@@ -1,0 +1,96 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+[$default byte_order: "LittleEndian"]
+[(cpp) namespace: "emboss::test"]
+
+
+struct Message:
+  0   [+1]    UInt         header_length (h)
+  1   [+1]    UInt         message_length (m)
+  2   [+h-2]  UInt:8[h-2]  padding
+  h   [+m]    UInt:8[m]    message
+  h+m [+4]    UInt         crc32
+
+
+struct Image:
+  0 [+1]         UInt                size
+  1 [+3*5*size]  UInt:8[3][5][size]  pixels
+
+
+struct TwoRegions:
+  # Fields are listed in reverse order to exercise a specific part of
+  # header_generator.py.
+  3       [+1]              UInt                   b_end
+  2       [+1]              UInt                   b_start
+  1       [+1]              UInt                   a_size
+  0       [+1]              UInt                   a_start
+  a_start [+a_size]         UInt:8[a_size]         region_a
+  b_start [+b_end-b_start]  UInt:8[b_end-b_start]  region_b
+
+
+struct MultipliedSize:
+  0 [+1]    UInt         width (w)
+  1 [+1]    UInt         height (h)
+  # Used to test that w*h is not performed with 8-bit arithmetic.
+  2 [+w*h]  UInt:8[w*h]  data
+
+
+struct NegativeTermsInSizes:
+  0 [+1]        UInt             a
+  1 [+1]        UInt             b
+  2 [+1]        UInt             c
+  # Used to test that the pruning logic for Size() doesn't miss anything.
+  3 [+a-b-3]    UInt:8[a-b-3]    a_minus_b
+  3 [+a-2*b-3]  UInt:8[a-2*b-3]  a_minus_2b
+  3 [+a-b-c-3]  UInt:8[a-b-c-3]  a_minus_b_minus_c
+  3 [+7-a]      UInt:8[7-a]      ten_minus_a
+  3 [+a-2*c-3]  UInt:8[a-2*c-3]  a_minus_2c
+  3 [+a-c-3]    UInt:8[a-c-3]    a_minus_c
+
+
+struct NegativeTermInLocation:
+  0 [+1]     UInt  a
+  10-a [+1]  UInt  b
+
+
+struct ChainedSize:
+  0 [+1]  UInt  a
+  a [+1]  UInt  b
+  b [+1]  UInt  c
+  c [+1]  UInt  d
+
+
+struct FinalFieldOverlaps:
+  0 [+1]  UInt  a
+  1 [+4]  UInt  b
+  3 [+2]  UInt  c
+
+
+struct DynamicFinalFieldOverlaps:
+  0   [+1]  UInt  a
+  9   [+1]  UInt  b
+  a   [+2]  UInt  c
+  a+1 [+1]  UInt  d
+
+
+struct DynamicFieldDependsOnLaterField:
+  a+1 [+1]  UInt  b
+  4   [+1]  UInt  a
+
+
+struct DynamicFieldDoesNotAffectSize:
+  0   [+1]  UInt  a
+  a   [+1]  UInt  b
+  255 [+1]  UInt  c

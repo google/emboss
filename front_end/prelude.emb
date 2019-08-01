@@ -1,0 +1,71 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+-- This is the Emboss Prelude.
+--
+-- This is a special file whose names are imported into (and therefore usable
+-- in) every Emboss module.  The IR for the Prelude module is included in every
+-- Emboss IR as the second element of the `module` list.
+
+# This namespace needs to match the namespace in emboss_prelude.h.
+# TODO(bolms): Move back-end-specific declarations to a separate file.
+[(cpp) namespace: "emboss::prelude"]
+
+
+external UInt:
+  -- UInt is an automatically-sized unsigned integer.
+  [static_requirements: $is_statically_sized && 1 <= $static_size_in_bits <= 64]
+  [is_integer: true]
+  [addressable_unit_size: 1]
+
+
+external Int:
+  -- Int is an automatically-sized signed 2's-complement integer.
+  [static_requirements: $is_statically_sized && 1 <= $static_size_in_bits <= 64]
+  [is_integer: true]
+  [addressable_unit_size: 1]
+
+
+external Bcd:
+  -- `Bcd` is an automatically-sized unsigned integer stored in Binary-Coded
+  -- Decimal (BCD) format.  https://en.wikipedia.org/wiki/Binary-coded_decimal
+  --
+  -- `Bcd` can be used in `bits` constructs.  If its size is not a multiple of
+  -- 4 bits, the value will be padded out to a multiple of 4 bits using 0s, and
+  -- then the resulting bit pattern will be treated as BCD.  Thus, a 7-bit `Bcd`
+  -- will have a range of 0..79, a 10-bit `Bcd` will have a range of 0..399, and
+  -- so on.
+  [static_requirements: $is_statically_sized && 1 <= $static_size_in_bits <= 64]
+  [is_integer: true]
+  [addressable_unit_size: 1]
+
+
+external Flag:
+  -- `Flag` is a boolean value, with `0` meaning `false` and `1` meaning `true`.
+  [static_requirements: $is_statically_sized && $static_size_in_bits == 1]
+  [fixed_size_in_bits: 1]
+  # Flags are not integers; if a user wants a 1-bit integer, they should use a
+  # 1-bit UInt.
+  [is_integer: false]
+  [addressable_unit_size: 1]
+
+
+external Float:
+  -- `Float` is a number in an IEEE 754 binaryNN format.
+  [static_requirements: $is_statically_sized && ($static_size_in_bits == 32 || $static_size_in_bits == 64)]
+  [is_integer: false]
+  [addressable_unit_size: 1]
+
+
+# TODO(bolms): Add Fixed-point.

@@ -1,0 +1,29 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+[$default byte_order: "LittleEndian"]
+[(cpp) namespace: "emboss::test"]
+
+
+struct Element:
+  0 [+1]  UInt  a
+  1 [+1]  UInt  b
+
+
+struct AutoSize:
+  0    [+1]    UInt       array_size (a)
+  1    [+4]    UInt:8[]   four_byte_array
+  5    [+8]    Element[]  four_struct_array
+  13   [+a]    UInt:8[]   dynamic_byte_array
+  13+a [+2*a]  Element[]  dynamic_struct_array

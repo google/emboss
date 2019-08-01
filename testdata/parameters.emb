@@ -1,0 +1,92 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+[$default byte_order: "LittleEndian"]
+[(cpp) namespace: "emboss_test"]
+
+enum Product:
+  VERSION_1 = 0
+  VERSION_2 = 10
+  VERSION_X = 23
+
+enum MessageId:
+  AXIS = 0
+  CONFIG = 1
+
+struct Multiversion(product: Product):
+  0 [+1]     MessageId                            message_id
+  if message_id == MessageId.AXIS:
+    1 [+12]  Axes(product == Product.VERSION_X ? 3 : 2)  axes
+  if message_id == MessageId.CONFIG:
+    1 [+4]  Config                                config
+  if product == Product.VERSION_X && message_id == MessageId.CONFIG:
+    1 [+8]  ConfigVX()                            config_vx
+
+struct Axes(axes: UInt:4):
+  0 [+axes * 4]  Axis(AxisType.GENERIC)[]  values
+  if axes > 0:
+    0 [+4]       Axis(AxisType.X_AXIS)     x
+  if axes > 1:
+    4 [+4]       Axis(AxisType.Y_AXIS)     y
+  if axes > 2:
+    8 [+4]       Axis(AxisType.Z_AXIS)     z
+  let axis_count_plus_one = axes + 1
+
+struct AxesEnvelope:
+  0 [+1]             UInt:8            axis_count
+  1 [+axis_count*4]  Axes(axis_count)  axes
+
+enum AxisType:
+  GENERIC = -1
+  X_AXIS = 1
+  Y_AXIS = 2
+  Z_AXIS = 3
+
+struct Axis(axis_type_parameter: AxisType):
+  let axis_type = axis_type_parameter
+  0 [+4]  UInt:32  value
+  if axis_type == AxisType.X_AXIS:
+    0 [+4]  UInt:32  x
+  if axis_type == AxisType.Y_AXIS:
+    0 [+4]  UInt:32  y
+  if axis_type == AxisType.Z_AXIS:
+    0 [+4]  UInt:32  z
+
+bits Config():
+  31 [+1]  Flag  power
+
+struct ConfigVX:
+  0 [+4]  bits:
+    31 [+1]  Flag  power
+  4 [+4]     UInt  gain
+
+
+struct StructWithUnusedParameter(x: UInt:8):
+  0 [+1]  UInt  y
+
+# StructContainingStructWithUnusedParameter is used to ensure that a struct is
+# not Ok() if it does not have its parameters, even if it does not directly use
+# those parameters.
+struct StructContainingStructWithUnusedParameter:
+  0 [+1]  StructWithUnusedParameter(x)  swup
+  1 [+1]  UInt                          x
+
+struct BiasedValue(bias: UInt:8):
+  0 [+1]  UInt  raw_value
+  let value = raw_value + bias
+
+struct SizedArrayOfBiasedValues:
+  0 [+1]   UInt                 element_count (ec)
+  1 [+1]   UInt                 bias
+  2 [+ec]  BiasedValue(bias)[]  values

@@ -1,0 +1,46 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+-- Structures which can be used be test code to check that alignment
+-- information is properly propagated through Emboss views.
+
+[$default byte_order: "BigEndian"]
+[(cpp) namespace: "emboss::test"]
+
+
+struct Alignments:
+  0  [+4]   Placeholder4     zero_offset
+  0  [+6]   Placeholder6     zero_offset_substructure
+  2  [+6]   Placeholder6     two_offset_substructure
+  3  [+4]   Placeholder4     three_offset
+  4  [+4]   Placeholder4     four_offset
+  11 [+4]   Placeholder4     eleven_offset
+  12 [+4]   Placeholder4     twelve_offset
+  0  [+12]  Placeholder4[3]  zero_offset_four_stride_array
+  0  [+24]  Placeholder6[4]  zero_offset_six_stride_array
+  3  [+12]  Placeholder4[3]  three_offset_four_stride_array
+  4  [+24]  Placeholder6[4]  four_offset_six_stride_array
+
+
+struct Placeholder4:
+  -- Four-byte structure used as a byte-oriented placeholder so that type
+  -- alignment can be tested without any of the bit/byte interface types.
+  0 [+4]  UInt  dummy
+
+
+struct Placeholder6:
+  -- Six-byte structure.  Includes Placeholder4 so that substructure alignments
+  -- can be checked.
+  0 [+4]  Placeholder4  zero_offset
+  2 [+4]  Placeholder4  two_offset

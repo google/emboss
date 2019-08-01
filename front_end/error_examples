@@ -1,0 +1,783 @@
+# Copyright 2019 Google LLC
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     https://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Error definitions.
+#
+# Each error definition consists of an error message section, followed by one or
+# more examples of that error.  The examples are used to train the parser to
+# recognize the error.
+#
+# Each error example should contain the token '$ERR' immediately before the
+# token on which the error is triggered.
+#
+# An example may optionally contain the token '$ANY'.  If so, the corresponding
+# error message will be used as a default message for parser errors which occur
+# in the corresponding parser state.  This is roughly equivalent to repeating
+# the example with every erroneous token in place of the '$ANY'.
+
+================================================================================
+A name is required for a struct field.
+--------------------------------------------------------------------------------
+# First example.
+struct Foo:
+  0 [+1]   UInt  $ERR  # Missing name (end of struct).
+---
+# Second example -- error on newline token, not comment token.
+struct Foo:
+  0 [+1]   UInt  $ERR
+
+
+================================================================================
+Module attributes must appear before type definitions.
+--------------------------------------------------------------------------------
+struct Foo:
+  0 [+1]   UInt   field
+
+$ERR [attrib: VALUE]  # Attribute after types.
+
+
+================================================================================
+A type name must be CamelCase.
+--------------------------------------------------------------------------------
+struct $ERR foo: # snake_case
+---
+struct $ERR FOO: # SHOUTY
+---
+struct $ERR Foo_: # Not a valid identifier
+---
+bits $ERR foo:
+---
+bits $ERR FOO:
+---
+bits $ERR Foo_:
+---
+enum $ERR foo:
+---
+enum $ERR FOO:
+---
+enum $ERR Foo_:
+---
+external $ERR foo:
+---
+external $ERR FOO:
+---
+external $ERR Foo_:
+---
+bits Type:
+  bits $ERR foo:
+---
+bits Type:
+  bits $ERR FOO:
+---
+bits Type:
+  bits $ERR Foo_:
+---
+bits Type:
+  struct $ERR foo:
+---
+bits Type:
+  struct $ERR FOO:
+---
+bits Type:
+  struct $ERR Foo_:
+---
+bits Type:
+  enum $ERR foo:
+---
+bits Type:
+  enum $ERR FOO:
+---
+bits Type:
+  enum $ERR Foo_:
+---
+bits Type:
+  external $ERR foo:
+---
+bits Type:
+  external $ERR FOO:
+---
+bits Type:
+  external $ERR Foo_:
+
+
+================================================================================
+Expected type name.
+--------------------------------------------------------------------------------
+struct $ERR $ANY
+---
+bits $ERR $ANY
+---
+enum $ERR $ANY
+---
+external $ERR $ANY
+---
+bits Type:
+  bits $ERR $ANY
+---
+bits Type:
+  struct $ERR $ANY
+---
+bits Type:
+  enum $ERR $ANY
+---
+bits Type:
+  external $ERR $ANY
+
+
+================================================================================
+Expected ':' after type name.
+--------------------------------------------------------------------------------
+struct Type $ERR $ANY
+---
+bits Type $ERR $ANY
+---
+enum Type $ERR $ANY
+---
+external Type $ERR $ANY
+
+
+================================================================================
+Expected end of line.
+--------------------------------------------------------------------------------
+struct Type: $ERR $ANY
+---
+bits Type: $ERR $ANY
+---
+enum Type: $ERR $ANY
+---
+external Type: $ERR $ANY
+---
+bits Type:
+  enum Type: $ERR $ANY
+---
+bits Type:
+  struct Type: $ERR $ANY
+---
+bits Type:
+  external Type: $ERR $ANY
+---
+struct Type:
+  enum Type: $ERR $ANY
+---
+struct Type:
+  external Type: $ERR $ANY
+---
+struct Type:
+  bits Type: $ERR $ANY
+---
+bits Type:
+  if false: $ERR $ANY
+---
+struct Type:
+  if false: $ERR $ANY
+---
+struct Type:
+  0 [+0] bits: $ERR $ANY
+---
+struct Type:
+  if false:
+    0 [+0] bits: $ERR $ANY
+---
+struct Type:
+  0 [+0] enum name: $ERR $ANY
+---
+struct Type:
+  if false:
+    0 [+0] enum name: $ERR $ANY
+
+
+================================================================================
+Expected documentation, an import, a module attribute, or a type at top level.
+--------------------------------------------------------------------------------
+$ERR $ANY
+
+
+================================================================================
+Expected an import, a module attribute, or a type definition.
+--------------------------------------------------------------------------------
+-- doc
+$ERR $ANY
+
+
+================================================================================
+Expected an import, a module attribute, or a type definition.
+--------------------------------------------------------------------------------
+import "string" as name
+$ERR $ANY
+
+
+================================================================================
+Imports should follow the form 'import "file_name.emb" as name'.
+--------------------------------------------------------------------------------
+import $ERR $ANY
+---
+import "string" $ERR $ANY
+---
+import "string" as $ERR $ANY
+
+
+================================================================================
+An import statement must be on its own line.
+--------------------------------------------------------------------------------
+import "string" as name $ERR $ANY
+
+
+================================================================================
+Expected inline type definition or field definition.
+--------------------------------------------------------------------------------
+struct Type:
+  external Type:
+    --
+  $ERR $ANY
+
+
+================================================================================
+Nested type definitions must come before fields.
+--------------------------------------------------------------------------------
+struct Type:
+  VALUE [+0] Type name
+  $ERR struct
+---
+struct Type:
+  VALUE [+0] Type name
+  $ERR enum
+---
+struct Type:
+  VALUE [+0] Type name
+  $ERR bits
+
+
+================================================================================
+Type documentation must come before fields.
+--------------------------------------------------------------------------------
+struct Type:
+  VALUE [+0] Type name
+  $ERR -- doc
+
+
+================================================================================
+Expected field definition.
+--------------------------------------------------------------------------------
+struct Type:
+  VALUE [+0] Type name
+  $ERR $ANY
+
+
+================================================================================
+Expected documentation, attribute, or enum value for inline enum.
+--------------------------------------------------------------------------------
+struct Type:
+  VALUE [+0] enum name:
+    $ERR $ANY
+
+
+================================================================================
+Attributes must be of the form '[name: value]', '[(domain) name: value]', or '[$default name: value]'
+--------------------------------------------------------------------------------
+[ $ERR $ANY
+---
+struct Type:
+  VALUE [+0] Type name [name: $ERR $ANY
+---
+[( $ERR $ANY
+---
+[(name $ERR $ANY
+---
+[(name) $ERR $ANY
+---
+[$default $ERR $ANY
+---
+[name $ERR $ANY
+---
+[name: $ERR $ANY
+---
+[name: VALUE $ERR $ANY
+---
+[name: false $ERR $ANY
+---
+[name: name $ERR $ANY
+---
+[name: "string" $ERR $ANY
+---
+[name: Type $ERR $ANY
+---
+[name: 0 $ERR $ANY
+
+
+================================================================================
+Expected a variable, constant, or expression.
+--------------------------------------------------------------------------------
+# The top-of-stack parser states here are common to expression parsing; the
+# module-attribute prefix is just the shortest prefix that gets to an
+# expression.
+[name: ( $ERR $ANY
+---
+# Yes, '((' puts the parser in a slightly different state than '('.
+# Fortunately, '(((' and on are equivalent to '(('.
+[name: (( $ERR $ANY
+---
+[name: + $ERR $ANY
+---
+[name: - $ERR $ANY
+---
+[name: 0 != ( $ERR $ANY
+---
+struct Type:
+  ( $ERR $ANY
+
+
+================================================================================
+Documentation must come before any enumeration values.
+--------------------------------------------------------------------------------
+enum Type:
+  VALUE = VALUE
+    --
+  $ERR -- doc
+
+================================================================================
+Attributes must come before any enumeration values.
+--------------------------------------------------------------------------------
+enum Type:
+  VALUE = VALUE
+    --
+  $ERR [attribute: value]
+
+
+================================================================================
+Expected 'NAME = value' pair.
+--------------------------------------------------------------------------------
+enum Type:
+  VALUE = VALUE
+    --
+  $ERR $ANY
+
+
+================================================================================
+Documentation must come before attributes.
+--------------------------------------------------------------------------------
+[name: VALUE]
+$ERR -- doc
+---
+enum Type:
+  [name: "string"]
+  $ERR -- doc
+---
+external Type:
+  [name: "string"]
+  $ERR -- doc
+---
+struct Type:
+  [name: "string"]
+  $ERR -- doc
+---
+bits Type:
+  [name: "string"]
+  $ERR -- doc
+
+
+================================================================================
+Imports must come before module attributes.
+--------------------------------------------------------------------------------
+[name: VALUE]
+$ERR import
+
+
+================================================================================
+Expected an attribute or a type definition.
+--------------------------------------------------------------------------------
+[name: VALUE]
+$ERR $ANY
+
+
+================================================================================
+Expected documentation or attribute for field.  (Wrong indent?)
+--------------------------------------------------------------------------------
+struct Type :
+  VALUE [+0] Type name
+    $ERR $ANY
+
+
+================================================================================
+Documentation must come before nested types.
+--------------------------------------------------------------------------------
+struct Type:
+  enum Type:
+    VALUE = VALUE
+  $ERR -- doc
+
+
+================================================================================
+Attributes must come before nested types.
+--------------------------------------------------------------------------------
+struct Type:
+  enum Type:
+    VALUE = VALUE
+  $ERR [
+
+
+================================================================================
+Expected nested type or field definition.
+--------------------------------------------------------------------------------
+struct Type:
+  enum Type:
+    VALUE = VALUE
+  $ERR $ANY
+
+
+================================================================================
+Documentation must come before field definitions.
+--------------------------------------------------------------------------------
+struct Type:
+  VALUE [+0] Type name
+    --
+  $ERR -- doc
+
+
+================================================================================
+Attributes must come before field definitions.
+--------------------------------------------------------------------------------
+struct Type:
+  VALUE [+0] Type name
+    --
+  $ERR [
+
+
+================================================================================
+Nested types must come before field definitions.
+--------------------------------------------------------------------------------
+struct Type :
+  VALUE [+0] Type name
+    --
+  $ERR enum
+---
+struct Type :
+  VALUE [+0] Type name
+    --
+  $ERR struct
+---
+struct Type :
+  VALUE [+0] Type name
+    --
+  $ERR bits
+---
+struct Type :
+  VALUE [+0] Type name
+    --
+  $ERR external
+
+
+================================================================================
+Expected field definition.
+--------------------------------------------------------------------------------
+struct Type :
+  VALUE [+0] Type name
+    --
+  $ERR $ANY
+
+
+================================================================================
+Expected attribute or end of line.
+--------------------------------------------------------------------------------
+struct Type:
+  VALUE [+0] Type name [name: VALUE] $ERR $ANY
+
+
+================================================================================
+Module documentation must come before imports.
+--------------------------------------------------------------------------------
+import "string" as name
+$ERR -- doc
+
+
+================================================================================
+Body of a type definition must be non-empty and indented.
+--------------------------------------------------------------------------------
+bits Type:
+$ERR $ANY
+---
+external Type:
+$ERR $ANY
+---
+struct Type:
+$ERR $ANY
+---
+enum Type:
+$ERR $ANY
+
+
+================================================================================
+Expected documentation, attribute, nested type, or field definition.
+--------------------------------------------------------------------------------
+bits Type:
+  $ERR $ANY
+---
+struct Type:
+  $ERR $ANY
+
+
+================================================================================
+Expected documentation or attribute.
+--------------------------------------------------------------------------------
+external Type:
+  $ERR $ANY
+
+
+================================================================================
+Expected documentation, attribute, or enumeration value.
+--------------------------------------------------------------------------------
+enum Type:
+  $ERR $ANY
+
+
+================================================================================
+Enumerations may not contain subtypes.
+--------------------------------------------------------------------------------
+enum Type:
+  $ERR bits
+---
+enum Type:
+  $ERR struct
+---
+enum Type:
+  $ERR external
+---
+enum Type:
+  $ERR enum
+
+
+================================================================================
+Expected operator or closing parenthesis.
+--------------------------------------------------------------------------------
+[name: (name $ERR $ANY
+---
+[name: (VALUE $ERR $ANY
+---
+[name: (false $ERR $ANY
+---
+[name: (0 $ERR $ANY
+---
+[name: ((false) $ERR $ANY
+
+
+================================================================================
+Expected arithmetic operator or closing parenthesis.
+--------------------------------------------------------------------------------
+[name: (0 != 0 $ERR $ANY
+---
+[name: (0 != VALUE $ERR $ANY
+---
+[name: (0 != false $ERR $ANY
+
+
+================================================================================
+Expected arithmetic operator or end of attribute.
+--------------------------------------------------------------------------------
+[name: 0 != VALUE $ERR $ANY
+---
+[name: 0 != 0 $ERR $ANY
+---
+[name: 0 != false $ERR $ANY
+
+
+================================================================================
+Expected operator or '.'.
+--------------------------------------------------------------------------------
+[name: 0 != name $ERR $ANY
+
+
+================================================================================
+Expected operator or closing parenthesis; enumerated values do not have subfields.
+--------------------------------------------------------------------------------
+[name: (VALUE $ERR .
+
+
+================================================================================
+Expected name.
+--------------------------------------------------------------------------------
+[name: Type. $ERR $ANY
+
+
+================================================================================
+Field locations must be of the form 'start [+length]'.  Missing '+'?
+--------------------------------------------------------------------------------
+struct Foo:
+  0 [ $ERR 0
+---
+struct Foo:
+  0 [ $ERR name
+---
+struct Foo:
+  0 [ $ERR VALUE
+---
+struct Foo:
+  0 [ $ERR Type
+---
+struct Foo:
+  0 [ $ERR 0
+---
+struct Foo:
+  0 [ $ERR name
+---
+struct Foo:
+  0 [ $ERR VALUE
+---
+struct Foo:
+  0 [ $ERR Type
+
+
+================================================================================
+Right operand must be an expression.
+--------------------------------------------------------------------------------
+[name: 0 * $ERR $ANY
+---
+[name: 0 + $ERR $ANY
+---
+[name: 0 - $ERR $ANY
+---
+[name: 0 == $ERR $ANY
+---
+[name: 0 != $ERR $ANY
+---
+[name: VALUE * $ERR $ANY
+---
+[name: VALUE + $ERR $ANY
+---
+[name: VALUE - $ERR $ANY
+---
+[name: VALUE == $ERR $ANY
+---
+[name: VALUE != $ERR $ANY
+
+
+================================================================================
+Attribute must appear on its own line.
+--------------------------------------------------------------------------------
+[name: false] $ERR $ANY
+
+
+================================================================================
+Expected subtype or enumeration name.
+--------------------------------------------------------------------------------
+[name: (Type. $ERR $ANY
+
+
+================================================================================
+Attribute missing closing ']'.
+--------------------------------------------------------------------------------
+[name: (0) $ERR
+
+
+================================================================================
+Expected operator or end of attribute.
+--------------------------------------------------------------------------------
+[name: (0) $ERR $ANY
+
+
+================================================================================
+Expected subfield name.
+--------------------------------------------------------------------------------
+[name: (name. $ERR $ANY
+---
+[name: name. $ERR $ANY
+---
+[name: 0 == name. $ERR $ANY
+
+
+================================================================================
+Expected expression for size of field.
+--------------------------------------------------------------------------------
+struct Foo:
+  0 [+ $ERR $ANY
+
+
+================================================================================
+Unexpected enum name; possibly incorrect indentation.
+--------------------------------------------------------------------------------
+enum Type:
+  VALUE = VALUE
+    --
+    $ERR VALUE = VALUE
+
+
+================================================================================
+Space is required after '--'.
+--------------------------------------------------------------------------------
+enum Type:
+  VALUE = VALUE
+    --
+    $ERR --No space
+
+
+================================================================================
+Expected documentation or next value.
+--------------------------------------------------------------------------------
+enum Type:
+  VALUE = VALUE
+    --
+    $ERR $ANY
+
+
+================================================================================
+Expected '=' after enumerated name.
+--------------------------------------------------------------------------------
+enum Type:
+  VALUE $ERR $ANY
+
+
+================================================================================
+Parentheses are required to mix '&&' and '||'.
+--------------------------------------------------------------------------------
+struct Foo:
+  if a && b && c $ERR ||
+---
+struct Foo:
+  if a || b || c $ERR &&
+
+
+================================================================================
+Greater-than comparisons may only be chained with equality and greater-than.
+--------------------------------------------------------------------------------
+struct Foo:
+  if a > b $ERR <
+---
+struct Foo:
+  if a > b $ERR <=
+
+
+================================================================================
+Less-than comparisons may only be chained with equality and less-than.
+--------------------------------------------------------------------------------
+struct Foo:
+  if a < b $ERR >
+---
+struct Foo:
+  if a < b $ERR >=
+
+
+================================================================================
+Chained or nested choice operations ('?:') require explicit parentheses.
+--------------------------------------------------------------------------------
+struct Foo:
+  if a ? b : c $ERR ?
+---
+struct Foo:
+  if a ? b $ERR ?
+
+
+================================================================================
+Virtual fields are not allowed in anonymous 'bits' constructs; place them in the enclosing type.
+--------------------------------------------------------------------------------
+struct Foo:
+  0 [+1]  bits:
+    $ERR let x = 0

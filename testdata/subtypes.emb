@@ -1,0 +1,65 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+-- Test cases for types containing types.
+
+[$default byte_order: "LittleEndian"]
+[(cpp) namespace: "emboss::test"]
+
+
+struct Out:
+  struct In:
+    struct InIn:
+      enum InInIn:
+        NO           = 0
+        YES          = 1
+
+      let outer_offset = 24
+
+      0 [+1]  InInIn  field_enum
+      # In2 should be Out.In2, despite In2 appearing in an enclosing scope and
+      # later in the source file.
+
+      1 [+1]  In2     in_2
+
+    0              [+2]  InIn         in_in_1
+
+    2              [+2]  InIn         in_in_2
+
+    4              [+1]  InIn.InInIn  in_in_in_1
+
+    5              [+1]  In2          in_2
+
+    6              [+1]  UInt         name_collision
+    # name_collision should resolve to Out.In.name_collision, not
+    # Out.name_collision, and there should be no error about ambiguous
+    # resolution.  (Note that since field references are actually used at
+    # runtime, and there isn't necessarily any enclosing Out object for an
+    # Out.In at runtime, it does not make sense for a field name to resolve to
+    # a field in an outer struct.)
+    # TODO(bolms): Add a warning for this case, since it is somewhat subtle.
+
+    name_collision [+1]  UInt         name_collision_check
+
+  struct In2:
+    0 [+1]  UInt  field_byte
+
+  0                    [+8]  In              in_1
+  8                    [+8]  In              in_2
+  16                   [+2]  In.InIn         in_in_1
+  18                   [+2]  In.InIn         in_in_2
+  20                   [+1]  In.InIn.InInIn  in_in_in_1
+  21                   [+1]  In.InIn.InInIn  in_in_in_2
+  22                   [+2]  UInt            name_collision
+  In.InIn.outer_offset [+1]  UInt            nested_constant_check

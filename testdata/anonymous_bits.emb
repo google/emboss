@@ -1,0 +1,32 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+[$default byte_order: "LittleEndian"]
+[(cpp) namespace: "emboss::test"]
+
+
+struct Foo:
+  0  [+4]  bits:
+    31 [+1]       Flag  high_bit
+    14 [+4]       enum  bar:
+      BAR = 0
+      BAZ = 1
+
+    0  [+1]       Flag  first_bit
+
+  4  [+4]  bits:
+    # The last byte is intentionally unused, in order to test that Ok() checks
+    # the readability of all the bits, not just the ones that have names.
+    23 [+1]       Flag  bit_23
+    0  [+1]       Flag  low_bit

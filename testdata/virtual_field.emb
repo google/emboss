@@ -1,0 +1,153 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+-- Tests for virtual fields:
+--
+-- *   `let` constructs
+-- *   TODO(bolms@): `transform` annotations
+-- *   TODO(bolms@): `read` and `write` annotations
+
+[$default byte_order: "LittleEndian"]
+[(cpp) namespace: "emboss::test"]
+
+
+struct StructureWithConstants:
+  let ten = 10
+  let twenty = 20
+  let four_billion = 4_000_000_000
+  let ten_billion = 10_000_000_000
+  let minus_ten_billion = -10_000_000_000
+  0 [+4]  UInt  value
+  let alias_of_value = value
+  let alias_of_alias_of_value = alias_of_value
+  let alias_of_ten = ten
+  let alias_of_alias_of_ten = alias_of_ten
+
+
+struct StructureWithComputedValues:
+  0 [+4]  UInt  value
+  let doubled  = value * 2
+  let plus_ten = value + 10
+  let signed_doubled  = value2 * 2
+  let signed_plus_ten = value2 + 10
+  let product = value * value2
+  4 [+4]  Int  value2
+
+
+struct StructureWithConditionalValue:
+  0 [+4]  UInt  x
+  if x < 0x8000_0000:
+    let two_x = x * 2
+  let x_plus_one = x + 1
+
+
+struct StructureWithValueInCondition:
+  let two_x = x * 2
+  0 [+4]    UInt  x
+  if two_x < 100:
+    4 [+4]  UInt  if_two_x_lt_100
+
+
+struct StructureWithValuesInLocation:
+  let two_x = x * 2
+  0     [+4]      UInt     x
+  two_x [+4]      UInt     offset_two_x
+  4     [+two_x]  UInt:32  size_two_x
+
+
+struct StructureWithBoolValue:
+  let x_is_ten = x == 10
+  0 [+4]  UInt  x
+
+
+struct StructureWithEnumValue:
+  enum Category:
+    SMALL = 1
+    LARGE = 2
+  let x_size = x < 100 ? Category.SMALL : Category.LARGE
+  0 [+4]  UInt  x
+
+
+struct StructureWithBitsWithValue:
+  0 [+4]  BitsWithValue  b
+  let alias_of_b_sum = b.sum
+  let alias_of_b_a = b.a
+
+
+bits BitsWithValue:
+  0  [+16]  UInt  a
+  16 [+16]  UInt  b
+  let sum = a + b
+
+
+struct StructureUsingForeignConstants:
+  StructureWithConstants.ten [+4]  UInt  x
+  let one_hundred = StructureWithConstants.twenty * 5
+
+
+struct SubfieldOfAlias:
+  0 [+4]    struct  header:
+    0 [+2]  UInt    size
+    2 [+2]  UInt    message_id
+  let h = header
+  let size = h.size
+
+
+struct RestrictedAlias:
+  0 [+4]  BitsWithValue  a_b
+  4 [+1]  UInt  alias_switch
+  if alias_switch > 10:
+    let a_b_alias = a_b
+
+
+struct HasField:
+  0 [+1]  UInt  z
+  if $present(x.y):
+    let y = x.y
+  if z > 10:
+    1 [+2]  struct  x:
+      0 [+1]  UInt  v
+      if v > 10:
+        1 [+1]  UInt  y
+  if $present(x):
+    let x_has_y = $present(x.y)
+
+
+struct VirtualUnconditionallyUsesConditional:
+  0 [+1]  UInt  x
+  if x == 0:
+    1 [+1]  UInt  xc
+
+  let x_nor_xc = x == 0 && xc == 0
+
+
+struct UsesSize:
+  0 [+1]  bits  r:
+    0 [+8]  UInt  q
+    let q_plus_bit_size = q + $size_in_bits
+  let r_q_plus_byte_size = r.q + $size_in_bytes
+
+
+struct UsesExternalSize:
+  0                [+4]                                      StructureWithConstants  x
+  x.$size_in_bytes [+StructureWithConstants.$size_in_bytes]  StructureWithConstants  y
+
+
+struct ImplicitWriteBack:
+  0 [+1]  UInt  x
+  let x_plus_ten = x + 10
+  let ten_plus_x = 10 + x
+  let x_minus_ten = x - 10
+  let ten_minus_x = 10 - x
+  let ten_minus_x_plus_ten = (10 - x) + 10

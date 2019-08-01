@@ -1,0 +1,376 @@
+module:
+  comment-line*:
+    comment-line:
+      Comment?:
+        Comment '# Copyright 2019 Google LLC' 1:1-1:28
+      "\n" '\n' 1:1-1:28
+    comment-line*:
+      comment-line:
+        Comment?:
+          Comment '#' 2:1-2:2
+        "\n" '\n' 2:1-2:2
+      comment-line*:
+        comment-line:
+          Comment?:
+            Comment '# Licensed under the Apache License, Version 2.0 (the "License");' 3:1-3:66
+          "\n" '\n' 3:1-3:66
+        comment-line*:
+          comment-line:
+            Comment?:
+              Comment '# you may not use this file except in compliance with the License.' 4:1-4:67
+            "\n" '\n' 4:1-4:67
+          comment-line*:
+            comment-line:
+              Comment?:
+                Comment '# You may obtain a copy of the License at' 5:1-5:42
+              "\n" '\n' 5:1-5:42
+            comment-line*:
+              comment-line:
+                Comment?:
+                  Comment '#' 6:1-6:2
+                "\n" '\n' 6:1-6:2
+              comment-line*:
+                comment-line:
+                  Comment?:
+                    Comment '#     https://www.apache.org/licenses/LICENSE-2.0' 7:1-7:50
+                  "\n" '\n' 7:1-7:50
+                comment-line*:
+                  comment-line:
+                    Comment?:
+                      Comment '#' 8:1-8:2
+                    "\n" '\n' 8:1-8:2
+                  comment-line*:
+                    comment-line:
+                      Comment?:
+                        Comment '# Unless required by applicable law or agreed to in writing, software' 9:1-9:70
+                      "\n" '\n' 9:1-9:70
+                    comment-line*:
+                      comment-line:
+                        Comment?:
+                          Comment '# distributed under the License is distributed on an "AS IS" BASIS,' 10:1-10:68
+                        "\n" '\n' 10:1-10:68
+                      comment-line*:
+                        comment-line:
+                          Comment?:
+                            Comment '# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.' 11:1-11:75
+                          "\n" '\n' 11:1-11:75
+                        comment-line*:
+                          comment-line:
+                            Comment?:
+                              Comment '# See the License for the specific language governing permissions and' 12:1-12:70
+                            "\n" '\n' 12:1-12:70
+                          comment-line*:
+                            comment-line:
+                              Comment?:
+                                Comment '# limitations under the License.' 13:1-13:33
+                              "\n" '\n' 13:1-13:33
+                            comment-line*:
+                              comment-line:
+                                Comment?
+                                "\n" '\n' 14:1-14:1
+                              comment-line*
+  doc-line*:
+    doc-line:
+      doc:
+        Documentation '-- This is a simple, real-world example structure.' 15:1-15:51
+      Comment?
+      eol:
+        "\n" '\n' 15:51-16:1
+        comment-line*:
+          comment-line:
+            Comment?
+            "\n" '\n' 16:1-16:1
+          comment-line*
+    doc-line*
+  import-line*
+  attribute-line*:
+    attribute-line:
+      attribute:
+        "[" '[' 17:1-17:2
+        attribute-context?
+        "$default"?:
+          "$default" '$default' 17:2-17:10
+        snake-word:
+          SnakeWord 'byte_order' 17:11-17:21
+        ":" ':' 17:21-17:22
+        attribute-value:
+          string-constant:
+            String '"LittleEndian"' 17:23-17:37
+        "]" ']' 17:37-17:38
+      Comment?
+      eol:
+        "\n" '\n' 17:38-17:38
+        comment-line*
+    attribute-line*:
+      attribute-line:
+        attribute:
+          "[" '[' 18:1-18:2
+          attribute-context?:
+            attribute-context:
+              "(" '(' 18:2-18:3
+              snake-word:
+                SnakeWord 'cpp' 18:3-18:6
+              ")" ')' 18:6-18:7
+          "$default"?
+          snake-word:
+            SnakeWord 'namespace' 18:8-18:17
+          ":" ':' 18:17-18:18
+          attribute-value:
+            string-constant:
+              String '"emboss::test"' 18:19-18:33
+          "]" ']' 18:33-18:34
+        Comment?
+        eol:
+          "\n" '\n' 18:34-20:1
+          comment-line*:
+            comment-line:
+              Comment?
+              "\n" '\n' 19:1-19:1
+            comment-line*:
+              comment-line:
+                Comment?
+                "\n" '\n' 20:1-20:1
+              comment-line*
+      attribute-line*
+  type-definition*:
+    type-definition:
+      struct:
+        "struct" 'struct' 21:1-21:7
+        type-name:
+          type-word:
+            CamelWord 'LogFileStatus' 21:8-21:21
+        delimited-parameter-definition-list?
+        ":" ':' 21:21-21:22
+        Comment?
+        eol:
+          "\n" '\n' 21:22-21:22
+          comment-line*
+        struct-body:
+          Indent '  ' 22:1-22:3
+          doc-line*
+          attribute-line*
+          type-definition*
+          struct-field-block:
+            unconditional-struct-field:
+              field:
+                field-location:
+                  expression:
+                    choice-expression:
+                      logical-expression:
+                        comparison-expression:
+                          additive-expression:
+                            times-expression:
+                              negation-expression:
+                                bottom-expression:
+                                  numeric-constant:
+                                    Number '0' 22:3-22:4
+                              times-expression-right*
+                            additive-expression-right*
+                  "[" '[' 22:6-22:7
+                  "+" '+' 22:7-22:8
+                  expression:
+                    choice-expression:
+                      logical-expression:
+                        comparison-expression:
+                          additive-expression:
+                            times-expression:
+                              negation-expression:
+                                bottom-expression:
+                                  numeric-constant:
+                                    Number '4' 22:8-22:9
+                              times-expression-right*
+                            additive-expression-right*
+                  "]" ']' 22:9-22:10
+                type:
+                  type-reference:
+                    type-reference-tail:
+                      type-word:
+                        CamelWord 'UInt' 22:13-22:17
+                  delimited-argument-list?
+                  type-size-specifier?
+                  array-length-specifier*
+                snake-name:
+                  snake-word:
+                    SnakeWord 'file_state' 22:25-22:35
+                abbreviation?
+                attribute*
+                doc?
+                Comment?
+                eol:
+                  "\n" '\n' 22:35-22:35
+                  comment-line*
+                field-body?
+            struct-field-block:
+              unconditional-struct-field:
+                field:
+                  field-location:
+                    expression:
+                      choice-expression:
+                        logical-expression:
+                          comparison-expression:
+                            additive-expression:
+                              times-expression:
+                                negation-expression:
+                                  bottom-expression:
+                                    numeric-constant:
+                                      Number '4' 23:3-23:4
+                                times-expression-right*
+                              additive-expression-right*
+                    "[" '[' 23:6-23:7
+                    "+" '+' 23:7-23:8
+                    expression:
+                      choice-expression:
+                        logical-expression:
+                          comparison-expression:
+                            additive-expression:
+                              times-expression:
+                                negation-expression:
+                                  bottom-expression:
+                                    numeric-constant:
+                                      Number '12' 23:8-23:10
+                                times-expression-right*
+                              additive-expression-right*
+                    "]" ']' 23:10-23:11
+                  type:
+                    type-reference:
+                      type-reference-tail:
+                        type-word:
+                          CamelWord 'UInt' 23:13-23:17
+                    delimited-argument-list?
+                    type-size-specifier?:
+                      type-size-specifier:
+                        ":" ':' 23:17-23:18
+                        numeric-constant:
+                          Number '8' 23:18-23:19
+                    array-length-specifier*:
+                      array-length-specifier:
+                        "[" '[' 23:19-23:20
+                        expression:
+                          choice-expression:
+                            logical-expression:
+                              comparison-expression:
+                                additive-expression:
+                                  times-expression:
+                                    negation-expression:
+                                      bottom-expression:
+                                        numeric-constant:
+                                          Number '12' 23:20-23:22
+                                    times-expression-right*
+                                  additive-expression-right*
+                        "]" ']' 23:22-23:23
+                      array-length-specifier*
+                  snake-name:
+                    snake-word:
+                      SnakeWord 'file_name' 23:25-23:34
+                  abbreviation?
+                  attribute*
+                  doc?
+                  Comment?
+                  eol:
+                    "\n" '\n' 23:34-23:34
+                    comment-line*
+                  field-body?
+              struct-field-block:
+                unconditional-struct-field:
+                  field:
+                    field-location:
+                      expression:
+                        choice-expression:
+                          logical-expression:
+                            comparison-expression:
+                              additive-expression:
+                                times-expression:
+                                  negation-expression:
+                                    bottom-expression:
+                                      numeric-constant:
+                                        Number '16' 24:3-24:5
+                                  times-expression-right*
+                                additive-expression-right*
+                      "[" '[' 24:6-24:7
+                      "+" '+' 24:7-24:8
+                      expression:
+                        choice-expression:
+                          logical-expression:
+                            comparison-expression:
+                              additive-expression:
+                                times-expression:
+                                  negation-expression:
+                                    bottom-expression:
+                                      numeric-constant:
+                                        Number '4' 24:8-24:9
+                                  times-expression-right*
+                                additive-expression-right*
+                      "]" ']' 24:9-24:10
+                    type:
+                      type-reference:
+                        type-reference-tail:
+                          type-word:
+                            CamelWord 'UInt' 24:13-24:17
+                      delimited-argument-list?
+                      type-size-specifier?
+                      array-length-specifier*
+                    snake-name:
+                      snake-word:
+                        SnakeWord 'file_size_kb' 24:25-24:37
+                    abbreviation?
+                    attribute*
+                    doc?
+                    Comment?
+                    eol:
+                      "\n" '\n' 24:37-24:37
+                      comment-line*
+                    field-body?
+                struct-field-block:
+                  unconditional-struct-field:
+                    field:
+                      field-location:
+                        expression:
+                          choice-expression:
+                            logical-expression:
+                              comparison-expression:
+                                additive-expression:
+                                  times-expression:
+                                    negation-expression:
+                                      bottom-expression:
+                                        numeric-constant:
+                                          Number '20' 25:3-25:5
+                                    times-expression-right*
+                                  additive-expression-right*
+                        "[" '[' 25:6-25:7
+                        "+" '+' 25:7-25:8
+                        expression:
+                          choice-expression:
+                            logical-expression:
+                              comparison-expression:
+                                additive-expression:
+                                  times-expression:
+                                    negation-expression:
+                                      bottom-expression:
+                                        numeric-constant:
+                                          Number '4' 25:8-25:9
+                                    times-expression-right*
+                                  additive-expression-right*
+                        "]" ']' 25:9-25:10
+                      type:
+                        type-reference:
+                          type-reference-tail:
+                            type-word:
+                              CamelWord 'UInt' 25:13-25:17
+                        delimited-argument-list?
+                        type-size-specifier?
+                        array-length-specifier*
+                      snake-name:
+                        snake-word:
+                          SnakeWord 'media' 25:25-25:30
+                      abbreviation?
+                      attribute*
+                      doc?
+                      Comment?
+                      eol:
+                        "\n" '\n' 25:30-25:30
+                        comment-line*
+                      field-body?
+                  struct-field-block
+          Dedent '' 26:1-26:1
+    type-definition*
+

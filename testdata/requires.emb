@@ -1,0 +1,87 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+[$default byte_order: "LittleEndian"]
+[(cpp) namespace: "emboss::test"]
+
+
+struct RequiresIntegers:
+  [requires: zero_through_nine <= ten_through_twenty - 10]
+
+  0 [+1]  UInt  zero_through_nine   [requires: 0 <= this <= 9]
+
+  1 [+1]  Int   ten_through_twenty  [requires: 10 <= this <= 20]
+
+  2 [+1]  UInt  disjoint
+    [requires: 0 <= this <= 5 || 15 <= this <= 20]
+
+  let ztn_plus_ttt = zero_through_nine + ten_through_twenty
+    [requires: 10 <= this <= 19]
+
+  let alias_of_zero_through_nine = zero_through_nine
+    [requires: 2 <= this <= 7]
+
+  let zero_through_nine_plus_five = zero_through_nine + 5
+    [requires: 5 <= this <= 10]
+
+
+struct RequiresBools:
+  [requires: a || b]
+
+  0 [+1]  bits:
+    0 [+1]  Flag  a
+    1 [+1]  Flag  b
+    2 [+1]  Flag  must_be_true
+      [requires: this]
+    3 [+1]  Flag  must_be_false
+      [requires: this == false]
+
+  let b_must_be_false = b == false
+    [requires: this]
+
+  let alias_of_a_must_be_true = a
+    [requires: this]
+
+
+struct RequiresEnums:
+  [requires: a == Enum.EN0 || b == Enum.EN0]
+
+  enum Enum:
+    EN0 = 0
+    EN1 = 1
+    EN2 = 2
+    EN3 = 3
+
+  0 [+1]  Enum  a
+  1 [+1]  Enum  b
+  2 [+1]  Enum  c
+    [requires: this == Enum.EN0 || this == Enum.EN1]
+
+  let filtered_a = a == Enum.EN0 ? Enum.EN1 : a
+    [requires: this == Enum.EN1]
+
+  let alias_of_a = a
+    [requires: this == Enum.EN1]
+
+
+struct RequiresWithOptionalFields:
+  [requires: a || b]
+  0 [+1]  bits:
+    0 [+1]  Flag  a
+    1 [+1]  Flag  b_exists
+    if b_exists:
+      2 [+1]  Flag b
+    if b_exists:
+      2 [+1]  Flag b_true
+        [requires: this]

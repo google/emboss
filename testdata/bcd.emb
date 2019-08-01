@@ -1,0 +1,39 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+-- Tests for various sizes of Binary-Coded Decimal (BCD) integers.
+
+[$default byte_order: "LittleEndian"]
+[(cpp) namespace: "emboss::test"]
+
+
+struct BcdSizes:
+  0  [+1]         Bcd  one_byte
+  1  [+2]         Bcd  two_byte
+  3  [+3]         Bcd  three_byte
+  6  [+4]         Bcd  four_byte
+  10 [+5]         Bcd  five_byte
+  15 [+6]         Bcd  six_byte
+  21 [+7]         Bcd  seven_byte
+  28 [+8]         Bcd  eight_byte
+  36 [+4]  bits:
+    0  [+4]       Bcd  four_bit
+    4  [+6]       Bcd  six_bit
+    10 [+10]      Bcd  ten_bit
+    20 [+12]      Bcd  twelve_bit
+
+
+struct BcdBigEndian:
+  [$default byte_order: "BigEndian"]
+  0 [+4]  Bcd  four_byte

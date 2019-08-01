@@ -1,0 +1,86 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+-- Test structs for 8, 16, 32, and 64 bit UInts and enums.
+
+[$default byte_order: "LittleEndian"]
+[(cpp) namespace: "emboss::test"]
+
+
+struct Sizes:
+  0  [+1]  UInt  one_byte
+  1  [+2]  UInt  two_byte
+  3  [+3]  UInt  three_byte
+  6  [+4]  UInt  four_byte
+  10 [+5]  UInt  five_byte
+  15 [+6]  UInt  six_byte
+  21 [+7]  UInt  seven_byte
+  28 [+8]  UInt  eight_byte
+
+
+struct BigEndianSizes:
+  [$default byte_order: "BigEndian"]
+  0  [+1]  UInt  one_byte
+  1  [+2]  UInt  two_byte
+  3  [+3]  UInt  three_byte
+  6  [+4]  UInt  four_byte
+  10 [+5]  UInt  five_byte
+  15 [+6]  UInt  six_byte
+  21 [+7]  UInt  seven_byte
+  28 [+8]  UInt  eight_byte
+
+
+struct AlternatingEndianSizes:
+  [$default byte_order: "BigEndian"]
+  0  [+1]  UInt  one_byte    [byte_order: "BigEndian"]
+  1  [+2]  UInt  two_byte    [byte_order: "LittleEndian"]
+  3  [+3]  UInt  three_byte                                # default to "BigEndian"
+  6  [+4]  UInt  four_byte   [byte_order: "LittleEndian"]
+  10 [+5]  UInt  five_byte                                 # default to "BigEndian"
+  15 [+6]  UInt  six_byte    [byte_order: "LittleEndian"]
+  21 [+7]  UInt  seven_byte  [byte_order: "BigEndian"]
+  28 [+8]  UInt  eight_byte  [byte_order: "LittleEndian"]
+
+
+struct EnumSizes:
+  0  [+1]  Enum  one_byte
+  1  [+2]  Enum  two_byte
+  3  [+3]  Enum  three_byte
+  6  [+4]  Enum  four_byte
+  10 [+5]  Enum  five_byte
+  15 [+6]  Enum  six_byte
+  21 [+7]  Enum  seven_byte
+  28 [+8]  Enum  eight_byte
+
+
+enum Enum:
+  VALUE1        = 1
+  VALUE10       = 10
+  VALUE100      = 100
+  VALUE1000     = 1000
+  VALUE10000    = 10000
+  VALUE100000   = 100000
+  VALUE1000000  = 1000000
+  VALUE10000000 = 10000000
+
+
+struct ArraySizes:
+  0  [+2]   UInt:8[2]   one_byte
+  2  [+4]   UInt:16[2]  two_byte
+  6  [+6]   UInt:24[2]  three_byte
+  12 [+8]   UInt:32[2]  four_byte
+  20 [+10]  UInt:40[2]  five_byte
+  30 [+12]  UInt:48[2]  six_byte
+  42 [+14]  UInt:56[2]  seven_byte
+  56 [+16]  UInt:64[2]  eight_byte
