@@ -15,14 +15,15 @@
 #ifndef EMBOSS_PUBLIC_EMBOSS_TEST_UTIL_H_
 #define EMBOSS_PUBLIC_EMBOSS_TEST_UTIL_H_
 
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
+
 #include <cctype>
 #include <iterator>
 #include <ostream>
 #include <string>
 
 #include "public/emboss_text_util.h"
-#include <gmock/gmock.h>
-#include <gtest/gtest.h>
 #include "third_party/absl/memory/memory.h"
 #include "third_party/googletest/googletest/include/gtest/internal/gtest-internal.h"
 
@@ -71,13 +72,14 @@ class EmbMatcher {
  private:
   // Splits the given string on '\n' boundaries and returns a vector of those
   // strings.
-  ::std::vector<::std::string> SplitToLines(const ::std::string& input) const {
+  ::std::vector</**/ ::std::string> SplitToLines(
+      const ::std::string& input) const {
     constexpr char kNewLine = '\n';
 
     ::std::stringstream ss(input);
-    ss.ignore(::std::numeric_limits<::std::streamsize>::max(), kNewLine);
+    ss.ignore(::std::numeric_limits</**/ ::std::streamsize>::max(), kNewLine);
 
-    ::std::vector<::std::string> lines;
+    ::std::vector</**/ ::std::string> lines;
     for (::std::string line; ::std::getline(ss, line, kNewLine);) {
       lines.push_back(::std::move(line));
     }
@@ -85,7 +87,7 @@ class EmbMatcher {
   }
 
   const bool compare_to_ok_;
-  const ::std::vector<::std::string> compare_to_lines_;
+  const ::std::vector</**/ ::std::string> compare_to_lines_;
 };
 
 template <typename ViewType>

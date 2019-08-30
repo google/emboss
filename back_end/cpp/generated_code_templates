@@ -274,18 +274,18 @@ Make$_name_$View($_constructor_parameters_$ T &&emboss_reserved_local_arg) {
 template <typename T>
 inline Generic$_name_$View</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
 Make$_name_$View($_constructor_parameters_$ T *emboss_reserved_local_data,
-                 size_t emboss_reserved_local_size) {
+                 ::std::size_t emboss_reserved_local_size) {
   return Generic$_name_$View</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
       $_forwarded_parameters_$ emboss_reserved_local_data,
       emboss_reserved_local_size);
 }
 
-template <typename T, size_t kAlignment>
+template <typename T, ::std::size_t kAlignment>
 inline Generic$_name_$View<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
 MakeAligned$_name_$View(
     $_constructor_parameters_$ T *emboss_reserved_local_data,
-    size_t emboss_reserved_local_size) {
+    ::std::size_t emboss_reserved_local_size) {
   return Generic$_name_$View<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
       $_forwarded_parameters_$ emboss_reserved_local_data,

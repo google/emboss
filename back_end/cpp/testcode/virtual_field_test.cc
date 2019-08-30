@@ -13,15 +13,14 @@
 // limitations under the License.
 
 // Tests of generated code for virtual fields.
-#include "testdata/virtual_field.emb.h"
-
+#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <type_traits>
 #include <utility>
 #include <vector>
 
-#include <gtest/gtest.h>
+#include "testdata/virtual_field.emb.h"
 
 namespace emboss {
 namespace test {
@@ -41,20 +40,20 @@ static_assert(StructureWithConstants::minus_ten_billion() == -10000000000L,
               "StructureWithConstants::minus_ten_billion() == -10000000000L");
 
 // Check the return types of the static Read methods.
+static_assert(::std::is_same</**/ ::std::int32_t,
+                             decltype(StructureWithConstants::ten())>::value,
+              "StructureWithConstants::ten() returns ::std::int8_t");
+static_assert(::std::is_same</**/ ::std::int32_t,
+                             decltype(StructureWithConstants::twenty())>::value,
+              "StructureWithConstants::twenty() returns ::std::int8_t");
 static_assert(
-    ::std::is_same<int32_t, decltype(StructureWithConstants::ten())>::value,
-    "StructureWithConstants::ten() returns int8_t");
-static_assert(
-    ::std::is_same<int32_t, decltype(StructureWithConstants::twenty())>::value,
-    "StructureWithConstants::twenty() returns int8_t");
-static_assert(
-    ::std::is_same<uint32_t,
+    ::std::is_same</**/ ::std::uint32_t,
                    decltype(StructureWithConstants::four_billion())>::value,
-    "StructureWithConstants::four_billion() returns uint32_t");
+    "StructureWithConstants::four_billion() returns ::std::uint32_t");
 static_assert(
-    ::std::is_same<int64_t,
+    ::std::is_same</**/ ::std::int64_t,
                    decltype(StructureWithConstants::ten_billion())>::value,
-    "StructureWithConstants::ten_billion() returns int64_t");
+    "StructureWithConstants::ten_billion() returns ::std::int64_t");
 
 TEST(Constants, ValuesOnView) {
   ::std::array<char, 4> values = {0, 0, 0, 0};
@@ -100,16 +99,20 @@ TEST(Computed, ReadFailsWhenUnderlyingFieldIsNotOk) {
 
 // Check the return types of nonstatic Read methods.
 static_assert(
-    ::std::is_same<int64_t, decltype(MakeStructureWithComputedValuesView("x", 1)
-                                         .doubled()
-                                         .Read())>::value,
-    "StructureWithComputedValuesView::doubled().Read() should return int64_t.");
+    ::std::is_same</**/ ::std::int64_t,
+                   decltype(MakeStructureWithComputedValuesView("x", 1)
+                                .doubled()
+                                .Read())>::value,
+    "StructureWithComputedValuesView::doubled().Read() should return "
+    "::std::int64_t.");
 // Check the return types of nonstatic Read methods.
 static_assert(
-    ::std::is_same<int64_t, decltype(MakeStructureWithComputedValuesView("x", 1)
-                                         .product()
-                                         .Read())>::value,
-    "StructureWithComputedValuesView::product().Read() should return int64_t.");
+    ::std::is_same</**/ ::std::int64_t,
+                   decltype(MakeStructureWithComputedValuesView("x", 1)
+                                .product()
+                                .Read())>::value,
+    "StructureWithComputedValuesView::product().Read() should return "
+    "::std::int64_t.");
 
 TEST(Constants, TextFormatWrite) {
   ::std::array<char, 4> values = {5, 0, 0, 0};
@@ -357,8 +360,8 @@ TEST(IntrinsicSize, SizeInBytes) {
 }
 
 TEST(VirtualFields, SizeInBytes) {
-  const ::std::array<uint8_t, 8> values = {0x11, 0x11, 0x11, 0x11,
-                                         0x22, 0x22, 0x22, 0x22};
+  const ::std::array</**/ ::std::uint8_t, 8> values = {0x11, 0x11, 0x11, 0x11,
+                                                       0x22, 0x22, 0x22, 0x22};
   const auto view = MakeUsesExternalSizeView(&values);
   EXPECT_TRUE(view.Ok());
   EXPECT_EQ(8, view.SizeInBytes());
@@ -384,7 +387,7 @@ TEST(WriteTransform, Write) {
   EXPECT_EQ(12, view.ten_plus_x().Read());
 
   EXPECT_TRUE((::std::is_same<decltype(view.x_minus_ten())::ValueType,
-                            ::std::int32_t>::value));
+                              ::std::int32_t>::value));
 
   view.x_minus_ten().Write(-7);
   EXPECT_EQ(3, view.x().Read());

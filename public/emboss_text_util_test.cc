@@ -14,17 +14,17 @@
 
 #include "public/emboss_text_util.h"
 
+#include <gtest/gtest.h>
+
 #include <cmath>
 #include <limits>
-
-#include <gtest/gtest.h>
 
 namespace emboss {
 namespace support {
 namespace test {
 
 TEST(DecodeInteger, DecodeUInt8Decimal) {
-  uint8_t result;
+  ::std::uint8_t result;
   EXPECT_TRUE(DecodeInteger("123", &result));
   EXPECT_EQ(123, result);
   EXPECT_TRUE(DecodeInteger("0", &result));
@@ -60,7 +60,7 @@ TEST(DecodeInteger, DecodeUInt8Decimal) {
 }
 
 TEST(DecodeInteger, DecodeInt8Decimal) {
-  int8_t result;
+  ::std::int8_t result;
   EXPECT_TRUE(DecodeInteger("123", &result));
   EXPECT_EQ(123, result);
   EXPECT_TRUE(DecodeInteger("0", &result));
@@ -104,7 +104,7 @@ TEST(DecodeInteger, DecodeInt8Decimal) {
 }
 
 TEST(DecodeInteger, DecodeUInt8Hex) {
-  uint8_t result;
+  ::std::uint8_t result;
   EXPECT_TRUE(DecodeInteger("0x23", &result));
   EXPECT_EQ(0x23, result);
   EXPECT_TRUE(DecodeInteger("0x0", &result));
@@ -134,7 +134,7 @@ TEST(DecodeInteger, DecodeUInt8Hex) {
 }
 
 TEST(DecodeInteger, DecodeUInt8Binary) {
-  uint8_t result;
+  ::std::uint8_t result;
   EXPECT_TRUE(DecodeInteger("0b10100101", &result));
   EXPECT_EQ(0xa5, result);
   EXPECT_TRUE(DecodeInteger("0b0", &result));
@@ -162,7 +162,7 @@ TEST(DecodeInteger, DecodeUInt8Binary) {
 }
 
 TEST(DecodeInteger, DecodeInt8Binary) {
-  int8_t result;
+  ::std::int8_t result;
   EXPECT_TRUE(DecodeInteger("0b01011010", &result));
   EXPECT_EQ(0x5a, result);
   EXPECT_TRUE(DecodeInteger("0b0", &result));
@@ -200,7 +200,7 @@ TEST(DecodeInteger, DecodeInt8Binary) {
 }
 
 TEST(DecodeInteger, DecodeUInt16) {
-  uint16_t result;
+  ::std::uint16_t result;
   EXPECT_TRUE(DecodeInteger("65535", &result));
   EXPECT_EQ(65535, result);
   EXPECT_FALSE(DecodeInteger("65536", &result));
@@ -208,7 +208,7 @@ TEST(DecodeInteger, DecodeUInt16) {
 }
 
 TEST(DecodeInteger, DecodeInt16) {
-  int16_t result;
+  ::std::int16_t result;
   EXPECT_TRUE(DecodeInteger("32767", &result));
   EXPECT_EQ(32767, result);
   EXPECT_FALSE(DecodeInteger("32768", &result));
@@ -220,7 +220,7 @@ TEST(DecodeInteger, DecodeInt16) {
 }
 
 TEST(DecodeInteger, DecodeUInt32) {
-  uint32_t result;
+  ::std::uint32_t result;
   EXPECT_TRUE(DecodeInteger("4294967295", &result));
   EXPECT_EQ(4294967295U, result);
   EXPECT_FALSE(DecodeInteger("4294967296", &result));
@@ -228,7 +228,7 @@ TEST(DecodeInteger, DecodeUInt32) {
 }
 
 TEST(DecodeInteger, DecodeInt32) {
-  int32_t result;
+  ::std::int32_t result;
   EXPECT_TRUE(DecodeInteger("2147483647", &result));
   EXPECT_EQ(2147483647, result);
   EXPECT_FALSE(DecodeInteger("2147483648", &result));
@@ -242,7 +242,7 @@ TEST(DecodeInteger, DecodeInt32) {
 }
 
 TEST(DecodeInteger, DecodeUInt64) {
-  uint64_t result;
+  ::std::uint64_t result;
   EXPECT_TRUE(DecodeInteger("18446744073709551615", &result));
   EXPECT_EQ(18446744073709551615ULL, result);
   EXPECT_FALSE(DecodeInteger("18446744073709551616", &result));
@@ -250,7 +250,7 @@ TEST(DecodeInteger, DecodeUInt64) {
 }
 
 TEST(DecodeInteger, DecodeInt64) {
-  int64_t result;
+  ::std::int64_t result;
   EXPECT_TRUE(DecodeInteger("9223372036854775807", &result));
   EXPECT_EQ(9223372036854775807LL, result);
   EXPECT_FALSE(DecodeInteger("9223372036854775808", &result));
@@ -264,7 +264,7 @@ TEST(DecodeInteger, DecodeInt64) {
 }
 
 TEST(TextStream, Construction) {
-  std::string string_text = "ab";
+  ::std::string string_text = "ab";
   auto text_stream = TextStream(string_text);
   char result;
   EXPECT_TRUE(text_stream.Read(&result));
@@ -432,347 +432,492 @@ template <typename Arg0, typename... Args>
 }
 
 TEST(WriteIntegerToTextStream, Decimal) {
-  EXPECT_EQ("0", WriteIntegerToString(static_cast<uint8_t>(0), 10, false));
-  EXPECT_EQ("100", WriteIntegerToString(static_cast<uint8_t>(100), 10, false));
-  EXPECT_EQ("255", WriteIntegerToString(static_cast<uint8_t>(255), 10, false));
-  EXPECT_EQ("-128", WriteIntegerToString(static_cast<int8_t>(-128), 10, false));
-  EXPECT_EQ("-100", WriteIntegerToString(static_cast<int8_t>(-100), 10, false));
-  EXPECT_EQ("0", WriteIntegerToString(static_cast<int8_t>(0), 10, false));
-  EXPECT_EQ("100", WriteIntegerToString(static_cast<int8_t>(100), 10, false));
-  EXPECT_EQ("127", WriteIntegerToString(static_cast<int8_t>(127), 10, false));
+  EXPECT_EQ("0", WriteIntegerToString(static_cast</**/ ::std::uint8_t>(0), 10,
+                                      false));
+  EXPECT_EQ("100", WriteIntegerToString(static_cast</**/ ::std::uint8_t>(100),
+                                        10, false));
+  EXPECT_EQ("255", WriteIntegerToString(static_cast</**/ ::std::uint8_t>(255),
+                                        10, false));
+  EXPECT_EQ("-128", WriteIntegerToString(static_cast</**/ ::std::int8_t>(-128),
+                                         10, false));
+  EXPECT_EQ("-100", WriteIntegerToString(static_cast</**/ ::std::int8_t>(-100),
+                                         10, false));
+  EXPECT_EQ(
+      "0", WriteIntegerToString(static_cast</**/ ::std::int8_t>(0), 10, false));
+  EXPECT_EQ("100", WriteIntegerToString(static_cast</**/ ::std::int8_t>(100),
+                                        10, false));
+  EXPECT_EQ("127", WriteIntegerToString(static_cast</**/ ::std::int8_t>(127),
+                                        10, false));
 
-  EXPECT_EQ("0", WriteIntegerToString(static_cast<uint8_t>(0), 10, true));
-  EXPECT_EQ("100", WriteIntegerToString(static_cast<uint8_t>(100), 10, true));
-  EXPECT_EQ("255", WriteIntegerToString(static_cast<uint8_t>(255), 10, true));
-  EXPECT_EQ("-128", WriteIntegerToString(static_cast<int8_t>(-128), 10, true));
-  EXPECT_EQ("-100", WriteIntegerToString(static_cast<int8_t>(-100), 10, true));
-  EXPECT_EQ("0", WriteIntegerToString(static_cast<int8_t>(0), 10, true));
-  EXPECT_EQ("100", WriteIntegerToString(static_cast<int8_t>(100), 10, true));
-  EXPECT_EQ("127", WriteIntegerToString(static_cast<int8_t>(127), 10, true));
+  EXPECT_EQ(
+      "0", WriteIntegerToString(static_cast</**/ ::std::uint8_t>(0), 10, true));
+  EXPECT_EQ("100", WriteIntegerToString(static_cast</**/ ::std::uint8_t>(100),
+                                        10, true));
+  EXPECT_EQ("255", WriteIntegerToString(static_cast</**/ ::std::uint8_t>(255),
+                                        10, true));
+  EXPECT_EQ("-128", WriteIntegerToString(static_cast</**/ ::std::int8_t>(-128),
+                                         10, true));
+  EXPECT_EQ("-100", WriteIntegerToString(static_cast</**/ ::std::int8_t>(-100),
+                                         10, true));
+  EXPECT_EQ("0",
+            WriteIntegerToString(static_cast</**/ ::std::int8_t>(0), 10, true));
+  EXPECT_EQ("100", WriteIntegerToString(static_cast</**/ ::std::int8_t>(100),
+                                        10, true));
+  EXPECT_EQ("127", WriteIntegerToString(static_cast</**/ ::std::int8_t>(127),
+                                        10, true));
 
-  EXPECT_EQ("0", WriteIntegerToString(static_cast<uint16_t>(0), 10, false));
-  EXPECT_EQ("1000",
-            WriteIntegerToString(static_cast<uint16_t>(1000), 10, false));
-  EXPECT_EQ("65535",
-            WriteIntegerToString(static_cast<uint16_t>(65535), 10, false));
-  EXPECT_EQ("-32768",
-            WriteIntegerToString(static_cast<int16_t>(-32768), 10, false));
-  EXPECT_EQ("-10000",
-            WriteIntegerToString(static_cast<int16_t>(-10000), 10, false));
-  EXPECT_EQ("0", WriteIntegerToString(static_cast<int16_t>(0), 10, false));
-  EXPECT_EQ("32767",
-            WriteIntegerToString(static_cast<int16_t>(32767), 10, false));
+  EXPECT_EQ("0", WriteIntegerToString(static_cast</**/ ::std::uint16_t>(0), 10,
+                                      false));
+  EXPECT_EQ("1000", WriteIntegerToString(
+                        static_cast</**/ ::std::uint16_t>(1000), 10, false));
+  EXPECT_EQ("65535", WriteIntegerToString(
+                         static_cast</**/ ::std::uint16_t>(65535), 10, false));
+  EXPECT_EQ("-32768", WriteIntegerToString(
+                          static_cast</**/ ::std::int16_t>(-32768), 10, false));
+  EXPECT_EQ("-10000", WriteIntegerToString(
+                          static_cast</**/ ::std::int16_t>(-10000), 10, false));
+  EXPECT_EQ("0", WriteIntegerToString(static_cast</**/ ::std::int16_t>(0), 10,
+                                      false));
+  EXPECT_EQ("32767", WriteIntegerToString(
+                         static_cast</**/ ::std::int16_t>(32767), 10, false));
 
-  EXPECT_EQ("0", WriteIntegerToString(static_cast<uint16_t>(0), 10, true));
-  EXPECT_EQ("999", WriteIntegerToString(static_cast<uint16_t>(999), 10, true));
-  EXPECT_EQ("1_000",
-            WriteIntegerToString(static_cast<uint16_t>(1000), 10, true));
-  EXPECT_EQ("65_535",
-            WriteIntegerToString(static_cast<uint16_t>(65535), 10, true));
-  EXPECT_EQ("-32_768",
-            WriteIntegerToString(static_cast<int16_t>(-32768), 10, true));
-  EXPECT_EQ("-1_000",
-            WriteIntegerToString(static_cast<int16_t>(-1000), 10, true));
-  EXPECT_EQ("-999", WriteIntegerToString(static_cast<int16_t>(-999), 10, true));
-  EXPECT_EQ("0", WriteIntegerToString(static_cast<int16_t>(0), 10, true));
-  EXPECT_EQ("32_767",
-            WriteIntegerToString(static_cast<int16_t>(32767), 10, true));
+  EXPECT_EQ("0", WriteIntegerToString(static_cast</**/ ::std::uint16_t>(0), 10,
+                                      true));
+  EXPECT_EQ("999", WriteIntegerToString(static_cast</**/ ::std::uint16_t>(999),
+                                        10, true));
+  EXPECT_EQ("1_000", WriteIntegerToString(
+                         static_cast</**/ ::std::uint16_t>(1000), 10, true));
+  EXPECT_EQ("65_535", WriteIntegerToString(
+                          static_cast</**/ ::std::uint16_t>(65535), 10, true));
+  EXPECT_EQ("-32_768", WriteIntegerToString(
+                           static_cast</**/ ::std::int16_t>(-32768), 10, true));
+  EXPECT_EQ("-1_000", WriteIntegerToString(
+                          static_cast</**/ ::std::int16_t>(-1000), 10, true));
+  EXPECT_EQ("-999", WriteIntegerToString(static_cast</**/ ::std::int16_t>(-999),
+                                         10, true));
+  EXPECT_EQ(
+      "0", WriteIntegerToString(static_cast</**/ ::std::int16_t>(0), 10, true));
+  EXPECT_EQ("32_767", WriteIntegerToString(
+                          static_cast</**/ ::std::int16_t>(32767), 10, true));
 
-  EXPECT_EQ("0", WriteIntegerToString(static_cast<uint32_t>(0), 10, false));
+  EXPECT_EQ("0", WriteIntegerToString(static_cast</**/ ::std::uint32_t>(0), 10,
+                                      false));
   EXPECT_EQ("1000000",
-            WriteIntegerToString(static_cast<uint32_t>(1000000), 10, false));
+            WriteIntegerToString(static_cast</**/ ::std::uint32_t>(1000000), 10,
+                                 false));
   EXPECT_EQ("4294967295",
-            WriteIntegerToString(static_cast<uint32_t>(4294967295), 10, false));
-  EXPECT_EQ("-2147483648",
-            WriteIntegerToString(static_cast<int32_t>(-2147483648), 10, false));
-  EXPECT_EQ("-100000",
-            WriteIntegerToString(static_cast<int32_t>(-100000), 10, false));
-  EXPECT_EQ("0", WriteIntegerToString(static_cast<int32_t>(0), 10, false));
-  EXPECT_EQ("2147483647",
-            WriteIntegerToString(static_cast<int32_t>(2147483647), 10, false));
-
-  EXPECT_EQ("0", WriteIntegerToString(static_cast<uint32_t>(0), 10, true));
-  EXPECT_EQ("999_999",
-            WriteIntegerToString(static_cast<uint32_t>(999999), 10, true));
-  EXPECT_EQ("1_000_000",
-            WriteIntegerToString(static_cast<uint32_t>(1000000), 10, true));
-  EXPECT_EQ("4_294_967_295",
-            WriteIntegerToString(static_cast<uint32_t>(4294967295U), 10, true));
-  EXPECT_EQ("-2_147_483_648",
-            WriteIntegerToString(static_cast<int32_t>(-2147483648L), 10, true));
-  EXPECT_EQ("-999_999",
-            WriteIntegerToString(static_cast<int32_t>(-999999), 10, true));
-  EXPECT_EQ("-1_000_000",
-            WriteIntegerToString(static_cast<int32_t>(-1000000), 10, true));
-  EXPECT_EQ("0", WriteIntegerToString(static_cast<int32_t>(0), 10, true));
-  EXPECT_EQ("2_147_483_647",
-            WriteIntegerToString(static_cast<int32_t>(2147483647), 10, true));
-
-  EXPECT_EQ("0", WriteIntegerToString(static_cast<uint64_t>(0), 10, false));
-  EXPECT_EQ("1000000",
-            WriteIntegerToString(static_cast<uint64_t>(1000000), 10, false));
-  EXPECT_EQ("18446744073709551615",
-            WriteIntegerToString(static_cast<uint64_t>(18446744073709551615UL),
+            WriteIntegerToString(static_cast</**/ ::std::uint32_t>(4294967295),
                                  10, false));
+  EXPECT_EQ("-2147483648",
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(-2147483648),
+                                 10, false));
+  EXPECT_EQ("-100000",
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(-100000), 10,
+                                 false));
+  EXPECT_EQ("0", WriteIntegerToString(static_cast</**/ ::std::int32_t>(0), 10,
+                                      false));
+  EXPECT_EQ("2147483647",
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(2147483647),
+                                 10, false));
+
+  EXPECT_EQ("0", WriteIntegerToString(static_cast</**/ ::std::uint32_t>(0), 10,
+                                      true));
+  EXPECT_EQ("999_999",
+            WriteIntegerToString(static_cast</**/ ::std::uint32_t>(999999), 10,
+                                 true));
+  EXPECT_EQ("1_000_000",
+            WriteIntegerToString(static_cast</**/ ::std::uint32_t>(1000000), 10,
+                                 true));
+  EXPECT_EQ("4_294_967_295",
+            WriteIntegerToString(static_cast</**/ ::std::uint32_t>(4294967295U),
+                                 10, true));
+  EXPECT_EQ("-2_147_483_648",
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(-2147483648L),
+                                 10, true));
+  EXPECT_EQ("-999_999",
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(-999999), 10,
+                                 true));
+  EXPECT_EQ("-1_000_000",
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(-1000000), 10,
+                                 true));
+  EXPECT_EQ(
+      "0", WriteIntegerToString(static_cast</**/ ::std::int32_t>(0), 10, true));
+  EXPECT_EQ("2_147_483_647",
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(2147483647),
+                                 10, true));
+
+  EXPECT_EQ("0", WriteIntegerToString(static_cast</**/ ::std::uint64_t>(0), 10,
+                                      false));
+  EXPECT_EQ("1000000",
+            WriteIntegerToString(static_cast</**/ ::std::uint64_t>(1000000), 10,
+                                 false));
+  EXPECT_EQ("18446744073709551615",
+            WriteIntegerToString(
+                static_cast</**/ ::std::uint64_t>(18446744073709551615UL), 10,
+                false));
   EXPECT_EQ("-9223372036854775808",
             WriteIntegerToString(
-                static_cast<int64_t>(-9223372036854775807L - 1), 10, false));
+                static_cast</**/ ::std::int64_t>(-9223372036854775807L - 1), 10,
+                false));
   EXPECT_EQ("-100000",
-            WriteIntegerToString(static_cast<int64_t>(-100000), 10, false));
-  EXPECT_EQ("0", WriteIntegerToString(static_cast<int64_t>(0), 10, false));
-  EXPECT_EQ("9223372036854775807",
-            WriteIntegerToString(static_cast<int64_t>(9223372036854775807L), 10,
+            WriteIntegerToString(static_cast</**/ ::std::int64_t>(-100000), 10,
                                  false));
+  EXPECT_EQ("0", WriteIntegerToString(static_cast</**/ ::std::int64_t>(0), 10,
+                                      false));
+  EXPECT_EQ(
+      "9223372036854775807",
+      WriteIntegerToString(
+          static_cast</**/ ::std::int64_t>(9223372036854775807L), 10, false));
 
-  EXPECT_EQ("0", WriteIntegerToString(static_cast<uint64_t>(0), 10, true));
+  EXPECT_EQ("0", WriteIntegerToString(static_cast</**/ ::std::uint64_t>(0), 10,
+                                      true));
   EXPECT_EQ("1_000_000",
-            WriteIntegerToString(static_cast<uint64_t>(1000000), 10, true));
-  EXPECT_EQ("18_446_744_073_709_551_615",
-            WriteIntegerToString(static_cast<uint64_t>(18446744073709551615UL),
-                                 10, true));
+            WriteIntegerToString(static_cast</**/ ::std::uint64_t>(1000000), 10,
+                                 true));
+  EXPECT_EQ(
+      "18_446_744_073_709_551_615",
+      WriteIntegerToString(
+          static_cast</**/ ::std::uint64_t>(18446744073709551615UL), 10, true));
   EXPECT_EQ("-9_223_372_036_854_775_808",
             WriteIntegerToString(
-                static_cast<int64_t>(-9223372036854775807L - 1), 10, true));
+                static_cast</**/ ::std::int64_t>(-9223372036854775807L - 1), 10,
+                true));
   EXPECT_EQ("-100_000",
-            WriteIntegerToString(static_cast<int64_t>(-100000), 10, true));
-  EXPECT_EQ("0", WriteIntegerToString(static_cast<int64_t>(0), 10, true));
-  EXPECT_EQ("9_223_372_036_854_775_807",
-            WriteIntegerToString(static_cast<int64_t>(9223372036854775807L), 10,
+            WriteIntegerToString(static_cast</**/ ::std::int64_t>(-100000), 10,
                                  true));
+  EXPECT_EQ(
+      "0", WriteIntegerToString(static_cast</**/ ::std::int64_t>(0), 10, true));
+  EXPECT_EQ(
+      "9_223_372_036_854_775_807",
+      WriteIntegerToString(
+          static_cast</**/ ::std::int64_t>(9223372036854775807L), 10, true));
 }
 
 TEST(WriteIntegerToTextStream, Binary) {
-  EXPECT_EQ("0b0", WriteIntegerToString(static_cast<uint8_t>(0), 2, false));
-  EXPECT_EQ("0b1100100",
-            WriteIntegerToString(static_cast<uint8_t>(100), 2, false));
-  EXPECT_EQ("0b11111111",
-            WriteIntegerToString(static_cast<uint8_t>(255), 2, false));
-  EXPECT_EQ("-0b10000000",
-            WriteIntegerToString(static_cast<int8_t>(-128), 2, false));
-  EXPECT_EQ("-0b1100100",
-            WriteIntegerToString(static_cast<int8_t>(-100), 2, false));
-  EXPECT_EQ("0b0", WriteIntegerToString(static_cast<int8_t>(0), 2, false));
-  EXPECT_EQ("0b1100100",
-            WriteIntegerToString(static_cast<int8_t>(100), 2, false));
-  EXPECT_EQ("0b1111111",
-            WriteIntegerToString(static_cast<int8_t>(127), 2, false));
+  EXPECT_EQ("0b0", WriteIntegerToString(static_cast</**/ ::std::uint8_t>(0), 2,
+                                        false));
+  EXPECT_EQ("0b1100100", WriteIntegerToString(
+                             static_cast</**/ ::std::uint8_t>(100), 2, false));
+  EXPECT_EQ("0b11111111", WriteIntegerToString(
+                              static_cast</**/ ::std::uint8_t>(255), 2, false));
+  EXPECT_EQ(
+      "-0b10000000",
+      WriteIntegerToString(static_cast</**/ ::std::int8_t>(-128), 2, false));
+  EXPECT_EQ("-0b1100100", WriteIntegerToString(
+                              static_cast</**/ ::std::int8_t>(-100), 2, false));
+  EXPECT_EQ("0b0",
+            WriteIntegerToString(static_cast</**/ ::std::int8_t>(0), 2, false));
+  EXPECT_EQ("0b1100100", WriteIntegerToString(
+                             static_cast</**/ ::std::int8_t>(100), 2, false));
+  EXPECT_EQ("0b1111111", WriteIntegerToString(
+                             static_cast</**/ ::std::int8_t>(127), 2, false));
 
-  EXPECT_EQ("0b0", WriteIntegerToString(static_cast<uint8_t>(0), 2, true));
-  EXPECT_EQ("0b1100100",
-            WriteIntegerToString(static_cast<uint8_t>(100), 2, true));
-  EXPECT_EQ("0b11111111",
-            WriteIntegerToString(static_cast<uint8_t>(255), 2, true));
-  EXPECT_EQ("-0b10000000",
-            WriteIntegerToString(static_cast<int8_t>(-128), 2, true));
-  EXPECT_EQ("-0b1100100",
-            WriteIntegerToString(static_cast<int8_t>(-100), 2, true));
-  EXPECT_EQ("0b0", WriteIntegerToString(static_cast<int8_t>(0), 2, true));
-  EXPECT_EQ("0b1100100",
-            WriteIntegerToString(static_cast<int8_t>(100), 2, true));
-  EXPECT_EQ("0b1111111",
-            WriteIntegerToString(static_cast<int8_t>(127), 2, true));
+  EXPECT_EQ("0b0",
+            WriteIntegerToString(static_cast</**/ ::std::uint8_t>(0), 2, true));
+  EXPECT_EQ("0b1100100", WriteIntegerToString(
+                             static_cast</**/ ::std::uint8_t>(100), 2, true));
+  EXPECT_EQ("0b11111111", WriteIntegerToString(
+                              static_cast</**/ ::std::uint8_t>(255), 2, true));
+  EXPECT_EQ("-0b10000000", WriteIntegerToString(
+                               static_cast</**/ ::std::int8_t>(-128), 2, true));
+  EXPECT_EQ("-0b1100100", WriteIntegerToString(
+                              static_cast</**/ ::std::int8_t>(-100), 2, true));
+  EXPECT_EQ("0b0",
+            WriteIntegerToString(static_cast</**/ ::std::int8_t>(0), 2, true));
+  EXPECT_EQ("0b1100100", WriteIntegerToString(
+                             static_cast</**/ ::std::int8_t>(100), 2, true));
+  EXPECT_EQ("0b1111111", WriteIntegerToString(
+                             static_cast</**/ ::std::int8_t>(127), 2, true));
 
-  EXPECT_EQ("0b0", WriteIntegerToString(static_cast<uint16_t>(0), 2, false));
-  EXPECT_EQ("0b1111101000",
-            WriteIntegerToString(static_cast<uint16_t>(1000), 2, false));
-  EXPECT_EQ("0b1111111111111111",
-            WriteIntegerToString(static_cast<uint16_t>(65535), 2, false));
-  EXPECT_EQ("-0b1000000000000000",
-            WriteIntegerToString(static_cast<int16_t>(-32768), 2, false));
-  EXPECT_EQ("-0b10011100010000",
-            WriteIntegerToString(static_cast<int16_t>(-10000), 2, false));
-  EXPECT_EQ("0b0", WriteIntegerToString(static_cast<int16_t>(0), 2, false));
-  EXPECT_EQ("0b111111111111111",
-            WriteIntegerToString(static_cast<int16_t>(32767), 2, false));
+  EXPECT_EQ("0b0", WriteIntegerToString(static_cast</**/ ::std::uint16_t>(0), 2,
+                                        false));
+  EXPECT_EQ(
+      "0b1111101000",
+      WriteIntegerToString(static_cast</**/ ::std::uint16_t>(1000), 2, false));
+  EXPECT_EQ(
+      "0b1111111111111111",
+      WriteIntegerToString(static_cast</**/ ::std::uint16_t>(65535), 2, false));
+  EXPECT_EQ(
+      "-0b1000000000000000",
+      WriteIntegerToString(static_cast</**/ ::std::int16_t>(-32768), 2, false));
+  EXPECT_EQ(
+      "-0b10011100010000",
+      WriteIntegerToString(static_cast</**/ ::std::int16_t>(-10000), 2, false));
+  EXPECT_EQ("0b0", WriteIntegerToString(static_cast</**/ ::std::int16_t>(0), 2,
+                                        false));
+  EXPECT_EQ(
+      "0b111111111111111",
+      WriteIntegerToString(static_cast</**/ ::std::int16_t>(32767), 2, false));
 
-  EXPECT_EQ("0b0", WriteIntegerToString(static_cast<uint16_t>(0), 2, true));
-  EXPECT_EQ("0b11_11101000",
-            WriteIntegerToString(static_cast<uint16_t>(1000), 2, true));
-  EXPECT_EQ("0b11111111_11111111",
-            WriteIntegerToString(static_cast<uint16_t>(65535), 2, true));
-  EXPECT_EQ("-0b10000000_00000000",
-            WriteIntegerToString(static_cast<int16_t>(-32768), 2, true));
-  EXPECT_EQ("-0b11_11101000",
-            WriteIntegerToString(static_cast<int16_t>(-1000), 2, true));
-  EXPECT_EQ("-0b11_11100111",
-            WriteIntegerToString(static_cast<int16_t>(-999), 2, true));
-  EXPECT_EQ("0b0", WriteIntegerToString(static_cast<int16_t>(0), 2, true));
-  EXPECT_EQ("0b1111111_11111111",
-            WriteIntegerToString(static_cast<int16_t>(32767), 2, true));
+  EXPECT_EQ("0b0", WriteIntegerToString(static_cast</**/ ::std::uint16_t>(0), 2,
+                                        true));
+  EXPECT_EQ(
+      "0b11_11101000",
+      WriteIntegerToString(static_cast</**/ ::std::uint16_t>(1000), 2, true));
+  EXPECT_EQ(
+      "0b11111111_11111111",
+      WriteIntegerToString(static_cast</**/ ::std::uint16_t>(65535), 2, true));
+  EXPECT_EQ(
+      "-0b10000000_00000000",
+      WriteIntegerToString(static_cast</**/ ::std::int16_t>(-32768), 2, true));
+  EXPECT_EQ(
+      "-0b11_11101000",
+      WriteIntegerToString(static_cast</**/ ::std::int16_t>(-1000), 2, true));
+  EXPECT_EQ(
+      "-0b11_11100111",
+      WriteIntegerToString(static_cast</**/ ::std::int16_t>(-999), 2, true));
+  EXPECT_EQ("0b0",
+            WriteIntegerToString(static_cast</**/ ::std::int16_t>(0), 2, true));
+  EXPECT_EQ(
+      "0b1111111_11111111",
+      WriteIntegerToString(static_cast</**/ ::std::int16_t>(32767), 2, true));
 
-  EXPECT_EQ("0b0", WriteIntegerToString(static_cast<uint32_t>(0), 2, false));
+  EXPECT_EQ("0b0", WriteIntegerToString(static_cast</**/ ::std::uint32_t>(0), 2,
+                                        false));
   EXPECT_EQ("0b11110100001001000000",
-            WriteIntegerToString(static_cast<uint32_t>(1000000), 2, false));
+            WriteIntegerToString(static_cast</**/ ::std::uint32_t>(1000000), 2,
+                                 false));
   EXPECT_EQ("0b11111111111111111111111111111111",
-            WriteIntegerToString(static_cast<uint32_t>(4294967295), 2, false));
+            WriteIntegerToString(static_cast</**/ ::std::uint32_t>(4294967295),
+                                 2, false));
   EXPECT_EQ("-0b10000000000000000000000000000000",
-            WriteIntegerToString(static_cast<int32_t>(-2147483648), 2, false));
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(-2147483648),
+                                 2, false));
   EXPECT_EQ("-0b11000011010100000",
-            WriteIntegerToString(static_cast<int32_t>(-100000), 2, false));
-  EXPECT_EQ("0b0", WriteIntegerToString(static_cast<int32_t>(0), 2, false));
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(-100000), 2,
+                                 false));
+  EXPECT_EQ("0b0", WriteIntegerToString(static_cast</**/ ::std::int32_t>(0), 2,
+                                        false));
   EXPECT_EQ("0b1111111111111111111111111111111",
-            WriteIntegerToString(static_cast<int32_t>(2147483647), 2, false));
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(2147483647),
+                                 2, false));
 
-  EXPECT_EQ("0b0", WriteIntegerToString(static_cast<uint32_t>(0), 2, true));
+  EXPECT_EQ("0b0", WriteIntegerToString(static_cast</**/ ::std::uint32_t>(0), 2,
+                                        true));
   EXPECT_EQ("0b1111_01000010_01000000",
-            WriteIntegerToString(static_cast<uint32_t>(1000000), 2, true));
+            WriteIntegerToString(static_cast</**/ ::std::uint32_t>(1000000), 2,
+                                 true));
   EXPECT_EQ("0b11111111_11111111_11111111_11111111",
-            WriteIntegerToString(static_cast<uint32_t>(4294967295U), 2, true));
+            WriteIntegerToString(static_cast</**/ ::std::uint32_t>(4294967295U),
+                                 2, true));
   EXPECT_EQ("-0b10000000_00000000_00000000_00000000",
-            WriteIntegerToString(static_cast<int32_t>(-2147483648L), 2, true));
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(-2147483648L),
+                                 2, true));
   EXPECT_EQ("-0b1111_01000010_01000000",
-            WriteIntegerToString(static_cast<int32_t>(-1000000), 2, true));
-  EXPECT_EQ("0b0", WriteIntegerToString(static_cast<int32_t>(0), 2, true));
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(-1000000), 2,
+                                 true));
+  EXPECT_EQ("0b0",
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(0), 2, true));
   EXPECT_EQ("0b1111111_11111111_11111111_11111111",
-            WriteIntegerToString(static_cast<int32_t>(2147483647), 2, true));
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(2147483647),
+                                 2, true));
 
-  EXPECT_EQ("0b0", WriteIntegerToString(static_cast<uint64_t>(0), 2, false));
+  EXPECT_EQ("0b0", WriteIntegerToString(static_cast</**/ ::std::uint64_t>(0), 2,
+                                        false));
   EXPECT_EQ("0b11110100001001000000",
-            WriteIntegerToString(static_cast<uint64_t>(1000000), 2, false));
+            WriteIntegerToString(static_cast</**/ ::std::uint64_t>(1000000), 2,
+                                 false));
   EXPECT_EQ(
       "0b1111111111111111111111111111111111111111111111111111111111111111",
-      WriteIntegerToString(static_cast<uint64_t>(18446744073709551615UL), 2,
-                           false));
+      WriteIntegerToString(
+          static_cast</**/ ::std::uint64_t>(18446744073709551615UL), 2, false));
   EXPECT_EQ(
       "-0b1000000000000000000000000000000000000000000000000000000000000000",
-      WriteIntegerToString(static_cast<int64_t>(-9223372036854775807L - 1), 2,
-                           false));
+      WriteIntegerToString(
+          static_cast</**/ ::std::int64_t>(-9223372036854775807L - 1), 2,
+          false));
   EXPECT_EQ("-0b11000011010100000",
-            WriteIntegerToString(static_cast<int64_t>(-100000), 2, false));
-  EXPECT_EQ("0b0", WriteIntegerToString(static_cast<int64_t>(0), 2, false));
-  EXPECT_EQ("0b111111111111111111111111111111111111111111111111111111111111111",
-            WriteIntegerToString(static_cast<int64_t>(9223372036854775807L), 2,
+            WriteIntegerToString(static_cast</**/ ::std::int64_t>(-100000), 2,
                                  false));
+  EXPECT_EQ("0b0", WriteIntegerToString(static_cast</**/ ::std::int64_t>(0), 2,
+                                        false));
+  EXPECT_EQ(
+      "0b111111111111111111111111111111111111111111111111111111111111111",
+      WriteIntegerToString(
+          static_cast</**/ ::std::int64_t>(9223372036854775807L), 2, false));
 
-  EXPECT_EQ("0b0", WriteIntegerToString(static_cast<uint64_t>(0), 2, true));
+  EXPECT_EQ("0b0", WriteIntegerToString(static_cast</**/ ::std::uint64_t>(0), 2,
+                                        true));
   EXPECT_EQ("0b1111_01000010_01000000",
-            WriteIntegerToString(static_cast<uint64_t>(1000000), 2, true));
+            WriteIntegerToString(static_cast</**/ ::std::uint64_t>(1000000), 2,
+                                 true));
   EXPECT_EQ(
       "0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_"
       "11111111",
-      WriteIntegerToString(static_cast<uint64_t>(18446744073709551615UL), 2,
-                           true));
+      WriteIntegerToString(
+          static_cast</**/ ::std::uint64_t>(18446744073709551615UL), 2, true));
   EXPECT_EQ(
       "-0b10000000_00000000_00000000_00000000_00000000_00000000_00000000_"
       "00000000",
-      WriteIntegerToString(static_cast<int64_t>(-9223372036854775807L - 1), 2,
-                           true));
-  EXPECT_EQ("-0b1_10000110_10100000",
-            WriteIntegerToString(static_cast<int64_t>(-100000), 2, true));
-  EXPECT_EQ("0b0", WriteIntegerToString(static_cast<int64_t>(0), 2, true));
+      WriteIntegerToString(
+          static_cast</**/ ::std::int64_t>(-9223372036854775807L - 1), 2,
+          true));
+  EXPECT_EQ(
+      "-0b1_10000110_10100000",
+      WriteIntegerToString(static_cast</**/ ::std::int64_t>(-100000), 2, true));
+  EXPECT_EQ("0b0",
+            WriteIntegerToString(static_cast</**/ ::std::int64_t>(0), 2, true));
   EXPECT_EQ(
       "0b1111111_11111111_11111111_11111111_11111111_11111111_11111111_"
       "11111111",
-      WriteIntegerToString(static_cast<int64_t>(9223372036854775807L), 2,
-                           true));
+      WriteIntegerToString(
+          static_cast</**/ ::std::int64_t>(9223372036854775807L), 2, true));
 }
 
 TEST(WriteIntegerToTextStream, Hexadecimal) {
-  EXPECT_EQ("0x0", WriteIntegerToString(static_cast<uint8_t>(0), 16, false));
-  EXPECT_EQ("0x64", WriteIntegerToString(static_cast<uint8_t>(100), 16, false));
-  EXPECT_EQ("0xff", WriteIntegerToString(static_cast<uint8_t>(255), 16, false));
-  EXPECT_EQ("-0x80",
-            WriteIntegerToString(static_cast<int8_t>(-128), 16, false));
-  EXPECT_EQ("-0x64",
-            WriteIntegerToString(static_cast<int8_t>(-100), 16, false));
-  EXPECT_EQ("0x0", WriteIntegerToString(static_cast<int8_t>(0), 16, false));
-  EXPECT_EQ("0x64", WriteIntegerToString(static_cast<int8_t>(100), 16, false));
-  EXPECT_EQ("0x7f", WriteIntegerToString(static_cast<int8_t>(127), 16, false));
+  EXPECT_EQ("0x0", WriteIntegerToString(static_cast</**/ ::std::uint8_t>(0), 16,
+                                        false));
+  EXPECT_EQ("0x64", WriteIntegerToString(static_cast</**/ ::std::uint8_t>(100),
+                                         16, false));
+  EXPECT_EQ("0xff", WriteIntegerToString(static_cast</**/ ::std::uint8_t>(255),
+                                         16, false));
+  EXPECT_EQ("-0x80", WriteIntegerToString(static_cast</**/ ::std::int8_t>(-128),
+                                          16, false));
+  EXPECT_EQ("-0x64", WriteIntegerToString(static_cast</**/ ::std::int8_t>(-100),
+                                          16, false));
+  EXPECT_EQ("0x0", WriteIntegerToString(static_cast</**/ ::std::int8_t>(0), 16,
+                                        false));
+  EXPECT_EQ("0x64", WriteIntegerToString(static_cast</**/ ::std::int8_t>(100),
+                                         16, false));
+  EXPECT_EQ("0x7f", WriteIntegerToString(static_cast</**/ ::std::int8_t>(127),
+                                         16, false));
 
-  EXPECT_EQ("0x0", WriteIntegerToString(static_cast<uint8_t>(0), 16, true));
-  EXPECT_EQ("0x64", WriteIntegerToString(static_cast<uint8_t>(100), 16, true));
-  EXPECT_EQ("0xff", WriteIntegerToString(static_cast<uint8_t>(255), 16, true));
-  EXPECT_EQ("-0x80", WriteIntegerToString(static_cast<int8_t>(-128), 16, true));
-  EXPECT_EQ("-0x64", WriteIntegerToString(static_cast<int8_t>(-100), 16, true));
-  EXPECT_EQ("0x0", WriteIntegerToString(static_cast<int8_t>(0), 16, true));
-  EXPECT_EQ("0x64", WriteIntegerToString(static_cast<int8_t>(100), 16, true));
-  EXPECT_EQ("0x7f", WriteIntegerToString(static_cast<int8_t>(127), 16, true));
+  EXPECT_EQ("0x0", WriteIntegerToString(static_cast</**/ ::std::uint8_t>(0), 16,
+                                        true));
+  EXPECT_EQ("0x64", WriteIntegerToString(static_cast</**/ ::std::uint8_t>(100),
+                                         16, true));
+  EXPECT_EQ("0xff", WriteIntegerToString(static_cast</**/ ::std::uint8_t>(255),
+                                         16, true));
+  EXPECT_EQ("-0x80", WriteIntegerToString(static_cast</**/ ::std::int8_t>(-128),
+                                          16, true));
+  EXPECT_EQ("-0x64", WriteIntegerToString(static_cast</**/ ::std::int8_t>(-100),
+                                          16, true));
+  EXPECT_EQ("0x0",
+            WriteIntegerToString(static_cast</**/ ::std::int8_t>(0), 16, true));
+  EXPECT_EQ("0x64", WriteIntegerToString(static_cast</**/ ::std::int8_t>(100),
+                                         16, true));
+  EXPECT_EQ("0x7f", WriteIntegerToString(static_cast</**/ ::std::int8_t>(127),
+                                         16, true));
 
-  EXPECT_EQ("0x0", WriteIntegerToString(static_cast<uint16_t>(0), 16, false));
-  EXPECT_EQ("0x3e8",
-            WriteIntegerToString(static_cast<uint16_t>(1000), 16, false));
-  EXPECT_EQ("0xffff",
-            WriteIntegerToString(static_cast<uint16_t>(65535), 16, false));
+  EXPECT_EQ("0x0", WriteIntegerToString(static_cast</**/ ::std::uint16_t>(0),
+                                        16, false));
+  EXPECT_EQ("0x3e8", WriteIntegerToString(
+                         static_cast</**/ ::std::uint16_t>(1000), 16, false));
+  EXPECT_EQ("0xffff", WriteIntegerToString(
+                          static_cast</**/ ::std::uint16_t>(65535), 16, false));
   EXPECT_EQ("-0x8000",
-            WriteIntegerToString(static_cast<int16_t>(-32768), 16, false));
+            WriteIntegerToString(static_cast</**/ ::std::int16_t>(-32768), 16,
+                                 false));
   EXPECT_EQ("-0x2710",
-            WriteIntegerToString(static_cast<int16_t>(-10000), 16, false));
-  EXPECT_EQ("0x0", WriteIntegerToString(static_cast<int16_t>(0), 16, false));
-  EXPECT_EQ("0x7fff",
-            WriteIntegerToString(static_cast<int16_t>(32767), 16, false));
+            WriteIntegerToString(static_cast</**/ ::std::int16_t>(-10000), 16,
+                                 false));
+  EXPECT_EQ("0x0", WriteIntegerToString(static_cast</**/ ::std::int16_t>(0), 16,
+                                        false));
+  EXPECT_EQ("0x7fff", WriteIntegerToString(
+                          static_cast</**/ ::std::int16_t>(32767), 16, false));
 
-  EXPECT_EQ("0x0", WriteIntegerToString(static_cast<uint16_t>(0), 16, true));
-  EXPECT_EQ("0x3e8",
-            WriteIntegerToString(static_cast<uint16_t>(1000), 16, true));
-  EXPECT_EQ("0xffff",
-            WriteIntegerToString(static_cast<uint16_t>(65535), 16, true));
-  EXPECT_EQ("-0x8000",
-            WriteIntegerToString(static_cast<int16_t>(-32768), 16, true));
-  EXPECT_EQ("-0x3e8",
-            WriteIntegerToString(static_cast<int16_t>(-1000), 16, true));
-  EXPECT_EQ("-0x3e7",
-            WriteIntegerToString(static_cast<int16_t>(-999), 16, true));
-  EXPECT_EQ("0x0", WriteIntegerToString(static_cast<int16_t>(0), 16, true));
-  EXPECT_EQ("0x7fff",
-            WriteIntegerToString(static_cast<int16_t>(32767), 16, true));
+  EXPECT_EQ("0x0", WriteIntegerToString(static_cast</**/ ::std::uint16_t>(0),
+                                        16, true));
+  EXPECT_EQ("0x3e8", WriteIntegerToString(
+                         static_cast</**/ ::std::uint16_t>(1000), 16, true));
+  EXPECT_EQ("0xffff", WriteIntegerToString(
+                          static_cast</**/ ::std::uint16_t>(65535), 16, true));
+  EXPECT_EQ("-0x8000", WriteIntegerToString(
+                           static_cast</**/ ::std::int16_t>(-32768), 16, true));
+  EXPECT_EQ("-0x3e8", WriteIntegerToString(
+                          static_cast</**/ ::std::int16_t>(-1000), 16, true));
+  EXPECT_EQ("-0x3e7", WriteIntegerToString(
+                          static_cast</**/ ::std::int16_t>(-999), 16, true));
+  EXPECT_EQ("0x0", WriteIntegerToString(static_cast</**/ ::std::int16_t>(0), 16,
+                                        true));
+  EXPECT_EQ("0x7fff", WriteIntegerToString(
+                          static_cast</**/ ::std::int16_t>(32767), 16, true));
 
-  EXPECT_EQ("0x0", WriteIntegerToString(static_cast<uint32_t>(0), 16, false));
+  EXPECT_EQ("0x0", WriteIntegerToString(static_cast</**/ ::std::uint32_t>(0),
+                                        16, false));
   EXPECT_EQ("0xf4240",
-            WriteIntegerToString(static_cast<uint32_t>(1000000), 16, false));
+            WriteIntegerToString(static_cast</**/ ::std::uint32_t>(1000000), 16,
+                                 false));
   EXPECT_EQ("0xffffffff",
-            WriteIntegerToString(static_cast<uint32_t>(4294967295), 16, false));
-  EXPECT_EQ("-0x80000000",
-            WriteIntegerToString(static_cast<int32_t>(-2147483648), 16, false));
-  EXPECT_EQ("-0x186a0",
-            WriteIntegerToString(static_cast<int32_t>(-100000), 16, false));
-  EXPECT_EQ("0x0", WriteIntegerToString(static_cast<int32_t>(0), 16, false));
-  EXPECT_EQ("0x7fffffff",
-            WriteIntegerToString(static_cast<int32_t>(2147483647), 16, false));
-
-  EXPECT_EQ("0x0", WriteIntegerToString(static_cast<uint32_t>(0), 16, true));
-  EXPECT_EQ("0xf_4240",
-            WriteIntegerToString(static_cast<uint32_t>(1000000), 16, true));
-  EXPECT_EQ("0xffff_ffff",
-            WriteIntegerToString(static_cast<uint32_t>(4294967295U), 16, true));
-  EXPECT_EQ("-0x8000_0000",
-            WriteIntegerToString(static_cast<int32_t>(-2147483648L), 16, true));
-  EXPECT_EQ("-0xf_4240",
-            WriteIntegerToString(static_cast<int32_t>(-1000000), 16, true));
-  EXPECT_EQ("0x0", WriteIntegerToString(static_cast<int32_t>(0), 16, true));
-  EXPECT_EQ("0x7fff_ffff",
-            WriteIntegerToString(static_cast<int32_t>(2147483647), 16, true));
-
-  EXPECT_EQ("0x0", WriteIntegerToString(static_cast<uint64_t>(0), 16, false));
-  EXPECT_EQ("0xf4240",
-            WriteIntegerToString(static_cast<uint64_t>(1000000), 16, false));
-  EXPECT_EQ("0xffffffffffffffff",
-            WriteIntegerToString(static_cast<uint64_t>(18446744073709551615UL),
+            WriteIntegerToString(static_cast</**/ ::std::uint32_t>(4294967295),
                                  16, false));
+  EXPECT_EQ("-0x80000000",
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(-2147483648),
+                                 16, false));
+  EXPECT_EQ("-0x186a0",
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(-100000), 16,
+                                 false));
+  EXPECT_EQ("0x0", WriteIntegerToString(static_cast</**/ ::std::int32_t>(0), 16,
+                                        false));
+  EXPECT_EQ("0x7fffffff",
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(2147483647),
+                                 16, false));
+
+  EXPECT_EQ("0x0", WriteIntegerToString(static_cast</**/ ::std::uint32_t>(0),
+                                        16, true));
+  EXPECT_EQ("0xf_4240",
+            WriteIntegerToString(static_cast</**/ ::std::uint32_t>(1000000), 16,
+                                 true));
+  EXPECT_EQ("0xffff_ffff",
+            WriteIntegerToString(static_cast</**/ ::std::uint32_t>(4294967295U),
+                                 16, true));
+  EXPECT_EQ("-0x8000_0000",
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(-2147483648L),
+                                 16, true));
+  EXPECT_EQ("-0xf_4240",
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(-1000000), 16,
+                                 true));
+  EXPECT_EQ("0x0", WriteIntegerToString(static_cast</**/ ::std::int32_t>(0), 16,
+                                        true));
+  EXPECT_EQ("0x7fff_ffff",
+            WriteIntegerToString(static_cast</**/ ::std::int32_t>(2147483647),
+                                 16, true));
+
+  EXPECT_EQ("0x0", WriteIntegerToString(static_cast</**/ ::std::uint64_t>(0),
+                                        16, false));
+  EXPECT_EQ("0xf4240",
+            WriteIntegerToString(static_cast</**/ ::std::uint64_t>(1000000), 16,
+                                 false));
+  EXPECT_EQ("0xffffffffffffffff",
+            WriteIntegerToString(
+                static_cast</**/ ::std::uint64_t>(18446744073709551615UL), 16,
+                false));
   EXPECT_EQ("-0x8000000000000000",
             WriteIntegerToString(
-                static_cast<int64_t>(-9223372036854775807L - 1), 16, false));
+                static_cast</**/ ::std::int64_t>(-9223372036854775807L - 1), 16,
+                false));
   EXPECT_EQ("-0x186a0",
-            WriteIntegerToString(static_cast<int64_t>(-100000), 16, false));
-  EXPECT_EQ("0x0", WriteIntegerToString(static_cast<int64_t>(0), 16, false));
-  EXPECT_EQ("0x7fffffffffffffff",
-            WriteIntegerToString(static_cast<int64_t>(9223372036854775807L), 16,
+            WriteIntegerToString(static_cast</**/ ::std::int64_t>(-100000), 16,
                                  false));
+  EXPECT_EQ("0x0", WriteIntegerToString(static_cast</**/ ::std::int64_t>(0), 16,
+                                        false));
+  EXPECT_EQ(
+      "0x7fffffffffffffff",
+      WriteIntegerToString(
+          static_cast</**/ ::std::int64_t>(9223372036854775807L), 16, false));
 
-  EXPECT_EQ("0x0", WriteIntegerToString(static_cast<uint64_t>(0), 16, true));
+  EXPECT_EQ("0x0", WriteIntegerToString(static_cast</**/ ::std::uint64_t>(0),
+                                        16, true));
   EXPECT_EQ("0xf_4240",
-            WriteIntegerToString(static_cast<uint64_t>(1000000), 16, true));
-  EXPECT_EQ("0xffff_ffff_ffff_ffff",
-            WriteIntegerToString(static_cast<uint64_t>(18446744073709551615UL),
-                                 16, true));
+            WriteIntegerToString(static_cast</**/ ::std::uint64_t>(1000000), 16,
+                                 true));
+  EXPECT_EQ(
+      "0xffff_ffff_ffff_ffff",
+      WriteIntegerToString(
+          static_cast</**/ ::std::uint64_t>(18446744073709551615UL), 16, true));
   EXPECT_EQ("-0x8000_0000_0000_0000",
             WriteIntegerToString(
-                static_cast<int64_t>(-9223372036854775807L - 1), 16, true));
+                static_cast</**/ ::std::int64_t>(-9223372036854775807L - 1), 16,
+                true));
   EXPECT_EQ("-0x1_86a0",
-            WriteIntegerToString(static_cast<int64_t>(-100000), 16, true));
-  EXPECT_EQ("0x0", WriteIntegerToString(static_cast<int64_t>(0), 16, true));
-  EXPECT_EQ("0x7fff_ffff_ffff_ffff",
-            WriteIntegerToString(static_cast<int64_t>(9223372036854775807L), 16,
+            WriteIntegerToString(static_cast</**/ ::std::int64_t>(-100000), 16,
                                  true));
+  EXPECT_EQ("0x0", WriteIntegerToString(static_cast</**/ ::std::int64_t>(0), 16,
+                                        true));
+  EXPECT_EQ(
+      "0x7fff_ffff_ffff_ffff",
+      WriteIntegerToString(
+          static_cast</**/ ::std::int64_t>(9223372036854775807L), 16, true));
 }
 
 // Small helper function for the various WriteFloatToTextStream tests; just sets

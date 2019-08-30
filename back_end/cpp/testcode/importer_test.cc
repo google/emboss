@@ -14,18 +14,18 @@
 
 // Tests for using imported types.
 
+#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
 #include "testdata/importer.emb.h"
-#include <gtest/gtest.h>
 
 namespace emboss {
 namespace test {
 namespace {
 
-const uint8_t kOuter[16] = {
+const ::std::uint8_t kOuter[16] = {
     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,  // inner
     0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10,  // inner_gen
 };

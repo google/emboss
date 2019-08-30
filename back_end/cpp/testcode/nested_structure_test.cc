@@ -16,18 +16,18 @@
 // nested_structure.emb.
 //
 // These tests check that nested structures work.
+#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
 #include "testdata/nested_structure.emb.h"
-#include <gtest/gtest.h>
 
 namespace emboss {
 namespace test {
 namespace {
 
-alignas(8) static const uint8_t kContainer[20] = {
+alignas(8) static const ::std::uint8_t kContainer[20] = {
     0x28, 0x00, 0x00, 0x00,  // 0:4    weight == 40
     0x78, 0x56, 0x34, 0x12,  // 4:8    important_box.id == 0x12345678
     0x03, 0x02, 0x01, 0x00,  // 8:12   important_box.count == 0x010203
@@ -42,16 +42,16 @@ TEST(ContainerView, StaticSizeIsCorrect) {
 
 // ContainerView::SizeInBytes() returns the expected value.
 TEST(ContainerView, SizeFieldIsCorrect) {
-  auto view =
-      MakeAlignedContainerView<const uint8_t, 8>(kContainer, sizeof kContainer);
+  auto view = MakeAlignedContainerView<const ::std::uint8_t, 8>(
+      kContainer, sizeof kContainer);
   EXPECT_EQ(40, view.weight().Read());
 }
 
 // ContainerView::important_box() returns a BoxView, and not a different
 // template instantiation.
 TEST(ContainerView, FieldTypesAreExpected) {
-  auto container =
-      MakeAlignedContainerView<const uint8_t, 8>(kContainer, sizeof kContainer);
+  auto container = MakeAlignedContainerView<const ::std::uint8_t, 8>(
+      kContainer, sizeof kContainer);
   auto box = container.important_box();
   EXPECT_EQ(0x12345678, box.id().Read());
 }
@@ -59,16 +59,16 @@ TEST(ContainerView, FieldTypesAreExpected) {
 // Box::SizeInBytes() returns the expected value, when retrieved from a
 // Container.
 TEST(ContainerView, BoxSizeFieldIsCorrect) {
-  auto view =
-      MakeAlignedContainerView<const uint8_t, 8>(kContainer, sizeof kContainer);
+  auto view = MakeAlignedContainerView<const ::std::uint8_t, 8>(
+      kContainer, sizeof kContainer);
   EXPECT_EQ(8, view.important_box().SizeInBytes());
 }
 
 // Box::id() and Box::count() return correct values when retrieved from
 // Container.
 TEST(ContainerView, BoxFieldValuesAreCorrect) {
-  auto view =
-      MakeAlignedContainerView<const uint8_t, 8>(kContainer, sizeof kContainer);
+  auto view = MakeAlignedContainerView<const ::std::uint8_t, 8>(
+      kContainer, sizeof kContainer);
   EXPECT_EQ(0x12345678, view.important_box().id().Read());
   EXPECT_EQ(0x010203, view.important_box().count().Read());
   EXPECT_EQ(0x87654321, view.other_box().id().Read());
@@ -76,20 +76,23 @@ TEST(ContainerView, BoxFieldValuesAreCorrect) {
 }
 
 TEST(ContainerView, CanWriteValues) {
-  alignas(8) uint8_t buffer[sizeof kContainer];
-  auto writer = MakeAlignedContainerView<uint8_t, 8>(buffer, sizeof buffer);
+  alignas(8)::std::uint8_t buffer[sizeof kContainer];
+  auto writer =
+      MakeAlignedContainerView</**/ ::std::uint8_t, 8>(buffer, sizeof buffer);
   writer.weight().Write(40);
   writer.important_box().id().Write(0x12345678);
   writer.important_box().count().Write(0x010203);
   writer.other_box().id().Write(0x87654321);
   writer.other_box().count().Write(0xaabbcc);
-  EXPECT_EQ(std::vector<uint8_t>(kContainer, kContainer + sizeof kContainer),
-            std::vector<uint8_t>(buffer, buffer + sizeof buffer));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(kContainer,
+                                               kContainer + sizeof kContainer),
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 }
 
 TEST(ContainerView, CanReadTextFormat) {
-  alignas(8) uint8_t buffer[sizeof kContainer];
-  auto writer = MakeAlignedContainerView<uint8_t, 8>(buffer, sizeof buffer);
+  alignas(8)::std::uint8_t buffer[sizeof kContainer];
+  auto writer =
+      MakeAlignedContainerView</**/ ::std::uint8_t, 8>(buffer, sizeof buffer);
   EXPECT_TRUE(::emboss::UpdateFromText(writer, R"(
     {
       weight: 40
@@ -103,11 +106,12 @@ TEST(ContainerView, CanReadTextFormat) {
       }
     }
   )"));
-  EXPECT_EQ(std::vector<uint8_t>(kContainer, kContainer + sizeof kContainer),
-            std::vector<uint8_t>(buffer, buffer + sizeof buffer));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(kContainer,
+                                               kContainer + sizeof kContainer),
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 }
 
-alignas(8) static const uint8_t kTruck[44] = {
+alignas(8) static const ::std::uint8_t kTruck[44] = {
     0x88, 0x66, 0x44, 0x22,  // 0:4    id == 0x22446688
     0x64, 0x00, 0x00, 0x00,  // 4:8    cargo[0].weight == 100
     0xff, 0x00, 0x00, 0x00,  // 8:12   cargo[0].important_box.id == 255
@@ -122,7 +126,8 @@ alignas(8) static const uint8_t kTruck[44] = {
 };
 
 TEST(TruckView, ValuesAreCorrect) {
-  auto view = MakeAlignedTruckView<const uint8_t, 8>(kTruck, sizeof kTruck);
+  auto view =
+      MakeAlignedTruckView<const ::std::uint8_t, 8>(kTruck, sizeof kTruck);
   EXPECT_EQ(0x22446688, view.id().Read());
   EXPECT_EQ(100, view.cargo()[0].weight().Read());
   EXPECT_EQ(255, view.cargo()[0].important_box().id().Read());
@@ -137,7 +142,7 @@ TEST(TruckView, ValuesAreCorrect) {
 }
 
 TEST(TruckView, WriteValues) {
-  uint8_t buffer[sizeof kTruck];
+  ::std::uint8_t buffer[sizeof kTruck];
   auto writer = TruckWriter(buffer, sizeof buffer);
   writer.id().Write(0x22446688);
   writer.cargo()[0].weight().Write(100);
@@ -150,12 +155,12 @@ TEST(TruckView, WriteValues) {
   writer.cargo()[1].important_box().count().Write(9);
   writer.cargo()[1].other_box().id().Write(2000000001);
   writer.cargo()[1].other_box().count().Write(499);
-  EXPECT_EQ(std::vector<uint8_t>(kTruck, kTruck + sizeof kTruck),
-            std::vector<uint8_t>(buffer, buffer + sizeof buffer));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(kTruck, kTruck + sizeof kTruck),
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 }
 
 TEST(TruckView, CanReadTextFormat) {
-  uint8_t buffer[sizeof kTruck];
+  ::std::uint8_t buffer[sizeof kTruck];
   auto writer = TruckWriter(buffer, sizeof buffer);
   EXPECT_TRUE(::emboss::UpdateFromText(writer, R"(
     {
@@ -186,8 +191,8 @@ TEST(TruckView, CanReadTextFormat) {
       }
     }
   )"));
-  EXPECT_EQ(std::vector<uint8_t>(kTruck, kTruck + sizeof kTruck),
-            std::vector<uint8_t>(buffer, buffer + sizeof buffer));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(kTruck, kTruck + sizeof kTruck),
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 }
 
 }  // namespace

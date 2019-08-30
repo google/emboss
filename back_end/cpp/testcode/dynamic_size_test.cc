@@ -13,18 +13,18 @@
 // limitations under the License.
 
 // Tests for fields and structs with dynamic sizes.
+#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
 #include "testdata/dynamic_size.emb.h"
-#include <gtest/gtest.h>
 
 namespace emboss {
 namespace test {
 namespace {
 
-static constexpr std::array<uint8_t, 16> kMessage = {{
+static constexpr ::std::array</**/ ::std::uint8_t, 16> kMessage = {{
     0x02,                                // 0:1   header_length = 2
     0x06,                                // 1:2   message_length = 6
     0x01, 0x02, 0x03, 0x04, 0x05, 0x06,  // 2:8   message
@@ -61,7 +61,7 @@ TEST(MessageView, PaddingFieldWorks) {
   EXPECT_DEATH(view.padding()[0].Read(), "");
 }
 
-static constexpr std::array<uint8_t, 16> kPaddedMessage = {{
+static constexpr ::std::array</**/ ::std::uint8_t, 16> kPaddedMessage = {{
     0x06,                    // 0:1    header_length = 6
     0x04,                    // 1:2    message_length = 4
     0x01, 0x02, 0x03, 0x04,  // 2:6    padding
@@ -92,7 +92,7 @@ TEST(MessageView, PaddedMessageFieldsAreCorrect) {
 
 // Writes to fields produce the correct byte values.
 TEST(MessageView, Writer) {
-  uint8_t buffer[kPaddedMessage.size()] = {0};
+  ::std::uint8_t buffer[kPaddedMessage.size()] = {0};
   auto writer = MessageWriter(buffer, sizeof buffer);
 
   // Write values that should match kMessage.
@@ -106,8 +106,9 @@ TEST(MessageView, Writer) {
   EXPECT_DEATH(writer.message()[writer.message_length().Read()].Read(), "");
   EXPECT_DEATH(writer.padding()[0].Read(), "");
   writer.crc32().Write(0x0a090807);
-  EXPECT_EQ(std::vector<uint8_t>(kMessage.begin(), kMessage.end()),
-            std::vector<uint8_t>(buffer, buffer + kMessage.size()));
+  EXPECT_EQ(
+      ::std::vector</**/ ::std::uint8_t>(kMessage.begin(), kMessage.end()),
+      ::std::vector</**/ ::std::uint8_t>(buffer, buffer + kMessage.size()));
 
   // Update values to match kPaddedMessage.  Only update values that are
   // different.
@@ -126,12 +127,14 @@ TEST(MessageView, Writer) {
     writer2.padding()[i].Write(i + 1);
   }
   writer2.crc32().Write(0x0c0b0a09);
-  EXPECT_EQ(std::vector<uint8_t>(kPaddedMessage.begin(), kPaddedMessage.end()),
-            std::vector<uint8_t>(buffer, buffer + kPaddedMessage.size()));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(kPaddedMessage.begin(),
+                                               kPaddedMessage.end()),
+            ::std::vector</**/ ::std::uint8_t>(buffer,
+                                               buffer + kPaddedMessage.size()));
 }
 
 TEST(MessageView, MakeFromPointerArrayIterator) {
-  std::array<const std::array<uint8_t, 16> *, 2> buffers = {
+  ::std::array<const ::std::array</**/ ::std::uint8_t, 16> *, 2> buffers = {
       {&kMessage, &kPaddedMessage}};
   // Ensure that the weird const-reference-to-pointer type returned by iteration
   // over a std::array of std::arrays actually compiles.
@@ -143,7 +146,7 @@ TEST(MessageView, MakeFromPointerArrayIterator) {
   }
 }
 
-static const uint8_t kThreeByFiveImage[46] = {
+static const ::std::uint8_t kThreeByFiveImage[46] = {
     0x03,              // 0:1  size
     0x01, 0x02, 0x03,  // pixels[0][0]
     0x04, 0x05, 0x06,  // pixels[0][1]
@@ -179,7 +182,7 @@ TEST(ImageView, PixelsAreCorrect) {
 }
 
 TEST(ImageView, WritePixels) {
-  uint8_t buffer[sizeof kThreeByFiveImage];
+  ::std::uint8_t buffer[sizeof kThreeByFiveImage];
   auto writer = ImageWriter(buffer, sizeof buffer);
   writer.size().Write(3);
   int counter = 1;
@@ -191,12 +194,13 @@ TEST(ImageView, WritePixels) {
       }
     }
   }
-  EXPECT_EQ(std::vector<uint8_t>(kThreeByFiveImage,
-                                 kThreeByFiveImage + sizeof kThreeByFiveImage),
-            std::vector<uint8_t>(buffer, buffer + sizeof buffer));
+  EXPECT_EQ(
+      ::std::vector</**/ ::std::uint8_t>(
+          kThreeByFiveImage, kThreeByFiveImage + sizeof kThreeByFiveImage),
+      ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 }
 
-static const uint8_t kTwoRegionsAFirst[10] = {
+static const ::std::uint8_t kTwoRegionsAFirst[10] = {
     0x04,                    // 0:1   a_start
     0x02,                    // 1:2   a_size
     0x06,                    // 2:3   b_start
@@ -220,7 +224,7 @@ TEST(TwoRegionsView, RegionAFirstWorks) {
   EXPECT_EQ(0x66, view.region_b()[3].Read());
 }
 
-static const uint8_t kTwoRegionsBFirst[14] = {
+static const ::std::uint8_t kTwoRegionsBFirst[14] = {
     0x0a,                    // 0:1    a_start
     0x04,                    // 1:2    a_size
     0x04,                    // 2:3    b_start
@@ -245,7 +249,7 @@ TEST(TwoRegionsView, RegionBFirstWorks) {
   EXPECT_EQ(0x22, view.region_b()[1].Read());
 }
 
-static const uint8_t kTwoRegionsAAndBOverlap[8] = {
+static const ::std::uint8_t kTwoRegionsAAndBOverlap[8] = {
     0x05,                    // 0:1  a_start
     0x02,                    // 1:2  a_size
     0x04,                    // 2:3  b_start
@@ -272,7 +276,7 @@ TEST(TwoRegionsView, RegionAAndBOverlappedWorks) {
 }
 
 TEST(TwoRegionsView, Write) {
-  uint8_t buffer[64];
+  ::std::uint8_t buffer[64];
   auto writer = TwoRegionsWriter(buffer, sizeof buffer);
   writer.a_start().Write(4);
   writer.a_size().Write(2);
@@ -284,9 +288,11 @@ TEST(TwoRegionsView, Write) {
   writer.region_b()[1].Write(0x44);
   writer.region_b()[2].Write(0x55);
   writer.region_b()[3].Write(0x66);
-  EXPECT_EQ(std::vector<uint8_t>(kTwoRegionsAFirst,
-                                 kTwoRegionsAFirst + sizeof kTwoRegionsAFirst),
-            std::vector<uint8_t>(buffer, buffer + sizeof kTwoRegionsAFirst));
+  EXPECT_EQ(
+      ::std::vector</**/ ::std::uint8_t>(
+          kTwoRegionsAFirst, kTwoRegionsAFirst + sizeof kTwoRegionsAFirst),
+      ::std::vector</**/ ::std::uint8_t>(buffer,
+                                         buffer + sizeof kTwoRegionsAFirst));
 
   writer.a_start().Write(10);
   writer.a_size().Write(4);
@@ -303,9 +309,11 @@ TEST(TwoRegionsView, Write) {
   buffer[7] = 0xff;
   buffer[8] = 0xff;
   buffer[9] = 0xff;
-  EXPECT_EQ(std::vector<uint8_t>(kTwoRegionsBFirst,
-                                 kTwoRegionsBFirst + sizeof kTwoRegionsBFirst),
-            std::vector<uint8_t>(buffer, buffer + sizeof kTwoRegionsBFirst));
+  EXPECT_EQ(
+      ::std::vector</**/ ::std::uint8_t>(
+          kTwoRegionsBFirst, kTwoRegionsBFirst + sizeof kTwoRegionsBFirst),
+      ::std::vector</**/ ::std::uint8_t>(buffer,
+                                         buffer + sizeof kTwoRegionsBFirst));
 
   writer.a_start().Write(5);
   writer.a_size().Write(2);
@@ -321,14 +329,14 @@ TEST(TwoRegionsView, Write) {
   writer.region_a()[1].Write(0x33);
   EXPECT_EQ(0x22, writer.region_b()[1].Read());
   EXPECT_EQ(0x33, writer.region_b()[2].Read());
-  EXPECT_EQ(
-      std::vector<uint8_t>(
-          kTwoRegionsAAndBOverlap,
-          kTwoRegionsAAndBOverlap + sizeof kTwoRegionsAAndBOverlap),
-      std::vector<uint8_t>(buffer, buffer + sizeof kTwoRegionsAAndBOverlap));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(
+                kTwoRegionsAAndBOverlap,
+                kTwoRegionsAAndBOverlap + sizeof kTwoRegionsAAndBOverlap),
+            ::std::vector</**/ ::std::uint8_t>(
+                buffer, buffer + sizeof kTwoRegionsAAndBOverlap));
 }
 
-static const uint8_t kMultipliedSize[299] = {
+static const ::std::uint8_t kMultipliedSize[299] = {
     0x09,  // 0:1    width == 9
     0x21,  // 1:2    height == 33
     // 9 x 33 == 297-byte block for data.
@@ -379,7 +387,7 @@ TEST(MultipliedSizeView, MultipliedSizesUseWideEnoughArithmetic) {
   EXPECT_EQ(0xff, view.data()[296].Read());
 }
 
-static const uint8_t kNegativeTermsInSizesAMinusBIsBiggest[7] = {
+static const ::std::uint8_t kNegativeTermsInSizesAMinusBIsBiggest[7] = {
     0x07,  // 0:1  a
     0x01,  // 1:2  b
     0x02,  // 2:3  c
@@ -408,7 +416,7 @@ TEST(NegativeTermsInSizes, AMinusBIsBiggest) {
   EXPECT_EQ(0x33, view.a_minus_b()[2].Read());
 }
 
-static const uint8_t kNegativeTermsInSizesAMinusCIsBiggest[7] = {
+static const ::std::uint8_t kNegativeTermsInSizesAMinusCIsBiggest[7] = {
     0x07,  // 0:1  a
     0x02,  // 1:2  b
     0x01,  // 2:3  c
@@ -439,7 +447,7 @@ TEST(NegativeTermsInSizes, AMinusCIsBiggest) {
   EXPECT_TRUE(view.a_minus_2b().IsComplete());
 }
 
-static const uint8_t kNegativeTermsInSizesTenMinusAIsBiggest[7] = {
+static const ::std::uint8_t kNegativeTermsInSizesTenMinusAIsBiggest[7] = {
     0x04,  // 0:1  a
     0x00,  // 1:2  b
     0x00,  // 2:3  c
@@ -470,7 +478,7 @@ TEST(NegativeTermsInSizes, TenMinusAIsBiggest) {
   EXPECT_TRUE(view.a_minus_2b().IsComplete());
 }
 
-static const uint8_t kNegativeTermsEndWouldBeNegative[10] = {
+static const ::std::uint8_t kNegativeTermsEndWouldBeNegative[10] = {
     0x00,  // 0:1  a
     0x02,  // 1:2  b
     0x02,  // 2:3  c
@@ -515,7 +523,7 @@ TEST(NegativeTermInLocation, NegativeLocation) {
   EXPECT_FALSE(view.b().Ok());
 }
 
-static const uint8_t kChainedSizeInOrder[4] = {
+static const ::std::uint8_t kChainedSizeInOrder[4] = {
     0x01,  // 0:1  a
     0x02,  // 1:2  b
     0x03,  // 2:3  c
@@ -537,7 +545,7 @@ TEST(ChainedSize, ChainedSizeInOrder) {
   EXPECT_EQ(4, view.d().Read());
 }
 
-static const uint8_t kChainedSizeNotInOrder[4] = {
+static const ::std::uint8_t kChainedSizeNotInOrder[4] = {
     0x03,  // 0:1  a
     0x04,  // 1:2  d
     0x01,  // 2:3  c
@@ -564,27 +572,27 @@ TEST(ChainedSize, ChainedSizeNotInOrder) {
 
 // Fields are readable, even through multiple levels of indirection.
 TEST(ChainedSize, Write) {
-  uint8_t buffer[4] = {0};
+  ::std::uint8_t buffer[4] = {0};
   auto writer = ChainedSizeWriter(buffer, sizeof buffer);
   writer.a().Write(1);
   writer.b().Write(2);
   writer.c().Write(3);
   writer.d().Write(4);
-  EXPECT_EQ(
-      std::vector<uint8_t>(kChainedSizeInOrder,
-                           kChainedSizeInOrder + sizeof kChainedSizeInOrder),
-      std::vector<uint8_t>(buffer, buffer + sizeof buffer));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(
+                kChainedSizeInOrder,
+                kChainedSizeInOrder + sizeof kChainedSizeInOrder),
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
   writer.a().Write(3);
   writer.b().Write(2);
   writer.c().Write(1);
   writer.d().Write(4);
-  EXPECT_EQ(std::vector<uint8_t>(
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(
                 kChainedSizeNotInOrder,
                 kChainedSizeNotInOrder + sizeof kChainedSizeNotInOrder),
-            std::vector<uint8_t>(buffer, buffer + sizeof buffer));
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 }
 
-static const uint8_t kChainedSizeTooShortForD[3] = {
+static const ::std::uint8_t kChainedSizeTooShortForD[3] = {
     0x01,  // 0:1  a
     0x02,  // 1:2  b
     0x03,  // 2:3  c
@@ -610,7 +618,7 @@ TEST(ChainedSize, ChainedSizeTooShortForD) {
   ASSERT_FALSE(view.d().IsComplete());
 }
 
-static const uint8_t kChainedSizeTooShortForC[2] = {
+static const ::std::uint8_t kChainedSizeTooShortForC[2] = {
     0x01,  // 0:1  a
     0x02,  // 1:2  b
            // c is missing
@@ -638,7 +646,7 @@ TEST(FinalFieldOverlaps, FinalSizeIsCorrect) {
   ASSERT_EQ(5, FinalFieldOverlapsView::SizeInBytes());
 }
 
-static const uint8_t kDynamicFinalFieldOverlapsDynamicFieldIsLast[12] = {
+static const ::std::uint8_t kDynamicFinalFieldOverlapsDynamicFieldIsLast[12] = {
     0x0a,                                            // 0:1  a
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // 1:9 padding
     0x01,                                            // 9:10  b
@@ -646,7 +654,7 @@ static const uint8_t kDynamicFinalFieldOverlapsDynamicFieldIsLast[12] = {
     0x03,  // 11:12 (a+1:a+2)  d; high byte of c
 };
 
-static const uint8_t kDynamicFinalFieldOverlapsStaticFieldIsLast[10] = {
+static const ::std::uint8_t kDynamicFinalFieldOverlapsStaticFieldIsLast[10] = {
     0x07,                                // 0:1  a
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // 1:7 padding
     0x02,                                // 7:8 (a:a+1)  low byte of c
@@ -668,7 +676,7 @@ TEST(DynamicFinalFieldOverlaps, FinalSizeIsCorrect) {
 }
 
 TEST(DynamicFieldDependsOnLaterField, DynamicLocationIsNotKnown) {
-  uint8_t bytes[5] = {0x04, 0x03, 0x02, 0x01, 0x00};
+  ::std::uint8_t bytes[5] = {0x04, 0x03, 0x02, 0x01, 0x00};
   auto view = MakeDynamicFieldDependsOnLaterFieldView(bytes, 4);
   EXPECT_FALSE(view.b().Ok());
   view = MakeDynamicFieldDependsOnLaterFieldView(bytes, 5);

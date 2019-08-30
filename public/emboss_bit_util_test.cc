@@ -21,10 +21,11 @@ namespace support {
 namespace test {
 
 TEST(ByteSwap, ByteSwap) {
-  EXPECT_EQ(0x01, ByteSwap(uint8_t{0x01}));
-  EXPECT_EQ(0x0102, ByteSwap(uint16_t{0x0201}));
-  EXPECT_EQ(0x01020304, ByteSwap(uint32_t{0x04030201}));
-  EXPECT_EQ(0x0102030405060708UL, ByteSwap(uint64_t{0x0807060504030201UL}));
+  EXPECT_EQ(0x01, ByteSwap(::std::uint8_t{0x01}));
+  EXPECT_EQ(0x0102, ByteSwap(::std::uint16_t{0x0201}));
+  EXPECT_EQ(0x01020304, ByteSwap(::std::uint32_t{0x04030201}));
+  EXPECT_EQ(0x0102030405060708UL,
+            ByteSwap(::std::uint64_t{0x0807060504030201UL}));
 }
 
 TEST(MaskToNBits, MaskToNBits) {
@@ -34,41 +35,42 @@ TEST(MaskToNBits, MaskToNBits) {
   EXPECT_EQ(0x00, MaskToNBits(0xfffffffeU, 1));
   EXPECT_EQ(0xffffffffU, MaskToNBits(0xffffffffU, 32));
   EXPECT_EQ(0xffffffffffffffffU, MaskToNBits(0xffffffffffffffffU, 64));
-  EXPECT_EQ(0xf, MaskToNBits(uint8_t{0xff}, 4));
+  EXPECT_EQ(0xf, MaskToNBits(::std::uint8_t{0xff}, 4));
 }
 
 TEST(IsPowerOfTwo, IsPowerOfTwo) {
   EXPECT_TRUE(IsPowerOfTwo(1U));
   EXPECT_TRUE(IsPowerOfTwo(2U));
   EXPECT_TRUE(IsPowerOfTwo(1UL << 63));
-  EXPECT_TRUE(IsPowerOfTwo(uint8_t{128}));
+  EXPECT_TRUE(IsPowerOfTwo(::std::uint8_t{128}));
   EXPECT_TRUE(IsPowerOfTwo(1));
   EXPECT_TRUE(IsPowerOfTwo(2));
   EXPECT_TRUE(IsPowerOfTwo(1L << 62));
-  EXPECT_TRUE(IsPowerOfTwo(int8_t{64}));
+  EXPECT_TRUE(IsPowerOfTwo(::std::int8_t{64}));
 
   EXPECT_FALSE(IsPowerOfTwo(0U));
   EXPECT_FALSE(IsPowerOfTwo(3U));
   EXPECT_FALSE(IsPowerOfTwo((1UL << 63) - 1));
   EXPECT_FALSE(IsPowerOfTwo((1UL << 62) + 1));
   EXPECT_FALSE(IsPowerOfTwo((3UL << 62)));
-  EXPECT_FALSE(IsPowerOfTwo(::std::numeric_limits<uint64_t>::max()));
-  EXPECT_FALSE(IsPowerOfTwo(uint8_t{129}));
-  EXPECT_FALSE(IsPowerOfTwo(uint8_t{255}));
+  EXPECT_FALSE(
+      IsPowerOfTwo(::std::numeric_limits</**/ ::std::uint64_t>::max()));
+  EXPECT_FALSE(IsPowerOfTwo(::std::uint8_t{129}));
+  EXPECT_FALSE(IsPowerOfTwo(::std::uint8_t{255}));
   EXPECT_FALSE(IsPowerOfTwo(-1));
   EXPECT_FALSE(IsPowerOfTwo(-2));
   EXPECT_FALSE(IsPowerOfTwo(-3));
-  EXPECT_FALSE(IsPowerOfTwo(::std::numeric_limits<int64_t>::min()));
-  EXPECT_FALSE(IsPowerOfTwo(::std::numeric_limits<int64_t>::max()));
+  EXPECT_FALSE(IsPowerOfTwo(::std::numeric_limits</**/ ::std::int64_t>::min()));
+  EXPECT_FALSE(IsPowerOfTwo(::std::numeric_limits</**/ ::std::int64_t>::max()));
   EXPECT_FALSE(IsPowerOfTwo(0));
   EXPECT_FALSE(IsPowerOfTwo(3));
   EXPECT_FALSE(IsPowerOfTwo((1L << 62) - 1));
   EXPECT_FALSE(IsPowerOfTwo((1L << 61) + 1));
   EXPECT_FALSE(IsPowerOfTwo((3L << 61)));
-  EXPECT_FALSE(IsPowerOfTwo(int8_t{-1}));
-  EXPECT_FALSE(IsPowerOfTwo(int8_t{-128}));
-  EXPECT_FALSE(IsPowerOfTwo(int8_t{65}));
-  EXPECT_FALSE(IsPowerOfTwo(int8_t{127}));
+  EXPECT_FALSE(IsPowerOfTwo(::std::int8_t{-1}));
+  EXPECT_FALSE(IsPowerOfTwo(::std::int8_t{-128}));
+  EXPECT_FALSE(IsPowerOfTwo(::std::int8_t{65}));
+  EXPECT_FALSE(IsPowerOfTwo(::std::int8_t{127}));
 }
 
 #if defined(EMBOSS_LITTLE_ENDIAN_TO_NATIVE)

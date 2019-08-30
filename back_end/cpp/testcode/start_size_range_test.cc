@@ -14,16 +14,16 @@
 
 // Test for the generated View class for StartSize from start_size_range.emb.
 
+#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include "testdata/start_size_range.emb.h"
-#include <gtest/gtest.h>
 
 namespace emboss {
 namespace test {
 namespace {
 
-static const uint8_t kStartSizeRange[9] = {
+static const ::std::uint8_t kStartSizeRange[9] = {
     0x02,                    // 0:1   0:1       size == 4
     0xe8, 0x03,              // 1:3   1   [+2]  start_size_constants == 1000
     0x11, 0x22,              // 3:5   3   [+s]  payload

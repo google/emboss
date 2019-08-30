@@ -34,70 +34,70 @@ TEST(FloatTypes, Types) {
 }
 
 TEST(LeastWidthInteger, Types) {
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<1>::Unsigned, ::std::uint8_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<1>::Signed, ::std::int8_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<4>::Unsigned, ::std::uint8_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<4>::Signed, ::std::int8_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<7>::Unsigned, ::std::uint8_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<7>::Signed, ::std::int8_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<8>::Unsigned, ::std::uint8_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<8>::Signed, ::std::int8_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<9>::Unsigned, ::std::uint16_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<9>::Signed, ::std::int16_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<1>::Unsigned, ::std::uint8_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<1>::Signed, ::std::int8_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<4>::Unsigned, ::std::uint8_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<4>::Signed, ::std::int8_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<7>::Unsigned, ::std::uint8_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<7>::Signed, ::std::int8_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<8>::Unsigned, ::std::uint8_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<8>::Signed, ::std::int8_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<9>::Unsigned, ::std::uint16_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<9>::Signed, ::std::int16_t>::value));
   EXPECT_TRUE((
       ::std::is_same<LeastWidthInteger<12>::Unsigned, ::std::uint16_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<12>::Signed, ::std::int16_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<12>::Signed, ::std::int16_t>::value));
   EXPECT_TRUE((
       ::std::is_same<LeastWidthInteger<15>::Unsigned, ::std::uint16_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<15>::Signed, ::std::int16_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<15>::Signed, ::std::int16_t>::value));
   EXPECT_TRUE((
       ::std::is_same<LeastWidthInteger<16>::Unsigned, ::std::uint16_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<16>::Signed, ::std::int16_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<16>::Signed, ::std::int16_t>::value));
   EXPECT_TRUE((
       ::std::is_same<LeastWidthInteger<17>::Unsigned, ::std::uint32_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<17>::Signed, ::std::int32_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<17>::Signed, ::std::int32_t>::value));
   EXPECT_TRUE((
       ::std::is_same<LeastWidthInteger<28>::Unsigned, ::std::uint32_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<28>::Signed, ::std::int32_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<28>::Signed, ::std::int32_t>::value));
   EXPECT_TRUE((
       ::std::is_same<LeastWidthInteger<31>::Unsigned, ::std::uint32_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<31>::Signed, ::std::int32_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<31>::Signed, ::std::int32_t>::value));
   EXPECT_TRUE((
       ::std::is_same<LeastWidthInteger<32>::Unsigned, ::std::uint32_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<32>::Signed, ::std::int32_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<32>::Signed, ::std::int32_t>::value));
   EXPECT_TRUE((
       ::std::is_same<LeastWidthInteger<33>::Unsigned, ::std::uint64_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<33>::Signed, ::std::int64_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<33>::Signed, ::std::int64_t>::value));
   EXPECT_TRUE((
       ::std::is_same<LeastWidthInteger<60>::Unsigned, ::std::uint64_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<60>::Signed, ::std::int64_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<60>::Signed, ::std::int64_t>::value));
   EXPECT_TRUE((
       ::std::is_same<LeastWidthInteger<63>::Unsigned, ::std::uint64_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<63>::Signed, ::std::int64_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<63>::Signed, ::std::int64_t>::value));
   EXPECT_TRUE((
       ::std::is_same<LeastWidthInteger<64>::Unsigned, ::std::uint64_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<64>::Signed, ::std::int64_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<64>::Signed, ::std::int64_t>::value));
 }
 
 TEST(IsChar, CharTypes) {
@@ -116,7 +116,9 @@ TEST(IsChar, CharTypes) {
 }
 
 TEST(IsChar, NonCharTypes) {
-  struct OneByte { char c; };
+  struct OneByte {
+    char c;
+  };
   EXPECT_EQ(1, sizeof(OneByte));
   EXPECT_FALSE(IsChar<int>::value);
   EXPECT_FALSE(IsChar<unsigned>::value);

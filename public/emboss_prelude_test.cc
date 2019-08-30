@@ -14,10 +14,11 @@
 
 #include "public/emboss_prelude.h"
 
+#include <gtest/gtest.h>
+
 #include <type_traits>
 
 #include "public/emboss_cpp_util.h"
-#include <gtest/gtest.h>
 
 namespace emboss {
 namespace prelude {
@@ -26,17 +27,17 @@ namespace test {
 using ::emboss::support::OffsetBitBlock;
 using ::emboss::support::ReadWriteContiguousBuffer;
 
-template <size_t kBits>
+template </**/ ::std::size_t kBits>
 using BitBlockN = ::emboss::support::BitBlock<
     ::emboss::support::LittleEndianByteOrderer<ReadWriteContiguousBuffer>,
     kBits>;
 
-template <size_t kBits>
+template </**/ ::std::size_t kBits>
 using ViewParameters = ::emboss::support::FixedSizeViewParameters<
     kBits, ::emboss::support::AllValuesAreOk>;
 
 TEST(FlagView, Methods) {
-  uint8_t byte = 0;
+  ::std::uint8_t byte = 0;
   auto flag_view =
       FlagView<ViewParameters<1>, OffsetBitBlock<BitBlockN<8>>>{BitBlockN<8>{
           ReadWriteContiguousBuffer{&byte, 1}}.GetOffsetStorage<1, 0>(0, 1)};
@@ -57,7 +58,7 @@ TEST(FlagView, Methods) {
 }
 
 TEST(FlagView, TextDecode) {
-  uint8_t byte = 0;
+  ::std::uint8_t byte = 0;
   const auto flag_view =
       FlagView<ViewParameters<1>, OffsetBitBlock<BitBlockN<8>>>{BitBlockN<8>{
           ReadWriteContiguousBuffer{&byte, 1}}.GetOffsetStorage<1, 0>(0, 1)};
@@ -82,7 +83,7 @@ TEST(FlagView, TextDecode) {
 }
 
 TEST(FlagView, TextEncode) {
-  uint8_t byte = 0;
+  ::std::uint8_t byte = 0;
   const auto flag_view =
       FlagView<ViewParameters<1>, OffsetBitBlock<BitBlockN<8>>>{BitBlockN<8>{
           ReadWriteContiguousBuffer{&byte, 1}}.GetOffsetStorage<1, 0>(0, 1)};
@@ -120,35 +121,35 @@ TEST(IntView, SizeInBits) { CheckViewSizeInBits<IntView, 64>(); }
 
 TEST(BcdView, SizeInBits) { CheckViewSizeInBits<BcdView, 64>(); }
 
-template <size_t kBits>
+template </**/ ::std::size_t kBits>
 using UIntViewN = UIntView<ViewParameters<kBits>, BitBlockN<kBits>>;
 
 TEST(UIntView, ValueType) {
   using BitBlockType = BitBlockN<64>;
-  EXPECT_TRUE(
-      (::std::is_same<uint8_t, UIntView<ViewParameters<8>,
-                                        BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<uint8_t, UIntView<ViewParameters<6>,
-                                        BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<uint16_t, UIntView<ViewParameters<9>,
-                                         BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<uint16_t, UIntView<ViewParameters<16>,
-                                         BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<uint32_t, UIntView<ViewParameters<17>,
-                                         BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<uint32_t, UIntView<ViewParameters<32>,
-                                         BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<uint64_t, UIntView<ViewParameters<33>,
-                                         BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<uint64_t, UIntView<ViewParameters<64>,
-                                         BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::uint8_t,
+               UIntView<ViewParameters<8>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::uint8_t,
+               UIntView<ViewParameters<6>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::uint16_t,
+               UIntView<ViewParameters<9>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::uint16_t,
+               UIntView<ViewParameters<16>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::uint32_t,
+               UIntView<ViewParameters<17>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::uint32_t,
+               UIntView<ViewParameters<32>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::uint64_t,
+               UIntView<ViewParameters<33>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::uint64_t,
+               UIntView<ViewParameters<64>, BitBlockType>::ValueType>::value));
 }
 
 TEST(UIntView, CouldWriteValue) {
@@ -187,26 +188,26 @@ TEST(UIntView, CouldWriteValueNarrowing) {
 }
 
 TEST(UIntView, ReadAndWriteWithSufficientBuffer) {
-  ::std::vector<uint8_t> bytes = {
+  ::std::vector</**/ ::std::uint8_t> bytes = {
       {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08}};
   auto uint64_view =
       UIntViewN<64>{BitBlockN<64>{ReadWriteContiguousBuffer{bytes.data(), 8}}};
   EXPECT_EQ(0x090a0b0c0d0e0f10UL, uint64_view.Read());
   EXPECT_EQ(0x090a0b0c0d0e0f10UL, uint64_view.UncheckedRead());
   uint64_view.Write(0x100f0e0d0c0b0a09UL);
-  EXPECT_EQ((::std::vector<uint8_t>{
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x08}}),
             bytes);
   uint64_view.UncheckedWrite(0x090a0b0c0d0e0f10UL);
-  EXPECT_EQ((::std::vector<uint8_t>{
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08}}),
             bytes);
   EXPECT_TRUE(uint64_view.TryToWrite(0x100f0e0d0c0b0a09UL));
-  EXPECT_EQ((::std::vector<uint8_t>{
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x08}}),
             bytes);
   EXPECT_TRUE(uint64_view.TryToWrite(0x090a0b0c0d0e0f10UL));
-  EXPECT_EQ((::std::vector<uint8_t>{
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08}}),
             bytes);
   EXPECT_TRUE(uint64_view.Ok());
@@ -214,7 +215,7 @@ TEST(UIntView, ReadAndWriteWithSufficientBuffer) {
 }
 
 TEST(UIntView, ReadAndWriteWithInsufficientBuffer) {
-  ::std::vector<uint8_t> bytes = {
+  ::std::vector</**/ ::std::uint8_t> bytes = {
       {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08}};
   auto uint64_view =
       UIntViewN<64>{BitBlockN<64>{ReadWriteContiguousBuffer{bytes.data(), 4}}};
@@ -222,11 +223,11 @@ TEST(UIntView, ReadAndWriteWithInsufficientBuffer) {
   EXPECT_EQ(0x090a0b0c0d0e0f10UL, uint64_view.UncheckedRead());
   EXPECT_DEATH(uint64_view.Write(0x100f0e0d0c0b0a09UL), "");
   EXPECT_FALSE(uint64_view.TryToWrite(0x100f0e0d0c0b0a09UL));
-  EXPECT_EQ((::std::vector<uint8_t>{
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08}}),
             bytes);
   uint64_view.UncheckedWrite(0x100f0e0d0c0b0a09UL);
-  EXPECT_EQ((::std::vector<uint8_t>{
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x08}}),
             bytes);
   EXPECT_FALSE(uint64_view.Ok());
@@ -235,37 +236,41 @@ TEST(UIntView, ReadAndWriteWithInsufficientBuffer) {
 }
 
 TEST(UIntView, NonPowerOfTwoSize) {
-  ::std::vector<uint8_t> bytes = {{0x10, 0x0f, 0x0e, 0x0d}};
+  ::std::vector</**/ ::std::uint8_t> bytes = {{0x10, 0x0f, 0x0e, 0x0d}};
   auto uint24_view =
       UIntViewN<24>{BitBlockN<24>{ReadWriteContiguousBuffer{bytes.data(), 3}}};
   EXPECT_EQ(0x0e0f10, uint24_view.Read());
   EXPECT_EQ(0x0e0f10, uint24_view.UncheckedRead());
   EXPECT_DEATH(uint24_view.Write(0x1000000), "");
   uint24_view.Write(0x100f0e);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x0e, 0x0f, 0x10, 0x0d}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x0e, 0x0f, 0x10, 0x0d}}),
+            bytes);
   uint24_view.UncheckedWrite(0x1000000);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x00, 0x00, 0x00, 0x0d}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x00, 0x00, 0x00, 0x0d}}),
+            bytes);
   EXPECT_TRUE(uint24_view.Ok());
   EXPECT_TRUE(uint24_view.IsComplete());
 }
 
 TEST(UIntView, NonPowerOfTwoSizeInsufficientBuffer) {
-  ::std::vector<uint8_t> bytes = {{0x10, 0x0f, 0x0e, 0x0d}};
+  ::std::vector</**/ ::std::uint8_t> bytes = {{0x10, 0x0f, 0x0e, 0x0d}};
   auto uint24_view =
       UIntViewN<24>{BitBlockN<24>{ReadWriteContiguousBuffer{bytes.data(), 2}}};
   EXPECT_DEATH(uint24_view.Read(), "");
   EXPECT_EQ(0x0e0f10, uint24_view.UncheckedRead());
   EXPECT_DEATH(uint24_view.Write(0x100f0e), "");
   uint24_view.UncheckedWrite(0x100f0e);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x0e, 0x0f, 0x10, 0x0d}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x0e, 0x0f, 0x10, 0x0d}}),
+            bytes);
   uint24_view.UncheckedWrite(0x1000000);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x00, 0x00, 0x00, 0x0d}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x00, 0x00, 0x00, 0x0d}}),
+            bytes);
   EXPECT_FALSE(uint24_view.Ok());
   EXPECT_FALSE(uint24_view.IsComplete());
 }
 
 TEST(UIntView, NonByteSize) {
-  ::std::vector<uint8_t> bytes = {{0x00, 0x00, 0x80, 0x80}};
+  ::std::vector</**/ ::std::uint8_t> bytes = {{0x00, 0x00, 0x80, 0x80}};
   auto uint23_view =
       UIntView<ViewParameters<23>, OffsetBitBlock<BitBlockN<24>>>{BitBlockN<24>{
           ReadWriteContiguousBuffer{bytes.data(),
@@ -276,57 +281,63 @@ TEST(UIntView, NonByteSize) {
   EXPECT_TRUE(uint23_view.CouldWriteValue(0x7fffff));
   EXPECT_DEATH(uint23_view.Write(0x800f0e), "");
   uint23_view.Write(0x400f0e);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x0e, 0x0f, 0xc0, 0x80}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x0e, 0x0f, 0xc0, 0x80}}),
+            bytes);
   uint23_view.UncheckedWrite(0x1000000);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x00, 0x00, 0x80, 0x80}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x00, 0x00, 0x80, 0x80}}),
+            bytes);
   EXPECT_TRUE(uint23_view.Ok());
   EXPECT_TRUE(uint23_view.IsComplete());
 }
 
 TEST(UIntView, TextDecode) {
-  ::std::vector<uint8_t> bytes = {{0x00, 0x00, 0x00, 0xff}};
+  ::std::vector</**/ ::std::uint8_t> bytes = {{0x00, 0x00, 0x00, 0xff}};
   const auto uint24_view =
       UIntViewN<24>{BitBlockN<24>{ReadWriteContiguousBuffer{bytes.data(), 3}}};
   EXPECT_TRUE(UpdateFromText(uint24_view, "23"));
-  EXPECT_EQ((::std::vector<uint8_t>{{23, 0x00, 0x00, 0xff}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{23, 0x00, 0x00, 0xff}}),
+            bytes);
   EXPECT_EQ(23, uint24_view.Read());
   EXPECT_FALSE(UpdateFromText(uint24_view, "16777216"));
-  EXPECT_EQ((::std::vector<uint8_t>{{23, 0x00, 0x00, 0xff}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{23, 0x00, 0x00, 0xff}}),
+            bytes);
   EXPECT_TRUE(UpdateFromText(uint24_view, "16777215"));
-  EXPECT_EQ((::std::vector<uint8_t>{{0xff, 0xff, 0xff, 0xff}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0xff, 0xff, 0xff, 0xff}}),
+            bytes);
   EXPECT_TRUE(UpdateFromText(uint24_view, "0x01_0203"));
-  EXPECT_EQ((::std::vector<uint8_t>{{0x03, 0x02, 0x01, 0xff}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x03, 0x02, 0x01, 0xff}}),
+            bytes);
 }
 
-template <size_t kBits>
+template </**/ ::std::size_t kBits>
 using IntViewN = IntView<ViewParameters<kBits>, BitBlockN<kBits>>;
 
 TEST(IntView, ValueType) {
   using BitBlockType = BitBlockN<64>;
-  EXPECT_TRUE(
-      (::std::is_same<
-          int8_t, IntView<ViewParameters<8>, BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<
-          int8_t, IntView<ViewParameters<6>, BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<int16_t, IntView<ViewParameters<9>,
-                                       BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<int16_t, IntView<ViewParameters<16>,
-                                       BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<int32_t, IntView<ViewParameters<17>,
-                                       BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<int32_t, IntView<ViewParameters<32>,
-                                       BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<int64_t, IntView<ViewParameters<33>,
-                                       BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<int64_t, IntView<ViewParameters<64>,
-                                       BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::int8_t,
+               IntView<ViewParameters<8>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::int8_t,
+               IntView<ViewParameters<6>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::int16_t,
+               IntView<ViewParameters<9>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::int16_t,
+               IntView<ViewParameters<16>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::int32_t,
+               IntView<ViewParameters<17>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::int32_t,
+               IntView<ViewParameters<32>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::int64_t,
+               IntView<ViewParameters<33>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::int64_t,
+               IntView<ViewParameters<64>, BitBlockType>::ValueType>::value));
 }
 
 TEST(IntView, CouldWriteValue) {
@@ -365,27 +376,27 @@ TEST(IntView, CouldWriteValueNarrowing) {
 }
 
 TEST(IntView, ReadAndWriteWithSufficientBuffer) {
-  ::std::vector<uint8_t> bytes = {
+  ::std::vector</**/ ::std::uint8_t> bytes = {
       {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08}};
   auto int64_view =
       IntViewN<64>{BitBlockN<64>{ReadWriteContiguousBuffer{bytes.data(), 8}}};
   EXPECT_EQ(0x090a0b0c0d0e0f10L, int64_view.Read());
   EXPECT_EQ(0x090a0b0c0d0e0f10L, int64_view.UncheckedRead());
   int64_view.Write(0x100f0e0d0c0b0a09L);
-  EXPECT_EQ((::std::vector<uint8_t>{
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x08}}),
             bytes);
   int64_view.UncheckedWrite(0x090a0b0c0d0e0f10L);
-  EXPECT_EQ((::std::vector<uint8_t>{
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08}}),
             bytes);
   EXPECT_TRUE(int64_view.TryToWrite(0x100f0e0d0c0b0a09L));
-  EXPECT_EQ((::std::vector<uint8_t>{
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x08}}),
             bytes);
   int64_view.Write(-0x100f0e0d0c0b0a09L);
   EXPECT_EQ(-0x100f0e0d0c0b0a09L, int64_view.Read());
-  EXPECT_EQ((::std::vector<uint8_t>{
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0xf7, 0xf5, 0xf4, 0xf3, 0xf2, 0xf1, 0xf0, 0xef, 0x08}}),
             bytes);
   EXPECT_TRUE(int64_view.Ok());
@@ -393,7 +404,7 @@ TEST(IntView, ReadAndWriteWithSufficientBuffer) {
 }
 
 TEST(IntView, ReadAndWriteWithInsufficientBuffer) {
-  ::std::vector<uint8_t> bytes = {
+  ::std::vector</**/ ::std::uint8_t> bytes = {
       {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08}};
   auto int64_view =
       IntViewN<64>{BitBlockN<64>{ReadWriteContiguousBuffer{bytes.data(), 4}}};
@@ -401,11 +412,11 @@ TEST(IntView, ReadAndWriteWithInsufficientBuffer) {
   EXPECT_EQ(0x090a0b0c0d0e0f10L, int64_view.UncheckedRead());
   EXPECT_DEATH(int64_view.Write(0x100f0e0d0c0b0a09L), "");
   EXPECT_FALSE(int64_view.TryToWrite(0x100f0e0d0c0b0a09L));
-  EXPECT_EQ((::std::vector<uint8_t>{
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08}}),
             bytes);
   int64_view.UncheckedWrite(0x100f0e0d0c0b0a09L);
-  EXPECT_EQ((::std::vector<uint8_t>{
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x08}}),
             bytes);
   EXPECT_FALSE(int64_view.Ok());
@@ -413,40 +424,45 @@ TEST(IntView, ReadAndWriteWithInsufficientBuffer) {
 }
 
 TEST(IntView, NonPowerOfTwoSize) {
-  ::std::vector<uint8_t> bytes = {{0x10, 0x0f, 0x0e, 0x0d}};
+  ::std::vector</**/ ::std::uint8_t> bytes = {{0x10, 0x0f, 0x0e, 0x0d}};
   auto int24_view =
       IntViewN<24>{BitBlockN<24>{ReadWriteContiguousBuffer{bytes.data(), 3}}};
   EXPECT_EQ(0x0e0f10, int24_view.Read());
   EXPECT_EQ(0x0e0f10, int24_view.UncheckedRead());
   EXPECT_DEATH(int24_view.Write(0x1000000), "");
   int24_view.Write(0x100f0e);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x0e, 0x0f, 0x10, 0x0d}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x0e, 0x0f, 0x10, 0x0d}}),
+            bytes);
   int24_view.Write(-0x100f0e);
-  EXPECT_EQ((::std::vector<uint8_t>{{0xf2, 0xf0, 0xef, 0x0d}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0xf2, 0xf0, 0xef, 0x0d}}),
+            bytes);
   EXPECT_DEATH(int24_view.Write(0x1000000), "");
   int24_view.UncheckedWrite(0x1000000);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x00, 0x00, 0x00, 0x0d}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x00, 0x00, 0x00, 0x0d}}),
+            bytes);
   EXPECT_TRUE(int24_view.Ok());
   EXPECT_TRUE(int24_view.IsComplete());
 }
 
 TEST(IntView, NonPowerOfTwoSizeInsufficientBuffer) {
-  ::std::vector<uint8_t> bytes = {{0x10, 0x0f, 0x0e, 0x0d}};
+  ::std::vector</**/ ::std::uint8_t> bytes = {{0x10, 0x0f, 0x0e, 0x0d}};
   auto int24_view =
       IntViewN<24>{BitBlockN<24>{ReadWriteContiguousBuffer{bytes.data(), 2}}};
   EXPECT_DEATH(int24_view.Read(), "");
   EXPECT_EQ(0x0e0f10, int24_view.UncheckedRead());
   EXPECT_DEATH(int24_view.Write(0x100f0e), "");
   int24_view.UncheckedWrite(0x100f0e);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x0e, 0x0f, 0x10, 0x0d}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x0e, 0x0f, 0x10, 0x0d}}),
+            bytes);
   int24_view.UncheckedWrite(0x1000000);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x00, 0x00, 0x00, 0x0d}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x00, 0x00, 0x00, 0x0d}}),
+            bytes);
   EXPECT_FALSE(int24_view.Ok());
   EXPECT_FALSE(int24_view.IsComplete());
 }
 
 TEST(IntView, NonByteSize) {
-  ::std::vector<uint8_t> bytes = {{0x00, 0x00, 0x80, 0x80}};
+  ::std::vector</**/ ::std::uint8_t> bytes = {{0x00, 0x00, 0x80, 0x80}};
   auto int23_view =
       IntView<ViewParameters<23>, OffsetBitBlock<BitBlockN<24>>>{BitBlockN<24>{
           ReadWriteContiguousBuffer{bytes.data(),
@@ -455,17 +471,20 @@ TEST(IntView, NonByteSize) {
   EXPECT_FALSE(int23_view.CouldWriteValue(0x400f0e));
   EXPECT_DEATH(int23_view.Write(0x400f0e), "");
   int23_view.Write(0x200f0e);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x0e, 0x0f, 0xa0, 0x80}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x0e, 0x0f, 0xa0, 0x80}}),
+            bytes);
   int23_view.Write(-0x400000);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x00, 0x00, 0xc0, 0x80}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x00, 0x00, 0xc0, 0x80}}),
+            bytes);
   int23_view.UncheckedWrite(0x1000000);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x00, 0x00, 0x80, 0x80}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x00, 0x00, 0x80, 0x80}}),
+            bytes);
   EXPECT_TRUE(int23_view.Ok());
   EXPECT_TRUE(int23_view.IsComplete());
 }
 
 TEST(IntView, OneBit) {
-  uint8_t bytes[] = {0xfe};
+  ::std::uint8_t bytes[] = {0xfe};
   auto int1_view =
       IntView<ViewParameters<1>, OffsetBitBlock<BitBlockN<8>>>{BitBlockN<8>{
           ReadWriteContiguousBuffer{bytes, 1}}.GetOffsetStorage<1, 0>(0, 1)};
@@ -487,56 +506,66 @@ TEST(IntView, OneBit) {
 }
 
 TEST(IntView, TextDecode) {
-  ::std::vector<uint8_t> bytes = {{0x00, 0x00, 0x00, 0xff}};
+  ::std::vector</**/ ::std::uint8_t> bytes = {{0x00, 0x00, 0x00, 0xff}};
   const auto int24_view =
       IntViewN<24>{BitBlockN<24>{ReadWriteContiguousBuffer{bytes.data(), 3}}};
   EXPECT_TRUE(UpdateFromText(int24_view, "23"));
-  EXPECT_EQ((::std::vector<uint8_t>{{23, 0x00, 0x00, 0xff}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{23, 0x00, 0x00, 0xff}}),
+            bytes);
   EXPECT_EQ(23, int24_view.Read());
   EXPECT_FALSE(UpdateFromText(int24_view, "16777216"));
-  EXPECT_EQ((::std::vector<uint8_t>{{23, 0x00, 0x00, 0xff}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{23, 0x00, 0x00, 0xff}}),
+            bytes);
   EXPECT_FALSE(UpdateFromText(int24_view, "16777215"));
-  EXPECT_EQ((::std::vector<uint8_t>{{23, 0x00, 0x00, 0xff}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{23, 0x00, 0x00, 0xff}}),
+            bytes);
   EXPECT_FALSE(UpdateFromText(int24_view, "8388608"));
-  EXPECT_EQ((::std::vector<uint8_t>{{23, 0x00, 0x00, 0xff}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{23, 0x00, 0x00, 0xff}}),
+            bytes);
   EXPECT_TRUE(UpdateFromText(int24_view, "8388607"));
-  EXPECT_EQ((::std::vector<uint8_t>{{0xff, 0xff, 0x7f, 0xff}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0xff, 0xff, 0x7f, 0xff}}),
+            bytes);
   EXPECT_TRUE(UpdateFromText(int24_view, "-8388608"));
-  EXPECT_EQ((::std::vector<uint8_t>{{0x00, 0x00, 0x80, 0xff}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x00, 0x00, 0x80, 0xff}}),
+            bytes);
   EXPECT_TRUE(UpdateFromText(int24_view, "-1"));
-  EXPECT_EQ((::std::vector<uint8_t>{{0xff, 0xff, 0xff, 0xff}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0xff, 0xff, 0xff, 0xff}}),
+            bytes);
   EXPECT_TRUE(UpdateFromText(int24_view, "0x01_0203"));
-  EXPECT_EQ((::std::vector<uint8_t>{{0x03, 0x02, 0x01, 0xff}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x03, 0x02, 0x01, 0xff}}),
+            bytes);
   EXPECT_TRUE(UpdateFromText(int24_view, "-0x01_0203"));
-  EXPECT_EQ((::std::vector<uint8_t>{{0xfd, 0xfd, 0xfe, 0xff}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0xfd, 0xfd, 0xfe, 0xff}}),
+            bytes);
   EXPECT_FALSE(UpdateFromText(int24_view, "- 0x01_0203"));
-  EXPECT_EQ((::std::vector<uint8_t>{{0xfd, 0xfd, 0xfe, 0xff}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0xfd, 0xfd, 0xfe, 0xff}}),
+            bytes);
 }
 
 TEST(MaxBcd, Values) {
-  EXPECT_EQ(0, MaxBcd<uint64_t>(0));
-  EXPECT_EQ(1, MaxBcd<uint64_t>(1));
-  EXPECT_EQ(3, MaxBcd<uint64_t>(2));
-  EXPECT_EQ(7, MaxBcd<uint64_t>(3));
-  EXPECT_EQ(9, MaxBcd<uint64_t>(4));
-  EXPECT_EQ(19, MaxBcd<uint64_t>(5));
-  EXPECT_EQ(39, MaxBcd<uint64_t>(6));
-  EXPECT_EQ(79, MaxBcd<uint64_t>(7));
-  EXPECT_EQ(99, MaxBcd<uint64_t>(8));
-  EXPECT_EQ(199, MaxBcd<uint64_t>(9));
-  EXPECT_EQ(999, MaxBcd<uint64_t>(12));
-  EXPECT_EQ(9999, MaxBcd<uint64_t>(16));
-  EXPECT_EQ(999999, MaxBcd<uint64_t>(24));
-  EXPECT_EQ(3999999999999999UL, MaxBcd<uint64_t>(62));
-  EXPECT_EQ(7999999999999999UL, MaxBcd<uint64_t>(63));
-  EXPECT_EQ(9999999999999999UL, MaxBcd<uint64_t>(64));
+  EXPECT_EQ(0, MaxBcd</**/ ::std::uint64_t>(0));
+  EXPECT_EQ(1, MaxBcd</**/ ::std::uint64_t>(1));
+  EXPECT_EQ(3, MaxBcd</**/ ::std::uint64_t>(2));
+  EXPECT_EQ(7, MaxBcd</**/ ::std::uint64_t>(3));
+  EXPECT_EQ(9, MaxBcd</**/ ::std::uint64_t>(4));
+  EXPECT_EQ(19, MaxBcd</**/ ::std::uint64_t>(5));
+  EXPECT_EQ(39, MaxBcd</**/ ::std::uint64_t>(6));
+  EXPECT_EQ(79, MaxBcd</**/ ::std::uint64_t>(7));
+  EXPECT_EQ(99, MaxBcd</**/ ::std::uint64_t>(8));
+  EXPECT_EQ(199, MaxBcd</**/ ::std::uint64_t>(9));
+  EXPECT_EQ(999, MaxBcd</**/ ::std::uint64_t>(12));
+  EXPECT_EQ(9999, MaxBcd</**/ ::std::uint64_t>(16));
+  EXPECT_EQ(999999, MaxBcd</**/ ::std::uint64_t>(24));
+  EXPECT_EQ(3999999999999999UL, MaxBcd</**/ ::std::uint64_t>(62));
+  EXPECT_EQ(7999999999999999UL, MaxBcd</**/ ::std::uint64_t>(63));
+  EXPECT_EQ(9999999999999999UL, MaxBcd</**/ ::std::uint64_t>(64));
   // Max uint64_t is 18446744073709551616, which is big enough to hold a 76-bit
   // BCD value.
-  EXPECT_EQ(19999999999999999UL, MaxBcd<uint64_t>(65));
-  EXPECT_EQ(39999999999999999UL, MaxBcd<uint64_t>(66));
-  EXPECT_EQ(99999999999999999UL, MaxBcd<uint64_t>(68));
-  EXPECT_EQ(999999999999999999UL, MaxBcd<uint64_t>(72));
-  EXPECT_EQ(9999999999999999999UL, MaxBcd<uint64_t>(76));
+  EXPECT_EQ(19999999999999999UL, MaxBcd</**/ ::std::uint64_t>(65));
+  EXPECT_EQ(39999999999999999UL, MaxBcd</**/ ::std::uint64_t>(66));
+  EXPECT_EQ(99999999999999999UL, MaxBcd</**/ ::std::uint64_t>(68));
+  EXPECT_EQ(999999999999999999UL, MaxBcd</**/ ::std::uint64_t>(72));
+  EXPECT_EQ(9999999999999999999UL, MaxBcd</**/ ::std::uint64_t>(76));
 }
 
 TEST(IsBcd, Values) {
@@ -544,16 +573,16 @@ TEST(IsBcd, Values) {
   EXPECT_TRUE(IsBcd(0x12U));
   EXPECT_TRUE(IsBcd(0x91U));
   EXPECT_TRUE(IsBcd(0x99U));
-  EXPECT_TRUE(IsBcd(uint8_t{0x00}));
-  EXPECT_TRUE(IsBcd(uint8_t{0x99}));
-  EXPECT_TRUE(IsBcd(uint16_t{0x0000}));
-  EXPECT_TRUE(IsBcd(uint16_t{0x9999}));
+  EXPECT_TRUE(IsBcd(::std::uint8_t{0x00}));
+  EXPECT_TRUE(IsBcd(::std::uint8_t{0x99}));
+  EXPECT_TRUE(IsBcd(::std::uint16_t{0x0000}));
+  EXPECT_TRUE(IsBcd(::std::uint16_t{0x9999}));
   EXPECT_TRUE(IsBcd(0x9999999999999999UL));
-  EXPECT_FALSE(IsBcd(uint8_t{0x0a}));
-  EXPECT_FALSE(IsBcd(uint8_t{0xa0}));
-  EXPECT_FALSE(IsBcd(uint8_t{0xff}));
-  EXPECT_FALSE(IsBcd(uint16_t{0x0a00}));
-  EXPECT_FALSE(IsBcd(uint16_t{0x000a}));
+  EXPECT_FALSE(IsBcd(::std::uint8_t{0x0a}));
+  EXPECT_FALSE(IsBcd(::std::uint8_t{0xa0}));
+  EXPECT_FALSE(IsBcd(::std::uint8_t{0xff}));
+  EXPECT_FALSE(IsBcd(::std::uint16_t{0x0a00}));
+  EXPECT_FALSE(IsBcd(::std::uint16_t{0x000a}));
   EXPECT_FALSE(IsBcd(0x999999999999999aUL));
   EXPECT_FALSE(IsBcd(0xaUL));
   EXPECT_FALSE(IsBcd(0xa000000000000000UL));
@@ -563,30 +592,30 @@ TEST(IsBcd, Values) {
 
 TEST(BcdView, ValueType) {
   using BitBlockType = BitBlockN<64>;
-  EXPECT_TRUE(
-      (::std::is_same<uint8_t, BcdView<ViewParameters<8>,
-                                       BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<uint8_t, BcdView<ViewParameters<6>,
-                                       BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<uint16_t, BcdView<ViewParameters<9>,
-                                        BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<uint16_t, BcdView<ViewParameters<16>,
-                                        BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<uint32_t, BcdView<ViewParameters<17>,
-                                        BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<uint32_t, BcdView<ViewParameters<32>,
-                                        BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<uint64_t, BcdView<ViewParameters<33>,
-                                        BitBlockType>::ValueType>::value));
-  EXPECT_TRUE(
-      (::std::is_same<uint64_t, BcdView<ViewParameters<64>,
-                                        BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::uint8_t,
+               BcdView<ViewParameters<8>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::uint8_t,
+               BcdView<ViewParameters<6>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::uint16_t,
+               BcdView<ViewParameters<9>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::uint16_t,
+               BcdView<ViewParameters<16>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::uint32_t,
+               BcdView<ViewParameters<17>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::uint32_t,
+               BcdView<ViewParameters<32>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::uint64_t,
+               BcdView<ViewParameters<33>, BitBlockType>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               /**/ ::std::uint64_t,
+               BcdView<ViewParameters<64>, BitBlockType>::ValueType>::value));
 }
 
 TEST(BcdView, CouldWriteValue) {
@@ -610,26 +639,26 @@ TEST(BcdView, CouldWriteValue) {
       BcdView<ViewParameters<48>, int>::CouldWriteValue(0xffffffffffffffffUL)));
 }
 
-template <size_t kBits>
+template </**/ ::std::size_t kBits>
 using BcdViewN = BcdView<ViewParameters<kBits>, BitBlockN<kBits>>;
 
 TEST(BcdView, ReadAndWriteWithSufficientBuffer) {
-  ::std::vector<uint8_t> bytes = {
+  ::std::vector</**/ ::std::uint8_t> bytes = {
       {0x16, 0x15, 0x14, 0x13, 0x12, 0x11, 0x10, 0x09, 0x08}};
   auto bcd64_view =
       BcdViewN<64>{BitBlockN<64>{ReadWriteContiguousBuffer{bytes.data(), 8}}};
   EXPECT_EQ(910111213141516UL, bcd64_view.Read());
   EXPECT_EQ(910111213141516UL, bcd64_view.UncheckedRead());
   bcd64_view.Write(1615141312111009);
-  EXPECT_EQ((::std::vector<uint8_t>{
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x08}}),
             bytes);
   bcd64_view.UncheckedWrite(910111213141516UL);
-  EXPECT_EQ((::std::vector<uint8_t>{
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0x16, 0x15, 0x14, 0x13, 0x12, 0x11, 0x10, 0x09, 0x08}}),
             bytes);
   EXPECT_TRUE(bcd64_view.TryToWrite(1615141312111009));
-  EXPECT_EQ((::std::vector<uint8_t>{
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x08}}),
             bytes);
   EXPECT_TRUE(bcd64_view.Ok());
@@ -637,7 +666,7 @@ TEST(BcdView, ReadAndWriteWithSufficientBuffer) {
 }
 
 TEST(BcdView, ReadAndWriteWithInsufficientBuffer) {
-  ::std::vector<uint8_t> bytes = {
+  ::std::vector</**/ ::std::uint8_t> bytes = {
       {0x16, 0x15, 0x14, 0x13, 0x12, 0x11, 0x10, 0x09, 0x08}};
   auto bcd64_view =
       BcdViewN<64>{BitBlockN<64>{ReadWriteContiguousBuffer{bytes.data(), 4}}};
@@ -645,11 +674,11 @@ TEST(BcdView, ReadAndWriteWithInsufficientBuffer) {
   EXPECT_EQ(910111213141516UL, bcd64_view.UncheckedRead());
   EXPECT_DEATH(bcd64_view.Write(1615141312111009), "");
   EXPECT_FALSE(bcd64_view.TryToWrite(1615141312111009));
-  EXPECT_EQ((::std::vector<uint8_t>{
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0x16, 0x15, 0x14, 0x13, 0x12, 0x11, 0x10, 0x09, 0x08}}),
             bytes);
   bcd64_view.UncheckedWrite(1615141312111009);
-  EXPECT_EQ((::std::vector<uint8_t>{
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x08}}),
             bytes);
   EXPECT_FALSE(bcd64_view.Ok());
@@ -657,39 +686,44 @@ TEST(BcdView, ReadAndWriteWithInsufficientBuffer) {
 }
 
 TEST(BcdView, NonPowerOfTwoSize) {
-  ::std::vector<uint8_t> bytes = {{0x16, 0x15, 0x14, 0x13}};
+  ::std::vector</**/ ::std::uint8_t> bytes = {{0x16, 0x15, 0x14, 0x13}};
   auto bcd24_view =
       BcdViewN<24>{BitBlockN<24>{ReadWriteContiguousBuffer{bytes.data(), 3}}};
   EXPECT_EQ(141516, bcd24_view.Read());
   EXPECT_EQ(141516, bcd24_view.UncheckedRead());
   bcd24_view.Write(161514);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x14, 0x15, 0x16, 0x13}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x14, 0x15, 0x16, 0x13}}),
+            bytes);
   EXPECT_DEATH(bcd24_view.Write(1000000), "");
   bcd24_view.UncheckedWrite(1000000);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x00, 0x00, 0x00, 0x13}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x00, 0x00, 0x00, 0x13}}),
+            bytes);
   bcd24_view.UncheckedWrite(141516);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x16, 0x15, 0x14, 0x13}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x16, 0x15, 0x14, 0x13}}),
+            bytes);
   EXPECT_TRUE(bcd24_view.Ok());
   EXPECT_TRUE(bcd24_view.IsComplete());
 }
 
 TEST(BcdView, NonPowerOfTwoSizeInsufficientBuffer) {
-  ::std::vector<uint8_t> bytes = {{0x16, 0x15, 0x14, 0x13}};
+  ::std::vector</**/ ::std::uint8_t> bytes = {{0x16, 0x15, 0x14, 0x13}};
   auto bcd24_view =
       BcdViewN<24>{BitBlockN<24>{ReadWriteContiguousBuffer{bytes.data(), 2}}};
   EXPECT_DEATH(bcd24_view.Read(), "");
   EXPECT_EQ(141516, bcd24_view.UncheckedRead());
   EXPECT_DEATH(bcd24_view.Write(161514), "");
   bcd24_view.UncheckedWrite(161514);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x14, 0x15, 0x16, 0x13}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x14, 0x15, 0x16, 0x13}}),
+            bytes);
   bcd24_view.UncheckedWrite(1000000);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x00, 0x00, 0x00, 0x13}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x00, 0x00, 0x00, 0x13}}),
+            bytes);
   EXPECT_FALSE(bcd24_view.Ok());
   EXPECT_FALSE(bcd24_view.IsComplete());
 }
 
 TEST(BcdView, NonByteSize) {
-  ::std::vector<uint8_t> bytes = {{0x00, 0x00, 0x80, 0x80}};
+  ::std::vector</**/ ::std::uint8_t> bytes = {{0x00, 0x00, 0x80, 0x80}};
   auto bcd23_view =
       BcdView<ViewParameters<23>, OffsetBitBlock<BitBlockN<24>>>{BitBlockN<24>{
           ReadWriteContiguousBuffer{bytes.data(),
@@ -699,15 +733,17 @@ TEST(BcdView, NonByteSize) {
   EXPECT_TRUE(bcd23_view.CouldWriteValue(799999));
   EXPECT_DEATH(bcd23_view.Write(800000), "");
   bcd23_view.Write(432198);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x98, 0x21, 0xc3, 0x80}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x98, 0x21, 0xc3, 0x80}}),
+            bytes);
   bcd23_view.UncheckedWrite(800000);
-  EXPECT_EQ((::std::vector<uint8_t>{{0x00, 0x00, 0x80, 0x80}}), bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x00, 0x00, 0x80, 0x80}}),
+            bytes);
   EXPECT_TRUE(bcd23_view.Ok());
   EXPECT_TRUE(bcd23_view.IsComplete());
 }
 
 TEST(BcdLittleEndianView, AllByteValues) {
-  uint8_t byte = 0;
+  ::std::uint8_t byte = 0;
   auto bcd8_view =
       BcdViewN<8>{BitBlockN<8>{ReadWriteContiguousBuffer{&byte, 1}}};
   for (int i = 0; i < 15; ++i) {

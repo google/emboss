@@ -14,9 +14,10 @@
 
 #include "public/emboss_test_util.h"
 
-#include "testdata/complex_structure.emb.h"
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+
+#include "testdata/complex_structure.emb.h"
 
 namespace emboss {
 namespace test {
@@ -25,9 +26,9 @@ namespace {
 class EmbossTestUtilTest : public ::testing::Test {
  protected:
   EmbossTestUtilTest() { b_.s().Write(1); }
-  std::array<uint8, 64> buf_a_{};
+  ::std::array<uint8, 64> buf_a_{};
   ::emboss_test::ComplexWriter a_{&buf_a_};
-  std::array<char, 64> buf_b_{};
+  ::std::array<char, 64> buf_b_{};
   ::emboss_test::ComplexWriter b_{&buf_b_};
 };
 

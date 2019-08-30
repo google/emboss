@@ -13,6 +13,7 @@
 // limitations under the License.
 
 // Tests of generated code for text format.
+#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <type_traits>
@@ -20,14 +21,13 @@
 #include <vector>
 
 #include "testdata/text_format.emb.h"
-#include <gtest/gtest.h>
 
 namespace emboss {
 namespace test {
 namespace {
 
 TEST(TextFormat, VanillaOutput) {
-  std::array<char, 2> values = {1, 2};
+  ::std::array<char, 2> values = {1, 2};
   const auto view = MakeVanillaView(&values);
   EXPECT_EQ("{ a: 1, b: 2 }", ::emboss::WriteToString(view));
   EXPECT_EQ(
@@ -39,7 +39,7 @@ TEST(TextFormat, VanillaOutput) {
 }
 
 TEST(TextFormat, SkippedFieldOutput) {
-  std::array<char, 3> values = {1, 2, 3};
+  ::std::array<char, 3> values = {1, 2, 3};
   const auto view = MakeStructWithSkippedFieldsView(&values);
   EXPECT_EQ("{ a: 1, c: 3 }", ::emboss::WriteToString(view));
   EXPECT_EQ(
@@ -51,7 +51,7 @@ TEST(TextFormat, SkippedFieldOutput) {
 }
 
 TEST(TextFormat, SkippedStructureFieldOutput) {
-  std::array<char, 6> values = {1, 2, 3, 4, 5, 6};
+  ::std::array<char, 6> values = {1, 2, 3, 4, 5, 6};
   const auto view = MakeStructWithSkippedStructureFieldsView(&values);
   EXPECT_EQ("{ a: { a: 1, b: 2 }, c: { a: 5, b: 6 } }",
             ::emboss::WriteToString(view));

@@ -13,19 +13,19 @@
 // limitations under the License.
 
 // Tests to ensure that conditional fields work.
+#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
 #include "testdata/condition.emb.h"
-#include <gtest/gtest.h>
 
 namespace emboss {
 namespace test {
 namespace {
 
 TEST(Conditional, WithConditionTrueFieldsAreOk) {
-  uint8_t buffer[2] = {0, 0};
+  ::std::uint8_t buffer[2] = {0, 0};
   auto writer = BasicConditionalWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   EXPECT_TRUE(writer.x().Ok());
@@ -33,19 +33,19 @@ TEST(Conditional, WithConditionTrueFieldsAreOk) {
 }
 
 TEST(Conditional, WithConditionTrueAllFieldsAreReadable) {
-  uint8_t buffer[2] = {0, 2};
+  ::std::uint8_t buffer[2] = {0, 2};
   auto writer = BasicConditionalWriter(buffer, sizeof buffer);
   EXPECT_EQ(0, writer.x().Read());
   EXPECT_EQ(2, writer.xc().Read());
 }
 
 TEST(Conditional, WithConditionTrueConditionalFieldIsWritable) {
-  uint8_t buffer1[2] = {0, 2};
+  ::std::uint8_t buffer1[2] = {0, 2};
   auto writer1 = BasicConditionalWriter(buffer1, sizeof buffer1);
   EXPECT_TRUE(writer1.xc().TryToWrite(3));
   EXPECT_EQ(3, buffer1[1]);
 
-  uint8_t buffer2[2] = {0, 0};
+  ::std::uint8_t buffer2[2] = {0, 0};
   auto writer2 = BasicConditionalWriter(buffer2, sizeof buffer2);
   EXPECT_FALSE(writer2.xc().Equals(writer1.xc()));
   EXPECT_TRUE(writer2.xc().TryToCopyFrom(writer1.xc()));
@@ -54,7 +54,7 @@ TEST(Conditional, WithConditionTrueConditionalFieldIsWritable) {
 }
 
 TEST(Conditional, WithConditionFalseStructIsOkButConditionalFieldIsNot) {
-  uint8_t buffer[2] = {1, 2};
+  ::std::uint8_t buffer[2] = {1, 2};
   auto writer = BasicConditionalWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   EXPECT_TRUE(writer.x().Ok());
@@ -62,19 +62,19 @@ TEST(Conditional, WithConditionFalseStructIsOkButConditionalFieldIsNot) {
 }
 
 TEST(Conditional, BasicConditionFalseReadCrashes) {
-  uint8_t buffer[2] = {1, 2};
+  ::std::uint8_t buffer[2] = {1, 2};
   auto writer = BasicConditionalWriter(buffer, sizeof buffer);
   EXPECT_DEATH(writer.xc().Read(), "");
 }
 
 TEST(Conditional, BasicConditionFalseWriteCrashes) {
-  uint8_t buffer[2] = {1, 2};
+  ::std::uint8_t buffer[2] = {1, 2};
   auto writer = BasicConditionalWriter(buffer, sizeof buffer);
   EXPECT_DEATH(writer.xc().Write(3), "");
 }
 
 TEST(Conditional, BasicConditionTrueSizeIncludesConditionalField) {
-  uint8_t buffer[2] = {0, 2};
+  ::std::uint8_t buffer[2] = {0, 2};
   auto writer = BasicConditionalWriter(buffer, sizeof buffer);
   EXPECT_EQ(2, writer.SizeInBytes());
   EXPECT_EQ(2, BasicConditional::MaxSizeInBytes());
@@ -84,7 +84,7 @@ TEST(Conditional, BasicConditionTrueSizeIncludesConditionalField) {
 }
 
 TEST(Conditional, BasicConditionFalseSizeDoesNotIncludeConditionalField) {
-  uint8_t buffer[2] = {1, 2};
+  ::std::uint8_t buffer[2] = {1, 2};
   auto writer = BasicConditionalWriter(buffer, sizeof buffer);
   EXPECT_EQ(1, writer.SizeInBytes());
   EXPECT_EQ(2, writer.MaxSizeInBytes().Read());
@@ -92,7 +92,7 @@ TEST(Conditional, BasicConditionFalseSizeDoesNotIncludeConditionalField) {
 }
 
 TEST(Conditional, WithConditionFalseStructIsOkWhenBufferIsSmall) {
-  uint8_t buffer[1] = {1};
+  ::std::uint8_t buffer[1] = {1};
   auto writer = BasicConditionalWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   EXPECT_TRUE(writer.x().Ok());
@@ -100,7 +100,7 @@ TEST(Conditional, WithConditionFalseStructIsOkWhenBufferIsSmall) {
 }
 
 TEST(Conditional, WithConditionTrueStructIsNotOkWhenBufferIsSmall) {
-  uint8_t buffer[1] = {0};
+  ::std::uint8_t buffer[1] = {0};
   auto writer = BasicConditionalWriter(buffer, sizeof buffer);
   EXPECT_FALSE(writer.Ok());
   EXPECT_TRUE(writer.x().Ok());
@@ -110,7 +110,7 @@ TEST(Conditional, WithConditionTrueStructIsNotOkWhenBufferIsSmall) {
 }
 
 TEST(Conditional, WithNegativeConditionTrueFieldsAreOk) {
-  uint8_t buffer[2] = {1, 0};
+  ::std::uint8_t buffer[2] = {1, 0};
   auto writer = NegativeConditionalWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   EXPECT_TRUE(writer.x().Ok());
@@ -118,19 +118,19 @@ TEST(Conditional, WithNegativeConditionTrueFieldsAreOk) {
 }
 
 TEST(Conditional, WithNegativeConditionTrueAllFieldsAreReadable) {
-  uint8_t buffer[2] = {1, 2};
+  ::std::uint8_t buffer[2] = {1, 2};
   auto writer = NegativeConditionalWriter(buffer, sizeof buffer);
   EXPECT_EQ(1, writer.x().Read());
   EXPECT_EQ(2, writer.xc().Read());
 }
 
 TEST(Conditional, WithNegativeConditionTrueConditionalFieldIsWritable) {
-  uint8_t buffer1[2] = {1, 2};
+  ::std::uint8_t buffer1[2] = {1, 2};
   auto writer1 = NegativeConditionalWriter(buffer1, sizeof buffer1);
   EXPECT_TRUE(writer1.xc().TryToWrite(3));
   EXPECT_EQ(3, buffer1[1]);
 
-  uint8_t buffer2[2] = {1, 0};
+  ::std::uint8_t buffer2[2] = {1, 0};
   auto writer2 = NegativeConditionalWriter(buffer2, sizeof buffer2);
   EXPECT_FALSE(writer2.xc().Equals(writer1.xc()));
   EXPECT_TRUE(writer2.xc().TryToCopyFrom(writer1.xc()));
@@ -140,7 +140,7 @@ TEST(Conditional, WithNegativeConditionTrueConditionalFieldIsWritable) {
 
 TEST(Conditional,
      WithNegativeConditionFalseStructIsOkButConditionalFieldIsNot) {
-  uint8_t buffer[2] = {0, 2};
+  ::std::uint8_t buffer[2] = {0, 2};
   auto writer = NegativeConditionalWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   EXPECT_TRUE(writer.x().Ok());
@@ -148,11 +148,11 @@ TEST(Conditional,
 }
 
 TEST(Conditional, NegativeConditionFalseReadCrashes) {
-  uint8_t buffer1[2] = {0, 2};
+  ::std::uint8_t buffer1[2] = {0, 2};
   auto writer1 = NegativeConditionalWriter(buffer1, sizeof buffer1);
   EXPECT_DEATH(writer1.xc().Read(), "");
 
-  uint8_t buffer2[2] = {0, 0};
+  ::std::uint8_t buffer2[2] = {0, 0};
   auto writer2 = BasicConditionalWriter(buffer2, sizeof buffer2);
   EXPECT_TRUE(writer2.xc().CouldWriteValue(2));
   EXPECT_EQ(writer2.xc().Read(), 0);
@@ -161,29 +161,29 @@ TEST(Conditional, NegativeConditionFalseReadCrashes) {
 }
 
 TEST(Conditional, NegativeConditionFalseWriteCrashes) {
-  uint8_t buffer1[2] = {0, 2};
+  ::std::uint8_t buffer1[2] = {0, 2};
   auto writer1 = NegativeConditionalWriter(buffer1, sizeof buffer1);
   EXPECT_DEATH(writer1.xc().Write(3), "");
 
-  uint8_t buffer2[2] = {0, 2};
+  ::std::uint8_t buffer2[2] = {0, 2};
   auto writer2 = NegativeConditionalWriter(buffer2, sizeof buffer2);
   EXPECT_FALSE(writer2.xc().TryToCopyFrom(writer1.xc()));
 }
 
 TEST(Conditional, NegativeConditionTrueSizeIncludesConditionalField) {
-  uint8_t buffer[2] = {1, 2};
+  ::std::uint8_t buffer[2] = {1, 2};
   auto writer = NegativeConditionalWriter(buffer, sizeof buffer);
   EXPECT_EQ(2, writer.SizeInBytes());
 }
 
 TEST(Conditional, NegativeConditionFalseSizeDoesNotIncludeConditionalField) {
-  uint8_t buffer[2] = {0, 2};
+  ::std::uint8_t buffer[2] = {0, 2};
   auto writer = NegativeConditionalWriter(buffer, sizeof buffer);
   EXPECT_EQ(1, writer.SizeInBytes());
 }
 
 TEST(Conditional, WithNegativeConditionFalseStructIsOkWhenBufferIsSmall) {
-  uint8_t buffer[1] = {0};
+  ::std::uint8_t buffer[1] = {0};
   auto writer = NegativeConditionalWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   EXPECT_TRUE(writer.x().Ok());
@@ -191,7 +191,7 @@ TEST(Conditional, WithNegativeConditionFalseStructIsOkWhenBufferIsSmall) {
 }
 
 TEST(Conditional, WithNegativeConditionTrueStructIsNotOkWhenBufferIsSmall) {
-  uint8_t buffer[1] = {1};
+  ::std::uint8_t buffer[1] = {1};
   auto writer = NegativeConditionalWriter(buffer, sizeof buffer);
   EXPECT_FALSE(writer.Ok());
   EXPECT_TRUE(writer.x().Ok());
@@ -202,7 +202,7 @@ TEST(Conditional, WithNegativeConditionTrueStructIsNotOkWhenBufferIsSmall) {
 
 TEST(Conditional,
      SizeIncludesUnconditionalFieldsThatOverlapWithConditionalFields) {
-  uint8_t buffer[2] = {1, 2};
+  ::std::uint8_t buffer[2] = {1, 2};
   auto writer = ConditionalAndUnconditionalOverlappingFinalFieldWriter(
       buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
@@ -220,28 +220,28 @@ TEST(Conditional, WhenConditionalFieldIsFirstSizeIsConstant) {
 }
 
 TEST(Conditional, WhenConditionIsFalseDynamicallyPlacedFieldDoesNotAffectSize) {
-  uint8_t buffer[3] = {1, 0, 10};
+  ::std::uint8_t buffer[3] = {1, 0, 10};
   auto writer = ConditionalAndDynamicLocationWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   EXPECT_EQ(3, writer.SizeInBytes());
 }
 
 TEST(Conditional, WhenConditionIsTrueDynamicallyPlacedFieldDoesAffectSize) {
-  uint8_t buffer[4] = {0, 0, 3, 0};
+  ::std::uint8_t buffer[4] = {0, 0, 3, 0};
   auto writer = ConditionalAndDynamicLocationWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   EXPECT_EQ(4, writer.SizeInBytes());
 }
 
 TEST(Conditional, WhenConditionIsTrueDynamicallyPlacedFieldOutOfRangeIsError) {
-  uint8_t buffer[3] = {0, 0, 3};
+  ::std::uint8_t buffer[3] = {0, 0, 3};
   auto writer = ConditionalAndDynamicLocationWriter(buffer, sizeof buffer);
   EXPECT_FALSE(writer.Ok());
   EXPECT_EQ(4, writer.SizeInBytes());
 }
 
 TEST(Conditional, ConditionUsesMinInt) {
-  uint8_t buffer[2] = {0, 0};
+  ::std::uint8_t buffer[2] = {0, 0};
   auto view = MakeConditionUsesMinIntView(buffer, sizeof buffer);
   EXPECT_TRUE(view.Ok());
   EXPECT_FALSE(view.has_xc().ValueOr(true));
@@ -255,7 +255,7 @@ TEST(Conditional, ConditionUsesMinInt) {
 
 TEST(Conditional,
      StructWithNestedConditionIsNotOkWhenOuterConditionDoesNotExist) {
-  uint8_t buffer[3] = {1, 0, 3};
+  ::std::uint8_t buffer[3] = {1, 0, 3};
   auto writer = NestedConditionalWriter(buffer, sizeof buffer);
   ASSERT_FALSE(writer.IntrinsicSizeInBytes().Ok());
   ASSERT_FALSE((writer.xc().Ok()));
@@ -269,7 +269,7 @@ TEST(Conditional,
 
 TEST(Conditional,
      StructWithCorrectNestedConditionIsOkWhenOuterConditionDoesNotExist) {
-  uint8_t buffer[3] = {1, 0, 3};
+  ::std::uint8_t buffer[3] = {1, 0, 3};
   auto writer = CorrectNestedConditionalWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.IsComplete());
   EXPECT_TRUE(writer.Ok());
@@ -282,7 +282,7 @@ TEST(Conditional,
 }
 
 TEST(Conditional, StructWithNestedConditionIsOkWhenOuterConditionExists) {
-  uint8_t buffer[3] = {0, 1, 3};
+  ::std::uint8_t buffer[3] = {0, 1, 3};
   auto writer = NestedConditionalWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -299,14 +299,14 @@ TEST(Conditional, AlwaysMissingFieldDoesNotContributeToStaticSize) {
 }
 
 TEST(Conditional, AlwaysMissingFieldDoesNotContributeToSize) {
-  uint8_t buffer[1] = {0};
+  ::std::uint8_t buffer[1] = {0};
   auto view = MakeAlwaysFalseConditionDynamicSizeView(buffer, sizeof buffer);
   ASSERT_TRUE(view.SizeIsKnown());
   EXPECT_EQ(1, view.SizeInBytes());
 }
 
 TEST(Conditional, StructIsOkWithAlwaysMissingField) {
-  uint8_t buffer[1] = {0};
+  ::std::uint8_t buffer[1] = {0};
   auto writer = AlwaysFalseConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -315,7 +315,7 @@ TEST(Conditional, StructIsOkWithAlwaysMissingField) {
 }
 
 TEST(Conditional, StructIsOkWithOnlyAlwaysMissingField) {
-  uint8_t buffer[1] = {0};
+  ::std::uint8_t buffer[1] = {0};
   auto writer = OnlyAlwaysFalseConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -328,13 +328,13 @@ TEST(Conditional, ConditionDoesNotBlockStaticSize) {
 }
 
 TEST(Conditional, EqualsHaveAllFields) {
-  std::array<uint8_t, 2> buf_a = {0, 1};
-  std::array<uint8_t, 2> buf_b = {0, 1};
+  ::std::array</**/ ::std::uint8_t, 2> buf_a = {0, 1};
+  ::std::array</**/ ::std::uint8_t, 2> buf_b = {0, 1};
   EXPECT_EQ(buf_a, buf_b);
 
   auto a = BasicConditionalWriter(&buf_a);
   auto a_const = BasicConditionalWriter(
-      static_cast</**/ ::std::array<uint8_t, 2> *>(&buf_a));
+      static_cast</**/ ::std::array</**/ ::std::uint8_t, 2> *>(&buf_a));
   auto b = BasicConditionalWriter(&buf_b);
 
   EXPECT_TRUE(a.has_xc().Known());
@@ -370,8 +370,8 @@ TEST(Conditional, EqualsHaveAllFields) {
 }
 
 TEST(Conditional, EqualsOneViewMissingField) {
-  std::array<uint8_t, 2> buf_a = {0, 1};
-  std::array<uint8_t, 2> buf_b = {1, 1};
+  ::std::array</**/ ::std::uint8_t, 2> buf_a = {0, 1};
+  ::std::array</**/ ::std::uint8_t, 2> buf_b = {1, 1};
   EXPECT_NE(buf_a, buf_b);
 
   auto a = BasicConditionalWriter(&buf_a);
@@ -389,13 +389,13 @@ TEST(Conditional, EqualsOneViewMissingField) {
 }
 
 TEST(Conditional, EqualsBothFieldsMissing) {
-  std::array<uint8_t, 2> buf_a = {1, 1};
-  std::array<uint8_t, 2> buf_b = {1, 1};
+  ::std::array</**/ ::std::uint8_t, 2> buf_a = {1, 1};
+  ::std::array</**/ ::std::uint8_t, 2> buf_b = {1, 1};
   EXPECT_EQ(buf_a, buf_b);
 
   auto a = BasicConditionalWriter(&buf_a);
   auto a_const = BasicConditionalWriter(
-      static_cast</**/ ::std::array<uint8_t, 2> *>(&buf_a));
+      static_cast</**/ ::std::array</**/ ::std::uint8_t, 2> *>(&buf_a));
   auto b = BasicConditionalWriter(&buf_b);
 
   EXPECT_TRUE(a.has_xc().Known());
@@ -427,7 +427,7 @@ TEST(Conditional, EqualsBothFieldsMissing) {
 }
 
 TEST(Conditional, TrueEnumBasedCondition) {
-  uint8_t buffer[2] = {1};
+  ::std::uint8_t buffer[2] = {1};
   auto writer = EnumConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -436,7 +436,7 @@ TEST(Conditional, TrueEnumBasedCondition) {
 }
 
 TEST(Conditional, FalseEnumBasedCondition) {
-  uint8_t buffer[2] = {0};
+  ::std::uint8_t buffer[2] = {0};
   auto writer = EnumConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -445,7 +445,7 @@ TEST(Conditional, FalseEnumBasedCondition) {
 }
 
 TEST(Conditional, TrueEnumBasedNegativeCondition) {
-  uint8_t buffer[2] = {0};
+  ::std::uint8_t buffer[2] = {0};
   auto writer = NegativeEnumConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -454,7 +454,7 @@ TEST(Conditional, TrueEnumBasedNegativeCondition) {
 }
 
 TEST(Conditional, FalseEnumBasedNegativeCondition) {
-  uint8_t buffer[2] = {1};
+  ::std::uint8_t buffer[2] = {1};
   auto writer = NegativeEnumConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -463,7 +463,7 @@ TEST(Conditional, FalseEnumBasedNegativeCondition) {
 }
 
 TEST(LessThanConditional, LessThan) {
-  uint8_t buffer[2] = {4};
+  ::std::uint8_t buffer[2] = {4};
   auto writer = LessThanConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -472,7 +472,7 @@ TEST(LessThanConditional, LessThan) {
 }
 
 TEST(LessThanConditional, Equal) {
-  uint8_t buffer[2] = {5};
+  ::std::uint8_t buffer[2] = {5};
   auto writer = LessThanConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -481,7 +481,7 @@ TEST(LessThanConditional, Equal) {
 }
 
 TEST(LessThanConditional, GreaterThan) {
-  uint8_t buffer[2] = {6};
+  ::std::uint8_t buffer[2] = {6};
   auto writer = LessThanConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -490,7 +490,7 @@ TEST(LessThanConditional, GreaterThan) {
 }
 
 TEST(LessThanOrEqualConditional, LessThan) {
-  uint8_t buffer[2] = {4};
+  ::std::uint8_t buffer[2] = {4};
   auto writer = LessThanOrEqualConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -499,7 +499,7 @@ TEST(LessThanOrEqualConditional, LessThan) {
 }
 
 TEST(LessThanOrEqualConditional, Equal) {
-  uint8_t buffer[2] = {5};
+  ::std::uint8_t buffer[2] = {5};
   auto writer = LessThanOrEqualConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -508,7 +508,7 @@ TEST(LessThanOrEqualConditional, Equal) {
 }
 
 TEST(LessThanOrEqualConditional, GreaterThan) {
-  uint8_t buffer[2] = {6};
+  ::std::uint8_t buffer[2] = {6};
   auto writer = LessThanOrEqualConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -517,7 +517,7 @@ TEST(LessThanOrEqualConditional, GreaterThan) {
 }
 
 TEST(GreaterThanConditional, LessThan) {
-  uint8_t buffer[2] = {4};
+  ::std::uint8_t buffer[2] = {4};
   auto writer = GreaterThanConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -526,7 +526,7 @@ TEST(GreaterThanConditional, LessThan) {
 }
 
 TEST(GreaterThanConditional, Equal) {
-  uint8_t buffer[2] = {5};
+  ::std::uint8_t buffer[2] = {5};
   auto writer = GreaterThanConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -535,7 +535,7 @@ TEST(GreaterThanConditional, Equal) {
 }
 
 TEST(GreaterThanConditional, GreaterThan) {
-  uint8_t buffer[2] = {6};
+  ::std::uint8_t buffer[2] = {6};
   auto writer = GreaterThanConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -544,7 +544,7 @@ TEST(GreaterThanConditional, GreaterThan) {
 }
 
 TEST(GreaterThanOrEqualConditional, LessThan) {
-  uint8_t buffer[2] = {4};
+  ::std::uint8_t buffer[2] = {4};
   auto writer = GreaterThanOrEqualConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -553,7 +553,7 @@ TEST(GreaterThanOrEqualConditional, LessThan) {
 }
 
 TEST(GreaterThanOrEqualConditional, Equal) {
-  uint8_t buffer[2] = {5};
+  ::std::uint8_t buffer[2] = {5};
   auto writer = GreaterThanOrEqualConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -562,7 +562,7 @@ TEST(GreaterThanOrEqualConditional, Equal) {
 }
 
 TEST(GreaterThanOrEqualConditional, GreaterThan) {
-  uint8_t buffer[2] = {6};
+  ::std::uint8_t buffer[2] = {6};
   auto writer = GreaterThanOrEqualConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -571,7 +571,7 @@ TEST(GreaterThanOrEqualConditional, GreaterThan) {
 }
 
 TEST(RangeConditional, ValueTooSmall) {
-  uint8_t buffer[3] = {1, 9};
+  ::std::uint8_t buffer[3] = {1, 9};
   auto writer = RangeConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -580,7 +580,7 @@ TEST(RangeConditional, ValueTooSmall) {
 }
 
 TEST(RangeConditional, ValueTooLarge) {
-  uint8_t buffer[3] = {11, 12};
+  ::std::uint8_t buffer[3] = {11, 12};
   auto writer = RangeConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -589,7 +589,7 @@ TEST(RangeConditional, ValueTooLarge) {
 }
 
 TEST(RangeConditional, ValuesSwapped) {
-  uint8_t buffer[3] = {8, 7};
+  ::std::uint8_t buffer[3] = {8, 7};
   auto writer = RangeConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -598,7 +598,7 @@ TEST(RangeConditional, ValuesSwapped) {
 }
 
 TEST(RangeConditional, True) {
-  uint8_t buffer[3] = {7, 8};
+  ::std::uint8_t buffer[3] = {7, 8};
   auto writer = RangeConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -607,7 +607,7 @@ TEST(RangeConditional, True) {
 }
 
 TEST(ReverseRangeConditional, ValueTooSmall) {
-  uint8_t buffer[3] = {1, 9};
+  ::std::uint8_t buffer[3] = {1, 9};
   auto writer = ReverseRangeConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -616,7 +616,7 @@ TEST(ReverseRangeConditional, ValueTooSmall) {
 }
 
 TEST(ReverseRangeConditional, ValueTooLarge) {
-  uint8_t buffer[3] = {11, 12};
+  ::std::uint8_t buffer[3] = {11, 12};
   auto writer = ReverseRangeConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -625,7 +625,7 @@ TEST(ReverseRangeConditional, ValueTooLarge) {
 }
 
 TEST(ReverseRangeConditional, ValuesSwapped) {
-  uint8_t buffer[3] = {8, 7};
+  ::std::uint8_t buffer[3] = {8, 7};
   auto writer = ReverseRangeConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -634,7 +634,7 @@ TEST(ReverseRangeConditional, ValuesSwapped) {
 }
 
 TEST(ReverseRangeConditional, True) {
-  uint8_t buffer[3] = {7, 8};
+  ::std::uint8_t buffer[3] = {7, 8};
   auto writer = ReverseRangeConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -643,7 +643,7 @@ TEST(ReverseRangeConditional, True) {
 }
 
 TEST(AndConditional, BothFalse) {
-  uint8_t buffer[3] = {1, 1};
+  ::std::uint8_t buffer[3] = {1, 1};
   auto writer = AndConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -652,7 +652,7 @@ TEST(AndConditional, BothFalse) {
 }
 
 TEST(AndConditional, FirstFalse) {
-  uint8_t buffer[3] = {1, 5};
+  ::std::uint8_t buffer[3] = {1, 5};
   auto writer = AndConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -661,7 +661,7 @@ TEST(AndConditional, FirstFalse) {
 }
 
 TEST(AndConditional, SecondFalse) {
-  uint8_t buffer[3] = {5, 1};
+  ::std::uint8_t buffer[3] = {5, 1};
   auto writer = AndConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -670,7 +670,7 @@ TEST(AndConditional, SecondFalse) {
 }
 
 TEST(AndConditional, BothTrue) {
-  uint8_t buffer[3] = {5, 5};
+  ::std::uint8_t buffer[3] = {5, 5};
   auto writer = AndConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -679,7 +679,7 @@ TEST(AndConditional, BothTrue) {
 }
 
 TEST(OrConditional, BothFalse) {
-  uint8_t buffer[3] = {1, 1};
+  ::std::uint8_t buffer[3] = {1, 1};
   auto writer = OrConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -688,7 +688,7 @@ TEST(OrConditional, BothFalse) {
 }
 
 TEST(OrConditional, FirstFalse) {
-  uint8_t buffer[3] = {1, 5};
+  ::std::uint8_t buffer[3] = {1, 5};
   auto writer = OrConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -697,7 +697,7 @@ TEST(OrConditional, FirstFalse) {
 }
 
 TEST(OrConditional, SecondFalse) {
-  uint8_t buffer[3] = {5, 1};
+  ::std::uint8_t buffer[3] = {5, 1};
   auto writer = OrConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -706,7 +706,7 @@ TEST(OrConditional, SecondFalse) {
 }
 
 TEST(OrConditional, BothTrue) {
-  uint8_t buffer[3] = {5, 5};
+  ::std::uint8_t buffer[3] = {5, 5};
   auto writer = OrConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
@@ -715,7 +715,7 @@ TEST(OrConditional, BothTrue) {
 }
 
 TEST(ChoiceConditional, UseX) {
-  ::std::array<uint8_t, 4> buffer = {1, 5, 0, 10};
+  ::std::array</**/ ::std::uint8_t, 4> buffer = {1, 5, 0, 10};
   auto view = MakeChoiceConditionView(&buffer);
   EXPECT_TRUE(view.Ok());
   EXPECT_TRUE(view.SizeIsKnown());
@@ -725,7 +725,7 @@ TEST(ChoiceConditional, UseX) {
 }
 
 TEST(ChoiceConditional, UseY) {
-  ::std::array<uint8_t, 4> buffer = {2, 5, 0, 10};
+  ::std::array</**/ ::std::uint8_t, 4> buffer = {2, 5, 0, 10};
   auto view = MakeChoiceConditionView(&buffer);
   EXPECT_TRUE(view.Ok());
   EXPECT_TRUE(view.SizeIsKnown());
@@ -734,7 +734,7 @@ TEST(ChoiceConditional, UseY) {
 }
 
 TEST(FlagConditional, True) {
-  uint8_t buffer[2] = {0x80, 0xff};
+  ::std::uint8_t buffer[2] = {0x80, 0xff};
   auto writer = ContainsContainsBitsWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   EXPECT_TRUE(writer.SizeIsKnown());
@@ -742,7 +742,7 @@ TEST(FlagConditional, True) {
 }
 
 TEST(WriteToString, MissingFieldsAreNotWritten) {
-  uint8_t buffer[2] = {0x01, 0x00};
+  ::std::uint8_t buffer[2] = {0x01, 0x00};
   auto reader = BasicConditionalWriter(buffer, 1U);
   EXPECT_EQ(
       "{\n"
@@ -753,7 +753,7 @@ TEST(WriteToString, MissingFieldsAreNotWritten) {
 }
 
 TEST(WriteToString, PresentFieldsNotWritten) {
-  uint8_t buffer[2] = {0x00, 0x01};
+  ::std::uint8_t buffer[2] = {0x00, 0x01};
   auto reader = BasicConditionalWriter(buffer, 2U);
   EXPECT_EQ(
       "{\n"
@@ -765,7 +765,7 @@ TEST(WriteToString, PresentFieldsNotWritten) {
 }
 
 TEST(WriteToString, AlwaysFalseCondition) {
-  uint8_t buffer[2] = {0x00};
+  ::std::uint8_t buffer[2] = {0x00};
   auto reader = MakeAlwaysFalseConditionView(buffer, 1U);
   EXPECT_EQ(
       "{\n"
@@ -776,7 +776,7 @@ TEST(WriteToString, AlwaysFalseCondition) {
 }
 
 TEST(WriteToString, OnlyAlwaysFalseCondition) {
-  uint8_t buffer[2] = {0x00};
+  ::std::uint8_t buffer[2] = {0x00};
   auto reader = MakeOnlyAlwaysFalseConditionView(buffer, 0U);
   EXPECT_EQ(
       "{\n"
@@ -786,7 +786,7 @@ TEST(WriteToString, OnlyAlwaysFalseCondition) {
 }
 
 TEST(WriteToString, EmptyStruct) {
-  uint8_t buffer[2] = {0x00};
+  ::std::uint8_t buffer[2] = {0x00};
   auto reader = MakeEmptyStructView(buffer, 0U);
   EXPECT_EQ(
       "{\n"
@@ -796,7 +796,7 @@ TEST(WriteToString, EmptyStruct) {
 }
 
 TEST(ConditionalInline, ConditionalInline) {
-  uint8_t buffer[4] = {0x00, 0x01, 0x02, 0x03};
+  ::std::uint8_t buffer[4] = {0x00, 0x01, 0x02, 0x03};
   auto reader = ConditionalInlineWriter(buffer, 4U);
   EXPECT_EQ(1, reader.type_0().a().Read());
   EXPECT_TRUE(reader.has_type_1().Known());
@@ -804,7 +804,7 @@ TEST(ConditionalInline, ConditionalInline) {
 }
 
 TEST(ConditionalAnonymous, ConditionalAnonymous) {
-  ::std::array<uint8_t, 2> buffer = {0x00, 0x98};
+  ::std::array</**/ ::std::uint8_t, 2> buffer = {0x00, 0x98};
   auto view = MakeConditionalAnonymousView(&buffer);
   EXPECT_TRUE(view.Ok());
   EXPECT_FALSE(view.has_low().Value());
@@ -826,7 +826,7 @@ TEST(ConditionalAnonymous, ConditionalAnonymous) {
 }
 
 TEST(ConditionalOnFlag, ConditionalOnFlag) {
-  ::std::array<uint8_t, 2> buffer = {0x00, 0x98};
+  ::std::array</**/ ::std::uint8_t, 2> buffer = {0x00, 0x98};
   auto view = MakeConditionalOnFlagView(&buffer);
   EXPECT_TRUE(view.Ok());
   EXPECT_FALSE(view.enabled().Read());

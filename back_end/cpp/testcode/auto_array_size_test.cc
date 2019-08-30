@@ -14,6 +14,8 @@
 
 // Tests for automatically-sized arrays from auto_array_size.emb.
 
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <iterator>
@@ -22,14 +24,12 @@
 
 #include "public/emboss_text_util.h"
 #include "testdata/auto_array_size.emb.h"
-#include <gmock/gmock.h>
-#include <gtest/gtest.h>
 
 namespace emboss {
 namespace test {
 namespace {
 
-alignas(8) static const uint8_t kAutoSize[22] = {
+alignas(8) static const ::std::uint8_t kAutoSize[22] = {
     0x03,                                // 0:1    array_size == 3
     0x10, 0x20, 0x30, 0x40,              // 1:5    four_byte_array
     0x11, 0x12, 0x21, 0x22,              // 5:9    four_struct_array[0, 1]
@@ -39,13 +39,15 @@ alignas(8) static const uint8_t kAutoSize[22] = {
 };
 
 TEST(AutoSizeView, IteratorIncrement) {
-  auto src_buf = std::vector<uint8_t>(kAutoSize, kAutoSize + sizeof kAutoSize);
+  auto src_buf = ::std::vector</**/ ::std::uint8_t>(
+      kAutoSize, kAutoSize + sizeof kAutoSize);
   auto src = MakeAutoSizeView(&src_buf).four_struct_array();
-  auto dst_buf = std::vector<uint8_t>(kAutoSize, kAutoSize + sizeof kAutoSize);
+  auto dst_buf = ::std::vector</**/ ::std::uint8_t>(
+      kAutoSize, kAutoSize + sizeof kAutoSize);
   auto dst = MakeAutoSizeView(&dst_buf).four_struct_array();
   EXPECT_TRUE(src.Equals(dst));
 
-  std::fill(dst.BackingStorage().begin(), dst.BackingStorage().end(), 0);
+  ::std::fill(dst.BackingStorage().begin(), dst.BackingStorage().end(), 0);
   EXPECT_FALSE(src.Equals(dst));
   for (auto src_it = src.begin(), dst_it = dst.begin();
        src_it != src.end() && dst_it != dst.end(); ++src_it, ++dst_it) {
@@ -53,7 +55,7 @@ TEST(AutoSizeView, IteratorIncrement) {
   }
   EXPECT_TRUE(src.Equals(dst));
 
-  std::fill(dst.BackingStorage().begin(), dst.BackingStorage().end(), 0);
+  ::std::fill(dst.BackingStorage().begin(), dst.BackingStorage().end(), 0);
   EXPECT_FALSE(src.Equals(dst));
   for (auto src_it = src.begin(), dst_it = dst.begin();
        src_it != src.end() && dst_it != dst.end(); src_it++, dst_it++) {
@@ -61,7 +63,7 @@ TEST(AutoSizeView, IteratorIncrement) {
   }
   EXPECT_TRUE(src.Equals(dst));
 
-  std::fill(dst.BackingStorage().begin(), dst.BackingStorage().end(), 0);
+  ::std::fill(dst.BackingStorage().begin(), dst.BackingStorage().end(), 0);
   EXPECT_FALSE(src.Equals(dst));
   for (auto src_it = src.rbegin(), dst_it = dst.rbegin();
        src_it != src.rend() && dst_it != dst.rend(); ++src_it, ++dst_it) {
@@ -69,7 +71,7 @@ TEST(AutoSizeView, IteratorIncrement) {
   }
   EXPECT_TRUE(src.Equals(dst));
 
-  std::fill(dst.BackingStorage().begin(), dst.BackingStorage().end(), 0);
+  ::std::fill(dst.BackingStorage().begin(), dst.BackingStorage().end(), 0);
   EXPECT_FALSE(src.Equals(dst));
   for (auto src_it = src.rbegin(), dst_it = dst.rbegin();
        src_it != src.rend() && dst_it != dst.rend(); src_it++, dst_it++) {
@@ -85,37 +87,37 @@ TEST(AutoSizeView, IteratorIncrement) {
 
 TEST(AutoSizeView, PreviousNext) {
   auto view = MakeAutoSizeView(kAutoSize, sizeof kAutoSize).four_struct_array();
-  EXPECT_TRUE(std::next(view.begin(), 0)->Equals(view[0]));
-  EXPECT_TRUE(std::next(view.begin(), 1)->Equals(view[1]));
-  EXPECT_TRUE(std::next(view.begin(), 2)->Equals(view[2]));
-  EXPECT_TRUE(std::next(view.begin(), 3)->Equals(view[3]));
+  EXPECT_TRUE(::std::next(view.begin(), 0)->Equals(view[0]));
+  EXPECT_TRUE(::std::next(view.begin(), 1)->Equals(view[1]));
+  EXPECT_TRUE(::std::next(view.begin(), 2)->Equals(view[2]));
+  EXPECT_TRUE(::std::next(view.begin(), 3)->Equals(view[3]));
 
-  EXPECT_TRUE(std::next(view.rbegin(), 0)->Equals(view[3]));
-  EXPECT_TRUE(std::next(view.rbegin(), 1)->Equals(view[2]));
-  EXPECT_TRUE(std::next(view.rbegin(), 2)->Equals(view[1]));
-  EXPECT_TRUE(std::next(view.rbegin(), 3)->Equals(view[0]));
+  EXPECT_TRUE(::std::next(view.rbegin(), 0)->Equals(view[3]));
+  EXPECT_TRUE(::std::next(view.rbegin(), 1)->Equals(view[2]));
+  EXPECT_TRUE(::std::next(view.rbegin(), 2)->Equals(view[1]));
+  EXPECT_TRUE(::std::next(view.rbegin(), 3)->Equals(view[0]));
 
-  EXPECT_TRUE(std::prev(view.end(), 1)->Equals(view[3]));
-  EXPECT_TRUE(std::prev(view.end(), 2)->Equals(view[2]));
-  EXPECT_TRUE(std::prev(view.end(), 3)->Equals(view[1]));
-  EXPECT_TRUE(std::prev(view.end(), 4)->Equals(view[0]));
+  EXPECT_TRUE(::std::prev(view.end(), 1)->Equals(view[3]));
+  EXPECT_TRUE(::std::prev(view.end(), 2)->Equals(view[2]));
+  EXPECT_TRUE(::std::prev(view.end(), 3)->Equals(view[1]));
+  EXPECT_TRUE(::std::prev(view.end(), 4)->Equals(view[0]));
 
-  EXPECT_TRUE(std::prev(view.rend(), 1)->Equals(view[0]));
-  EXPECT_TRUE(std::prev(view.rend(), 2)->Equals(view[1]));
-  EXPECT_TRUE(std::prev(view.rend(), 3)->Equals(view[2]));
-  EXPECT_TRUE(std::prev(view.rend(), 4)->Equals(view[3]));
+  EXPECT_TRUE(::std::prev(view.rend(), 1)->Equals(view[0]));
+  EXPECT_TRUE(::std::prev(view.rend(), 2)->Equals(view[1]));
+  EXPECT_TRUE(::std::prev(view.rend(), 3)->Equals(view[2]));
+  EXPECT_TRUE(::std::prev(view.rend(), 4)->Equals(view[3]));
 }
 
 TEST(AutoSizeView, ForEach) {
   auto view = MakeAutoSizeView(kAutoSize, sizeof kAutoSize).four_struct_array();
 
   int i = 0;
-  std::for_each(view.begin(), view.end(), [&](ElementView element) {
+  ::std::for_each(view.begin(), view.end(), [&](ElementView element) {
     ASSERT_TRUE(element.Equals(view[i++]));
   });
 
   i = view.ElementCount() - 1;
-  std::for_each(view.rbegin(), view.rend(), [&](ElementView element) {
+  ::std::for_each(view.rbegin(), view.rend(), [&](ElementView element) {
     ASSERT_TRUE(element.Equals(view[i--]));
   });
 }
@@ -124,36 +126,36 @@ TEST(AutoSizeView, Find) {
   auto view = MakeAutoSizeView(kAutoSize, sizeof kAutoSize).four_struct_array();
 
   EXPECT_TRUE(
-      std::find_if(view.begin(), view.end(), [view](ElementView element) {
+      ::std::find_if(view.begin(), view.end(), [view](ElementView element) {
         return element.Equals(view[0]);
       })->Equals(view[0]));
   EXPECT_TRUE(
-      std::find_if(view.begin(), view.end(), [view](ElementView element) {
+      ::std::find_if(view.begin(), view.end(), [view](ElementView element) {
         return element.Equals(view[1]);
       })->Equals(view[1]));
   EXPECT_TRUE(
-      std::find_if(view.begin(), view.end(), [view](ElementView element) {
+      ::std::find_if(view.begin(), view.end(), [view](ElementView element) {
         return element.Equals(view[2]);
       })->Equals(view[2]));
   EXPECT_TRUE(
-      std::find_if(view.begin(), view.end(), [view](ElementView element) {
+      ::std::find_if(view.begin(), view.end(), [view](ElementView element) {
         return element.Equals(view[3]);
       })->Equals(view[3]));
 
   EXPECT_TRUE(
-      std::find_if(view.rbegin(), view.rend(), [view](ElementView element) {
+      ::std::find_if(view.rbegin(), view.rend(), [view](ElementView element) {
         return element.Equals(view[0]);
       })->Equals(view[0]));
   EXPECT_TRUE(
-      std::find_if(view.rbegin(), view.rend(), [view](ElementView element) {
+      ::std::find_if(view.rbegin(), view.rend(), [view](ElementView element) {
         return element.Equals(view[1]);
       })->Equals(view[1]));
   EXPECT_TRUE(
-      std::find_if(view.rbegin(), view.rend(), [view](ElementView element) {
+      ::std::find_if(view.rbegin(), view.rend(), [view](ElementView element) {
         return element.Equals(view[2]);
       })->Equals(view[2]));
   EXPECT_TRUE(
-      std::find_if(view.rbegin(), view.rend(), [view](ElementView element) {
+      ::std::find_if(view.rbegin(), view.rend(), [view](ElementView element) {
         return element.Equals(view[3]);
       })->Equals(view[3]));
 }
@@ -194,8 +196,8 @@ TEST(AutoSizeView, RangeBasedFor) {
 }
 
 TEST(AutoSizeView, CanReadAutoArrays) {
-  auto view =
-      MakeAlignedAutoSizeView<const uint8_t, 8>(kAutoSize, sizeof kAutoSize);
+  auto view = MakeAlignedAutoSizeView<const ::std::uint8_t, 8>(
+      kAutoSize, sizeof kAutoSize);
   EXPECT_EQ(22, view.SizeInBytes());
   EXPECT_EQ(3, view.array_size().Read());
   EXPECT_EQ(0x10, view.four_byte_array()[0].Read());
@@ -262,12 +264,13 @@ TEST(AutoSizeWriter, CanWriteAutoArrays) {
   writer.dynamic_struct_array()[2].a().Write(0x71);
   writer.dynamic_struct_array()[2].b().Write(0x72);
   EXPECT_FALSE(writer.dynamic_struct_array()[3].IsComplete());
-  EXPECT_EQ(std::vector<char>(kAutoSize, kAutoSize + sizeof kAutoSize), buffer);
+  EXPECT_EQ(::std::vector<char>(kAutoSize, kAutoSize + sizeof kAutoSize),
+            buffer);
 }
 
 TEST(AutoSizeView, CanUseDataMethod) {
-  auto view =
-      MakeAlignedAutoSizeView<const uint8_t, 8>(kAutoSize, sizeof kAutoSize);
+  auto view = MakeAlignedAutoSizeView<const ::std::uint8_t, 8>(
+      kAutoSize, sizeof kAutoSize);
 
   for (unsigned i = 0; i < view.SizeInBytes(); ++i) {
     EXPECT_EQ(*(view.BackingStorage().data() + i), kAutoSize[i])
@@ -276,11 +279,12 @@ TEST(AutoSizeView, CanUseDataMethod) {
 }
 
 TEST(AutoSizeView, CanCopyFrom) {
-  auto source =
-      MakeAlignedAutoSizeView<const uint8_t, 8>(kAutoSize, sizeof kAutoSize);
+  auto source = MakeAlignedAutoSizeView<const ::std::uint8_t, 8>(
+      kAutoSize, sizeof kAutoSize);
 
-  std::array<uint8_t, sizeof kAutoSize> buf = {0};
-  auto dest = MakeAlignedAutoSizeView<uint8_t, 8>(buf.data(), buf.size());
+  ::std::array</**/ ::std::uint8_t, sizeof kAutoSize> buf = {0};
+  auto dest =
+      MakeAlignedAutoSizeView</**/ ::std::uint8_t, 8>(buf.data(), buf.size());
 
   // Copy one element.
   EXPECT_NE(source.four_struct_array()[0].a().Read(),
@@ -305,12 +309,12 @@ TEST(AutoSizeView, CanCopyFrom) {
 
 TEST(AutoSizeView, CanCopyFromDifferentSizes) {
   constexpr int padding = 10;
-  std::array<uint8_t, sizeof kAutoSize + padding> source_buffer;
+  ::std::array</**/ ::std::uint8_t, sizeof kAutoSize + padding> source_buffer;
   memset(source_buffer.data(), 0, source_buffer.size());
   memcpy(source_buffer.data(), kAutoSize, sizeof kAutoSize);
   auto source = MakeAutoSizeView(&source_buffer);
 
-  std::array<uint8_t, sizeof kAutoSize + padding> buf;
+  ::std::array</**/ ::std::uint8_t, sizeof kAutoSize + padding> buf;
   memset(buf.data(), 0xff, buf.size());
   auto dest = MakeAutoSizeView(buf.data(), sizeof kAutoSize);
 
@@ -325,7 +329,7 @@ TEST(AutoSizeView, CanCopyFromDifferentSizes) {
 
 TEST(AutoSizeView, CanCopyFromOverlapping) {
   constexpr int kElementSizeBytes = ElementView::SizeInBytes();
-  std::vector<uint8_t> buf = {1, 2, 3};
+  ::std::vector</**/ ::std::uint8_t> buf = {1, 2, 3};
 
   auto source = MakeElementView(buf.data(), kElementSizeBytes);
   auto dest = MakeElementView(buf.data() + 1, kElementSizeBytes);
@@ -334,17 +338,17 @@ TEST(AutoSizeView, CanCopyFromOverlapping) {
   EXPECT_EQ(dest.b().Read(), buf[2]);
 
   dest.CopyFrom(source);  // Forward overlap.
-  EXPECT_EQ(buf, std::vector<uint8_t>({1, 1, 2}));
+  EXPECT_EQ(buf, ::std::vector</**/ ::std::uint8_t>({1, 1, 2}));
   source.CopyFrom(dest);  // Reverse overlap.
-  EXPECT_EQ(buf, std::vector<uint8_t>({1, 2, 2}));
+  EXPECT_EQ(buf, ::std::vector</**/ ::std::uint8_t>({1, 2, 2}));
 }
 
 TEST(AutoSizeView, Equals) {
-  std::vector<uint8_t> buf_x = {1, 2};
-  std::vector<uint8_t> buf_y = {1, 2, 3};
+  ::std::vector</**/ ::std::uint8_t> buf_x = {1, 2};
+  ::std::vector</**/ ::std::uint8_t> buf_y = {1, 2, 3};
   auto x = MakeElementView(&buf_x);
-  auto x_const =
-      MakeElementView(static_cast<const std::vector<uint8_t>*>(&buf_x));
+  auto x_const = MakeElementView(
+      static_cast<const ::std::vector</**/ ::std::uint8_t>*>(&buf_x));
   auto y = MakeElementView(&buf_y);
 
   EXPECT_TRUE(x.Equals(x));

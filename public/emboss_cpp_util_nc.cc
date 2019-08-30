@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "public/emboss_cpp_util.h"
-
 #include <string>
+
+#include "public/emboss_cpp_util.h"
 
 namespace emboss {
 namespace {
 
 void X() {
 #ifdef TEST_CANNOT_CONSTRUCT_READ_WRITE_CONTIGUOUS_BUFFER_FROM_STRING
-  ::std::string foo = "string";
+  ::std::string foo = "::std::string";
 
   // Read-only ContiguousBuffer should be fine.
   (void)ContiguousBuffer<const char>(foo);

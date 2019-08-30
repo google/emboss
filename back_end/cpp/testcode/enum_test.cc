@@ -100,7 +100,7 @@ TEST(ManifestEntryView, EdgeCases) {
   auto view = ManifestEntryView(kManifestEntryEdgeCases,
                                 sizeof kManifestEntryEdgeCases);
   EXPECT_EQ(static_cast<Kind>(255), view.kind().Read());
-  EXPECT_EQ(255, static_cast<uint64_t>(view.kind().Read()));
+  EXPECT_EQ(255, static_cast</**/ ::std::uint64_t>(view.kind().Read()));
   EXPECT_EQ(Kind::MAX32BIT, view.wide_kind().Read());
   EXPECT_EQ(Kind::MAX32BIT, view.wide_kind_in_bits().Read());
 }
@@ -109,9 +109,10 @@ TEST(Kind, Values) {
   EXPECT_EQ(static_cast<Kind>(0), Kind::WIDGET);
   EXPECT_EQ(static_cast<Kind>(1), Kind::SPROCKET);
   EXPECT_EQ(static_cast<Kind>(2), Kind::GEEGAW);
-  EXPECT_EQ(static_cast<Kind>(static_cast<uint64_t>(Kind::GEEGAW) +
-                              static_cast<uint64_t>(Kind::SPROCKET)),
-            Kind::COMPUTED);
+  EXPECT_EQ(
+      static_cast<Kind>(static_cast</**/ ::std::uint64_t>(Kind::GEEGAW) +
+                        static_cast</**/ ::std::uint64_t>(Kind::SPROCKET)),
+      Kind::COMPUTED);
   EXPECT_EQ(static_cast<Kind>(4294967295), Kind::MAX32BIT);
 }
 
@@ -122,9 +123,9 @@ TEST(ManifestEntryWriter, CanWriteKind) {
   writer.count().Write(4);
   writer.wide_kind().Write(Kind::GEEGAW);
   writer.wide_kind_in_bits().Write(Kind::GEEGAW);
-  EXPECT_EQ(std::vector</**/ ::std::uint8_t>(
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(
                 kManifestEntry, kManifestEntry + sizeof kManifestEntry),
-            std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 
   EXPECT_DEATH(writer.kind().Write(Kind::LARGE_VALUE), "");
   writer.kind().Write(static_cast<Kind>(0xff));
@@ -134,10 +135,10 @@ TEST(ManifestEntryWriter, CanWriteKind) {
   EXPECT_EQ(0x04, buffer[1]);
   writer.wide_kind().Write(Kind::MAX32BIT);
   writer.wide_kind_in_bits().Write(Kind::MAX32BIT);
-  EXPECT_EQ(std::vector</**/ ::std::uint8_t>(
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(
                 kManifestEntryEdgeCases,
                 kManifestEntryEdgeCases + sizeof kManifestEntryEdgeCases),
-            std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 }
 
 TEST(Kind, EnumToName) {
@@ -155,30 +156,30 @@ TEST(Kind, EnumToName) {
 
 TEST(Kind, EnumToOstream) {
   {
-    std::ostringstream s;
+    ::std::ostringstream s;
     s << Kind::WIDGET;
     EXPECT_EQ("WIDGET", s.str());
   }
   {
-    std::ostringstream s;
+    ::std::ostringstream s;
     s << Kind::MAX32BIT;
     EXPECT_EQ("MAX32BIT", s.str());
   }
   {
-    std::ostringstream s;
+    ::std::ostringstream s;
     s << static_cast<Kind>(10005);
     EXPECT_EQ("10005", s.str());
   }
   {
-    std::ostringstream s;
+    ::std::ostringstream s;
     s << Kind::WIDGET << ":" << Kind::SPROCKET;
     EXPECT_EQ("WIDGET:SPROCKET", s.str());
   }
 }
 
 TEST(ManifestEntryView, CopyFrom) {
-  std::array</**/ ::std::uint8_t, 14> buf_x = {0x00};
-  std::array</**/ ::std::uint8_t, 14> buf_y = {0xff};
+  ::std::array</**/ ::std::uint8_t, 14> buf_x = {0x00};
+  ::std::array</**/ ::std::uint8_t, 14> buf_y = {0xff};
 
   auto x = MakeManifestEntryView(&buf_x);
   auto y = MakeManifestEntryView(&buf_y);
@@ -189,8 +190,8 @@ TEST(ManifestEntryView, CopyFrom) {
 }
 
 TEST(ManifestEntryView, TryToCopyFrom) {
-  std::array</**/ ::std::uint8_t, 14> buf_x = {0x00};
-  std::array</**/ ::std::uint8_t, 14> buf_y = {0xff};
+  ::std::array</**/ ::std::uint8_t, 14> buf_x = {0x00};
+  ::std::array</**/ ::std::uint8_t, 14> buf_y = {0xff};
 
   auto x = MakeManifestEntryView(&buf_x);
   auto y = MakeManifestEntryView(&buf_y);
@@ -231,13 +232,13 @@ TEST(Kind, NameToEnum) {
 }
 
 TEST(Kind, Type) {
-  EXPECT_TRUE(
-      (::std::is_same<uint64_t, ::std::underlying_type<Kind>::type>::value));
+  EXPECT_TRUE((::std::is_same</**/ ::std::uint64_t,
+                              ::std::underlying_type<Kind>::type>::value));
 }
 
 TEST(Signed, Type) {
-  EXPECT_TRUE(
-      (::std::is_same<int64_t, ::std::underlying_type<Signed>::type>::value));
+  EXPECT_TRUE((::std::is_same</**/ ::std::int64_t,
+                              ::std::underlying_type<Signed>::type>::value));
 }
 
 TEST(Foo, EnumsExposedFromView) {

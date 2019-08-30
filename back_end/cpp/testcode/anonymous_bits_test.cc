@@ -14,13 +14,12 @@
 
 // Tests for generated code for anonymous "bits" types, using
 // anonymous_bits.emb.
+#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
 #include "public/emboss_cpp_util.h"
-#include <gtest/gtest.h>
-
 #include "testdata/anonymous_bits.emb.h"
 
 namespace emboss {
@@ -33,10 +32,11 @@ TEST(AnonymousBits, InnerEnumIsVisibleAtOuterScope) {
 }
 
 TEST(AnonymousBits, BitsAreReadable) {
-  alignas(8) uint8_t data[] = {0x01, 0x00, 0x00, 0x80, 0x01, 0x00, 0x80, 0x00};
+  alignas(8)::std::uint8_t data[] = {0x01, 0x00, 0x00, 0x80,
+                                     0x01, 0x00, 0x80, 0x00};
   EXPECT_FALSE((FooWriter{data, sizeof data - 1}.Ok()));
 
-  auto foo = MakeAlignedFooView<uint8_t, 8>(data, sizeof data);
+  auto foo = MakeAlignedFooView</**/ ::std::uint8_t, 8>(data, sizeof data);
   ASSERT_TRUE(foo.Ok());
   EXPECT_TRUE(foo.high_bit().Read());
   EXPECT_TRUE(foo.first_bit().Read());
@@ -49,12 +49,15 @@ TEST(AnonymousBits, BitsAreReadable) {
 }
 
 TEST(AnonymousBits, Equals) {
-  alignas(8) uint8_t buf_x[] = {0x01, 0x00, 0x00, 0x80, 0x01, 0x00, 0x80, 0x00};
-  alignas(8) uint8_t buf_y[] = {0x01, 0x00, 0x00, 0x80, 0x01, 0x00, 0x80, 0x00};
+  alignas(8)::std::uint8_t buf_x[] = {0x01, 0x00, 0x00, 0x80,
+                                      0x01, 0x00, 0x80, 0x00};
+  alignas(8)::std::uint8_t buf_y[] = {0x01, 0x00, 0x00, 0x80,
+                                      0x01, 0x00, 0x80, 0x00};
 
-  auto x = MakeAlignedFooView<uint8_t, 8>(buf_x, sizeof buf_x);
-  auto x_const = MakeFooView(static_cast<const uint8_t *>(buf_x), sizeof buf_x);
-  auto y = MakeAlignedFooView<uint8_t, 8>(buf_y, sizeof buf_y);
+  auto x = MakeAlignedFooView</**/ ::std::uint8_t, 8>(buf_x, sizeof buf_x);
+  auto x_const =
+      MakeFooView(static_cast<const ::std::uint8_t *>(buf_x), sizeof buf_x);
+  auto y = MakeAlignedFooView</**/ ::std::uint8_t, 8>(buf_y, sizeof buf_y);
 
   EXPECT_TRUE(x.Equals(x));
   EXPECT_TRUE(x.UncheckedEquals(x));
@@ -87,7 +90,8 @@ TEST(AnonymousBits, Equals) {
 }
 
 TEST(AnonymousBits, WriteToString) {
-  const uint8_t data[] = {0x01, 0x00, 0x00, 0x80, 0x01, 0x00, 0x80, 0x00};
+  const ::std::uint8_t data[] = {0x01, 0x00, 0x00, 0x80,
+                                 0x01, 0x00, 0x80, 0x00};
   auto foo = MakeFooView(data, sizeof data);
   ASSERT_TRUE(foo.Ok());
   EXPECT_EQ(
@@ -97,15 +101,16 @@ TEST(AnonymousBits, WriteToString) {
 }
 
 TEST(AnonymousBits, ReadFromString) {
-  const uint8_t data[] = {0x01, 0x00, 0x00, 0x80, 0x01, 0x00, 0x80, 0x00};
-  uint8_t data2[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  const ::std::uint8_t data[] = {0x01, 0x00, 0x00, 0x80,
+                                 0x01, 0x00, 0x80, 0x00};
+  ::std::uint8_t data2[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
   auto foo = MakeFooView(data, sizeof data);
   auto foo_writer = MakeFooView(data2, sizeof data2);
   ASSERT_TRUE(foo.Ok());
   ASSERT_TRUE(foo_writer.Ok());
   ::emboss::UpdateFromText(foo_writer, ::emboss::WriteToString(foo));
-  EXPECT_EQ(::std::vector<uint8_t>(data, data + sizeof data),
-            ::std::vector<uint8_t>(data2, data2 + sizeof data2));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(data, data + sizeof data),
+            ::std::vector</**/ ::std::uint8_t>(data2, data2 + sizeof data2));
 }
 
 }  // namespace

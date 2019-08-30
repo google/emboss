@@ -14,12 +14,12 @@
 
 // Tests for the generated View class for a LogFileStatus from
 // span_se_log_file_status.emb.
+#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
 #include "testdata/golden/span_se_log_file_status.emb.h"
-#include <gtest/gtest.h>
 
 namespace emboss {
 namespace test {
@@ -67,8 +67,8 @@ TEST(LogFileStatusView, Ok) {
   EXPECT_TRUE(view.Ok());
   view = LogFileStatusView(kLogFileStatus, sizeof kLogFileStatus - 1);
   EXPECT_FALSE(view.Ok());
-  std::vector</**/ ::std::uint8_t> bigger_than_necessary(sizeof kLogFileStatus +
-                                                         1);
+  ::std::vector</**/ ::std::uint8_t> bigger_than_necessary(
+      sizeof kLogFileStatus + 1);
   view = LogFileStatusView(&bigger_than_necessary[0],
                            bigger_than_necessary.size());
   EXPECT_TRUE(view.Ok());
@@ -86,9 +86,9 @@ TEST(LogFileStatusView, Writing) {
   for (::std::size_t i = 0; i < writer.file_name().SizeInBytes(); ++i) {
     writer.file_name()[i].Write('A' + i);
   }
-  EXPECT_EQ(std::vector</**/ ::std::uint8_t>(
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(
                 kLogFileStatus, kLogFileStatus + sizeof kLogFileStatus),
-            std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 }
 
 }  // namespace

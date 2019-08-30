@@ -319,8 +319,8 @@ class GenericArrayView final {
 };
 
 // Optionally prints a shorthand representation of a BitArray in a comment.
-template <class ElementView, class BufferType, size_t kElementSize,
-          size_t kAddressableUnitSize, class Stream>
+template <class ElementView, class BufferType, ::std::size_t kElementSize,
+          ::std::size_t kAddressableUnitSize, class Stream>
 void WriteShorthandArrayCommentToTextStream(
     const GenericArrayView<ElementView, BufferType, kElementSize,
                            kAddressableUnitSize> *array,
@@ -355,7 +355,7 @@ void WriteShorthandAsciiArrayCommentToTextStream(
 // Overload for arrays of UInt.
 // Prints out the elements as ASCII characters for arrays of UInt:8.
 template <class BufferType, class BitViewType, class Stream,
-          size_t kElementSize, class Parameters,
+          ::std::size_t kElementSize, class Parameters,
           class = typename ::std::enable_if<Parameters::kBits == 8>::type>
 void WriteShorthandArrayCommentToTextStream(
     const GenericArrayView<prelude::UIntView<Parameters, BitViewType>,
@@ -367,7 +367,7 @@ void WriteShorthandArrayCommentToTextStream(
 // Overload for arrays of UInt.
 // Prints out the elements as ASCII characters for arrays of Int:8.
 template <class BufferType, class BitViewType, class Stream,
-          size_t kElementSize, class Parameters,
+          ::std::size_t kElementSize, class Parameters,
           class = typename ::std::enable_if<Parameters::kBits == 8>::type>
 void WriteShorthandArrayCommentToTextStream(
     const GenericArrayView<prelude::IntView<Parameters, BitViewType>,

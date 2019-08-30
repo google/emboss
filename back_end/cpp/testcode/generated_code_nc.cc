@@ -21,7 +21,7 @@ namespace test {
 namespace {
 
 void X() {
-  static const uint8_t kAutoSize[36] = {0};
+  static const ::std::uint8_t kAutoSize[36] = {0};
   (void)kAutoSize;  // Suppress unused variable warning.
 
 #ifdef TEST_WRITER_IS_NOT_CONSTRUCTIBLE_FROM_CONSTANT

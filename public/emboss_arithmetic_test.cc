@@ -39,164 +39,244 @@ using ::std::uint32_t;
 using ::std::uint64_t;
 
 TEST(Sum, Sum) {
-  EXPECT_EQ(Maybe<int32_t>(0), (Sum<int32_t, int32_t, int32_t, int32_t>(
-                                   Maybe<int32_t>(0), Maybe<int32_t>(0))));
-  EXPECT_EQ(Maybe<int32_t>(2147483647),
-            (Sum<int32_t, int32_t, int32_t, int32_t>(Maybe<int32_t>(2147483646),
-                                                     Maybe<int32_t>(1))));
-  EXPECT_EQ(Maybe<int32_t>(-2147483647 - 1),
-            (Sum<int32_t, int32_t, int32_t, int32_t>(
-                Maybe<int32_t>(-2147483647), Maybe<int32_t>(-1))));
-  EXPECT_EQ(Maybe<uint32_t>(2147483648U),
-            (Sum<uint32_t, uint32_t, int32_t, int32_t>(
-                Maybe<int32_t>(2147483647), Maybe<int32_t>(1))));
-  EXPECT_EQ(Maybe<int32_t>(2147483647),
-            (Sum<int64_t, int32_t, uint32_t, int32_t>(
-                Maybe<uint32_t>(2147483648U), Maybe<int32_t>(-1))));
-  EXPECT_EQ(Maybe<int32_t>(), (Sum<int64_t, int32_t, uint32_t, int32_t>(
-                                  Maybe<uint32_t>(), Maybe<int32_t>(-1))));
+  EXPECT_EQ(
+      Maybe</**/ ::std::int32_t>(0),
+      (Sum</**/ ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(
+          Maybe</**/ ::std::int32_t>(0), Maybe</**/ ::std::int32_t>(0))));
+  EXPECT_EQ(
+      Maybe</**/ ::std::int32_t>(2147483647),
+      (Sum</**/ ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(
+          Maybe</**/ ::std::int32_t>(2147483646),
+          Maybe</**/ ::std::int32_t>(1))));
+  EXPECT_EQ(
+      Maybe</**/ ::std::int32_t>(-2147483647 - 1),
+      (Sum</**/ ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(
+          Maybe</**/ ::std::int32_t>(-2147483647),
+          Maybe</**/ ::std::int32_t>(-1))));
+  EXPECT_EQ(Maybe</**/ ::std::uint32_t>(2147483648U),
+            (Sum</**/ ::std::uint32_t, ::std::uint32_t, ::std::int32_t,
+                 ::std::int32_t>(Maybe</**/ ::std::int32_t>(2147483647),
+                                 Maybe</**/ ::std::int32_t>(1))));
+  EXPECT_EQ(Maybe</**/ ::std::int32_t>(2147483647),
+            (Sum</**/ ::std::int64_t, ::std::int32_t, ::std::uint32_t,
+                 ::std::int32_t>(Maybe</**/ ::std::uint32_t>(2147483648U),
+                                 Maybe</**/ ::std::int32_t>(-1))));
+  EXPECT_EQ(Maybe</**/ ::std::int32_t>(),
+            (Sum</**/ ::std::int64_t, ::std::int32_t, ::std::uint32_t,
+                 ::std::int32_t>(Maybe</**/ ::std::uint32_t>(),
+                                 Maybe</**/ ::std::int32_t>(-1))));
 }
 
 TEST(Difference, Difference) {
-  EXPECT_EQ(Maybe<int32_t>(0), (Difference<int32_t, int32_t, int32_t, int32_t>(
-                                   Maybe<int32_t>(0), Maybe<int32_t>(0))));
-  EXPECT_EQ(Maybe<int32_t>(2147483647),
-            (Difference<int32_t, int32_t, int32_t, int32_t>(
-                Maybe<int32_t>(2147483646), Maybe<int32_t>(-1))));
-  EXPECT_EQ(Maybe<int32_t>(-2147483647 - 1),
-            (Difference<int32_t, int32_t, int32_t, int32_t>(
-                Maybe<int32_t>(-2147483647), Maybe<int32_t>(1))));
-  EXPECT_EQ(Maybe<uint32_t>(2147483648U),
-            (Difference<uint32_t, uint32_t, int32_t, int32_t>(
-                Maybe<int32_t>(2147483647), Maybe<int32_t>(-1))));
-  EXPECT_EQ(Maybe<int32_t>(2147483647),
-            (Difference<uint32_t, int32_t, uint32_t, int32_t>(
-                Maybe<uint32_t>(2147483648U), Maybe<int32_t>(1))));
-  EXPECT_EQ(Maybe<int32_t>(-2147483647 - 1),
-            (Difference<int64_t, int32_t, int32_t, uint32_t>(
-                Maybe<int32_t>(1), Maybe<uint32_t>(2147483649U))));
-  EXPECT_EQ(Maybe<int32_t>(), (Difference<int64_t, int32_t, int32_t, uint32_t>(
-                                  Maybe<int32_t>(1), Maybe<uint32_t>())));
+  EXPECT_EQ(Maybe</**/ ::std::int32_t>(0),
+            (Difference</**/ ::std::int32_t, ::std::int32_t, ::std::int32_t,
+                        ::std::int32_t>(Maybe</**/ ::std::int32_t>(0),
+                                        Maybe</**/ ::std::int32_t>(0))));
+  EXPECT_EQ(Maybe</**/ ::std::int32_t>(2147483647),
+            (Difference</**/ ::std::int32_t, ::std::int32_t, ::std::int32_t,
+                        ::std::int32_t>(Maybe</**/ ::std::int32_t>(2147483646),
+                                        Maybe</**/ ::std::int32_t>(-1))));
+  EXPECT_EQ(Maybe</**/ ::std::int32_t>(-2147483647 - 1),
+            (Difference</**/ ::std::int32_t, ::std::int32_t, ::std::int32_t,
+                        ::std::int32_t>(Maybe</**/ ::std::int32_t>(-2147483647),
+                                        Maybe</**/ ::std::int32_t>(1))));
+  EXPECT_EQ(Maybe</**/ ::std::uint32_t>(2147483648U),
+            (Difference</**/ ::std::uint32_t, ::std::uint32_t, ::std::int32_t,
+                        ::std::int32_t>(Maybe</**/ ::std::int32_t>(2147483647),
+                                        Maybe</**/ ::std::int32_t>(-1))));
+  EXPECT_EQ(
+      Maybe</**/ ::std::int32_t>(2147483647),
+      (Difference</**/ ::std::uint32_t, ::std::int32_t, ::std::uint32_t,
+                  ::std::int32_t>(Maybe</**/ ::std::uint32_t>(2147483648U),
+                                  Maybe</**/ ::std::int32_t>(1))));
+  EXPECT_EQ(
+      Maybe</**/ ::std::int32_t>(-2147483647 - 1),
+      (Difference</**/ ::std::int64_t, ::std::int32_t, ::std::int32_t,
+                  ::std::uint32_t>(Maybe</**/ ::std::int32_t>(1),
+                                   Maybe</**/ ::std::uint32_t>(2147483649U))));
+  EXPECT_EQ(Maybe</**/ ::std::int32_t>(),
+            (Difference</**/ ::std::int64_t, ::std::int32_t, ::std::int32_t,
+                        ::std::uint32_t>(Maybe</**/ ::std::int32_t>(1),
+                                         Maybe</**/ ::std::uint32_t>())));
 }
 
 TEST(Product, Product) {
-  EXPECT_EQ(Maybe<int32_t>(0), (Product<int32_t, int32_t, int32_t, int32_t>(
-                                   Maybe<int32_t>(0), Maybe<int32_t>(0))));
-  EXPECT_EQ(Maybe<int32_t>(-2147483646),
-            (Product<int32_t, int32_t, int32_t, int32_t>(
-                Maybe<int32_t>(2147483646), Maybe<int32_t>(-1))));
-  EXPECT_EQ(Maybe<int32_t>(-2147483647 - 1),
-            (Product<int32_t, int32_t, int32_t, int32_t>(
-                Maybe<int32_t>(-2147483647 - 1), Maybe<int32_t>(1))));
-  EXPECT_EQ(Maybe<uint32_t>(2147483648U),
-            (Product<uint32_t, uint32_t, int32_t, int32_t>(
-                Maybe<int32_t>(1073741824), Maybe<int32_t>(2))));
-  EXPECT_EQ(Maybe<uint32_t>(), (Product<uint32_t, uint32_t, int32_t, int32_t>(
-                                   Maybe<int32_t>(), Maybe<int32_t>(2))));
+  EXPECT_EQ(Maybe</**/ ::std::int32_t>(0),
+            (Product</**/ ::std::int32_t, ::std::int32_t, ::std::int32_t,
+                     ::std::int32_t>(Maybe</**/ ::std::int32_t>(0),
+                                     Maybe</**/ ::std::int32_t>(0))));
+  EXPECT_EQ(Maybe</**/ ::std::int32_t>(-2147483646),
+            (Product</**/ ::std::int32_t, ::std::int32_t, ::std::int32_t,
+                     ::std::int32_t>(Maybe</**/ ::std::int32_t>(2147483646),
+                                     Maybe</**/ ::std::int32_t>(-1))));
+  EXPECT_EQ(
+      Maybe</**/ ::std::int32_t>(-2147483647 - 1),
+      (Product</**/ ::std::int32_t, ::std::int32_t, ::std::int32_t,
+               ::std::int32_t>(Maybe</**/ ::std::int32_t>(-2147483647 - 1),
+                               Maybe</**/ ::std::int32_t>(1))));
+  EXPECT_EQ(Maybe</**/ ::std::uint32_t>(2147483648U),
+            (Product</**/ ::std::uint32_t, ::std::uint32_t, ::std::int32_t,
+                     ::std::int32_t>(Maybe</**/ ::std::int32_t>(1073741824),
+                                     Maybe</**/ ::std::int32_t>(2))));
+  EXPECT_EQ(Maybe</**/ ::std::uint32_t>(),
+            (Product</**/ ::std::uint32_t, ::std::uint32_t, ::std::int32_t,
+                     ::std::int32_t>(Maybe</**/ ::std::int32_t>(),
+                                     Maybe</**/ ::std::int32_t>(2))));
 }
 
 TEST(Equal, Equal) {
-  EXPECT_EQ(Maybe<bool>(true), (Equal<int32_t, bool, int32_t, int32_t>(
-                                   Maybe<int32_t>(0), Maybe<int32_t>(0))));
-  EXPECT_EQ(Maybe<bool>(false),
-            (Equal<int32_t, bool, int32_t, int32_t>(Maybe<int32_t>(2147483646),
-                                                    Maybe<int32_t>(-1))));
   EXPECT_EQ(Maybe<bool>(true),
-            (Equal<int32_t, bool, int32_t, uint32_t>(
-                Maybe<int32_t>(2147483647), Maybe<uint32_t>(2147483647))));
+            (Equal</**/ ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(
+                Maybe</**/ ::std::int32_t>(0), Maybe</**/ ::std::int32_t>(0))));
   EXPECT_EQ(Maybe<bool>(false),
-            (Equal<int64_t, bool, int32_t, uint32_t>(
-                Maybe<int32_t>(-2147483648LL), Maybe<uint32_t>(2147483648U))));
+            (Equal</**/ ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(
+                Maybe</**/ ::std::int32_t>(2147483646),
+                Maybe</**/ ::std::int32_t>(-1))));
+  EXPECT_EQ(Maybe<bool>(true),
+            (Equal</**/ ::std::int32_t, bool, ::std::int32_t, ::std::uint32_t>(
+                Maybe</**/ ::std::int32_t>(2147483647),
+                Maybe</**/ ::std::uint32_t>(2147483647))));
+  EXPECT_EQ(Maybe<bool>(false),
+            (Equal</**/ ::std::int64_t, bool, ::std::int32_t, ::std::uint32_t>(
+                Maybe</**/ ::std::int32_t>(-2147483648LL),
+                Maybe</**/ ::std::uint32_t>(2147483648U))));
   EXPECT_EQ(Maybe<bool>(),
-            (Equal<int64_t, bool, int32_t, uint32_t>(
-                Maybe<int32_t>(), Maybe<uint32_t>(2147483648U))));
+            (Equal</**/ ::std::int64_t, bool, ::std::int32_t, ::std::uint32_t>(
+                Maybe</**/ ::std::int32_t>(),
+                Maybe</**/ ::std::uint32_t>(2147483648U))));
 }
 
 TEST(NotEqual, NotEqual) {
-  EXPECT_EQ(Maybe<bool>(false), (NotEqual<int32_t, bool, int32_t, int32_t>(
-                                    Maybe<int32_t>(0), Maybe<int32_t>(0))));
-  EXPECT_EQ(Maybe<bool>(true),
-            (NotEqual<int32_t, bool, int32_t, int32_t>(
-                Maybe<int32_t>(2147483646), Maybe<int32_t>(-1))));
-  EXPECT_EQ(Maybe<bool>(false),
-            (NotEqual<int32_t, bool, int32_t, uint32_t>(
-                Maybe<int32_t>(2147483647), Maybe<uint32_t>(2147483647))));
-  EXPECT_EQ(Maybe<bool>(true),
-            (NotEqual<int64_t, bool, int32_t, uint32_t>(
-                Maybe<int32_t>(-2147483648LL), Maybe<uint32_t>(2147483648U))));
-  EXPECT_EQ(Maybe<bool>(),
-            (NotEqual<int64_t, bool, int32_t, uint32_t>(
-                Maybe<int32_t>(-2147483648LL), Maybe<uint32_t>())));
+  EXPECT_EQ(
+      Maybe<bool>(false),
+      (NotEqual</**/ ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(
+          Maybe</**/ ::std::int32_t>(0), Maybe</**/ ::std::int32_t>(0))));
+  EXPECT_EQ(
+      Maybe<bool>(true),
+      (NotEqual</**/ ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(
+          Maybe</**/ ::std::int32_t>(2147483646),
+          Maybe</**/ ::std::int32_t>(-1))));
+  EXPECT_EQ(
+      Maybe<bool>(false),
+      (NotEqual</**/ ::std::int32_t, bool, ::std::int32_t, ::std::uint32_t>(
+          Maybe</**/ ::std::int32_t>(2147483647),
+          Maybe</**/ ::std::uint32_t>(2147483647))));
+  EXPECT_EQ(
+      Maybe<bool>(true),
+      (NotEqual</**/ ::std::int64_t, bool, ::std::int32_t, ::std::uint32_t>(
+          Maybe</**/ ::std::int32_t>(-2147483648LL),
+          Maybe</**/ ::std::uint32_t>(2147483648U))));
+  EXPECT_EQ(
+      Maybe<bool>(),
+      (NotEqual</**/ ::std::int64_t, bool, ::std::int32_t, ::std::uint32_t>(
+          Maybe</**/ ::std::int32_t>(-2147483648LL),
+          Maybe</**/ ::std::uint32_t>())));
 }
 
 TEST(LessThan, LessThan) {
-  EXPECT_EQ(Maybe<bool>(false), (LessThan<int32_t, bool, int32_t, int32_t>(
-                                    Maybe<int32_t>(0), Maybe<int32_t>(0))));
-  EXPECT_EQ(Maybe<bool>(false),
-            (LessThan<int32_t, bool, int32_t, int32_t>(
-                Maybe<int32_t>(2147483646), Maybe<int32_t>(-1))));
-  EXPECT_EQ(Maybe<bool>(false),
-            (LessThan<int32_t, bool, int32_t, uint32_t>(
-                Maybe<int32_t>(2147483647), Maybe<uint32_t>(2147483647))));
-  EXPECT_EQ(Maybe<bool>(true),
-            (LessThan<int64_t, bool, int32_t, uint32_t>(
-                Maybe<int32_t>(-2147483648LL), Maybe<uint32_t>(2147483648U))));
-  EXPECT_EQ(Maybe<bool>(),
-            (LessThan<int64_t, bool, int32_t, uint32_t>(
-                Maybe<int32_t>(), Maybe<uint32_t>(2147483648U))));
+  EXPECT_EQ(
+      Maybe<bool>(false),
+      (LessThan</**/ ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(
+          Maybe</**/ ::std::int32_t>(0), Maybe</**/ ::std::int32_t>(0))));
+  EXPECT_EQ(
+      Maybe<bool>(false),
+      (LessThan</**/ ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(
+          Maybe</**/ ::std::int32_t>(2147483646),
+          Maybe</**/ ::std::int32_t>(-1))));
+  EXPECT_EQ(
+      Maybe<bool>(false),
+      (LessThan</**/ ::std::int32_t, bool, ::std::int32_t, ::std::uint32_t>(
+          Maybe</**/ ::std::int32_t>(2147483647),
+          Maybe</**/ ::std::uint32_t>(2147483647))));
+  EXPECT_EQ(
+      Maybe<bool>(true),
+      (LessThan</**/ ::std::int64_t, bool, ::std::int32_t, ::std::uint32_t>(
+          Maybe</**/ ::std::int32_t>(-2147483648LL),
+          Maybe</**/ ::std::uint32_t>(2147483648U))));
+  EXPECT_EQ(
+      Maybe<bool>(),
+      (LessThan</**/ ::std::int64_t, bool, ::std::int32_t, ::std::uint32_t>(
+          Maybe</**/ ::std::int32_t>(),
+          Maybe</**/ ::std::uint32_t>(2147483648U))));
 }
 
 TEST(LessThanOrEqual, LessThanOrEqual) {
   EXPECT_EQ(Maybe<bool>(true),
-            (LessThanOrEqual<int32_t, bool, int32_t, int32_t>(
-                Maybe<int32_t>(0), Maybe<int32_t>(0))));
-  EXPECT_EQ(Maybe<bool>(false),
-            (LessThanOrEqual<int32_t, bool, int32_t, int32_t>(
-                Maybe<int32_t>(2147483646), Maybe<int32_t>(-1))));
+            (LessThanOrEqual</**/ ::std::int32_t, bool, ::std::int32_t,
+                             ::std::int32_t>(Maybe</**/ ::std::int32_t>(0),
+                                             Maybe</**/ ::std::int32_t>(0))));
+  EXPECT_EQ(
+      Maybe<bool>(false),
+      (LessThanOrEqual</**/ ::std::int32_t, bool, ::std::int32_t,
+                       ::std::int32_t>(Maybe</**/ ::std::int32_t>(2147483646),
+                                       Maybe</**/ ::std::int32_t>(-1))));
   EXPECT_EQ(Maybe<bool>(true),
-            (LessThanOrEqual<int32_t, bool, int32_t, uint32_t>(
-                Maybe<int32_t>(2147483647), Maybe<uint32_t>(2147483647))));
+            (LessThanOrEqual</**/ ::std::int32_t, bool, ::std::int32_t,
+                             ::std::uint32_t>(
+                Maybe</**/ ::std::int32_t>(2147483647),
+                Maybe</**/ ::std::uint32_t>(2147483647))));
   EXPECT_EQ(Maybe<bool>(true),
-            (LessThanOrEqual<int64_t, bool, int32_t, uint32_t>(
-                Maybe<int32_t>(-2147483648LL), Maybe<uint32_t>(2147483648U))));
-  EXPECT_EQ(Maybe<bool>(),
-            (LessThanOrEqual<int64_t, bool, int32_t, uint32_t>(
-                Maybe<int32_t>(), Maybe<uint32_t>(2147483648U))));
+            (LessThanOrEqual</**/ ::std::int64_t, bool, ::std::int32_t,
+                             ::std::uint32_t>(
+                Maybe</**/ ::std::int32_t>(-2147483648LL),
+                Maybe</**/ ::std::uint32_t>(2147483648U))));
+  EXPECT_EQ(Maybe<bool>(), (LessThanOrEqual</**/ ::std::int64_t, bool,
+                                            ::std::int32_t, ::std::uint32_t>(
+                               Maybe</**/ ::std::int32_t>(),
+                               Maybe</**/ ::std::uint32_t>(2147483648U))));
 }
 
 TEST(GreaterThan, GreaterThan) {
-  EXPECT_EQ(Maybe<bool>(false), (GreaterThan<int32_t, bool, int32_t, int32_t>(
-                                    Maybe<int32_t>(0), Maybe<int32_t>(0))));
-  EXPECT_EQ(Maybe<bool>(true),
-            (GreaterThan<int32_t, bool, int32_t, int32_t>(
-                Maybe<int32_t>(2147483646), Maybe<int32_t>(-1))));
-  EXPECT_EQ(Maybe<bool>(false),
-            (GreaterThan<int32_t, bool, int32_t, uint32_t>(
-                Maybe<int32_t>(2147483647), Maybe<uint32_t>(2147483647))));
-  EXPECT_EQ(Maybe<bool>(false),
-            (GreaterThan<int64_t, bool, int32_t, uint32_t>(
-                Maybe<int32_t>(-2147483648LL), Maybe<uint32_t>(2147483648U))));
-  EXPECT_EQ(Maybe<bool>(),
-            (GreaterThan<int64_t, bool, int32_t, uint32_t>(
-                Maybe<int32_t>(), Maybe<uint32_t>(2147483648U))));
+  EXPECT_EQ(
+      Maybe<bool>(false),
+      (GreaterThan</**/ ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(
+          Maybe</**/ ::std::int32_t>(0), Maybe</**/ ::std::int32_t>(0))));
+  EXPECT_EQ(
+      Maybe<bool>(true),
+      (GreaterThan</**/ ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(
+          Maybe</**/ ::std::int32_t>(2147483646),
+          Maybe</**/ ::std::int32_t>(-1))));
+  EXPECT_EQ(
+      Maybe<bool>(false),
+      (GreaterThan</**/ ::std::int32_t, bool, ::std::int32_t, ::std::uint32_t>(
+          Maybe</**/ ::std::int32_t>(2147483647),
+          Maybe</**/ ::std::uint32_t>(2147483647))));
+  EXPECT_EQ(
+      Maybe<bool>(false),
+      (GreaterThan</**/ ::std::int64_t, bool, ::std::int32_t, ::std::uint32_t>(
+          Maybe</**/ ::std::int32_t>(-2147483648LL),
+          Maybe</**/ ::std::uint32_t>(2147483648U))));
+  EXPECT_EQ(
+      Maybe<bool>(),
+      (GreaterThan</**/ ::std::int64_t, bool, ::std::int32_t, ::std::uint32_t>(
+          Maybe</**/ ::std::int32_t>(),
+          Maybe</**/ ::std::uint32_t>(2147483648U))));
 }
 
 TEST(GreaterThanOrEqual, GreaterThanOrEqual) {
   EXPECT_EQ(Maybe<bool>(true),
-            (GreaterThanOrEqual<int32_t, bool, int32_t, int32_t>(
-                Maybe<int32_t>(0), Maybe<int32_t>(0))));
+            (GreaterThanOrEqual</**/ ::std::int32_t, bool, ::std::int32_t,
+                                ::std::int32_t>(
+                Maybe</**/ ::std::int32_t>(0), Maybe</**/ ::std::int32_t>(0))));
   EXPECT_EQ(Maybe<bool>(true),
-            (GreaterThanOrEqual<int32_t, bool, int32_t, int32_t>(
-                Maybe<int32_t>(2147483646), Maybe<int32_t>(-1))));
+            (GreaterThanOrEqual</**/ ::std::int32_t, bool, ::std::int32_t,
+                                ::std::int32_t>(
+                Maybe</**/ ::std::int32_t>(2147483646),
+                Maybe</**/ ::std::int32_t>(-1))));
   EXPECT_EQ(Maybe<bool>(true),
-            (GreaterThanOrEqual<int32_t, bool, int32_t, uint32_t>(
-                Maybe<int32_t>(2147483647), Maybe<uint32_t>(2147483647))));
+            (GreaterThanOrEqual</**/ ::std::int32_t, bool, ::std::int32_t,
+                                ::std::uint32_t>(
+                Maybe</**/ ::std::int32_t>(2147483647),
+                Maybe</**/ ::std::uint32_t>(2147483647))));
   EXPECT_EQ(Maybe<bool>(false),
-            (GreaterThanOrEqual<int64_t, bool, int32_t, uint32_t>(
-                Maybe<int32_t>(-2147483648LL), Maybe<uint32_t>(2147483648U))));
-  EXPECT_EQ(Maybe<bool>(),
-            (GreaterThanOrEqual<int64_t, bool, int32_t, uint32_t>(
-                Maybe<int32_t>(), Maybe<uint32_t>(2147483648U))));
+            (GreaterThanOrEqual</**/ ::std::int64_t, bool, ::std::int32_t,
+                                ::std::uint32_t>(
+                Maybe</**/ ::std::int32_t>(-2147483648LL),
+                Maybe</**/ ::std::uint32_t>(2147483648U))));
+  EXPECT_EQ(Maybe<bool>(), (GreaterThanOrEqual</**/ ::std::int64_t, bool,
+                                               ::std::int32_t, ::std::uint32_t>(
+                               Maybe</**/ ::std::int32_t>(),
+                               Maybe</**/ ::std::uint32_t>(2147483648U))));
 }
 
 TEST(And, And) {
@@ -255,15 +335,21 @@ TEST(Choice, Choice) {
   EXPECT_EQ(Maybe<int>(),
             (Choice<int, int, bool, int, int>(Maybe<bool>(false), Maybe<int>(1),
                                               Maybe<int>())));
-  EXPECT_EQ(Maybe<int64_t>(2),
-            (Choice<int64_t, int64_t, bool, int32_t, int32_t>(
-                Maybe<bool>(false), Maybe<int32_t>(1), Maybe<int32_t>(2))));
-  EXPECT_EQ(Maybe<int64_t>(2),
-            (Choice<int64_t, int64_t, bool, int32_t, uint32_t>(
-                Maybe<bool>(false), Maybe<int32_t>(-1), Maybe<uint32_t>(2))));
-  EXPECT_EQ(Maybe<int64_t>(-1),
-            (Choice<int64_t, int64_t, bool, int32_t, uint32_t>(
-                Maybe<bool>(true), Maybe<int32_t>(-1), Maybe<uint32_t>(2))));
+  EXPECT_EQ(
+      Maybe</**/ ::std::int64_t>(2),
+      (Choice</**/ ::std::int64_t, ::std::int64_t, bool, ::std::int32_t,
+              ::std::int32_t>(Maybe<bool>(false), Maybe</**/ ::std::int32_t>(1),
+                              Maybe</**/ ::std::int32_t>(2))));
+  EXPECT_EQ(Maybe</**/ ::std::int64_t>(2),
+            (Choice</**/ ::std::int64_t, ::std::int64_t, bool, ::std::int32_t,
+                    ::std::uint32_t>(Maybe<bool>(false),
+                                     Maybe</**/ ::std::int32_t>(-1),
+                                     Maybe</**/ ::std::uint32_t>(2))));
+  EXPECT_EQ(Maybe</**/ ::std::int64_t>(-1),
+            (Choice</**/ ::std::int64_t, ::std::int64_t, bool, ::std::int32_t,
+                    ::std::uint32_t>(Maybe<bool>(true),
+                                     Maybe</**/ ::std::int32_t>(-1),
+                                     Maybe</**/ ::std::uint32_t>(2))));
   EXPECT_EQ(Maybe<bool>(true),
             (Choice<bool, bool, bool, bool, bool>(
                 Maybe<bool>(false), Maybe<bool>(false), Maybe<bool>(true))));

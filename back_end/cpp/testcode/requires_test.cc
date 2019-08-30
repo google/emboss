@@ -13,19 +13,19 @@
 // limitations under the License.
 
 // Tests for [requires] using requires.emb.
+#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
 #include "testdata/requires.emb.h"
-#include <gtest/gtest.h>
 
 namespace emboss {
 namespace test {
 namespace {
 
 TEST(RequiresIntegers, Ok) {
-  std::array<std::uint8_t, 3> buffer = {0, 0, 0};
+  ::std::array</**/ ::std::uint8_t, 3> buffer = {0, 0, 0};
   auto view = MakeRequiresIntegersView(&buffer);
   EXPECT_TRUE(view.zero_through_nine().Ok());
   EXPECT_FALSE(view.ten_through_twenty().Ok());
@@ -62,7 +62,7 @@ TEST(RequiresIntegers, Ok) {
 }
 
 TEST(RequiresIntegers, CouldWriteValue) {
-  std::array<std::uint8_t, 3> buffer = {0, 0, 0};
+  ::std::array</**/ ::std::uint8_t, 3> buffer = {0, 0, 0};
   auto view = MakeRequiresIntegersView(&buffer);
 
   EXPECT_TRUE(view.zero_through_nine().CouldWriteValue(0));
@@ -87,7 +87,7 @@ TEST(RequiresIntegers, CouldWriteValue) {
 }
 
 TEST(RequiresBools, Ok) {
-  std::array<std::uint8_t, 1> buffer = {0};
+  ::std::array</**/ ::std::uint8_t, 1> buffer = {0};
   auto view = MakeRequiresBoolsView(&buffer);
   EXPECT_TRUE(view.must_be_false().Ok());
   EXPECT_FALSE(view.must_be_true().Ok());
@@ -105,7 +105,7 @@ TEST(RequiresBools, Ok) {
 }
 
 TEST(RequiresBools, CouldWriteValue) {
-  std::array<std::uint8_t, 1> buffer = {0};
+  ::std::array</**/ ::std::uint8_t, 1> buffer = {0};
   auto view = MakeRequiresBoolsView(&buffer);
 
   EXPECT_TRUE(view.a().CouldWriteValue(true));
@@ -122,7 +122,7 @@ TEST(RequiresBools, CouldWriteValue) {
 }
 
 TEST(RequiresEnums, Ok) {
-  std::array<std::uint8_t, 3> buffer = {0, 0, 0};
+  ::std::array</**/ ::std::uint8_t, 3> buffer = {0, 0, 0};
   auto view = MakeRequiresEnumsView(&buffer);
   EXPECT_TRUE(view.a().Ok());
   EXPECT_TRUE(view.b().Ok());
@@ -152,7 +152,7 @@ TEST(RequiresEnums, Ok) {
 }
 
 TEST(RequiresEnums, CouldWriteValue) {
-  std::array<std::uint8_t, 3> buffer = {0, 0, 0};
+  ::std::array</**/ ::std::uint8_t, 3> buffer = {0, 0, 0};
   auto view = MakeRequiresEnumsView(&buffer);
 
   EXPECT_TRUE(view.a().CouldWriteValue(RequiresEnums::Enum::EN0));
@@ -170,7 +170,7 @@ TEST(RequiresEnums, CouldWriteValue) {
 }
 
 TEST(RequiresWithOptionalFields, Ok) {
-  std::array<std::uint8_t, 1> buffer = {0};
+  ::std::array</**/ ::std::uint8_t, 1> buffer = {0};
   auto view = MakeRequiresWithOptionalFieldsView(&buffer);
   EXPECT_FALSE(view.Ok());
   view.a().Write(true);
@@ -187,7 +187,7 @@ TEST(RequiresWithOptionalFields, Ok) {
 }
 
 TEST(RequiresWithOptionalFields, CouldWriteValue) {
-  std::array<std::uint8_t, 1> buffer = {0};
+  ::std::array</**/ ::std::uint8_t, 1> buffer = {0};
   auto view = MakeRequiresWithOptionalFieldsView(&buffer);
   view.b_exists().Write(true);
 

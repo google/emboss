@@ -15,12 +15,12 @@
 // Tests for the generated View class from subtypes.emb.
 //
 // These tests check that nested types work.
+#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
 #include "testdata/subtypes.emb.h"
-#include <gtest/gtest.h>
 
 namespace emboss {
 namespace test {
@@ -32,7 +32,7 @@ TEST(SubtypesTest, InnerEnumNames) {
 }
 
 TEST(SubtypesTest, OuterStructure) {
-  uint8_t buffer[OutWriter::SizeInBytes()] = {0};
+  ::std::uint8_t buffer[OutWriter::SizeInBytes()] = {0};
   auto view = OutWriter(buffer, sizeof buffer);
   buffer[1] = 0xcc;
   EXPECT_EQ(0xcc, view.in_1().in_in_1().in_2().field_byte().Read());

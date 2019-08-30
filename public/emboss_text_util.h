@@ -78,7 +78,7 @@ class TextOutputOptions final {
   bool multiline() const { return multiline_; }
   bool digit_grouping() const { return digit_grouping_; }
   bool comments() const { return comments_; }
-  uint8_t numeric_base() const { return numeric_base_; }
+  ::std::uint8_t numeric_base() const { return numeric_base_; }
 
  private:
   ::std::string indent_;
@@ -86,7 +86,7 @@ class TextOutputOptions final {
   bool comments_ = false;
   bool multiline_ = false;
   bool digit_grouping_ = false;
-  uint8_t numeric_base_ = 10;
+  ::std::uint8_t numeric_base_ = 10;
 };
 
 namespace support {
@@ -240,8 +240,8 @@ bool ReadIntegerFromTextStream(View *view, Stream *stream) {
 // digit separators to hex numbers, and nothing that would use '_' for digit
 // separators.
 template <class Stream, typename IntegralType>
-void WriteIntegerToTextStream(IntegralType value, Stream *stream, uint8_t base,
-                              bool digit_grouping) {
+void WriteIntegerToTextStream(IntegralType value, Stream *stream,
+                              ::std::uint8_t base, bool digit_grouping) {
   static_assert(::std::numeric_limits<
                     typename ::std::remove_cv<IntegralType>::type>::is_integer,
                 "WriteIntegerToTextStream only supports integer types.");
@@ -374,9 +374,15 @@ template <>
 struct FloatConstants<double> {
   static_assert(sizeof(double) == 8, "Emboss requires 64-bit double.");
   using MatchingIntegerType = ::std::uint64_t;
-  static constexpr MatchingIntegerType kMantissaMask() { return 0xfffffffffffffUL; }
-  static constexpr MatchingIntegerType kExponentMask() { return 0x7ff0000000000000UL; }
-  static constexpr MatchingIntegerType kSignMask() { return 0x8000000000000000UL; }
+  static constexpr MatchingIntegerType kMantissaMask() {
+    return 0xfffffffffffffUL;
+  }
+  static constexpr MatchingIntegerType kExponentMask() {
+    return 0x7ff0000000000000UL;
+  }
+  static constexpr MatchingIntegerType kSignMask() {
+    return 0x8000000000000000UL;
+  }
   static constexpr int kPrintfPrecision() { return 17; }
   static constexpr const char *kScanfFormat() { return "%lf%n"; }
 };
@@ -481,8 +487,8 @@ bool DecodeFloat(const ::std::string &token, Float *result) {
   // For non-NaN, non-Inf values, use the C scanf function, mirroring the use of
   // printf for writing the value, below.
   int chars_used = -1;
-  if (::std::sscanf(token.c_str(), FloatConstants<Float>::kScanfFormat(), result,
-                    &chars_used) < 1) {
+  if (::std::sscanf(token.c_str(), FloatConstants<Float>::kScanfFormat(),
+                    result, &chars_used) < 1) {
     return false;
   }
   if (chars_used < 0 ||
@@ -626,7 +632,7 @@ bool ReadArrayFromTextStream(Array *array, Stream *stream) {
   // double-set, but doing so would require quite a bit of overhead, and
   // O(array->ElementCount()) extra space in the worst case.  It does not seem
   // worth it to impose the runtime cost here.
-  size_t index = 0;
+  ::std::size_t index = 0;
   ::std::string brace;
   // Read out the opening brace.
   if (!ReadToken(stream, &brace)) return false;
@@ -734,7 +740,7 @@ class TextStream final {
   inline explicit TextStream(const char *text)
       : text_(text), length_(strlen(text)) {}
 
-  inline TextStream(const char *text, size_t length)
+  inline TextStream(const char *text, ::std::size_t length)
       : text_(text), length_(length) {}
 
   inline bool Read(char *result) {
@@ -755,8 +761,8 @@ class TextStream final {
   // It would be nice to use string_view here, but that's not available until
   // C++17.
   const char *text_ = nullptr;
-  size_t length_ = 0;
-  size_t index_ = 0;
+  ::std::size_t length_ = 0;
+  ::std::size_t index_ = 0;
 };
 
 }  // namespace support

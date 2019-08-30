@@ -21,8 +21,9 @@
 
 // Entry point for fuzz tester: this must have this exact signature, including
 // the name `LLVMFuzzerTestOneInput`, or it will not work.
-extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
-  auto storage = ::std::basic_string<uint8_t>(data, size);
+extern "C" int LLVMFuzzerTestOneInput(const ::std::uint8_t *data,
+                                      ::std::size_t size) {
+  auto storage = ::std::basic_string</**/ ::std::uint8_t>(data, size);
   const auto view = ::emboss_test::MakeComplexView(&storage);
   (void)view.Ok();
   return 0;

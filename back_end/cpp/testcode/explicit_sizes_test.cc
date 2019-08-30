@@ -16,18 +16,18 @@
 // nested_structure.emb.
 //
 // These tests check that nested structures work.
+#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
 #include "testdata/explicit_sizes.emb.h"
-#include <gtest/gtest.h>
 
 namespace emboss {
 namespace test {
 namespace {
 
-static const uint8_t kUIntArrays[21] = {
+static const ::std::uint8_t kUIntArrays[21] = {
     0x21,                    // one_nibble == { 0x1, 0x2 }
     0x10, 0x20,              // two_nibble == { 0x10, 0x20 }
     0x10, 0x11, 0x20, 0x22,  // four_nibble == { 0x1110, 0x2220 }

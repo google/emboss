@@ -22,7 +22,8 @@
 
 // Entry point for fuzz tester: this must have this exact signature, including
 // the name `LLVMFuzzerTestOneInput`, or it will not work.
-extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
+extern "C" int LLVMFuzzerTestOneInput(const ::std::uint8_t *data,
+                                      ::std::size_t size) {
   ::std::array<char, 64> values = {0};
   const auto view = ::emboss_test::MakeComplexView(&values);
   ::emboss::UpdateFromText(

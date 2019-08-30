@@ -14,8 +14,9 @@
 
 #include "public/emboss_memory_util.h"
 
-#include "public/emboss_prelude.h"
 #include <gtest/gtest.h>
+
+#include "public/emboss_prelude.h"
 
 namespace emboss {
 namespace support {
@@ -24,11 +25,11 @@ namespace test {
 using ::emboss::prelude::IntView;
 using ::emboss::prelude::UIntView;
 
-template <size_t kBits>
+template </**/ ::std::size_t kBits>
 using BigEndianBitBlockN =
     BitBlock<BigEndianByteOrderer<ReadWriteContiguousBuffer>, kBits>;
 
-template <size_t kBits>
+template </**/ ::std::size_t kBits>
 using LittleEndianBitBlockN =
     BitBlock<LittleEndianByteOrderer<ReadWriteContiguousBuffer>, kBits>;
 
@@ -47,7 +48,8 @@ TEST(GreatestCommonDivisor, GreatestCommonDivisor) {
 // possible to loop through them directly.  Instead, TestMemoryAccessor tests
 // a particular MemoryAccessor's methods, then calls the next template to test
 // the next set of template parameters to MemoryAccessor.
-template <typename CharT, size_t kAlignment, size_t kOffset, size_t kBits>
+template <typename CharT, ::std::size_t kAlignment, ::std::size_t kOffset,
+          ::std::size_t kBits>
 void TestMemoryAccessor() {
   alignas(kAlignment)
       CharT bytes[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
@@ -187,8 +189,10 @@ struct NonstandardAllocator {
   template <class U>
   NonstandardAllocator(const NonstandardAllocator<U> &) {}  // NOLINT
 
-  T *allocate(size_t n) { return ::std::allocator<T>().allocate(n); }
-  void deallocate(T *p, size_t n) { ::std::allocator<T>().deallocate(p, n); }
+  T *allocate(::std::size_t n) { return ::std::allocator<T>().allocate(n); }
+  void deallocate(T *p, ::std::size_t n) {
+    ::std::allocator<T>().deallocate(p, n);
+  }
 
   static size_type max_size() {
     return ::std::numeric_limits<size_type>::max() / sizeof(value_type);
@@ -277,59 +281,59 @@ TEST(ContiguousBuffer, ReturnTypeOfReadUInt) {
   const auto buffer = ContiguousBuffer<char, 1, 0>();
 
   EXPECT_TRUE((::std::is_same<decltype(buffer.ReadBigEndianUInt<64>()),
-                              uint64_t>::value));
+                              ::std::uint64_t>::value));
   EXPECT_TRUE((::std::is_same<decltype(buffer.ReadBigEndianUInt<48>()),
-                              uint64_t>::value));
+                              ::std::uint64_t>::value));
   EXPECT_TRUE((::std::is_same<decltype(buffer.ReadBigEndianUInt<32>()),
-                              uint32_t>::value));
+                              ::std::uint32_t>::value));
   EXPECT_TRUE((::std::is_same<decltype(buffer.ReadBigEndianUInt<16>()),
-                              uint16_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<decltype(buffer.ReadBigEndianUInt<8>()), uint8_t>::value));
+                              ::std::uint16_t>::value));
+  EXPECT_TRUE((::std::is_same<decltype(buffer.ReadBigEndianUInt<8>()),
+                              ::std::uint8_t>::value));
 
   EXPECT_TRUE((::std::is_same<decltype(buffer.ReadLittleEndianUInt<64>()),
-                              uint64_t>::value));
+                              ::std::uint64_t>::value));
   EXPECT_TRUE((::std::is_same<decltype(buffer.ReadLittleEndianUInt<48>()),
-                              uint64_t>::value));
+                              ::std::uint64_t>::value));
   EXPECT_TRUE((::std::is_same<decltype(buffer.ReadLittleEndianUInt<32>()),
-                              uint32_t>::value));
+                              ::std::uint32_t>::value));
   EXPECT_TRUE((::std::is_same<decltype(buffer.ReadLittleEndianUInt<16>()),
-                              uint16_t>::value));
+                              ::std::uint16_t>::value));
   EXPECT_TRUE((::std::is_same<decltype(buffer.ReadLittleEndianUInt<8>()),
-                              uint8_t>::value));
+                              ::std::uint8_t>::value));
 
   EXPECT_TRUE((::std::is_same<decltype(buffer.UncheckedReadBigEndianUInt<64>()),
-                              uint64_t>::value));
+                              ::std::uint64_t>::value));
   EXPECT_TRUE((::std::is_same<decltype(buffer.UncheckedReadBigEndianUInt<48>()),
-                              uint64_t>::value));
+                              ::std::uint64_t>::value));
   EXPECT_TRUE((::std::is_same<decltype(buffer.UncheckedReadBigEndianUInt<32>()),
-                              uint32_t>::value));
+                              ::std::uint32_t>::value));
   EXPECT_TRUE((::std::is_same<decltype(buffer.UncheckedReadBigEndianUInt<16>()),
-                              uint16_t>::value));
+                              ::std::uint16_t>::value));
   EXPECT_TRUE((::std::is_same<decltype(buffer.UncheckedReadBigEndianUInt<8>()),
-                              uint8_t>::value));
+                              ::std::uint8_t>::value));
 
   EXPECT_TRUE(
       (::std::is_same<decltype(buffer.UncheckedReadLittleEndianUInt<64>()),
-                      uint64_t>::value));
+                      ::std::uint64_t>::value));
   EXPECT_TRUE(
       (::std::is_same<decltype(buffer.UncheckedReadLittleEndianUInt<48>()),
-                      uint64_t>::value));
+                      ::std::uint64_t>::value));
   EXPECT_TRUE(
       (::std::is_same<decltype(buffer.UncheckedReadLittleEndianUInt<32>()),
-                      uint32_t>::value));
+                      ::std::uint32_t>::value));
   EXPECT_TRUE(
       (::std::is_same<decltype(buffer.UncheckedReadLittleEndianUInt<16>()),
-                      uint16_t>::value));
+                      ::std::uint16_t>::value));
   EXPECT_TRUE(
       (::std::is_same<decltype(buffer.UncheckedReadLittleEndianUInt<8>()),
-                      uint8_t>::value));
+                      ::std::uint8_t>::value));
 }
 
 TEST(ReadOnlyContiguousBuffer, Methods) {
-  const ::std::vector<uint8_t> bytes = {{0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b,
-                                         0x0a, 0x09, 0x08, 0x07, 0x06, 0x05,
-                                         0x04, 0x03, 0x02, 0x01}};
+  const ::std::vector</**/ ::std::uint8_t> bytes = {
+      {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07, 0x06, 0x05,
+       0x04, 0x03, 0x02, 0x01}};
   const auto buffer = ReadOnlyContiguousBuffer{bytes.data(), bytes.size() - 4};
   EXPECT_DEATH(buffer.ReadBigEndianUInt<64>(), "");
   EXPECT_TRUE(buffer.Ok());
@@ -372,7 +376,7 @@ TEST(ReadOnlyContiguousBuffer, Methods) {
 }
 
 TEST(ReadWriteContiguousBuffer, Methods) {
-  ::std::vector<uint8_t> bytes = {
+  ::std::vector</**/ ::std::uint8_t> bytes = {
       {0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01}};
   const auto buffer = ReadWriteContiguousBuffer{bytes.data(), bytes.size() - 4};
   // Read and Ok methods should work just as in ReadOnlyContiguousBuffer.
@@ -381,33 +385,39 @@ TEST(ReadWriteContiguousBuffer, Methods) {
   EXPECT_EQ(0x0c0b0a0908070605, buffer.ReadBigEndianUInt<64>());
 
   buffer.WriteBigEndianUInt<64>(0x05060708090a0b0c);
-  EXPECT_EQ((::std::vector<uint8_t>{0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b,
-                                    0x0c, 0x04, 0x03, 0x02, 0x01}),
-            bytes);
+  EXPECT_EQ(
+      (::std::vector</**/ ::std::uint8_t>{0x05, 0x06, 0x07, 0x08, 0x09, 0x0a,
+                                          0x0b, 0x0c, 0x04, 0x03, 0x02, 0x01}),
+      bytes);
   buffer.WriteLittleEndianUInt<64>(0x05060708090a0b0c);
-  EXPECT_EQ((::std::vector<uint8_t>{0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07, 0x06,
-                                    0x05, 0x04, 0x03, 0x02, 0x01}),
-            bytes);
+  EXPECT_EQ(
+      (::std::vector</**/ ::std::uint8_t>{0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07,
+                                          0x06, 0x05, 0x04, 0x03, 0x02, 0x01}),
+      bytes);
 
   const auto offset_buffer = buffer.GetOffsetStorage<1, 0>(4, 4);
   offset_buffer.WriteBigEndianUInt<32>(0x05060708);
-  EXPECT_EQ((::std::vector<uint8_t>{0x0c, 0x0b, 0x0a, 0x09, 0x05, 0x06, 0x07,
-                                    0x08, 0x04, 0x03, 0x02, 0x01}),
-            bytes);
+  EXPECT_EQ(
+      (::std::vector</**/ ::std::uint8_t>{0x0c, 0x0b, 0x0a, 0x09, 0x05, 0x06,
+                                          0x07, 0x08, 0x04, 0x03, 0x02, 0x01}),
+      bytes);
   offset_buffer.WriteLittleEndianUInt<32>(0x05060708);
-  EXPECT_EQ((::std::vector<uint8_t>{0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07, 0x06,
-                                    0x05, 0x04, 0x03, 0x02, 0x01}),
-            bytes);
+  EXPECT_EQ(
+      (::std::vector</**/ ::std::uint8_t>{0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07,
+                                          0x06, 0x05, 0x04, 0x03, 0x02, 0x01}),
+      bytes);
 
   const auto small_offset_buffer = buffer.GetOffsetStorage<1, 0>(4, 1);
   small_offset_buffer.WriteBigEndianUInt<8>(0x80);
-  EXPECT_EQ((::std::vector<uint8_t>{0x0c, 0x0b, 0x0a, 0x09, 0x80, 0x07, 0x06,
-                                    0x05, 0x04, 0x03, 0x02, 0x01}),
-            bytes);
+  EXPECT_EQ(
+      (::std::vector</**/ ::std::uint8_t>{0x0c, 0x0b, 0x0a, 0x09, 0x80, 0x07,
+                                          0x06, 0x05, 0x04, 0x03, 0x02, 0x01}),
+      bytes);
   small_offset_buffer.WriteLittleEndianUInt<8>(0x08);
-  EXPECT_EQ((::std::vector<uint8_t>{0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07, 0x06,
-                                    0x05, 0x04, 0x03, 0x02, 0x01}),
-            bytes);
+  EXPECT_EQ(
+      (::std::vector</**/ ::std::uint8_t>{0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07,
+                                          0x06, 0x05, 0x04, 0x03, 0x02, 0x01}),
+      bytes);
 
   EXPECT_DEATH(ReadWriteContiguousBuffer().ReadLittleEndianUInt<8>(), "");
   EXPECT_DEATH(
@@ -448,7 +458,8 @@ TEST(ContiguousBuffer, ConstructionFromCompatibleContiguousBuffers) {
 }
 
 TEST(LittleEndianByteOrderer, Methods) {
-  ::std::vector<uint8_t> bytes = {{21, 22, 1, 2, 3, 4, 5, 6, 7, 8, 23, 24}};
+  ::std::vector</**/ ::std::uint8_t> bytes = {
+      {21, 22, 1, 2, 3, 4, 5, 6, 7, 8, 23, 24}};
   const int buffer_start = 2;
   const auto buffer = LittleEndianByteOrderer<ReadWriteContiguousBuffer>{
       ReadWriteContiguousBuffer{bytes.data() + buffer_start, 8}};
@@ -459,10 +470,12 @@ TEST(LittleEndianByteOrderer, Methods) {
   EXPECT_DEATH(buffer.ReadUInt<56>(), "");
   EXPECT_EQ(0x07060504030201, buffer.UncheckedReadUInt<56>());
   buffer.WriteUInt<64>(0x0102030405060708);
-  EXPECT_EQ((::std::vector<uint8_t>{21, 22, 8, 7, 6, 5, 4, 3, 2, 1, 23, 24}),
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{21, 22, 8, 7, 6, 5, 4, 3, 2, 1,
+                                                23, 24}),
             bytes);
   buffer.UncheckedWriteUInt<64>(0x0807060504030201);
-  EXPECT_EQ((::std::vector<uint8_t>{21, 22, 1, 2, 3, 4, 5, 6, 7, 8, 23, 24}),
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{21, 22, 1, 2, 3, 4, 5, 6, 7, 8,
+                                                23, 24}),
             bytes);
   EXPECT_DEATH(buffer.WriteUInt<56>(0x77777777777777), "");
 
@@ -478,7 +491,8 @@ TEST(LittleEndianByteOrderer, Methods) {
 }
 
 TEST(BigEndianByteOrderer, Methods) {
-  ::std::vector<uint8_t> bytes = {{21, 22, 1, 2, 3, 4, 5, 6, 7, 8, 23, 24}};
+  ::std::vector</**/ ::std::uint8_t> bytes = {
+      {21, 22, 1, 2, 3, 4, 5, 6, 7, 8, 23, 24}};
   const int buffer_start = 2;
   const auto buffer = BigEndianByteOrderer<ReadWriteContiguousBuffer>{
       ReadWriteContiguousBuffer{bytes.data() + buffer_start, 8}};
@@ -489,10 +503,12 @@ TEST(BigEndianByteOrderer, Methods) {
   EXPECT_DEATH(buffer.ReadUInt<56>(), "");
   EXPECT_EQ(0x01020304050607, buffer.UncheckedReadUInt<56>());
   buffer.WriteUInt<64>(0x0807060504030201);
-  EXPECT_EQ((::std::vector<uint8_t>{21, 22, 8, 7, 6, 5, 4, 3, 2, 1, 23, 24}),
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{21, 22, 8, 7, 6, 5, 4, 3, 2, 1,
+                                                23, 24}),
             bytes);
   buffer.UncheckedWriteUInt<64>(0x0102030405060708);
-  EXPECT_EQ((::std::vector<uint8_t>{21, 22, 1, 2, 3, 4, 5, 6, 7, 8, 23, 24}),
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{21, 22, 1, 2, 3, 4, 5, 6, 7, 8,
+                                                23, 24}),
             bytes);
   EXPECT_DEATH(buffer.WriteUInt<56>(0x77777777777777), "");
 
@@ -507,7 +523,7 @@ TEST(BigEndianByteOrderer, Methods) {
 }
 
 TEST(NullByteOrderer, Methods) {
-  uint8_t bytes[] = {0xdb, 0x0f, 0x0e, 0x0d};
+  ::std::uint8_t bytes[] = {0xdb, 0x0f, 0x0e, 0x0d};
   const auto buffer = NullByteOrderer<ReadWriteContiguousBuffer>{
       ReadWriteContiguousBuffer{bytes, 1}};
   EXPECT_EQ(bytes[0], buffer.ReadUInt<8>());
@@ -540,8 +556,8 @@ TEST(NullByteOrderer, Methods) {
 }
 
 TEST(BitBlock, BigEndianMethods) {
-  uint8_t bytes[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-                     0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10};
+  ::std::uint8_t bytes[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                            0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10};
   const auto big_endian =
       BigEndianBitBlockN<64>{ReadWriteContiguousBuffer{bytes + 4, 8}};
   EXPECT_EQ(64, big_endian.SizeInBits());
@@ -555,8 +571,8 @@ TEST(BitBlock, BigEndianMethods) {
 }
 
 TEST(BitBlock, LittleEndianMethods) {
-  uint8_t bytes[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-                     0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10};
+  ::std::uint8_t bytes[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                            0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10};
   const auto little_endian =
       LittleEndianBitBlockN<64>{ReadWriteContiguousBuffer{bytes + 4, 8}};
   EXPECT_EQ(64, little_endian.SizeInBits());
@@ -570,8 +586,8 @@ TEST(BitBlock, LittleEndianMethods) {
 }
 
 TEST(BitBlock, GetOffsetStorage) {
-  uint8_t bytes[] = {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09,
-                     0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
+  ::std::uint8_t bytes[] = {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09,
+                            0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
   const auto bit_block =
       LittleEndianBitBlockN<64>{ReadWriteContiguousBuffer{bytes, 8}};
   const OffsetBitBlock<LittleEndianBitBlockN<64>> offset_block =
@@ -588,7 +604,7 @@ TEST(BitBlock, GetOffsetStorage) {
 }
 
 TEST(OffsetBitBlock, Methods) {
-  ::std::vector<uint8_t> bytes = {
+  ::std::vector</**/ ::std::uint8_t> bytes = {
       {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09}};
   const auto bit_block =
       LittleEndianBitBlockN<64>{ReadWriteContiguousBuffer{&bytes}};
@@ -600,36 +616,36 @@ TEST(OffsetBitBlock, Methods) {
   EXPECT_EQ(0x0a0b0c0d0e0f, offset_block.ReadUInt());
   EXPECT_EQ(0x0a0b0c0d0e0f, offset_block.UncheckedReadUInt());
   offset_block.WriteUInt(0x0f0e0d0c0b0a);
-  EXPECT_EQ(
-      (::std::vector<uint8_t>{0x10, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x09}),
-      bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{0x10, 0x0a, 0x0b, 0x0c, 0x0d,
+                                                0x0e, 0x0f, 0x09}),
+            bytes);
   offset_block.UncheckedWriteUInt(0x0a0b0c0d0e0f);
-  EXPECT_EQ(
-      (::std::vector<uint8_t>{0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09}),
-      bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{0x10, 0x0f, 0x0e, 0x0d, 0x0c,
+                                                0x0b, 0x0a, 0x09}),
+            bytes);
   EXPECT_DEATH(offset_block.WriteUInt(0x10f0e0d0c0b0a), "");
   offset_block.UncheckedWriteUInt(0x10f0e0d0c0b0a);
-  EXPECT_EQ(
-      (::std::vector<uint8_t>{0x10, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x09}),
-      bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{0x10, 0x0a, 0x0b, 0x0c, 0x0d,
+                                                0x0e, 0x0f, 0x09}),
+            bytes);
 
   const auto offset_offset_block = offset_block.GetOffsetStorage<1, 0>(16, 16);
   EXPECT_FALSE((offset_offset_block.GetOffsetStorage<1, 0>(8, 16).Ok()));
   EXPECT_EQ(0x0d0c, offset_offset_block.ReadUInt());
   EXPECT_EQ(0x0d0c, offset_offset_block.UncheckedReadUInt());
   offset_offset_block.WriteUInt(0x0c0d);
-  EXPECT_EQ(
-      (::std::vector<uint8_t>{0x10, 0x0a, 0x0b, 0x0d, 0x0c, 0x0e, 0x0f, 0x09}),
-      bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{0x10, 0x0a, 0x0b, 0x0d, 0x0c,
+                                                0x0e, 0x0f, 0x09}),
+            bytes);
   offset_offset_block.UncheckedWriteUInt(0x0d0c);
-  EXPECT_EQ(
-      (::std::vector<uint8_t>{0x10, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x09}),
-      bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{0x10, 0x0a, 0x0b, 0x0c, 0x0d,
+                                                0x0e, 0x0f, 0x09}),
+            bytes);
   EXPECT_DEATH(offset_offset_block.WriteUInt(0x10c0d), "");
   offset_offset_block.UncheckedWriteUInt(0x20c0d);
-  EXPECT_EQ(
-      (::std::vector<uint8_t>{0x10, 0x0a, 0x0b, 0x0d, 0x0c, 0x0e, 0x0f, 0x09}),
-      bytes);
+  EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{0x10, 0x0a, 0x0b, 0x0d, 0x0c,
+                                                0x0e, 0x0f, 0x09}),
+            bytes);
 
   const auto null_offset_block = OffsetBitBlock<BigEndianBitBlockN<32>>();
   EXPECT_FALSE(null_offset_block.Ok());

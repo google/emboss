@@ -15,6 +15,7 @@
 // Tests for the generated View class from bcd.emb.
 //
 // These tests check that Binary-Coded Decimal (BCD) numbers work.
+#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <array>
@@ -22,13 +23,12 @@
 #include <vector>
 
 #include "testdata/bcd.emb.h"
-#include <gtest/gtest.h>
 
 namespace emboss {
 namespace test {
 namespace {
 
-alignas(8) static const uint8_t kBcd[40] = {
+alignas(8) static const ::std::uint8_t kBcd[40] = {
     0x02,                    // 0  [+1]  one_byte == 2
     0x04, 0x01,              // 1  [+2]  two_byte == 104
     0x66, 0x55, 0x44,        // 3  [+3]  three_byte == 445566
@@ -48,7 +48,8 @@ alignas(8) static const uint8_t kBcd[40] = {
 };
 
 TEST(BcdSizesView, CanReadBcd) {
-  auto view = MakeAlignedBcdSizesView<const uint8_t, 8>(kBcd, sizeof kBcd);
+  auto view =
+      MakeAlignedBcdSizesView<const ::std::uint8_t, 8>(kBcd, sizeof kBcd);
   EXPECT_EQ(2, view.one_byte().Read());
   EXPECT_EQ(104, view.two_byte().Read());
   EXPECT_EQ(445566, view.three_byte().Read());
@@ -77,7 +78,7 @@ TEST(BcdSizesView, CanReadBcd) {
 }
 
 TEST(BcdSizesWriter, CanWriteBcd) {
-  uint8_t buffer[sizeof kBcd] = {0};
+  ::std::uint8_t buffer[sizeof kBcd] = {0};
   auto writer = BcdSizesWriter(buffer, sizeof buffer);
   writer.one_byte().Write(2);
   writer.two_byte().Write(104);
@@ -91,8 +92,8 @@ TEST(BcdSizesWriter, CanWriteBcd) {
   writer.six_bit().Write(13);
   writer.ten_bit().Write(307);
   writer.twelve_bit().Write(123);
-  EXPECT_EQ(std::vector<uint8_t>(kBcd, kBcd + sizeof kBcd),
-            std::vector<uint8_t>(buffer, buffer + sizeof buffer));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(kBcd, kBcd + sizeof kBcd),
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 
   EXPECT_DEATH(writer.one_byte().Write(100), "");
   EXPECT_DEATH(writer.three_byte().Write(1445566), "");
@@ -113,7 +114,7 @@ TEST(BcdSizesView, OkIsTrueForGoodBcd) {
   EXPECT_TRUE(view.eight_byte().Ok());
 }
 
-static const uint8_t kBadBcd[40] = {
+static const ::std::uint8_t kBadBcd[40] = {
     0x0a,                    // 0  [+1]  one_byte
     0xb4, 0x01,              // 1  [+2]  two_byte
     0xaa, 0x55, 0x44,        // 3  [+3]  three_byte
@@ -179,7 +180,7 @@ TEST(BcdSizesView, OkIsFalseForBadBcd) {
 }
 
 TEST(BcdBigEndianView, BigEndianReadWrite) {
-  uint8_t big_endian[4] = {0x12, 0x34, 0x56, 0x78};
+  ::std::uint8_t big_endian[4] = {0x12, 0x34, 0x56, 0x78};
   auto writer = BcdBigEndianWriter(big_endian, sizeof big_endian);
   EXPECT_EQ(12345678, writer.four_byte().Read());
   writer.four_byte().Write(87654321);
@@ -190,8 +191,8 @@ TEST(BcdBigEndianView, BigEndianReadWrite) {
 }
 
 TEST(BcdBigEndianView, CopyFrom) {
-  std::array<uint8_t, 4> buf_x = {0x12, 0x34, 0x56, 0x78};
-  std::array<uint8_t, 4> buf_y = {0x00, 0x00, 0x00, 0x00};
+  ::std::array</**/ ::std::uint8_t, 4> buf_x = {0x12, 0x34, 0x56, 0x78};
+  ::std::array</**/ ::std::uint8_t, 4> buf_y = {0x00, 0x00, 0x00, 0x00};
 
   auto x = BcdBigEndianWriter(&buf_x);
   auto y = BcdBigEndianWriter(&buf_y);
@@ -202,8 +203,8 @@ TEST(BcdBigEndianView, CopyFrom) {
 }
 
 TEST(BcdBigEndianView, TryToCopyFrom) {
-  std::array<uint8_t, 4> buf_x = {0x12, 0x34, 0x56, 0x78};
-  std::array<uint8_t, 4> buf_y = {0x00, 0x00, 0x00, 0x00};
+  ::std::array</**/ ::std::uint8_t, 4> buf_x = {0x12, 0x34, 0x56, 0x78};
+  ::std::array</**/ ::std::uint8_t, 4> buf_y = {0x00, 0x00, 0x00, 0x00};
 
   auto x = BcdBigEndianWriter(&buf_x);
   auto y = BcdBigEndianWriter(&buf_y);
@@ -214,11 +215,11 @@ TEST(BcdBigEndianView, TryToCopyFrom) {
 }
 
 TEST(BcdSizesView, Equals) {
-  std::array<uint8_t, sizeof kBcd> buf_x;
-  std::array<uint8_t, sizeof kBcd> buf_y;
+  ::std::array</**/ ::std::uint8_t, sizeof kBcd> buf_x;
+  ::std::array</**/ ::std::uint8_t, sizeof kBcd> buf_y;
 
-  std::copy(kBcd, kBcd + sizeof kBcd, buf_x.begin());
-  std::copy(kBcd, kBcd + sizeof kBcd, buf_y.begin());
+  ::std::copy(kBcd, kBcd + sizeof kBcd, buf_x.begin());
+  ::std::copy(kBcd, kBcd + sizeof kBcd, buf_y.begin());
 
   EXPECT_EQ(buf_x, buf_y);
   auto x = BcdSizesView(&buf_x);
@@ -255,11 +256,11 @@ TEST(BcdSizesView, Equals) {
 }
 
 TEST(BcdSizesView, UncheckedEquals) {
-  std::array<uint8_t, sizeof kBadBcd> buf_x;
-  std::array<uint8_t, sizeof kBadBcd> buf_y;
+  ::std::array</**/ ::std::uint8_t, sizeof kBadBcd> buf_x;
+  ::std::array</**/ ::std::uint8_t, sizeof kBadBcd> buf_y;
 
-  std::copy(kBadBcd, kBadBcd + sizeof kBadBcd, buf_x.begin());
-  std::copy(kBadBcd, kBadBcd + sizeof kBadBcd, buf_y.begin());
+  ::std::copy(kBadBcd, kBadBcd + sizeof kBadBcd, buf_x.begin());
+  ::std::copy(kBadBcd, kBadBcd + sizeof kBadBcd, buf_y.begin());
 
   EXPECT_EQ(buf_x, buf_y);
   auto x = BcdSizesView(&buf_x);

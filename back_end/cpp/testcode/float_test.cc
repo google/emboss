@@ -14,20 +14,20 @@
 
 // Tests for Emboss floating-point support.
 
+#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <cmath>
 #include <vector>
 
 #include "testdata/float.emb.h"
-#include <gtest/gtest.h>
 
 namespace emboss {
 namespace test {
 namespace {
 
-std::array<char, 8> MakeFloats(uint32_t bits) {
-  return std::array<char, 8>({{
+::std::array<char, 8> MakeFloats(::std::uint32_t bits) {
+  return ::std::array<char, 8>({{
       // Little endian version
       static_cast<char>(bits & 0xff),          //
       static_cast<char>((bits >> 8) & 0xff),   //
@@ -42,8 +42,8 @@ std::array<char, 8> MakeFloats(uint32_t bits) {
   }});
 }
 
-std::array<char, 16> MakeDoubles(uint64_t bits) {
-  return std::array<char, 16>({{
+::std::array<char, 16> MakeDoubles(::std::uint64_t bits) {
+  return ::std::array<char, 16>({{
       // Little endian version
       static_cast<char>(bits & 0xff),          //
       static_cast<char>((bits >> 8) & 0xff),   //
@@ -67,10 +67,10 @@ std::array<char, 16> MakeDoubles(uint64_t bits) {
 }
 
 // This is used separately for tests where !(a == a).
-void TestFloatWrite(float value, uint32_t bits) {
+void TestFloatWrite(float value, ::std::uint32_t bits) {
   const auto floats = MakeFloats(bits);
 
-  std::array<char, 8> buffer = {};
+  ::std::array<char, 8> buffer = {};
   auto writer = MakeFloatsView(&buffer);
   EXPECT_TRUE(writer.float_little_endian().CouldWriteValue(value));
   EXPECT_TRUE(writer.float_big_endian().CouldWriteValue(value));
@@ -79,7 +79,7 @@ void TestFloatWrite(float value, uint32_t bits) {
   EXPECT_EQ(floats, buffer);
 }
 
-std::array<char, 8> TestFloatValue(float value, uint32_t bits) {
+::std::array<char, 8> TestFloatValue(float value, ::std::uint32_t bits) {
   const auto floats = MakeFloats(bits);
 
   auto view = MakeFloatsView(&floats);
@@ -92,10 +92,10 @@ std::array<char, 8> TestFloatValue(float value, uint32_t bits) {
 }
 
 // This is used separately for tests where !(a == a).
-void TestDoubleWrite(double value, uint64_t bits) {
+void TestDoubleWrite(double value, ::std::uint64_t bits) {
   const auto doubles = MakeDoubles(bits);
 
-  std::array<char, 16> buffer = {};
+  ::std::array<char, 16> buffer = {};
   auto writer = MakeDoublesView(&buffer);
   EXPECT_TRUE(writer.double_little_endian().CouldWriteValue(value));
   EXPECT_TRUE(writer.double_big_endian().CouldWriteValue(value));
@@ -104,7 +104,7 @@ void TestDoubleWrite(double value, uint64_t bits) {
   EXPECT_EQ(doubles, buffer);
 }
 
-std::array<char, 16> TestDoubleValue(double value, uint64_t bits) {
+::std::array<char, 16> TestDoubleValue(double value, ::std::uint64_t bits) {
   const auto doubles = MakeDoubles(bits);
 
   auto view = MakeDoublesView(&doubles);
@@ -118,39 +118,41 @@ std::array<char, 16> TestDoubleValue(double value, uint64_t bits) {
 
 TEST(Floats, One) { TestFloatValue(+1.0f, 0x3f800000); }
 TEST(Floats, Fraction) { TestFloatValue(-0.375f, 0xbec00000); }
-TEST(Floats, MinimumDenorm) { TestFloatValue(std::exp2(-149.0f), 0x00000001); }
+TEST(Floats, MinimumDenorm) {
+  TestFloatValue(::std::exp2(-149.0f), 0x00000001);
+}
 
 TEST(Floats, PlusZero) {
   auto floats = TestFloatValue(+0.0f, 0x00000000);
   auto view = MakeFloatsView(&floats);
-  EXPECT_FALSE(std::signbit(view.float_little_endian().Read()));
-  EXPECT_FALSE(std::signbit(view.float_big_endian().Read()));
+  EXPECT_FALSE(::std::signbit(view.float_little_endian().Read()));
+  EXPECT_FALSE(::std::signbit(view.float_big_endian().Read()));
 }
 
 TEST(Floats, MinusZero) {
   auto floats = TestFloatValue(-0.0f, 0x80000000);
   auto view = MakeFloatsView(&floats);
-  EXPECT_TRUE(std::signbit(view.float_little_endian().Read()));
-  EXPECT_TRUE(std::signbit(view.float_big_endian().Read()));
+  EXPECT_TRUE(::std::signbit(view.float_little_endian().Read()));
+  EXPECT_TRUE(::std::signbit(view.float_big_endian().Read()));
 }
 
 TEST(Floats, PlusInfinity) {
   auto floats = MakeFloats(0x7f800000);
   auto view = MakeFloatsView(&floats);
-  EXPECT_TRUE(std::isinf(view.float_little_endian().Read()));
-  EXPECT_TRUE(std::isinf(view.float_big_endian().Read()));
-  EXPECT_FALSE(std::signbit(view.float_little_endian().Read()));
-  EXPECT_FALSE(std::signbit(view.float_big_endian().Read()));
+  EXPECT_TRUE(::std::isinf(view.float_little_endian().Read()));
+  EXPECT_TRUE(::std::isinf(view.float_big_endian().Read()));
+  EXPECT_FALSE(::std::signbit(view.float_little_endian().Read()));
+  EXPECT_FALSE(::std::signbit(view.float_big_endian().Read()));
   TestFloatWrite(view.float_little_endian().Read(), 0x7f800000);
 }
 
 TEST(Floats, MinusInfinity) {
   auto floats = MakeFloats(0xff800000);
   auto view = MakeFloatsView(&floats);
-  EXPECT_TRUE(std::isinf(view.float_little_endian().Read()));
-  EXPECT_TRUE(std::isinf(view.float_big_endian().Read()));
-  EXPECT_TRUE(std::signbit(view.float_little_endian().Read()));
-  EXPECT_TRUE(std::signbit(view.float_big_endian().Read()));
+  EXPECT_TRUE(::std::isinf(view.float_little_endian().Read()));
+  EXPECT_TRUE(::std::isinf(view.float_big_endian().Read()));
+  EXPECT_TRUE(::std::signbit(view.float_little_endian().Read()));
+  EXPECT_TRUE(::std::signbit(view.float_big_endian().Read()));
   TestFloatWrite(view.float_little_endian().Read(), 0xff800000);
 }
 
@@ -166,8 +168,8 @@ TEST(Floats, Nan) {
 
   auto floats = MakeFloats(0x7f800001);
   auto view = MakeFloatsView(&floats);
-  EXPECT_TRUE(std::isnan(view.float_little_endian().Read()));
-  EXPECT_TRUE(std::isnan(view.float_big_endian().Read()));
+  EXPECT_TRUE(::std::isnan(view.float_little_endian().Read()));
+  EXPECT_TRUE(::std::isnan(view.float_big_endian().Read()));
   TestFloatWrite(view.float_little_endian().Read(), 0x7f800001);
 }
 
@@ -211,10 +213,10 @@ TEST(FloatView, EqualsNaN) {
   auto x = MakeFloatsView(&buf_x);
   auto y = MakeFloatsView(&buf_y);
 
-  EXPECT_TRUE(std::isnan(x.float_little_endian().Read()));
-  EXPECT_TRUE(std::isnan(x.float_big_endian().Read()));
-  EXPECT_TRUE(std::isnan(y.float_little_endian().Read()));
-  EXPECT_TRUE(std::isnan(y.float_big_endian().Read()));
+  EXPECT_TRUE(::std::isnan(x.float_little_endian().Read()));
+  EXPECT_TRUE(::std::isnan(x.float_big_endian().Read()));
+  EXPECT_TRUE(::std::isnan(y.float_little_endian().Read()));
+  EXPECT_TRUE(::std::isnan(y.float_big_endian().Read()));
 
   EXPECT_FALSE(x.Equals(x));
   EXPECT_FALSE(y.Equals(y));
@@ -225,48 +227,48 @@ TEST(FloatView, EqualsNaN) {
 TEST(Doubles, One) { TestDoubleValue(+1.0, 0x3ff0000000000000UL); }
 TEST(Doubles, Fraction) { TestDoubleValue(-0.375, 0xbfd8000000000000UL); }
 TEST(Doubles, MinimumDenorm) {
-  TestDoubleValue(std::exp2(-1074.0), 0x0000000000000001UL);
+  TestDoubleValue(::std::exp2(-1074.0), 0x0000000000000001UL);
 }
 
 TEST(Doubles, PlusZero) {
   auto doubles = TestDoubleValue(+0.0, 0x0000000000000000UL);
   auto view = MakeDoublesView(&doubles);
-  EXPECT_FALSE(std::signbit(view.double_little_endian().Read()));
-  EXPECT_FALSE(std::signbit(view.double_big_endian().Read()));
+  EXPECT_FALSE(::std::signbit(view.double_little_endian().Read()));
+  EXPECT_FALSE(::std::signbit(view.double_big_endian().Read()));
 }
 
 TEST(Doubles, MinusZero) {
   auto doubles = TestDoubleValue(-0.0, 0x8000000000000000UL);
   auto view = MakeDoublesView(&doubles);
-  EXPECT_TRUE(std::signbit(view.double_little_endian().Read()));
-  EXPECT_TRUE(std::signbit(view.double_big_endian().Read()));
+  EXPECT_TRUE(::std::signbit(view.double_little_endian().Read()));
+  EXPECT_TRUE(::std::signbit(view.double_big_endian().Read()));
 }
 
 TEST(Doubles, PlusInfinity) {
   auto doubles = MakeDoubles(0x7ff0000000000000UL);
   auto view = MakeDoublesView(&doubles);
-  EXPECT_TRUE(std::isinf(view.double_little_endian().Read()));
-  EXPECT_TRUE(std::isinf(view.double_big_endian().Read()));
-  EXPECT_FALSE(std::signbit(view.double_little_endian().Read()));
-  EXPECT_FALSE(std::signbit(view.double_big_endian().Read()));
+  EXPECT_TRUE(::std::isinf(view.double_little_endian().Read()));
+  EXPECT_TRUE(::std::isinf(view.double_big_endian().Read()));
+  EXPECT_FALSE(::std::signbit(view.double_little_endian().Read()));
+  EXPECT_FALSE(::std::signbit(view.double_big_endian().Read()));
   TestDoubleWrite(view.double_little_endian().Read(), 0x7ff0000000000000UL);
 }
 
 TEST(Doubles, MinusInfinity) {
   auto doubles = MakeDoubles(0xfff0000000000000UL);
   auto view = MakeDoublesView(&doubles);
-  EXPECT_TRUE(std::isinf(view.double_little_endian().Read()));
-  EXPECT_TRUE(std::isinf(view.double_big_endian().Read()));
-  EXPECT_TRUE(std::signbit(view.double_little_endian().Read()));
-  EXPECT_TRUE(std::signbit(view.double_big_endian().Read()));
+  EXPECT_TRUE(::std::isinf(view.double_little_endian().Read()));
+  EXPECT_TRUE(::std::isinf(view.double_big_endian().Read()));
+  EXPECT_TRUE(::std::signbit(view.double_little_endian().Read()));
+  EXPECT_TRUE(::std::signbit(view.double_big_endian().Read()));
   TestDoubleWrite(view.double_little_endian().Read(), 0xfff0000000000000UL);
 }
 
 TEST(Doubles, Nan) {
   auto doubles = MakeDoubles(0x7ff0000000000001UL);
   auto view = MakeDoublesView(&doubles);
-  EXPECT_TRUE(std::isnan(view.double_little_endian().Read()));
-  EXPECT_TRUE(std::isnan(view.double_big_endian().Read()));
+  EXPECT_TRUE(::std::isnan(view.double_little_endian().Read()));
+  EXPECT_TRUE(::std::isnan(view.double_big_endian().Read()));
   TestDoubleWrite(view.double_little_endian().Read(), 0x7ff0000000000001UL);
 }
 
@@ -327,10 +329,10 @@ TEST(DoubleView, EqualsNaN) {
   auto x = MakeDoublesView(&buf_x);
   auto y = MakeDoublesView(&buf_y);
 
-  EXPECT_TRUE(std::isnan(x.double_little_endian().Read()));
-  EXPECT_TRUE(std::isnan(x.double_big_endian().Read()));
-  EXPECT_TRUE(std::isnan(y.double_little_endian().Read()));
-  EXPECT_TRUE(std::isnan(y.double_big_endian().Read()));
+  EXPECT_TRUE(::std::isnan(x.double_little_endian().Read()));
+  EXPECT_TRUE(::std::isnan(x.double_big_endian().Read()));
+  EXPECT_TRUE(::std::isnan(y.double_little_endian().Read()));
+  EXPECT_TRUE(::std::isnan(y.double_big_endian().Read()));
 
   EXPECT_FALSE(x.Equals(x));
   EXPECT_FALSE(y.Equals(y));

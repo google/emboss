@@ -16,18 +16,18 @@
 // nested_structure.emb.
 //
 // These tests check that nested structures work.
+#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
 #include "testdata/uint_sizes.emb.h"
-#include <gtest/gtest.h>
 
 namespace emboss {
 namespace test {
 namespace {
 
-alignas(8) static const uint8_t kUIntSizes[36] = {
+alignas(8) static const ::std::uint8_t kUIntSizes[36] = {
     0x02,                    // 0:1    one_byte == 2
     0x04, 0x01,              // 1:3    two_byte == 260
     0x66, 0x55, 0x44,        // 3:6    three_byte == 0x445566
@@ -43,8 +43,8 @@ alignas(8) static const uint8_t kUIntSizes[36] = {
 };
 
 TEST(SizesView, CanReadSizes) {
-  auto view =
-      MakeAlignedSizesView<const uint8_t, 8>(kUIntSizes, sizeof kUIntSizes);
+  auto view = MakeAlignedSizesView<const ::std::uint8_t, 8>(kUIntSizes,
+                                                            sizeof kUIntSizes);
   EXPECT_EQ(2, view.one_byte().Read());
   EXPECT_EQ(260, view.two_byte().Read());
   EXPECT_EQ(0x445566U, view.three_byte().Read());
@@ -65,7 +65,7 @@ TEST(SizesView, CanReadSizes) {
 }
 
 TEST(SizesWriter, CanWriteSizes) {
-  uint8_t buffer[sizeof kUIntSizes];
+  ::std::uint8_t buffer[sizeof kUIntSizes];
   auto writer = SizesWriter(buffer, sizeof buffer);
   writer.one_byte().Write(2);
   writer.two_byte().Write(260);
@@ -75,8 +75,9 @@ TEST(SizesWriter, CanWriteSizes) {
   writer.six_byte().Write(0x123456789abc);
   writer.seven_byte().Write(0xf1e2d3c4b5a697);
   writer.eight_byte().Write(0xff00010203040506UL);
-  EXPECT_EQ(std::vector<uint8_t>(kUIntSizes, kUIntSizes + sizeof kUIntSizes),
-            std::vector<uint8_t>(buffer, buffer + sizeof buffer));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(kUIntSizes,
+                                               kUIntSizes + sizeof kUIntSizes),
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 }
 
 TEST(SizesView, CanReadSizesBigEndian) {
@@ -101,7 +102,7 @@ TEST(SizesView, CanReadSizesBigEndian) {
 }
 
 TEST(SizesWriter, CanWriteSizesBigEndian) {
-  uint8_t buffer[sizeof kUIntSizes];
+  ::std::uint8_t buffer[sizeof kUIntSizes];
   auto writer = BigEndianSizesWriter(buffer, sizeof buffer);
   writer.one_byte().Write(2);
   writer.two_byte().Write(0x0401);
@@ -111,8 +112,9 @@ TEST(SizesWriter, CanWriteSizesBigEndian) {
   writer.six_byte().Write(0xbc9a78563412);
   writer.seven_byte().Write(0x97a6b5c4d3e2f1);
   writer.eight_byte().Write(0x06050403020100ffUL);
-  EXPECT_EQ(std::vector<uint8_t>(kUIntSizes, kUIntSizes + sizeof kUIntSizes),
-            std::vector<uint8_t>(buffer, buffer + sizeof buffer));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(kUIntSizes,
+                                               kUIntSizes + sizeof kUIntSizes),
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 }
 
 TEST(SizesView, CanReadSizesAlternatingEndian) {
@@ -137,7 +139,7 @@ TEST(SizesView, CanReadSizesAlternatingEndian) {
 }
 
 TEST(SizesWriter, CanWriteSizesAlternatingEndian) {
-  uint8_t buffer[sizeof kUIntSizes];
+  ::std::uint8_t buffer[sizeof kUIntSizes];
   auto writer = AlternatingEndianSizesWriter(buffer, sizeof buffer);
   writer.one_byte().Write(2);
   writer.two_byte().Write(0x0104);
@@ -147,12 +149,13 @@ TEST(SizesWriter, CanWriteSizesAlternatingEndian) {
   writer.six_byte().Write(0x123456789abc);
   writer.seven_byte().Write(0x97a6b5c4d3e2f1);
   writer.eight_byte().Write(0xff00010203040506UL);
-  EXPECT_EQ(std::vector<uint8_t>(kUIntSizes, kUIntSizes + sizeof kUIntSizes),
-            std::vector<uint8_t>(buffer, buffer + sizeof buffer));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(kUIntSizes,
+                                               kUIntSizes + sizeof kUIntSizes),
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 }
 
 TEST(SizesView, DecodeUIntsFromText) {
-  uint8_t buffer[sizeof kUIntSizes] = {0};
+  ::std::uint8_t buffer[sizeof kUIntSizes] = {0};
   auto writer = SizesWriter(buffer, sizeof buffer);
   EXPECT_TRUE(::emboss::UpdateFromText(writer, R"(
     {
@@ -166,8 +169,9 @@ TEST(SizesView, DecodeUIntsFromText) {
       eight_byte: 0xff00010203040506
     }
   )"));
-  EXPECT_EQ(std::vector<uint8_t>(kUIntSizes, kUIntSizes + sizeof kUIntSizes),
-            std::vector<uint8_t>(buffer, buffer + sizeof buffer));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(kUIntSizes,
+                                               kUIntSizes + sizeof kUIntSizes),
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
   EXPECT_EQ(2, writer.one_byte().Read());
   EXPECT_TRUE(::emboss::UpdateFromText(writer, "{one_byte:5}"));
   EXPECT_EQ(5, buffer[0]);
@@ -180,7 +184,7 @@ TEST(SizesView, DecodeUIntsFromText) {
 }
 
 TEST(SizesView, DecodeUIntsFromTextWithCommas) {
-  uint8_t buffer[sizeof kUIntSizes] = {0};
+  ::std::uint8_t buffer[sizeof kUIntSizes] = {0};
   auto writer = SizesWriter(buffer, sizeof buffer);
   EXPECT_TRUE(::emboss::UpdateFromText(writer, R"(
     {
@@ -194,12 +198,13 @@ TEST(SizesView, DecodeUIntsFromTextWithCommas) {
       eight_byte: 0xff00010203040506,
     }
   )"));
-  EXPECT_EQ(std::vector<uint8_t>(kUIntSizes, kUIntSizes + sizeof kUIntSizes),
-            std::vector<uint8_t>(buffer, buffer + sizeof buffer));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(kUIntSizes,
+                                               kUIntSizes + sizeof kUIntSizes),
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 }
 
 TEST(SizesView, DecodeBigEndianUIntsFromText) {
-  uint8_t buffer[sizeof kUIntSizes] = {0};
+  ::std::uint8_t buffer[sizeof kUIntSizes] = {0};
   auto writer = BigEndianSizesWriter(buffer, sizeof buffer);
   EXPECT_TRUE(::emboss::UpdateFromText(writer, R"(
     {
@@ -213,13 +218,14 @@ TEST(SizesView, DecodeBigEndianUIntsFromText) {
       eight_byte: 0x06050403020100ff
     }
   )"));
-  EXPECT_EQ(std::vector<uint8_t>(kUIntSizes, kUIntSizes + sizeof kUIntSizes),
-            std::vector<uint8_t>(buffer, buffer + sizeof buffer));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(kUIntSizes,
+                                               kUIntSizes + sizeof kUIntSizes),
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 }
 
 TEST(SizesView, EncodeUIntsToText) {
-  auto view =
-      MakeAlignedSizesView<const uint8_t, 8>(kUIntSizes, sizeof kUIntSizes);
+  auto view = MakeAlignedSizesView<const ::std::uint8_t, 8>(kUIntSizes,
+                                                            sizeof kUIntSizes);
   EXPECT_EQ(
       "{\n"
       "  one_byte: 2  # 0x2\n"
@@ -239,7 +245,7 @@ TEST(SizesView, EncodeUIntsToText) {
       ::emboss::WriteToString(view));
 }
 
-static const uint8_t kEnumSizes[36] = {
+static const ::std::uint8_t kEnumSizes[36] = {
     0x01,                    // 0:1    one_byte == VALUE1
     0x0a, 0x00,              // 1:3    two_byte == VALUE10
     0x10, 0x27, 0x00,        // 3:6    three_byte == VALUE10000
@@ -276,7 +282,7 @@ TEST(SizesView, CanReadEnumSizes) {
 }
 
 TEST(SizesWriter, CanWriteEnumSizes) {
-  uint8_t buffer[sizeof kEnumSizes];
+  ::std::uint8_t buffer[sizeof kEnumSizes];
   auto writer = EnumSizesWriter(buffer, sizeof buffer);
   writer.one_byte().Write(Enum::VALUE1);
   writer.two_byte().Write(Enum::VALUE10);
@@ -286,12 +292,13 @@ TEST(SizesWriter, CanWriteEnumSizes) {
   writer.six_byte().Write(Enum::VALUE1000000);
   writer.seven_byte().Write(Enum::VALUE10000000);
   writer.eight_byte().Write(Enum::VALUE1000);
-  EXPECT_EQ(std::vector<uint8_t>(kEnumSizes, kEnumSizes + sizeof kEnumSizes),
-            std::vector<uint8_t>(buffer, buffer + sizeof buffer));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(kEnumSizes,
+                                               kEnumSizes + sizeof kEnumSizes),
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 }
 
 TEST(SizesView, DecodeEnumsFromText) {
-  uint8_t buffer[sizeof kEnumSizes] = {0};
+  ::std::uint8_t buffer[sizeof kEnumSizes] = {0};
   auto writer = EnumSizesWriter(buffer, sizeof buffer);
   EXPECT_TRUE(::emboss::UpdateFromText(writer, R"(
     {
@@ -305,12 +312,13 @@ TEST(SizesView, DecodeEnumsFromText) {
       eight_byte: VALUE1000
     }
   )"));
-  EXPECT_EQ(std::vector<uint8_t>(kEnumSizes, kEnumSizes + sizeof kEnumSizes),
-            std::vector<uint8_t>(buffer, buffer + sizeof buffer));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(kEnumSizes,
+                                               kEnumSizes + sizeof kEnumSizes),
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 }
 
 TEST(SizesView, DecodeEnumsFromIntegerText) {
-  uint8_t buffer[sizeof kEnumSizes] = {0};
+  ::std::uint8_t buffer[sizeof kEnumSizes] = {0};
   auto writer = EnumSizesWriter(buffer, sizeof buffer);
   EXPECT_TRUE(::emboss::UpdateFromText(writer, R"(
     {
@@ -324,11 +332,12 @@ TEST(SizesView, DecodeEnumsFromIntegerText) {
       eight_byte: 1000
     }
   )"));
-  EXPECT_EQ(std::vector<uint8_t>(kEnumSizes, kEnumSizes + sizeof kEnumSizes),
-            std::vector<uint8_t>(buffer, buffer + sizeof buffer));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(kEnumSizes,
+                                               kEnumSizes + sizeof kEnumSizes),
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 }
 
-static const uint8_t kUIntArraySizes[72] = {
+static const ::std::uint8_t kUIntArraySizes[72] = {
     0x02,                    // 0:2    one_byte[0] == 2
     0x03,                    // 0:2    one_byte[1] == 3
     0x04, 0x01,              // 2:6    two_byte[0] == 260
@@ -385,8 +394,8 @@ TEST(SizesView, CanReadArraySizes) {
 }
 
 TEST(SizesView, CopyFrom) {
-  std::array<uint8_t, sizeof kUIntArraySizes> buf_x = {};
-  std::array<uint8_t, sizeof kUIntArraySizes> buf_y = {};
+  ::std::array</**/ ::std::uint8_t, sizeof kUIntArraySizes> buf_x = {};
+  ::std::array</**/ ::std::uint8_t, sizeof kUIntArraySizes> buf_y = {};
 
   const auto x = SizesWriter(&buf_x);
   const auto y = SizesWriter(&buf_y);
@@ -399,8 +408,8 @@ TEST(SizesView, CopyFrom) {
 }
 
 TEST(SizesView, TryToCopyFrom) {
-  std::array<uint8_t, sizeof kUIntArraySizes> buf_x = {};
-  std::array<uint8_t, sizeof kUIntArraySizes> buf_y = {};
+  ::std::array</**/ ::std::uint8_t, sizeof kUIntArraySizes> buf_x = {};
+  ::std::array</**/ ::std::uint8_t, sizeof kUIntArraySizes> buf_y = {};
 
   const auto x = SizesWriter(&buf_x);
   const auto y = SizesWriter(&buf_y);

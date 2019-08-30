@@ -13,6 +13,7 @@
 // limitations under the License.
 
 // Tests of generated code for virtual fields.
+#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <type_traits>
@@ -20,7 +21,6 @@
 #include <vector>
 
 #include "testdata/parameters.emb.h"
-#include <gtest/gtest.h>
 
 namespace emboss_test {
 namespace {

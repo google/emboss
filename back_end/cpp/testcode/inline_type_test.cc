@@ -13,20 +13,20 @@
 // limitations under the License.
 
 // Tests for types defined inline.
+#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
 #include "testdata/inline_type.emb.h"
-#include <gtest/gtest.h>
 
 namespace emboss {
 namespace test {
 namespace {
 
-static const uint8_t kFoo[2] = {0, 12};
+static const ::std::uint8_t kFoo[2] = {0, 12};
 
-static const uint8_t kFooOnFire[2] = {12, 0};
+static const ::std::uint8_t kFooOnFire[2] = {12, 0};
 
 // Tests that inline-defined enums have correct, independent values.
 TEST(FooView, EnumValuesAreAsExpected) {

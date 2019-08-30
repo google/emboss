@@ -89,7 +89,9 @@ struct MemoryAccessor<CharT, 1, 0, kBits> {
   static inline Unsigned ReadLittleEndianUInt(const CharT *bytes) {
     Unsigned result = 0;
     for (decltype(kBits) i = 0; i < kBits / 8; ++i) {
-      result |= static_cast<Unsigned>(static_cast<uint8_t>(bytes[i])) << i * 8;
+      result |=
+          static_cast<Unsigned>(static_cast</**/ ::std::uint8_t>(bytes[i]))
+          << i * 8;
     }
     return result;
   }
@@ -103,7 +105,7 @@ struct MemoryAccessor<CharT, 1, 0, kBits> {
 #else
   static inline void WriteLittleEndianUInt(CharT *bytes, Unsigned value) {
     for (decltype(kBits) i = 0; i < kBits / 8; ++i) {
-      bytes[i] = static_cast<CharT>(static_cast<uint8_t>(value));
+      bytes[i] = static_cast<CharT>(static_cast</**/ ::std::uint8_t>(value));
       if (sizeof value > 1) {
         // Shifting an 8-bit type by 8 bits is undefined behavior, so skip this
         // step for uint8_t.
@@ -167,8 +169,9 @@ struct MemoryAccessor<CharT, 1, 0, kBits> {
   static inline Unsigned ReadBigEndianUInt(const CharT *bytes) {
     Unsigned result = 0;
     for (decltype(kBits) i = 0; i < kBits / 8; ++i) {
-      result |= static_cast<Unsigned>(static_cast</**/::std::uint8_t>(bytes[i]))
-                << (kBits - 8 - i * 8);
+      result |=
+          static_cast<Unsigned>(static_cast</**/ ::std::uint8_t>(bytes[i]))
+          << (kBits - 8 - i * 8);
     }
     return result;
   }
@@ -420,7 +423,8 @@ class ContiguousBuffer final {
   // The final !::std::is_same<...> clause prevents this constructor from
   // overlapping with the *implicit* copy constructor.
   template <
-      typename OtherByte, size_t kOtherAlignment, size_t kOtherOffset,
+      typename OtherByte, ::std::size_t kOtherAlignment,
+      ::std::size_t kOtherOffset,
       typename = typename ::std::enable_if<
           kOtherAlignment % kAlignment == 0 &&
           kOtherOffset % kAlignment ==
@@ -435,7 +439,8 @@ class ContiguousBuffer final {
         size_{other.SizeInBytes()} {}
 
   // Assignment from a compatible ContiguousBuffer.
-  template <typename OtherByte, size_t kOtherAlignment, size_t kOtherOffset,
+  template <typename OtherByte, ::std::size_t kOtherAlignment,
+            ::std::size_t kOtherOffset,
             typename = typename ::std::enable_if<
                 kOtherAlignment % kAlignment == 0 &&
                 kOtherOffset % kAlignment ==
@@ -658,21 +663,21 @@ class LittleEndianByteOrderer final {
   // LittleEndianByteOrderer just passes straight through to the underlying
   // buffer.
   bool Ok() const { return buffer_.Ok(); }
-  size_t SizeInBytes() const { return buffer_.SizeInBytes(); }
+  ::std::size_t SizeInBytes() const { return buffer_.SizeInBytes(); }
 
-  template <size_t kBits>
+  template </**/ ::std::size_t kBits>
   typename LeastWidthInteger<kBits>::Unsigned ReadUInt() const {
     return buffer_.template ReadLittleEndianUInt<kBits>();
   }
-  template <size_t kBits>
+  template </**/ ::std::size_t kBits>
   typename LeastWidthInteger<kBits>::Unsigned UncheckedReadUInt() const {
     return buffer_.template UncheckedReadLittleEndianUInt<kBits>();
   }
-  template <size_t kBits>
+  template </**/ ::std::size_t kBits>
   void WriteUInt(typename LeastWidthInteger<kBits>::Unsigned value) const {
     buffer_.template WriteLittleEndianUInt<kBits>(value);
   }
-  template <size_t kBits>
+  template </**/ ::std::size_t kBits>
   void UncheckedWriteUInt(
       typename LeastWidthInteger<kBits>::Unsigned value) const {
     buffer_.template UncheckedWriteLittleEndianUInt<kBits>(value);
@@ -729,21 +734,21 @@ class BigEndianByteOrderer final {
 
   // Ok() and SizeInBytes() get passed through with no changes.
   bool Ok() const { return buffer_.Ok(); }
-  size_t SizeInBytes() const { return buffer_.SizeInBytes(); }
+  ::std::size_t SizeInBytes() const { return buffer_.SizeInBytes(); }
 
-  template <size_t kBits>
+  template </**/ ::std::size_t kBits>
   typename LeastWidthInteger<kBits>::Unsigned ReadUInt() const {
     return buffer_.template ReadBigEndianUInt<kBits>();
   }
-  template <size_t kBits>
+  template </**/ ::std::size_t kBits>
   typename LeastWidthInteger<kBits>::Unsigned UncheckedReadUInt() const {
     return buffer_.template UncheckedReadBigEndianUInt<kBits>();
   }
-  template <size_t kBits>
+  template </**/ ::std::size_t kBits>
   void WriteUInt(typename LeastWidthInteger<kBits>::Unsigned value) const {
     buffer_.template WriteBigEndianUInt<kBits>(value);
   }
-  template <size_t kBits>
+  template </**/ ::std::size_t kBits>
   void UncheckedWriteUInt(
       typename LeastWidthInteger<kBits>::Unsigned value) const {
     buffer_.template UncheckedWriteBigEndianUInt<kBits>(value);
@@ -773,24 +778,24 @@ class NullByteOrderer final {
   NullByteOrderer &operator=(const NullByteOrderer &other) = default;
 
   bool Ok() const { return buffer_.Ok(); }
-  size_t SizeInBytes() const { return Ok() ? 1 : 0; }
+  ::std::size_t SizeInBytes() const { return Ok() ? 1 : 0; }
 
-  template <size_t kBits>
+  template </**/ ::std::size_t kBits>
   typename LeastWidthInteger<kBits>::Unsigned ReadUInt() const {
     static_assert(kBits == 8, "NullByteOrderer may only read 8-bit values.");
     return buffer_.template ReadLittleEndianUInt<kBits>();
   }
-  template <size_t kBits>
+  template </**/ ::std::size_t kBits>
   typename LeastWidthInteger<kBits>::Unsigned UncheckedReadUInt() const {
     static_assert(kBits == 8, "NullByteOrderer may only read 8-bit values.");
     return buffer_.template UncheckedReadLittleEndianUInt<kBits>();
   }
-  template <size_t kBits>
+  template </**/ ::std::size_t kBits>
   void WriteUInt(typename LeastWidthInteger<kBits>::Unsigned value) const {
     static_assert(kBits == 8, "NullByteOrderer may only read 8-bit values.");
     buffer_.template WriteBigEndianUInt<kBits>(value);
   }
-  template <size_t kBits>
+  template </**/ ::std::size_t kBits>
   void UncheckedWriteUInt(
       typename LeastWidthInteger<kBits>::Unsigned value) const {
     static_assert(kBits == 8, "NullByteOrderer may only read 8-bit values.");
@@ -821,22 +826,22 @@ class OffsetBitBlock final {
   // blocks to have the same methods and types as byte blocks, so even though
   // kNewAlignment and kNewOffset are unused, they must be present as template
   // parameters.
-  template <size_t kNewAlignment, size_t kNewOffset>
+  template </**/ ::std::size_t kNewAlignment, ::std::size_t kNewOffset>
   using OffsetStorageType = OffsetBitBlock<UnderlyingBitBlockType>;
 
   OffsetBitBlock() : bit_block_(), offset_(0), size_(0), ok_(false) {}
-  explicit OffsetBitBlock(UnderlyingBitBlockType bit_block, size_t offset,
-                          size_t size, bool ok)
+  explicit OffsetBitBlock(UnderlyingBitBlockType bit_block,
+                          ::std::size_t offset, ::std::size_t size, bool ok)
       : bit_block_{bit_block},
-        offset_{static_cast<uint8_t>(offset)},
-        size_{static_cast<uint8_t>(size)},
+        offset_{static_cast</**/ ::std::uint8_t>(offset)},
+        size_{static_cast</**/ ::std::uint8_t>(size)},
         ok_{offset == offset_ && size == size_ && ok} {}
   OffsetBitBlock(const OffsetBitBlock &other) = default;
   OffsetBitBlock &operator=(const OffsetBitBlock &other) = default;
 
-  template <size_t kNewAlignment, size_t kNewOffset>
+  template </**/ ::std::size_t kNewAlignment, ::std::size_t kNewOffset>
   OffsetStorageType<kNewAlignment, kNewOffset> GetOffsetStorage(
-      size_t offset, size_t size) const {
+      ::std::size_t offset, ::std::size_t size) const {
     return OffsetStorageType<kNewAlignment, kNewOffset>{
         bit_block_, offset_ + offset, size, ok_ && offset + size <= size_};
   }
@@ -873,7 +878,7 @@ class OffsetBitBlock final {
         MaskInValue(bit_block_.UncheckedReadUInt(), value));
   }
 
-  size_t SizeInBits() const { return size_; }
+  ::std::size_t SizeInBits() const { return size_; }
   bool Ok() const { return ok_; }
 
  private:
@@ -884,9 +889,9 @@ class OffsetBitBlock final {
   }
 
   const UnderlyingBitBlockType bit_block_;
-  const uint8_t offset_;
-  const uint8_t size_;
-  const uint8_t ok_;
+  const ::std::uint8_t offset_;
+  const ::std::uint8_t size_;
+  const ::std::uint8_t ok_;
 };
 
 // BitBlock is a view of a short, fixed-size sequence of bits somewhere in
@@ -901,7 +906,7 @@ class OffsetBitBlock final {
 // byte addresses for big-endian values, though it does mean that in certain
 // cases excess bits will be read or written, particularly if care is not taken
 // in the .emb definition to keep `bits` types to a minimum size.
-template <class BufferType, size_t kBufferSizeInBits>
+template <class BufferType, ::std::size_t kBufferSizeInBits>
 class BitBlock final {
   static_assert(kBufferSizeInBits % 8 == 0,
                 "BitBlock can only operate on byte buffers.");
@@ -913,7 +918,7 @@ class BitBlock final {
   // As with OffsetBitBlock::OffsetStorageType, the kNewAlignment and kNewOffset
   // values are not used, but they must be template parameters so that generated
   // code can work with both BitBlock and ContiguousBuffer.
-  template <size_t kNewAlignment, size_t kNewOffset>
+  template </**/ ::std::size_t kNewAlignment, ::std::size_t kNewOffset>
   using OffsetStorageType =
       OffsetBitBlock<BitBlock<BufferType, kBufferSizeInBits>>;
 
@@ -926,11 +931,11 @@ class BitBlock final {
   BitBlock &operator=(BitBlock &&) = default;
   ~BitBlock() = default;
 
-  static constexpr size_t Bits() { return kBufferSizeInBits; }
+  static constexpr ::std::size_t Bits() { return kBufferSizeInBits; }
 
-  template <size_t kNewAlignment, size_t kNewOffset>
+  template </**/ ::std::size_t kNewAlignment, ::std::size_t kNewOffset>
   OffsetStorageType<kNewAlignment, kNewOffset> GetOffsetStorage(
-      size_t offset, size_t size) const {
+      ::std::size_t offset, ::std::size_t size) const {
     return OffsetStorageType<kNewAlignment, kNewOffset>{
         *this, offset, size, Ok() && offset + size <= kBufferSizeInBits};
   }
@@ -953,7 +958,7 @@ class BitBlock final {
     buffer_.template UncheckedWriteUInt<kBufferSizeInBits>(value);
   }
 
-  size_t SizeInBits() const { return kBufferSizeInBits; }
+  ::std::size_t SizeInBits() const { return kBufferSizeInBits; }
   bool Ok() const {
     return buffer_.Ok() && buffer_.SizeInBytes() * 8 == kBufferSizeInBits;
   }

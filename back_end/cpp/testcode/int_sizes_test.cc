@@ -16,18 +16,18 @@
 // nested_structure.emb.
 //
 // These tests check that nested structures work.
+#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
 #include "testdata/int_sizes.emb.h"
-#include <gtest/gtest.h>
 
 namespace emboss {
 namespace test {
 namespace {
 
-alignas(8) static const uint8_t kIntSizes[36] = {
+alignas(8) static const ::std::uint8_t kIntSizes[36] = {
     0x02,                    // 0:1    one_byte == 2
     0xfc, 0xfe,              // 1:3    two_byte == -260
     0x66, 0x55, 0x44,        // 3:6    three_byte == 0x445566
@@ -43,8 +43,8 @@ alignas(8) static const uint8_t kIntSizes[36] = {
 };
 
 TEST(SizesView, CanReadSizes) {
-  auto view =
-      MakeAlignedSizesView<const uint8_t, 8>(kIntSizes, sizeof kIntSizes);
+  auto view = MakeAlignedSizesView<const ::std::uint8_t, 8>(kIntSizes,
+                                                            sizeof kIntSizes);
   EXPECT_EQ(2, view.one_byte().Read());
   EXPECT_EQ(-260, view.two_byte().Read());
   EXPECT_EQ(0x445566, view.three_byte().Read());
@@ -65,7 +65,7 @@ TEST(SizesView, CanReadSizes) {
 }
 
 TEST(SizesWriter, CanWriteSizes) {
-  uint8_t buffer[sizeof kIntSizes];
+  ::std::uint8_t buffer[sizeof kIntSizes];
   auto writer = SizesWriter(buffer, sizeof buffer);
   writer.one_byte().Write(2);
   writer.two_byte().Write(-260);
@@ -75,11 +75,12 @@ TEST(SizesWriter, CanWriteSizes) {
   writer.six_byte().Write(-0x123456789abc);
   writer.seven_byte().Write(0x71e2d3c4b5a697);
   writer.eight_byte().Write(-0x7f00010203040506);
-  EXPECT_EQ(std::vector<uint8_t>(kIntSizes, kIntSizes + sizeof kIntSizes),
-            std::vector<uint8_t>(buffer, buffer + sizeof buffer));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(kIntSizes,
+                                               kIntSizes + sizeof kIntSizes),
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 }
 
-alignas(8) static const uint8_t kIntSizesNegativeOnes[36] = {
+alignas(8) static const ::std::uint8_t kIntSizesNegativeOnes[36] = {
     0xff,                    // 0:1    one_byte == -1
     0xff, 0xff,              // 1:3    two_byte == -1
     0xff, 0xff, 0xff,        // 3:6    three_byte == -1
@@ -95,7 +96,7 @@ alignas(8) static const uint8_t kIntSizesNegativeOnes[36] = {
 };
 
 TEST(SizesView, CanReadNegativeOne) {
-  auto view = MakeAlignedSizesView<const uint8_t, 8>(
+  auto view = MakeAlignedSizesView<const ::std::uint8_t, 8>(
       kIntSizesNegativeOnes, sizeof kIntSizesNegativeOnes);
   EXPECT_EQ(-1, view.one_byte().Read());
   EXPECT_EQ(-1, view.two_byte().Read());
@@ -108,7 +109,7 @@ TEST(SizesView, CanReadNegativeOne) {
 }
 
 TEST(SizesView, CanWriteNegativeOne) {
-  uint8_t buffer[sizeof kIntSizesNegativeOnes];
+  ::std::uint8_t buffer[sizeof kIntSizesNegativeOnes];
   auto writer = SizesWriter(buffer, sizeof buffer);
   writer.one_byte().Write(-1);
   writer.two_byte().Write(-1);
@@ -118,15 +119,15 @@ TEST(SizesView, CanWriteNegativeOne) {
   writer.six_byte().Write(-1);
   writer.seven_byte().Write(-1);
   writer.eight_byte().Write(-1);
-  EXPECT_EQ(std::vector<uint8_t>(
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(
                 kIntSizesNegativeOnes,
                 kIntSizesNegativeOnes + sizeof kIntSizesNegativeOnes),
-            std::vector<uint8_t>(buffer, buffer + sizeof buffer));
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 }
 
 TEST(SizesView, CopyFrom) {
-  std::array<uint8_t, sizeof kIntSizesNegativeOnes> buf_x = {};
-  std::array<uint8_t, sizeof kIntSizesNegativeOnes> buf_y = {};
+  ::std::array</**/ ::std::uint8_t, sizeof kIntSizesNegativeOnes> buf_x = {};
+  ::std::array</**/ ::std::uint8_t, sizeof kIntSizesNegativeOnes> buf_y = {};
 
   auto x = SizesWriter(&buf_x);
   auto y = SizesWriter(&buf_y);
@@ -139,8 +140,8 @@ TEST(SizesView, CopyFrom) {
 }
 
 TEST(SizesView, TryToCopyFrom) {
-  std::array<uint8_t, sizeof kIntSizesNegativeOnes> buf_x = {};
-  std::array<uint8_t, sizeof kIntSizesNegativeOnes> buf_y = {};
+  ::std::array</**/ ::std::uint8_t, sizeof kIntSizesNegativeOnes> buf_x = {};
+  ::std::array</**/ ::std::uint8_t, sizeof kIntSizesNegativeOnes> buf_y = {};
 
   auto x = SizesWriter(&buf_x);
   auto y = SizesWriter(&buf_y);

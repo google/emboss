@@ -14,12 +14,12 @@
 
 #include "public/emboss_array_view.h"
 
+#include <gtest/gtest.h>
+
 #include <string>
 #include <type_traits>
 
 #include "absl/strings/str_format.h"
-#include <gtest/gtest.h>
-
 #include "public/emboss_prelude.h"
 
 namespace emboss {
@@ -35,21 +35,21 @@ using ArrayView = GenericArrayView<ElementView, BufferType, kElementSize, 8>;
 template <class ElementView, class BufferType, ::std::size_t kElementSize>
 using BitArrayView = GenericArrayView<ElementView, BufferType, kElementSize, 1>;
 
-template <size_t kBits>
+template </**/ ::std::size_t kBits>
 using LittleEndianBitBlockN =
     BitBlock<LittleEndianByteOrderer<ReadWriteContiguousBuffer>, kBits>;
 
-template <size_t kBits>
+template </**/ ::std::size_t kBits>
 using FixedUIntView = UIntView<FixedSizeViewParameters<kBits, AllValuesAreOk>,
                                LittleEndianBitBlockN<kBits>>;
 
-template <size_t kBits>
+template </**/ ::std::size_t kBits>
 using FixedIntView = IntView<FixedSizeViewParameters<kBits, AllValuesAreOk>,
                              LittleEndianBitBlockN<kBits>>;
 
 TEST(ArrayView, Methods) {
-  uint8_t bytes[] = {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09,
-                     0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
+  ::std::uint8_t bytes[] = {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09,
+                            0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
   auto byte_array = ArrayView<FixedUIntView<8>, ReadWriteContiguousBuffer, 1>{
       ReadWriteContiguousBuffer{bytes, sizeof bytes - 4}};
   EXPECT_EQ(sizeof bytes - 4, byte_array.SizeInBytes());
@@ -88,8 +88,8 @@ TEST(ArrayView, Methods) {
 }
 
 TEST(ArrayView, Ok) {
-  uint8_t bytes[] = {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09,
-                     0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
+  ::std::uint8_t bytes[] = {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09,
+                            0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
   // All elements are complete and, themselves, Ok(), so the array should be
   // Ok().
   auto byte_array = ArrayView<FixedUIntView<16>, ReadWriteContiguousBuffer, 2>(
@@ -108,7 +108,7 @@ TEST(ArrayView, Ok) {
 }
 
 TEST(ArrayView, TextFormatInput) {
-  uint8_t bytes[16] = {0};
+  ::std::uint8_t bytes[16] = {0};
   auto byte_array = ArrayView<FixedUIntView<8>, ReadWriteContiguousBuffer, 1>{
       ReadWriteContiguousBuffer{bytes, sizeof bytes}};
   EXPECT_FALSE(UpdateFromText(byte_array, ""));
@@ -157,8 +157,8 @@ TEST(ArrayView, TextFormatInput) {
 TEST(ArrayView, TextFormatOutput_WithAndWithoutComments) {
   signed char bytes[16] = {-3, 2, -1, 1,  0,  1,  1,  2,
                            3,  5, 8,  13, 21, 34, 55, 89};
-  auto buffer = ReadWriteContiguousBuffer{reinterpret_cast<uint8_t *>(bytes),
-                                          sizeof bytes};
+  auto buffer = ReadWriteContiguousBuffer{
+      reinterpret_cast</**/ ::std::uint8_t *>(bytes), sizeof bytes};
   auto byte_array =
       ArrayView<FixedIntView<8>, ReadWriteContiguousBuffer, 1>{buffer};
   EXPECT_EQ(
@@ -212,7 +212,7 @@ TEST(ArrayView, TextFormatOutput_WithAndWithoutComments) {
 }
 
 TEST(ArrayView, TextFormatOutput_8BitIntElementTypes) {
-  uint8_t bytes[1] = {65};
+  ::std::uint8_t bytes[1] = {65};
   auto buffer = ReadWriteContiguousBuffer{bytes, sizeof bytes};
   const ::std::string expected_text = R"({
   # A
@@ -231,9 +231,9 @@ TEST(ArrayView, TextFormatOutput_8BitIntElementTypes) {
 }
 
 TEST(ArrayView, TextFormatOutput_16BitIntElementTypes) {
-  uint16_t bytes[1] = {65};
-  auto buffer = ReadWriteContiguousBuffer{reinterpret_cast<uint8_t *>(bytes),
-                                          sizeof bytes};
+  ::std::uint16_t bytes[1] = {65};
+  auto buffer = ReadWriteContiguousBuffer{
+      reinterpret_cast</**/ ::std::uint8_t *>(bytes), sizeof bytes};
   const ::std::string expected_text = R"({
   [0]: 65  # 0x41
 })";
@@ -250,7 +250,7 @@ TEST(ArrayView, TextFormatOutput_16BitIntElementTypes) {
 }
 
 TEST(ArrayView, TextFormatOutput_MultilineComment) {
-  uint8_t bytes[65];
+  ::std::uint8_t bytes[65];
   for (::std::size_t i = 0; i < sizeof bytes; ++i) {
     bytes[i] = '0' + (i % 10);
   }
