@@ -23,6 +23,7 @@ fed to lr1.Grammar in order to create a parser for the Emboss language.
 """
 
 import re
+import sys
 
 from public import ir_pb2
 from util import name_conversion
@@ -78,9 +79,9 @@ def build_ir(parse_tree, used_productions=None):
   r"""Builds a module-level intermediate representation from a valid parse tree.
 
   The parse tree is precisely dictated by the exact productions in the grammar
-  used by the parser, with no semantic information.  build_ir transforms this
-  "raw" form into a stable, cooked representation, thereby isolating subsequent
-  steps from the exact details of the grammar.
+  used by the parser, with no semantic information.  _really_build_ir transforms
+  this "raw" form into a stable, cooked representation, thereby isolating
+  subsequent steps from the exact details of the grammar.
 
   (Probably incomplete) list of transformations:
 
@@ -107,6 +108,7 @@ def build_ir(parse_tree, used_productions=None):
       folded into a single "Name" type, since they are guaranteed to appear in
       the correct places in the parse tree.
 
+
   Arguments:
     parse_tree: A parse tree.  Each leaf node should be a parser_types.Token
       object, and each non-leaf node should have a 'symbol' attribute specifying
@@ -125,10 +127,24 @@ def build_ir(parse_tree, used_productions=None):
     (source file).  This IR will not have symbols resolved; that must be done on
     a forest of module IRs so that names from other modules can be resolved.
   """
+
+  # TODO(b/140259131): Refactor _really_build_ir to be less recursive/use an
+  # explicit stack.
+  old_recursion_limit = sys.getrecursionlimit()
+  sys.setrecursionlimit(16 * 1024)  # ~8000 top-level entities in one module.
+  try:
+    result = _really_build_ir(parse_tree, used_productions)
+  finally:
+    sys.setrecursionlimit(old_recursion_limit)
+  return result
+
+
+def _really_build_ir(parse_tree, used_productions):
+  """Real implementation of build_ir()."""
   if used_productions is None:
     used_productions = set()
   if hasattr(parse_tree, 'children'):
-    parsed_children = [build_ir(child, used_productions)
+    parsed_children = [_really_build_ir(child, used_productions)
                        for child in parse_tree.children]
     used_productions.add(parse_tree.production)
     result = _handlers[parse_tree.production](*parsed_children)
