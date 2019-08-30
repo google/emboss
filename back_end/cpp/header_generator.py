@@ -1211,8 +1211,9 @@ def _generate_header_guard(file_path):
   header_path = file_path + ".h"
   uppercased_path = header_path.upper()
   no_punctuation_path = re.sub(r"[^A-Za-z0-9_]", "_", uppercased_path)
-  no_double_underscore_path = re.sub(r"__+", "_", no_punctuation_path)
-  return no_double_underscore_path + "_"
+  suffixed_path = no_punctuation_path + "_"
+  no_double_underscore_path = re.sub(r"__+", "_", suffixed_path)
+  return no_double_underscore_path
 
 
 def generate_header(ir):
