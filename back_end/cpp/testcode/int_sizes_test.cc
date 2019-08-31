@@ -54,14 +54,14 @@ TEST(SizesView, CanReadSizes) {
   EXPECT_EQ(0x71e2d3c4b5a697, view.seven_byte().Read());
   EXPECT_EQ(-0x7f00010203040506, view.eight_byte().Read());
   // Test that the views return appropriate integer widths.
-  EXPECT_EQ(1, sizeof(view.one_byte().Read()));
-  EXPECT_EQ(2, sizeof(view.two_byte().Read()));
-  EXPECT_EQ(4, sizeof(view.three_byte().Read()));
-  EXPECT_EQ(4, sizeof(view.four_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.five_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.six_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.seven_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.eight_byte().Read()));
+  EXPECT_EQ(1U, sizeof(view.one_byte().Read()));
+  EXPECT_EQ(2U, sizeof(view.two_byte().Read()));
+  EXPECT_EQ(4U, sizeof(view.three_byte().Read()));
+  EXPECT_EQ(4U, sizeof(view.four_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.five_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.six_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.seven_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.eight_byte().Read()));
 }
 
 TEST(SizesWriter, CanWriteSizes) {

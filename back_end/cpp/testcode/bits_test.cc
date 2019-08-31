@@ -116,8 +116,8 @@ TEST(Bits, ArrayInBits) {
   EXPECT_EQ(true, array.array_in_bits().flags()[11].Read());
   array.array_in_bits().flags()[8].Write(true);
   EXPECT_EQ(0xab, data[1]);
-  EXPECT_EQ(12, array.array_in_bits().flags().SizeInBits());
-  EXPECT_EQ(12, array.array_in_bits().flags().ElementCount());
+  EXPECT_EQ(12U, array.array_in_bits().flags().SizeInBits());
+  EXPECT_EQ(12U, array.array_in_bits().flags().ElementCount());
   EXPECT_TRUE(array.array_in_bits().flags().Ok());
   EXPECT_TRUE(array.array_in_bits().flags().IsComplete());
 }

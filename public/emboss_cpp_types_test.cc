@@ -21,10 +21,10 @@ namespace support {
 namespace test {
 
 TEST(FloatTypes, Types) {
-  EXPECT_EQ(32 / CHAR_BIT, sizeof(FloatType<32>::Type));
-  EXPECT_EQ(64 / CHAR_BIT, sizeof(FloatType<64>::Type));
-  EXPECT_EQ(32 / CHAR_BIT, sizeof(FloatType<32>::UIntType));
-  EXPECT_EQ(64 / CHAR_BIT, sizeof(FloatType<64>::UIntType));
+  EXPECT_EQ(32U / CHAR_BIT, sizeof(FloatType<32>::Type));
+  EXPECT_EQ(64U / CHAR_BIT, sizeof(FloatType<64>::Type));
+  EXPECT_EQ(32U / CHAR_BIT, sizeof(FloatType<32>::UIntType));
+  EXPECT_EQ(64U / CHAR_BIT, sizeof(FloatType<64>::UIntType));
   EXPECT_TRUE(::std::is_floating_point<FloatType<32>::Type>::value);
   EXPECT_TRUE(::std::is_floating_point<FloatType<64>::Type>::value);
   EXPECT_TRUE(
@@ -119,7 +119,7 @@ TEST(IsChar, NonCharTypes) {
   struct OneByte {
     char c;
   };
-  EXPECT_EQ(1, sizeof(OneByte));
+  EXPECT_EQ(1U, sizeof(OneByte));
   EXPECT_FALSE(IsChar<int>::value);
   EXPECT_FALSE(IsChar<unsigned>::value);
   EXPECT_FALSE(IsChar<const int>::value);

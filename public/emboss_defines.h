@@ -21,6 +21,7 @@
 #include <assert.h>
 #define EMBOSS_CHECK(x) assert((x))
 #define EMBOSS_CHECK_LE(x, y) assert((x) <= (y))
+#define EMBOSS_CHECK_LT(x, y) assert((x) < (y))
 #define EMBOSS_CHECK_GE(x, y) assert((x) >= (y))
 #define EMBOSS_CHECK_GT(x, y) assert((x) > (y))
 #define EMBOSS_CHECK_EQ(x, y) assert((x) == (y))
@@ -41,10 +42,10 @@
 // so this should be a reasonably safe way to check that a pointer is aligned.
 #define EMBOSS_DCHECK_POINTER_ALIGNMENT(p, align, offset)                  \
   EMBOSS_DCHECK_EQ(reinterpret_cast</**/ ::std::uintptr_t>((p)) % (align), \
-                   (offset))
+                   (static_cast</**/ ::std::uintptr_t>((offset))))
 #define EMBOSS_CHECK_POINTER_ALIGNMENT(p, align, offset)                  \
   EMBOSS_CHECK_EQ(reinterpret_cast</**/ ::std::uintptr_t>((p)) % (align), \
-                  (offset))
+                  static_cast</**/ ::std::uintptr_t>((offset)))
 
 // !! WARNING !!
 //

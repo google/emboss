@@ -16,7 +16,7 @@
 # vim:set ft=blazebuild:
 """Rule to generate cc_tests with and without system-specific optimizations."""
 
-def emboss_cc_test(name, copts = None, **kwargs):
+def emboss_cc_test(name, copts = None, no_w_sign_compare = False, **kwargs):
     """Generates cc_test rules with and without -DEMBOSS_NO_OPTIMIZATIONS."""
     native.cc_test(
         name = name,
@@ -28,6 +28,6 @@ def emboss_cc_test(name, copts = None, **kwargs):
         copts = [
             "-DEMBOSS_NO_OPTIMIZATIONS",
             "-DEMBOSS_FORCE_ALL_CHECKS",
-        ] + (copts or []),
+        ] + ([] if no_w_sign_compare else ["-Wsign-compare"]) + (copts or []),
         **kwargs
     )

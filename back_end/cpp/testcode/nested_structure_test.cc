@@ -37,14 +37,14 @@ alignas(8) static const ::std::uint8_t kContainer[20] = {
 
 // ContainerView::SizeInBytes() returns the expected value.
 TEST(ContainerView, StaticSizeIsCorrect) {
-  EXPECT_EQ(20, ContainerView::SizeInBytes());
+  EXPECT_EQ(20U, ContainerView::SizeInBytes());
 }
 
 // ContainerView::SizeInBytes() returns the expected value.
 TEST(ContainerView, SizeFieldIsCorrect) {
   auto view = MakeAlignedContainerView<const ::std::uint8_t, 8>(
       kContainer, sizeof kContainer);
-  EXPECT_EQ(40, view.weight().Read());
+  EXPECT_EQ(40U, view.weight().Read());
 }
 
 // ContainerView::important_box() returns a BoxView, and not a different
@@ -53,7 +53,7 @@ TEST(ContainerView, FieldTypesAreExpected) {
   auto container = MakeAlignedContainerView<const ::std::uint8_t, 8>(
       kContainer, sizeof kContainer);
   auto box = container.important_box();
-  EXPECT_EQ(0x12345678, box.id().Read());
+  EXPECT_EQ(0x12345678U, box.id().Read());
 }
 
 // Box::SizeInBytes() returns the expected value, when retrieved from a
@@ -61,7 +61,7 @@ TEST(ContainerView, FieldTypesAreExpected) {
 TEST(ContainerView, BoxSizeFieldIsCorrect) {
   auto view = MakeAlignedContainerView<const ::std::uint8_t, 8>(
       kContainer, sizeof kContainer);
-  EXPECT_EQ(8, view.important_box().SizeInBytes());
+  EXPECT_EQ(8U, view.important_box().SizeInBytes());
 }
 
 // Box::id() and Box::count() return correct values when retrieved from
@@ -69,10 +69,10 @@ TEST(ContainerView, BoxSizeFieldIsCorrect) {
 TEST(ContainerView, BoxFieldValuesAreCorrect) {
   auto view = MakeAlignedContainerView<const ::std::uint8_t, 8>(
       kContainer, sizeof kContainer);
-  EXPECT_EQ(0x12345678, view.important_box().id().Read());
-  EXPECT_EQ(0x010203, view.important_box().count().Read());
-  EXPECT_EQ(0x87654321, view.other_box().id().Read());
-  EXPECT_EQ(0xaabbcc, view.other_box().count().Read());
+  EXPECT_EQ(0x12345678U, view.important_box().id().Read());
+  EXPECT_EQ(0x010203U, view.important_box().count().Read());
+  EXPECT_EQ(0x87654321U, view.other_box().id().Read());
+  EXPECT_EQ(0xaabbccU, view.other_box().count().Read());
 }
 
 TEST(ContainerView, CanWriteValues) {
@@ -128,17 +128,17 @@ alignas(8) static const ::std::uint8_t kTruck[44] = {
 TEST(TruckView, ValuesAreCorrect) {
   auto view =
       MakeAlignedTruckView<const ::std::uint8_t, 8>(kTruck, sizeof kTruck);
-  EXPECT_EQ(0x22446688, view.id().Read());
-  EXPECT_EQ(100, view.cargo()[0].weight().Read());
-  EXPECT_EQ(255, view.cargo()[0].important_box().id().Read());
-  EXPECT_EQ(10, view.cargo()[0].important_box().count().Read());
-  EXPECT_EQ(2000000000, view.cargo()[0].other_box().id().Read());
-  EXPECT_EQ(500, view.cargo()[0].other_box().count().Read());
-  EXPECT_EQ(101, view.cargo()[1].weight().Read());
-  EXPECT_EQ(254, view.cargo()[1].important_box().id().Read());
-  EXPECT_EQ(9, view.cargo()[1].important_box().count().Read());
-  EXPECT_EQ(2000000001, view.cargo()[1].other_box().id().Read());
-  EXPECT_EQ(499, view.cargo()[1].other_box().count().Read());
+  EXPECT_EQ(0x22446688U, view.id().Read());
+  EXPECT_EQ(100U, view.cargo()[0].weight().Read());
+  EXPECT_EQ(255U, view.cargo()[0].important_box().id().Read());
+  EXPECT_EQ(10U, view.cargo()[0].important_box().count().Read());
+  EXPECT_EQ(2000000000U, view.cargo()[0].other_box().id().Read());
+  EXPECT_EQ(500U, view.cargo()[0].other_box().count().Read());
+  EXPECT_EQ(101U, view.cargo()[1].weight().Read());
+  EXPECT_EQ(254U, view.cargo()[1].important_box().id().Read());
+  EXPECT_EQ(9U, view.cargo()[1].important_box().count().Read());
+  EXPECT_EQ(2000000001U, view.cargo()[1].other_box().id().Read());
+  EXPECT_EQ(499U, view.cargo()[1].other_box().count().Read());
 }
 
 TEST(TruckView, WriteValues) {

@@ -576,12 +576,11 @@ void WriteFloatToTextStream(Float n, Stream *stream,
   ::std::array<char, 30> buffer;
   // TODO(bolms): Figure out how to get ::std::snprintf to work on
   // microcontroller builds.
-  EMBOSS_CHECK_LE(static_cast</**/ ::std::size_t>(
-                      ::snprintf(&(buffer[0]), buffer.size(), "%.*g",
-                                 FloatConstants<Float>::kPrintfPrecision(),
-                                 static_cast<double>(n)) +
-                      1),
-                  buffer.size());
+  EMBOSS_CHECK_LE(
+      static_cast</**/ ::std::size_t>(::snprintf(
+          &(buffer[0]), buffer.size(), "%.*g",
+          FloatConstants<Float>::kPrintfPrecision(), static_cast<double>(n))),
+      buffer.size());
   stream->Write(&buffer[0]);
 
   // TODO(bolms): Support digit grouping.

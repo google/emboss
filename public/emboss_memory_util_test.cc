@@ -34,14 +34,14 @@ using LittleEndianBitBlockN =
     BitBlock<LittleEndianByteOrderer<ReadWriteContiguousBuffer>, kBits>;
 
 TEST(GreatestCommonDivisor, GreatestCommonDivisor) {
-  EXPECT_EQ(4, GreatestCommonDivisor(12, 20));
-  EXPECT_EQ(4, GreatestCommonDivisor(20, 12));
-  EXPECT_EQ(4, GreatestCommonDivisor(20, 4));
-  EXPECT_EQ(6, GreatestCommonDivisor(12, 78));
-  EXPECT_EQ(6, GreatestCommonDivisor(6, 0));
-  EXPECT_EQ(6, GreatestCommonDivisor(0, 6));
-  EXPECT_EQ(3, GreatestCommonDivisor(9, 6));
-  EXPECT_EQ(0, GreatestCommonDivisor(0, 0));
+  EXPECT_EQ(4U, GreatestCommonDivisor(12, 20));
+  EXPECT_EQ(4U, GreatestCommonDivisor(20, 12));
+  EXPECT_EQ(4U, GreatestCommonDivisor(20, 4));
+  EXPECT_EQ(6U, GreatestCommonDivisor(12, 78));
+  EXPECT_EQ(6U, GreatestCommonDivisor(6, 0));
+  EXPECT_EQ(6U, GreatestCommonDivisor(0, 6));
+  EXPECT_EQ(3U, GreatestCommonDivisor(9, 6));
+  EXPECT_EQ(0U, GreatestCommonDivisor(0, 0));
 }
 
 // Because MemoryAccessor's parameters are template parameters, it is not
@@ -235,7 +235,7 @@ TYPED_TEST(ReadOnlyContiguousBufferTest, ConstructionFromContainers) {
   EXPECT_EQ(0x0807060504030201UL, buffer.template ReadBigEndianUInt<64>());
 
   const auto offset_buffer = buffer.template GetOffsetStorage<1, 0>(4, 4);
-  EXPECT_EQ(4, offset_buffer.SizeInBytes());
+  EXPECT_EQ(4U, offset_buffer.SizeInBytes());
   EXPECT_EQ(0x04030201U, offset_buffer.template ReadBigEndianUInt<32>());
 
   // The size of the resulting buffer should be the minimum of the available
@@ -244,7 +244,7 @@ TYPED_TEST(ReadOnlyContiguousBufferTest, ConstructionFromContainers) {
             (buffer.template GetOffsetStorage<1, 0>(2, bytes.size() - 4)
                  .SizeInBytes()));
   EXPECT_EQ(
-      0,
+      0U,
       (buffer.template GetOffsetStorage<1, 0>(bytes.size(), 4).SizeInBytes()));
 }
 
@@ -274,7 +274,7 @@ TYPED_TEST(ReadWriteContiguousBufferTest, ConstructionFromContainers) {
             bytes);
 
   bytes[4] = static_cast<CharType>(255);
-  EXPECT_EQ(0x1020304ff060708, buffer.template ReadBigEndianUInt<64>());
+  EXPECT_EQ(0x1020304ff060708UL, buffer.template ReadBigEndianUInt<64>());
 }
 
 TEST(ContiguousBuffer, ReturnTypeOfReadUInt) {
@@ -338,20 +338,21 @@ TEST(ReadOnlyContiguousBuffer, Methods) {
   EXPECT_DEATH(buffer.ReadBigEndianUInt<64>(), "");
   EXPECT_TRUE(buffer.Ok());
   EXPECT_EQ(bytes.size() - 4, buffer.SizeInBytes());
-  EXPECT_EQ(0x100f0e0d0c0b0a09, buffer.UncheckedReadBigEndianUInt<64>());
-  EXPECT_EQ(0x090a0b0c0d0e0f10, buffer.UncheckedReadLittleEndianUInt<64>());
+  EXPECT_EQ(0x100f0e0d0c0b0a09UL, buffer.UncheckedReadBigEndianUInt<64>());
+  EXPECT_EQ(0x090a0b0c0d0e0f10UL, buffer.UncheckedReadLittleEndianUInt<64>());
 
   const auto offset_buffer = buffer.GetOffsetStorage<1, 0>(4, 4);
-  EXPECT_EQ(0x0c0b0a09, offset_buffer.ReadBigEndianUInt<32>());
-  EXPECT_EQ(0x090a0b0c, offset_buffer.ReadLittleEndianUInt<32>());
-  EXPECT_EQ(0x0c0b0a0908070605, offset_buffer.UncheckedReadBigEndianUInt<64>());
-  EXPECT_EQ(4, offset_buffer.SizeInBytes());
+  EXPECT_EQ(0x0c0b0a09U, offset_buffer.ReadBigEndianUInt<32>());
+  EXPECT_EQ(0x090a0b0cU, offset_buffer.ReadLittleEndianUInt<32>());
+  EXPECT_EQ(0x0c0b0a0908070605UL,
+            offset_buffer.UncheckedReadBigEndianUInt<64>());
+  EXPECT_EQ(4U, offset_buffer.SizeInBytes());
   EXPECT_TRUE(offset_buffer.Ok());
 
   const auto small_offset_buffer = buffer.GetOffsetStorage<1, 0>(4, 1);
-  EXPECT_EQ(0x0c, small_offset_buffer.ReadBigEndianUInt<8>());
-  EXPECT_EQ(0x0c, small_offset_buffer.ReadLittleEndianUInt<8>());
-  EXPECT_EQ(1, small_offset_buffer.SizeInBytes());
+  EXPECT_EQ(0x0cU, small_offset_buffer.ReadBigEndianUInt<8>());
+  EXPECT_EQ(0x0cU, small_offset_buffer.ReadLittleEndianUInt<8>());
+  EXPECT_EQ(1U, small_offset_buffer.SizeInBytes());
   EXPECT_TRUE(small_offset_buffer.Ok());
 
   EXPECT_FALSE(ReadOnlyContiguousBuffer().Ok());
@@ -360,9 +361,9 @@ TEST(ReadOnlyContiguousBuffer, Methods) {
   EXPECT_DEATH((ReadOnlyContiguousBuffer{static_cast<char *>(nullptr), 4}
                     .ReadBigEndianUInt<32>()),
                "");
-  EXPECT_EQ(0, ReadOnlyContiguousBuffer().SizeInBytes());
-  EXPECT_EQ(0, (ReadOnlyContiguousBuffer{static_cast<char *>(nullptr), 12}
-                    .SizeInBytes()));
+  EXPECT_EQ(0U, ReadOnlyContiguousBuffer().SizeInBytes());
+  EXPECT_EQ(0U, (ReadOnlyContiguousBuffer{static_cast<char *>(nullptr), 12}
+                     .SizeInBytes()));
   EXPECT_DEATH(
       (ReadOnlyContiguousBuffer{bytes.data(), 0}.ReadBigEndianUInt<8>()), "");
 
@@ -370,8 +371,8 @@ TEST(ReadOnlyContiguousBuffer, Methods) {
   // size and the requested size.
   EXPECT_EQ(bytes.size() - 8,
             (buffer.GetOffsetStorage<1, 0>(4, bytes.size() - 4).SizeInBytes()));
-  EXPECT_EQ(4, (buffer.GetOffsetStorage<1, 0>(0, 4).SizeInBytes()));
-  EXPECT_EQ(0, (buffer.GetOffsetStorage<1, 0>(bytes.size(), 4).SizeInBytes()));
+  EXPECT_EQ(4U, (buffer.GetOffsetStorage<1, 0>(0, 4).SizeInBytes()));
+  EXPECT_EQ(0U, (buffer.GetOffsetStorage<1, 0>(bytes.size(), 4).SizeInBytes()));
   EXPECT_FALSE((ReadOnlyContiguousBuffer().GetOffsetStorage<1, 0>(0, 0).Ok()));
 }
 
@@ -381,8 +382,8 @@ TEST(ReadWriteContiguousBuffer, Methods) {
   const auto buffer = ReadWriteContiguousBuffer{bytes.data(), bytes.size() - 4};
   // Read and Ok methods should work just as in ReadOnlyContiguousBuffer.
   EXPECT_TRUE(buffer.Ok());
-  EXPECT_EQ(bytes.size() - 4, buffer.SizeInBytes());
-  EXPECT_EQ(0x0c0b0a0908070605, buffer.ReadBigEndianUInt<64>());
+  EXPECT_EQ(bytes.size() - 4U, buffer.SizeInBytes());
+  EXPECT_EQ(0x0c0b0a0908070605UL, buffer.ReadBigEndianUInt<64>());
 
   buffer.WriteBigEndianUInt<64>(0x05060708090a0b0c);
   EXPECT_EQ(
@@ -463,12 +464,12 @@ TEST(LittleEndianByteOrderer, Methods) {
   const int buffer_start = 2;
   const auto buffer = LittleEndianByteOrderer<ReadWriteContiguousBuffer>{
       ReadWriteContiguousBuffer{bytes.data() + buffer_start, 8}};
-  EXPECT_EQ(8, buffer.SizeInBytes());
+  EXPECT_EQ(8U, buffer.SizeInBytes());
   EXPECT_TRUE(buffer.Ok());
-  EXPECT_EQ(0x0807060504030201, buffer.ReadUInt<64>());
-  EXPECT_EQ(0x0807060504030201, buffer.UncheckedReadUInt<64>());
+  EXPECT_EQ(0x0807060504030201UL, buffer.ReadUInt<64>());
+  EXPECT_EQ(0x0807060504030201UL, buffer.UncheckedReadUInt<64>());
   EXPECT_DEATH(buffer.ReadUInt<56>(), "");
-  EXPECT_EQ(0x07060504030201, buffer.UncheckedReadUInt<56>());
+  EXPECT_EQ(0x07060504030201UL, buffer.UncheckedReadUInt<56>());
   buffer.WriteUInt<64>(0x0102030405060708);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{21, 22, 8, 7, 6, 5, 4, 3, 2, 1,
                                                 23, 24}),
@@ -480,7 +481,7 @@ TEST(LittleEndianByteOrderer, Methods) {
   EXPECT_DEATH(buffer.WriteUInt<56>(0x77777777777777), "");
 
   EXPECT_FALSE(LittleEndianByteOrderer<ReadOnlyContiguousBuffer>().Ok());
-  EXPECT_EQ(0,
+  EXPECT_EQ(0U,
             LittleEndianByteOrderer<ReadOnlyContiguousBuffer>().SizeInBytes());
   EXPECT_EQ(bytes[1], (LittleEndianByteOrderer<ReadOnlyContiguousBuffer>{
                           ReadOnlyContiguousBuffer{bytes.data() + 1, 0}}
@@ -496,12 +497,12 @@ TEST(BigEndianByteOrderer, Methods) {
   const int buffer_start = 2;
   const auto buffer = BigEndianByteOrderer<ReadWriteContiguousBuffer>{
       ReadWriteContiguousBuffer{bytes.data() + buffer_start, 8}};
-  EXPECT_EQ(8, buffer.SizeInBytes());
+  EXPECT_EQ(8U, buffer.SizeInBytes());
   EXPECT_TRUE(buffer.Ok());
-  EXPECT_EQ(0x0102030405060708, buffer.ReadUInt<64>());
-  EXPECT_EQ(0x0102030405060708, buffer.UncheckedReadUInt<64>());
+  EXPECT_EQ(0x0102030405060708UL, buffer.ReadUInt<64>());
+  EXPECT_EQ(0x0102030405060708UL, buffer.UncheckedReadUInt<64>());
   EXPECT_DEATH(buffer.ReadUInt<56>(), "");
-  EXPECT_EQ(0x01020304050607, buffer.UncheckedReadUInt<56>());
+  EXPECT_EQ(0x01020304050607UL, buffer.UncheckedReadUInt<56>());
   buffer.WriteUInt<64>(0x0807060504030201);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{21, 22, 8, 7, 6, 5, 4, 3, 2, 1,
                                                 23, 24}),
@@ -513,7 +514,7 @@ TEST(BigEndianByteOrderer, Methods) {
   EXPECT_DEATH(buffer.WriteUInt<56>(0x77777777777777), "");
 
   EXPECT_FALSE(BigEndianByteOrderer<ReadOnlyContiguousBuffer>().Ok());
-  EXPECT_EQ(0, BigEndianByteOrderer<ReadOnlyContiguousBuffer>().SizeInBytes());
+  EXPECT_EQ(0U, BigEndianByteOrderer<ReadOnlyContiguousBuffer>().SizeInBytes());
   EXPECT_EQ(bytes[1], (BigEndianByteOrderer<ReadOnlyContiguousBuffer>{
                           ReadOnlyContiguousBuffer{bytes.data() + 1, 0}}
                            .UncheckedReadUInt<8>()));
@@ -531,14 +532,14 @@ TEST(NullByteOrderer, Methods) {
   // NullByteOrderer::UncheckedRead ignores its argument.
   EXPECT_EQ(bytes[0], buffer.UncheckedReadUInt<8>());
   buffer.WriteUInt<8>(0x24);
-  EXPECT_EQ(0x24, bytes[0]);
+  EXPECT_EQ(0x24U, bytes[0]);
   buffer.UncheckedWriteUInt<8>(0x25);
-  EXPECT_EQ(0x25, bytes[0]);
-  EXPECT_EQ(1, buffer.SizeInBytes());
+  EXPECT_EQ(0x25U, bytes[0]);
+  EXPECT_EQ(1U, buffer.SizeInBytes());
   EXPECT_TRUE(buffer.Ok());
 
   EXPECT_FALSE(NullByteOrderer<ReadOnlyContiguousBuffer>().Ok());
-  EXPECT_EQ(0, NullByteOrderer<ReadOnlyContiguousBuffer>().SizeInBytes());
+  EXPECT_EQ(0U, NullByteOrderer<ReadOnlyContiguousBuffer>().SizeInBytes());
   EXPECT_DEATH((NullByteOrderer<ReadOnlyContiguousBuffer>{
                    ReadOnlyContiguousBuffer{bytes, 0}}
                     .ReadUInt<8>()),
@@ -560,12 +561,12 @@ TEST(BitBlock, BigEndianMethods) {
                             0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10};
   const auto big_endian =
       BigEndianBitBlockN<64>{ReadWriteContiguousBuffer{bytes + 4, 8}};
-  EXPECT_EQ(64, big_endian.SizeInBits());
+  EXPECT_EQ(64U, big_endian.SizeInBits());
   EXPECT_TRUE(big_endian.Ok());
   EXPECT_EQ(0x05060708090a0b0cUL, big_endian.ReadUInt());
   EXPECT_EQ(0x05060708090a0b0cUL, big_endian.UncheckedReadUInt());
   EXPECT_FALSE(BigEndianBitBlockN<64>().Ok());
-  EXPECT_EQ(64, BigEndianBitBlockN<64>().SizeInBits());
+  EXPECT_EQ(64U, BigEndianBitBlockN<64>().SizeInBits());
   EXPECT_FALSE(
       (BigEndianBitBlockN<64>{ReadWriteContiguousBuffer{bytes, 0}}.Ok()));
 }
@@ -575,12 +576,12 @@ TEST(BitBlock, LittleEndianMethods) {
                             0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10};
   const auto little_endian =
       LittleEndianBitBlockN<64>{ReadWriteContiguousBuffer{bytes + 4, 8}};
-  EXPECT_EQ(64, little_endian.SizeInBits());
+  EXPECT_EQ(64U, little_endian.SizeInBits());
   EXPECT_TRUE(little_endian.Ok());
   EXPECT_EQ(0x0c0b0a0908070605UL, little_endian.ReadUInt());
   EXPECT_EQ(0x0c0b0a0908070605UL, little_endian.UncheckedReadUInt());
   EXPECT_FALSE(LittleEndianBitBlockN<64>().Ok());
-  EXPECT_EQ(64, LittleEndianBitBlockN<64>().SizeInBits());
+  EXPECT_EQ(64U, LittleEndianBitBlockN<64>().SizeInBits());
   EXPECT_FALSE(
       (LittleEndianBitBlockN<64>{ReadWriteContiguousBuffer{bytes, 0}}.Ok()));
 }
@@ -592,15 +593,15 @@ TEST(BitBlock, GetOffsetStorage) {
       LittleEndianBitBlockN<64>{ReadWriteContiguousBuffer{bytes, 8}};
   const OffsetBitBlock<LittleEndianBitBlockN<64>> offset_block =
       bit_block.GetOffsetStorage<1, 0>(4, 8);
-  EXPECT_EQ(8, offset_block.SizeInBits());
-  EXPECT_EQ(0xf1, offset_block.ReadUInt());
+  EXPECT_EQ(8U, offset_block.SizeInBits());
+  EXPECT_EQ(0xf1U, offset_block.ReadUInt());
   EXPECT_EQ(bit_block.SizeInBits(),
             (bit_block.GetOffsetStorage<1, 0>(8, bit_block.SizeInBits())
                  .SizeInBits()));
   EXPECT_FALSE(
       (bit_block.GetOffsetStorage<1, 0>(8, bit_block.SizeInBits()).Ok()));
-  EXPECT_EQ(10, (bit_block.GetOffsetStorage<1, 0>(bit_block.SizeInBits(), 10)
-                     .SizeInBits()));
+  EXPECT_EQ(10U, (bit_block.GetOffsetStorage<1, 0>(bit_block.SizeInBits(), 10)
+                      .SizeInBits()));
 }
 
 TEST(OffsetBitBlock, Methods) {
@@ -613,8 +614,8 @@ TEST(OffsetBitBlock, Methods) {
 
   const auto offset_block = bit_block.GetOffsetStorage<1, 0>(8, 48);
   EXPECT_FALSE((offset_block.GetOffsetStorage<1, 0>(40, 16).Ok()));
-  EXPECT_EQ(0x0a0b0c0d0e0f, offset_block.ReadUInt());
-  EXPECT_EQ(0x0a0b0c0d0e0f, offset_block.UncheckedReadUInt());
+  EXPECT_EQ(0x0a0b0c0d0e0fUL, offset_block.ReadUInt());
+  EXPECT_EQ(0x0a0b0c0d0e0fUL, offset_block.UncheckedReadUInt());
   offset_block.WriteUInt(0x0f0e0d0c0b0a);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{0x10, 0x0a, 0x0b, 0x0c, 0x0d,
                                                 0x0e, 0x0f, 0x09}),
@@ -631,8 +632,8 @@ TEST(OffsetBitBlock, Methods) {
 
   const auto offset_offset_block = offset_block.GetOffsetStorage<1, 0>(16, 16);
   EXPECT_FALSE((offset_offset_block.GetOffsetStorage<1, 0>(8, 16).Ok()));
-  EXPECT_EQ(0x0d0c, offset_offset_block.ReadUInt());
-  EXPECT_EQ(0x0d0c, offset_offset_block.UncheckedReadUInt());
+  EXPECT_EQ(0x0d0cU, offset_offset_block.ReadUInt());
+  EXPECT_EQ(0x0d0cU, offset_offset_block.UncheckedReadUInt());
   offset_offset_block.WriteUInt(0x0c0d);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{0x10, 0x0a, 0x0b, 0x0d, 0x0c,
                                                 0x0e, 0x0f, 0x09}),
@@ -649,7 +650,7 @@ TEST(OffsetBitBlock, Methods) {
 
   const auto null_offset_block = OffsetBitBlock<BigEndianBitBlockN<32>>();
   EXPECT_FALSE(null_offset_block.Ok());
-  EXPECT_EQ(0, null_offset_block.SizeInBits());
+  EXPECT_EQ(0U, null_offset_block.SizeInBits());
 }
 
 }  // namespace test

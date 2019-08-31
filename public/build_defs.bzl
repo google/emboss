@@ -78,7 +78,7 @@ def emboss_cc_util_test(name, copts = [], **kwargs):
     """Constructs two cc_test targets, with and without optimizations."""
     native.cc_test(
         name = name,
-        copts = copts,
+        copts = copts + ["-Wsign-compare"],
         **kwargs
     )
     native.cc_test(

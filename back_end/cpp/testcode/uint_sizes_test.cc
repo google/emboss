@@ -49,19 +49,19 @@ TEST(SizesView, CanReadSizes) {
   EXPECT_EQ(260, view.two_byte().Read());
   EXPECT_EQ(0x445566U, view.three_byte().Read());
   EXPECT_EQ(0x03040506U, view.four_byte().Read());
-  EXPECT_EQ(0xa987654321, view.five_byte().Read());
-  EXPECT_EQ(0x123456789abc, view.six_byte().Read());
-  EXPECT_EQ(0xf1e2d3c4b5a697, view.seven_byte().Read());
+  EXPECT_EQ(0xa987654321UL, view.five_byte().Read());
+  EXPECT_EQ(0x123456789abcUL, view.six_byte().Read());
+  EXPECT_EQ(0xf1e2d3c4b5a697UL, view.seven_byte().Read());
   EXPECT_EQ(0xff00010203040506UL, view.eight_byte().Read());
   // Test that the views return appropriate integer widths.
-  EXPECT_EQ(1, sizeof(view.one_byte().Read()));
-  EXPECT_EQ(2, sizeof(view.two_byte().Read()));
-  EXPECT_EQ(4, sizeof(view.three_byte().Read()));
-  EXPECT_EQ(4, sizeof(view.four_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.five_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.six_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.seven_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.eight_byte().Read()));
+  EXPECT_EQ(1U, sizeof(view.one_byte().Read()));
+  EXPECT_EQ(2U, sizeof(view.two_byte().Read()));
+  EXPECT_EQ(4U, sizeof(view.three_byte().Read()));
+  EXPECT_EQ(4U, sizeof(view.four_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.five_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.six_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.seven_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.eight_byte().Read()));
 }
 
 TEST(SizesWriter, CanWriteSizes) {
@@ -86,19 +86,19 @@ TEST(SizesView, CanReadSizesBigEndian) {
   EXPECT_EQ(0x0401, view.two_byte().Read());
   EXPECT_EQ(0x665544U, view.three_byte().Read());
   EXPECT_EQ(0x06050403U, view.four_byte().Read());
-  EXPECT_EQ(0x21436587a9, view.five_byte().Read());
-  EXPECT_EQ(0xbc9a78563412, view.six_byte().Read());
-  EXPECT_EQ(0x97a6b5c4d3e2f1, view.seven_byte().Read());
+  EXPECT_EQ(0x21436587a9UL, view.five_byte().Read());
+  EXPECT_EQ(0xbc9a78563412UL, view.six_byte().Read());
+  EXPECT_EQ(0x97a6b5c4d3e2f1UL, view.seven_byte().Read());
   EXPECT_EQ(0x06050403020100ffUL, view.eight_byte().Read());
   // Test that the views return appropriate integer widths.
-  EXPECT_EQ(1, sizeof(view.one_byte().Read()));
-  EXPECT_EQ(2, sizeof(view.two_byte().Read()));
-  EXPECT_EQ(4, sizeof(view.three_byte().Read()));
-  EXPECT_EQ(4, sizeof(view.four_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.five_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.six_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.seven_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.eight_byte().Read()));
+  EXPECT_EQ(1U, sizeof(view.one_byte().Read()));
+  EXPECT_EQ(2U, sizeof(view.two_byte().Read()));
+  EXPECT_EQ(4U, sizeof(view.three_byte().Read()));
+  EXPECT_EQ(4U, sizeof(view.four_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.five_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.six_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.seven_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.eight_byte().Read()));
 }
 
 TEST(SizesWriter, CanWriteSizesBigEndian) {
@@ -123,19 +123,19 @@ TEST(SizesView, CanReadSizesAlternatingEndian) {
   EXPECT_EQ(0x0104, view.two_byte().Read());
   EXPECT_EQ(0x665544U, view.three_byte().Read());
   EXPECT_EQ(0x03040506U, view.four_byte().Read());
-  EXPECT_EQ(0x21436587a9, view.five_byte().Read());
-  EXPECT_EQ(0x123456789abc, view.six_byte().Read());
-  EXPECT_EQ(0x97a6b5c4d3e2f1, view.seven_byte().Read());
+  EXPECT_EQ(0x21436587a9UL, view.five_byte().Read());
+  EXPECT_EQ(0x123456789abcUL, view.six_byte().Read());
+  EXPECT_EQ(0x97a6b5c4d3e2f1UL, view.seven_byte().Read());
   EXPECT_EQ(0xff00010203040506UL, view.eight_byte().Read());
   // Test that the views return appropriate integer widths.
-  EXPECT_EQ(1, sizeof(view.one_byte().Read()));
-  EXPECT_EQ(2, sizeof(view.two_byte().Read()));
-  EXPECT_EQ(4, sizeof(view.three_byte().Read()));
-  EXPECT_EQ(4, sizeof(view.four_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.five_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.six_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.seven_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.eight_byte().Read()));
+  EXPECT_EQ(1U, sizeof(view.one_byte().Read()));
+  EXPECT_EQ(2U, sizeof(view.two_byte().Read()));
+  EXPECT_EQ(4U, sizeof(view.three_byte().Read()));
+  EXPECT_EQ(4U, sizeof(view.four_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.five_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.six_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.seven_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.eight_byte().Read()));
 }
 
 TEST(SizesWriter, CanWriteSizesAlternatingEndian) {
@@ -271,14 +271,14 @@ TEST(SizesView, CanReadEnumSizes) {
   EXPECT_EQ(Enum::VALUE10000000, view.seven_byte().Read());
   EXPECT_EQ(Enum::VALUE1000, view.eight_byte().Read());
   // Emboss enums are always derived from uint64_t.
-  EXPECT_EQ(8, sizeof(view.one_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.two_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.three_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.four_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.five_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.six_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.seven_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.eight_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.one_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.two_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.three_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.four_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.five_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.six_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.seven_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.eight_byte().Read()));
 }
 
 TEST(SizesWriter, CanWriteEnumSizes) {
@@ -374,23 +374,23 @@ TEST(SizesView, CanReadArraySizes) {
   EXPECT_EQ(0x445567U, view.three_byte()[1].Read());
   EXPECT_EQ(0x03040506U, view.four_byte()[0].Read());
   EXPECT_EQ(0x03040507U, view.four_byte()[1].Read());
-  EXPECT_EQ(0xa987654321, view.five_byte()[0].Read());
-  EXPECT_EQ(0xa987654322, view.five_byte()[1].Read());
-  EXPECT_EQ(0x123456789abc, view.six_byte()[0].Read());
-  EXPECT_EQ(0x123456789abd, view.six_byte()[1].Read());
-  EXPECT_EQ(0xf1e2d3c4b5a697, view.seven_byte()[0].Read());
-  EXPECT_EQ(0xf1e2d3c4b5a698, view.seven_byte()[1].Read());
+  EXPECT_EQ(0xa987654321UL, view.five_byte()[0].Read());
+  EXPECT_EQ(0xa987654322UL, view.five_byte()[1].Read());
+  EXPECT_EQ(0x123456789abcUL, view.six_byte()[0].Read());
+  EXPECT_EQ(0x123456789abdUL, view.six_byte()[1].Read());
+  EXPECT_EQ(0xf1e2d3c4b5a697UL, view.seven_byte()[0].Read());
+  EXPECT_EQ(0xf1e2d3c4b5a698UL, view.seven_byte()[1].Read());
   EXPECT_EQ(0xff00010203040506UL, view.eight_byte()[0].Read());
   EXPECT_EQ(0xff00010203040507UL, view.eight_byte()[1].Read());
   // Test that the views return appropriate integer widths.
-  EXPECT_EQ(1, sizeof(view.one_byte()[0].Read()));
-  EXPECT_EQ(2, sizeof(view.two_byte()[0].Read()));
-  EXPECT_EQ(4, sizeof(view.three_byte()[0].Read()));
-  EXPECT_EQ(4, sizeof(view.four_byte()[0].Read()));
-  EXPECT_EQ(8, sizeof(view.five_byte()[0].Read()));
-  EXPECT_EQ(8, sizeof(view.six_byte()[0].Read()));
-  EXPECT_EQ(8, sizeof(view.seven_byte()[0].Read()));
-  EXPECT_EQ(8, sizeof(view.eight_byte()[0].Read()));
+  EXPECT_EQ(1U, sizeof(view.one_byte()[0].Read()));
+  EXPECT_EQ(2U, sizeof(view.two_byte()[0].Read()));
+  EXPECT_EQ(4U, sizeof(view.three_byte()[0].Read()));
+  EXPECT_EQ(4U, sizeof(view.four_byte()[0].Read()));
+  EXPECT_EQ(8U, sizeof(view.five_byte()[0].Read()));
+  EXPECT_EQ(8U, sizeof(view.six_byte()[0].Read()));
+  EXPECT_EQ(8U, sizeof(view.seven_byte()[0].Read()));
+  EXPECT_EQ(8U, sizeof(view.eight_byte()[0].Read()));
 }
 
 TEST(SizesView, CopyFrom) {

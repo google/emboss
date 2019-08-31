@@ -850,6 +850,8 @@ class OffsetBitBlock final {
   // the appropriate size.
   ValueType ReadUInt() const {
     EMBOSS_CHECK_GE(bit_block_.SizeInBits(), offset_ + size_);
+    EMBOSS_CHECK_GE(bit_block_.SizeInBits(),
+                    static_cast</**/ ::std::uint64_t>(offset_ + size_));
     EMBOSS_CHECK(Ok());
     return MaskToNBits(bit_block_.ReadUInt(), offset_ + size_) >> offset_;
   }

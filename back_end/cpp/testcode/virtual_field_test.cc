@@ -65,21 +65,21 @@ TEST(Constants, ValuesOnView) {
   EXPECT_EQ(20, view.twenty().Read());
   EXPECT_EQ(4000000000U, view.four_billion().Read());
   EXPECT_EQ(10000000000L, view.ten_billion().Read());
-  EXPECT_EQ(0, view.value().Read());
-  EXPECT_EQ(0, view.alias_of_value().Read());
-  EXPECT_EQ(0, view.alias_of_alias_of_value().Read());
+  EXPECT_EQ(0U, view.value().Read());
+  EXPECT_EQ(0U, view.alias_of_value().Read());
+  EXPECT_EQ(0U, view.alias_of_alias_of_value().Read());
   view.alias_of_alias_of_value().Write(10);
-  EXPECT_EQ(10, view.value().Read());
-  EXPECT_EQ(10, view.alias_of_value().Read());
-  EXPECT_EQ(10, view.alias_of_alias_of_value().Read());
+  EXPECT_EQ(10U, view.value().Read());
+  EXPECT_EQ(10U, view.alias_of_value().Read());
+  EXPECT_EQ(10U, view.alias_of_alias_of_value().Read());
 }
 
 TEST(Computed, Values) {
   ::std::array<char, 8> values = {5, 0, 0, 0, 50, 0, 0, 0};
   const auto view = MakeStructureWithComputedValuesView(&values);
-  EXPECT_EQ(5, view.value().Read());
-  EXPECT_EQ(10, view.doubled().Read());
-  EXPECT_EQ(15, view.plus_ten().Read());
+  EXPECT_EQ(5U, view.value().Read());
+  EXPECT_EQ(10U, view.doubled().Read());
+  EXPECT_EQ(15U, view.plus_ten().Read());
   EXPECT_EQ(50, view.value2().Read());
   EXPECT_EQ(100, view.signed_doubled().Read());
   EXPECT_EQ(60, view.signed_plus_ten().Read());
@@ -239,13 +239,13 @@ TEST(VirtualInLocation, Offset) {
   EXPECT_FALSE(view.Ok());
   view.x().Write(2);
   EXPECT_TRUE(view.Ok());
-  EXPECT_EQ(50, view.offset_two_x().Read());
-  EXPECT_EQ(50, view.size_two_x().Read());
+  EXPECT_EQ(50U, view.offset_two_x().Read());
+  EXPECT_EQ(50U, view.size_two_x().Read());
   view.x().Write(1);
   EXPECT_FALSE(view.Ok());
-  EXPECT_EQ(50 * 0x10000, view.offset_two_x().Read());
+  EXPECT_EQ(50 * 0x10000U, view.offset_two_x().Read());
   view.x().Write(0);
-  EXPECT_EQ(0, view.offset_two_x().Read());
+  EXPECT_EQ(0U, view.offset_two_x().Read());
 }
 
 TEST(BooleanVirtual, TrueAndFalse) {
@@ -287,7 +287,7 @@ TEST(ForeignConstants, ForeignConstants) {
   ::std::array<char, 14> values = {5, 0, 0, 0, 10, 0, 0, 0, 15, 0, 20, 0, 0, 0};
   const auto view = MakeStructureUsingForeignConstantsView(&values);
   EXPECT_TRUE(view.Ok());
-  EXPECT_EQ(20, view.x().Read());
+  EXPECT_EQ(20U, view.x().Read());
   EXPECT_EQ(100, view.one_hundred().Read());
 }
 
@@ -364,11 +364,11 @@ TEST(VirtualFields, SizeInBytes) {
                                                        0x22, 0x22, 0x22, 0x22};
   const auto view = MakeUsesExternalSizeView(&values);
   EXPECT_TRUE(view.Ok());
-  EXPECT_EQ(8, view.SizeInBytes());
-  EXPECT_EQ(view.x().SizeInBytes(), 4);
-  EXPECT_EQ(view.y().SizeInBytes(), 4);
-  EXPECT_EQ(view.x().value().Read(), 0x11111111);
-  EXPECT_EQ(view.y().value().Read(), 0x22222222);
+  EXPECT_EQ(8U, view.SizeInBytes());
+  EXPECT_EQ(view.x().SizeInBytes(), 4U);
+  EXPECT_EQ(view.y().SizeInBytes(), 4U);
+  EXPECT_EQ(view.x().value().Read(), 0x11111111U);
+  EXPECT_EQ(view.y().value().Read(), 0x22222222U);
   EXPECT_TRUE(view.IntrinsicSizeInBytes().Ok());
   EXPECT_EQ(8, UsesExternalSizeView::IntrinsicSizeInBytes().Read());
   EXPECT_EQ(8, UsesExternalSize::MaxSizeInBytes());

@@ -43,15 +43,15 @@ TEST(LogFileStatusView, ConstructorRuns) {
 
 // LogFileStatusView::SizeInBytes() returns the expected value.
 TEST(LogFileStatusView, SizeIsCorrect) {
-  EXPECT_EQ(24, LogFileStatusView::SizeInBytes());
+  EXPECT_EQ(24U, LogFileStatusView::SizeInBytes());
 }
 
 // LogFileStatusView's atomic field accessors work.
 TEST(LogFileStatusView, AtomicFieldAccessorsWork) {
   auto view = LogFileStatusView(kLogFileStatus, sizeof kLogFileStatus);
-  EXPECT_EQ(0x04030201, view.file_state().Read());
-  EXPECT_EQ(0x08070605, view.file_size_kb().Read());
-  EXPECT_EQ(0x0c0b0a09, view.media().Read());
+  EXPECT_EQ(0x04030201U, view.file_state().Read());
+  EXPECT_EQ(0x08070605U, view.file_size_kb().Read());
+  EXPECT_EQ(0x0c0b0a09U, view.media().Read());
 }
 
 // LogFileStatusView's array field accessor works.

@@ -161,7 +161,10 @@ emboss_cc_util_test(
     srcs = [
         "emboss_text_util_test.cc",
     ],
-    copts = ["-DEMBOSS_FORCE_ALL_CHECKS"],
+    copts = [
+        "-DEMBOSS_FORCE_ALL_CHECKS",
+        "-Wsign-compare",
+    ],
     deps = [
         ":cpp_utils",
         "@com_google_googletest//:gtest_main",

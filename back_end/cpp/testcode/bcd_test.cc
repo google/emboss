@@ -52,8 +52,8 @@ TEST(BcdSizesView, CanReadBcd) {
       MakeAlignedBcdSizesView<const ::std::uint8_t, 8>(kBcd, sizeof kBcd);
   EXPECT_EQ(2, view.one_byte().Read());
   EXPECT_EQ(104, view.two_byte().Read());
-  EXPECT_EQ(445566, view.three_byte().Read());
-  EXPECT_EQ(3040506, view.four_byte().Read());
+  EXPECT_EQ(445566U, view.three_byte().Read());
+  EXPECT_EQ(3040506U, view.four_byte().Read());
   EXPECT_EQ(9987654321UL, view.five_byte().Read());
   EXPECT_EQ(123456789123UL, view.six_byte().Read());
   EXPECT_EQ(91827364554637UL, view.seven_byte().Read());
@@ -63,18 +63,18 @@ TEST(BcdSizesView, CanReadBcd) {
   EXPECT_EQ(307, view.ten_bit().Read());
   EXPECT_EQ(123, view.twelve_bit().Read());
   // Test that the views return appropriate integer widths.
-  EXPECT_EQ(1, sizeof(view.one_byte().Read()));
-  EXPECT_EQ(2, sizeof(view.two_byte().Read()));
-  EXPECT_EQ(4, sizeof(view.three_byte().Read()));
-  EXPECT_EQ(4, sizeof(view.four_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.five_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.six_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.seven_byte().Read()));
-  EXPECT_EQ(8, sizeof(view.eight_byte().Read()));
-  EXPECT_EQ(1, sizeof(view.four_bit().Read()));
-  EXPECT_EQ(1, sizeof(view.six_bit().Read()));
-  EXPECT_EQ(2, sizeof(view.ten_bit().Read()));
-  EXPECT_EQ(2, sizeof(view.twelve_bit().Read()));
+  EXPECT_EQ(1U, sizeof(view.one_byte().Read()));
+  EXPECT_EQ(2U, sizeof(view.two_byte().Read()));
+  EXPECT_EQ(4U, sizeof(view.three_byte().Read()));
+  EXPECT_EQ(4U, sizeof(view.four_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.five_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.six_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.seven_byte().Read()));
+  EXPECT_EQ(8U, sizeof(view.eight_byte().Read()));
+  EXPECT_EQ(1U, sizeof(view.four_bit().Read()));
+  EXPECT_EQ(1U, sizeof(view.six_bit().Read()));
+  EXPECT_EQ(2U, sizeof(view.ten_bit().Read()));
+  EXPECT_EQ(2U, sizeof(view.twelve_bit().Read()));
 }
 
 TEST(BcdSizesWriter, CanWriteBcd) {
@@ -182,7 +182,7 @@ TEST(BcdSizesView, OkIsFalseForBadBcd) {
 TEST(BcdBigEndianView, BigEndianReadWrite) {
   ::std::uint8_t big_endian[4] = {0x12, 0x34, 0x56, 0x78};
   auto writer = BcdBigEndianWriter(big_endian, sizeof big_endian);
-  EXPECT_EQ(12345678, writer.four_byte().Read());
+  EXPECT_EQ(12345678U, writer.four_byte().Read());
   writer.four_byte().Write(87654321);
   EXPECT_EQ(0x87, big_endian[0]);
   EXPECT_EQ(0x65, big_endian[1]);

@@ -76,7 +76,7 @@ TEST(Conditional, BasicConditionFalseWriteCrashes) {
 TEST(Conditional, BasicConditionTrueSizeIncludesConditionalField) {
   ::std::uint8_t buffer[2] = {0, 2};
   auto writer = BasicConditionalWriter(buffer, sizeof buffer);
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
   EXPECT_EQ(2, BasicConditional::MaxSizeInBytes());
   EXPECT_EQ(1, BasicConditional::MinSizeInBytes());
   EXPECT_EQ(2, writer.MaxSizeInBytes().Read());
@@ -86,7 +86,7 @@ TEST(Conditional, BasicConditionTrueSizeIncludesConditionalField) {
 TEST(Conditional, BasicConditionFalseSizeDoesNotIncludeConditionalField) {
   ::std::uint8_t buffer[2] = {1, 2};
   auto writer = BasicConditionalWriter(buffer, sizeof buffer);
-  EXPECT_EQ(1, writer.SizeInBytes());
+  EXPECT_EQ(1U, writer.SizeInBytes());
   EXPECT_EQ(2, writer.MaxSizeInBytes().Read());
   EXPECT_EQ(1, writer.MinSizeInBytes().Read());
 }
@@ -173,13 +173,13 @@ TEST(Conditional, NegativeConditionFalseWriteCrashes) {
 TEST(Conditional, NegativeConditionTrueSizeIncludesConditionalField) {
   ::std::uint8_t buffer[2] = {1, 2};
   auto writer = NegativeConditionalWriter(buffer, sizeof buffer);
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
 }
 
 TEST(Conditional, NegativeConditionFalseSizeDoesNotIncludeConditionalField) {
   ::std::uint8_t buffer[2] = {0, 2};
   auto writer = NegativeConditionalWriter(buffer, sizeof buffer);
-  EXPECT_EQ(1, writer.SizeInBytes());
+  EXPECT_EQ(1U, writer.SizeInBytes());
 }
 
 TEST(Conditional, WithNegativeConditionFalseStructIsOkWhenBufferIsSmall) {
@@ -206,38 +206,39 @@ TEST(Conditional,
   auto writer = ConditionalAndUnconditionalOverlappingFinalFieldWriter(
       buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
 }
 
 TEST(Conditional,
      SizeIsConstantWhenUnconditionalFieldsOverlapWithConditionalFields) {
   EXPECT_EQ(
-      2, ConditionalAndUnconditionalOverlappingFinalFieldWriter::SizeInBytes());
+      2U,
+      ConditionalAndUnconditionalOverlappingFinalFieldWriter::SizeInBytes());
 }
 
 TEST(Conditional, WhenConditionalFieldIsFirstSizeIsConstant) {
-  EXPECT_EQ(2, ConditionalBasicConditionalFieldFirstWriter::SizeInBytes());
+  EXPECT_EQ(2U, ConditionalBasicConditionalFieldFirstWriter::SizeInBytes());
 }
 
 TEST(Conditional, WhenConditionIsFalseDynamicallyPlacedFieldDoesNotAffectSize) {
   ::std::uint8_t buffer[3] = {1, 0, 10};
   auto writer = ConditionalAndDynamicLocationWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
-  EXPECT_EQ(3, writer.SizeInBytes());
+  EXPECT_EQ(3U, writer.SizeInBytes());
 }
 
 TEST(Conditional, WhenConditionIsTrueDynamicallyPlacedFieldDoesAffectSize) {
   ::std::uint8_t buffer[4] = {0, 0, 3, 0};
   auto writer = ConditionalAndDynamicLocationWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
-  EXPECT_EQ(4, writer.SizeInBytes());
+  EXPECT_EQ(4U, writer.SizeInBytes());
 }
 
 TEST(Conditional, WhenConditionIsTrueDynamicallyPlacedFieldOutOfRangeIsError) {
   ::std::uint8_t buffer[3] = {0, 0, 3};
   auto writer = ConditionalAndDynamicLocationWriter(buffer, sizeof buffer);
   EXPECT_FALSE(writer.Ok());
-  EXPECT_EQ(4, writer.SizeInBytes());
+  EXPECT_EQ(4U, writer.SizeInBytes());
 }
 
 TEST(Conditional, ConditionUsesMinInt) {
@@ -245,12 +246,12 @@ TEST(Conditional, ConditionUsesMinInt) {
   auto view = MakeConditionUsesMinIntView(buffer, sizeof buffer);
   EXPECT_TRUE(view.Ok());
   EXPECT_FALSE(view.has_xc().ValueOr(true));
-  EXPECT_EQ(1, view.SizeInBytes());
+  EXPECT_EQ(1U, view.SizeInBytes());
   buffer[0] = 0x80;
   EXPECT_TRUE(view.Ok());
   EXPECT_EQ(-0x80, view.x().Read());
   EXPECT_TRUE(view.has_xc().ValueOr(false));
-  EXPECT_EQ(2, view.SizeInBytes());
+  EXPECT_EQ(2U, view.SizeInBytes());
 }
 
 TEST(Conditional,
@@ -278,7 +279,7 @@ TEST(Conditional,
   EXPECT_TRUE(writer.has_xcc().Known());
   EXPECT_FALSE(writer.has_xcc().Value());
   EXPECT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(1, writer.SizeInBytes());
+  EXPECT_EQ(1U, writer.SizeInBytes());
 }
 
 TEST(Conditional, StructWithNestedConditionIsOkWhenOuterConditionExists) {
@@ -290,19 +291,19 @@ TEST(Conditional, StructWithNestedConditionIsOkWhenOuterConditionExists) {
   EXPECT_TRUE(writer.has_xc().Value());
   EXPECT_TRUE(writer.has_xcc().Known());
   EXPECT_FALSE(writer.has_xcc().Value());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
 }
 
 TEST(Conditional, AlwaysMissingFieldDoesNotContributeToStaticSize) {
-  EXPECT_EQ(0, OnlyAlwaysFalseConditionWriter::SizeInBytes());
-  EXPECT_EQ(1, AlwaysFalseConditionWriter::SizeInBytes());
+  EXPECT_EQ(0U, OnlyAlwaysFalseConditionWriter::SizeInBytes());
+  EXPECT_EQ(1U, AlwaysFalseConditionWriter::SizeInBytes());
 }
 
 TEST(Conditional, AlwaysMissingFieldDoesNotContributeToSize) {
   ::std::uint8_t buffer[1] = {0};
   auto view = MakeAlwaysFalseConditionDynamicSizeView(buffer, sizeof buffer);
   ASSERT_TRUE(view.SizeIsKnown());
-  EXPECT_EQ(1, view.SizeInBytes());
+  EXPECT_EQ(1U, view.SizeInBytes());
 }
 
 TEST(Conditional, StructIsOkWithAlwaysMissingField) {
@@ -310,8 +311,8 @@ TEST(Conditional, StructIsOkWithAlwaysMissingField) {
   auto writer = AlwaysFalseConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(1, writer.SizeInBytes());
-  EXPECT_EQ(1, AlwaysFalseConditionView::SizeInBytes());
+  EXPECT_EQ(1U, writer.SizeInBytes());
+  EXPECT_EQ(1U, AlwaysFalseConditionView::SizeInBytes());
 }
 
 TEST(Conditional, StructIsOkWithOnlyAlwaysMissingField) {
@@ -319,12 +320,12 @@ TEST(Conditional, StructIsOkWithOnlyAlwaysMissingField) {
   auto writer = OnlyAlwaysFalseConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(0, writer.SizeInBytes());
-  EXPECT_EQ(0, OnlyAlwaysFalseConditionView::SizeInBytes());
+  EXPECT_EQ(0U, writer.SizeInBytes());
+  EXPECT_EQ(0U, OnlyAlwaysFalseConditionView::SizeInBytes());
 }
 
 TEST(Conditional, ConditionDoesNotBlockStaticSize) {
-  EXPECT_EQ(3, ConditionDoesNotContributeToSizeView::SizeInBytes());
+  EXPECT_EQ(3U, ConditionDoesNotContributeToSizeView::SizeInBytes());
 }
 
 TEST(Conditional, EqualsHaveAllFields) {
@@ -431,7 +432,7 @@ TEST(Conditional, TrueEnumBasedCondition) {
   auto writer = EnumConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
   EXPECT_EQ(0, writer.xc().Read());
 }
 
@@ -440,7 +441,7 @@ TEST(Conditional, FalseEnumBasedCondition) {
   auto writer = EnumConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(1, writer.SizeInBytes());
+  EXPECT_EQ(1U, writer.SizeInBytes());
   EXPECT_FALSE(writer.xc().Ok());
 }
 
@@ -449,7 +450,7 @@ TEST(Conditional, TrueEnumBasedNegativeCondition) {
   auto writer = NegativeEnumConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
   EXPECT_EQ(0, writer.xc().Read());
 }
 
@@ -458,7 +459,7 @@ TEST(Conditional, FalseEnumBasedNegativeCondition) {
   auto writer = NegativeEnumConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(1, writer.SizeInBytes());
+  EXPECT_EQ(1U, writer.SizeInBytes());
   EXPECT_FALSE(writer.xc().Ok());
 }
 
@@ -467,7 +468,7 @@ TEST(LessThanConditional, LessThan) {
   auto writer = LessThanConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
   EXPECT_TRUE(writer.xc().Ok());
 }
 
@@ -476,7 +477,7 @@ TEST(LessThanConditional, Equal) {
   auto writer = LessThanConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(1, writer.SizeInBytes());
+  EXPECT_EQ(1U, writer.SizeInBytes());
   EXPECT_FALSE(writer.xc().Ok());
 }
 
@@ -485,7 +486,7 @@ TEST(LessThanConditional, GreaterThan) {
   auto writer = LessThanConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(1, writer.SizeInBytes());
+  EXPECT_EQ(1U, writer.SizeInBytes());
   EXPECT_FALSE(writer.xc().Ok());
 }
 
@@ -494,7 +495,7 @@ TEST(LessThanOrEqualConditional, LessThan) {
   auto writer = LessThanOrEqualConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
   EXPECT_TRUE(writer.xc().Ok());
 }
 
@@ -503,7 +504,7 @@ TEST(LessThanOrEqualConditional, Equal) {
   auto writer = LessThanOrEqualConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
   EXPECT_TRUE(writer.xc().Ok());
 }
 
@@ -512,7 +513,7 @@ TEST(LessThanOrEqualConditional, GreaterThan) {
   auto writer = LessThanOrEqualConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(1, writer.SizeInBytes());
+  EXPECT_EQ(1U, writer.SizeInBytes());
   EXPECT_FALSE(writer.xc().Ok());
 }
 
@@ -521,7 +522,7 @@ TEST(GreaterThanConditional, LessThan) {
   auto writer = GreaterThanConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(1, writer.SizeInBytes());
+  EXPECT_EQ(1U, writer.SizeInBytes());
   EXPECT_FALSE(writer.xc().Ok());
 }
 
@@ -530,7 +531,7 @@ TEST(GreaterThanConditional, Equal) {
   auto writer = GreaterThanConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(1, writer.SizeInBytes());
+  EXPECT_EQ(1U, writer.SizeInBytes());
   EXPECT_FALSE(writer.xc().Ok());
 }
 
@@ -539,7 +540,7 @@ TEST(GreaterThanConditional, GreaterThan) {
   auto writer = GreaterThanConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
   EXPECT_TRUE(writer.xc().Ok());
 }
 
@@ -548,7 +549,7 @@ TEST(GreaterThanOrEqualConditional, LessThan) {
   auto writer = GreaterThanOrEqualConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(1, writer.SizeInBytes());
+  EXPECT_EQ(1U, writer.SizeInBytes());
   EXPECT_FALSE(writer.xc().Ok());
 }
 
@@ -557,7 +558,7 @@ TEST(GreaterThanOrEqualConditional, Equal) {
   auto writer = GreaterThanOrEqualConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
   EXPECT_TRUE(writer.xc().Ok());
 }
 
@@ -566,7 +567,7 @@ TEST(GreaterThanOrEqualConditional, GreaterThan) {
   auto writer = GreaterThanOrEqualConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
   EXPECT_TRUE(writer.xc().Ok());
 }
 
@@ -575,7 +576,7 @@ TEST(RangeConditional, ValueTooSmall) {
   auto writer = RangeConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
   EXPECT_FALSE(writer.xc().Ok());
 }
 
@@ -584,7 +585,7 @@ TEST(RangeConditional, ValueTooLarge) {
   auto writer = RangeConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
   EXPECT_FALSE(writer.xc().Ok());
 }
 
@@ -593,7 +594,7 @@ TEST(RangeConditional, ValuesSwapped) {
   auto writer = RangeConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
   EXPECT_FALSE(writer.xc().Ok());
 }
 
@@ -602,7 +603,7 @@ TEST(RangeConditional, True) {
   auto writer = RangeConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(3, writer.SizeInBytes());
+  EXPECT_EQ(3U, writer.SizeInBytes());
   EXPECT_TRUE(writer.xc().Ok());
 }
 
@@ -611,7 +612,7 @@ TEST(ReverseRangeConditional, ValueTooSmall) {
   auto writer = ReverseRangeConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
   EXPECT_FALSE(writer.xc().Ok());
 }
 
@@ -620,7 +621,7 @@ TEST(ReverseRangeConditional, ValueTooLarge) {
   auto writer = ReverseRangeConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
   EXPECT_FALSE(writer.xc().Ok());
 }
 
@@ -629,7 +630,7 @@ TEST(ReverseRangeConditional, ValuesSwapped) {
   auto writer = ReverseRangeConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
   EXPECT_FALSE(writer.xc().Ok());
 }
 
@@ -638,7 +639,7 @@ TEST(ReverseRangeConditional, True) {
   auto writer = ReverseRangeConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(3, writer.SizeInBytes());
+  EXPECT_EQ(3U, writer.SizeInBytes());
   EXPECT_TRUE(writer.xc().Ok());
 }
 
@@ -647,7 +648,7 @@ TEST(AndConditional, BothFalse) {
   auto writer = AndConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
   EXPECT_FALSE(writer.xc().Ok());
 }
 
@@ -656,7 +657,7 @@ TEST(AndConditional, FirstFalse) {
   auto writer = AndConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
   EXPECT_FALSE(writer.xc().Ok());
 }
 
@@ -665,7 +666,7 @@ TEST(AndConditional, SecondFalse) {
   auto writer = AndConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
   EXPECT_FALSE(writer.xc().Ok());
 }
 
@@ -674,7 +675,7 @@ TEST(AndConditional, BothTrue) {
   auto writer = AndConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(3, writer.SizeInBytes());
+  EXPECT_EQ(3U, writer.SizeInBytes());
   EXPECT_TRUE(writer.xc().Ok());
 }
 
@@ -683,7 +684,7 @@ TEST(OrConditional, BothFalse) {
   auto writer = OrConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(2, writer.SizeInBytes());
+  EXPECT_EQ(2U, writer.SizeInBytes());
   EXPECT_FALSE(writer.xc().Ok());
 }
 
@@ -692,7 +693,7 @@ TEST(OrConditional, FirstFalse) {
   auto writer = OrConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(3, writer.SizeInBytes());
+  EXPECT_EQ(3U, writer.SizeInBytes());
   EXPECT_TRUE(writer.xc().Ok());
 }
 
@@ -701,7 +702,7 @@ TEST(OrConditional, SecondFalse) {
   auto writer = OrConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(3, writer.SizeInBytes());
+  EXPECT_EQ(3U, writer.SizeInBytes());
   EXPECT_TRUE(writer.xc().Ok());
 }
 
@@ -710,7 +711,7 @@ TEST(OrConditional, BothTrue) {
   auto writer = OrConditionWriter(buffer, sizeof buffer);
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
-  EXPECT_EQ(3, writer.SizeInBytes());
+  EXPECT_EQ(3U, writer.SizeInBytes());
   EXPECT_TRUE(writer.xc().Ok());
 }
 
@@ -719,7 +720,7 @@ TEST(ChoiceConditional, UseX) {
   auto view = MakeChoiceConditionView(&buffer);
   EXPECT_TRUE(view.Ok());
   EXPECT_TRUE(view.SizeIsKnown());
-  EXPECT_EQ(4, view.SizeInBytes());
+  EXPECT_EQ(4U, view.SizeInBytes());
   EXPECT_TRUE(view.has_xyc().ValueOr(false));
   EXPECT_EQ(10, view.xyc().Read());
 }
@@ -729,7 +730,7 @@ TEST(ChoiceConditional, UseY) {
   auto view = MakeChoiceConditionView(&buffer);
   EXPECT_TRUE(view.Ok());
   EXPECT_TRUE(view.SizeIsKnown());
-  EXPECT_EQ(3, view.SizeInBytes());
+  EXPECT_EQ(3U, view.SizeInBytes());
   EXPECT_FALSE(view.has_xyc().ValueOr(true));
 }
 

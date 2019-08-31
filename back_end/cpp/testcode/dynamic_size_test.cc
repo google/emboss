@@ -35,29 +35,29 @@ static constexpr ::std::array</**/ ::std::uint8_t, 16> kMessage = {{
 // MessageView::SizeInBytes() returns the expected value.
 TEST(MessageView, DynamicSizeIsCorrect) {
   auto view = MessageView(&kMessage);
-  EXPECT_EQ(12, view.SizeInBytes());
+  EXPECT_EQ(12U, view.SizeInBytes());
 }
 
 // Fields read the correct values.
 TEST(MessageView, FieldsAreCorrect) {
   auto view = MessageView(&kMessage);
-  EXPECT_EQ(2, view.header_length().Read());
-  EXPECT_EQ(6, view.message_length().Read());
-  EXPECT_EQ(1, view.message()[0].Read());
-  EXPECT_EQ(2, view.message()[1].Read());
-  EXPECT_EQ(3, view.message()[2].Read());
-  EXPECT_EQ(4, view.message()[3].Read());
-  EXPECT_EQ(5, view.message()[4].Read());
-  EXPECT_EQ(6, view.message()[5].Read());
-  EXPECT_EQ(6, view.message().SizeInBytes());
+  EXPECT_EQ(2U, view.header_length().Read());
+  EXPECT_EQ(6U, view.message_length().Read());
+  EXPECT_EQ(1U, view.message()[0].Read());
+  EXPECT_EQ(2U, view.message()[1].Read());
+  EXPECT_EQ(3U, view.message()[2].Read());
+  EXPECT_EQ(4U, view.message()[3].Read());
+  EXPECT_EQ(5U, view.message()[4].Read());
+  EXPECT_EQ(6U, view.message()[5].Read());
+  EXPECT_EQ(6U, view.message().SizeInBytes());
   EXPECT_DEATH(view.message()[6].Read(), "");
-  EXPECT_EQ(0x0a090807, view.crc32().Read());
+  EXPECT_EQ(0x0a090807U, view.crc32().Read());
 }
 
 // The zero-length padding field works as expected.
 TEST(MessageView, PaddingFieldWorks) {
   auto view = MessageView(&kMessage);
-  EXPECT_EQ(0, view.padding().SizeInBytes());
+  EXPECT_EQ(0U, view.padding().SizeInBytes());
   EXPECT_DEATH(view.padding()[0].Read(), "");
 }
 
@@ -73,21 +73,21 @@ static constexpr ::std::array</**/ ::std::uint8_t, 16> kPaddedMessage = {{
 // Fields read the correct values.
 TEST(MessageView, PaddedMessageFieldsAreCorrect) {
   auto view = MessageView(&kPaddedMessage);
-  EXPECT_EQ(6, view.header_length().Read());
-  EXPECT_EQ(4, view.message_length().Read());
-  EXPECT_EQ(1, view.padding()[0].Read());
-  EXPECT_EQ(2, view.padding()[1].Read());
-  EXPECT_EQ(3, view.padding()[2].Read());
-  EXPECT_EQ(4, view.padding()[3].Read());
-  EXPECT_EQ(4, view.padding().SizeInBytes());
+  EXPECT_EQ(6U, view.header_length().Read());
+  EXPECT_EQ(4U, view.message_length().Read());
+  EXPECT_EQ(1U, view.padding()[0].Read());
+  EXPECT_EQ(2U, view.padding()[1].Read());
+  EXPECT_EQ(3U, view.padding()[2].Read());
+  EXPECT_EQ(4U, view.padding()[3].Read());
+  EXPECT_EQ(4U, view.padding().SizeInBytes());
   EXPECT_DEATH(view.padding()[4].Read(), "");
-  EXPECT_EQ(5, view.message()[0].Read());
-  EXPECT_EQ(6, view.message()[1].Read());
-  EXPECT_EQ(7, view.message()[2].Read());
-  EXPECT_EQ(8, view.message()[3].Read());
-  EXPECT_EQ(4, view.message().SizeInBytes());
+  EXPECT_EQ(5U, view.message()[0].Read());
+  EXPECT_EQ(6U, view.message()[1].Read());
+  EXPECT_EQ(7U, view.message()[2].Read());
+  EXPECT_EQ(8U, view.message()[3].Read());
+  EXPECT_EQ(4U, view.message().SizeInBytes());
   EXPECT_DEATH(view.message()[4].Read(), "");
-  EXPECT_EQ(0x0c0b0a09, view.crc32().Read());
+  EXPECT_EQ(0x0c0b0a09U, view.crc32().Read());
 }
 
 // Writes to fields produce the correct byte values.
@@ -102,7 +102,7 @@ TEST(MessageView, Writer) {
   for (int i = 0; i < writer.message_length().Read(); ++i) {
     writer.message()[i].Write(i + 1);
   }
-  EXPECT_EQ(12, writer.SizeInBytes());
+  EXPECT_EQ(12U, writer.SizeInBytes());
   EXPECT_DEATH(writer.message()[writer.message_length().Read()].Read(), "");
   EXPECT_DEATH(writer.padding()[0].Read(), "");
   writer.crc32().Write(0x0a090807);
@@ -115,12 +115,12 @@ TEST(MessageView, Writer) {
   auto writer2 = MessageWriter(buffer, sizeof buffer);
   writer2.header_length().Write(6);
   // Writes made through one writer should be immediately visible to the other.
-  EXPECT_EQ(6, writer.header_length().Read());
-  EXPECT_EQ(6, writer2.header_length().Read());
+  EXPECT_EQ(6U, writer.header_length().Read());
+  EXPECT_EQ(6U, writer2.header_length().Read());
   writer2.message_length().Write(4);
   // The message() field is now pointing to a different place; it should read
   // the data that was already there.
-  EXPECT_EQ(5, writer2.message()[0].Read());
+  EXPECT_EQ(5U, writer2.message()[0].Read());
   // The padding bytes are already set to the correct values; do not update
   // them.
   for (int i = 0; i < writer2.message_length().Read(); ++i) {
@@ -213,15 +213,15 @@ static const ::std::uint8_t kTwoRegionsAFirst[10] = {
 // the order of their declarations works.
 TEST(TwoRegionsView, RegionAFirstWorks) {
   auto view = TwoRegionsView(kTwoRegionsAFirst, sizeof kTwoRegionsAFirst);
-  EXPECT_EQ(10, view.SizeInBytes());
-  EXPECT_EQ(4, view.a_start().Read());
-  EXPECT_EQ(2, view.a_size().Read());
-  EXPECT_EQ(6, view.b_start().Read());
-  EXPECT_EQ(10, view.b_end().Read());
-  EXPECT_EQ(0x11, view.region_a()[0].Read());
-  EXPECT_EQ(0x22, view.region_a()[1].Read());
-  EXPECT_EQ(0x33, view.region_b()[0].Read());
-  EXPECT_EQ(0x66, view.region_b()[3].Read());
+  EXPECT_EQ(10U, view.SizeInBytes());
+  EXPECT_EQ(4U, view.a_start().Read());
+  EXPECT_EQ(2U, view.a_size().Read());
+  EXPECT_EQ(6U, view.b_start().Read());
+  EXPECT_EQ(10U, view.b_end().Read());
+  EXPECT_EQ(0x11U, view.region_a()[0].Read());
+  EXPECT_EQ(0x22U, view.region_a()[1].Read());
+  EXPECT_EQ(0x33U, view.region_b()[0].Read());
+  EXPECT_EQ(0x66U, view.region_b()[3].Read());
 }
 
 static const ::std::uint8_t kTwoRegionsBFirst[14] = {
@@ -238,15 +238,15 @@ static const ::std::uint8_t kTwoRegionsBFirst[14] = {
 // of the order of their declarations works.
 TEST(TwoRegionsView, RegionBFirstWorks) {
   auto view = TwoRegionsView(kTwoRegionsBFirst, sizeof kTwoRegionsBFirst);
-  EXPECT_EQ(14, view.SizeInBytes());
-  EXPECT_EQ(10, view.a_start().Read());
-  EXPECT_EQ(4, view.a_size().Read());
-  EXPECT_EQ(4, view.b_start().Read());
-  EXPECT_EQ(6, view.b_end().Read());
-  EXPECT_EQ(0x33, view.region_a()[0].Read());
-  EXPECT_EQ(0x66, view.region_a()[3].Read());
-  EXPECT_EQ(0x11, view.region_b()[0].Read());
-  EXPECT_EQ(0x22, view.region_b()[1].Read());
+  EXPECT_EQ(14U, view.SizeInBytes());
+  EXPECT_EQ(10U, view.a_start().Read());
+  EXPECT_EQ(4U, view.a_size().Read());
+  EXPECT_EQ(4U, view.b_start().Read());
+  EXPECT_EQ(6U, view.b_end().Read());
+  EXPECT_EQ(0x33U, view.region_a()[0].Read());
+  EXPECT_EQ(0x66U, view.region_a()[3].Read());
+  EXPECT_EQ(0x11U, view.region_b()[0].Read());
+  EXPECT_EQ(0x22U, view.region_b()[1].Read());
 }
 
 static const ::std::uint8_t kTwoRegionsAAndBOverlap[8] = {
@@ -262,17 +262,17 @@ static const ::std::uint8_t kTwoRegionsAAndBOverlap[8] = {
 TEST(TwoRegionsView, RegionAAndBOverlappedWorks) {
   auto view =
       TwoRegionsView(kTwoRegionsAAndBOverlap, sizeof kTwoRegionsAAndBOverlap);
-  EXPECT_EQ(8, view.SizeInBytes());
-  EXPECT_EQ(5, view.a_start().Read());
-  EXPECT_EQ(2, view.a_size().Read());
-  EXPECT_EQ(4, view.b_start().Read());
-  EXPECT_EQ(8, view.b_end().Read());
-  EXPECT_EQ(0x22, view.region_a()[0].Read());
-  EXPECT_EQ(0x33, view.region_a()[1].Read());
-  EXPECT_EQ(0x11, view.region_b()[0].Read());
-  EXPECT_EQ(0x22, view.region_b()[1].Read());
-  EXPECT_EQ(0x33, view.region_b()[2].Read());
-  EXPECT_EQ(0x44, view.region_b()[3].Read());
+  EXPECT_EQ(8U, view.SizeInBytes());
+  EXPECT_EQ(5U, view.a_start().Read());
+  EXPECT_EQ(2U, view.a_size().Read());
+  EXPECT_EQ(4U, view.b_start().Read());
+  EXPECT_EQ(8U, view.b_end().Read());
+  EXPECT_EQ(0x22U, view.region_a()[0].Read());
+  EXPECT_EQ(0x33U, view.region_a()[1].Read());
+  EXPECT_EQ(0x11U, view.region_b()[0].Read());
+  EXPECT_EQ(0x22U, view.region_b()[1].Read());
+  EXPECT_EQ(0x33U, view.region_b()[2].Read());
+  EXPECT_EQ(0x44U, view.region_b()[3].Read());
 }
 
 TEST(TwoRegionsView, Write) {
@@ -323,12 +323,12 @@ TEST(TwoRegionsView, Write) {
   writer.region_b()[1].Write(0xff);
   writer.region_b()[2].Write(0xee);
   writer.region_b()[3].Write(0x44);
-  EXPECT_EQ(0xff, writer.region_a()[0].Read());
-  EXPECT_EQ(0xee, writer.region_a()[1].Read());
+  EXPECT_EQ(0xffU, writer.region_a()[0].Read());
+  EXPECT_EQ(0xeeU, writer.region_a()[1].Read());
   writer.region_a()[0].Write(0x22);
   writer.region_a()[1].Write(0x33);
-  EXPECT_EQ(0x22, writer.region_b()[1].Read());
-  EXPECT_EQ(0x33, writer.region_b()[2].Read());
+  EXPECT_EQ(0x22U, writer.region_b()[1].Read());
+  EXPECT_EQ(0x33U, writer.region_b()[2].Read());
   EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(
                 kTwoRegionsAAndBOverlap,
                 kTwoRegionsAAndBOverlap + sizeof kTwoRegionsAAndBOverlap),
@@ -380,11 +380,11 @@ static const ::std::uint8_t kMultipliedSize[299] = {
 // fit in 8 bits.
 TEST(MultipliedSizeView, MultipliedSizesUseWideEnoughArithmetic) {
   auto view = MultipliedSizeView(kMultipliedSize, sizeof kMultipliedSize);
-  EXPECT_EQ(299, view.SizeInBytes());
-  EXPECT_EQ(9, view.width().Read());
-  EXPECT_EQ(33, view.height().Read());
-  EXPECT_EQ(1, view.data()[0].Read());
-  EXPECT_EQ(0xff, view.data()[296].Read());
+  EXPECT_EQ(299U, view.SizeInBytes());
+  EXPECT_EQ(9U, view.width().Read());
+  EXPECT_EQ(33U, view.height().Read());
+  EXPECT_EQ(1U, view.data()[0].Read());
+  EXPECT_EQ(0xffU, view.data()[296].Read());
 }
 
 static const ::std::uint8_t kNegativeTermsInSizesAMinusBIsBiggest[7] = {
@@ -409,11 +409,11 @@ TEST(NegativeTermsInSizes, AMinusBIsBiggest) {
   auto view =
       NegativeTermsInSizesView(kNegativeTermsInSizesAMinusBIsBiggest,
                                sizeof kNegativeTermsInSizesAMinusBIsBiggest);
-  EXPECT_EQ(6, view.SizeInBytes());
-  EXPECT_EQ(7, view.a().Read());
-  EXPECT_EQ(1, view.b().Read());
-  EXPECT_EQ(2, view.c().Read());
-  EXPECT_EQ(0x33, view.a_minus_b()[2].Read());
+  EXPECT_EQ(6U, view.SizeInBytes());
+  EXPECT_EQ(7U, view.a().Read());
+  EXPECT_EQ(1U, view.b().Read());
+  EXPECT_EQ(2U, view.c().Read());
+  EXPECT_EQ(0x33U, view.a_minus_b()[2].Read());
 }
 
 static const ::std::uint8_t kNegativeTermsInSizesAMinusCIsBiggest[7] = {
@@ -438,11 +438,11 @@ TEST(NegativeTermsInSizes, AMinusCIsBiggest) {
   auto view =
       NegativeTermsInSizesView(kNegativeTermsInSizesAMinusCIsBiggest,
                                sizeof kNegativeTermsInSizesAMinusCIsBiggest);
-  EXPECT_EQ(6, view.SizeInBytes());
-  EXPECT_EQ(7, view.a().Read());
-  EXPECT_EQ(2, view.b().Read());
-  EXPECT_EQ(1, view.c().Read());
-  EXPECT_EQ(0x33, view.a_minus_c()[2].Read());
+  EXPECT_EQ(6U, view.SizeInBytes());
+  EXPECT_EQ(7U, view.a().Read());
+  EXPECT_EQ(2U, view.b().Read());
+  EXPECT_EQ(1U, view.c().Read());
+  EXPECT_EQ(0x33U, view.a_minus_c()[2].Read());
   EXPECT_TRUE(view.a_minus_b().IsComplete());
   EXPECT_TRUE(view.a_minus_2b().IsComplete());
 }
@@ -469,11 +469,11 @@ TEST(NegativeTermsInSizes, TenMinusAIsBiggest) {
   auto view =
       NegativeTermsInSizesView(kNegativeTermsInSizesTenMinusAIsBiggest,
                                sizeof kNegativeTermsInSizesTenMinusAIsBiggest);
-  EXPECT_EQ(6, view.SizeInBytes());
-  EXPECT_EQ(4, view.a().Read());
-  EXPECT_EQ(0, view.b().Read());
-  EXPECT_EQ(0, view.c().Read());
-  EXPECT_EQ(0x33, view.ten_minus_a()[2].Read());
+  EXPECT_EQ(6U, view.SizeInBytes());
+  EXPECT_EQ(4U, view.a().Read());
+  EXPECT_EQ(0U, view.b().Read());
+  EXPECT_EQ(0U, view.c().Read());
+  EXPECT_EQ(0x33U, view.ten_minus_a()[2].Read());
   EXPECT_TRUE(view.a_minus_b().IsComplete());
   EXPECT_TRUE(view.a_minus_2b().IsComplete());
 }
@@ -502,12 +502,12 @@ static const ::std::uint8_t kNegativeTermsEndWouldBeNegative[10] = {
 TEST(NegativeTermsInSizes, NegativeEnd) {
   auto view = NegativeTermsInSizesView(kNegativeTermsEndWouldBeNegative,
                                        sizeof kNegativeTermsEndWouldBeNegative);
-  EXPECT_EQ(10, view.SizeInBytes());
+  EXPECT_EQ(10U, view.SizeInBytes());
   EXPECT_TRUE(view.SizeIsKnown());
-  EXPECT_EQ(0, view.a().Read());
-  EXPECT_EQ(2, view.b().Read());
-  EXPECT_EQ(2, view.c().Read());
-  EXPECT_EQ(0x77, view.ten_minus_a()[6].Read());
+  EXPECT_EQ(0U, view.a().Read());
+  EXPECT_EQ(2U, view.b().Read());
+  EXPECT_EQ(2U, view.c().Read());
+  EXPECT_EQ(0x77U, view.ten_minus_a()[6].Read());
   EXPECT_FALSE(view.a_minus_b().IsComplete());
   EXPECT_FALSE(view.a_minus_2b().IsComplete());
 }
@@ -534,15 +534,15 @@ static const ::std::uint8_t kChainedSizeInOrder[4] = {
 TEST(ChainedSize, ChainedSizeInOrder) {
   auto view = ChainedSizeView(kChainedSizeInOrder, sizeof kChainedSizeInOrder);
   ASSERT_TRUE(view.SizeIsKnown());
-  EXPECT_EQ(4, view.SizeInBytes());
+  EXPECT_EQ(4U, view.SizeInBytes());
   ASSERT_TRUE(view.a().IsComplete());
-  EXPECT_EQ(1, view.a().Read());
+  EXPECT_EQ(1U, view.a().Read());
   ASSERT_TRUE(view.b().IsComplete());
-  EXPECT_EQ(2, view.b().Read());
+  EXPECT_EQ(2U, view.b().Read());
   ASSERT_TRUE(view.c().IsComplete());
-  EXPECT_EQ(3, view.c().Read());
+  EXPECT_EQ(3U, view.c().Read());
   ASSERT_TRUE(view.d().IsComplete());
-  EXPECT_EQ(4, view.d().Read());
+  EXPECT_EQ(4U, view.d().Read());
 }
 
 static const ::std::uint8_t kChainedSizeNotInOrder[4] = {
@@ -559,15 +559,15 @@ TEST(ChainedSize, ChainedSizeNotInOrder) {
       ChainedSizeView(kChainedSizeNotInOrder, sizeof kChainedSizeNotInOrder);
   ASSERT_TRUE(view.Ok());
   ASSERT_TRUE(view.SizeIsKnown());
-  EXPECT_EQ(4, view.SizeInBytes());
+  EXPECT_EQ(4U, view.SizeInBytes());
   ASSERT_TRUE(view.a().IsComplete());
-  EXPECT_EQ(3, view.a().Read());
+  EXPECT_EQ(3U, view.a().Read());
   ASSERT_TRUE(view.b().IsComplete());
-  EXPECT_EQ(2, view.b().Read());
+  EXPECT_EQ(2U, view.b().Read());
   ASSERT_TRUE(view.c().IsComplete());
-  EXPECT_EQ(1, view.c().Read());
+  EXPECT_EQ(1U, view.c().Read());
   ASSERT_TRUE(view.d().IsComplete());
-  EXPECT_EQ(4, view.d().Read());
+  EXPECT_EQ(4U, view.d().Read());
 }
 
 // Fields are readable, even through multiple levels of indirection.
@@ -608,13 +608,13 @@ TEST(ChainedSize, ChainedSizeTooShortForD) {
                               sizeof kChainedSizeTooShortForD);
   ASSERT_FALSE(view.Ok());
   ASSERT_TRUE(view.SizeIsKnown());
-  EXPECT_EQ(4, view.SizeInBytes());
+  EXPECT_EQ(4U, view.SizeInBytes());
   ASSERT_TRUE(view.a().IsComplete());
-  EXPECT_EQ(1, view.a().Read());
+  EXPECT_EQ(1U, view.a().Read());
   ASSERT_TRUE(view.b().IsComplete());
-  EXPECT_EQ(2, view.b().Read());
+  EXPECT_EQ(2U, view.b().Read());
   ASSERT_TRUE(view.c().IsComplete());
-  EXPECT_EQ(3, view.c().Read());
+  EXPECT_EQ(3U, view.c().Read());
   ASSERT_FALSE(view.d().IsComplete());
 }
 
@@ -633,9 +633,9 @@ TEST(ChainedSize, ChainedSizeTooShortForC) {
   ASSERT_FALSE(view.Ok());
   EXPECT_FALSE(view.SizeIsKnown());
   ASSERT_TRUE(view.a().IsComplete());
-  EXPECT_EQ(1, view.a().Read());
+  EXPECT_EQ(1U, view.a().Read());
   ASSERT_TRUE(view.b().IsComplete());
-  EXPECT_EQ(2, view.b().Read());
+  EXPECT_EQ(2U, view.b().Read());
   ASSERT_FALSE(view.c().IsComplete());
   ASSERT_FALSE(view.d().IsComplete());
 }
@@ -643,7 +643,7 @@ TEST(ChainedSize, ChainedSizeTooShortForC) {
 // A structure with static size and two end-aligned fields compiles and returns
 // the correct size.
 TEST(FinalFieldOverlaps, FinalSizeIsCorrect) {
-  ASSERT_EQ(5, FinalFieldOverlapsView::SizeInBytes());
+  ASSERT_EQ(5U, FinalFieldOverlapsView::SizeInBytes());
 }
 
 static const ::std::uint8_t kDynamicFinalFieldOverlapsDynamicFieldIsLast[12] = {
@@ -668,11 +668,11 @@ TEST(DynamicFinalFieldOverlaps, FinalSizeIsCorrect) {
   auto dynamic_last_view = DynamicFinalFieldOverlapsView(
       kDynamicFinalFieldOverlapsDynamicFieldIsLast,
       sizeof kDynamicFinalFieldOverlapsDynamicFieldIsLast);
-  ASSERT_EQ(12, dynamic_last_view.SizeInBytes());
+  ASSERT_EQ(12U, dynamic_last_view.SizeInBytes());
   auto static_last_view = DynamicFinalFieldOverlapsView(
       kDynamicFinalFieldOverlapsStaticFieldIsLast,
       sizeof kDynamicFinalFieldOverlapsStaticFieldIsLast);
-  ASSERT_EQ(10, static_last_view.SizeInBytes());
+  ASSERT_EQ(10U, static_last_view.SizeInBytes());
 }
 
 TEST(DynamicFieldDependsOnLaterField, DynamicLocationIsNotKnown) {
@@ -681,11 +681,11 @@ TEST(DynamicFieldDependsOnLaterField, DynamicLocationIsNotKnown) {
   EXPECT_FALSE(view.b().Ok());
   view = MakeDynamicFieldDependsOnLaterFieldView(bytes, 5);
   EXPECT_TRUE(view.b().Ok());
-  EXPECT_EQ(3, view.b().Read());
+  EXPECT_EQ(3U, view.b().Read());
 }
 
 TEST(DynamicFieldDoesNotAffectSize, DynamicFieldDoesNotAffectSize) {
-  EXPECT_EQ(256, DynamicFieldDoesNotAffectSizeView::SizeInBytes());
+  EXPECT_EQ(256U, DynamicFieldDoesNotAffectSizeView::SizeInBytes());
 }
 
 }  // namespace

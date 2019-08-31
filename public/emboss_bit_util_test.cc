@@ -21,21 +21,21 @@ namespace support {
 namespace test {
 
 TEST(ByteSwap, ByteSwap) {
-  EXPECT_EQ(0x01, ByteSwap(::std::uint8_t{0x01}));
-  EXPECT_EQ(0x0102, ByteSwap(::std::uint16_t{0x0201}));
-  EXPECT_EQ(0x01020304, ByteSwap(::std::uint32_t{0x04030201}));
+  EXPECT_EQ(0x01U, ByteSwap(::std::uint8_t{0x01}));
+  EXPECT_EQ(0x0102U, ByteSwap(::std::uint16_t{0x0201}));
+  EXPECT_EQ(0x01020304U, ByteSwap(::std::uint32_t{0x04030201}));
   EXPECT_EQ(0x0102030405060708UL,
             ByteSwap(::std::uint64_t{0x0807060504030201UL}));
 }
 
 TEST(MaskToNBits, MaskToNBits) {
-  EXPECT_EQ(0xff, MaskToNBits(0xffffffffU, 8));
-  EXPECT_EQ(0x00, MaskToNBits(0xffffff00U, 8));
-  EXPECT_EQ(0x01, MaskToNBits(0xffffffffU, 1));
-  EXPECT_EQ(0x00, MaskToNBits(0xfffffffeU, 1));
+  EXPECT_EQ(0xffU, MaskToNBits(0xffffffffU, 8));
+  EXPECT_EQ(0x00U, MaskToNBits(0xffffff00U, 8));
+  EXPECT_EQ(0x01U, MaskToNBits(0xffffffffU, 1));
+  EXPECT_EQ(0x00U, MaskToNBits(0xfffffffeU, 1));
   EXPECT_EQ(0xffffffffU, MaskToNBits(0xffffffffU, 32));
   EXPECT_EQ(0xffffffffffffffffU, MaskToNBits(0xffffffffffffffffU, 64));
-  EXPECT_EQ(0xf, MaskToNBits(::std::uint8_t{0xff}, 4));
+  EXPECT_EQ(0xfU, MaskToNBits(::std::uint8_t{0xff}, 4));
 }
 
 TEST(IsPowerOfTwo, IsPowerOfTwo) {
@@ -85,7 +85,7 @@ TEST(EndianConversion, LittleEndianToNative) {
   reinterpret_cast<char *>(&data32)[1] = 0x02;
   reinterpret_cast<char *>(&data32)[2] = 0x03;
   reinterpret_cast<char *>(&data32)[3] = 0x04;
-  EXPECT_EQ(0x04030201, EMBOSS_LITTLE_ENDIAN_TO_NATIVE(data32));
+  EXPECT_EQ(0x04030201U, EMBOSS_LITTLE_ENDIAN_TO_NATIVE(data32));
 
   ::std::uint64_t data64 = 0;
   reinterpret_cast<char *>(&data64)[0] = 0x01;
@@ -96,7 +96,7 @@ TEST(EndianConversion, LittleEndianToNative) {
   reinterpret_cast<char *>(&data64)[5] = 0x06;
   reinterpret_cast<char *>(&data64)[6] = 0x07;
   reinterpret_cast<char *>(&data64)[7] = 0x08;
-  EXPECT_EQ(0x0807060504030201, EMBOSS_LITTLE_ENDIAN_TO_NATIVE(data64));
+  EXPECT_EQ(0x0807060504030201UL, EMBOSS_LITTLE_ENDIAN_TO_NATIVE(data64));
 }
 #endif  // defined(EMBOSS_LITTLE_ENDIAN_TO_NATIVE)
 
@@ -112,7 +112,7 @@ TEST(EndianConversion, BigEndianToNative) {
   reinterpret_cast<char *>(&data32)[1] = 0x02;
   reinterpret_cast<char *>(&data32)[2] = 0x03;
   reinterpret_cast<char *>(&data32)[3] = 0x04;
-  EXPECT_EQ(0x01020304, EMBOSS_BIG_ENDIAN_TO_NATIVE(data32));
+  EXPECT_EQ(0x01020304U, EMBOSS_BIG_ENDIAN_TO_NATIVE(data32));
 
   ::std::uint64_t data64 = 0;
   reinterpret_cast<char *>(&data64)[0] = 0x01;
@@ -123,7 +123,7 @@ TEST(EndianConversion, BigEndianToNative) {
   reinterpret_cast<char *>(&data64)[5] = 0x06;
   reinterpret_cast<char *>(&data64)[6] = 0x07;
   reinterpret_cast<char *>(&data64)[7] = 0x08;
-  EXPECT_EQ(0x0102030405060708, EMBOSS_BIG_ENDIAN_TO_NATIVE(data64));
+  EXPECT_EQ(0x0102030405060708UL, EMBOSS_BIG_ENDIAN_TO_NATIVE(data64));
 }
 #endif  // defined(EMBOSS_BIG_ENDIAN_TO_NATIVE)
 

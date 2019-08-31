@@ -29,20 +29,20 @@ TEST(Axes, Construction) {
   ::std::array<char, 12> values = {1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0};
   auto view = MakeAxesView(2, &values);
   EXPECT_TRUE(view.Ok());
-  EXPECT_EQ(2, view.values().ElementCount());
-  EXPECT_EQ(1, view.values()[0].value().Read());
-  EXPECT_EQ(1, view.x().x().Read());
-  EXPECT_EQ(2, view.values()[1].value().Read());
-  EXPECT_EQ(2, view.y().y().Read());
+  EXPECT_EQ(2U, view.values().ElementCount());
+  EXPECT_EQ(1U, view.values()[0].value().Read());
+  EXPECT_EQ(1U, view.x().x().Read());
+  EXPECT_EQ(2U, view.values()[1].value().Read());
+  EXPECT_EQ(2U, view.y().y().Read());
   EXPECT_FALSE(view.has_z().Value());
 
   view = MakeAxesView(3, &values);
   EXPECT_TRUE(view.Ok());
-  EXPECT_EQ(3, view.values().ElementCount());
-  EXPECT_EQ(1, view.values()[0].value().Read());
-  EXPECT_EQ(2, view.values()[1].value().Read());
-  EXPECT_EQ(3, view.values()[2].value().Read());
-  EXPECT_EQ(3, view.z().z().Read());
+  EXPECT_EQ(3U, view.values().ElementCount());
+  EXPECT_EQ(1U, view.values()[0].value().Read());
+  EXPECT_EQ(2U, view.values()[1].value().Read());
+  EXPECT_EQ(3U, view.values()[2].value().Read());
+  EXPECT_EQ(3U, view.z().z().Read());
 
   view = MakeAxesView(4, &values);
   EXPECT_FALSE(view.Ok());
@@ -60,7 +60,7 @@ TEST(AxesEnvelope, FieldPassedAsParameter) {
   auto view = MakeAxesEnvelopeView(&values);
   EXPECT_TRUE(view.Ok());
   EXPECT_EQ(0x80000000U, view.axes().x().value().Read());
-  EXPECT_EQ(9, view.SizeInBytes());
+  EXPECT_EQ(9U, view.SizeInBytes());
 }
 
 TEST(AxesEnvelope, ParameterValueIsOutOfRange) {
@@ -74,11 +74,11 @@ TEST(Multiversion, ParameterPassedDown) {
   ::std::array<char, 13> values = {0, 1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0};
   auto view = MakeMultiversionView(Product::VERSION_1, &values);
   EXPECT_TRUE(view.Ok());
-  EXPECT_EQ(2, view.axes().y().y().Read());
+  EXPECT_EQ(2U, view.axes().y().y().Read());
   EXPECT_FALSE(view.axes().has_z().Value());
   view = MakeMultiversionView(Product::VERSION_X, &values);
   EXPECT_TRUE(view.Ok());
-  EXPECT_EQ(2, view.axes().y().y().Read());
+  EXPECT_EQ(2U, view.axes().y().y().Read());
   EXPECT_TRUE(view.axes().has_z().Value());
 }
 
@@ -88,13 +88,13 @@ TEST(Multiversion, ParameterUsedToSwitchField) {
   EXPECT_TRUE(view.Ok());
   EXPECT_TRUE(view.config().power().Read());
   EXPECT_FALSE(view.has_config_vx().Value());
-  EXPECT_EQ(5, view.SizeInBytes());
+  EXPECT_EQ(5U, view.SizeInBytes());
   view = MakeMultiversionView(Product::VERSION_X, &values);
   EXPECT_TRUE(view.Ok());
   EXPECT_TRUE(view.config().power().Read());
   EXPECT_TRUE(view.has_config_vx().Value());
-  EXPECT_EQ(25600, view.config_vx().gain().Read());
-  EXPECT_EQ(9, view.SizeInBytes());
+  EXPECT_EQ(25600U, view.config_vx().gain().Read());
+  EXPECT_EQ(9U, view.SizeInBytes());
 }
 
 TEST(StructContainingStructWithUnusedParameter, NoParameterIsNotOk) {

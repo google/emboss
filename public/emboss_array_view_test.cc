@@ -73,11 +73,11 @@ TEST(ArrayView, Methods) {
           ReadWriteContiguousBuffer{bytes, sizeof bytes - 4}};
   EXPECT_EQ(sizeof bytes - 4, uint32_array.SizeInBytes());
   EXPECT_TRUE(uint32_array[0].Ok());
-  EXPECT_EQ(0x0d0e0f10, uint32_array[0].Read());
-  EXPECT_EQ(0x090a0b0c, uint32_array[1].Read());
-  EXPECT_EQ(0x05060708, uint32_array[2].Read());
+  EXPECT_EQ(0x0d0e0f10U, uint32_array[0].Read());
+  EXPECT_EQ(0x090a0b0cU, uint32_array[1].Read());
+  EXPECT_EQ(0x05060708U, uint32_array[2].Read());
   EXPECT_DEATH(uint32_array[3].Read(), "");
-  EXPECT_EQ(0x01020304, uint32_array[3].UncheckedRead());
+  EXPECT_EQ(0x01020304U, uint32_array[3].UncheckedRead());
   EXPECT_TRUE(uint32_array[2].IsComplete());
   EXPECT_FALSE(uint32_array[3].IsComplete());
   EXPECT_TRUE(uint32_array.Ok());

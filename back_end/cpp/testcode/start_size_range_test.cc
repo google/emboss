@@ -32,7 +32,7 @@ static const ::std::uint8_t kStartSizeRange[9] = {
 
 TEST(StartSizeView, EverythingInPlace) {
   auto view = StartSizeView(kStartSizeRange, sizeof kStartSizeRange);
-  EXPECT_EQ(9, view.SizeInBytes());
+  EXPECT_EQ(9U, view.SizeInBytes());
   EXPECT_EQ(2, view.size().Read());
   EXPECT_EQ(1000, view.start_size_constants().Read());
   EXPECT_EQ(0x11, view.payload()[0].Read());

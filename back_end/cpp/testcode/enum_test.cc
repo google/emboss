@@ -100,7 +100,7 @@ TEST(ManifestEntryView, EdgeCases) {
   auto view = ManifestEntryView(kManifestEntryEdgeCases,
                                 sizeof kManifestEntryEdgeCases);
   EXPECT_EQ(static_cast<Kind>(255), view.kind().Read());
-  EXPECT_EQ(255, static_cast</**/ ::std::uint64_t>(view.kind().Read()));
+  EXPECT_EQ(255U, static_cast</**/ ::std::uint64_t>(view.kind().Read()));
   EXPECT_EQ(Kind::MAX32BIT, view.wide_kind().Read());
   EXPECT_EQ(Kind::MAX32BIT, view.wide_kind_in_bits().Read());
 }
