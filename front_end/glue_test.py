@@ -155,7 +155,8 @@ class FrontEndGlueTest(unittest.TestCase):
     self.assertEqual(_SPAN_SE_LOG_FILE_PARSE_TREE_TEXT.strip(),
                      debug_info.format_parse_tree().strip())
     self.assertEqual(_SPAN_SE_LOG_FILE_IR, debug_info.ir)
-    self.assertEqual(repr(_SPAN_SE_LOG_FILE_IR), debug_info.format_module_ir())
+    self.assertEqual(_SPAN_SE_LOG_FILE_IR.to_json(indent=2),
+                     debug_info.format_module_ir())
 
   def test_parse_emboss_file(self):
     # parse_emboss_file calls parse_module, wraps its results, and calls

@@ -111,7 +111,7 @@ class ModuleDebugInfo(object):
 
   def format_module_ir(self):
     """Renders self.ir in a human-readable format."""
-    return repr(self.ir)
+    return self.ir.to_json(indent=2)
 
 
 def format_production_set(productions):
