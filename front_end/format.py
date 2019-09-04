@@ -31,37 +31,38 @@ from util import error
 
 def _parse_command_line(argv):
   """Parses the given command-line arguments."""
-  parser = argparse.ArgumentParser(description="Emboss compiler front end.",
+  argparser = argparse.ArgumentParser(description="Emboss compiler front end.",
                                    prog=argv[0])
-  parser.add_argument("input_file",
-                      type=str,
-                      nargs='+',
-                      help=".emb file to compile.")
-  parser.add_argument('--no-check-result',
-                      default=True,
-                      action='store_false',
-                      dest='check_result',
-                      help='Verify that the resulting formatted text contains '
-                           'only whitespace changes.')
-  parser.add_argument('--debug-show-line-types',
-                      default=False,
-                      help='Show the computed type of each line.')
-  parser.add_argument('--no-edit-in-place',
-                      default=True,
-                      action='store_false',
-                      dest='edit_in_place',
-                      help='Write the formatted text back to the input file.')
-  parser.add_argument('--indent',
-                      type=int,
-                      default=2,
-                      help='Number of spaces to use for each level of '
-                           'indentation.')
-  parser.add_argument('--color-output',
-                      default='if-tty',
-                      choices=['always', 'never', 'if-tty', 'auto'],
-                      help="Print error messages using color.  'auto' is a "
-                           "synonym for 'if-tty'.")
-  return parser.parse_args(argv[1:])
+  argparser.add_argument("input_file",
+                         type=str,
+                         nargs='+',
+                         help=".emb file to compile.")
+  argparser.add_argument('--no-check-result',
+                         default=True,
+                         action='store_false',
+                         dest='check_result',
+                         help='Verify that the resulting formatted text '
+                         'contains only whitespace changes.')
+  argparser.add_argument('--debug-show-line-types',
+                         default=False,
+                         help='Show the computed type of each line.')
+  argparser.add_argument('--no-edit-in-place',
+                         default=True,
+                         action='store_false',
+                         dest='edit_in_place',
+                         help='Write the formatted text back to the input '
+                              'file.')
+  argparser.add_argument('--indent',
+                         type=int,
+                         default=2,
+                         help='Number of spaces to use for each level of '
+                         'indentation.')
+  argparser.add_argument('--color-output',
+                         default='if-tty',
+                         choices=['always', 'never', 'if-tty', 'auto'],
+                         help="Print error messages using color.  'auto' is a "
+                         "synonym for 'if-tty'.")
+  return argparser.parse_args(argv[1:])
 
 
 def _print_errors(errors, source_codes, flags):
@@ -80,7 +81,7 @@ def main(argv=()):
     return 1
 
   if flags.edit_in_place and flags.debug_show_line_types:
-    print('The flag --debug_show_line_types requires --no-edit_in_place.',
+    print('The flag --debug-show-line-types requires --no-edit-in-place.',
           file=sys.stderr)
     return 1
 
