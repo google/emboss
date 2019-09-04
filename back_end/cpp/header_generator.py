@@ -1098,8 +1098,8 @@ def _generate_structure_definition(type_ir, ir):
   if requires_attr is not None:
     requires_clause = _render_expression(
         requires_attr.expression, ir, _DirectFieldRenderer()).rendered
-    requires_check = "    if (!({}).ValueOr(false))\n      return false;".format(
-        requires_clause)
+    requires_check = ("    if (!({}).ValueOr(false))\n"
+                      "      return false;").format(requires_clause)
   else:
     requires_check = ""
 
