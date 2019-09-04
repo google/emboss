@@ -15,151 +15,166 @@
 """Tests for util.traverse_ir."""
 
 import collections
+
 import unittest
 
 from public import ir_pb2
 from util import traverse_ir
 
-_EXAMPLE_IR = ir_pb2.EmbossIr(
-    module=[
-        {
-            "type": [
-                {
-                    "structure": {
-                        "field": [
-                            {
-                                "location": {
-                                    "start": { "constant": { "value": "0" } },
-                                    "size": { "constant": { "value": "8" } }
-                                },
-                                "type": {
-                                    "atomic_type": {
-                                        "reference": { "canonical_name": { "module_file": "", "object_path": ["UInt"] } }
-                                    }
-                                },
-                                "name": { "name": { "text": "field1" } }
-                            },
-                            {
-                                "location": {
-                                    "start": { "constant": { "value": "8" } },
-                                    "size": { "constant": { "value": "16" } }
-                                },
-                                "type": {
-                                    "array_type": {
-                                        "base_type": {
-                                            "atomic_type": {
-                                                "reference": {
-                                                    "canonical_name": { "module_file": "", "object_path": ["UInt"] }
-                                                }
-                                            }
-                                        },
-                                        "element_count": { "constant": { "value": "8" } }
-                                    }
-                                },
-                                "name": { "name": { "text": "field2" } }
-                            }
-                        ]
-                    },
-                    "name": { "name": { "text": "Foo" } },
-                    "subtype": [
-                        {
-                            "structure": {
-                                "field": [
-                                    {
-                                        "location": {
-                                            "start": { "constant": { "value": "24" } },
-                                            "size": { "constant": { "value": "32" } }
-                                        },
-                                        "type": {
-                                            "atomic_type": {
-                                                "reference": {
-                                                    "canonical_name": { "module_file": "", "object_path": ["UInt"] }
-                                                }
-                                            }
-                                        },
-                                        "name": { "name": { "text": "bar_field1" } }
-                                    },
-                                    {
-                                        "location": {
-                                            "start": { "constant": { "value": "32" } },
-                                            "size": { "constant": { "value": "320" } }
-                                        },
-                                        "type": {
-                                            "array_type": {
-                                                "base_type": {
-                                                    "array_type": {
-                                                        "base_type": {
-                                                            "atomic_type": {
-                                                                "reference": {
-                                                                    "canonical_name": { "module_file": "", "object_path": ["UInt"] }
-                                                                }
-                                                            }
-                                                        },
-                                                        "element_count": { "constant": { "value": "16" } }
-                                                    }
-                                                },
-                                                "automatic": { }
-                                            }
-                                        },
-                                        "name": { "name": { "text": "bar_field2" } }
-                                    }
-                                ]
-                            },
-                            "name": { "name": { "text": "Bar" } }
-                        }
-                    ]
-                },
-                {
-                    "enumeration": {
-                        "value": [
-                            {
-                                "name": { "name": { "text": "ONE" } },
-                                "value": { "constant": { "value": "1" } }
-                            },
-                            {
-                                "name": { "name": { "text": "TWO" } },
-                                "value": {
-                                    "function": {
-                                        "function": ir_pb2.Function.ADDITION,
-                                        "args": [
-                                            { "constant": { "value": "1" } },
-                                            { "constant": { "value": "1" } }
-                                        ],
-                                        "function_name": { "text": "+" }
-                                    }
-                                }
-                            }
-                        ]
-                    },
-                    "name": { "name": { "text": "Bar" } }
-                },
-            ],
-            "source_file_name": "t.emb"
-        },
-        {
-            "type": [
-                {
-                    "external": { },
-                    "name": {
-                        "name": { "text": "UInt" },
-                        "canonical_name": { "module_file": "", "object_path": ["UInt"] }
-                    },
-                    "attribute": [
-                        {
-                            "name": { "text": "statically_sized" },
-                            "value": { "expression": { "boolean_constant": { "value": True } } }
-                        },
-                        {
-                            "name": { "text": "size_in_bits" },
-                            "value": { "expression": { "constant": { "value": "64" } } }
-                        }
-                    ]
+_EXAMPLE_IR = ir_pb2.EmbossIr.from_json("""{
+"module": [
+  {
+    "type": [
+      {
+        "structure": {
+          "field": [
+            {
+              "location": {
+                "start": { "constant": { "value": "0" } },
+                "size": { "constant": { "value": "8" } }
+              },
+              "type": {
+                "atomic_type": {
+                  "reference": {
+                    "canonical_name": {
+                      "module_file": "",
+                      "object_path": ["UInt"]
+                    }
+                  }
                 }
-            ],
-            "source_file_name": ""
-        }
-    ]
-)
+              },
+              "name": { "name": { "text": "field1" } }
+            },
+            {
+              "location": {
+                "start": { "constant": { "value": "8" } },
+                "size": { "constant": { "value": "16" } }
+              },
+              "type": {
+                "array_type": {
+                  "base_type": {
+                    "atomic_type": {
+                      "reference": {
+                        "canonical_name": {
+                          "module_file": "",
+                          "object_path": ["UInt"]
+                        }
+                      }
+                    }
+                  },
+                  "element_count": { "constant": { "value": "8" } }
+                }
+              },
+              "name": { "name": { "text": "field2" } }
+            }
+          ]
+        },
+        "name": { "name": { "text": "Foo" } },
+        "subtype": [
+          {
+            "structure": {
+              "field": [
+                {
+                  "location": {
+                    "start": { "constant": { "value": "24" } },
+                    "size": { "constant": { "value": "32" } }
+                  },
+                  "type": {
+                    "atomic_type": {
+                      "reference": {
+                        "canonical_name": {
+                          "module_file": "",
+                          "object_path": ["UInt"]
+                        }
+                      }
+                    }
+                  },
+                  "name": { "name": { "text": "bar_field1" } }
+                },
+                {
+                  "location": {
+                    "start": { "constant": { "value": "32" } },
+                    "size": { "constant": { "value": "320" } }
+                  },
+                  "type": {
+                    "array_type": {
+                      "base_type": {
+                        "array_type": {
+                          "base_type": {
+                            "atomic_type": {
+                              "reference": {
+                                "canonical_name": {
+                                  "module_file": "",
+                                  "object_path": ["UInt"]
+                                }
+                              }
+                            }
+                          },
+                          "element_count": { "constant": { "value": "16" } }
+                        }
+                      },
+                      "automatic": { }
+                    }
+                  },
+                  "name": { "name": { "text": "bar_field2" } }
+                }
+              ]
+            },
+            "name": { "name": { "text": "Bar" } }
+          }
+        ]
+      },
+      {
+        "enumeration": {
+          "value": [
+            {
+              "name": { "name": { "text": "ONE" } },
+              "value": { "constant": { "value": "1" } }
+            },
+            {
+              "name": { "name": { "text": "TWO" } },
+              "value": {
+                "function": {
+                  "function": "ADDITION",
+                  "args": [
+                    { "constant": { "value": "1" } },
+                    { "constant": { "value": "1" } }
+                  ],
+                  "function_name": { "text": "+" }
+                }
+              }
+            }
+          ]
+        },
+        "name": { "name": { "text": "Bar" } }
+      }
+    ],
+    "source_file_name": "t.emb"
+  },
+  {
+    "type": [
+      {
+        "external": { },
+        "name": {
+          "name": { "text": "UInt" },
+          "canonical_name": { "module_file": "", "object_path": ["UInt"] }
+        },
+        "attribute": [
+          {
+            "name": { "text": "statically_sized" },
+            "value": { "expression": { "boolean_constant": { "value": true } } }
+          },
+          {
+            "name": { "text": "size_in_bits" },
+            "value": { "expression": { "constant": { "value": "64" } } }
+          }
+        ]
+      }
+    ],
+    "source_file_name": ""
+  }
+]
+}""")
 
 
 def _count_entries(sequence):

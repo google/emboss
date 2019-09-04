@@ -15,7 +15,6 @@
 """Tests for util.ir_util."""
 
 import unittest
-
 from public import ir_pb2
 from util import expression_parser
 from util import ir_util
@@ -411,69 +410,86 @@ class IrUtilTest(unittest.TestCase):
                       "bob")
 
   def test_find_object(self):
-    ir = ir_pb2.EmbossIr(
-        module=[{
-            "type": [{
-            "structure": {
-              "field": [{
-                "name": {
-                  "name": { "text": "field" },
-                  "canonical_name": {
-                    "module_file": "test.emb",
-                    "object_path": ["Foo", "field"]
+    ir = ir_pb2.EmbossIr.from_json(
+        """{
+          "module": [
+            {
+              "type": [
+                {
+                  "structure": {
+                    "field": [
+                      {
+                        "name": {
+                          "name": { "text": "field" },
+                          "canonical_name": {
+                            "module_file": "test.emb",
+                            "object_path": [ "Foo", "field" ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "name": {
+                    "name": { "text": "Foo" },
+                    "canonical_name": {
+                      "module_file": "test.emb",
+                      "object_path": [ "Foo" ]
+                    }
+                  },
+                  "runtime_parameter": [
+                    {
+                      "name": {
+                        "name": { "text": "parameter" },
+                        "canonical_name": {
+                          "module_file": "test.emb",
+                          "object_path": [ "Foo", "parameter" ]
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "enumeration": {
+                    "value": [
+                      {
+                        "name": {
+                          "name": { "text": "QUX" },
+                          "canonical_name": {
+                            "module_file": "test.emb",
+                            "object_path": [ "Bar", "QUX" ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "name": {
+                    "name": { "text": "Bar" },
+                    "canonical_name": {
+                      "module_file": "test.emb",
+                      "object_path": [ "Bar" ]
+                    }
                   }
                 }
-              }]
+              ],
+              "source_file_name": "test.emb"
             },
-            "name": {
-              "name": { "text": "Foo" },
-              "canonical_name": {
-                "module_file": "test.emb",
-                "object_path": ["Foo"]
-              }
-            },
-            "runtime_parameter": [{
-              "name": {
-                "name": { "text": "parameter" },
-                "canonical_name": {
-                  "module_file": "test.emb",
-                  "object_path": ["Foo", "parameter"],
-                }
-              }
-            }]
-          },
-          {
-            "enumeration": {
-              "value": [{
-                "name": {
-                  "name": { "text": "QUX" },
-                  "canonical_name": {
-                    "module_file": "test.emb",
-                    "object_path": ["Bar", "QUX"]
+            {
+              "type": [
+                {
+                  "external": {},
+                  "name": {
+                    "name": { "text": "UInt" },
+                    "canonical_name": {
+                      "module_file": "",
+                      "object_path": [ "UInt" ]
+                    }
                   }
                 }
-              }]
-            },
-            "name": {
-              "name": { "text": "Bar" },
-              "canonical_name": {
-                "module_file": "test.emb",
-                "object_path": ["Bar"]
-              }
+              ],
+              "source_file_name": ""
             }
-          }],
-          "source_file_name": "test.emb"
-        },
-        {
-          "type": [{
-            "external": { },
-            "name": {
-              "name": { "text": "UInt" },
-              "canonical_name": { "module_file": "", "object_path": ["UInt"] }
-            }
-          }],
-          "source_file_name": ""
-        }])
+          ]
+        }""")
 
     # Test that find_object works with any of its four "name" types.
     canonical_name_of_foo = ir_pb2.CanonicalName(module_file="test.emb",
@@ -548,23 +564,25 @@ class IrUtilTest(unittest.TestCase):
                                                 object_path=["Foo", "Bar"]))))
 
   def test_get_base_type(self):
-    array_type_ir = ir_pb2.Type(
-        array_type={
-          "element_count": { "constant": { "value": "20" } },
-          "base_type": {
-            "array_type": {
-              "element_count": { "constant": { "value": "10" } },
-              "base_type": {
-                "atomic_type": {
-                  "reference": { },
-                  "source_location": { "start": { "line": 5 } }
-                }
-              },
-              "source_location": { "start": { "line": 4 } }
-            }
-          },
-          "source_location": { "start": { "line": 3 } }
-        })
+    array_type_ir = ir_pb2.Type.from_json(
+        """{
+          "array_type": {
+            "element_count": { "constant": { "value": "20" } },
+            "base_type": {
+              "array_type": {
+                "element_count": { "constant": { "value": "10" } },
+                "base_type": {
+                  "atomic_type": {
+                    "reference": { },
+                    "source_location": { "start": { "line": 5 } }
+                  }
+                },
+                "source_location": { "start": { "line": 4 } }
+              }
+            },
+            "source_location": { "start": { "line": 3 } }
+          }
+        }""")
     base_type_ir = array_type_ir.array_type.base_type.array_type.base_type
     self.assertEqual(base_type_ir, ir_util.get_base_type(array_type_ir))
     self.assertEqual(base_type_ir, ir_util.get_base_type(
@@ -572,135 +590,187 @@ class IrUtilTest(unittest.TestCase):
     self.assertEqual(base_type_ir, ir_util.get_base_type(base_type_ir))
 
   def test_size_of_type_in_bits(self):
-    ir = ir_pb2.EmbossIr(
-        module=[{
-          "type": [{
-            "name": {
-              "name": { "text": "Baz" },
-              "canonical_name": { "module_file": "s.emb", "object_path": ["Baz"] }
-            }
-          }],
-          "source_file_name": "s.emb"
-        },
-        {
-          "type": [{
-            "name": {
-              "name": { "text": "UInt" },
+    ir = ir_pb2.EmbossIr.from_json(
+        """{
+          "module": [{
+            "type": [{
+              "name": {
+                "name": { "text": "Baz" },
+                "canonical_name": {
+                  "module_file": "s.emb",
+                  "object_path": ["Baz"]
+                }
+              }
+            }],
+            "source_file_name": "s.emb"
+          },
+          {
+            "type": [{
+              "name": {
+                "name": { "text": "UInt" },
+                "canonical_name": {
+                  "module_file": "",
+                  "object_path": ["UInt"]
+                }
+              }
+            },
+            {
+              "name": {
+                "name": { "text": "Byte" },
+                "canonical_name": {
+                  "module_file": "",
+                  "object_path": ["Byte"]
+                }
+              },
+              "attribute": [{
+                "name": { "text": "fixed_size_in_bits" },
+                "value": {
+                  "expression": {
+                    "constant": { "value": "8" },
+                    "type": {
+                      "integer": { "modular_value": "8", "modulus": "infinity" }
+                    }
+                  }
+                }
+              }]
+            }],
+            "source_file_name": ""
+          }]
+        }""")
+
+    fixed_size_type = ir_pb2.Type.from_json(
+        """{
+          "atomic_type": {
+            "reference": {
+              "canonical_name": { "module_file": "", "object_path": ["Byte"] }
+             }
+          }
+        }""")
+    self.assertEqual(8, ir_util.fixed_size_of_type_in_bits(fixed_size_type, ir))
+
+    explicit_size_type = ir_pb2.Type.from_json(
+        """{
+          "atomic_type": {
+            "reference": {
               "canonical_name": { "module_file": "", "object_path": ["UInt"] }
             }
           },
-          {
-            "name": {
-              "name": { "text": "Byte" },
-              "canonical_name": { "module_file": "", "object_path": ["Byte"] }
-            },
-            "attribute": [{
-              "name": { "text": "fixed_size_in_bits" },
-              "value": {
-                "expression": {
-                  "constant": { "value": "8" },
-                  "type": { "integer": { "modular_value": "8", "modulus": "infinity" } }
-                }
-              }
-            }]
-          }],
-          "source_file_name": ""
-        }])
-
-    fixed_size_type = ir_pb2.Type(
-        atomic_type={
-          "reference": { "canonical_name": { "module_file": "", "object_path": ["Byte"] } }
-        })
-    self.assertEqual(8, ir_util.fixed_size_of_type_in_bits(fixed_size_type, ir))
-
-    explicit_size_type = ir_pb2.Type(
-        atomic_type={
-          "reference": { "canonical_name": { "module_file": "", "object_path": ["UInt"] } }
-        },
-        size_in_bits={
-          "constant": { "value": "32" },
-          "type": { "integer": { "modular_value": "32", "modulus": "infinity" } }
-        })
+          "size_in_bits": {
+            "constant": { "value": "32" },
+            "type": {
+              "integer": { "modular_value": "32", "modulus": "infinity" }
+            }
+          }
+        }""")
     self.assertEqual(32,
                      ir_util.fixed_size_of_type_in_bits(explicit_size_type, ir))
 
-    fixed_size_array = ir_pb2.Type(
-        array_type={
-          "base_type": {
-            "atomic_type": {
-              "reference": {
-                "canonical_name": { "module_file": "", "object_path": ["Byte"] }
+    fixed_size_array = ir_pb2.Type.from_json(
+        """{
+          "array_type": {
+            "base_type": {
+              "atomic_type": {
+                "reference": {
+                  "canonical_name": { "module_file": "", "object_path": ["Byte"] }
+                }
+              }
+            },
+            "element_count": {
+              "constant": { "value": "5" },
+              "type": {
+                "integer": { "modular_value": "5", "modulus": "infinity" }
               }
             }
-          },
-          "element_count": {
-            "constant": { "value": "5" },
-            "type": { "integer": { "modular_value": "5", "modulus": "infinity" } }
           }
-        })
+        }""")
     self.assertEqual(40,
                      ir_util.fixed_size_of_type_in_bits(fixed_size_array, ir))
 
-    fixed_size_2d_array = ir_pb2.Type(
-        array_type={
-          "base_type": {
-            "array_type": {
-              "base_type": {
-                "atomic_type": {
-                  "reference": {
-                    "canonical_name": { "module_file": "", "object_path": ["Byte"] }
+    fixed_size_2d_array = ir_pb2.Type.from_json(
+        """{
+          "array_type": {
+            "base_type": {
+              "array_type": {
+                "base_type": {
+                  "atomic_type": {
+                    "reference": {
+                      "canonical_name": {
+                        "module_file": "",
+                        "object_path": ["Byte"]
+                      }
+                    }
+                  }
+                },
+                "element_count": {
+                  "constant": { "value": "5" },
+                  "type": {
+                    "integer": { "modular_value": "5", "modulus": "infinity" }
                   }
                 }
-              },
-              "element_count": {
-                "constant": { "value": "5" },
-                "type": { "integer": { "modular_value": "5", "modulus": "infinity" } }
+              }
+            },
+            "element_count": {
+              "constant": { "value": "2" },
+              "type": {
+                "integer": { "modular_value": "2", "modulus": "infinity" }
               }
             }
-          },
-          "element_count": {
-            "constant": { "value": "2" },
-            "type": { "integer": { "modular_value": "2", "modulus": "infinity" } }
           }
-        })
+        }""")
     self.assertEqual(
         80, ir_util.fixed_size_of_type_in_bits(fixed_size_2d_array, ir))
 
-    automatic_size_array = ir_pb2.Type(
-        array_type={
-          "base_type": {
-            "array_type": {
-              "base_type": {
-                "atomic_type": {
-                  "reference": {
-                    "canonical_name": { "module_file": "", "object_path": ["Byte"] }
+    automatic_size_array = ir_pb2.Type.from_json(
+        """{
+          "array_type": {
+            "base_type": {
+              "array_type": {
+                "base_type": {
+                  "atomic_type": {
+                    "reference": {
+                      "canonical_name": {
+                        "module_file": "",
+                        "object_path": ["Byte"]
+                      }
+                    }
+                  }
+                },
+                "element_count": {
+                  "constant": { "value": "5" },
+                  "type": {
+                    "integer": { "modular_value": "5", "modulus": "infinity" }
                   }
                 }
-              },
-              "element_count": {
-                "constant": { "value": "5" },
-                "type": { "integer": { "modular_value": "5", "modulus": "infinity" } }
               }
-            }
-          },
-          "automatic": { }
-        })
+            },
+            "automatic": { }
+          }
+      }""")
     self.assertIsNone(
         ir_util.fixed_size_of_type_in_bits(automatic_size_array, ir))
 
-    variable_size_type = ir_pb2.Type(
-        atomic_type={
-          "reference": { "canonical_name": { "module_file": "", "object_path": ["UInt"] } }
-        })
+    variable_size_type = ir_pb2.Type.from_json(
+        """{
+          "atomic_type": {
+            "reference": {
+              "canonical_name": { "module_file": "", "object_path": ["UInt"] }
+            }
+          }
+        }""")
     self.assertIsNone(
         ir_util.fixed_size_of_type_in_bits(variable_size_type, ir))
 
-    no_size_type = ir_pb2.Type(
-        atomic_type={
-          "reference": {
-            "canonical_name": { "module_file": "s.emb", "object_path": ["Baz"] }
+    no_size_type = ir_pb2.Type.from_json(
+        """{
+          "atomic_type": {
+            "reference": {
+              "canonical_name": {
+                "module_file": "s.emb",
+                "object_path": ["Baz"]
+              }
+            }
           }
-        })
+        }""")
     self.assertIsNone(ir_util.fixed_size_of_type_in_bits(no_size_type, ir))
 
   def test_field_is_virtual(self):
