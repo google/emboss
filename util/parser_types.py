@@ -84,7 +84,7 @@ class Token(
   """
 
   def __str__(self):
-    return "{} {} {}".format(self.symbol, repr(str(self.text)),
+    return "{} {} {}".format(self.symbol, repr(self.text),
                              format_location(self.source_location))
 
 

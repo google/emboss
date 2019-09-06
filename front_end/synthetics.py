@@ -96,7 +96,9 @@ def _add_anonymous_aliases(structure, type_definition):
         field_type = subtype
         break
     else:
-      assert False, "Unable to find corresponding type {} for anonymous field in {}.".format(field.type.atomic_type.reference, type_definition)
+      assert False, ("Unable to find corresponding type {} for anonymous field "
+                     "in {}.".format(
+                         field.type.atomic_type.reference, type_definition))
     anonymous_reference = ir_pb2.Reference(source_name=[field.name.name])
     anonymous_field_reference = ir_pb2.FieldReference(
         path=[anonymous_reference])

@@ -15,7 +15,6 @@
 """Routines for fully traversing an IR."""
 
 import inspect
-import sys
 
 from public import ir_pb2
 
@@ -127,7 +126,7 @@ def _fields_to_scan_by_current_and_target():
         fields[field_name] = field_type.type
         types_to_check.append(field_type.type)
         type_fields_to_cardinality[type_to_check, field_name] = (
-                field_type.__class__)
+            field_type.__class__)
     type_to_fields[type_to_check] = fields
 
   # type_to_descendant_types is a map of all types that can be reached from a
@@ -170,7 +169,7 @@ def _fields_to_scan_by_current_and_target():
           # Singular and repeated fields go to different lists, so that they can
           # be handled separately.
           if (type_fields_to_cardinality[current_node_type, field_name] ==
-                  ir_pb2.Optional):
+              ir_pb2.Optional):
             singular_fields_to_scan.append(field_name)
           else:
             repeated_fields_to_scan.append(field_name)

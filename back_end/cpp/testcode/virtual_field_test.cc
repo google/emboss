@@ -204,7 +204,7 @@ TEST(ConditionalVirtual, UncheckedRead) {
 }
 
 TEST(ConditionalVirtual, TextFormatWrite) {
-  ::std::array<unsigned char, 4> values = {0, 0, 0, 0x80};
+  ::std::array<char, 4> values = {0, 0, 0, 0x80};
   const auto view = MakeStructureWithConditionalValueView(&values);
   EXPECT_EQ("{ x: 2147483648, x_plus_one: 2147483649 }",
             ::emboss::WriteToString(view));

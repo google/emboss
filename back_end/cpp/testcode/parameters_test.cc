@@ -56,7 +56,7 @@ TEST(Axes, VirtualUsingParameter) {
 }
 
 TEST(AxesEnvelope, FieldPassedAsParameter) {
-  ::std::array<unsigned char, 9> values = {2, 0, 0, 0, 0x80, 0, 100, 0, 0};
+  ::std::array<char, 9> values = {2, 0, 0, 0, 0x80, 0, 100, 0, 0};
   auto view = MakeAxesEnvelopeView(&values);
   EXPECT_TRUE(view.Ok());
   EXPECT_EQ(0x80000000U, view.axes().x().value().Read());
@@ -64,7 +64,7 @@ TEST(AxesEnvelope, FieldPassedAsParameter) {
 }
 
 TEST(AxesEnvelope, ParameterValueIsOutOfRange) {
-  ::std::array<unsigned char, 9> values = {16, 0, 0, 0, 0x80, 0, 100, 0, 0};
+  ::std::array<char, 9> values = {16, 0, 0, 0, 0x80, 0, 100, 0, 0};
   auto view = MakeAxesEnvelopeView(&values);
   EXPECT_FALSE(view.Ok());
   EXPECT_FALSE(view.axes().Ok());
@@ -83,7 +83,7 @@ TEST(Multiversion, ParameterPassedDown) {
 }
 
 TEST(Multiversion, ParameterUsedToSwitchField) {
-  ::std::array<unsigned char, 9> values = {1, 0, 0, 0, 0x80, 0, 100, 0, 0};
+  ::std::array<char, 9> values = {1, 0, 0, 0, 0x80, 0, 100, 0, 0};
   auto view = MakeMultiversionView(Product::VERSION_1, &values);
   EXPECT_TRUE(view.Ok());
   EXPECT_TRUE(view.config().power().Read());

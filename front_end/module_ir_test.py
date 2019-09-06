@@ -4036,7 +4036,8 @@ def _make_superset_tests():
       is_superset, error_message = test_util.proto_is_superset(ir, test.ir)
       self.assertTrue(
           is_superset,
-          error_message + "\n" + ir.to_json(indent=2) + "\n" + test.ir.to_json(indent=2))
+          error_message + "\n" + ir.to_json(indent=2) + "\n" +
+          test.ir.to_json(indent=2))
 
     return test_case
 

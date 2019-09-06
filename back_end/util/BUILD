@@ -21,7 +21,8 @@ package(
 py_library(
     name = "code_template",
     srcs = ["code_template.py"],
-    deps = [],
+    deps = [
+    ],
 )
 
 py_test(

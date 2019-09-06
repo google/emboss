@@ -17,7 +17,9 @@
 load(":build_defs.bzl", "emboss_cc_test")
 
 package(
-    default_visibility = ["//visibility:private"],
+    default_visibility = [
+        "//visibility:private",
+    ],
     features = ["-layering_check"],
 )
 

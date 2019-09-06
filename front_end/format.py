@@ -31,12 +31,12 @@ from util import error
 
 def _parse_command_line(argv):
   """Parses the given command-line arguments."""
-  argparser = argparse.ArgumentParser(description="Emboss compiler front end.",
-                                   prog=argv[0])
-  argparser.add_argument("input_file",
+  argparser = argparse.ArgumentParser(description='Emboss compiler front end.',
+                                      prog=argv[0])
+  argparser.add_argument('input_file',
                          type=str,
                          nargs='+',
-                         help=".emb file to compile.")
+                         help='.emb file to compile.')
   argparser.add_argument('--no-check-result',
                          default=True,
                          action='store_false',
@@ -98,7 +98,8 @@ def main(argv=()):
     if parse_result.error:
       _print_errors(
           [error.make_error_from_parse_error(file_name, parse_result.error)],
-          {file_name: source_code})
+          {file_name: source_code},
+          flags)
       continue
 
     formatted_text = format_emb.format_emboss_parse_tree(

@@ -149,7 +149,7 @@ class FrontEndGlueTest(unittest.TestCase):
   def test_debug_info_from_parse_module(self):
     debug_info = glue.parse_module(_SPAN_SE_LOG_FILE_PATH,
                                    _SPAN_SE_LOG_FILE_READER).debug_info
-    self.maxDiff = 200000
+    self.maxDiff = 200000  # pylint:disable=invalid-name
     self.assertEqual(_SPAN_SE_LOG_FILE_TOKENIZATION_TEXT.strip(),
                      debug_info.format_tokenization().strip())
     self.assertEqual(_SPAN_SE_LOG_FILE_PARSE_TREE_TEXT.strip(),
