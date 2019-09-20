@@ -25,9 +25,9 @@ py_library(
     visibility = ["//visibility:public"],
 )
 
-cc_library(
-    name = "cpp_utils",
-    hdrs = [
+filegroup(
+    name = "raw_headers",
+    srcs = [
         "emboss_arithmetic.h",
         "emboss_array_view.h",
         "emboss_bit_util.h",
@@ -42,9 +42,20 @@ cc_library(
         "emboss_text_util.h",
         "emboss_view_parameters.h",
     ],
-    deps = [
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "cpp_utils",
+    hdrs = [
+        ":raw_headers",
     ],
     visibility = ["//visibility:public"],
+    deps = [
+        # BEGIN INSERT_MY_SITE_DEFINES_TARGET_HERE
+        # "//MY_SITE_DEFINES:TARGET",
+        # END INSERT_MY_SITE_DEFINES_TARGET_HERE
+    ],
 )
 
 emboss_cc_util_test(
@@ -133,6 +144,18 @@ emboss_cc_util_test(
 )
 
 emboss_cc_util_test(
+    name = "emboss_enum_view_test",
+    srcs = [
+        "emboss_enum_view_test.cc",
+    ],
+    copts = ["-DEMBOSS_FORCE_ALL_CHECKS"],
+    deps = [
+        ":cpp_utils",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+emboss_cc_util_test(
     name = "emboss_maybe_test",
     srcs = [
         "emboss_maybe_test.cc",
@@ -161,10 +184,7 @@ emboss_cc_util_test(
     srcs = [
         "emboss_text_util_test.cc",
     ],
-    copts = [
-        "-DEMBOSS_FORCE_ALL_CHECKS",
-        "-Wsign-compare",
-    ],
+    copts = ["-DEMBOSS_FORCE_ALL_CHECKS"],
     deps = [
         ":cpp_utils",
         "@com_google_googletest//:gtest_main",

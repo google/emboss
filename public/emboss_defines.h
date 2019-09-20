@@ -14,53 +14,134 @@
 
 // This header contains #defines that are used to control Emboss's generated
 // code.
-#ifndef EMBOSS_PUBLIC_EMBOSS_DEFINES_H_
-#define EMBOSS_PUBLIC_EMBOSS_DEFINES_H_
+//
+// These #defines are global, and *must* be defined the same way in every
+// translation unit.  In particular, if you use `-D` (or your compiler's
+// equivalent) to define some of them on the command line, you *must* pass the
+// *exact* same definition when compiling *every* file that #includes any
+// Emboss-generated or Emboss-related file, directly or indirectly.  Failure to
+// do so will lead to ODR violations and strange behavior.
+//
+// Rather than using the command line, the Emboss authors recommend that you
+// insert an #include of a custom site_defines.h between the two markers below.
+//
+// If you are using [Copybara][1] to import Emboss into your environment, you
+// can use a transform like:
+//
+//     core.replace(
+//         before = '${start_of_line}// #include "MY_SITE_DEFINES.h"',
+//         after = '${start_of_line}#include "MY_SITE_DEFINES.h"',
+//         paths = ['public/emboss_defines.h'],
+//         regex_groups = {
+//             'start_of_line': '^',
+//         },
+//     ),
+//
+// [1]: https://github.com/google/copybara
+//
+// If you are using [Bazel][2], be sure to add a dependency from the
+// //public:cpp_utils target to a target exporting your custom header:
+//
+//     core.replace(
+//         before = '${leading_whitespace}# "//MY_SITE_DEFINES:TARGET",',
+//         after = '${leading_whitespace}"//MY_SITE_DEFINES:TARGET",',
+//         paths = ['public/BUILD'],
+//         regex_groups = {
+//             'leading_whitespace': '^ *',
+//         },
+//     ),
+//
+// [2]: https://bazel.build
+#ifndef THIRD_PARTY_EMBOSS_PUBLIC_EMBOSS_DEFINES_H_
+#define THIRD_PARTY_EMBOSS_PUBLIC_EMBOSS_DEFINES_H_
 
-// TODO(bolms): Add an explicit extension point for these macros.
-#include <assert.h>
+// START INSERT_INCLUDE_SITE_DEFINES_HERE
+// #include "MY_SITE_DEFINES.h"
+// END INSERT_INCLUDE_SITE_DEFINES_HERE
+
+#include <cassert>
+
+// EMBOSS_CHECK should abort the program if the given expression evaluates to
+// false.
+//
+// By default, checks are only enabled on non-NDEBUG builds.  (Note that all
+// translation units MUST be built with the same value of NDEBUG!)
+#if !defined(EMBOSS_CHECK)
 #define EMBOSS_CHECK(x) assert((x))
-#define EMBOSS_CHECK_LE(x, y) assert((x) <= (y))
-#define EMBOSS_CHECK_LT(x, y) assert((x) < (y))
-#define EMBOSS_CHECK_GE(x, y) assert((x) >= (y))
-#define EMBOSS_CHECK_GT(x, y) assert((x) > (y))
-#define EMBOSS_CHECK_EQ(x, y) assert((x) == (y))
+#endif  // !defined(EMBOSS_CHECK)
 
-// If EMBOSS_FORCE_ALL_CHECKS is #defined, then all checks are enabled even in
-// optimized modes.  Otherwise, EMBOSS_DCHECK only runs in debug mode.
-#ifdef EMBOSS_FORCE_ALL_CHECKS
-#define EMBOSS_DCHECK_EQ(x, y) assert((x) == (y))
-#define EMBOSS_DCHECK_GE(x, y) assert((x) >= (y))
-#else
-#define EMBOSS_DCHECK_EQ(x, y) assert((x) == (y))
-#define EMBOSS_DCHECK_GE(x, y) assert((x) >= (y))
-#endif  // EMBOSS_FORCE_ALL_CHECKS
+#if !defined(EMBOSS_CHECK_LE)
+#define EMBOSS_CHECK_LE(x, y) EMBOSS_CHECK((x) <= (y))
+#endif  // !defined(EMBOSS_CHECK_LE)
+
+#if !defined(EMBOSS_CHECK_LT)
+#define EMBOSS_CHECK_LT(x, y) EMBOSS_CHECK((x) < (y))
+#endif  // !defined(EMBOSS_CHECK_LT)
+
+#if !defined(EMBOSS_CHECK_GE)
+#define EMBOSS_CHECK_GE(x, y) EMBOSS_CHECK((x) >= (y))
+#endif  // !defined(EMBOSS_CHECK_GE)
+
+#if !defined(EMBOSS_CHECK_GT)
+#define EMBOSS_CHECK_GT(x, y) EMBOSS_CHECK((x) > (y))
+#endif  // !defined(EMBOSS_CHECK_GT)
+
+#if !defined(EMBOSS_CHECK_EQ)
+#define EMBOSS_CHECK_EQ(x, y) EMBOSS_CHECK((x) == (y))
+#endif  // !defined(EMBOSS_CHECK_EQ)
+
+#if !defined(EMBOSS_CHECK_NE)
+#define EMBOSS_CHECK_NE(x, y) EMBOSS_CHECK((x) == (y))
+#endif  // !defined(EMBOSS_CHECK_NE)
+
+// The EMBOSS_DCHECK macros, by default, work the same way as EMBOSS_CHECK;
+// EMBOSS_DCHECK is used as an assert() for logic embedded in Emboss, where
+// EMBOSS_CHECK is used to check preconditions on application logic.  Depending
+// on how much you trust the correctness of Emboss itself, you may wish to
+// disable EMBOSS_DCHECK in situations where you do not disable EMBOSS_CHECK.
+#if !defined(EMBOSS_DCHECK)
+#define EMBOSS_DCHECK(x) assert((x))
+#endif  // !defined(EMBOSS_DCHECK)
+
+#if !defined(EMBOSS_DCHECK_LE)
+#define EMBOSS_DCHECK_LE(x, y) EMBOSS_DCHECK((x) <= (y))
+#endif  // !defined(EMBOSS_DCHECK_LE)
+
+#if !defined(EMBOSS_DCHECK_LT)
+#define EMBOSS_DCHECK_LT(x, y) EMBOSS_DCHECK((x) < (y))
+#endif  // !defined(EMBOSS_DCHECK_LT)
+
+#if !defined(EMBOSS_DCHECK_GE)
+#define EMBOSS_DCHECK_GE(x, y) EMBOSS_DCHECK((x) >= (y))
+#endif  // !defined(EMBOSS_DCHECK_GE)
+
+#if !defined(EMBOSS_DCHECK_GT)
+#define EMBOSS_DCHECK_GT(x, y) EMBOSS_DCHECK((x) > (y))
+#endif  // !defined(EMBOSS_DCHECK_GT)
+
+#if !defined(EMBOSS_DCHECK_EQ)
+#define EMBOSS_DCHECK_EQ(x, y) EMBOSS_DCHECK((x) == (y))
+#endif  // !defined(EMBOSS_DCHECK_EQ)
+
+#if !defined(EMBOSS_DCHECK_NE)
+#define EMBOSS_DCHECK_NE(x, y) EMBOSS_DCHECK((x) == (y))
+#endif  // !defined(EMBOSS_DCHECK_NE)
 
 // Technically, the mapping from pointers to integers is implementation-defined,
 // but the standard states "[ Note: It is intended to be unsurprising to those
 // who know the addressing structure of the underlying machine. - end note ],"
 // so this should be a reasonably safe way to check that a pointer is aligned.
+#if !defined(EMBOSS_DCHECK_POINTER_ALIGNMENT)
 #define EMBOSS_DCHECK_POINTER_ALIGNMENT(p, align, offset)                  \
   EMBOSS_DCHECK_EQ(reinterpret_cast</**/ ::std::uintptr_t>((p)) % (align), \
                    (static_cast</**/ ::std::uintptr_t>((offset))))
+#endif  // !defined(EMBOSS_DCHECK_POINTER_ALIGNMENT)
+
+#if !defined(EMBOSS_CHECK_POINTER_ALIGNMENT)
 #define EMBOSS_CHECK_POINTER_ALIGNMENT(p, align, offset)                  \
   EMBOSS_CHECK_EQ(reinterpret_cast</**/ ::std::uintptr_t>((p)) % (align), \
                   static_cast</**/ ::std::uintptr_t>((offset)))
-
-// !! WARNING !!
-//
-// It is possible to pre-#define a number of macros used below to influence
-// Emboss's system-specific optimizations.  If so, they *must* be #defined the
-// same way in every compilation unit that #includes any Emboss-related header
-// or generated code, before any such headers are #included, or else there is a
-// real risk of ODR violations.  It is recommended that any EMBOSS_* #defines
-// are added to the global C++ compiler options in your build system, rather
-// than being individually specified in source files.
-//
-// TODO(bolms): Add an #include for a site-specific header file, where
-// site-specific customizations can be placed, and recommend that any overrides
-// be placed in that header.  Further, use that header for the EMBOSS_CHECK_*
-// #defines, above.
+#endif  // !defined(EMBOSS_CHECK_POINTER_ALIGNMENT)
 
 // EMBOSS_NO_OPTIMIZATIONS is used to turn off all system-specific
 // optimizations.  This is mostly intended for testing, but could be used if
@@ -75,9 +156,9 @@
 //
 // TODO(bolms): Are there actually any non-archaic systems that use any integer
 // types other than 2's-complement?
-#ifndef EMBOSS_SYSTEM_IS_TWOS_COMPLEMENT
+#if !defined(EMBOSS_SYSTEM_IS_TWOS_COMPLEMENT)
 #define EMBOSS_SYSTEM_IS_TWOS_COMPLEMENT 1
-#endif
+#endif  // !defined(EMBOSS_SYSTEM_IS_TWOS_COMPLEMENT)
 
 #if !defined(__INTEL_COMPILER)
 // On systems with known host byte order, Emboss can always use memcpy to safely
@@ -123,8 +204,10 @@
 //
 // Note the lack of parentheses around 't' in the expansion: unfortunately,
 // GCC's attribute syntax disallows parentheses in that particular position.
+#if !defined(EMBOSS_ALIAS_SAFE_POINTER_CAST)
 #define EMBOSS_ALIAS_SAFE_POINTER_CAST(t, x) \
   reinterpret_cast<t __attribute__((__may_alias__)) *>((x))
+#endif  // !defined(EMBOSS_LITTLE_ENDIAN_TO_NATIVE)
 #endif  // !defined(__INTEL_COMPILER)
 
 // GCC supports __BYTE_ORDER__ of __ORDER_LITTLE_ENDIAN__, __ORDER_BIG_ENDIAN__,
@@ -140,10 +223,22 @@
 //
 // On little-endian systems, no fixup is needed for little-endian sources, but
 // big-endian sources require a byte swap.
+#if !defined(EMBOSS_LITTLE_ENDIAN_TO_NATIVE)
 #define EMBOSS_LITTLE_ENDIAN_TO_NATIVE(x) (x)
+#endif  // !defined(EMBOSS_LITTLE_ENDIAN_TO_NATIVE)
+
+#if !defined(EMBOSS_NATIVE_TO_LITTLE_ENDIAN)
 #define EMBOSS_NATIVE_TO_LITTLE_ENDIAN(x) (x)
+#endif  // !defined(EMBOSS_NATIVE_TO_LITTLE_ENDIAN)
+
+#if !defined(EMBOSS_BIG_ENDIAN_TO_NATIVE)
 #define EMBOSS_BIG_ENDIAN_TO_NATIVE(x) (::emboss::support::ByteSwap((x)))
+#endif  // !defined(EMBOSS_BIG_ENDIAN_TO_NATIVE)
+
+#if !defined(EMBOSS_NATIVE_TO_BIG_ENDIAN)
 #define EMBOSS_NATIVE_TO_BIG_ENDIAN(x) (::emboss::support::ByteSwap((x)))
+#endif  // !defined(EMBOSS_NATIVE_TO_BIG_ENDIAN)
+
 // TODO(bolms): Find a way to test on a big-endian architecture, and add support
 // for __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
 #endif  // __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
@@ -156,13 +251,25 @@
 // that fails to compile on GCC, even with defined(__has_builtin) &&
 // __has_builtin(__builtin_bswap16), so instead Emboss just checks for
 // defined(__clang__).
+#if !defined(EMBOSS_BYTESWAP16)
 #if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8) || defined(__clang__)
 #define EMBOSS_BYTESWAP16(x) __builtin_bswap16((x))
 #endif  // __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)
+#endif  // !defined(EMBOSS_BYTESWAP16)
+
+#if !defined(EMBOSS_BYTESWAP32)
 #define EMBOSS_BYTESWAP32(x) __builtin_bswap32((x))
+#endif  // !defined(EMBOSS_BYTESWAP32)
+
+#if !defined(EMBOSS_BYTESWAP64)
 #define EMBOSS_BYTESWAP64(x) __builtin_bswap64((x))
+#endif  // !defined(EMBOSS_BYTESWAP64)
 
 #endif  // defined(__GNUC__)
 #endif  // !defined(EMBOSS_NO_OPTIMIZATIONS)
 
-#endif  // EMBOSS_PUBLIC_EMBOSS_DEFINES_H_
+#if !defined(EMBOSS_SYSTEM_IS_TWOS_COMPLEMENT)
+#define EMBOSS_SYSTEM_IS_TWOS_COMPLEMENT 0
+#endif  // !defined(EMBOSS_SYSTEM_IS_TWOS_COMPLEMENT)
+
+#endif  // THIRD_PARTY_EMBOSS_PUBLIC_EMBOSS_DEFINES_H_
