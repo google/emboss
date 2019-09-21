@@ -190,3 +190,28 @@ emboss_cc_util_test(
         "@com_google_googletest//:gtest_main",
     ],
 )
+
+cc_library(
+    name = "emboss_test_util",
+    testonly = 1,
+    hdrs = ["emboss_test_util.h"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":cpp_utils",
+        "@com_google_googletest//:gtest",
+        "@com_google_absl//absl/memory",
+    ],
+)
+
+cc_test(
+    name = "emboss_test_util_test",
+    srcs = [
+        "emboss_test_util_test.cc",
+    ],
+    copts = ["-Wsign-compare"],
+    deps = [
+        ":emboss_test_util",
+        "@com_google_googletest//:gtest_main",
+        "//testdata:complex_structure_emboss",
+    ],
+)

@@ -26,7 +26,7 @@ namespace {
 class EmbossTestUtilTest : public ::testing::Test {
  protected:
   EmbossTestUtilTest() { b_.s().Write(1); }
-  ::std::array<uint8, 64> buf_a_{};
+  ::std::array</**/ ::std::uint8_t, 64> buf_a_{};
   ::emboss_test::ComplexWriter a_{&buf_a_};
   ::std::array<char, 64> buf_b_{};
   ::emboss_test::ComplexWriter b_{&buf_b_};

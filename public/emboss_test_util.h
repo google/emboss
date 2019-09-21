@@ -24,8 +24,7 @@
 #include <string>
 
 #include "public/emboss_text_util.h"
-#include "third_party/absl/memory/memory.h"
-#include "third_party/googletest/googletest/include/gtest/internal/gtest-internal.h"
+#include "absl/memory/memory.h"
 
 namespace emboss {
 
