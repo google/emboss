@@ -15,7 +15,7 @@
 #include <gtest/gtest.h>
 
 #include "public/emboss_cpp_util.h"
-#include "third_party/absl/strings/string_view.h"
+#include "absl/strings/string_view.h"
 
 namespace emboss {
 namespace support {

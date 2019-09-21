@@ -191,6 +191,22 @@ emboss_cc_util_test(
     ],
 )
 
+cc_test(
+    name = "emboss_cpp_util_google_integration_test",
+    srcs = [
+        "emboss_cpp_util_google_integration_test.cc",
+    ],
+    copts = [
+        "-DEMBOSS_FORCE_ALL_CHECKS",
+        "-Wsign-compare",
+    ],
+    deps = [
+        ":cpp_utils",
+        "@com_google_absl//absl/strings",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
 cc_library(
     name = "emboss_test_util",
     testonly = 1,
