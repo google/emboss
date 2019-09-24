@@ -15,16 +15,15 @@
 #ifndef EMBOSS_PUBLIC_EMBOSS_TEST_UTIL_H_
 #define EMBOSS_PUBLIC_EMBOSS_TEST_UTIL_H_
 
-#include <gmock/gmock.h>
-#include <gtest/gtest.h>
-
 #include <cctype>
 #include <iterator>
 #include <ostream>
 #include <string>
 
-#include "public/emboss_text_util.h"
 #include "absl/memory/memory.h"
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
+#include "public/emboss_text_util.h"
 
 namespace emboss {
 
