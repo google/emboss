@@ -54,7 +54,7 @@ def _parse_args(argv):
 def main(argv):
     flags = _parse_args(argv)
     base_path = path.dirname(__file__) or "."
-    subprocess_environment = {k: v for k, v in os.environ.items()}
+    subprocess_environment = os.environ.copy()
     if subprocess_environment.get("PYTHONPATH"):
         subprocess_environment["PYTHONPATH"] = (
             base_path + ":" + subprocess_environment.get("PYTHONPATH"))
