@@ -29,6 +29,7 @@ from front_end import parser
 from front_end import tokenizer
 from util import error
 
+
 def _parse_command_line(argv):
   """Parses the given command-line arguments."""
   argparser = argparse.ArgumentParser(description='Emboss compiler front end.',

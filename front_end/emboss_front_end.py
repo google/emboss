@@ -31,6 +31,7 @@ from front_end import glue
 from front_end import module_ir
 from util import error
 
+
 def _parse_command_line(argv):
   """Parses the given command-line arguments."""
   parser = argparse.ArgumentParser(description="Emboss compiler front end.",

@@ -17,6 +17,7 @@
 from __future__ import print_function
 
 import re
+import sys
 
 from front_end import constraints
 from front_end import module_ir
