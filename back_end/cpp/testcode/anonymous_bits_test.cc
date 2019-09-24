@@ -14,11 +14,11 @@
 
 // Tests for generated code for anonymous "bits" types, using
 // anonymous_bits.emb.
-#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
+#include "gtest/gtest.h"
 #include "public/emboss_cpp_util.h"
 #include "testdata/anonymous_bits.emb.h"
 

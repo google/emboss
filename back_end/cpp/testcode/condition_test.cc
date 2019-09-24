@@ -13,11 +13,11 @@
 // limitations under the License.
 
 // Tests to ensure that conditional fields work.
-#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
+#include "gtest/gtest.h"
 #include "testdata/condition.emb.h"
 
 namespace emboss {

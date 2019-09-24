@@ -14,8 +14,7 @@
 
 #include "public/emboss_enum_view.h"
 
-#include <gtest/gtest.h>
-
+#include "gtest/gtest.h"
 #include "public/emboss_prelude.h"
 
 namespace emboss {

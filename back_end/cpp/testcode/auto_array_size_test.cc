@@ -14,14 +14,14 @@
 
 // Tests for automatically-sized arrays from auto_array_size.emb.
 
-#include <gmock/gmock.h>
-#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <iterator>
 #include <random>
 #include <vector>
 
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
 #include "public/emboss_text_util.h"
 #include "testdata/auto_array_size.emb.h"
 

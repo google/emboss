@@ -13,11 +13,11 @@
 // limitations under the License.
 
 // Tests for [requires] using requires.emb.
-#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
+#include "gtest/gtest.h"
 #include "testdata/requires.emb.h"
 
 namespace emboss {

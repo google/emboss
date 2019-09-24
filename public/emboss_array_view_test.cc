@@ -14,12 +14,11 @@
 
 #include "public/emboss_array_view.h"
 
-#include <gtest/gtest.h>
-
 #include <string>
 #include <type_traits>
 
 #include "absl/strings/str_format.h"
+#include "gtest/gtest.h"
 #include "public/emboss_prelude.h"
 
 namespace emboss {

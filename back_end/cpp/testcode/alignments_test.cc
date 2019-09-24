@@ -14,11 +14,11 @@
 
 // Tests that generated code properly preserves and propagates alignment
 // information.
-#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
+#include "gtest/gtest.h"
 #include "public/emboss_cpp_util.h"
 #include "testdata/alignments.emb.h"
 

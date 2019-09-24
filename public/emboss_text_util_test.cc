@@ -14,10 +14,10 @@
 
 #include "public/emboss_text_util.h"
 
-#include <gtest/gtest.h>
-
 #include <cmath>
 #include <limits>
+
+#include "gtest/gtest.h"
 
 namespace emboss {
 namespace support {

@@ -14,11 +14,11 @@
 
 // Tests for the generated View class for a LogFileStatus from
 // span_se_log_file_status.emb.
-#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
+#include "gtest/gtest.h"
 #include "testdata/golden/span_se_log_file_status.emb.h"
 
 namespace emboss {

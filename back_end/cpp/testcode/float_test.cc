@@ -14,12 +14,12 @@
 
 // Tests for Emboss floating-point support.
 
-#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <cmath>
 #include <vector>
 
+#include "gtest/gtest.h"
 #include "testdata/float.emb.h"
 
 namespace emboss {

@@ -14,11 +14,11 @@
 
 // Tests for using imported types.
 
-#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
+#include "gtest/gtest.h"
 #include "testdata/importer.emb.h"
 
 namespace emboss {

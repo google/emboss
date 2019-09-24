@@ -16,11 +16,11 @@
 // nested_structure.emb.
 //
 // These tests check that nested structures work.
-#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
+#include "gtest/gtest.h"
 #include "testdata/int_sizes.emb.h"
 
 namespace emboss {

@@ -13,11 +13,11 @@
 // limitations under the License.
 
 // Tests for fields and structs with dynamic sizes.
-#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
+#include "gtest/gtest.h"
 #include "testdata/dynamic_size.emb.h"
 
 namespace emboss {

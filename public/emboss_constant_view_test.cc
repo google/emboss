@@ -14,7 +14,7 @@
 
 #include "public/emboss_constant_view.h"
 
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
 
 namespace emboss {
 namespace support {

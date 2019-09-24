@@ -13,11 +13,11 @@
 // limitations under the License.
 
 // Tests for generated code for "bits" types, using bits.emb.
-#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
+#include "gtest/gtest.h"
 #include "public/emboss_cpp_util.h"
 #include "testdata/bits.emb.h"
 

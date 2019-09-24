@@ -14,9 +14,9 @@
 
 // Test for the generated View class for StartSize from start_size_range.emb.
 
-#include <gtest/gtest.h>
 #include <stdint.h>
 
+#include "gtest/gtest.h"
 #include "testdata/start_size_range.emb.h"
 
 namespace emboss {

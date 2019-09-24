@@ -15,13 +15,13 @@
 // Tests for the generated View class from bcd.emb.
 //
 // These tests check that Binary-Coded Decimal (BCD) numbers work.
-#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <array>
 #include <string>
 #include <vector>
 
+#include "gtest/gtest.h"
 #include "testdata/bcd.emb.h"
 
 namespace emboss {

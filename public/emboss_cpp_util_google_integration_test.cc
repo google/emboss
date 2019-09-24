@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <gtest/gtest.h>
-
-#include "public/emboss_cpp_util.h"
 #include "absl/strings/string_view.h"
+#include "gtest/gtest.h"
+#include "public/emboss_cpp_util.h"
 
 namespace emboss {
 namespace support {

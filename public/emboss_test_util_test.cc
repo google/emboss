@@ -14,9 +14,8 @@
 
 #include "public/emboss_test_util.h"
 
-#include <gmock/gmock.h>
-#include <gtest/gtest.h>
-
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
 #include "testdata/complex_structure.emb.h"
 
 namespace emboss {

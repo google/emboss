@@ -13,11 +13,11 @@
 // limitations under the License.
 
 // Tests for types defined inline.
-#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
+#include "gtest/gtest.h"
 #include "testdata/inline_type.emb.h"
 
 namespace emboss {

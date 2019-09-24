@@ -14,10 +14,9 @@
 
 #include "public/emboss_prelude.h"
 
-#include <gtest/gtest.h>
-
 #include <type_traits>
 
+#include "gtest/gtest.h"
 #include "public/emboss_cpp_util.h"
 
 namespace emboss {

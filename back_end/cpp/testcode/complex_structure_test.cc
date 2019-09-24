@@ -13,13 +13,13 @@
 // limitations under the License.
 
 // Tests of generated code for text format.
-#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <type_traits>
 #include <utility>
 #include <vector>
 
+#include "gtest/gtest.h"
 #include "testdata/complex_structure.emb.h"
 
 namespace emboss_test {

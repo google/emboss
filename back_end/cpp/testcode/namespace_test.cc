@@ -13,11 +13,11 @@
 // limitations under the License.
 
 // Tests that generated code ends up in the correct C++ namespaces.
-#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
+#include "gtest/gtest.h"
 #include "testdata/absolute_cpp_namespace.emb.h"
 #include "testdata/cpp_namespace.emb.h"
 #include "testdata/no_cpp_namespace.emb.h"

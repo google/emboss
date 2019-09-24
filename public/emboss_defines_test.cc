@@ -14,9 +14,9 @@
 
 #include "public/emboss_defines.h"
 
-#include <gtest/gtest.h>
-
 #include <cstdint>
+
+#include "gtest/gtest.h"
 
 namespace emboss {
 namespace support {

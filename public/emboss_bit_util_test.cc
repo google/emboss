@@ -14,7 +14,7 @@
 
 #include "public/emboss_bit_util.h"
 
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
 
 namespace emboss {
 namespace support {

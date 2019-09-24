@@ -15,11 +15,11 @@
 // Tests for the generated View class from subtypes.emb.
 //
 // These tests check that nested types work.
-#include <gtest/gtest.h>
 #include <stdint.h>
 
 #include <vector>
 
+#include "gtest/gtest.h"
 #include "testdata/subtypes.emb.h"
 
 namespace emboss {
