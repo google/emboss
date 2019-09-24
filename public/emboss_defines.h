@@ -55,11 +55,11 @@
 #ifndef EMBOSS_PUBLIC_EMBOSS_DEFINES_H_
 #define EMBOSS_PUBLIC_EMBOSS_DEFINES_H_
 
+#include <cassert>
+
 // START INSERT_INCLUDE_SITE_DEFINES_HERE
 // #include "MY_SITE_DEFINES.h"
 // END INSERT_INCLUDE_SITE_DEFINES_HERE
-
-#include <cassert>
 
 // EMBOSS_CHECK should abort the program if the given expression evaluates to
 // false.
