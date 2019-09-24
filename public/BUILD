@@ -22,7 +22,7 @@ load(
 py_library(
     name = "ir_pb2",
     srcs = ["ir_pb2.py"],
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
 )
 
 filegroup(
@@ -42,7 +42,7 @@ filegroup(
         "emboss_text_util.h",
         "emboss_view_parameters.h",
     ],
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
 )
 
 cc_library(
