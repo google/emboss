@@ -14,7 +14,7 @@
 
 # Shared test data for Emboss.
 
-load("//public:build_defs.bzl", "emboss_cc_library")
+load("//:build_defs.bzl", "emboss_cc_library")
 
 package(
     default_visibility = ["//:__subpackages__"],

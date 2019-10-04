@@ -64,7 +64,7 @@ def main(argv):
     subprocess_environment["PYTHONPATH"] = base_path
   front_end_args = [
       sys.executable,
-      path.join(base_path, "front_end", "emboss_front_end.py"),
+      path.join(base_path, "compiler", "front_end", "emboss_front_end.py"),
       "--output-ir-to-stdout",
       "--color-output", flags.color_output,
   ]
@@ -82,7 +82,8 @@ def main(argv):
   back_end_status = subprocess.run(
       [
           sys.executable,
-          path.join(base_path, "back_end", "cpp", "emboss_codegen_cpp.py"),
+          path.join(base_path, "compiler", "back_end", "cpp",
+                    "emboss_codegen_cpp.py"),
       ],
       input=front_end_status.stdout,
       stdout=subprocess.PIPE,

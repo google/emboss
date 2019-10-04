@@ -1,0 +1,573 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""Module which adds and verifies attributes in Emboss IR.
+
+The main entry point is normalize_and_verify(), which adds attributes and/or
+verifies attributes which may have been manually entered.
+"""
+
+from compiler.front_end import attributes
+from compiler.front_end import type_check
+from compiler.util import ir_pb2
+from compiler.util import error
+from compiler.util import ir_util
+from compiler.util import traverse_ir
+
+# The "namespace" attribute is C++-back-end specific, and so should not be used
+# by the front end.
+_NAMESPACE = "namespace"
+
+
+# Error messages used by multiple attribute type checkers.
+_BAD_TYPE_MESSAGE = "Attribute '{name}' must have {type} value."
+_MUST_BE_CONSTANT_MESSAGE = "Attribute '{name}' must have a constant value."
+
+
+# Attribute type checkers
+def _is_constant_boolean(attr, module_source_file):
+  """Checks if the given attr is a constant boolean."""
+  if not attr.value.expression.type.boolean.HasField("value"):
+    return [[error.error(module_source_file,
+                         attr.value.source_location,
+                         _BAD_TYPE_MESSAGE.format(name=attr.name.text,
+                                                  type="a constant boolean"))]]
+  return []
+
+
+def _is_boolean(attr, module_source_file):
+  """Checks if the given attr is a boolean."""
+  if attr.value.expression.type.WhichOneof("type") != "boolean":
+    return [[error.error(module_source_file,
+                         attr.value.source_location,
+                         _BAD_TYPE_MESSAGE.format(name=attr.name.text,
+                                                  type="a boolean"))]]
+  return []
+
+
+def _is_constant_integer(attr, module_source_file):
+  """Checks if the given attr is an integer constant expression."""
+  if (not attr.value.HasField("expression") or
+      attr.value.expression.type.WhichOneof("type") != "integer"):
+    return [[error.error(module_source_file,
+                         attr.value.source_location,
+                         _BAD_TYPE_MESSAGE.format(name=attr.name.text,
+                                                  type="an integer"))]]
+  if not ir_util.is_constant(attr.value.expression):
+    return [[error.error(module_source_file,
+                         attr.value.source_location,
+                         _MUST_BE_CONSTANT_MESSAGE.format(
+                             name=attr.name.text))]]
+  return []
+
+
+def _is_string(attr, module_source_file):
+  """Checks if the given attr is a string."""
+  if not attr.value.HasField("string_constant"):
+    return [[error.error(module_source_file,
+                         attr.value.source_location,
+                         _BAD_TYPE_MESSAGE.format(name=attr.name.text,
+                                                  type="a string"))]]
+  return []
+
+
+def _is_valid_byte_order(attr, module_source_file):
+  """Checks if the given attr is a valid byte_order."""
+  return _is_string_from_list(attr, module_source_file,
+                              {"BigEndian", "LittleEndian", "Null"})
+
+
+def _is_string_from_list(attr, module_source_file, valid_values):
+  """Checks if the given attr has one of the valid_values."""
+  if attr.value.string_constant.text not in valid_values:
+    return [[error.error(module_source_file,
+                         attr.value.source_location,
+                         "Attribute '{name}' must be '{options}'.".format(
+                             name=attr.name.text,
+                             options="' or '".join(sorted(valid_values))))]]
+  return []
+
+
+def _is_valid_text_output(attr, module_source_file):
+  """Checks if the given attr is a valid text_output."""
+  return _is_string_from_list(attr, module_source_file, {"Emit", "Skip"})
+
+
+# Attributes must be the same type no matter where they occur.
+_ATTRIBUTE_TYPES = {
+    ("", attributes.ADDRESSABLE_UNIT_SIZE): _is_constant_integer,
+    ("", attributes.BYTE_ORDER): _is_valid_byte_order,
+    ("", attributes.FIXED_SIZE): _is_constant_integer,
+    ("", attributes.IS_INTEGER): _is_constant_boolean,
+    ("", attributes.REQUIRES): _is_boolean,
+    ("", attributes.STATIC_REQUIREMENTS): _is_boolean,
+    ("", attributes.TEXT_OUTPUT): _is_valid_text_output,
+    ("cpp", _NAMESPACE): _is_string,
+}
+
+_MODULE_ATTRIBUTES = {
+    ("", attributes.BYTE_ORDER, True),
+    # TODO(bolms): Allow back-end-specific attributes to be specified
+    # externally.
+    ("cpp", _NAMESPACE, False),
+}
+_BITS_ATTRIBUTES = {
+    ("", attributes.FIXED_SIZE, False),
+    ("", attributes.REQUIRES, False),
+    ("", attributes.STATIC_REQUIREMENTS, False),
+}
+_STRUCT_ATTRIBUTES = {
+    ("", attributes.FIXED_SIZE, False),
+    ("", attributes.BYTE_ORDER, True),
+    ("", attributes.REQUIRES, False),
+    ("", attributes.STATIC_REQUIREMENTS, False),
+}
+_ENUM_ATTRIBUTES = {
+    ("", attributes.STATIC_REQUIREMENTS, False),
+}
+_EXTERNAL_ATTRIBUTES = {
+    ("", attributes.ADDRESSABLE_UNIT_SIZE, False),
+    ("", attributes.FIXED_SIZE, False),
+    ("", attributes.IS_INTEGER, False),
+    ("", attributes.STATIC_REQUIREMENTS, False),
+}
+_STRUCT_PHYSICAL_FIELD_ATTRIBUTES = {
+    ("", attributes.BYTE_ORDER, False),
+    ("", attributes.REQUIRES, False),
+    ("", attributes.TEXT_OUTPUT, False),
+}
+_STRUCT_VIRTUAL_FIELD_ATTRIBUTES = {
+    ("", attributes.REQUIRES, False),
+    ("", attributes.TEXT_OUTPUT, False),
+}
+
+
+def _construct_integer_attribute(name, value, source_location):
+  """Constructs an integer Attribute with the given name and value."""
+  attr_value = ir_pb2.AttributeValue(
+      expression=ir_pb2.Expression(
+          constant=ir_pb2.NumericConstant(value=str(value),
+                                          source_location=source_location),
+          type=ir_pb2.ExpressionType(
+              integer=ir_pb2.IntegerType(modular_value=str(value),
+                                         modulus="infinity",
+                                         minimum_value=str(value),
+                                         maximum_value=str(value))),
+          source_location=source_location),
+      source_location=source_location)
+  return ir_pb2.Attribute(name=ir_pb2.Word(text=name),
+                          value=attr_value,
+                          source_location=source_location)
+
+
+def _construct_string_attribute(name, value, source_location):
+  """Constructs a string Attribute with the given name and value."""
+  attr_value = ir_pb2.AttributeValue(
+      string_constant=ir_pb2.String(text=value,
+                                    source_location=source_location),
+      source_location=source_location)
+  return ir_pb2.Attribute(name=ir_pb2.Word(text=name,
+                                           source_location=source_location),
+                          value=attr_value,
+                          source_location=source_location)
+
+
+def _check_attributes_in_ir(ir):
+  """Performs basic checks on all attributes in the given ir.
+
+  This function calls _check_attributes on each attribute list in ir.
+
+  Arguments:
+    ir: An ir_pb2.EmbossIr to check.
+
+  Returns:
+    A list of lists of error.error, or an empty list if there were no errors.
+  """
+
+  def check_module(module, errors):
+    errors.extend(_check_attributes(
+        module.attribute, _MODULE_ATTRIBUTES, "module '{}'".format(
+            module.source_file_name), module.source_file_name))
+
+  def check_type_definition(type_definition, source_file_name, errors):
+    if type_definition.HasField("structure"):
+      if type_definition.addressable_unit == ir_pb2.TypeDefinition.BYTE:
+        errors.extend(_check_attributes(
+            type_definition.attribute, _STRUCT_ATTRIBUTES, "struct '{}'".format(
+                type_definition.name.name.text), source_file_name))
+      elif type_definition.addressable_unit == ir_pb2.TypeDefinition.BIT:
+        errors.extend(_check_attributes(
+            type_definition.attribute, _BITS_ATTRIBUTES, "bits '{}'".format(
+                type_definition.name.name.text), source_file_name))
+      else:
+        assert False, "Unexpected addressable_unit '{}'".format(
+            type_definition.addressable_unit)
+    elif type_definition.HasField("enumeration"):
+      errors.extend(_check_attributes(
+          type_definition.attribute, _ENUM_ATTRIBUTES, "enum '{}'".format(
+              type_definition.name.name.text), source_file_name))
+    elif type_definition.HasField("external"):
+      errors.extend(_check_attributes(
+          type_definition.attribute, _EXTERNAL_ATTRIBUTES,
+          "external '{}'".format(
+              type_definition.name.name.text), source_file_name))
+
+  def check_struct_field(field, source_file_name, errors):
+    if ir_util.field_is_virtual(field):
+      field_attributes = _STRUCT_VIRTUAL_FIELD_ATTRIBUTES
+      field_adjective = "virtual "
+    else:
+      field_attributes = _STRUCT_PHYSICAL_FIELD_ATTRIBUTES
+      field_adjective = ""
+    errors.extend(_check_attributes(
+        field.attribute, field_attributes,
+        "{}struct field '{}'".format(field_adjective, field.name.name.text),
+        source_file_name))
+
+  errors = []
+  # TODO(bolms): Add a check that only known $default'ed attributes are
+  # used.
+  traverse_ir.fast_traverse_ir_top_down(
+      ir, [ir_pb2.Module], check_module,
+      parameters={"errors": errors})
+  traverse_ir.fast_traverse_ir_top_down(
+      ir, [ir_pb2.TypeDefinition], check_type_definition,
+      parameters={"errors": errors})
+  traverse_ir.fast_traverse_ir_top_down(
+      ir, [ir_pb2.Field], check_struct_field,
+      parameters={"errors": errors})
+  return errors
+
+
+def _check_attributes(attribute_list, attribute_specs, context_name,
+                      module_source_file):
+  """Performs basic checks on the given list of attributes.
+
+  Checks the given attribute_list for duplicates, unknown attributes, attributes
+  with incorrect type, and attributes whose values are not constant.
+
+  Arguments:
+    attribute_list: An iterable of ir_pb2.Attribute.
+    attribute_specs: A dict of attribute names to _Attribute structures
+      specifying the allowed attributes.
+    context_name: A name for the context of these attributes, such as "struct
+      'Foo'" or "module 'm.emb'".  Used in error messages.
+    module_source_file: The value of module.source_file_name from the module
+      containing 'attribute_list'.  Used in error messages.
+
+  Returns:
+    A list of lists of error.Errors.  An empty list indicates no errors were
+    found.
+  """
+  errors = []
+  already_seen_attributes = {}
+  for attr in attribute_list:
+    if attr.back_end.text:
+      attribute_name = "({}) {}".format(attr.back_end.text, attr.name.text)
+    else:
+      attribute_name = attr.name.text
+    if (attr.name.text, attr.is_default) in already_seen_attributes:
+      original_attr = already_seen_attributes[attr.name.text, attr.is_default]
+      errors.append([
+          error.error(module_source_file,
+                      attr.source_location,
+                      "Duplicate attribute '{}'.".format(attribute_name)),
+          error.note(module_source_file,
+                     original_attr.source_location,
+                     "Original attribute")])
+      continue
+    already_seen_attributes[attr.name.text, attr.is_default] = attr
+
+    if ((attr.back_end.text, attr.name.text, attr.is_default) not in
+        attribute_specs):
+      if attr.is_default:
+        error_message = "Attribute '{}' may not be defaulted on {}.".format(
+            attribute_name, context_name)
+      else:
+        error_message = "Unknown attribute '{}' on {}.".format(attribute_name,
+                                                               context_name)
+      errors.append([error.error(module_source_file,
+                                 attr.name.source_location,
+                                 error_message)])
+    else:
+      attribute_check = _ATTRIBUTE_TYPES[attr.back_end.text, attr.name.text]
+      errors.extend(attribute_check(attr, module_source_file))
+  return errors
+
+
+def _fixed_size_of_struct_or_bits(struct, unit_size):
+  """Returns size of struct in bits or None, if struct is not fixed size."""
+  size = 0
+  for field in struct.field:
+    if not field.HasField("location"):
+      # Virtual fields do not contribute to the physical size of the struct.
+      continue
+    field_start = ir_util.constant_value(field.location.start)
+    field_size = ir_util.constant_value(field.location.size)
+    if field_start is None or field_size is None:
+      # Technically, start + size could be constant even if start and size are
+      # not; e.g. if start == x and size == 10 - x, but we don't handle that
+      # here.
+      return None
+      # TODO(bolms): knows_own_size
+      # TODO(bolms): compute min/max sizes for variable-sized arrays.
+    field_end = field_start + field_size
+    if field_end >= size:
+      size = field_end
+  return size * unit_size
+
+
+def _verify_size_attributes_on_structure(struct, type_definition,
+                                         source_file_name, errors):
+  """Verifies size attributes on a struct or bits."""
+  fixed_size = _fixed_size_of_struct_or_bits(struct,
+                                             type_definition.addressable_unit)
+  fixed_size_attr = ir_util.get_attribute(type_definition.attribute,
+                                          attributes.FIXED_SIZE)
+  if not fixed_size_attr:
+    return
+  if fixed_size is None:
+    errors.append([error.error(
+        source_file_name, fixed_size_attr.source_location,
+        "Struct is marked as fixed size, but contains variable-location "
+        "fields.")])
+  elif ir_util.constant_value(fixed_size_attr.expression) != fixed_size:
+    errors.append([error.error(
+        source_file_name, fixed_size_attr.source_location,
+        "Struct is {} bits, but is marked as {} bits.".format(
+            fixed_size, ir_util.constant_value(fixed_size_attr.expression)))])
+
+
+# TODO(bolms): remove [fixed_size]; it is superseded by $size_in_{bits,bytes}
+def _add_missing_size_attributes_on_structure(struct, type_definition):
+  """Adds missing size attributes on a struct."""
+  fixed_size = _fixed_size_of_struct_or_bits(struct,
+                                             type_definition.addressable_unit)
+  if fixed_size is None:
+    return
+  fixed_size_attr = ir_util.get_attribute(type_definition.attribute,
+                                          attributes.FIXED_SIZE)
+  if not fixed_size_attr:
+    # TODO(bolms): Use the offset and length of the last field as the
+    # source_location of the fixed_size attribute?
+    type_definition.attribute.extend([
+        _construct_integer_attribute(attributes.FIXED_SIZE, fixed_size,
+                                     type_definition.source_location)])
+
+
+def _field_needs_byte_order(field, type_definition, ir):
+  """Returns true if the given field needs a byte_order attribute."""
+  if ir_util.field_is_virtual(field):
+    # Virtual fields have no physical type, and thus do not need a byte order.
+    return False
+  field_type = ir_util.find_object(
+      ir_util.get_base_type(field.type).atomic_type.reference.canonical_name,
+      ir)
+  assert field_type is not None
+  assert field_type.addressable_unit != ir_pb2.TypeDefinition.NONE
+  return field_type.addressable_unit != type_definition.addressable_unit
+
+
+def _field_may_have_null_byte_order(field, type_definition, ir):
+  """Returns true if "Null" is a valid byte order for the given field."""
+  # If the field is one unit in length, then byte order does not matter.
+  if (ir_util.is_constant(field.location.size) and
+      ir_util.constant_value(field.location.size) == 1):
+    return True
+  unit = type_definition.addressable_unit
+  # Otherwise, if the field's type is either a one-unit-sized type or an array
+  # of a one-unit-sized type, then byte order does not matter.
+  if (ir_util.fixed_size_of_type_in_bits(ir_util.get_base_type(field.type), ir)
+      == unit):
+    return True
+  # In all other cases, byte order does matter.
+  return False
+
+
+def _add_missing_byte_order_attribute_on_field(field, type_definition, ir,
+                                               defaults):
+  """Adds missing byte_order attributes to fields that need them."""
+  if _field_needs_byte_order(field, type_definition, ir):
+    byte_order_attr = ir_util.get_attribute(field.attribute,
+                                            attributes.BYTE_ORDER)
+    if byte_order_attr is None:
+      if attributes.BYTE_ORDER in defaults:
+        field.attribute.extend([defaults[attributes.BYTE_ORDER]])
+      elif _field_may_have_null_byte_order(field, type_definition, ir):
+        field.attribute.extend(
+            [_construct_string_attribute(attributes.BYTE_ORDER, "Null",
+                                         field.source_location)])
+
+
+def _add_addressable_unit_to_external(external, type_definition):
+  """Sets the addressable_unit field for an external TypeDefinition."""
+  # Strictly speaking, addressable_unit isn't an "attribute," but it's close
+  # enough that it makes sense to handle it with attributes.
+  del external  # Unused.
+  size = ir_util.get_integer_attribute(type_definition.attribute,
+                                       attributes.ADDRESSABLE_UNIT_SIZE)
+  if size == 1:
+    type_definition.addressable_unit = ir_pb2.TypeDefinition.BIT
+  elif size == 8:
+    type_definition.addressable_unit = ir_pb2.TypeDefinition.BYTE
+  # If the addressable_unit_size is not in (1, 8), it will be caught by
+  # _verify_addressable_unit_attribute_on_external, below.
+
+
+def _verify_byte_order_attribute_on_field(field, type_definition,
+                                          source_file_name, ir, errors):
+  """Verifies the byte_order attribute on the given field."""
+  byte_order_attr = ir_util.get_attribute(field.attribute,
+                                          attributes.BYTE_ORDER)
+  field_needs_byte_order = _field_needs_byte_order(field, type_definition, ir)
+  if byte_order_attr and not field_needs_byte_order:
+    errors.append([error.error(
+        source_file_name, byte_order_attr.source_location,
+        "Attribute 'byte_order' not allowed on field which is not byte order "
+        "dependent.")])
+  if not byte_order_attr and field_needs_byte_order:
+    errors.append([error.error(
+        source_file_name, field.source_location,
+        "Attribute 'byte_order' required on field which is byte order "
+        "dependent.")])
+  if (byte_order_attr and byte_order_attr.string_constant.text == "Null" and
+      not _field_may_have_null_byte_order(field, type_definition, ir)):
+    errors.append([error.error(
+        source_file_name, byte_order_attr.source_location,
+        "Attribute 'byte_order' may only be 'Null' for one-byte fields.")])
+
+
+def _verify_requires_attribute_on_field(field, source_file_name, ir, errors):
+  """Verifies that [requires] is valid on the given field."""
+  requires_attr = ir_util.get_attribute(field.attribute, attributes.REQUIRES)
+  if not requires_attr:
+    return
+  if ir_util.field_is_virtual(field):
+    field_expression_type = field.read_transform.type
+  else:
+    if not field.type.HasField("atomic_type"):
+      errors.append([
+          error.error(source_file_name, requires_attr.source_location,
+                      "Attribute 'requires' is only allowed on integer, "
+                      "enumeration, or boolean fields, not arrays."),
+          error.note(source_file_name, field.type.source_location,
+                     "Field type."),
+      ])
+      return
+    field_type = ir_util.find_object(field.type.atomic_type.reference, ir)
+    assert field_type, "Field type should be non-None after name resolution."
+    field_expression_type = (
+        type_check.unbounded_expression_type_for_physical_type(field_type))
+  if field_expression_type.WhichOneof("type") not in (
+      "integer", "enumeration", "boolean"):
+    errors.append([error.error(
+        source_file_name, requires_attr.source_location,
+        "Attribute 'requires' is only allowed on integer, enumeration, or "
+        "boolean fields.")])
+
+
+def _verify_addressable_unit_attribute_on_external(external, type_definition,
+                                                   source_file_name, errors):
+  """Verifies the addressable_unit_size attribute on an external."""
+  del external  # Unused.
+  addressable_unit_size_attr = ir_util.get_integer_attribute(
+      type_definition.attribute, attributes.ADDRESSABLE_UNIT_SIZE)
+  if addressable_unit_size_attr is None:
+    errors.append([error.error(
+        source_file_name, type_definition.source_location,
+        "Expected '{}' attribute for external type.".format(
+            attributes.ADDRESSABLE_UNIT_SIZE))])
+  elif addressable_unit_size_attr not in (1, 8):
+    errors.append([
+        error.error(source_file_name, type_definition.source_location,
+                    "Only values '1' (bit) and '8' (byte) are allowed for the "
+                    "'{}' attribute".format(attributes.ADDRESSABLE_UNIT_SIZE))
+    ])
+
+
+def _gather_default_attributes(obj, defaults):
+  defaults = defaults.copy()
+  for attr in obj.attribute:
+    if attr.is_default:
+      defaulted_attr = ir_pb2.Attribute()
+      defaulted_attr.CopyFrom(attr)
+      defaulted_attr.is_default = False
+      defaults[attr.name.text] = defaulted_attr
+  return {"defaults": defaults}
+
+
+def _add_missing_attributes_on_ir(ir):
+  """Adds missing attributes in a complete IR."""
+  traverse_ir.fast_traverse_ir_top_down(
+      ir, [ir_pb2.External], _add_addressable_unit_to_external)
+  traverse_ir.fast_traverse_ir_top_down(
+      ir, [ir_pb2.Structure], _add_missing_size_attributes_on_structure,
+      incidental_actions={
+          ir_pb2.Module: _gather_default_attributes,
+          ir_pb2.TypeDefinition: _gather_default_attributes,
+          ir_pb2.Field: _gather_default_attributes,
+      },
+      parameters={"defaults": {}})
+  traverse_ir.fast_traverse_ir_top_down(
+      ir, [ir_pb2.Field], _add_missing_byte_order_attribute_on_field,
+      incidental_actions={
+          ir_pb2.Module: _gather_default_attributes,
+          ir_pb2.TypeDefinition: _gather_default_attributes,
+          ir_pb2.Field: _gather_default_attributes,
+      },
+      parameters={"defaults": {}})
+  return []
+
+
+def _verify_field_attributes(field, type_definition, source_file_name, ir,
+                             errors):
+  _verify_byte_order_attribute_on_field(field, type_definition,
+                                        source_file_name, ir, errors)
+  _verify_requires_attribute_on_field(field, source_file_name, ir, errors)
+
+
+def _verify_attributes_on_ir(ir):
+  """Verifies attributes in a complete IR."""
+  errors = []
+  traverse_ir.fast_traverse_ir_top_down(
+      ir, [ir_pb2.Structure], _verify_size_attributes_on_structure,
+      parameters={"errors": errors})
+  traverse_ir.fast_traverse_ir_top_down(
+      ir, [ir_pb2.External], _verify_addressable_unit_attribute_on_external,
+      parameters={"errors": errors})
+  traverse_ir.fast_traverse_ir_top_down(
+      ir, [ir_pb2.Field], _verify_field_attributes,
+      parameters={"errors": errors})
+  return errors
+
+
+def normalize_and_verify(ir):
+  """Performs various normalizations and verifications on ir.
+
+  Checks for duplicate attributes.
+
+  Adds fixed_size_in_bits and addressable_unit_size attributes to types when
+  they are missing, and checks their correctness when they are not missing.
+
+  Arguments:
+    ir: The IR object to normalize.
+
+  Returns:
+    A list of validation errors, or an empty list if no errors were encountered.
+  """
+  errors = _check_attributes_in_ir(ir)
+  if errors:
+    return errors
+  _add_missing_attributes_on_ir(ir)
+  return _verify_attributes_on_ir(ir)
