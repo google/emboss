@@ -14,8 +14,8 @@
 
 // Implementations for the operations and builtin functions in the Emboss
 // expression language.
-#ifndef EMBOSS_PUBLIC_EMBOSS_ARITHMETIC_H_
-#define EMBOSS_PUBLIC_EMBOSS_ARITHMETIC_H_
+#ifndef EMBOSS_RUNTIME_CPP_EMBOSS_ARITHMETIC_H_
+#define EMBOSS_RUNTIME_CPP_EMBOSS_ARITHMETIC_H_
 
 #include <cstdint>
 #include <type_traits>
@@ -322,4 +322,4 @@ inline constexpr Maybe<ResultT> Maximum(Maybe<ArgsT>... args) {
 }  // namespace support
 }  // namespace emboss
 
-#endif  // EMBOSS_PUBLIC_EMBOSS_ARITHMETIC_H_
+#endif  // EMBOSS_RUNTIME_CPP_EMBOSS_ARITHMETIC_H_

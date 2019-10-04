@@ -15,8 +15,8 @@
 // Helper classes for constructing the `Parameters` template argument to view
 // classes.
 
-#ifndef EMBOSS_PUBLIC_EMBOSS_VIEW_PARAMETERS_H_
-#define EMBOSS_PUBLIC_EMBOSS_VIEW_PARAMETERS_H_
+#ifndef EMBOSS_RUNTIME_CPP_EMBOSS_VIEW_PARAMETERS_H_
+#define EMBOSS_RUNTIME_CPP_EMBOSS_VIEW_PARAMETERS_H_
 
 namespace emboss {
 namespace support {
@@ -42,4 +42,4 @@ struct AllValuesAreOk {
 }  // namespace support
 }  // namespace emboss
 
-#endif  // EMBOSS_PUBLIC_EMBOSS_VIEW_PARAMETERS_H_
+#endif  // EMBOSS_RUNTIME_CPP_EMBOSS_VIEW_PARAMETERS_H_

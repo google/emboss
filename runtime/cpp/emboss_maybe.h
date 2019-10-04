@@ -13,8 +13,8 @@
 // limitations under the License.
 
 // Definition of the Maybe<T> template class.
-#ifndef EMBOSS_PUBLIC_EMBOSS_MAYBE_H_
-#define EMBOSS_PUBLIC_EMBOSS_MAYBE_H_
+#ifndef EMBOSS_RUNTIME_CPP_EMBOSS_MAYBE_H_
+#define EMBOSS_RUNTIME_CPP_EMBOSS_MAYBE_H_
 
 #include <utility>
 
@@ -73,4 +73,4 @@ class Maybe final {
 }  // namespace support
 }  // namespace emboss
 
-#endif  // EMBOSS_PUBLIC_EMBOSS_MAYBE_H_
+#endif  // EMBOSS_RUNTIME_CPP_EMBOSS_MAYBE_H_

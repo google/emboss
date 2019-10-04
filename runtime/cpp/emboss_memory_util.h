@@ -13,8 +13,8 @@
 // limitations under the License.
 
 // Utilities for efficiently reading and writing to/from memory.
-#ifndef EMBOSS_PUBLIC_EMBOSS_MEMORY_UTIL_H_
-#define EMBOSS_PUBLIC_EMBOSS_MEMORY_UTIL_H_
+#ifndef EMBOSS_RUNTIME_CPP_EMBOSS_MEMORY_UTIL_H_
+#define EMBOSS_RUNTIME_CPP_EMBOSS_MEMORY_UTIL_H_
 
 #include <algorithm>
 #include <cstddef>
@@ -972,4 +972,4 @@ class BitBlock final {
 }  // namespace support
 }  // namespace emboss
 
-#endif  // EMBOSS_PUBLIC_EMBOSS_MEMORY_UTIL_H_
+#endif  // EMBOSS_RUNTIME_CPP_EMBOSS_MEMORY_UTIL_H_

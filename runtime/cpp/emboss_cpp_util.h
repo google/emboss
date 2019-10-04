@@ -14,8 +14,8 @@
 
 // This header exports utilities that are needed for all Emboss-generated C++
 // code.
-#ifndef EMBOSS_PUBLIC_EMBOSS_CPP_UTIL_H_
-#define EMBOSS_PUBLIC_EMBOSS_CPP_UTIL_H_
+#ifndef EMBOSS_RUNTIME_CPP_EMBOSS_CPP_UTIL_H_
+#define EMBOSS_RUNTIME_CPP_EMBOSS_CPP_UTIL_H_
 
 #include "runtime/cpp/emboss_arithmetic.h"
 #include "runtime/cpp/emboss_array_view.h"
@@ -28,4 +28,4 @@
 #include "runtime/cpp/emboss_text_util.h"
 #include "runtime/cpp/emboss_view_parameters.h"
 
-#endif  // EMBOSS_PUBLIC_EMBOSS_CPP_UTIL_H_
+#endif  // EMBOSS_RUNTIME_CPP_EMBOSS_CPP_UTIL_H_

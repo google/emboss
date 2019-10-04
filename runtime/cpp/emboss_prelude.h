@@ -14,8 +14,8 @@
 
 // This header contains implementations of the types in the Emboss Prelude
 // (UInt, Int, Flag, etc.)
-#ifndef EMBOSS_PUBLIC_EMBOSS_PRELUDE_H_
-#define EMBOSS_PUBLIC_EMBOSS_PRELUDE_H_
+#ifndef EMBOSS_RUNTIME_CPP_EMBOSS_PRELUDE_H_
+#define EMBOSS_RUNTIME_CPP_EMBOSS_PRELUDE_H_
 
 #include <stddef.h>
 #include <stdint.h>
@@ -800,4 +800,4 @@ class FloatView final {
 }  // namespace prelude
 }  // namespace emboss
 
-#endif  // EMBOSS_PUBLIC_EMBOSS_PRELUDE_H_
+#endif  // EMBOSS_RUNTIME_CPP_EMBOSS_PRELUDE_H_

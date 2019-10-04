@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef EMBOSS_PUBLIC_EMBOSS_CONSTANT_VIEW_H_
-#define EMBOSS_PUBLIC_EMBOSS_CONSTANT_VIEW_H_
+#ifndef EMBOSS_RUNTIME_CPP_EMBOSS_CONSTANT_VIEW_H_
+#define EMBOSS_RUNTIME_CPP_EMBOSS_CONSTANT_VIEW_H_
 
 #include "runtime/cpp/emboss_maybe.h"
 
@@ -48,4 +48,4 @@ class MaybeConstantView {
 }  // namespace support
 }  // namespace emboss
 
-#endif  // EMBOSS_PUBLIC_EMBOSS_CONSTANT_VIEW_H_
+#endif  // EMBOSS_RUNTIME_CPP_EMBOSS_CONSTANT_VIEW_H_

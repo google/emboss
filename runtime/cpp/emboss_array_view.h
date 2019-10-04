@@ -13,8 +13,8 @@
 // limitations under the License.
 
 // View classes for arrays and bit arrays.
-#ifndef EMBOSS_PUBLIC_EMBOSS_ARRAY_VIEW_H_
-#define EMBOSS_PUBLIC_EMBOSS_ARRAY_VIEW_H_
+#ifndef EMBOSS_RUNTIME_CPP_EMBOSS_ARRAY_VIEW_H_
+#define EMBOSS_RUNTIME_CPP_EMBOSS_ARRAY_VIEW_H_
 
 #include <cstddef>
 #include <iterator>
@@ -379,4 +379,4 @@ void WriteShorthandArrayCommentToTextStream(
 }  // namespace support
 }  // namespace emboss
 
-#endif  // EMBOSS_PUBLIC_EMBOSS_ARRAY_VIEW_H_
+#endif  // EMBOSS_RUNTIME_CPP_EMBOSS_ARRAY_VIEW_H_

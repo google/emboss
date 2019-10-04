@@ -13,8 +13,8 @@
 // limitations under the License.
 
 // View class template for enums.
-#ifndef EMBOSS_PUBLIC_EMBOSS_ENUM_VIEW_H_
-#define EMBOSS_PUBLIC_EMBOSS_ENUM_VIEW_H_
+#ifndef EMBOSS_RUNTIME_CPP_EMBOSS_ENUM_VIEW_H_
+#define EMBOSS_RUNTIME_CPP_EMBOSS_ENUM_VIEW_H_
 
 #include <cctype>
 #include <cstdint>
@@ -156,4 +156,4 @@ class EnumView final {
 }  // namespace support
 }  // namespace emboss
 
-#endif  // EMBOSS_PUBLIC_EMBOSS_ENUM_VIEW_H_
+#endif  // EMBOSS_RUNTIME_CPP_EMBOSS_ENUM_VIEW_H_

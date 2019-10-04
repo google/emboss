@@ -13,8 +13,8 @@
 // limitations under the License.
 
 // This file contains various C++ type aliases for use in Emboss.
-#ifndef EMBOSS_PUBLIC_EMBOSS_CPP_TYPES_H_
-#define EMBOSS_PUBLIC_EMBOSS_CPP_TYPES_H_
+#ifndef EMBOSS_RUNTIME_CPP_EMBOSS_CPP_TYPES_H_
+#define EMBOSS_RUNTIME_CPP_EMBOSS_CPP_TYPES_H_
 
 #include <climits>
 #include <cstdint>
@@ -122,4 +122,4 @@ struct AddSourceCV {
 }  // namespace support
 }  // namespace emboss
 
-#endif  // EMBOSS_PUBLIC_EMBOSS_CPP_TYPES_H_
+#endif  // EMBOSS_RUNTIME_CPP_EMBOSS_CPP_TYPES_H_

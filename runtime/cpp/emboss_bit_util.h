@@ -14,8 +14,8 @@
 
 // This file contains various utility routines for manipulating values at a low
 // level, such as byte swaps and safe casts.
-#ifndef EMBOSS_PUBLIC_EMBOSS_BIT_UTIL_H_
-#define EMBOSS_PUBLIC_EMBOSS_BIT_UTIL_H_
+#ifndef EMBOSS_RUNTIME_CPP_EMBOSS_BIT_UTIL_H_
+#define EMBOSS_RUNTIME_CPP_EMBOSS_BIT_UTIL_H_
 
 #include <cstdint>
 #include <type_traits>
@@ -76,4 +76,4 @@ inline constexpr bool IsPowerOfTwo(T value) {
 }  // namespace support
 }  // namespace emboss
 
-#endif  // EMBOSS_PUBLIC_EMBOSS_BIT_UTIL_H_
+#endif  // EMBOSS_RUNTIME_CPP_EMBOSS_BIT_UTIL_H_

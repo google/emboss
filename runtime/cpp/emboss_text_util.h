@@ -13,8 +13,8 @@
 // limitations under the License.
 
 // This header contains functionality related to Emboss text output.
-#ifndef EMBOSS_PUBLIC_EMBOSS_TEXT_UTIL_H_
-#define EMBOSS_PUBLIC_EMBOSS_TEXT_UTIL_H_
+#ifndef EMBOSS_RUNTIME_CPP_EMBOSS_TEXT_UTIL_H_
+#define EMBOSS_RUNTIME_CPP_EMBOSS_TEXT_UTIL_H_
 
 #include <array>
 #include <climits>
@@ -800,4 +800,4 @@ inline ::std::string WriteToString(const EmbossViewType &view) {
 
 }  // namespace emboss
 
-#endif  // EMBOSS_PUBLIC_EMBOSS_TEXT_UTIL_H_
+#endif  // EMBOSS_RUNTIME_CPP_EMBOSS_TEXT_UTIL_H_
