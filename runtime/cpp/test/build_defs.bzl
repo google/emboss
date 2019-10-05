@@ -15,6 +15,8 @@
 # -*- mode: python; -*-
 # vim:set ft=blazebuild:
 
+"""Macro to run tests both with and without optimizations."""
+
 def emboss_cc_util_test(name, copts = [], **kwargs):
     """Constructs two cc_test targets, with and without optimizations."""
     native.cc_test(
