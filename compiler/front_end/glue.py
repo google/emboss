@@ -33,8 +33,8 @@ from compiler.front_end import synthetics
 from compiler.front_end import tokenizer
 from compiler.front_end import type_check
 from compiler.front_end import write_inference
-from compiler.util import ir_pb2
 from compiler.util import error
+from compiler.util import ir_pb2
 from compiler.util import parser_types
 
 _IrDebugInfo = collections.namedtuple("IrDebugInfo", ["ir", "debug_info",

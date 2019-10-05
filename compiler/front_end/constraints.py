@@ -17,8 +17,8 @@
 import pkgutil
 
 from compiler.front_end import attributes
-from compiler.util import ir_pb2
 from compiler.util import error
+from compiler.util import ir_pb2
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 

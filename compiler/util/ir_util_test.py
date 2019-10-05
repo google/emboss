@@ -15,8 +15,8 @@
 """Tests for util.ir_util."""
 
 import unittest
-from compiler.util import ir_pb2
 from compiler.util import expression_parser
+from compiler.util import ir_pb2
 from compiler.util import ir_util
 
 

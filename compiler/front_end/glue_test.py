@@ -19,8 +19,8 @@ import unittest
 
 from compiler.front_end import glue
 from compiler.front_end import test_util
-from compiler.util import ir_pb2
 from compiler.util import error
+from compiler.util import ir_pb2
 from compiler.util import parser_types
 
 _location = parser_types.make_location
