@@ -95,9 +95,11 @@ TEST(BcdSizesWriter, CanWriteBcd) {
   EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(kBcd, kBcd + sizeof kBcd),
             ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(writer.one_byte().Write(100), "");
   EXPECT_DEATH(writer.three_byte().Write(1445566), "");
   EXPECT_DEATH(writer.ten_bit().Write(400), "");
+#endif  // EMBOSS_CHECK_ABORTS
 }
 
 TEST(BcdSizesView, OkIsTrueForGoodBcd) {
@@ -146,6 +148,7 @@ TEST(BcdSizesView, UncheckedReadingInvalidBcdDoesNotCrash) {
   view.twelve_bit().UncheckedRead();
 }
 
+#if EMBOSS_CHECK_ABORTS
 TEST(BcdSizesView, ReadingInvalidBcdCrashes) {
   auto view = BcdSizesView(kBadBcd, sizeof kBadBcd);
   EXPECT_DEATH(view.one_byte().Read(), "");
@@ -161,6 +164,7 @@ TEST(BcdSizesView, ReadingInvalidBcdCrashes) {
   EXPECT_DEATH(view.ten_bit().Read(), "");
   EXPECT_DEATH(view.twelve_bit().Read(), "");
 }
+#endif  // EMBOSS_CHECK_ABORTS
 
 TEST(BcdSizesView, OkIsFalseForBadBcd) {
   auto view = BcdSizesView(kBadBcd, sizeof kBadBcd);
@@ -270,30 +274,40 @@ TEST(BcdSizesView, UncheckedEquals) {
   auto y = BcdSizesView(&buf_y);
 
   EXPECT_TRUE(x.UncheckedEquals(x));
-  EXPECT_DEATH(x.Equals(x), "");
   EXPECT_TRUE(y.UncheckedEquals(y));
+#if EMBOSS_CHECK_ABORTS
+  EXPECT_DEATH(x.Equals(x), "");
   EXPECT_DEATH(y.Equals(y), "");
+#endif  // EMBOSS_CHECK_ABORTS
 
   EXPECT_TRUE(x.UncheckedEquals(y));
-  EXPECT_DEATH(x.Equals(y), "");
   EXPECT_TRUE(y.UncheckedEquals(x));
+#if EMBOSS_CHECK_ABORTS
+  EXPECT_DEATH(x.Equals(y), "");
   EXPECT_DEATH(y.Equals(x), "");
+#endif  // EMBOSS_CHECK_ABORTS
 
   EXPECT_TRUE(x_const.UncheckedEquals(y));
-  EXPECT_DEATH(x_const.Equals(y), "");
   EXPECT_TRUE(y.UncheckedEquals(x_const));
+#if EMBOSS_CHECK_ABORTS
+  EXPECT_DEATH(x_const.Equals(y), "");
   EXPECT_DEATH(y.Equals(x_const), "");
+#endif  // EMBOSS_CHECK_ABORTS
 
   ++buf_y[1];
   EXPECT_FALSE(x.UncheckedEquals(y));
-  EXPECT_DEATH(x.Equals(y), "");
   EXPECT_FALSE(y.UncheckedEquals(x));
+#if EMBOSS_CHECK_ABORTS
+  EXPECT_DEATH(x.Equals(y), "");
   EXPECT_DEATH(y.Equals(x), "");
+#endif  // EMBOSS_CHECK_ABORTS
 
   EXPECT_FALSE(x_const.UncheckedEquals(y));
-  EXPECT_DEATH(x_const.Equals(y), "");
   EXPECT_FALSE(y.UncheckedEquals(x_const));
+#if EMBOSS_CHECK_ABORTS
+  EXPECT_DEATH(x_const.Equals(y), "");
   EXPECT_DEATH(y.Equals(x_const), "");
+#endif  // EMBOSS_CHECK_ABORTS
 }
 
 }  // namespace

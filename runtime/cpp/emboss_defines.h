@@ -68,7 +68,12 @@
 // translation units MUST be built with the same value of NDEBUG!)
 #if !defined(EMBOSS_CHECK)
 #define EMBOSS_CHECK(x) assert((x))
+#define EMBOSS_CHECK_ABORTS (!(NDEBUG))
 #endif  // !defined(EMBOSS_CHECK)
+
+#if !defined(EMBOSS_CHECK_ABORTS)
+#error "Custom EMBOSS_CHECK without EMBOSS_CHECK_ABORTS."
+#endif  // !defined(EMBOSS_CHECK_ABORTS)
 
 #if !defined(EMBOSS_CHECK_LE)
 #define EMBOSS_CHECK_LE(x, y) EMBOSS_CHECK((x) <= (y))
@@ -101,7 +106,12 @@
 // disable EMBOSS_DCHECK in situations where you do not disable EMBOSS_CHECK.
 #if !defined(EMBOSS_DCHECK)
 #define EMBOSS_DCHECK(x) assert((x))
+#define EMBOSS_DCHECK_ABORTS (!(NDEBUG))
 #endif  // !defined(EMBOSS_DCHECK)
+
+#if !defined(EMBOSS_DCHECK_ABORTS)
+#error "Custom EMBOSS_DCHECK without EMBOSS_DCHECK_ABORTS."
+#endif  // !defined(EMBOSS_DCHECK_ABORTS)
 
 #if !defined(EMBOSS_DCHECK_LE)
 #define EMBOSS_DCHECK_LE(x, y) EMBOSS_DCHECK((x) <= (y))

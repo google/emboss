@@ -90,12 +90,14 @@ TEST(Computed, Values) {
   EXPECT_EQ(-250, view.product().Read());
 }
 
+#if EMBOSS_CHECK_ABORTS
 TEST(Computed, ReadFailsWhenUnderlyingFieldIsNotOk) {
   ::std::array<char, 0> values = {};
   const auto view = MakeStructureWithComputedValuesView(&values);
   EXPECT_DEATH(view.value().Read(), "");
   EXPECT_DEATH(view.doubled().Read(), "");
 }
+#endif  // EMBOSS_CHECK_ABORTS
 
 // Check the return types of nonstatic Read methods.
 static_assert(
@@ -189,7 +191,9 @@ TEST(ConditionalVirtual, ConditionChecks) {
   EXPECT_EQ(6, view.x_plus_one().UncheckedRead());
   view.x().Write(0x80000000U);
   EXPECT_FALSE(view.has_two_x().Value());
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(view.two_x().Read(), "");
+#endif  // EMBOSS_CHECK_ABORTS
   EXPECT_TRUE(view.has_x_plus_one().Value());
   EXPECT_EQ(0x80000001U, view.x_plus_one().Read());
 }
@@ -199,7 +203,9 @@ TEST(ConditionalVirtual, UncheckedRead) {
   const auto view = MakeStructureWithConditionalValueView(&values[0], 1);
   EXPECT_FALSE(view.Ok());
   EXPECT_FALSE(view.x().Ok());
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(view.two_x().Read(), "");
+#endif  // EMBOSS_CHECK_ABORTS
   EXPECT_EQ(0, view.two_x().UncheckedRead());
 }
 

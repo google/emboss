@@ -205,7 +205,9 @@ TEST(AutoSizeView, CanReadAutoArrays) {
   EXPECT_EQ(0x30U, view.four_byte_array()[2].Read());
   EXPECT_EQ(0x40U, view.four_byte_array()[3].Read());
   EXPECT_EQ(4U, view.four_byte_array().SizeInBytes());
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(view.four_byte_array()[4].Read(), "");
+#endif  // EMBOSS_CHECK_ABORTS
   EXPECT_EQ(0x11U, view.four_struct_array()[0].a().Read());
   EXPECT_EQ(0x12U, view.four_struct_array()[0].b().Read());
   EXPECT_EQ(0x21U, view.four_struct_array()[1].a().Read());
@@ -215,7 +217,9 @@ TEST(AutoSizeView, CanReadAutoArrays) {
   EXPECT_EQ(0x41U, view.four_struct_array()[3].a().Read());
   EXPECT_EQ(0x42U, view.four_struct_array()[3].b().Read());
   EXPECT_EQ(8U, view.four_struct_array().SizeInBytes());
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(view.four_struct_array()[4].a().Read(), "");
+#endif  // EMBOSS_CHECK_ABORTS
   EXPECT_EQ(0x50U, view.dynamic_byte_array()[0].Read());
   EXPECT_EQ(0x60U, view.dynamic_byte_array()[1].Read());
   EXPECT_EQ(0x70U, view.dynamic_byte_array()[2].Read());
@@ -236,14 +240,18 @@ TEST(AutoSizeWriter, CanWriteAutoArrays) {
   auto writer = MakeAutoSizeView(&buffer);
   writer.array_size().Write(0);
   EXPECT_EQ(13U, writer.SizeInBytes());
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(writer.dynamic_byte_array()[0].Read(), "");
+#endif  // EMBOSS_CHECK_ABORTS
   writer.array_size().Write(3);
   EXPECT_EQ(22U, writer.SizeInBytes());
   writer.four_byte_array()[0].Write(0x10);
   writer.four_byte_array()[1].Write(0x20);
   writer.four_byte_array()[2].Write(0x30);
   writer.four_byte_array()[3].Write(0x40);
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(writer.four_byte_array()[4].Write(0), "");
+#endif  // EMBOSS_CHECK_ABORTS
   writer.four_struct_array()[0].a().Write(0x11);
   writer.four_struct_array()[0].b().Write(0x12);
   writer.four_struct_array()[1].a().Write(0x21);

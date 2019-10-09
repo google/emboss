@@ -61,6 +61,7 @@ TEST(Conditional, WithConditionFalseStructIsOkButConditionalFieldIsNot) {
   EXPECT_FALSE(writer.xc().Ok());
 }
 
+#if EMBOSS_CHECK_ABORTS
 TEST(Conditional, BasicConditionFalseReadCrashes) {
   ::std::uint8_t buffer[2] = {1, 2};
   auto writer = BasicConditionalWriter(buffer, sizeof buffer);
@@ -72,6 +73,7 @@ TEST(Conditional, BasicConditionFalseWriteCrashes) {
   auto writer = BasicConditionalWriter(buffer, sizeof buffer);
   EXPECT_DEATH(writer.xc().Write(3), "");
 }
+#endif  // EMBOSS_CHECK_ABORTS
 
 TEST(Conditional, BasicConditionTrueSizeIncludesConditionalField) {
   ::std::uint8_t buffer[2] = {0, 2};
@@ -150,7 +152,9 @@ TEST(Conditional,
 TEST(Conditional, NegativeConditionFalseReadCrashes) {
   ::std::uint8_t buffer1[2] = {0, 2};
   auto writer1 = NegativeConditionalWriter(buffer1, sizeof buffer1);
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(writer1.xc().Read(), "");
+#endif  // EMBOSS_CHECK_ABORTS
 
   ::std::uint8_t buffer2[2] = {0, 0};
   auto writer2 = BasicConditionalWriter(buffer2, sizeof buffer2);
@@ -163,7 +167,9 @@ TEST(Conditional, NegativeConditionFalseReadCrashes) {
 TEST(Conditional, NegativeConditionFalseWriteCrashes) {
   ::std::uint8_t buffer1[2] = {0, 2};
   auto writer1 = NegativeConditionalWriter(buffer1, sizeof buffer1);
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(writer1.xc().Write(3), "");
+#endif  // EMBOSS_CHECK_ABORTS
 
   ::std::uint8_t buffer2[2] = {0, 2};
   auto writer2 = NegativeConditionalWriter(buffer2, sizeof buffer2);

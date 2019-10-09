@@ -46,7 +46,9 @@ TEST(Maybe, Unknown) {
   EXPECT_EQ(3, Maybe<int>().ValueOr(3));
   EXPECT_EQ(0, Maybe<int>().ValueOrDefault());
   EXPECT_FALSE(Maybe<bool>().ValueOrDefault());
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(Maybe<int>().Value(), "Known()");
+#endif  // EMBOSS_CHECK_ABORTS
   EXPECT_FALSE(Maybe<bool>().ValueOrDefault());
   EXPECT_EQ(static_cast<Foo>(0), Maybe<Foo>().ValueOrDefault());
 

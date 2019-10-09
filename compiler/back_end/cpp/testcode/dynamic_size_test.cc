@@ -50,7 +50,9 @@ TEST(MessageView, FieldsAreCorrect) {
   EXPECT_EQ(5U, view.message()[4].Read());
   EXPECT_EQ(6U, view.message()[5].Read());
   EXPECT_EQ(6U, view.message().SizeInBytes());
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(view.message()[6].Read(), "");
+#endif  // EMBOSS_CHECK_ABORTS
   EXPECT_EQ(0x0a090807U, view.crc32().Read());
 }
 
@@ -58,7 +60,9 @@ TEST(MessageView, FieldsAreCorrect) {
 TEST(MessageView, PaddingFieldWorks) {
   auto view = MessageView(&kMessage);
   EXPECT_EQ(0U, view.padding().SizeInBytes());
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(view.padding()[0].Read(), "");
+#endif  // EMBOSS_CHECK_ABORTS
 }
 
 static constexpr ::std::array</**/ ::std::uint8_t, 16> kPaddedMessage = {{
@@ -80,13 +84,17 @@ TEST(MessageView, PaddedMessageFieldsAreCorrect) {
   EXPECT_EQ(3U, view.padding()[2].Read());
   EXPECT_EQ(4U, view.padding()[3].Read());
   EXPECT_EQ(4U, view.padding().SizeInBytes());
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(view.padding()[4].Read(), "");
+#endif  // EMBOSS_CHECK_ABORTS
   EXPECT_EQ(5U, view.message()[0].Read());
   EXPECT_EQ(6U, view.message()[1].Read());
   EXPECT_EQ(7U, view.message()[2].Read());
   EXPECT_EQ(8U, view.message()[3].Read());
   EXPECT_EQ(4U, view.message().SizeInBytes());
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(view.message()[4].Read(), "");
+#endif  // EMBOSS_CHECK_ABORTS
   EXPECT_EQ(0x0c0b0a09U, view.crc32().Read());
 }
 
@@ -103,8 +111,10 @@ TEST(MessageView, Writer) {
     writer.message()[i].Write(i + 1);
   }
   EXPECT_EQ(12U, writer.SizeInBytes());
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(writer.message()[writer.message_length().Read()].Read(), "");
   EXPECT_DEATH(writer.padding()[0].Read(), "");
+#endif  // EMBOSS_CHECK_ABORTS
   writer.crc32().Write(0x0a090807);
   EXPECT_EQ(
       ::std::vector</**/ ::std::uint8_t>(kMessage.begin(), kMessage.end()),

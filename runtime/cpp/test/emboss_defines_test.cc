@@ -22,22 +22,24 @@ namespace emboss {
 namespace support {
 namespace test {
 
+#if EMBOSS_CHECK_ABORTS
 TEST(CheckPointerAlignment, Aligned) {
   ::std::uint32_t t;
-  EMBOSS_DCHECK_POINTER_ALIGNMENT(&t, sizeof t, 0);
-  EMBOSS_DCHECK_POINTER_ALIGNMENT(&t, 1, 0);
-  EMBOSS_DCHECK_POINTER_ALIGNMENT(reinterpret_cast<char *>(&t) + 1, sizeof t,
-                                  1);
-  EMBOSS_DCHECK_POINTER_ALIGNMENT(reinterpret_cast<char *>(&t) + 1, 1, 0);
+  EMBOSS_CHECK_POINTER_ALIGNMENT(&t, sizeof t, 0);
+  EMBOSS_CHECK_POINTER_ALIGNMENT(&t, 1, 0);
+  EMBOSS_CHECK_POINTER_ALIGNMENT(reinterpret_cast<char *>(&t) + 1, sizeof t, 1);
+  EMBOSS_CHECK_POINTER_ALIGNMENT(reinterpret_cast<char *>(&t) + 1, 1, 0);
 }
 
 TEST(CheckPointerAlignment, Misaligned) {
   ::std::uint32_t t;
-  EXPECT_DEATH(EMBOSS_DCHECK_POINTER_ALIGNMENT(&t, sizeof t, 1), "");
-  EXPECT_DEATH(EMBOSS_DCHECK_POINTER_ALIGNMENT(reinterpret_cast<char *>(&t) + 1,
-                                               sizeof t, 0),
+  EXPECT_DEATH(EMBOSS_CHECK_POINTER_ALIGNMENT(&t, sizeof t, 1), "");
+  EXPECT_DEATH(EMBOSS_CHECK_POINTER_ALIGNMENT(reinterpret_cast<char *>(&t) + 1,
+                                              sizeof t, 0),
                "");
+  (void)t;
 }
+#endif  // EMBOSS_CHECK_ABORTS
 
 #if EMBOSS_SYSTEM_IS_TWOS_COMPLEMENT
 TEST(SystemIsTwosComplement, CastToSigned) {
