@@ -65,7 +65,9 @@ TEST(Bits, StructOfBits) {
   struct_of_bits.four_byte().low_nibble().Write(115);
   EXPECT_EQ(0xff, data[3]);
   // Out-of-[range] write.
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(struct_of_bits.four_byte().low_nibble().Write(100), "");
+#endif  // EMBOSS_CHECK_ABORTS
 }
 
 TEST(Bits, StructOfBitsFromText) {

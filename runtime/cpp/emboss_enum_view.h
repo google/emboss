@@ -54,7 +54,11 @@ class EnumView final {
   ValueType UncheckedRead() const {
     return static_cast<ValueType>(buffer_.UncheckedReadUInt());
   }
-  void Write(ValueType value) const { EMBOSS_CHECK(TryToWrite(value)); }
+  void Write(ValueType value) const {
+    const bool result = TryToWrite(value);
+    (void)result;
+    EMBOSS_CHECK(result);
+  }
   bool TryToWrite(ValueType value) const {
     if (!CouldWriteValue(value)) return false;
     if (!IsComplete()) return false;

@@ -182,9 +182,11 @@ TEST(EnumView, ReadAndWriteWithInsufficientBuffer) {
   ::std::vector</**/ ::std::uint8_t> bytes = {
       {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08}};
   auto enum64_view = FooViewN<64>{ReadWriteContiguousBuffer{bytes.data(), 4}};
-  EXPECT_DEATH(enum64_view.Read(), "");
   EXPECT_EQ(Foo::kReallyBig, enum64_view.UncheckedRead());
+#if EMBOSS_CHECK_ABORTS
+  EXPECT_DEATH(enum64_view.Read(), "");
   EXPECT_DEATH(enum64_view.Write(Foo::kReallyBigBackwards), "");
+#endif  // EMBOSS_CHECK_ABORTS
   EXPECT_FALSE(enum64_view.TryToWrite(Foo::kReallyBigBackwards));
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{0x10, 0x0f, 0x0e, 0x0d, 0x0c,
                                                 0x0b, 0x0a, 0x09, 0x08}),
@@ -205,7 +207,9 @@ TEST(EnumView, NonPowerOfTwoSize) {
   enum24_view.Write(Foo::kBigBackwards);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{0x0e, 0x0f, 0x10, 0x0d}),
             bytes);
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(enum24_view.Write(Foo::k2to24), "");
+#endif  // EMBOSS_CHECK_ABORTS
   enum24_view.UncheckedWrite(Foo::k2to24);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{0x00, 0x00, 0x00, 0x0d}),
             bytes);
@@ -216,9 +220,11 @@ TEST(EnumView, NonPowerOfTwoSize) {
 TEST(EnumView, NonPowerOfTwoSizeInsufficientBuffer) {
   ::std::vector</**/ ::std::uint8_t> bytes = {{0x10, 0x0f, 0x0e, 0x0d}};
   auto enum24_view = FooViewN<24>{ReadWriteContiguousBuffer{bytes.data(), 2}};
-  EXPECT_DEATH(enum24_view.Read(), "");
   EXPECT_EQ(Foo::kBig, enum24_view.UncheckedRead());
+#if EMBOSS_CHECK_ABORTS
+  EXPECT_DEATH(enum24_view.Read(), "");
   EXPECT_DEATH(enum24_view.Write(Foo::kBigBackwards), "");
+#endif  // EMBOSS_CHECK_ABORTS
   enum24_view.UncheckedWrite(Foo::kBigBackwards);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{0x0e, 0x0f, 0x10, 0x0d}),
             bytes);

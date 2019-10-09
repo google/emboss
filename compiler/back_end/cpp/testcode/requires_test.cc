@@ -118,7 +118,9 @@ TEST(RequiresBools, CouldWriteValue) {
   EXPECT_TRUE(view.must_be_false().CouldWriteValue(false));
   EXPECT_TRUE(view.alias_of_a_must_be_true().CouldWriteValue(true));
   EXPECT_FALSE(view.alias_of_a_must_be_true().CouldWriteValue(false));
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(view.alias_of_a_must_be_true().Write(false), "");
+#endif  // EMBOSS_CHECK_ABORTS
 }
 
 TEST(RequiresEnums, Ok) {

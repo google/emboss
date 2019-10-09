@@ -636,7 +636,9 @@ $_write_methods_$
           emboss_reserved_local_maybe_new_value.ValueOrDefault());
     }
     void Write($_logical_type_$ emboss_reserved_local_value) {
-      EMBOSS_CHECK(TryToWrite(emboss_reserved_local_value));
+      const bool result = TryToWrite(emboss_reserved_local_value);
+      (void)result;
+      EMBOSS_CHECK(result);
     }
     void UncheckedWrite($_logical_type_$ emboss_reserved_local_value) {
       view_.$_destination_$.UncheckedWrite(($_transform_$).ValueOrDefault());

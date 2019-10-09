@@ -55,7 +55,9 @@ TEST(ArrayView, Methods) {
   EXPECT_EQ(bytes[0], byte_array[0].Read());
   EXPECT_EQ(bytes[1], byte_array[1].Read());
   EXPECT_EQ(bytes[2], byte_array[2].Read());
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(byte_array[sizeof bytes - 4].Read(), "");
+#endif  // EMBOSS_CHECK_ABORTS
   EXPECT_EQ(bytes[sizeof bytes - 4],
             byte_array[sizeof bytes - 4].UncheckedRead());
   EXPECT_TRUE(byte_array[sizeof bytes - 5].IsComplete());
@@ -75,7 +77,9 @@ TEST(ArrayView, Methods) {
   EXPECT_EQ(0x0d0e0f10U, uint32_array[0].Read());
   EXPECT_EQ(0x090a0b0cU, uint32_array[1].Read());
   EXPECT_EQ(0x05060708U, uint32_array[2].Read());
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(uint32_array[3].Read(), "");
+#endif  // EMBOSS_CHECK_ABORTS
   EXPECT_EQ(0x01020304U, uint32_array[3].UncheckedRead());
   EXPECT_TRUE(uint32_array[2].IsComplete());
   EXPECT_FALSE(uint32_array[3].IsComplete());

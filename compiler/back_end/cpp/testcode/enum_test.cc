@@ -126,7 +126,9 @@ TEST(ManifestEntryWriter, CanWriteKind) {
                 kManifestEntry, kManifestEntry + sizeof kManifestEntry),
             ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(writer.kind().Write(Kind::LARGE_VALUE), "");
+#endif  // EMBOSS_CHECK_ABORTS
   writer.kind().Write(static_cast<Kind>(0xff));
   EXPECT_EQ(static_cast<Kind>(0xff), writer.kind().Read());
   EXPECT_EQ(0xff, buffer[0]);

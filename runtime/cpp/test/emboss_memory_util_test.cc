@@ -334,7 +334,9 @@ TEST(ReadOnlyContiguousBuffer, Methods) {
       {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08, 0x07, 0x06, 0x05,
        0x04, 0x03, 0x02, 0x01}};
   const auto buffer = ReadOnlyContiguousBuffer{bytes.data(), bytes.size() - 4};
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(buffer.ReadBigEndianUInt<64>(), "");
+#endif  // EMBOSS_CHECK_ABORTS
   EXPECT_TRUE(buffer.Ok());
   EXPECT_EQ(bytes.size() - 4, buffer.SizeInBytes());
   EXPECT_EQ(0x100f0e0d0c0b0a09UL, buffer.UncheckedReadBigEndianUInt<64>());
@@ -357,14 +359,18 @@ TEST(ReadOnlyContiguousBuffer, Methods) {
   EXPECT_FALSE(ReadOnlyContiguousBuffer().Ok());
   EXPECT_FALSE(
       (ReadOnlyContiguousBuffer{static_cast<char *>(nullptr), 12}.Ok()));
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH((ReadOnlyContiguousBuffer{static_cast<char *>(nullptr), 4}
                     .ReadBigEndianUInt<32>()),
                "");
+#endif  // EMBOSS_CHECK_ABORTS
   EXPECT_EQ(0U, ReadOnlyContiguousBuffer().SizeInBytes());
   EXPECT_EQ(0U, (ReadOnlyContiguousBuffer{static_cast<char *>(nullptr), 12}
                      .SizeInBytes()));
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(
       (ReadOnlyContiguousBuffer{bytes.data(), 0}.ReadBigEndianUInt<8>()), "");
+#endif  // EMBOSS_CHECK_ABORTS
 
   // The size of the resulting buffer should be the minimum of the available
   // size and the requested size.
@@ -419,6 +425,7 @@ TEST(ReadWriteContiguousBuffer, Methods) {
                                           0x06, 0x05, 0x04, 0x03, 0x02, 0x01}),
       bytes);
 
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(ReadWriteContiguousBuffer().ReadLittleEndianUInt<8>(), "");
   EXPECT_DEATH(
       (ReadWriteContiguousBuffer{static_cast<unsigned char *>(nullptr), 1}
@@ -428,6 +435,7 @@ TEST(ReadWriteContiguousBuffer, Methods) {
       (ReadWriteContiguousBuffer{static_cast<unsigned char *>(nullptr), 1}
            .WriteLittleEndianUInt<8>(0xff)),
       "");
+#endif  // EMBOSS_CHECK_ABORTS
 }
 
 TEST(ContiguousBuffer, AssignmentFromCompatibleContiguousBuffers) {
@@ -467,7 +475,9 @@ TEST(LittleEndianByteOrderer, Methods) {
   EXPECT_TRUE(buffer.Ok());
   EXPECT_EQ(0x0807060504030201UL, buffer.ReadUInt<64>());
   EXPECT_EQ(0x0807060504030201UL, buffer.UncheckedReadUInt<64>());
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(buffer.ReadUInt<56>(), "");
+#endif  // EMBOSS_CHECK_ABORTS
   EXPECT_EQ(0x07060504030201UL, buffer.UncheckedReadUInt<56>());
   buffer.WriteUInt<64>(0x0102030405060708);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{21, 22, 8, 7, 6, 5, 4, 3, 2, 1,
@@ -477,7 +487,9 @@ TEST(LittleEndianByteOrderer, Methods) {
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{21, 22, 1, 2, 3, 4, 5, 6, 7, 8,
                                                 23, 24}),
             bytes);
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(buffer.WriteUInt<56>(0x77777777777777), "");
+#endif  // EMBOSS_CHECK_ABORTS
 
   EXPECT_FALSE(LittleEndianByteOrderer<ReadOnlyContiguousBuffer>().Ok());
   EXPECT_EQ(0U,
@@ -500,7 +512,9 @@ TEST(BigEndianByteOrderer, Methods) {
   EXPECT_TRUE(buffer.Ok());
   EXPECT_EQ(0x0102030405060708UL, buffer.ReadUInt<64>());
   EXPECT_EQ(0x0102030405060708UL, buffer.UncheckedReadUInt<64>());
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(buffer.ReadUInt<56>(), "");
+#endif  // EMBOSS_CHECK_ABORTS
   EXPECT_EQ(0x01020304050607UL, buffer.UncheckedReadUInt<56>());
   buffer.WriteUInt<64>(0x0807060504030201);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{21, 22, 8, 7, 6, 5, 4, 3, 2, 1,
@@ -510,7 +524,9 @@ TEST(BigEndianByteOrderer, Methods) {
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{21, 22, 1, 2, 3, 4, 5, 6, 7, 8,
                                                 23, 24}),
             bytes);
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(buffer.WriteUInt<56>(0x77777777777777), "");
+#endif  // EMBOSS_CHECK_ABORTS
 
   EXPECT_FALSE(BigEndianByteOrderer<ReadOnlyContiguousBuffer>().Ok());
   EXPECT_EQ(0U, BigEndianByteOrderer<ReadOnlyContiguousBuffer>().SizeInBytes());
@@ -539,6 +555,7 @@ TEST(NullByteOrderer, Methods) {
 
   EXPECT_FALSE(NullByteOrderer<ReadOnlyContiguousBuffer>().Ok());
   EXPECT_EQ(0U, NullByteOrderer<ReadOnlyContiguousBuffer>().SizeInBytes());
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH((NullByteOrderer<ReadOnlyContiguousBuffer>{
                    ReadOnlyContiguousBuffer{bytes, 0}}
                     .ReadUInt<8>()),
@@ -547,6 +564,7 @@ TEST(NullByteOrderer, Methods) {
                    ReadOnlyContiguousBuffer{bytes, 2}}
                     .ReadUInt<8>()),
                "");
+#endif  // EMBOSS_CHECK_ABORTS
   EXPECT_EQ(bytes[0], (NullByteOrderer<ReadOnlyContiguousBuffer>{
                           ReadOnlyContiguousBuffer{bytes, 0}}
                            .UncheckedReadUInt<8>()));
@@ -623,7 +641,9 @@ TEST(OffsetBitBlock, Methods) {
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{0x10, 0x0f, 0x0e, 0x0d, 0x0c,
                                                 0x0b, 0x0a, 0x09}),
             bytes);
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(offset_block.WriteUInt(0x10f0e0d0c0b0a), "");
+#endif  // EMBOSS_CHECK_ABORTS
   offset_block.UncheckedWriteUInt(0x10f0e0d0c0b0a);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{0x10, 0x0a, 0x0b, 0x0c, 0x0d,
                                                 0x0e, 0x0f, 0x09}),
@@ -641,7 +661,9 @@ TEST(OffsetBitBlock, Methods) {
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{0x10, 0x0a, 0x0b, 0x0c, 0x0d,
                                                 0x0e, 0x0f, 0x09}),
             bytes);
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(offset_offset_block.WriteUInt(0x10c0d), "");
+#endif  // EMBOSS_CHECK_ABORTS
   offset_offset_block.UncheckedWriteUInt(0x20c0d);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{0x10, 0x0a, 0x0b, 0x0d, 0x0c,
                                                 0x0e, 0x0f, 0x09}),

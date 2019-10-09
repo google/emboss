@@ -218,9 +218,11 @@ TEST(UIntView, ReadAndWriteWithInsufficientBuffer) {
       {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08}};
   auto uint64_view =
       UIntViewN<64>{BitBlockN<64>{ReadWriteContiguousBuffer{bytes.data(), 4}}};
-  EXPECT_DEATH(uint64_view.Read(), "");
   EXPECT_EQ(0x090a0b0c0d0e0f10UL, uint64_view.UncheckedRead());
+#if EMBOSS_CHECK_ABORTS
+  EXPECT_DEATH(uint64_view.Read(), "");
   EXPECT_DEATH(uint64_view.Write(0x100f0e0d0c0b0a09UL), "");
+#endif  // EMBOSS_CHECK_ABORTS
   EXPECT_FALSE(uint64_view.TryToWrite(0x100f0e0d0c0b0a09UL));
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08}}),
@@ -240,7 +242,9 @@ TEST(UIntView, NonPowerOfTwoSize) {
       UIntViewN<24>{BitBlockN<24>{ReadWriteContiguousBuffer{bytes.data(), 3}}};
   EXPECT_EQ(0x0e0f10U, uint24_view.Read());
   EXPECT_EQ(0x0e0f10U, uint24_view.UncheckedRead());
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(uint24_view.Write(0x1000000), "");
+#endif  // EMBOSS_CHECK_ABORTS
   uint24_view.Write(0x100f0e);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x0e, 0x0f, 0x10, 0x0d}}),
             bytes);
@@ -255,9 +259,11 @@ TEST(UIntView, NonPowerOfTwoSizeInsufficientBuffer) {
   ::std::vector</**/ ::std::uint8_t> bytes = {{0x10, 0x0f, 0x0e, 0x0d}};
   auto uint24_view =
       UIntViewN<24>{BitBlockN<24>{ReadWriteContiguousBuffer{bytes.data(), 2}}};
-  EXPECT_DEATH(uint24_view.Read(), "");
   EXPECT_EQ(0x0e0f10U, uint24_view.UncheckedRead());
+#if EMBOSS_CHECK_ABORTS
+  EXPECT_DEATH(uint24_view.Read(), "");
   EXPECT_DEATH(uint24_view.Write(0x100f0e), "");
+#endif  // EMBOSS_CHECK_ABORTS
   uint24_view.UncheckedWrite(0x100f0e);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x0e, 0x0f, 0x10, 0x0d}}),
             bytes);
@@ -278,7 +284,9 @@ TEST(UIntView, NonByteSize) {
   EXPECT_FALSE(uint23_view.CouldWriteValue(0x800f0e));
   EXPECT_FALSE(uint23_view.CouldWriteValue(0x800000));
   EXPECT_TRUE(uint23_view.CouldWriteValue(0x7fffff));
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(uint23_view.Write(0x800f0e), "");
+#endif  // EMBOSS_CHECK_ABORTS
   uint23_view.Write(0x400f0e);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x0e, 0x0f, 0xc0, 0x80}}),
             bytes);
@@ -407,9 +415,11 @@ TEST(IntView, ReadAndWriteWithInsufficientBuffer) {
       {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08}};
   auto int64_view =
       IntViewN<64>{BitBlockN<64>{ReadWriteContiguousBuffer{bytes.data(), 4}}};
-  EXPECT_DEATH(int64_view.Read(), "");
   EXPECT_EQ(0x090a0b0c0d0e0f10L, int64_view.UncheckedRead());
+#if EMBOSS_CHECK_ABORTS
+  EXPECT_DEATH(int64_view.Read(), "");
   EXPECT_DEATH(int64_view.Write(0x100f0e0d0c0b0a09L), "");
+#endif  // EMBOSS_CHECK_ABORTS
   EXPECT_FALSE(int64_view.TryToWrite(0x100f0e0d0c0b0a09L));
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0x10, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08}}),
@@ -428,14 +438,18 @@ TEST(IntView, NonPowerOfTwoSize) {
       IntViewN<24>{BitBlockN<24>{ReadWriteContiguousBuffer{bytes.data(), 3}}};
   EXPECT_EQ(0x0e0f10, int24_view.Read());
   EXPECT_EQ(0x0e0f10, int24_view.UncheckedRead());
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(int24_view.Write(0x1000000), "");
+#endif  // EMBOSS_CHECK_ABORTS
   int24_view.Write(0x100f0e);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x0e, 0x0f, 0x10, 0x0d}}),
             bytes);
   int24_view.Write(-0x100f0e);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0xf2, 0xf0, 0xef, 0x0d}}),
             bytes);
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(int24_view.Write(0x1000000), "");
+#endif  // EMBOSS_CHECK_ABORTS
   int24_view.UncheckedWrite(0x1000000);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x00, 0x00, 0x00, 0x0d}}),
             bytes);
@@ -447,9 +461,11 @@ TEST(IntView, NonPowerOfTwoSizeInsufficientBuffer) {
   ::std::vector</**/ ::std::uint8_t> bytes = {{0x10, 0x0f, 0x0e, 0x0d}};
   auto int24_view =
       IntViewN<24>{BitBlockN<24>{ReadWriteContiguousBuffer{bytes.data(), 2}}};
-  EXPECT_DEATH(int24_view.Read(), "");
   EXPECT_EQ(0x0e0f10, int24_view.UncheckedRead());
+#if EMBOSS_CHECK_ABORTS
+  EXPECT_DEATH(int24_view.Read(), "");
   EXPECT_DEATH(int24_view.Write(0x100f0e), "");
+#endif  // EMBOSS_CHECK_ABORTS
   int24_view.UncheckedWrite(0x100f0e);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x0e, 0x0f, 0x10, 0x0d}}),
             bytes);
@@ -468,7 +484,9 @@ TEST(IntView, NonByteSize) {
                                     3}}.GetOffsetStorage<1, 0>(0, 23)};
   EXPECT_EQ(0x0, int23_view.Read());
   EXPECT_FALSE(int23_view.CouldWriteValue(0x400f0e));
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(int23_view.Write(0x400f0e), "");
+#endif  // EMBOSS_CHECK_ABORTS
   int23_view.Write(0x200f0e);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x0e, 0x0f, 0xa0, 0x80}}),
             bytes);
@@ -493,7 +511,9 @@ TEST(IntView, OneBit) {
   EXPECT_FALSE(int1_view.CouldWriteValue(1));
   EXPECT_TRUE(int1_view.CouldWriteValue(0));
   EXPECT_TRUE(int1_view.CouldWriteValue(-1));
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(int1_view.Write(1), "");
+#endif  // EMBOSS_CHECK_ABORTS
   int1_view.Write(-1);
   EXPECT_EQ(0xff, bytes[0]);
   EXPECT_EQ(-1, int1_view.Read());
@@ -669,9 +689,11 @@ TEST(BcdView, ReadAndWriteWithInsufficientBuffer) {
       {0x16, 0x15, 0x14, 0x13, 0x12, 0x11, 0x10, 0x09, 0x08}};
   auto bcd64_view =
       BcdViewN<64>{BitBlockN<64>{ReadWriteContiguousBuffer{bytes.data(), 4}}};
-  EXPECT_DEATH(bcd64_view.Read(), "");
   EXPECT_EQ(910111213141516UL, bcd64_view.UncheckedRead());
+#if EMBOSS_CHECK_ABORTS
+  EXPECT_DEATH(bcd64_view.Read(), "");
   EXPECT_DEATH(bcd64_view.Write(1615141312111009), "");
+#endif  // EMBOSS_CHECK_ABORTS
   EXPECT_FALSE(bcd64_view.TryToWrite(1615141312111009));
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{
                 {0x16, 0x15, 0x14, 0x13, 0x12, 0x11, 0x10, 0x09, 0x08}}),
@@ -693,7 +715,9 @@ TEST(BcdView, NonPowerOfTwoSize) {
   bcd24_view.Write(161514);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x14, 0x15, 0x16, 0x13}}),
             bytes);
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(bcd24_view.Write(1000000), "");
+#endif  // EMBOSS_CHECK_ABORTS
   bcd24_view.UncheckedWrite(1000000);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x00, 0x00, 0x00, 0x13}}),
             bytes);
@@ -708,9 +732,11 @@ TEST(BcdView, NonPowerOfTwoSizeInsufficientBuffer) {
   ::std::vector</**/ ::std::uint8_t> bytes = {{0x16, 0x15, 0x14, 0x13}};
   auto bcd24_view =
       BcdViewN<24>{BitBlockN<24>{ReadWriteContiguousBuffer{bytes.data(), 2}}};
-  EXPECT_DEATH(bcd24_view.Read(), "");
   EXPECT_EQ(141516U, bcd24_view.UncheckedRead());
+#if EMBOSS_CHECK_ABORTS
+  EXPECT_DEATH(bcd24_view.Read(), "");
   EXPECT_DEATH(bcd24_view.Write(161514), "");
+#endif  // EMBOSS_CHECK_ABORTS
   bcd24_view.UncheckedWrite(161514);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x14, 0x15, 0x16, 0x13}}),
             bytes);
@@ -730,7 +756,9 @@ TEST(BcdView, NonByteSize) {
   EXPECT_EQ(0x0U, bcd23_view.Read());
   EXPECT_FALSE(bcd23_view.CouldWriteValue(800000));
   EXPECT_TRUE(bcd23_view.CouldWriteValue(799999));
+#if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(bcd23_view.Write(800000), "");
+#endif  // EMBOSS_CHECK_ABORTS
   bcd23_view.Write(432198);
   EXPECT_EQ((::std::vector</**/ ::std::uint8_t>{{0x98, 0x21, 0xc3, 0x80}}),
             bytes);

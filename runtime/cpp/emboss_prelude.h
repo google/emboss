@@ -53,7 +53,11 @@ class FlagView final {
     return result;
   }
   bool UncheckedRead() const { return bit_block_.UncheckedReadUInt(); }
-  void Write(bool value) const { EMBOSS_CHECK(TryToWrite(value)); }
+  void Write(bool value) const {
+    const bool result = TryToWrite(value);
+    (void)result;
+    EMBOSS_CHECK(result);
+  }
   bool TryToWrite(bool value) const {
     if (!CouldWriteValue(value)) return false;
     if (!IsComplete()) return false;
@@ -174,7 +178,9 @@ class UIntView final {
                                                IntT>::type>::type>::value) ||
                 ::std::is_enum<IntT>::value>::type>
   void Write(IntT value) const {
-    EMBOSS_CHECK(TryToWrite(value));
+    const bool result = TryToWrite(value);
+    (void)result;
+    EMBOSS_CHECK(result);
   }
 
   template <typename IntT,
@@ -337,7 +343,9 @@ class IntView final {
                                                IntT>::type>::type>::value) ||
                 ::std::is_enum<IntT>::value>::type>
   void Write(IntT value) const {
-    EMBOSS_CHECK(TryToWrite(value));
+    const bool result = TryToWrite(value);
+    (void)result;
+    EMBOSS_CHECK(result);
   }
 
   template <typename IntT,
@@ -490,6 +498,7 @@ class IntView final {
         return -1;
       } else {
         EMBOSS_CHECK(false);
+        return -1;  // Return value if EMBOSS_CHECK is disabled.
       }
     } else {
       typename BitViewType::ValueType sign_bit =
@@ -605,7 +614,11 @@ class BcdView final {
   ValueType UncheckedRead() const {
     return ConvertToBinary(buffer_.UncheckedReadUInt());
   }
-  void Write(ValueType value) const { EMBOSS_CHECK(TryToWrite(value)); }
+  void Write(ValueType value) const {
+    const bool result = TryToWrite(value);
+    (void)result;
+    EMBOSS_CHECK(result);
+  }
   bool TryToWrite(ValueType value) const {
     if (!CouldWriteValue(value)) return false;
     if (!IsComplete()) return false;
@@ -720,7 +733,11 @@ class FloatView final {
   ValueType UncheckedRead() const {
     return ConvertToFloat(buffer_.UncheckedReadUInt());
   }
-  void Write(ValueType value) const { EMBOSS_CHECK(TryToWrite(value)); }
+  void Write(ValueType value) const {
+    const bool result = TryToWrite(value);
+    (void)result;
+    EMBOSS_CHECK(result);
+  }
   bool TryToWrite(ValueType value) const {
     if (!CouldWriteValue(value)) return false;
     if (!IsComplete()) return false;
