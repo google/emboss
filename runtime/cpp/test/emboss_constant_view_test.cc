@@ -24,7 +24,7 @@ TEST(MaybeConstantViewTest, Read) {
   EXPECT_EQ(7, MaybeConstantView</**/ ::std::uint8_t>(7).Read());
 #if EMBOSS_CHECK_ABORTS
   EXPECT_DEATH(MaybeConstantView</**/ ::std::uint8_t>().Read(), "Known\\(\\)");
-#endif // EMBOSS_CHECK_ABORTS
+#endif  // EMBOSS_CHECK_ABORTS
 }
 
 TEST(MaybeConstantViewTest, UncheckedRead) {
