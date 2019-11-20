@@ -44,16 +44,16 @@ def emboss_cc_library(name, srcs, deps = [], visibility = None):
         name = name + "_header",
         tools = [
             # TODO(bolms): Make "emboss" driver program.
-            "//compiler/front_end:emboss_front_end",
-            "//compiler/back_end/cpp:emboss_codegen_cpp",
+            "@com_google_emboss//compiler/front_end:emboss_front_end",
+            "@com_google_emboss//compiler/back_end/cpp:emboss_codegen_cpp",
         ],
         srcs = srcs + [dep + "__emb" for dep in deps],
-        cmd = ("$(location //compiler/front_end:emboss_front_end) " +
+        cmd = ("$(location @com_google_emboss//compiler/front_end:emboss_front_end) " +
                "--output-ir-to-stdout " +
                "--import-dir=. " +
                "--import-dir='$(GENDIR)' " +
                "$(location {}) > $(@D)/$$(basename $(OUTS) .h).ir; " +
-               "$(location //compiler/back_end/cpp:emboss_codegen_cpp) " +
+               "$(location @com_google_emboss//compiler/back_end/cpp:emboss_codegen_cpp) " +
                "< $(@D)/$$(basename $(OUTS) .h).ir > " +
                "$(OUTS); " +
                "rm $(@D)/$$(basename $(OUTS) .h).ir").format(") $location( ".join(srcs)),
@@ -68,7 +68,7 @@ def emboss_cc_library(name, srcs, deps = [], visibility = None):
             ":" + name + "_header",
         ],
         deps = deps + [
-            "//runtime/cpp:cpp_utils",
+            "@com_google_emboss//runtime/cpp:cpp_utils",
         ],
         visibility = visibility,
     )
