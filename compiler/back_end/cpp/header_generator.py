@@ -193,7 +193,7 @@ def _get_type_size(type_ir, ir):
 
 
 def _offset_storage_adapter(buffer_type, alignment, static_offset):
-  return "{}::template OffsetStorageType<{}, {}>".format(
+  return "{}::template OffsetStorageType</**/{}, {}>".format(
       buffer_type, alignment, static_offset)
 
 
@@ -1031,7 +1031,7 @@ def _generate_structure_definition(type_ir, ir):
     constructor_parameters.append(
         "{} {}, ".format(parameter_type, parameter_name))
     forwarded_parameters.append(
-        "::std::forward<{}>({}),".format(parameter_type, parameter_name))
+        "::std::forward</**/{}>({}),".format(parameter_type, parameter_name))
     parameter_initializers.append(", {0}_({0})".format(parameter_name))
     field_method_declarations.append(
         code_template.format_template(
