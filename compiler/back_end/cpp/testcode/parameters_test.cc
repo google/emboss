@@ -107,6 +107,27 @@ TEST(StructContainingStructWithUnusedParameter, NoParameterIsNotOk) {
   // storage, making the entire child struct not Ok().
 }
 
+TEST(BiasedValue, BiasedValueIsReadable) {
+  ::std::array<char, 1> bytes = {10};
+  auto view = MakeBiasedValueView(20, &bytes);
+  EXPECT_TRUE(view.Ok());
+  EXPECT_EQ(30, view.value().Read());
+}
+
+TEST(AliasedValue, VirtualFirstFieldWithParam) {
+  ::std::array<char, 1> bytes = {10};
+  auto view = MakeVirtualFirstFieldWithParamView(20, &bytes);
+  EXPECT_TRUE(view.Ok());
+  EXPECT_EQ(10, view.value().Read());
+}
+
+TEST(AliasedValue, ConstVirtualFirstFieldWithParam) {
+  ::std::array<char, 1> bytes = {10};
+  auto view = MakeConstVirtualFirstFieldWithParamView(20, &bytes);
+  EXPECT_TRUE(view.Ok());
+  EXPECT_EQ(10, view.value().Read());
+}
+
 TEST(SizedArrayOfBiasedValues, ArrayElementsAreAccessible) {
   ::std::array<char, 3> bytes = {1, 10, 100};
   auto view = MakeSizedArrayOfBiasedValuesView(&bytes);
