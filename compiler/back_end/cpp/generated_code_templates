@@ -487,6 +487,7 @@ Generic$_parent_type_$View<Storage>::has_$_name_$() const {
 
 
 // ** structure_single_const_virtual_field_method_declarations ** //////////////
+ $_visibility_$:
   class $_virtual_view_type_name_$ final {
    public:
     using ValueType = $_logical_type_$;
@@ -540,6 +541,7 @@ inline constexpr $_logical_type_$ Generic$_parent_type_$View<
 }
 
 // ** structure_single_virtual_field_method_declarations ** ////////////////////
+ $_visibility_$:
   class $_virtual_view_type_name_$ final {
    public:
     using ValueType = $_logical_type_$;
