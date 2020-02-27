@@ -225,6 +225,7 @@ def _get_fully_qualified_name(name, ir):
 def _get_adapted_cpp_buffer_type_for_field(type_definition, size_in_bits,
                                            buffer_type, byte_order,
                                            parent_addressable_unit):
+  """Returns the adapted C++ type information needed to construct a view."""
   if (parent_addressable_unit == ir_pb2.TypeDefinition.BYTE and
       type_definition.addressable_unit == ir_pb2.TypeDefinition.BIT):
     assert byte_order
@@ -1012,6 +1013,7 @@ def _generate_structure_definition(type_ir, ir):
   constructor_parameters = []
   forwarded_parameters = []
   parameter_initializers = []
+  parameter_copy_initializers = []
   units = {1: "Bits", 8: "Bytes"}[type_ir.addressable_unit]
 
   for subtype in type_ir.subtype:
@@ -1030,9 +1032,12 @@ def _generate_structure_definition(type_ir, ir):
     parameter_fields.append("{} {}_;".format(parameter_type, parameter_name))
     constructor_parameters.append(
         "{} {}, ".format(parameter_type, parameter_name))
-    forwarded_parameters.append(
-        "::std::forward</**/{}>({}),".format(parameter_type, parameter_name))
+    forwarded_parameters.append("::std::forward</**/{}>({}),".format(
+        parameter_type, parameter_name))
     parameter_initializers.append(", {0}_({0})".format(parameter_name))
+    parameter_copy_initializers.append(
+        ", {0}_(emboss_reserved_local_other.{0}_)".format(parameter_name))
+
     field_method_declarations.append(
         code_template.format_template(
             _TEMPLATES.structure_single_parameter_field_method_declarations,
@@ -1047,6 +1052,8 @@ def _generate_structure_definition(type_ir, ir):
                                       field=parameter_name + "()"))
   if type_ir.runtime_parameter:
     flag_name = "parameters_initialized_"
+    parameter_copy_initializers.append(
+        ", {0}(emboss_reserved_local_other.{0})".format(flag_name))
     parameters_initialized_flag = "bool {} = false;".format(flag_name)
     initialize_parameters_initialized_true = ", {}(true)".format(flag_name)
     parameter_checks = ["if (!{}) return false;".format(flag_name)]
@@ -1123,6 +1130,7 @@ def _generate_structure_definition(type_ir, ir):
       constructor_parameters="".join(constructor_parameters),
       forwarded_parameters="".join(forwarded_parameters),
       parameter_initializers="\n".join(parameter_initializers),
+      parameter_copy_initializers="\n".join(parameter_copy_initializers),
       parameters_initialized_flag=parameters_initialized_flag,
       initialize_parameters_initialized_true=(
           initialize_parameters_initialized_true),

@@ -20,56 +20,80 @@ enum Product:
   VERSION_2 = 10
   VERSION_X = 23
 
+
 enum MessageId:
-  AXIS = 0
+  AXIS   = 0
   CONFIG = 1
 
-struct Multiversion(product: Product):
-  0 [+1]     MessageId                            message_id
+
+struct MultiVersion(product: Product):
+  0 [+1]     MessageId                                   message_id
   if message_id == MessageId.AXIS:
     1 [+12]  Axes(product == Product.VERSION_X ? 3 : 2)  axes
+
   if message_id == MessageId.CONFIG:
-    1 [+4]  Config                                config
+    1 [+4]   Config                                      config
+
   if product == Product.VERSION_X && message_id == MessageId.CONFIG:
-    1 [+8]  ConfigVX()                            config_vx
+    1 [+8]   ConfigVX()                                  config_vx
+
 
 struct Axes(axes: UInt:4):
-  0 [+axes * 4]  Axis(AxisType.GENERIC)[]  values
+  0 [+axes*4]  Axis(AxisType.GENERIC)[]  values
   if axes > 0:
-    0 [+4]       Axis(AxisType.X_AXIS)     x
+    0 [+4]     Axis(AxisType.X_AXIS)     x
+
   if axes > 1:
-    4 [+4]       Axis(AxisType.Y_AXIS)     y
+    4 [+4]     Axis(AxisType.Y_AXIS)     y
+
   if axes > 2:
-    8 [+4]       Axis(AxisType.Z_AXIS)     z
-  let axis_count_plus_one = axes + 1
+    8 [+4]     Axis(AxisType.Z_AXIS)     z
+
+  let axis_count_plus_one = axes+1
+
+
+struct AxisPair(axis_type_a_parameter: AxisType, axis_type_b_parameter: AxisType):
+  0 [+4]  Axis(axis_type_a)  axis_a
+  4 [+4]  Axis(axis_type_b)  axis_b
+  let axis_type_a = axis_type_a_parameter
+  let axis_type_b = axis_type_b_parameter
+
 
 struct AxesEnvelope:
   0 [+1]             UInt:8            axis_count
   1 [+axis_count*4]  Axes(axis_count)  axes
 
+
 enum AxisType:
   GENERIC = -1
-  X_AXIS = 1
-  Y_AXIS = 2
-  Z_AXIS = 3
+  X_AXIS  = 1
+  Y_AXIS  = 2
+  Z_AXIS  = 3
+
 
 struct Axis(axis_type_parameter: AxisType):
-  let axis_type = axis_type_parameter
-  0 [+4]  UInt:32  value
+  0 [+4]    UInt:32  value
   if axis_type == AxisType.X_AXIS:
     0 [+4]  UInt:32  x
+
   if axis_type == AxisType.Y_AXIS:
     0 [+4]  UInt:32  y
+
   if axis_type == AxisType.Z_AXIS:
     0 [+4]  UInt:32  z
+
+  let axis_type = axis_type_parameter
+
 
 bits Config():
   31 [+1]  Flag  power
 
+
 struct ConfigVX:
-  0 [+4]  bits:
-    31 [+1]  Flag  power
-  4 [+4]     UInt  gain
+  0  [+4]  bits:
+    31 [+1]       Flag  power
+
+  4  [+4]         UInt  gain
 
 
 struct StructWithUnusedParameter(x: UInt:8):
@@ -78,13 +102,15 @@ struct StructWithUnusedParameter(x: UInt:8):
 # StructContainingStructWithUnusedParameter is used to ensure that a struct is
 # not Ok() if it does not have its parameters, even if it does not directly use
 # those parameters.
+
+
 struct StructContainingStructWithUnusedParameter:
   0 [+1]  StructWithUnusedParameter(x)  swup
   1 [+1]  UInt                          x
 
 struct BiasedValue(bias: UInt:8):
   0 [+1]  UInt  raw_value
-  let value = raw_value + bias
+  let value = raw_value+bias
 
 struct VirtualFirstFieldWithParam(param: UInt:8):
   # Regression test: virtual fields did not have `public:` annotations, causing

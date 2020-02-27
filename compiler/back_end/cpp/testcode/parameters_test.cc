@@ -22,8 +22,32 @@
 #include "gtest/gtest.h"
 #include "testdata/parameters.emb.h"
 
-namespace emboss_test {
+namespace emboss {
+namespace test {
 namespace {
+
+TEST(AxisPair, Construction) {
+  ::std::array<char, 12> values = {1, 0, 0, 0, 2, 0, 0, 0};
+  auto view = MakeAxisPairView(AxisType::X_AXIS, AxisType::Y_AXIS, &values);
+
+  EXPECT_TRUE(view.Ok());
+
+  EXPECT_EQ(view.axis_type_a().Read(), AxisType::X_AXIS);
+  EXPECT_EQ(1U, view.axis_a().value().Read());
+
+  EXPECT_EQ(view.axis_type_b().Read(), AxisType::Y_AXIS);
+  EXPECT_EQ(2U, view.axis_b().value().Read());
+}
+
+TEST(AxisPair, Copy) {
+  ::std::array<char, 12> values = {1, 0, 0, 0, 2, 0, 0, 0};
+  auto view1 = MakeAxisPairView(AxisType::X_AXIS, AxisType::Y_AXIS, &values);
+  auto view2 = view1;
+
+  EXPECT_EQ(view1.Ok(), view2.Ok());
+  EXPECT_EQ(view1.axis_a().axis_type().Read(),
+            view2.axis_a().axis_type().Read());
+}
 
 TEST(Axes, Construction) {
   ::std::array<char, 12> values = {1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0};
@@ -48,6 +72,20 @@ TEST(Axes, Construction) {
   EXPECT_FALSE(view.Ok());
 }
 
+TEST(Axes, Copy) {
+  ::std::array<char, 12> values = {1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0};
+  auto view1 = MakeAxesView(2, &values);
+  auto view2 = view1;
+
+  EXPECT_EQ(view1.Ok(), view2.Ok());
+  EXPECT_EQ(view1.values().ElementCount(), view2.values().ElementCount());
+  EXPECT_EQ(view1.values()[0].value().Read(), view2.values()[0].value().Read());
+  EXPECT_EQ(view1.x().x().Read(), view2.x().x().Read());
+  EXPECT_EQ(view1.values()[1].value().Read(), view2.values()[1].value().Read());
+  EXPECT_EQ(view1.y().y().Read(), view2.y().y().Read());
+  EXPECT_EQ(view1.has_z().Value(), view2.has_z().Value());
+}
+
 TEST(Axes, VirtualUsingParameter) {
   ::std::array<char, 12> values = {1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0};
   auto view = MakeAxesView(2, &values);
@@ -70,26 +108,26 @@ TEST(AxesEnvelope, ParameterValueIsOutOfRange) {
   EXPECT_FALSE(view.axes().Ok());
 }
 
-TEST(Multiversion, ParameterPassedDown) {
+TEST(MultiVersion, ParameterPassedDown) {
   ::std::array<char, 13> values = {0, 1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0};
-  auto view = MakeMultiversionView(Product::VERSION_1, &values);
+  auto view = MakeMultiVersionView(Product::VERSION_1, &values);
   EXPECT_TRUE(view.Ok());
   EXPECT_EQ(2U, view.axes().y().y().Read());
   EXPECT_FALSE(view.axes().has_z().Value());
-  view = MakeMultiversionView(Product::VERSION_X, &values);
+  view = MakeMultiVersionView(Product::VERSION_X, &values);
   EXPECT_TRUE(view.Ok());
   EXPECT_EQ(2U, view.axes().y().y().Read());
   EXPECT_TRUE(view.axes().has_z().Value());
 }
 
-TEST(Multiversion, ParameterUsedToSwitchField) {
+TEST(MultiVersion, ParameterUsedToSwitchField) {
   ::std::array<unsigned char, 9> values = {1, 0, 0, 0, 0x80, 0, 100, 0, 0};
-  auto view = MakeMultiversionView(Product::VERSION_1, &values);
+  auto view = MakeMultiVersionView(Product::VERSION_1, &values);
   EXPECT_TRUE(view.Ok());
   EXPECT_TRUE(view.config().power().Read());
   EXPECT_FALSE(view.has_config_vx().Value());
   EXPECT_EQ(5U, view.SizeInBytes());
-  view = MakeMultiversionView(Product::VERSION_X, &values);
+  view = MakeMultiVersionView(Product::VERSION_X, &values);
   EXPECT_TRUE(view.Ok());
   EXPECT_TRUE(view.config().power().Read());
   EXPECT_TRUE(view.has_config_vx().Value());
@@ -136,4 +174,5 @@ TEST(SizedArrayOfBiasedValues, ArrayElementsAreAccessible) {
 }
 
 }  // namespace
-}  // namespace emboss_test
+}  // namespace test
+}  // namespace emboss
