@@ -80,7 +80,8 @@ class Generic$_name_$View final {
   template <typename OtherStorage>
   Generic$_name_$View(
       const Generic$_name_$View<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()} {}
+      : backing_{emboss_reserved_local_other.BackingStorage()}
+        $_parameter_copy_initializers_$ {}
 
   // Allow pass-through construction of backing_, but only if there is at least
   // one argument, and, if exactly one argument, that argument is not a
