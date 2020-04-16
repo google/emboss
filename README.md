@@ -93,4 +93,4 @@ will try to answer feature requests, bug reports, and questions, there is no SLA
 
 ## Getting Started
 
-Head over to the [User Guide](g3doc/guide.md) to get started.
+Head over to the [User Guide](doc/guide.md) to get started.
