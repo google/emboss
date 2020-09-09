@@ -393,6 +393,13 @@ TEST(SizesView, CanReadArraySizes) {
   EXPECT_EQ(8U, sizeof(view.eight_byte()[0].Read()));
 }
 
+TEST(SizesView, ToString) {
+  ::std::array</**/ ::std::uint8_t, sizeof kUIntArraySizes> buf = {'a', 'b'};
+  auto view = MakeArraySizesView(&buf);
+
+  EXPECT_EQ(view.one_byte().ToString</**/ ::std::string>(), "ab");
+}
+
 TEST(SizesView, CopyFrom) {
   ::std::array</**/ ::std::uint8_t, sizeof kUIntArraySizes> buf_x = {};
   ::std::array</**/ ::std::uint8_t, sizeof kUIntArraySizes> buf_y = {};
