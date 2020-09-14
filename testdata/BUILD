@@ -284,3 +284,10 @@ emboss_cc_library(
         "virtual_field.emb",
     ],
 )
+
+emboss_cc_library(
+    name = "complex_offset_emboss",
+    srcs = [
+        "complex_offset.emb",
+    ],
+)

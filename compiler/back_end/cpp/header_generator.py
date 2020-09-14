@@ -443,16 +443,18 @@ def _cpp_integer_type_for_range(min_val, max_val):
   return None
 
 
-def _render_builtin_operation(expression, ir, field_reader):
+def _render_builtin_operation(expression, ir, field_reader, subexpressions):
   """Renders a built-in operation (+, -, &&, etc.) into C++ code."""
   assert expression.function.function not in (
       ir_pb2.Function.UPPER_BOUND, ir_pb2.Function.LOWER_BOUND), (
           "UPPER_BOUND and LOWER_BOUND should be constant.")
   if expression.function.function == ir_pb2.Function.PRESENCE:
-    return field_reader.render_existence(expression.function.args[0])
+    return field_reader.render_existence(expression.function.args[0],
+                                         subexpressions)
   args = expression.function.args
   rendered_args = [
-      _render_expression(arg, ir, field_reader).rendered for arg in args]
+      _render_expression(arg, ir, field_reader, subexpressions).rendered
+      for arg in args]
   minimum_integers = []
   maximum_integers = []
   enum_types = set()
@@ -506,18 +508,25 @@ def _render_builtin_operation(expression, ir, field_reader):
 class _FieldRenderer(object):
   """Base class for rendering field reads."""
 
-  def render_field_read_with_context(self, expression, ir, prefix):
+  def render_field_read_with_context(self, expression, ir, prefix,
+                                     subexpressions):
+    field = (
+        prefix +
+        _render_variable(ir_util.hashable_form_of_field_reference(
+            expression.field_reference)))
+    if subexpressions is None:
+      field_expression = field
+    else:
+      field_expression = subexpressions.add(field)
     expression_cpp_type = _cpp_basic_type_for_expression(expression, ir)
-    return ("({0}{1}.Ok()"
-            "    ? {2}(static_cast</**/{3}>({0}{1}.UncheckedRead()))"
-            "    : {2}())".format(
-                prefix,
-                _render_variable(ir_util.hashable_form_of_field_reference(
-                    expression.field_reference)),
+    return ("({0}.Ok()"
+            "    ? {1}(static_cast</**/{2}>({0}.UncheckedRead()))"
+            "    : {1}())".format(
+                field_expression,
                 _maybe_type(expression_cpp_type),
                 expression_cpp_type))
 
-  def render_existence_with_context(self, expression, prefix):
+  def render_existence_with_context(self, expression, prefix, subexpressions):
     return "{1}{0}".format(
         _render_variable(
             ir_util.hashable_form_of_field_reference(
@@ -529,28 +538,51 @@ class _FieldRenderer(object):
 class _DirectFieldRenderer(_FieldRenderer):
   """Renderer for fields read from inside a structure's View type."""
 
-  def render_field(self, expression, ir):
-    return self.render_field_read_with_context(expression, ir, "")
+  def render_field(self, expression, ir, subexpressions):
+    return self.render_field_read_with_context(
+        expression, ir, "", subexpressions)
 
-  def render_existence(self, expression):
-    return self.render_existence_with_context(expression, "")
+  def render_existence(self, expression, subexpressions):
+    return self.render_existence_with_context(expression, "", subexpressions)
 
 
 class _VirtualViewFieldRenderer(_FieldRenderer):
   """Renderer for field reads from inside a virtual field's View."""
 
-  def render_existence(self, expression):
-    return self.render_existence_with_context(expression, "view_.")
+  def render_existence(self, expression, subexpressions):
+    return self.render_existence_with_context(
+        expression, "view_.", subexpressions)
 
-  def render_field(self, expression, ir):
-    return self.render_field_read_with_context(expression, ir, "view_.")
+  def render_field(self, expression, ir, subexpressions):
+    return self.render_field_read_with_context(
+        expression, ir, "view_.", subexpressions)
+
+
+class _SubexpressionStore:
+  """Holder for subexpressions to be assigned to local variables."""
+
+  def __init__(self, prefix):
+    self._prefix = prefix
+    self._subexpr_to_name = {}
+    self._index_to_subexpr = []
+
+  def add(self, subexpr):
+    if subexpr not in self._subexpr_to_name:
+      self._index_to_subexpr.append(subexpr)
+      self._subexpr_to_name[subexpr] = (
+          self._prefix + str(len(self._index_to_subexpr)))
+    return self._subexpr_to_name[subexpr]
+
+  def subexprs(self):
+    return [(self._subexpr_to_name[subexpr], subexpr)
+            for subexpr in self._index_to_subexpr]
 
 
 _ExpressionResult = collections.namedtuple("ExpressionResult",
                                            ["rendered", "is_constant"])
 
 
-def _render_expression(expression, ir, field_reader=None):
+def _render_expression(expression, ir, field_reader=None, subexpressions=None):
   """Renders an expression into C++ code.
 
   Arguments:
@@ -558,6 +590,8 @@ def _render_expression(expression, ir, field_reader=None):
       ir: The IR in which to look up references.
       field_reader: An object with render_existence and render_field methods
           appropriate for the C++ context of the expression.
+      subexpressions: A _SubexpressionStore in which to put subexpressions, or
+          None if subexpressions should be inline.
 
   Returns:
       A tuple of (rendered_text, is_constant), where rendered_text is C++ code
@@ -591,26 +625,33 @@ def _render_expression(expression, ir, field_reader=None):
     assert False, "Unhandled expression type {}".format(
         expression.type.WhichOneof("type"))
 
+  result = None
   # Otherwise, render the operation.
   if expression.WhichOneof("expression") == "function":
-    return _ExpressionResult(
-        _render_builtin_operation(expression, ir, field_reader), False)
+    result = _render_builtin_operation(
+        expression, ir, field_reader, subexpressions)
   elif expression.WhichOneof("expression") == "field_reference":
-    return _ExpressionResult(field_reader.render_field(expression, ir), False)
+    result = field_reader.render_field(expression, ir, subexpressions)
   elif (expression.WhichOneof("expression") == "builtin_reference" and
         expression.builtin_reference.canonical_name.object_path[-1] ==
         "$logical_value"):
     return _ExpressionResult(
         _maybe_type("decltype(emboss_reserved_local_value)") +
         "(emboss_reserved_local_value)", False)
+
   # Any of the constant expression types should have been handled in the
   # previous section.
+  assert result is not None, "Unable to render expression {}".format(
+      str(expression))
 
-  assert False, "Unable to render expression {}".format(str(expression))
+  if subexpressions is None:
+    return _ExpressionResult(result, False)
+  else:
+    return _ExpressionResult(subexpressions.add(result), False)
 
 
-def _render_existence_test(field, ir):
-  return _render_expression(field.existence_condition, ir)
+def _render_existence_test(field, ir, subexpressions=None):
+  return _render_expression(field.existence_condition, ir, subexpressions)
 
 
 def _alignment_of_location(location):
@@ -663,11 +704,11 @@ def _generate_custom_validator_expression_for(field_ir, ir):
     class _ValidatorFieldReader(object):
       """A "FieldReader" that translates the current field to `value`."""
 
-      def render_existence(self, expression):
+      def render_existence(self, expression, subexpressions):
         del expression  # Unused.
         assert False, "Shouldn't be here."
 
-      def render_field(self, expression, ir):
+      def render_field(self, expression, ir, subexpressions):
         assert len(expression.field_reference.path) == 1
         assert (expression.field_reference.path[0].canonical_name ==
                 field_ir.name.canonical_name)
@@ -708,13 +749,16 @@ def _generate_structure_virtual_field_methods(enclosing_type_name, field_ir,
   if field_ir.write_method.WhichOneof("method") == "alias":
     return _generate_field_indirection(field_ir, enclosing_type_name, ir)
 
+  read_subexpressions = _SubexpressionStore("emboss_reserved_local_subexpr_")
   read_value = _render_expression(
       field_ir.read_transform, ir,
-      field_reader=_VirtualViewFieldRenderer())
+      field_reader=_VirtualViewFieldRenderer(),
+      subexpressions=read_subexpressions)
   field_exists = _render_existence_test(field_ir, ir)
   logical_type = _cpp_basic_type_for_expression(field_ir.read_transform, ir)
 
   if read_value.is_constant and field_exists.is_constant:
+    assert not read_subexpressions.subexprs()
     declaration_template = (
         _TEMPLATES.structure_single_const_virtual_field_method_declarations)
     definition_template = (
@@ -766,6 +810,10 @@ def _generate_structure_virtual_field_methods(enclosing_type_name, field_ir,
       name=name,
       virtual_view_type_name=virtual_view_type_name,
       logical_type=logical_type,
+      read_subexpressions="".join(
+          ["      const auto {} = {};".format(name, subexpr)
+           for name, subexpr in read_subexpressions.subexprs()]
+      ),
       read_value=read_value.rendered,
       write_to_text_stream_function=write_to_text_stream_function,
       parent_type=enclosing_type_name,
@@ -828,15 +876,36 @@ def _generate_structure_physical_field_methods(enclosing_type_name, field_ir,
       _get_cpp_type_reader_of_field(field_ir, ir, "Storage", validator_type,
                                     parent_addressable_unit))
 
+
   field_name = field_ir.name.canonical_name.object_path[-1]
+
+  subexpressions = _SubexpressionStore("emboss_reserved_local_subexpr_")
   parameter_values = []
   parameters_known = []
   for parameter in parameter_expressions:
-    parameter_cpp_expr = _render_expression(parameter, ir)
+    parameter_cpp_expr = _render_expression(
+        parameter, ir, subexpressions=subexpressions)
     parameter_values.append(
         "{}.ValueOrDefault(), ".format(parameter_cpp_expr.rendered))
     parameters_known.append(
         "{}.Known() && ".format(parameter_cpp_expr.rendered))
+  parameter_subexpressions = "".join(
+      ["  const auto {} = {};\n".format(name, subexpr)
+       for name, subexpr in subexpressions.subexprs()]
+  )
+
+  first_size_and_offset_subexpr = len(subexpressions.subexprs())
+  offset = _render_expression(
+      field_ir.location.start, ir, subexpressions=subexpressions).rendered
+  size = _render_expression(
+      field_ir.location.size, ir, subexpressions=subexpressions).rendered
+  size_and_offset_subexpressions = "".join(
+      ["    const auto {} = {};\n".format(name, subexpr)
+       for name, subexpr in subexpressions.subexprs()[
+         first_size_and_offset_subexpr:]]
+  )
+
+
   field_alignment, field_offset = _alignment_of_location(field_ir.location)
   declaration = code_template.format_template(
       _TEMPLATES.structure_single_field_method_declarations,
@@ -848,12 +917,14 @@ def _generate_structure_physical_field_methods(enclosing_type_name, field_ir,
       parent_type=enclosing_type_name,
       name=field_name,
       type_reader=type_reader,
-      offset=_render_expression(field_ir.location.start, ir).rendered,
-      size=_render_expression(field_ir.location.size, ir).rendered,
+      offset=offset,
+      size=size,
+      size_and_offset_subexpressions=size_and_offset_subexpressions,
       field_exists=_render_existence_test(field_ir, ir).rendered,
       alignment=field_alignment,
       parameters_known="".join(parameters_known),
       parameter_values="".join(parameter_values),
+      parameter_subexpressions=parameter_subexpressions,
       static_offset=field_offset)
   return validator_declaration, declaration, definition
 
