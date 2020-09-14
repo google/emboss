@@ -1,0 +1,48 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+-- Test .emb with a struct with several consecutive packed fields.
+--
+-- This particular case stresses generated code; common subexpression
+-- elimination is needed in the code generator or else the generated code is
+-- very, *very* slow when compiled without optimizations.
+
+[$default byte_order: "BigEndian"]
+[(cpp) namespace: "emboss::test"]
+
+struct Length:
+  0 [+1]  UInt  length
+
+struct Data:
+  0 [+1]              Length    length
+  1 [+length.length]  UInt:8[]  data
+
+struct PackedFields:
+  0  [+1]            Length    length1 (l1)
+  0  [+l1.length+1]  Data      data1 (d1)
+  let o1 = d1.$size_in_bytes
+  o1 [+1]            Length    length2 (l2)
+  o1 [+l2.length+1]  Data      data2 (d2)
+  let o2 = o1 + d2.$size_in_bytes
+  o2 [+1]            Length    length3 (l3)
+  o2 [+l3.length+1]  Data      data3 (d3)
+  let o3 = o2 + d3.$size_in_bytes
+  o3 [+1]            Length    length4 (l4)
+  o3 [+l4.length+1]  Data      data4 (d4)
+  let o4 = o3 + d4.$size_in_bytes
+  o4 [+1]            Length    length5 (l5)
+  o4 [+l5.length+1]  Data      data5 (d5)
+  let o5 = o4 + d5.$size_in_bytes
+  o5 [+1]            Length    length6 (l6)
+  o5 [+l6.length+1]  Data      data6 (d6)
