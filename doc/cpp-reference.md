@@ -1074,6 +1074,37 @@ bool IsComplete() const;
 to hold the entire array.
 
 
+### `ToString` method
+
+```c++
+template <class String>
+String ToString() const;
+```
+
+Intended usage:
+
+```c++
+// Makes a copy of view's backing storage.
+auto str = view.ToString<std::string>();
+
+// Points to view's backing storage.
+auto str_view = view.ToString<std::string_view>();
+```
+
+`ToString()` returns a string type constructed from the backing storage of the
+array.  Note that `ToString()` is only enabled for arrays of 1-byte values,
+such as `UInt:8[]`, and only when the array view's underlying storage is
+contiguous.
+
+Although it is intended for use with `std::string` and `std::string_view`,
+`ToString()` can work with any C++ type that:
+
+1.  Has a `data()` method that returns a pointer to the string's underlying
+    data as a `char` type.
+2.  Has a constructor that accepts a `const declval(data())` pointer and a
+    `size_t` length.
+
+
 ### `UpdateFromTextStream` method
 
 ```c++

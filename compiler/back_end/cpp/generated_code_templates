@@ -468,16 +468,24 @@ inline typename $_type_reader_$ Generic$_parent_type_$View<Storage>::$_name_$()
   // call those methods at all.  Similarly, if the end of the field would come
   // before the start, we provide a null storage, though arguably we should
   // not.
-  if ($_parameters_known_$ has_$_name_$().ValueOr(false) && $_size_$.Known() &&
-      $_size_$.ValueOr(0) >= 0 && $_offset_$.Known() &&
-      $_offset_$.ValueOr(0) >= 0) {
-    return $_type_reader_$(
-        $_parameter_values_$ backing_
-            .template GetOffsetStorage<$_alignment_$, $_static_offset_$>(
-                $_offset_$.ValueOrDefault(), $_size_$.ValueOrDefault()));
-  } else {
-    return $_type_reader_$();
+$_parameter_subexpressions_$
+  if ($_parameters_known_$ has_$_name_$().ValueOr(false)) {
+$_size_and_offset_subexpressions_$
+    auto emboss_reserved_local_size = $_size_$;
+    auto emboss_reserved_local_offset = $_offset_$;
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        return $_type_reader_$(
+                $_parameter_values_$ backing_
+                        .template GetOffsetStorage<$_alignment_$,
+                                                   $_static_offset_$>(
+                                emboss_reserved_local_offset.ValueOrDefault(),
+                                emboss_reserved_local_size.ValueOrDefault()));
+    }
   }
+  return $_type_reader_$();
 }
 
 template <class Storage>
@@ -617,6 +625,7 @@ $_write_methods_$
 
    private:
     ::emboss::support::Maybe</**/ $_logical_type_$> MaybeRead() const {
+$_read_subexpressions_$
       return $_read_value_$;
     }
 

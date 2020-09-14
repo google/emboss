@@ -250,6 +250,16 @@ class GenericArrayView final {
 
   BufferType BackingStorage() const { return buffer_; }
 
+  // Forwards to BufferType's ToString(), if any, but only if ElementView is a
+  // 1-byte type.
+  template <typename String>
+  typename ::std::enable_if<kAddressableUnitSize == 8 && kElementSize == 1,
+                            String>::type
+  ToString() const {
+    EMBOSS_CHECK(Ok());
+    return BackingStorage().template ToString<String>();
+  }
+
  private:
   // This uses the same technique to select the correct definition of
   // SizeOfBuffer() as in the SizeInBits()/SizeInBytes() selection above.

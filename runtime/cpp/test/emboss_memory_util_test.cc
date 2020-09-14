@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if __cplusplus >= 201402L
+#include <string_view>
+#endif  // __cplusplus >= 201402L
+#include <vector>
+
 #include "runtime/cpp/emboss_memory_util.h"
 
 #include "gtest/gtest.h"
@@ -463,6 +468,21 @@ TEST(ContiguousBuffer, ConstructionFromCompatibleContiguousBuffers) {
       ContiguousBuffer<unsigned char, 4, 3>(data + 3, sizeof data - 3)};
   EXPECT_TRUE(aligned_buffer.Ok());
   EXPECT_EQ(aligned_buffer.data(), reinterpret_cast<signed char *>(data + 3));
+}
+
+TEST(ContiguousBuffer, ToString) {
+  const ::std::vector</**/ ::std::uint8_t> bytes = {
+      {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'}};
+  const auto buffer = ReadOnlyContiguousBuffer{bytes.data(), bytes.size() - 4};
+  auto str = buffer.ToString</**/ ::std::string>();
+  EXPECT_TRUE((::std::is_same</**/ ::std::string, decltype(str)>::value));
+  EXPECT_EQ(str, "abcd");
+#if __cplusplus >= 201402L
+  auto str_view = buffer.ToString</**/ ::std::string_view>();
+  EXPECT_TRUE(
+      (::std::is_same</**/ ::std::string_view, decltype(str_view)>::value));
+  EXPECT_EQ(str_view, "abcd");
+#endif  // __cplusplus >= 201402L
 }
 
 TEST(LittleEndianByteOrderer, Methods) {

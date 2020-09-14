@@ -616,6 +616,34 @@ class ContiguousBuffer final {
   Byte *begin() const { return bytes_; }
   Byte *end() const { return bytes_ + size_; }
 
+  // Constructs a string type from the underlying data; mostly intended to be
+  // called as:
+  //
+  //     buffer.ToString<std::string>();
+  //
+  // or:
+  //
+  //     buffer.ToString<std::string_view>();
+  //
+  // ... but it should also work with any similar-enough classes, such as
+  // std::basic_string_view<unsigned char> or Google's absl::string_view.
+  //
+  // Note that this may or may not make a copy of the underlying data,
+  // depending on the behavior of the given string type.
+  template <typename String>
+  typename ::std::enable_if<
+      IsChar<typename ::std::remove_reference<
+          decltype(*::std::declval<String>().data())>::type>::value,
+      String>::type
+  ToString() const {
+    return String(
+        reinterpret_cast<
+            const typename ::std::remove_reference<typename ::std::remove_cv<
+                decltype(*::std::declval<String>().data())>::type>::type *>(
+            bytes_),
+        size_);
+  }
+
  private:
   Byte *bytes_ = nullptr;
   ::std::size_t size_ = 0;

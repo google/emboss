@@ -313,3 +313,12 @@ emboss_cc_test(
         "@com_google_googletest//:gtest_main",
     ],
 )
+
+emboss_cc_test(
+    name = "complex_offset_test",
+    srcs = ["testcode/complex_offset_test.cc"],
+    deps = [
+        "//testdata:complex_offset_emboss",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
