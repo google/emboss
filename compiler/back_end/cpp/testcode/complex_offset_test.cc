@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Tests of generated code for text format.
+// Tests of packed field support.
 #include <stdint.h>
 
 #include <type_traits>
@@ -30,17 +30,7 @@ TEST(PackedFields, PerformanceOfOk) {
   ::std::array<char, 64> values = {0};
   const auto view = MakePackedFieldsView(&values);
   EXPECT_TRUE(view.Ok());
-  EXPECT_TRUE(view.length1().Ok());
-  EXPECT_TRUE(view.length2().Ok());
-  EXPECT_TRUE(view.length3().Ok());
-  EXPECT_TRUE(view.length4().Ok());
-  EXPECT_TRUE(view.length5().Ok());
   EXPECT_TRUE(view.length6().Ok());
-  EXPECT_TRUE(view.data1().Ok());
-  EXPECT_TRUE(view.data2().Ok());
-  EXPECT_TRUE(view.data3().Ok());
-  EXPECT_TRUE(view.data4().Ok());
-  EXPECT_TRUE(view.data5().Ok());
   EXPECT_TRUE(view.data6().Ok());
 }
 
