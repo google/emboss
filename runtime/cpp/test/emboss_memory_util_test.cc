@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if __cplusplus >= 201402L
+#if __cplusplus >= 201702L
 #include <string_view>
-#endif  // __cplusplus >= 201402L
+#endif  // __cplusplus >= 201702L
 #include <vector>
 
 #include "runtime/cpp/emboss_memory_util.h"
@@ -477,12 +477,12 @@ TEST(ContiguousBuffer, ToString) {
   auto str = buffer.ToString</**/ ::std::string>();
   EXPECT_TRUE((::std::is_same</**/ ::std::string, decltype(str)>::value));
   EXPECT_EQ(str, "abcd");
-#if __cplusplus >= 201402L
+#if __cplusplus >= 201702L
   auto str_view = buffer.ToString</**/ ::std::string_view>();
   EXPECT_TRUE(
       (::std::is_same</**/ ::std::string_view, decltype(str_view)>::value));
   EXPECT_EQ(str_view, "abcd");
-#endif  // __cplusplus >= 201402L
+#endif  // __cplusplus >= 201702L
 }
 
 TEST(LittleEndianByteOrderer, Methods) {
