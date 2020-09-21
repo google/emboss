@@ -248,13 +248,13 @@ using $_name_$Writer =
 
 template <class View>
 struct EmbossReservedInternalIsGeneric$_name_$View {
-  static constexpr bool value = false;
+  static constexpr const bool value = false;
 };
 
 template <class Storage>
 struct EmbossReservedInternalIsGeneric$_name_$View<
     Generic$_name_$View<Storage>> {
-  static constexpr bool value = true;
+  static constexpr const bool value = true;
 };
 
 template <typename T>
@@ -544,7 +544,8 @@ Generic$_parent_type_$View<Storage>::$_virtual_view_type_name_$::Read() {
 }
 
 template <class Storage>
-inline constexpr $_logical_type_$ Generic$_parent_type_$View<
+inline constexpr $_logical_type_$
+Generic$_parent_type_$View<
     Storage>::$_virtual_view_type_name_$::UncheckedRead() {
   return $_parent_type_$::$_name_$();
 }
