@@ -558,7 +558,7 @@ class _VirtualViewFieldRenderer(_FieldRenderer):
         expression, ir, "view_.", subexpressions)
 
 
-class _SubexpressionStore:
+class _SubexpressionStore(object):
   """Holder for subexpressions to be assigned to local variables."""
 
   def __init__(self, prefix):
@@ -811,8 +811,8 @@ def _generate_structure_virtual_field_methods(enclosing_type_name, field_ir,
       virtual_view_type_name=virtual_view_type_name,
       logical_type=logical_type,
       read_subexpressions="".join(
-          ["      const auto {} = {};".format(name, subexpr)
-           for name, subexpr in read_subexpressions.subexprs()]
+          ["      const auto {} = {};\n".format(subexpr_name, subexpr)
+           for subexpr_name, subexpr in read_subexpressions.subexprs()]
       ),
       read_value=read_value.rendered,
       write_to_text_stream_function=write_to_text_stream_function,
@@ -876,7 +876,6 @@ def _generate_structure_physical_field_methods(enclosing_type_name, field_ir,
       _get_cpp_type_reader_of_field(field_ir, ir, "Storage", validator_type,
                                     parent_addressable_unit))
 
-
   field_name = field_ir.name.canonical_name.object_path[-1]
 
   subexpressions = _SubexpressionStore("emboss_reserved_local_subexpr_")
@@ -902,9 +901,8 @@ def _generate_structure_physical_field_methods(enclosing_type_name, field_ir,
   size_and_offset_subexpressions = "".join(
       ["    const auto {} = {};\n".format(name, subexpr)
        for name, subexpr in subexpressions.subexprs()[
-         first_size_and_offset_subexpr:]]
+           first_size_and_offset_subexpr:]]
   )
-
 
   field_alignment, field_offset = _alignment_of_location(field_ir.location)
   declaration = code_template.format_template(
