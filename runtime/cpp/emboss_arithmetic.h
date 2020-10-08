@@ -70,8 +70,9 @@ inline constexpr bool AllKnown() { return true; }
 // the arguments.  Unfortunately, C++11 std::initializer_list is not
 // constexpr, and C++11 constexpr does not allow iteration.
 //
-// Instead, for "small" numbers of arguments (up to 64, at time of writing), we
-// have generated overloads of the form:
+// Instead, for "small" numbers of arguments (up to 64, at time of writing,
+// controlled by OVERLOADS in generators/all_known.py), we have generated
+// overloads of the form:
 //
 // template <typename T0, ... typename TN>
 // inline constexpr bool AllKnown(T0 v0, ... TN vN) {
@@ -198,11 +199,12 @@ struct MaximumOperation {
   // constexpr, and C++11 constexpr does not allow iteration.
   //
   // Instead, we have a small number of hand-written overloads and a large
-  // number (61, at time of writing) of generated overloads, which use O(lg(N))
-  // stack for "small" numbers of arguments (128 or fewer, at time of writing),
-  // and O(N) stack for more arguments, but with a much, much smaller constant
-  // multiplier: one additional stack frame per 64 arguments, instead of one
-  // per argument.
+  // number (59, at time of writing, controlled by OVERLOADS in
+  // generators/maximum_operation_do.py) of generated overloads, which use
+  // O(lg(N)) stack for "small" numbers of arguments (128 or fewer, at time of
+  // writing), and O(N) stack for more arguments, but with a much, much smaller
+  // constant multiplier: one additional stack frame per 64 arguments, instead
+  // of one per argument.
 
   // Maximum of 2-4 elements are special-cased.
   template <typename T>
