@@ -75,6 +75,23 @@ TEST(TextFormat, SkippedStructureFieldOutput) {
       "}",
       ::emboss::WriteToString(view.b(), ::emboss::MultilineText()));
 }
+  
+TEST(TextFormat, UpdateFromText) {
+  ::std::array<char, 2> values{};
+  const auto view = MakeVanillaView(&values);
+
+  ::emboss::UpdateFromText(view, "{ a: 1, b: 2 }");
+  EXPECT_EQ(view.a().Read(), 1);
+  EXPECT_EQ(view.b().Read(), 2);
+
+  ::emboss::UpdateFromText(view, "{ a: 3 }");
+  EXPECT_EQ(view.a().Read(), 3);
+  EXPECT_EQ(view.b().Read(), 2);
+
+  ::emboss::UpdateFromText(view, "{ b: 4 }");
+  EXPECT_EQ(view.a().Read(), 3);
+  EXPECT_EQ(view.b().Read(), 4);
+}
 
 }  // namespace
 }  // namespace test
