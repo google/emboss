@@ -14,12 +14,21 @@
 
 """Functions for proving mathematical properties of expressions."""
 
+import math
 import fractions
 import operator
 
 from compiler.util import ir_pb2
 from compiler.util import ir_util
 from compiler.util import traverse_ir
+
+
+# Create a local alias for math.gcd with a fallback to fractions.gcd if it is
+# not available. This can be dropped if pre-3.5 Python support is dropped.
+if hasattr(math, 'gcd'):
+  _math_gcd = math.gcd
+else:
+  _math_gcd = fractions.gcd
 
 
 def compute_constraints_of_expression(expression, ir):
@@ -691,7 +700,7 @@ def _greatest_common_divisor(a, b):
   if b == 0: return a
   if a == "infinity": return b
   if b == "infinity": return a
-  return fractions.gcd(a, b)
+  return _math_gcd(a, b)
 
 
 def compute_constants(ir):
