@@ -75,7 +75,7 @@ TEST(TextFormat, SkippedStructureFieldOutput) {
       "}",
       ::emboss::WriteToString(view.b(), ::emboss::MultilineText()));
 }
-  
+
 TEST(TextFormat, UpdateFromText) {
   ::std::array<char, 2> values{};
   const auto view = MakeVanillaView(&values);
