@@ -118,6 +118,8 @@ class FlagView final {
     ::emboss::support::WriteBooleanViewToTextStream(this, stream, options);
   }
 
+  static constexpr bool IsAggregate() { return false; }
+
  private:
   BitBlock bit_block_;
 };
@@ -297,6 +299,8 @@ class UIntView final {
     support::WriteIntegerViewToTextStream(this, stream, options);
   }
 
+  static constexpr bool IsAggregate() { return false; }
+
   static constexpr int SizeInBits() { return Parameters::kBits; }
 
  private:
@@ -459,6 +463,8 @@ class IntView final {
                          ::emboss::TextOutputOptions options) const {
     support::WriteIntegerViewToTextStream(this, stream, options);
   }
+
+  static constexpr bool IsAggregate() { return false; }
 
   static constexpr int SizeInBits() { return Parameters::kBits; }
 
@@ -649,6 +655,8 @@ class BcdView final {
     support::WriteIntegerViewToTextStream(this, stream, options);
   }
 
+  static constexpr bool IsAggregate() { return false; }
+
   template <typename OtherView>
   void CopyFrom(const OtherView &other) const {
     Write(other.Read());
@@ -788,6 +796,8 @@ class FloatView final {
                          ::emboss::TextOutputOptions options) const {
     support::WriteFloatToTextStream(Read(), stream, options);
   }
+
+  static constexpr bool IsAggregate() { return false; }
 
   static constexpr int SizeInBits() { return Parameters::kBits; }
 

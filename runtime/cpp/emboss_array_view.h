@@ -248,6 +248,8 @@ class GenericArrayView final {
     WriteArrayToTextStream(this, stream, options);
   }
 
+  static constexpr bool IsAggregate() { return true; }
+
   BufferType BackingStorage() const { return buffer_; }
 
   // Forwards to BufferType's ToString(), if any, but only if ElementView is a

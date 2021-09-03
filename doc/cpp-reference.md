@@ -1902,7 +1902,9 @@ TextOutputOptions PlusOneIndent() const;
 `PlusOneIndent` returns a new `TextOutputOptions` with one more level of
 indentation than the current `TextOutputOptions`. This is primarily intended for
 use inside of `WriteToTextStream` methods, as a way to get an indented
-`TextOutputOptions` to pass to the `WriteToTextStream` methods of child objects.
+`TextOutputOptions` to pass to the `WriteToTextStream` methods of child
+objects.  However, application callers may use `PlusOneIndent()`, possibly
+multiple times, to indent the entire output.
 
 ### `Multiline` method
 
@@ -1950,10 +1952,19 @@ Returns a new `TextOutputOptions` with the same options as the current
 `TextOutputOptions`, except for a new value for `digit_grouping()`. The new
 numeric base should be 2, 10, or 16.
 
+### `WithAllowPartialOutput` method
+
+```c++
+TextOutputOptions WithAllowPartialOutput(bool new_value) const;
+```
+
+Returns a new `TextOutputOptions` with the same options as the current
+`TextOutputOptions`, except for a new value for `allow_partial_output()`.
+
 ### `current_indent` method
 
 ```c++
-::std::string current_indent() const;
+::std::string current_indent() const;  // Default "".
 ```
 
 Returns the current indent string.
@@ -1961,16 +1972,16 @@ Returns the current indent string.
 ### `indent` method
 
 ```c++
-::std::string indent() const;
+::std::string indent() const;  // Default "  ".
 ```
 
-Returns the indent string. The indent string is the string used for a single
-level of indentation; most callers will prefer `current_indent`.
+Returns the indent string.  The indent string is the string used for a *single*
+level of indentation.
 
 ### `multiline` method
 
 ```c++
-bool multiline() const;
+bool multiline() const;  // Default false.
 ```
 
 Returns `true` if text output should use multiple lines, or `false` if text
@@ -1979,7 +1990,7 @@ output should be single-line only.
 ### `digit_grouping` method
 
 ```c++
-bool digit_grouping() const;
+bool digit_grouping() const;  // Default false.
 ```
 
 Returns `true` if text output should include digit separators on numbers; i.e.
@@ -1988,7 +1999,7 @@ Returns `true` if text output should include digit separators on numbers; i.e.
 ### `comments` method
 
 ```c++
-bool comments() const;
+bool comments() const;  // Default false.
 ```
 
 Returns `true` if text output should include comments, e.g., to show numbers in
@@ -1997,8 +2008,25 @@ multiple bases.
 ### `numeric_base` method
 
 ```c++
-uint8_t numeric_base() const;
+uint8_t numeric_base() const;  // Default 10.
 ```
 
 Returns the numeric base that should be used for formatting numbers. This should
 always be 2, 10, or 16.
+
+### `allow_partial_output` method
+
+```c++
+bool allow_partial_output() const;  // Default false.
+```
+
+Returns `true` if text output should attempt to extract fields from a view that
+is not `Ok()`.  If so:
+
+*   `WriteToString()` or `WriteToTextStream()` should never `CHECK`-fail.
+*   Atomic fields (e.g., `Int`, `UInt`, `enum`, `Flag`, etc. types) will not be
+    written to the text stream if they cannot be read.
+*   If `comments()` is also `true`, unreadable atomic fields will be commented
+    in the text stream.
+*   Aggregate fields (`struct`, `bits`, or arrays) will be written, but may be
+    missing fields or entirely empty if they have non-`Ok()` members.

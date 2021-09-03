@@ -151,6 +151,8 @@ class EnumView final {
     ::emboss::support::WriteEnumViewToTextStream(this, stream, options);
   }
 
+  static constexpr bool IsAggregate() { return false; }
+
   static constexpr int SizeInBits() { return Parameters::kBits; }
 
  private:

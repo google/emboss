@@ -201,6 +201,56 @@ TEST(RequiresWithOptionalFields, CouldWriteValue) {
   EXPECT_FALSE(view.b_true().CouldWriteValue(false));
 }
 
+TEST(WriteToString, NotOkFieldsAreNotWritten) {
+  ::std::array</**/ ::std::uint8_t, 3> buffer = {0x00, 0x00, 0x00};
+  auto reader = MakeRequiresIntegersView(&buffer);
+  EXPECT_FALSE(reader.Ok());
+  EXPECT_EQ(
+      "{\n"
+      "  zero_through_nine: 0  # 0x0\n"
+      "  # ten_through_twenty: UNREADABLE\n"
+      "  disjoint: 0  # 0x0\n"
+      "  # ztn_plus_ttt: UNREADABLE\n"
+      "  # alias_of_zero_through_nine: UNREADABLE\n"
+      "  zero_through_nine_plus_five: 5  # 0x5\n"
+      "}",
+      ::emboss::WriteToString(
+          reader, ::emboss::MultilineText().WithAllowPartialOutput(true)));
+  EXPECT_EQ(
+      "{ zero_through_nine: 0, disjoint: 0, zero_through_nine_plus_five: 5 }",
+      ::emboss::WriteToString(
+          reader, ::emboss::TextOutputOptions().WithAllowPartialOutput(true)));
+}
+
+TEST(WriteToString, NotOkArrayElementsAreNotWritten) {
+  ::std::array</**/ ::std::uint8_t, 4> buffer = {0x20, 0x00, 0x30, 0x05};
+  auto reader = MakeRequiresInArrayElementsView(&buffer);
+  EXPECT_FALSE(reader.Ok());
+  EXPECT_EQ(
+      "{\n"
+      "  xs: {\n"
+      "    [0]: {\n"
+      "      # x: UNREADABLE\n"
+      "    }\n"
+      "    [1]: {\n"
+      "      x: 0  # 0x0\n"
+      "    }\n"
+      "    [2]: {\n"
+      "      # x: UNREADABLE\n"
+      "    }\n"
+      "    [3]: {\n"
+      "      x: 5  # 0x5\n"
+      "    }\n"
+      "  }\n"
+      "}",
+      ::emboss::WriteToString(
+          reader, ::emboss::MultilineText().WithAllowPartialOutput(true)));
+  EXPECT_EQ(
+      "{ xs: { [0]: { }, { x: 0 }, { }, { x: 5 } } }",
+      ::emboss::WriteToString(
+          reader, ::emboss::TextOutputOptions().WithAllowPartialOutput(true)));
+}
+
 }  // namespace
 }  // namespace test
 }  // namespace emboss
