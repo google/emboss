@@ -420,6 +420,13 @@ TEST(TextOutputOptions, WithNumericBase) {
   EXPECT_EQ(2, new_options.numeric_base());
 }
 
+TEST(TextOutputOptions, WithAllowPartialOutput) {
+  TextOutputOptions options;
+  TextOutputOptions new_options = options.WithAllowPartialOutput(true);
+  EXPECT_FALSE(options.allow_partial_output());
+  EXPECT_TRUE(new_options.allow_partial_output());
+}
+
 // Small helper function for the various WriteIntegerToTextStream tests; just
 // sets up a stream, forwards its arguments to WriteIntegerToTextStream, and
 // then returns the text from the stream.

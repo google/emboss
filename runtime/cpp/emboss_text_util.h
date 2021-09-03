@@ -73,12 +73,19 @@ class TextOutputOptions final {
     return result;
   }
 
+  TextOutputOptions WithAllowPartialOutput(bool new_value) const {
+    TextOutputOptions result = *this;
+    result.allow_partial_output_ = new_value;
+    return result;
+  }
+
   ::std::string current_indent() const { return current_indent_; }
   ::std::string indent() const { return indent_; }
   bool multiline() const { return multiline_; }
   bool digit_grouping() const { return digit_grouping_; }
   bool comments() const { return comments_; }
   ::std::uint8_t numeric_base() const { return numeric_base_; }
+  bool allow_partial_output() const { return allow_partial_output_; }
 
  private:
   ::std::string indent_;
@@ -86,6 +93,7 @@ class TextOutputOptions final {
   bool comments_ = false;
   bool multiline_ = false;
   bool digit_grouping_ = false;
+  bool allow_partial_output_ = false;
   ::std::uint8_t numeric_base_ = 10;
 };
 
@@ -691,36 +699,63 @@ void WriteArrayToTextStream(Array *array, Stream *stream,
     stream->Write("{");
     WriteShorthandArrayCommentToTextStream(array, stream, element_options);
     for (::std::size_t i = 0; i < array->ElementCount(); ++i) {
-      stream->Write("\n");
-      stream->Write(element_options.current_indent());
-      stream->Write("[");
-      // TODO(bolms): Put padding in here so that array elements start at the
-      // same column.
-      //
-      // TODO(bolms): (Maybe) figure out how to get padding to work so that
-      // elements with comments can have their comments align to the same
-      // column.
-      WriteIntegerToTextStream(i, stream, options.numeric_base(),
-                               options.digit_grouping());
-      stream->Write("]: ");
-      (*array)[i].WriteToTextStream(stream, element_options);
+      if (!options.allow_partial_output() || (*array)[i].IsAggregate() ||
+          (*array)[i].Ok()) {
+        stream->Write("\n");
+        stream->Write(element_options.current_indent());
+        stream->Write("[");
+        // TODO(bolms): Put padding in here so that array elements start at the
+        // same column.
+        //
+        // TODO(bolms): (Maybe) figure out how to get padding to work so that
+        // elements with comments can have their comments align to the same
+        // column.
+        WriteIntegerToTextStream(i, stream, options.numeric_base(),
+                                 options.digit_grouping());
+        stream->Write("]: ");
+        (*array)[i].WriteToTextStream(stream, element_options);
+      } else if (element_options.comments()) {
+        stream->Write("\n");
+        stream->Write(element_options.current_indent());
+        stream->Write("# [");
+        WriteIntegerToTextStream(i, stream, options.numeric_base(),
+                                 options.digit_grouping());
+        stream->Write("]: UNREADABLE");
+      }
     }
     stream->Write("\n");
     stream->Write(options.current_indent());
     stream->Write("}");
   } else {
     stream->Write("{");
+    bool skipped_unreadable = false;
     for (::std::size_t i = 0; i < array->ElementCount(); ++i) {
-      stream->Write(" ");
-      if (i % 8 == 0) {
-        stream->Write("[");
-        WriteIntegerToTextStream(i, stream, options.numeric_base(),
-                                 options.digit_grouping());
-        stream->Write("]: ");
-      }
-      (*array)[i].WriteToTextStream(stream, element_options);
-      if (i < array->ElementCount() - 1) {
-        stream->Write(",");
+      if (!options.allow_partial_output() || (*array)[i].IsAggregate() ||
+          (*array)[i].Ok()) {
+        stream->Write(" ");
+        if (i % 8 == 0 || skipped_unreadable) {
+          stream->Write("[");
+          WriteIntegerToTextStream(i, stream, options.numeric_base(),
+                                   options.digit_grouping());
+          stream->Write("]: ");
+        }
+        (*array)[i].WriteToTextStream(stream, element_options);
+        if (i < array->ElementCount() - 1) {
+          stream->Write(",");
+        }
+        skipped_unreadable = false;
+      } else {
+        if (element_options.comments()) {
+          stream->Write(" # ");
+          if (i % 8 == 0) {
+            stream->Write("[");
+            WriteIntegerToTextStream(i, stream, options.numeric_base(),
+                                     options.digit_grouping());
+            stream->Write("]: ");
+          }
+          stream->Write("UNREADABLE\n");
+        }
+        skipped_unreadable = true;
       }
     }
     stream->Write(" }");

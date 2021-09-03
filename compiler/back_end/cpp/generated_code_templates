@@ -225,6 +225,8 @@ $_write_fields_$
     }
   }
 
+  static constexpr bool IsAggregate() { return true; }
+
 $_field_method_declarations_$
 
  private:
@@ -305,40 +307,61 @@ MakeAligned$_name_$View(
         continue;
       }
 
-
 // ** write_field_to_text_stream ** ////////////////////////////////////////////
     if (has_$_field_name_$().ValueOr(false)) {
-      if (emboss_reserved_local_field_options.multiline()) {
-        emboss_reserved_local_stream->Write(
-            emboss_reserved_local_field_options.current_indent());
-      } else {
-        if (emboss_reserved_local_wrote_field) {
-          emboss_reserved_local_stream->Write(",");
+      // Don't try to read the field if `allow_partial_output` is set and the
+      // field can't be `Read()`.  Aggregates should still be visited, even if
+      // they are not `Ok()` overall, since submembers may still be `Ok()`.
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          $_field_name_$().IsAggregate() || $_field_name_$().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write(" ");
-      }
-      emboss_reserved_local_stream->Write("$_field_name_$: ");
-      $_field_name_$().WriteToTextStream(emboss_reserved_local_stream,
-                                         emboss_reserved_local_field_options);
-      emboss_reserved_local_wrote_field = true;
-      if (emboss_reserved_local_field_options.multiline()) {
-        emboss_reserved_local_stream->Write("\n");
+        emboss_reserved_local_stream->Write("$_field_name_$: ");
+        $_field_name_$().WriteToTextStream(emboss_reserved_local_stream,
+                                           emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !$_field_name_$().IsAggregate() && !$_field_name_$().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# $_field_name_$: UNREADABLE\n");
       }
     }
-
 
 // ** write_read_only_field_to_text_stream ** //////////////////////////////////
     if (has_$_field_name_$().ValueOr(false) &&
         emboss_reserved_local_field_options.comments()) {
-      emboss_reserved_local_stream->Write(
-          emboss_reserved_local_field_options.current_indent());
-      // TODO(bolms): When there are multiline read-only fields, add an option
-      // to TextOutputOptions to add `# ` to the current indent and use it here,
-      // so that subsequent lines are also commented out.
-      emboss_reserved_local_stream->Write("# $_field_name_$: ");
-      $_field_name_$().WriteToTextStream(emboss_reserved_local_stream,
-                                         emboss_reserved_local_field_options);
-      emboss_reserved_local_stream->Write("\n");
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          $_field_name_$().IsAggregate() || $_field_name_$().Ok()) {
+        emboss_reserved_local_stream->Write(
+            emboss_reserved_local_field_options.current_indent());
+        // TODO(bolms): When there are multiline read-only fields, add an option
+        // to TextOutputOptions to add `# ` to the current indent and use it
+        // here, so that subsequent lines are also commented out.
+        emboss_reserved_local_stream->Write("# $_field_name_$: ");
+        $_field_name_$().WriteToTextStream(emboss_reserved_local_stream,
+                                           emboss_reserved_local_field_options);
+        emboss_reserved_local_stream->Write("\n");
+      } else {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# $_field_name_$: UNREADABLE\n");
+      }
     }
 
 // ** constant_structure_size_method ** ////////////////////////////////////////
@@ -520,6 +543,8 @@ Generic$_parent_type_$View<Storage>::has_$_name_$() const {
       ::emboss::support::$_write_to_text_stream_function_$(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
+
+    static constexpr bool IsAggregate() { return false; }
   };
 
   static constexpr $_virtual_view_type_name_$ $_name_$() {
@@ -621,6 +646,8 @@ Generic$_parent_type_$View<
       ::emboss::support::$_write_to_text_stream_function_$(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
+
+    static constexpr bool IsAggregate() { return false; }
 
 $_write_methods_$
 

@@ -85,3 +85,10 @@ struct RequiresWithOptionalFields:
     if b_exists:
       2 [+1]  Flag b_true
         [requires: this]
+
+
+struct RequiresInArrayElements:
+  struct Element:
+    0 [+1]  UInt:8  x  [requires: 0 <= this <= 10]
+
+  0 [+4]  Element[]  xs

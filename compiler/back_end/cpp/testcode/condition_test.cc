@@ -759,6 +759,44 @@ TEST(WriteToString, MissingFieldsAreNotWritten) {
   EXPECT_EQ("{ x: 1 }", ::emboss::WriteToString(reader));
 }
 
+TEST(WriteToString, NotOkFieldsAreNotWritten) {
+  ::std::uint8_t buffer[2] = {0x00, 0x00};
+  auto reader = BasicConditionalWriter(buffer, 1U);
+  EXPECT_FALSE(reader.Ok());
+  EXPECT_EQ(
+      "{\n"
+      "  x: 0  # 0x0\n"
+      "  # xc: UNREADABLE\n"
+      "}",
+      ::emboss::WriteToString(
+          reader, ::emboss::MultilineText().WithAllowPartialOutput(true)));
+  EXPECT_EQ(
+      "{ x: 0 }",
+      ::emboss::WriteToString(
+          reader, ::emboss::TextOutputOptions().WithAllowPartialOutput(true)));
+}
+
+TEST(WriteToString, NotOkStructSubFieldsAreNotWritten) {
+  ::std::uint8_t buffer[2] = {0x00, 0x00};
+  auto reader = ConditionalInlineWriter(buffer, 2U);
+  EXPECT_FALSE(reader.Ok());
+  EXPECT_EQ(
+      "{\n"
+      "  payload_id: 0  # 0x0\n"
+      "  type_0: {\n"
+      "    a: 0  # 0x0\n"
+      "    # b: UNREADABLE\n"
+      "    # c: UNREADABLE\n"
+      "  }\n"
+      "}",
+      ::emboss::WriteToString(
+          reader, ::emboss::MultilineText().WithAllowPartialOutput(true)));
+  EXPECT_EQ(
+      "{ payload_id: 0, type_0: { a: 0 } }",
+      ::emboss::WriteToString(
+          reader, ::emboss::TextOutputOptions().WithAllowPartialOutput(true)));
+}
+
 TEST(WriteToString, PresentFieldsNotWritten) {
   ::std::uint8_t buffer[2] = {0x00, 0x01};
   auto reader = BasicConditionalWriter(buffer, 2U);
