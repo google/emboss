@@ -639,6 +639,17 @@ M_LOG2_E
 M_INVLN2
 
 
+-- Arduino
+# Minimum reserved words from Arduino.h.  Other words may be reserved depending
+# on the platform.
+HIGH
+LOW
+INPUT
+OUTPUT
+INPUT_PULLUP
+LED_BUILTIN
+
+
 -- Verilog
 # Verilog and System Verilog allow any keyword to be used as an identifier as
 # long as it is prefixed with '\' and followed by whitespace; e.g., \if .
