@@ -18,8 +18,8 @@ filegroup(
     name = "raw_headers",
     srcs = [
         "emboss_arithmetic.h",
-        "emboss_arithmetic_all_known_generated.inc",
-        "emboss_arithmetic_maximum_operation_generated.inc",
+        "emboss_arithmetic_all_known_generated.h",
+        "emboss_arithmetic_maximum_operation_generated.h",
         "emboss_array_view.h",
         "emboss_bit_util.h",
         "emboss_constant_view.h",

@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Generator for emboss_arithmetic_maximum_operation_generated.inc.
+# Generator for emboss_arithmetic_maximum_operation_generated.h.
 
 # Maximum number of explicit arguments in the recursive overloads.  This script
 # will generate overloads for 5...OVERLOADS arguments, plus a special overload

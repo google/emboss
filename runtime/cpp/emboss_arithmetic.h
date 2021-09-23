@@ -80,7 +80,7 @@ inline constexpr bool AllKnown() { return true; }
 // }
 //
 // This reduces stack frames by ~64x.
-#  include "emboss_arithmetic_all_known_generated.inc"
+#include "emboss_arithmetic_all_known_generated.h"
 
 // MaybeDo implements the logic of checking for known values, unwrapping the
 // known values, passing the unwrapped values to OperatorT, and then rewrapping
@@ -238,7 +238,7 @@ struct MaximumOperation {
   //
   // Note that, if there are enough arguments, this still falls back onto
   // linear-stack-space recursion.
-#  include "emboss_arithmetic_maximum_operation_generated.inc"
+#include "emboss_arithmetic_maximum_operation_generated.h"
 };
 
 //// Special operations, where either un-Known() operands do not always result
