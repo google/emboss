@@ -1,0 +1,992 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Reserved words for Emboss.
+#
+# In the interest of avoiding problems during codegen, Emboss disallows fields,
+# types, and enum values that would collide with reserved words from a number
+# of languages.  This (mostly) avoids cases where the back-end code generator
+# would want to emit a field accessor with the same name as a keyword.  (Proto,
+# for example, handles this case by appending "_" to the field name if it
+# collides with a keyword; however, this is not documented, and Proto still
+# breaks if you happen to have fields named "struct" and "struct_" in the same
+# message.)
+#
+# Emboss reserves words from many languages, on the off chance that they will
+# someday have code generators, but there is an emphasis on systems languages
+# (such as C), hardware definition languages (such as Verilog), and languages
+# which can easily be used for handling binary data (such as Erlang).
+#
+# Non-blank/comment lines in this file take one of two forms:
+#
+# -- Source
+# word
+#
+# e.g.:
+#
+# -- C
+# int
+# long
+# _Bool  # C99
+#
+# -- Verilog
+# always
+# case
+#
+# A word may appear in multiple language sections.  The first language name for
+# a word will be used in error messages when names matching that word are
+# found.
+
+# TODO(bolms): There still needs to be a way to override field names in
+# generated code.  This list is *not* a complete list of every possible
+# reserved word -- such a list is impossible, given that language designers
+# continue to add new keywords to existing languages, new languages pop up,
+# standards such as POSIX reserve huge swathes of namespace for future
+# expansion (i.e., anything starting with E[A-Z0-9]), and different C and C++
+# code bases may have custom preprocessor macros that collide with *anything*.
+
+-- C
+asm
+auto
+break
+case
+char
+const
+continue
+default
+do
+double
+else
+extern
+float
+for
+fortran
+goto
+if
+inline  # C99
+int
+long
+register
+restrict  # C99
+return
+short
+signed
+sizeof
+static
+switch
+typedef
+unsigned
+void
+volatile
+while
+_Alignas  # C11
+_Alignof  # C11
+_Atomic  # C11
+_Bool  # C99
+_Complex  # C99
+_Generic  # C11
+_Imaginary  # C99
+_Noreturn  # C11
+_Pragma  # C99
+_Static_assert  # C11
+_Thread_local  # C11
+
+# The following are *macros* defined in the C standard library.  For the most
+# part, I do not think banning these will inconvenience many people.
+
+# <assert.h>
+NDEBUG
+static_assert
+assert
+
+# <complex.h>
+__STDC_NO_COMPLEX__
+complex
+_Complex_I
+imaginary
+_Imaginary_I
+I
+CMPLX
+CMPLXF
+CMPLXL
+
+# <errno.h>
+errno
+EDOM
+EILSEQ
+ERANGE
+
+# <fenv.h>
+FE_DIVBYZERO
+FE_INEXACT
+FE_INVALID
+FE_OVERFLOW
+FE_UNDERFLOW
+FE_ALL_EXCEPT
+FE_DOWNWARD
+FE_TONEAREST
+FE_TOWARDZERO
+FE_UPWARD
+FE_DFL_ENV
+
+# <float.h>
+FLT_ROUNDS
+FLT_EVAL_METHOD
+FLT_HAS_SUBNORM
+DBL_HAS_SUBNORM
+LDBL_HAS_SUBNORM
+FLT_RADIX
+FLT_MANT_DIG
+DBL_MANT_DIG
+LDBL_MANT_DIG
+FLT_DECIMAL_DIG
+DBL_DECIMAL_DIG
+LDBL_DECIMAL_DIG
+DECIMAL_DIG
+FLT_DIG
+DBL_DIG
+LDBL_DIG
+FLT_MIN_EXP
+DBL_MIN_EXP
+LDBL_MIN_EXP
+FLT_MIN_10_EXP
+DBL_MIN_10_EXP
+LDBL_MIN_10_EXP
+FLT_MAX_EXP
+DBL_MAX_EXP
+LDBL_MAX_EXP
+FLT_MAX_10_EXP
+DBL_MAX_10_EXP
+LDBL_MAX_10_EXP
+FLT_MAX
+DBL_MAX
+LDBL_MAX
+FLT_EPSILON
+DBL_EPSILON
+LDBL_EPSILON
+FLT_MIN
+DBL_MIN
+LDBL_MIN
+FLT_TRUE_MIN
+DBL_TRUE_MIN
+LDBL_TRUE_MIN
+
+# <iso646.h>
+# These are not frequently used in real C code, but then, it is hard to think
+# of a good reason to use these as field names.
+and
+and_eq
+bitand
+bitor
+compl
+not
+not_eq
+or
+or_eq
+xor
+xor_eq
+
+# <limits.h>
+CHAR_BIT
+SCHAR_MIN
+SCHAR_MAX
+UCHAR_MAX
+CHAR_MIN
+CHAR_MAX
+MB_LEN_MAX
+SHRT_MIN
+SHRT_MAX
+USHRT_MAX
+INT_MIN
+INT_MAX
+UINT_MAX
+LONG_MIN
+LONG_MAX
+ULONG_MAX
+LLONG_MIN
+LLONG_MAX
+ULLONG_MAX
+
+# <locale.h>
+NULL
+LC_ALL
+LC_COLLATE
+LC_CTYPE
+LC_MONETARY
+LC_NUMERIC
+LC_TIME
+
+# <math.h>
+HUGE_VAL
+HUGE_VALF
+HUGE_VALL
+INFINITY
+NAN
+FP_INFINITE
+FP_NAN
+FP_NORMAL
+FP_SUBNORMAL
+FP_ZERO
+FP_FAST_FMA
+FP_FAST_FMAF
+FP_FAST_FMAL
+FP_ILOGB0
+FP_ILOGBNAN
+MATH_ERRNO
+MATH_ERREXCEPT
+math_errhandling
+fpclassify
+isfinite
+isinf
+isnan
+isnormal
+signbit
+isgreater
+isgreaterequal
+isless
+islessequal
+islessgreater
+isunordered
+
+# <setjmp.h>
+setjmp
+# Oddly, setjmp is a macro, but longjmp is not.
+
+# <signal.h>
+SIG_DFL
+SIG_ERR
+SIG_IGN
+SIGABRT
+SIGFPE
+SIGILL
+SIGINT
+SIGSEGV
+SIGTERM
+
+# <stdalign.h>
+alignas
+__alignas_is_defined
+
+# <stdarg.h>
+va_arg
+va_copy
+va_end
+va_start
+
+# <stdatomic.h>
+__STDC_NO_ATOMICS__
+ATOMIC_BOOL_LOCK_FREE
+ATOMIC_CHAR_LOCK_FREE
+ATOMIC_CHAR16_T_LOCK_FREE
+ATOMIC_CHAR32_T_LOCK_FREE
+ATOMIC_WCHAR_T_LOCK_FREE
+ATOMIC_SHORT_LOCK_FREE
+ATOMIC_INT_LOCK_FREE
+ATOMIC_LONG_LOCK_FREE
+ATOMIC_LLONG_LOCK_FREE
+ATOMIC_POINTER_LOCK_FREE
+ATOMIC_FLAG_INIT
+ATOMIC_VAR_INIT
+# Many of the following are listed by the standard as "generic functions"
+# instead of explicitly calling them out as macros.
+atomic_init
+kill_dependency
+atomic_is_lock_free
+atomic_store
+atomic_store_explicit
+atomic_load
+atomic_load_explicit
+atomic_exchange
+atomic_exchange_explicit
+atomic_compare_exchange_strong
+atomic_compare_exchange_strong_explicit
+atomic_compare_exchange_weak
+atomic_compare_exchange_weak_explicit
+atomic_fetch_add
+atomic_fetch_sub
+atomic_fetch_or
+atomic_fetch_xor
+atomic_fetch_and
+atomic_fetch_add_explicit
+atomic_fetch_sub_explicit
+atomic_fetch_or_explicit
+atomic_fetch_xor_explicit
+atomic_fetch_and_explicit
+
+# <stdbool.h>
+bool
+__bool_true_false_are_defined
+
+# <stddef.h>
+NULL
+offsetof
+
+# <stdint.h>
+INT16_C
+INT16_MAX
+INT16_MIN
+INT32_C
+INT32_MAX
+INT32_MIN
+INT64_C
+INT64_MAX
+INT64_MIN
+INT8_C
+INT8_MAX
+INT8_MIN
+INT_FAST16_MAX
+INT_FAST16_MIN
+INT_FAST32_MAX
+INT_FAST32_MIN
+INT_FAST64_MAX
+INT_FAST64_MIN
+INT_FAST8_MAX
+INT_FAST8_MIN
+INT_LEAST16_MAX
+INT_LEAST16_MIN
+INT_LEAST32_MAX
+INT_LEAST32_MIN
+INT_LEAST64_MAX
+INT_LEAST64_MIN
+INT_LEAST8_MAX
+INT_LEAST8_MIN
+INTMAX_C
+INTMAX_MAX
+INTMAX_MIN
+INTPTR_MAX
+INTPTR_MIN
+PTRDIFF_MAX
+PTRDIFF_MIN
+SIG_ATOMIC_MAX
+SIG_ATOMIC_MIN
+SIZE_MAX
+UINT16_C
+UINT16_MAX
+UINT32_C
+UINT32_MAX
+UINT64_C
+UINT64_MAX
+UINT8_C
+UINT8_MAX
+UINT_FAST16_MAX
+UINT_FAST32_MAX
+UINT_FAST64_MAX
+UINT_FAST8_MAX
+UINT_LEAST16_MAX
+UINT_LEAST32_MAX
+UINT_LEAST64_MAX
+UINT_LEAST8_MAX
+UINTMAX_C
+UINTMAX_MAX
+UINTPTR_MAX
+WCHAR_MAX
+WCHAR_MIN
+WINT_MAX
+WINT_MIN
+
+# <stdio.h>
+NULL
+_IOFBF
+_IOLBF
+_IONBF
+BUFSIZ
+EOF
+FOPEN_MAX
+FILENAME_MAX
+L_tmpnam
+SEEK_CUR
+SEEK_END
+SEEK_SET
+TMP_MAX
+stderr
+stdin
+stdout
+L_tmpnam_s
+TMP_MAX_S
+
+# <stdlib.h>
+NULL
+EXIT_FAILURE
+EXIT_SUCCESS
+RAND_MAX
+MB_CUR_MAX
+
+# <stdnoreturn.h>
+noreturn
+
+# <string.h>
+NULL
+
+# <tgmath.h>
+acos
+asin
+atan
+acosh
+asinh
+atanh
+cos
+sin
+tan
+cosh
+sinh
+tanh
+exp
+log
+pow
+sqrt
+fabs
+atan2
+cbrt
+ceil
+copysign
+erf
+erfc
+exp2
+expm1
+fdim
+floor
+fma
+fmax
+fmin
+fmod
+frexp
+hypot
+ilogb
+ldexp
+lgamma
+llrint
+llround
+log10
+log1p
+log2
+logb
+lrint
+lround
+nearbyint
+nextafter
+nexttoward
+remainder
+remquo
+rint
+round
+scalbn
+scalbln
+tgamma
+trunc
+carg
+cimag
+conj
+cproj
+creal
+
+# <threads.h>
+__STD_C_NO_THREADS__
+thread_local
+ONCE_FLAG_INIT
+TSS_DTOR_ITERATIONS
+
+# <time.h>
+NULL
+CLOCKS_PER_SEC
+TIME_UTC
+
+# <uchar.h> has no macros.
+
+# <wchar.h>
+NULL
+WCHAR_MAX
+WCHAR_MIN
+WEOF
+
+# <wctype.h>
+WEOF
+
+
+-- C++
+alignas # C++11
+alignof # C++11
+and
+and_eq
+asm
+auto
+bitand
+bitor
+bool
+break
+case
+catch
+char
+char16_t # C++11
+char32_t # C++11
+class
+compl
+concept # concepts TS
+const
+constexpr # C++11
+const_cast
+continue
+decltype # C++11
+default
+delete
+do
+double
+dynamic_cast
+else
+enum
+explicit
+export
+extern
+false
+float
+for
+friend
+goto
+if
+inline
+int
+long
+mutable
+namespace
+new
+noexcept # C++11
+not
+not_eq
+nullptr # C++11
+operator
+or
+or_eq
+private
+protected
+public
+register
+reinterpret_cast
+requires # concepts TS
+return
+short
+signed
+sizeof
+static
+static_assert # C++11
+static_cast
+struct
+switch
+template
+this
+thread_local # C++11
+throw
+true
+try
+typedef
+typeid
+typename
+union
+unsigned
+using
+virtual
+void
+volatile
+wchar_t
+while
+xor
+xor_eq
+
+
+-- System V libc
+# <math.h>
+DOMAIN
+SING
+OVERFLOW
+UNDERFLOW
+TLOSS
+PLOSS
+
+
+-- BSD libc
+# <math.h>
+MAXFLOAT
+M_E
+M_LOG2E
+M_LOG10E
+M_LN2
+M_LN10
+M_PI
+M_PI_2
+M_PI_4
+M_1_PI
+M_2_PI
+M_2_SQRTPI
+M_SQRT2
+M_SQRT1_2
+M_TWOPI
+M_3PI_4
+M_SQRTPI
+M_LN2LO
+M_LN2HI
+M_SQRT3
+M_IVLN10
+M_LOG2_E
+M_INVLN2
+
+
+-- Verilog
+# Verilog and System Verilog allow any keyword to be used as an identifier as
+# long as it is prefixed with '\' and followed by whitespace; e.g., \if .
+
+
+-- VHDL
+# VHDL allows any keyword to be used as an identifier by surrounding it with
+# '\' characters; e.g. \if\.
+
+
+-- Go
+break
+case
+chan
+const
+continue
+default
+defer
+else
+fallthrough
+for
+func
+go
+goto
+if
+import
+interface
+map
+package
+range
+return
+select
+switch
+type
+var
+
+
+-- Python 2
+# Python 2-only keywords.
+exec
+print
+
+
+-- Python
+# Keywords in both Python 2 and 3.
+and
+as
+assert
+break
+class
+continue
+def
+del
+elif
+else
+except
+finally
+for
+from
+global
+if
+import
+in
+is
+lambda
+not
+or
+pass
+raise
+return
+try
+while
+with
+yield
+
+
+-- Python 3
+# Python 3-only keywords.
+False
+None
+nonlocal
+print
+True
+
+
+-- Java
+abstract
+assert
+boolean
+break
+byte
+case
+catch
+char
+class
+const
+continue
+default
+do
+double
+else
+extends
+final
+finally
+float
+for
+goto
+if
+implements
+import
+instanceof
+int
+interface
+long
+native
+new
+package
+private
+protected
+public
+return
+short
+static
+strictfp
+super
+switch
+synchronized
+this
+throw
+throws
+transient
+try
+void
+volatile
+while
+
+
+-- Protocol Buffers
+# The protobuf compiler does not reserve *any* words.  The following is a
+# perfectly valid .proto file:
+#
+# message message {
+#   optional optional optional = 1;
+# };
+#
+# message optional {
+#   optional message message = 1;
+# };
+#
+# Unsurprisingly, the same appears to be true of Cap'n'Proto.
+
+
+-- Dart
+assert
+break
+case
+catch
+class
+const
+continue
+default
+do
+else
+enum
+extends
+false
+final
+finally
+for
+if
+in
+is
+new
+null
+rethrow
+return
+super
+switch
+this
+throw
+true
+try
+var
+void
+while
+with
+
+
+-- Objective C
+auto
+break
+case
+CGFloat
+char
+const
+continue
+default
+do
+double
+else
+enum
+extern
+float
+for
+goto
+if
+implementation
+int
+interface
+long
+nonatomic
+NSInteger
+NSNumber
+NSObject
+_Packed
+property
+protocol
+readonly
+readwrite
+register
+retain
+return
+short
+signed
+sizeof
+static
+strong
+struct
+switch
+typedef
+union
+unsafe_unretained
+unsigned
+void
+volatile
+weak
+while
+
+
+-- Swift
+# Swift allows any name to be used as an identifier if it is enclosed in
+# backticks (e.g., `if`).
+
+
+-- Erlang
+after
+and
+andalso
+band
+begin
+bnot
+bor
+bsl
+bsr
+bxor
+case
+catch
+cond
+div
+end
+fun
+if
+let
+not
+of
+or
+orelse
+receive
+rem
+try
+when
+xor
+
+
+-- Rust
+abstract
+alignof
+as
+become
+box
+break
+const
+continue
+crate
+do
+else
+extern
+final
+fn
+for
+if
+impl
+in
+let
+loop
+macro
+match
+mod
+move
+mut
+offsetof
+override
+priv
+proc
+pub
+pure
+ref
+return
+self
+Self
+sizeof
+static
+super
+trait
+type
+typeof
+unsafe
+unsized
+use
+virtual
+where
+while
+yield
+
+
+-- C#
+# C# allows any name to be used as an identifier if it is prefixed with '@';
+# e.g., @if.
+
+
+-- MATLAB
+break
+case
+catch
+classdef
+continue
+else
+elseif
+end
+for
+function
+global
+if
+otherwise
+parfor
+persistent
+return
+spmd
+switch
+try
+while
