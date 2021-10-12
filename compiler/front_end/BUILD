@@ -452,10 +452,9 @@ py_test(
     name = "docs_are_up_to_date_test",
     srcs = ["docs_are_up_to_date_test.py"],
     data = [
+        ":generate_grammar_md",
         "//doc:grammar_md",
     ],
     python_version = "PY3",
-    deps = [
-        ":generate_grammar_md",
-    ],
+    deps = [],
 )
