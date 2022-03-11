@@ -17,8 +17,8 @@ if you think Emboss would be useful, but your project uses a different language.
 ## When should I use Emboss?
 
 If you're sitting down with a manual that looks something like
-[this](http://www.novatel.com/assets/Documents/Manuals/om-20000094.pdf) or
-[this](http://www.u-blox.com/images/downloads/Product_Docs/u-blox6_ReceiverDescriptionProtocolSpec_%28GPS.G6-SW-10018%29.pdf),
+[this](https://hexagondownloads.blob.core.windows.net/public/Novatel/assets/Documents/Manuals/om-20000094/om-20000094.pdf) or
+[this](https://www.u-blox.com/sites/default/files/products/documents/u-blox6_ReceiverDescrProtSpec_%28GPS.G6-SW-10018%29_Public.pdf),
 Emboss is meant for you.
 
 
