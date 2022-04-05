@@ -239,7 +239,6 @@ def _maybe_replace_next_keyword_in_expression(expression, last_location,
   expression.function.args[0].CopyFrom(last_location.start)
   expression.function.args[1].CopyFrom(last_location.size)
   expression.source_location.CopyFrom(original_location)
-  # DO NOT SUBMIT: Error messages for circular references?
   _mark_as_synthetic(expression.function)
 
 
@@ -311,7 +310,7 @@ def _add_virtuals_to_structure(structure, type_definition):
 def desugar(ir):
   """Translates pure syntactic sugar to its desugared form.
 
-  Replaces `$then` symbols with the start+length of the previous physical
+  Replaces `$next` symbols with the start+length of the previous physical
   field.
 
   Adds aliases for all fields in anonymous `bits` to the enclosing structure.

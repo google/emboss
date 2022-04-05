@@ -224,9 +224,10 @@ def _find_cycles(graph):
 
 def _find_object_dependency_cycles(ir):
   """Finds dependency cycles in types in the ir."""
-  dependencies, errors = _find_dependencies(ir)
-  if errors:
-    return errors
+  dependencies, find_dependency_errors = _find_dependencies(ir)
+  if find_dependency_errors:
+    return find_dependency_errors
+  errors = []
   cycles = _find_cycles(dict(dependencies))
   for cycle in cycles:
     # TODO(bolms): This lists the entire strongly-connected component in a

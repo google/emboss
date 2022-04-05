@@ -28,13 +28,14 @@ namespace emboss {
 namespace test {
 namespace {
 
+// For reference in the code below, the NextKeyword structure is defined as:
+//
 // [$default byte_order: "LittleEndian"]
 // struct NextKeyword:
 //   0       [+4]  UInt  value32
 //   $next   [+2]  UInt  value16
 //   $next   [+1]  UInt  value8
 //   $next+3 [+1]  UInt  value8_offset
-
 TEST(NextKeyword, FieldsAreCorrectlyLocated) {
   ::std::array<char, NextKeyword::IntrinsicSizeInBytes()> values = {
     1, 0, 0, 0,

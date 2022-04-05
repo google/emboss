@@ -294,13 +294,13 @@ def fast_traverse_node_top_down(node, pattern, action, incidental_actions=None,
   It does not have any built-in incidental actions.
 
   Arguments:
-    ir: An ir_pb2.Ir object to walk.
+    node: An ir_pb2.Ir object to walk.
     pattern: A list of node types to match.
     action: A callable, which will be called on nodes matching `pattern`.
     incidental_actions: A dict of node types to callables, which can be used to
         set new parameters for `action` for part of the IR tree.
     skip_descendants_of: A list of types whose children should be skipped when
-        traversing `ir`.
+        traversing `node`.
     parameters: A list of top-level parameters.
 
   Returns:
