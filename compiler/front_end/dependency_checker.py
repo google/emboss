@@ -20,7 +20,20 @@ from compiler.util import ir_util
 from compiler.util import traverse_ir
 
 
-def _add_reference_to_dependencies(reference, dependencies, name):
+def _add_reference_to_dependencies(reference, dependencies, name,
+                                   source_file_name, errors):
+  if reference.canonical_name.object_path[0] in {"$is_statically_sized",
+                                                 "$static_size_in_bits",
+                                                 "$next"}:
+    # This error is a bit opaque, but given that the compiler used to crash on
+    # this case -- for a couple of years -- and no one complained, it seems
+    # safe to assume that this is a rare error.
+    errors.append([
+        error.error(source_file_name, reference.source_location,
+                    "Keyword `" + reference.canonical_name.object_path[0] +
+                    "` may not be used in this context."),
+    ])
+    return
   dependencies[name] |= {ir_util.hashable_form_of_reference(reference)}
 
 
@@ -37,6 +50,7 @@ def _add_name_to_dependencies(proto, dependencies):
 def _find_dependencies(ir):
   """Constructs a dependency graph for the entire IR."""
   dependencies = {}
+  errors = []
   traverse_ir.fast_traverse_ir_top_down(
       ir, [ir_pb2.Reference], _add_reference_to_dependencies,
       # TODO(bolms): Add handling for references inside of attributes, once
@@ -49,7 +63,10 @@ def _find_dependencies(ir):
           ir_pb2.EnumValue: _add_name_to_dependencies,
           ir_pb2.RuntimeParameter: _add_name_to_dependencies,
       },
-      parameters={"dependencies": dependencies})
+      parameters={
+          "dependencies": dependencies,
+          "errors": errors,
+      })
   traverse_ir.fast_traverse_ir_top_down(
       ir, [ir_pb2.FieldReference], _add_field_reference_to_dependencies,
       skip_descendants_of={ir_pb2.Attribute},
@@ -59,7 +76,7 @@ def _find_dependencies(ir):
           ir_pb2.RuntimeParameter: _add_name_to_dependencies,
       },
       parameters={"dependencies": dependencies})
-  return dependencies
+  return dependencies, errors
 
 
 def _find_dependency_ordering_for_fields_in_structure(
@@ -207,9 +224,10 @@ def _find_cycles(graph):
 
 def _find_object_dependency_cycles(ir):
   """Finds dependency cycles in types in the ir."""
-  dependencies = _find_dependencies(ir)
+  dependencies, errors = _find_dependencies(ir)
+  if errors:
+    return errors
   cycles = _find_cycles(dict(dependencies))
-  errors = []
   for cycle in cycles:
     # TODO(bolms): This lists the entire strongly-connected component in a
     # fairly arbitrary order.  This is simple, and handles components that

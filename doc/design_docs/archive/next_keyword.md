@@ -1,5 +1,9 @@
 # Design Sketch: Packed Field Notation
 
+This document is provided for historical interest.  This feature is now
+implemented in the form of the `$next` keyword.
+
+
 ## Motivation
 
 Many structures have many or most fields laid out consecutively, possibly with

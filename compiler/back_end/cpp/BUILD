@@ -273,6 +273,17 @@ emboss_cc_test(
 )
 
 emboss_cc_test(
+    name = "next_keyword_test",
+    srcs = [
+        "testcode/next_keyword_test.cc",
+    ],
+    deps = [
+        "//testdata:next_keyword_emboss",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+emboss_cc_test(
     name = "virtual_field_test",
     srcs = [
         "testcode/virtual_field_test.cc",

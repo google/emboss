@@ -298,7 +298,7 @@ def process_ir(ir, stop_before_step):
     back end, and errors is a list of compilation errors.  If errors is not an
     empty list, ir will be None.
   """
-  passes = (synthetics.synthesize_fields,
+  passes = (synthetics.desugar,
             symbol_resolver.resolve_symbols,
             dependency_checker.find_dependency_cycles,
             dependency_checker.set_dependency_order,
