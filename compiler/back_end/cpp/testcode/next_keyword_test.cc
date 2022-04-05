@@ -44,7 +44,7 @@ TEST(NextKeyword, FieldsAreCorrectlyLocated) {
     5, 6, 7, 4,
   };
   const auto view = MakeNextKeywordView(&values);
-  EXPECT_TRUE(view.Ok());
+  ASSERT_TRUE(view.Ok());
   EXPECT_EQ(1, view.value32().Read());
   EXPECT_EQ(2, view.value16().Read());
   EXPECT_EQ(3, view.value8().Read());
