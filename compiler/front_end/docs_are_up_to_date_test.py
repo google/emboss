@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests that g3doc/grammar.md is up to date."""
+"""Tests that doc/grammar.md is up to date."""
 
 import pkgutil
 
@@ -28,7 +28,7 @@ class DocsAreUpToDateTest(unittest.TestCase):
     correct_md = generate_grammar_md.generate_grammar_md()
     # If this fails, run:
     #
-    # bazel run //front_end:generate_grammar_md > g3doc/grammar.md
+    # bazel run //compiler/front_end:generate_grammar_md > doc/grammar.md
     #
     # Be sure to check that the results look good before committing!
     doc_md_lines = doc_md.splitlines()

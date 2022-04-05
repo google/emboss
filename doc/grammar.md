@@ -125,6 +125,7 @@ type-word                              -> CamelWord
 constant-word                          -> ShoutyWord
 builtin-reference                      -> builtin-word
 builtin-word                           -> "$is_statically_sized"
+                                        | "$next"
                                         | "$static_size_in_bits"
 boolean-constant                       -> BooleanConstant
 and-expression                         -> comparison-expression
@@ -349,6 +350,7 @@ Pattern                                    | Symbol
 `\$present`                                | `"$present"`
 `\$upper_bound`                            | `"$upper_bound"`
 `\$lower_bound`                            | `"$lower_bound"`
+`\$next`                                   | `"$next"`
 `\$size_in_bits`                           | `"$size_in_bits"`
 `\$size_in_bytes`                          | `"$size_in_bytes"`
 `\$max_size_in_bits`                       | `"$max_size_in_bits"`

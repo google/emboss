@@ -51,6 +51,7 @@ filegroup(
         "int_sizes.emb",
         "nested_structure.emb",
         "no_cpp_namespace.emb",
+        "next_keyword.emb",
         "parameters.emb",
         "requires.emb",
         "subtypes.emb",
@@ -282,6 +283,13 @@ emboss_cc_library(
     name = "virtual_field_emboss",
     srcs = [
         "virtual_field.emb",
+    ],
+)
+
+emboss_cc_library(
+    name = "next_keyword_emboss",
+    srcs = [
+        "next_keyword.emb",
     ],
 )
 

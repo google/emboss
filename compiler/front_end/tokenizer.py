@@ -122,7 +122,7 @@ def tokenize(text, file_name):
 LITERAL_TOKEN_PATTERNS = (
     "[ ] ( ) : = + - * . ? == != && || < > <= >= , "
     "$static_size_in_bits $is_statically_sized "
-    "$max $present $upper_bound $lower_bound "
+    "$max $present $upper_bound $lower_bound $next "
     "$size_in_bits $size_in_bytes "
     "$max_size_in_bits $max_size_in_bytes $min_size_in_bits $min_size_in_bytes "
     "$default struct bits enum external import as if let").split()

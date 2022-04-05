@@ -3614,6 +3614,31 @@ external Foo:
 }
 
 ===
+$next
+---
+struct Foo:
+  $next [+0]  UInt  x
+---
+{
+  "type": [
+    {
+      "structure": {
+        "field": [
+          {
+            "location": {
+              "start": {
+                "builtin_reference": { "source_name": [ { "text": "$next" } ] }
+              }
+            },
+            "name": { "name": { "text": "x" } }
+          }
+        ]
+      }
+    }
+  ]
+}
+
+===
 virtual fields
 ---
 struct Foo:

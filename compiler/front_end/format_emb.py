@@ -719,6 +719,7 @@ def _empty_string():
 @_formats('builtin-field-word -> "$size_in_bytes"')
 @_formats('builtin-reference -> builtin-word')
 @_formats('builtin-word -> "$is_statically_sized"')
+@_formats('builtin-word -> "$next"')
 @_formats('builtin-word -> "$static_size_in_bits"')
 @_formats('choice-expression -> logical-expression')
 @_formats('Comment? -> Comment')

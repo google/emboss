@@ -15,6 +15,7 @@
 """Adds auto-generated virtual fields to the IR."""
 
 from compiler.front_end import attributes
+from compiler.util import error
 from compiler.util import expression_parser
 from compiler.util import ir_pb2
 from compiler.util import ir_util
@@ -215,23 +216,117 @@ def _add_size_virtuals(structure, type_definition):
   structure.field.extend([size_field])
 
 
+# The replacement for the "$next" keyword is a simple "start + size" expression.
+# 'x' and 'y' are placeholders, to be replaced.
+_NEXT_KEYWORD_REPLACEMENT_EXPRESSION = expression_parser.parse("x + y")
+
+
+def _maybe_replace_next_keyword_in_expression(expression, last_location,
+                                              source_file_name, errors):
+  if not expression.HasField("builtin_reference"):
+    return
+  if expression.builtin_reference.canonical_name.object_path[0] != "$next":
+    return
+  if not last_location:
+    errors.append([
+      error.error(source_file_name, expression.source_location,
+                  "`$next` may not be used in the first physical field of a " +
+                  "structure; perhaps you meant `0`?")
+    ])
+    return
+  original_location = expression.source_location
+  expression.CopyFrom(_NEXT_KEYWORD_REPLACEMENT_EXPRESSION)
+  expression.function.args[0].CopyFrom(last_location.start)
+  expression.function.args[1].CopyFrom(last_location.size)
+  expression.source_location.CopyFrom(original_location)
+  _mark_as_synthetic(expression.function)
+
+
+def _check_for_bad_next_keyword_in_size(expression, source_file_name, errors):
+  if not expression.HasField("builtin_reference"):
+    return
+  if expression.builtin_reference.canonical_name.object_path[0] != "$next":
+    return
+  errors.append([
+    error.error(source_file_name, expression.source_location,
+                "`$next` may only be used in the start expression of a " +
+                "physical field.")
+  ])
+
+
+def _replace_next_keyword(structure, source_file_name, errors):
+  last_physical_field_location = None
+  new_errors = []
+  for field in structure.field:
+    if ir_util.field_is_virtual(field):
+      # TODO(bolms): It could be useful to allow `$next` in a virtual field, in
+      # order to reuse the value (say, to allow overlapping fields in a
+      # mostly-packed structure), but it seems better to add `$end_of(field)`,
+      # `$offset_of(field)`, and `$size_of(field)` constructs of some sort,
+      # instead.
+      continue
+    traverse_ir.fast_traverse_node_top_down(
+        field.location.size, [ir_pb2.Expression],
+        _check_for_bad_next_keyword_in_size,
+        parameters={
+            "errors": new_errors,
+            "source_file_name": source_file_name,
+        })
+    # If `$next` is misused in a field size, it can end up causing a
+    # `RecursionError` in fast_traverse_node_top_down.  (When the `$next` node
+    # in the next field is replaced, its replacement gets traversed, but the
+    # replacement also contains a `$next` node, leading to infinite recursion.)
+    #
+    # Technically, we could scan all of the sizes instead of bailing early, but
+    # it seems relatively unlikely that someone will have `$next` in multiple
+    # sizes and not figure out what is going on relatively quickly.
+    if new_errors:
+      errors.extend(new_errors)
+      return
+    traverse_ir.fast_traverse_node_top_down(
+        field.location.start, [ir_pb2.Expression],
+        _maybe_replace_next_keyword_in_expression,
+        parameters={
+            "last_location": last_physical_field_location,
+            "errors": new_errors,
+            "source_file_name": source_file_name,
+        })
+    # The only possible error from _maybe_replace_next_keyword_in_expression is
+    # `$next` occurring in the start expression of the first physical field,
+    # which leads to similar recursion issue if `$next` is used in the start
+    # expression of the next physical field.
+    if new_errors:
+      errors.extend(new_errors)
+      return
+    last_physical_field_location = field.location
+
+
 def _add_virtuals_to_structure(structure, type_definition):
   _add_anonymous_aliases(structure, type_definition)
   _add_size_virtuals(structure, type_definition)
   _add_size_bound_virtuals(structure, type_definition)
 
 
-def synthesize_fields(ir):
-  """Adds synthetic fields to all structures.
+def desugar(ir):
+  """Translates pure syntactic sugar to its desugared form.
+
+  Replaces `$next` symbols with the start+length of the previous physical
+  field.
 
   Adds aliases for all fields in anonymous `bits` to the enclosing structure.
 
   Arguments:
-      ir: The IR to which to add fields.
+      ir: The IR to desugar.
 
   Returns:
       A list of errors, or an empty list.
   """
+  errors = []
+  traverse_ir.fast_traverse_ir_top_down(
+      ir, [ir_pb2.Structure], _replace_next_keyword,
+      parameters={"errors": errors})
+  if errors:
+    return errors
   traverse_ir.fast_traverse_ir_top_down(
       ir, [ir_pb2.Structure], _add_virtuals_to_structure)
   return []

@@ -1,7 +1,5 @@
 # Emboss Language Reference
 
-[TOC]
-
 ## Top Level Structure
 
 An `.emb` file contains four sections: a documentation block, imports, an
@@ -326,6 +324,48 @@ not available in the generated code: `framed_message_view.h()` wouldn't compile.
 
 Finally, fields may have attributes and documentation, just like any other
 Emboss construct.
+
+
+#### `$next`
+
+The keyword `$next` may be used in the offset expression of a physical field:
+
+```
+struct Foo:
+  0     [+4]  UInt  x
+  $next [+2]  UInt  y
+  $next [+1]  UInt  z
+  $next [+4]  UInt  q
+```
+
+`$next` translates to a built-in constant meaning "the end of the previous
+physical field."  In the example above, `y` will start at offset 4 (0 + 4), `z`
+starts at offset 6 (4 + 2), and `q` at 7 (6 + 1).
+
+`$next` may be used in `bits` as well as `struct`s:
+
+```
+bits Bar:
+  0     [+4]  UInt  x
+  $next [+2]  UInt  y
+  $next [+1]  UInt  z
+  $next [+4]  UInt  q
+```
+
+You may use `$next` like a regular variable.  For example, if you want to leave
+a two-byte gap between `z` and `q` (so that `q` starts at offset 9):
+
+```
+struct Foo:
+  0       [+4]  UInt  x
+  $next   [+2]  UInt  y
+  $next   [+1]  UInt  z
+  $next+2 [+4]  UInt  q
+```
+
+`$next` is particularly useful if your datasheet defines structures as lists of
+fields without offsets, or if you are translating from a C or C++ packed
+`struct`.
 
 
 #### Parameters

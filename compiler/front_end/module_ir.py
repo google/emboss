@@ -1265,6 +1265,7 @@ def _name(word):
 @_handles('builtin-field-word -> "$min_size_in_bytes"')
 @_handles('builtin-word -> "$is_statically_sized"')
 @_handles('builtin-word -> "$static_size_in_bits"')
+@_handles('builtin-word -> "$next"')
 @_handles('constant-word -> ShoutyWord')
 @_handles('and-operator -> "&&"')
 @_handles('or-operator -> "||"')

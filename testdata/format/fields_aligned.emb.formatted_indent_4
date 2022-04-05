@@ -19,3 +19,4 @@ struct Foo:
     0         [+1]  UInt     short
     10        [+1]  UInt:8   medium
     1_000_000 [+8]  UInt:64  long
+    $next     [+2]  UInt     packed

@@ -1,4 +1,4 @@
-# Copyright 2019 Google LLC
+# Copyright 2022 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,10 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-struct Foo:
-  # Field columns should be aligned, with one space betwen start and size, and
-  # two spaces between other columns.
-  0 [+1]  UInt  short
-  10 [+1]  UInt:8  medium
-  1_000_000 [+8]  UInt:64  long
-  $next   [+2] UInt packed
+-- Test structures for the `$next` keyword.
+
+[$default byte_order: "LittleEndian"]
+[(cpp) namespace: "emboss::test"]
+
+
+struct NextKeyword:
+  0       [+4]  UInt  value32
+  $next   [+2]  UInt  value16
+  $next   [+1]  UInt  value8
+  $next+3 [+1]  UInt  value8_offset

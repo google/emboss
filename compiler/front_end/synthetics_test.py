@@ -18,6 +18,7 @@ import unittest
 from compiler.front_end import glue
 from compiler.front_end import synthetics
 from compiler.front_end import test_util
+from compiler.util import error
 from compiler.util import ir_pb2
 
 
@@ -36,7 +37,7 @@ class SyntheticsTest(unittest.TestCase):
     ir, unused_debug_info, errors = glue.parse_emboss_file(
         "m.emb",
         test_util.dict_file_reader({"m.emb": emb_text}),
-        stop_before_step="synthesize_fields")
+        stop_before_step="desugar")
     assert not errors, errors
     return ir
 
@@ -44,7 +45,7 @@ class SyntheticsTest(unittest.TestCase):
     ir = self._make_ir("struct Foo:\n"
                        "  0 [+1]     UInt      x\n"
                        "  1 [+1]     UInt:8[]  y\n")
-    self.assertEqual([], synthetics.synthesize_fields(ir))
+    self.assertEqual([], synthetics.desugar(ir))
 
   def test_adds_anonymous_bits_fields(self):
     ir = self._make_ir("struct Foo:\n"
@@ -57,7 +58,7 @@ class SyntheticsTest(unittest.TestCase):
                        "  BAR = 0\n"
                        "bits Bits:\n"
                        "  0 [+4]  UInt  uint\n")
-    self.assertEqual([], synthetics.synthesize_fields(ir))
+    self.assertEqual([], synthetics.desugar(ir))
     structure = ir.module[0].type[0].structure
     # The first field should be the anonymous bits structure.
     self.assertTrue(structure.field[0].HasField("location"))
@@ -73,7 +74,7 @@ class SyntheticsTest(unittest.TestCase):
     ir = self._make_ir("struct Foo:\n"
                        "  0 [+1]  bits:\n"
                        "    0 [+4]  UInt  bar\n")
-    self.assertEqual([], synthetics.synthesize_fields(ir))
+    self.assertEqual([], synthetics.desugar(ir))
     bits_field = ir.module[0].type[0].structure.field[0]
     alias_field = ir.module[0].type[0].structure.field[1]
     self.assertEqual("bar", alias_field.name.name.text)
@@ -99,7 +100,7 @@ class SyntheticsTest(unittest.TestCase):
     ir = self._make_ir("struct Foo:\n"
                        "  0 [+1]  bits:\n"
                        "    0 [+4]  UInt  bar\n")
-    self.assertEqual([], synthetics.synthesize_fields(ir))
+    self.assertEqual([], synthetics.desugar(ir))
     bits_field = ir.module[0].type[0].structure.field[0]
     alias_field = ir.module[0].type[0].structure.field[1]
     self.assertEqual("bar", alias_field.name.name.text)
@@ -115,7 +116,7 @@ class SyntheticsTest(unittest.TestCase):
                        "  0 [+1]  bits:\n"
                        "    0 [+4]  UInt  bar\n"
                        "    4 [+4]  UInt  baz (qux)\n")
-    self.assertEqual([], synthetics.synthesize_fields(ir))
+    self.assertEqual([], synthetics.desugar(ir))
     bar_alias = ir.module[0].type[0].structure.field[1]
     baz_alias = ir.module[0].type[0].structure.field[2]
     self.assertFalse(bar_alias.HasField("abbreviation"))
@@ -125,7 +126,7 @@ class SyntheticsTest(unittest.TestCase):
     ir = self._make_ir("struct Foo:\n"
                        "  0 [+1]  bits:\n"
                        "    0 [+4]  UInt  bar (b)\n")
-    self.assertEqual([], synthetics.synthesize_fields(ir))
+    self.assertEqual([], synthetics.desugar(ir))
     bits_field = ir.module[0].type[0].subtype[0].structure.field[0]
     alias_field = ir.module[0].type[0].structure.field[1]
     self.assertFalse(alias_field.name.source_location.is_synthetic)
@@ -148,7 +149,7 @@ class SyntheticsTest(unittest.TestCase):
     ir = self._make_ir("struct Foo:\n"
                        "  0 [+1]  bits:\n"
                        "    0 [+4]  UInt  bar (b)\n")
-    self.assertEqual([], synthetics.synthesize_fields(ir))
+    self.assertEqual([], synthetics.desugar(ir))
     bits_field = ir.module[0].type[0].structure.field[0]
     text_output_attribute = self._find_attribute(bits_field, "text_output")
     self.assertEqual("Skip", text_output_attribute.value.string_constant.text)
@@ -157,7 +158,7 @@ class SyntheticsTest(unittest.TestCase):
     ir = self._make_ir("struct Foo:\n"
                        "  0 [+1]  bits:\n"
                        "    0 [+4]  UInt  bar\n")
-    self.assertEqual([], synthetics.synthesize_fields(ir))
+    self.assertEqual([], synthetics.desugar(ir))
     bits_field = ir.module[0].type[0].structure.field[0]
     attribute = self._find_attribute(bits_field, "text_output")
     self.assertTrue(attribute.source_location.is_synthetic)
@@ -170,7 +171,7 @@ class SyntheticsTest(unittest.TestCase):
     ir = self._make_ir("struct Foo:\n"
                        "  1 [+l]  UInt:8[]  bytes\n"
                        "  0 [+1]  UInt      length (l)\n")
-    self.assertEqual([], synthetics.synthesize_fields(ir))
+    self.assertEqual([], synthetics.desugar(ir))
     structure = ir.module[0].type[0].structure
     size_in_bytes_field = structure.field[2]
     max_size_in_bytes_field = structure.field[3]
@@ -193,7 +194,7 @@ class SyntheticsTest(unittest.TestCase):
     ir = self._make_ir("bits Foo:\n"
                        "  1 [+9]  UInt  hi\n"
                        "  0 [+1]  Flag  lo\n")
-    self.assertEqual([], synthetics.synthesize_fields(ir))
+    self.assertEqual([], synthetics.desugar(ir))
     structure = ir.module[0].type[0].structure
     size_in_bits_field = structure.field[2]
     max_size_in_bits_field = structure.field[3]
@@ -216,12 +217,52 @@ class SyntheticsTest(unittest.TestCase):
     ir = self._make_ir("struct Foo:\n"
                        "  1 [+l]  UInt:8[]  bytes\n"
                        "  0 [+1]  UInt      length (l)\n")
-    self.assertEqual([], synthetics.synthesize_fields(ir))
+    self.assertEqual([], synthetics.desugar(ir))
     size_in_bytes_field = ir.module[0].type[0].structure.field[2]
     self.assertEqual("$size_in_bytes", size_in_bytes_field.name.name.text)
     text_output_attribute = self._find_attribute(size_in_bytes_field,
                                                  "text_output")
     self.assertEqual("Skip", text_output_attribute.value.string_constant.text)
+
+  def test_replaces_next(self):
+    ir = self._make_ir("struct Foo:\n"
+                       "  1     [+2]  UInt:8[]  a\n"
+                       "  $next [+4]  UInt      b\n"
+                       "  $next [+1]  UInt      c\n")
+    self.assertEqual([], synthetics.desugar(ir))
+    offset_of_b = ir.module[0].type[0].structure.field[1].location.start
+    self.assertTrue(offset_of_b.HasField("function"))
+    self.assertEqual(offset_of_b.function.function, ir_pb2.Function.ADDITION)
+    self.assertEqual(offset_of_b.function.args[0].constant.value, "1")
+    self.assertEqual(offset_of_b.function.args[1].constant.value, "2")
+    offset_of_c = ir.module[0].type[0].structure.field[2].location.start
+    self.assertEqual(
+            offset_of_c.function.args[0].function.args[0].constant.value, "1")
+    self.assertEqual(
+            offset_of_c.function.args[0].function.args[1].constant.value, "2")
+    self.assertEqual(offset_of_c.function.args[1].constant.value, "4")
+
+  def test_next_in_first_field(self):
+    ir = self._make_ir("struct Foo:\n"
+                       "  $next [+2]  UInt:8[]  a\n"
+                       "  $next [+4]  UInt      b\n")
+    struct = ir.module[0].type[0].structure
+    self.assertEqual([[
+        error.error("m.emb", struct.field[0].location.start.source_location,
+                    "`$next` may not be used in the first physical field of " +
+                    "a structure; perhaps you meant `0`?"),
+    ]], synthetics.desugar(ir))
+
+  def test_next_in_size(self):
+    ir = self._make_ir("struct Foo:\n"
+                       "  0 [+2]      UInt:8[]  a\n"
+                       "  1 [+$next]  UInt      b\n")
+    struct = ir.module[0].type[0].structure
+    self.assertEqual([[
+        error.error("m.emb", struct.field[1].location.size.source_location,
+                    "`$next` may only be used in the start expression of a " +
+                    "physical field."),
+    ]], synthetics.desugar(ir))
 
 
 if __name__ == "__main__":

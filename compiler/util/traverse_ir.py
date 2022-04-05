@@ -281,3 +281,31 @@ def fast_traverse_ir_top_down(ir, pattern, action, incidental_actions=None,
       all_incidental_actions.setdefault(key, []).extend(incidental_action)
   _fast_traverse_proto_top_down(ir, all_incidental_actions, pattern,
                                 skip_descendants_of, action, parameters or {})
+
+
+def fast_traverse_node_top_down(node, pattern, action, incidental_actions=None,
+                                skip_descendants_of=(), parameters=None):
+  """Traverse a subtree of an IR, executing the given actions.
+
+  fast_traverse_node_top_down is like fast_traverse_ir_top_down, except that:
+
+  It may be called on a subtree, instead of the top of the IR.
+
+  It does not have any built-in incidental actions.
+
+  Arguments:
+    node: An ir_pb2.Ir object to walk.
+    pattern: A list of node types to match.
+    action: A callable, which will be called on nodes matching `pattern`.
+    incidental_actions: A dict of node types to callables, which can be used to
+        set new parameters for `action` for part of the IR tree.
+    skip_descendants_of: A list of types whose children should be skipped when
+        traversing `node`.
+    parameters: A list of top-level parameters.
+
+  Returns:
+    None
+  """
+  _fast_traverse_proto_top_down(node, incidental_actions or {}, pattern,
+                                skip_descendants_of or {}, action,
+                                parameters or {})
