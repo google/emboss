@@ -392,8 +392,8 @@ struct Bar(version: Version):
 Each parameter must have the form *name`:` type*.  Currently, the *type* can
 be:
 
-*   `UInt:`*`n`*, where *`n`* is a number from 1 to 64, inclusive.
-*   `Int:`*`n`*, where *`n`* is a number from 1 to 64, inclusive.
+*   <code>UInt:*n*</code>, where *`n`* is a number from 1 to 64, inclusive.
+*   <code>Int:*n*</code>, where *`n`* is a number from 1 to 64, inclusive.
 *   The name of an Emboss `enum` type.
 
 `UInt`- and `Int`-typed parameters are integers with the corresponding range:
@@ -1372,8 +1372,9 @@ result.
 
 ##### `?:`
 
-The `?:` operator, used like *`condition`*` ? `*`if_true`*` : `*`if_false`*,
-returns *`if_true`* if *`condition`* is `true`, otherwise *`if_false`*.
+The `?:` operator, used like <code>*condition* ? *if\_true* :
+*if\_false*</code>, returns *`if_true`* if *`condition`* is `true`, otherwise
+*`if_false`*.
 
 Other than having stricter type requirements for its arguments, it behaves like
 the C, C++, Java, JavaScript, C#, etc. conditional operator `?:` (sometimes

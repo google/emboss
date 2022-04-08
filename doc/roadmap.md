@@ -84,8 +84,8 @@ caring about `is_anonymous`.
 
 ## Finishing Refactoring Hacky Anonymous Bits Code {#del_anon_hack}
 
-Replace the final uses of *`name`*`.is_anonymous` with something that marks
-"anonymous" fields as "private."
+Replace the final uses of <code>*name*.is_anonymous</code> with something that
+marks "anonymous" fields as "private."
 
 
 
