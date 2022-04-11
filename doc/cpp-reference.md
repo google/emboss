@@ -1,12 +1,10 @@
 # Emboss C++ Generated Code Reference
 
-[TOC]
-
 ## `struct`s
 
 A `struct` will have a corresponding view class, and functions to create views.
 
-### `Make`*`Struct`*`View` free function
+### <code>Make*Struct*View</code> free function
 
 ```c++
 template <typename T>
@@ -61,26 +59,28 @@ template <typename T>
 auto MakeBarView(std::uint8_t x, std::int32_t y, T *container);
 ```
 
-The `Make`*`Struct`*`View` functions construct a view for *`Struct`* over the
-given bytes.  For the data/size form, the type `T` must be a character type:
-`char`, `const char`, `unsigned char`, `const unsigned char`, `signed char`, or
-`const signed char`.  For the container form, the container can be a
+The <code>Make*Struct*View</code> functions construct a view for *`Struct`*
+over the given bytes.  For the data/size form, the type `T` must be a character
+type: `char`, `const char`, `unsigned char`, `const unsigned char`, `signed
+char`, or `const signed char`.  For the container form, the container can be a
 `std::vector`, `std::array`, or `std::basic_string` of a character type, or any
 other type with a `data()` method that returns a possibly-`const` `char *`,
 `signed char *`, or `unsigned char *`, and a `size()` method that returns a size
 in bytes.  Google's `absl::string_view` is one example of such a type.
 
 If given a pointer to a `const` character type or a `const` reference to a
-container, `Make`*`Struct`*`View` will return a read-only view; otherwise
+container, <code>Make*Struct*View</code> will return a read-only view; otherwise
 it will return a read-write view.
 
-The result of `Make`*`Struct`*`View` should be stored in an `auto` variable:
+The result of <code>Make*Struct*View</code> should be stored in an `auto`
+variable:
 
 ```c++
 auto view = MakeFooView(byte_buffer, available_byte_count);
 ```
 
-The specific type returned by `Make`*`Struct`*`View` is subject to change.
+The specific type returned by <code>Make*Struct*View</code> is subject to
+change.
 
 
 ### `CopyFrom` method
@@ -405,7 +405,7 @@ foo_view.bar_alias().Write(100);
 assert(foo_view.bar().Read() == 100);
 ```
 
-As with `Make`*`Struct`*`View`, the exact return type of field methods is
+As with <code>Make*Struct*View</code>, the exact return type of field methods is
 subject to change; if a field's view must be stored, use an `auto` variable.
 
 Fields in anonymous `bits` are treated as if they were fields of the enclosing
@@ -424,9 +424,9 @@ auto foo_view = MakeFooView(&vector_of_foo_bytes);
 uint8_t bar_value = foo_view.bar().Read();
 ```
 
-For each field, there is a `has_`*`field`*`()` method, which returns an object.
-`has_` methods are typically used for conditional fields.  Suppose you have a
-`struct` like:
+For each field, there is a <code>has_*field*()</code> method, which returns an
+object.  `has_` methods are typically used for conditional fields.  Suppose you
+have a `struct` like:
 
 ```
 struct Foo:
@@ -471,12 +471,12 @@ static_assert(Foo::register_number() == 0xf8);
 ```
 
 
-### *`field`*`().Ok()` vs *`field`*`().IsComplete()` vs `has_`*`field`*`()`
+### <code>*field*().Ok()</code> vs <code>*field*().IsComplete()</code> vs <code>has_*field*()</code>
 
 Emboss provides a number of methods to query different kinds of validity.
 
-`has_`*`field`*`()` is used for checking the existence condition specified in
-the `.emb` file:
+<code>has_*field*()</code> is used for checking the existence condition
+specified in the `.emb` file:
 
 ```
 struct Foo:
@@ -529,15 +529,16 @@ assert(!incomplete_foo.has_y().Known());
 assert(!incomplete_foo.has_y().ValueOr(false));
 ```
 
-`has_`*`field`*`()` is notional: it queries whether *`field`* *should* be
-present in the view.  Even if `has_`*`field`*`().Value()` is `true`,
-*`field`*`().IsComplete()` and *`field`*`().Ok()` might return `false`.
+<code>has_*field*()</code> is notional: it queries whether *`field`* *should* be
+present in the view.  Even if <code>has_*field*().Value()</code> is `true`,
+<code>*field*().IsComplete()</code> and *field*().Ok() might return `false`.
 
-*`field`*`().IsComplete()` tests if there are enough bytes in the backing
-storage to hold *`field`*.  If *`field`*`().IsComplete()`, it is safe to call
-`Write()` on the field with a valid value for that field.  *`field`*`().Ok()`
-tests if there are enough bytes in the backing storage to hold *`field`*, *and*
-that those bytes contain a valid value for *`field`*:
+<code>*field*().IsComplete()</code> tests if there are enough bytes in the
+backing storage to hold *`field`*.  If <code>*field*().IsComplete()</code>, it
+is safe to call `Write()` on the field with a valid value for that field.
+<code>*field*().Ok()</code> tests if there are enough bytes in the backing
+storage to hold *`field`*, *and* that those bytes contain a valid value for
+*`field`*:
 
 ```
 struct Bar:
@@ -571,7 +572,7 @@ assert(!bar.y().IsComplete());
 
 Note that all views have `Ok()` and `IsComplete()` methods.  A view of a
 structure is `Ok()` if all of its fields are either `Ok()` or not present, and
-`has_`*`field`*`().Known()` is `true` for all fields.
+<code>has_*field*().Known()</code> is `true` for all fields.
 
 A structure view `IsComplete()` if its `SizeIsKnown()` and its backing storage
 contains at least `SizeInBits()` or `SizeInBytes()` bits or bytes.  In other
@@ -595,7 +596,7 @@ struct SizeNeverKnown:
 
 The code generated for a `bits` construct is very similar to the code generated
 for a `struct`.  The primary differences are that there is no
-`Make`*`Bits`*`View` function and that `SizeInBytes` is replaced by
+<code>Make*Bits*View</code> function and that `SizeInBytes` is replaced by
 `SizeInBits`.
 
 

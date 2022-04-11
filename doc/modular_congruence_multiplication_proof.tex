@@ -1,0 +1,151 @@
+%This proof is used in Emboss to propagate alignment restrictions through
+%multiplication: if a and b are non-constant integers, their product can still
+%have a known alignment.
+%
+%Forgive me on the details and formatting, math majors, I never completed my
+%math degree.  --bolms
+%
+%Thanks to Aaron Webster for helping me format this as an actual proof.
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amssymb,amsmath,amsthm}
+\title{Modular Congruence of the Product of Two Values with Known Modular Congruences}
+\author{Emboss Authors}
+\date{2017}
+
+\begin{document}
+\maketitle
+
+\newtheorem{theorem}{Theorem}
+
+%(Draft)
+%TODO(webstera): Try to simplify this proof.
+
+\begin{theorem}
+Given
+
+\begin{align*}
+  &{a} \equiv {r} \pmod{{m}} \\
+  &{b} \equiv {s} \pmod{{n}} \\
+  &{a}, {r}, {m}, {b}, {s}, {n} \in \mathbb{Z}
+\end{align*}
+
+then
+
+\begin{align*}
+  &{a}{b} \equiv {r}{s} \pmod{G\left(\dfrac{{m}}{G\left({m}, {r}\right)},
+\dfrac{{n}}{G\left({n}, {s}\right)}\right) \cdot G\left({m}, {r}\right) \cdot
+G\left({n}, {s}\right)}
+\end{align*}
+
+where $G$ is the greatest common divisor function.
+\end{theorem}
+
+\begin{proof}
+\begin{align}
+  \text{Let }{q} &= G\left({m}, {r}\right) \label{eq:qdef} \\
+             {p} &= G\left({n}, {s}\right) \label{eq:pdef} \\
+             {z} &= G\left(\dfrac{{m}}{{q}}, \dfrac{{n}}{{p}}\right) =
+                    G\left(\dfrac{{m}}{G\left({m}, {r}\right)},
+                    \dfrac{{n}}{G\left({n}, {s}\right)}\right) \label{eq:zdef}
+\end{align}
+
+by the definition of modular congruence:
+\begin{align}
+  &\exists {x} \in \mathbb{Z} : {a} = {m}{x} + {r} \\
+  &\exists {y} \in \mathbb{Z} : {b} = {n}{y} + {s}
+\end{align}
+
+multiplying $\dfrac{{q}}{{q}}$ and distributing $\dfrac{1}{{q}}$:
+\begin{align}
+  &{a} = {q}\left(\dfrac{{m}{x}}{q} + \dfrac{{r}}{q}\right)
+\end{align}
+
+by the definition of ${q}$ in \eqref{eq:qdef}:
+\begin{align}
+  &\dfrac{{m}{x}}{q}, \dfrac{{r}}{q} \in \mathbb{Z} \label{eq:rqinz}
+\end{align}
+
+multiplying $\dfrac{{p}}{{p}}$ and distributing $\dfrac{1}{{p}}$:
+\begin{align}
+  &{b} = {p}\left(\dfrac{{n}{y}}{{p}} + \dfrac{{s}}{{p}}\right)
+\end{align}
+
+by the definition of ${p}$ in \eqref{eq:pdef}:
+\begin{align}
+  &\dfrac{{n}{y}}{{p}}, \dfrac{{s}}{{p}} \in \mathbb{Z} \label{eq:spinz}
+\end{align}
+
+multiplying $\dfrac{{z}}{{z}}$:
+\begin{align}
+  &{a} = {q}\left({z} \cdot \dfrac{{m}{x}}{{q}{z}} + \dfrac{{r}}{{q}}\right) \label{eq:aeqq}
+\end{align}
+
+by the definition of ${z}$ in \eqref{eq:zdef}:
+\begin{align}
+  &\dfrac{{m}{x}}{{q}{z}} \in \mathbb{Z} \label{eq:mxqzinz}
+\end{align}
+
+multiplying $\dfrac{{z}}{{z}}$:
+\begin{align}
+  &{b} = {p}\left({z} \cdot \dfrac{{n}{y}}{{p}{z}} + \dfrac{{s}}{{p}}\right) \label{eq:beqp}
+\end{align}
+
+by the definition of ${z}$ in \eqref{eq:zdef}:
+\begin{align}
+  &\dfrac{{n}{y}}{{p}{z}} \in \mathbb{Z} \label{eq:nypzinz}
+\end{align}
+
+\eqref{eq:aeqq} and \eqref{eq:beqp}:
+\begin{align}
+  &{a}{b} = {q}{p}\left({z} \cdot \dfrac{{m}{x}}{{q}{z}} +
+    \dfrac{{r}}{{q}}\right)\left({z} \cdot \dfrac{{n}{y}}{{p}{z}} +
+    \dfrac{{s}}{{p}}\right) \label{eq:abeqqp}
+\end{align}
+
+partially distributing \eqref{eq:abeqqp}:
+\begin{align}
+  &{a}{b} = {q}{p}\left({z}^2 \cdot \dfrac{{m}{x}}{{q}{z}} \cdot
+    \dfrac{{n}{y}}{{p}{z}} + {z} \cdot \dfrac{{r}}{{q}} \cdot
+    \dfrac{{n}{y}}{{p}{z}} + {z} \cdot \dfrac{{m}{x}}{{q}{z}} \cdot
+    \dfrac{{s}}{{p}} + \dfrac{{r}}{{q}} \cdot \dfrac{{s}}{{p}}\right) \label{eq:abeqqpexp}
+\end{align}
+
+extracting the $\dfrac{{r}{s}}{{q}{p}}$ term from \eqref{eq:abeqqpexp} and cancelling $\dfrac{{q}{p}}{{q}{p}}$:
+\begin{align}
+  &{a}{b} = {q}{p}\left({z}^2 \cdot \dfrac{{m}{x}}{{q}{z}} \cdot
+    \dfrac{{n}{y}}{{p}{z}} + {z} \cdot \dfrac{{r}}{{q}} \cdot
+    \dfrac{{n}{y}}{{p}{z}} + {z} \cdot \dfrac{{m}{x}}{{q}{z}} \cdot
+    \dfrac{{s}}{{p}}\right) + {r}{s} \label{eq:abeqqpextr}
+\end{align}
+
+factoring ${z}$ from \eqref{eq:abeqqpextr}:
+\begin{align}
+  &{a}{b} = {q}{p}{z}\left({z} \cdot \dfrac{{m}{x}}{{q}{z}} \cdot
+    \dfrac{{n}{y}}{{p}{z}} + \dfrac{{r}}{{q}} \cdot \dfrac{{n}{y}}{{p}{z}} +
+    \dfrac{{m}{x}}{{q}{z}} \cdot \dfrac{{s}}{{p}}\right) + {r}{s}
+\end{align}
+
+because ${z}, \dfrac{{r}}{q}, \dfrac{{s}}{{p}}, \dfrac{{m}{x}}{{q}{z}},
+  \dfrac{{n}{y}}{{p}{z}} \in \mathbb{Z}$, per \eqref{eq:zdef}, \eqref{eq:rqinz}, \eqref{eq:spinz}, \eqref{eq:mxqzinz}, \eqref{eq:nypzinz}:
+\begin{align}
+  &{z} \cdot \dfrac{{m}{x}}{{q}{z}} \cdot \dfrac{{n}{y}}{{p}{z}} +
+    \dfrac{{r}}{{q}} \cdot \dfrac{{n}{y}}{{p}{z}} + \dfrac{{m}{x}}{{q}{z}} \cdot
+    \dfrac{{s}}{{p}} \in \mathbb{Z}
+\end{align}
+
+by the definition of modulus:
+\begin{align}
+  &{a}{b} \equiv {r}{s} \pmod{{q}{p}{z}}
+\end{align}
+
+by the definitions of ${q}$, ${p}$, and ${z}$ in \eqref{eq:qdef}, \eqref{eq:pdef}, and \eqref{eq:zdef}:
+\begin{align}
+  &{a}{b} \equiv {r}{s} \pmod{G\left(\dfrac{{m}}{G\left({m}, {r}\right)},
+    \dfrac{{n}}{G\left({n}, {s}\right)}\right) \cdot G\left({m}, {r}\right)
+    \cdot G\left({n}, {s}\right)}
+\end{align}
+
+\end{proof}
+\end{document}
