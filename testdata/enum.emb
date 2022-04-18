@@ -35,12 +35,59 @@ enum Signed:
   MAX64BIT = 0x8000_0000_0000_0000-1
 
 
+enum OnlyShortValues:
+  ZERO = 0
+  ONE  = 1
+
+
+enum OnlyShortSignedValues:
+  ZERO         = 0
+  NEGATIVE_ONE = -1
+
+
+enum ExplicitlySigned:
+  [is_signed: true]
+  ZERO = 0
+
+
+enum ExplicitlySized64:
+  [maximum_bits: 64]
+  ZERO = 0
+
+
+enum ExplicitlySized32:
+  [maximum_bits: 32]
+  ZERO = 0
+
+
+enum ExplicitlySized16:
+  [maximum_bits: 16]
+  ZERO = 0
+
+
+enum ExplicitlySized8:
+  [maximum_bits: 8]
+  ZERO = 0
+
+
+enum ExplicitlySized12:
+  [maximum_bits: 12]
+  ZERO = 0
+
+
+enum ExplicitlySizedAndSigned:
+  [maximum_bits: 32]
+  [is_signed: true]
+  ZERO = 0
+
+
 struct ManifestEntry:
   0 [+1]     Kind  kind
   1 [+4]     UInt  count
   5 [+4]     Kind  wide_kind
   9 [+5]  bits:
     4 [+32]  Kind  wide_kind_in_bits
+
 
 struct StructContainingEnum:
   enum Status:

@@ -35,6 +35,10 @@ _BAD_TYPE_MESSAGE = "Attribute '{name}' must have {type} value."
 _MUST_BE_CONSTANT_MESSAGE = "Attribute '{name}' must have a constant value."
 
 
+# Default value for maximum_bits on an `enum`.
+_DEFAULT_ENUM_MAXIMUM_BITS = 64
+
+
 # Attribute type checkers
 def _is_constant_boolean(attr, module_source_file):
   """Checks if the given attr is a constant boolean."""
@@ -108,8 +112,10 @@ def _is_valid_text_output(attr, module_source_file):
 _ATTRIBUTE_TYPES = {
     ("", attributes.ADDRESSABLE_UNIT_SIZE): _is_constant_integer,
     ("", attributes.BYTE_ORDER): _is_valid_byte_order,
+    ("", attributes.ENUM_MAXIMUM_BITS): _is_constant_integer,
     ("", attributes.FIXED_SIZE): _is_constant_integer,
     ("", attributes.IS_INTEGER): _is_constant_boolean,
+    ("", attributes.IS_SIGNED): _is_constant_boolean,
     ("", attributes.REQUIRES): _is_boolean,
     ("", attributes.STATIC_REQUIREMENTS): _is_boolean,
     ("", attributes.TEXT_OUTPUT): _is_valid_text_output,
@@ -125,16 +131,15 @@ _MODULE_ATTRIBUTES = {
 _BITS_ATTRIBUTES = {
     ("", attributes.FIXED_SIZE, False),
     ("", attributes.REQUIRES, False),
-    ("", attributes.STATIC_REQUIREMENTS, False),
 }
 _STRUCT_ATTRIBUTES = {
     ("", attributes.FIXED_SIZE, False),
     ("", attributes.BYTE_ORDER, True),
     ("", attributes.REQUIRES, False),
-    ("", attributes.STATIC_REQUIREMENTS, False),
 }
 _ENUM_ATTRIBUTES = {
-    ("", attributes.STATIC_REQUIREMENTS, False),
+    ("", attributes.ENUM_MAXIMUM_BITS, False),
+    ("", attributes.IS_SIGNED, False),
 }
 _EXTERNAL_ATTRIBUTES = {
     ("", attributes.ADDRESSABLE_UNIT_SIZE, False),
@@ -166,7 +171,23 @@ def _construct_integer_attribute(name, value, source_location):
                                          maximum_value=str(value))),
           source_location=source_location),
       source_location=source_location)
-  return ir_pb2.Attribute(name=ir_pb2.Word(text=name),
+  return ir_pb2.Attribute(name=ir_pb2.Word(text=name,
+                                           source_location=source_location),
+                          value=attr_value,
+                          source_location=source_location)
+
+
+def _construct_boolean_attribute(name, value, source_location):
+  """Constructs a boolean Attribute with the given name and value."""
+  attr_value = ir_pb2.AttributeValue(
+      expression=ir_pb2.Expression(
+          boolean_constant=ir_pb2.BooleanConstant(
+              value=value, source_location=source_location),
+          type=ir_pb2.ExpressionType(boolean=ir_pb2.BooleanType(value=value)),
+          source_location=source_location),
+      source_location=source_location)
+  return ir_pb2.Attribute(name=ir_pb2.Word(text=name,
+                                           source_location=source_location),
                           value=attr_value,
                           source_location=source_location)
 
@@ -425,6 +446,30 @@ def _add_addressable_unit_to_external(external, type_definition):
   # _verify_addressable_unit_attribute_on_external, below.
 
 
+def _add_missing_width_and_sign_attributes_on_enum(enum, type_definition):
+  """Sets the maximum_bits and is_signed attributes for an enum, if needed."""
+  max_bits_attr = ir_util.get_integer_attribute(type_definition.attribute,
+                                                attributes.ENUM_MAXIMUM_BITS)
+  if max_bits_attr is None:
+    type_definition.attribute.extend([
+        _construct_integer_attribute(attributes.ENUM_MAXIMUM_BITS,
+                                     _DEFAULT_ENUM_MAXIMUM_BITS,
+                                     type_definition.source_location)])
+  signed_attr = ir_util.get_boolean_attribute(type_definition.attribute,
+                                              attributes.IS_SIGNED)
+  if signed_attr is None:
+    for value in enum.value:
+      numeric_value = ir_util.constant_value(value.value)
+      if numeric_value < 0:
+        is_signed = True
+        break
+    else:
+      is_signed = False
+    type_definition.attribute.extend([
+        _construct_boolean_attribute(attributes.IS_SIGNED, is_signed,
+                                     type_definition.source_location)])
+
+
 def _verify_byte_order_attribute_on_field(field, type_definition,
                                           source_file_name, ir, errors):
   """Verifies the byte_order attribute on the given field."""
@@ -496,6 +541,22 @@ def _verify_addressable_unit_attribute_on_external(external, type_definition,
     ])
 
 
+def _verify_width_attribute_on_enum(enum, type_definition, source_file_name,
+                                    errors):
+  """Verifies the maximum_bits attribute for an enum TypeDefinition."""
+  max_bits_value = ir_util.get_integer_attribute(type_definition.attribute,
+                                                attributes.ENUM_MAXIMUM_BITS)
+  # The attribute should already have been defaulted, if not originally present.
+  assert max_bits_value is not None, "maximum_bits not set"
+  if max_bits_value > 64 or max_bits_value < 1:
+    max_bits_attr = ir_util.get_attribute(type_definition.attribute,
+                                          attributes.ENUM_MAXIMUM_BITS)
+    errors.append([
+        error.error(source_file_name, max_bits_attr.source_location,
+                    "'maximum_bits' on an 'enum' must be between 1 and 64.")
+    ])
+
+
 def _gather_default_attributes(obj, defaults):
   defaults = defaults.copy()
   for attr in obj.attribute:
@@ -511,6 +572,8 @@ def _add_missing_attributes_on_ir(ir):
   """Adds missing attributes in a complete IR."""
   traverse_ir.fast_traverse_ir_top_down(
       ir, [ir_pb2.External], _add_addressable_unit_to_external)
+  traverse_ir.fast_traverse_ir_top_down(
+      ir, [ir_pb2.Enum], _add_missing_width_and_sign_attributes_on_enum)
   traverse_ir.fast_traverse_ir_top_down(
       ir, [ir_pb2.Structure], _add_missing_size_attributes_on_structure,
       incidental_actions={
@@ -542,6 +605,9 @@ def _verify_attributes_on_ir(ir):
   errors = []
   traverse_ir.fast_traverse_ir_top_down(
       ir, [ir_pb2.Structure], _verify_size_attributes_on_structure,
+      parameters={"errors": errors})
+  traverse_ir.fast_traverse_ir_top_down(
+      ir, [ir_pb2.Enum], _verify_width_attribute_on_enum,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
       ir, [ir_pb2.External], _verify_addressable_unit_attribute_on_external,

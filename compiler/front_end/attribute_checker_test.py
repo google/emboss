@@ -26,6 +26,8 @@ from compiler.util import ir_util
 # of the contract with back ends.
 _BYTE_ORDER = "byte_order"
 _FIXED_SIZE = "fixed_size_in_bits"
+_IS_SIGNED = "is_signed"
+_MAX_BITS = "maximum_bits"
 
 
 def _make_ir_from_emb(emb_text, name="m.emb"):
@@ -582,6 +584,75 @@ class NormalizeIrTest(unittest.TestCase):
         [[error.error("m.emb", field_ir.attribute[0].value.source_location,
                       "Attribute 'requires' is only allowed on integer, "
                       "enumeration, or boolean fields.")]],
+        error.filter_errors(attribute_checker.normalize_and_verify(ir)))
+
+  def test_adds_false_is_signed_attribute(self):
+    ir = _make_ir_from_emb("enum Foo:\n"
+                           "  ZERO = 0\n")
+    self.assertEqual([], attribute_checker.normalize_and_verify(ir))
+    enum = ir.module[0].type[0]
+    is_signed_attr = ir_util.get_attribute(enum.attribute, _IS_SIGNED)
+    self.assertTrue(is_signed_attr.expression.HasField("boolean_constant"))
+    self.assertFalse(is_signed_attr.expression.boolean_constant.value)
+
+  def test_leaves_is_signed_attribute(self):
+    ir = _make_ir_from_emb("enum Foo:\n"
+                           "  [is_signed: true]\n"
+                           "  ZERO = 0\n")
+    self.assertEqual([], attribute_checker.normalize_and_verify(ir))
+    enum = ir.module[0].type[0]
+    is_signed_attr = ir_util.get_attribute(enum.attribute, _IS_SIGNED)
+    self.assertTrue(is_signed_attr.expression.HasField("boolean_constant"))
+    self.assertTrue(is_signed_attr.expression.boolean_constant.value)
+
+  def test_adds_true_is_signed_attribute(self):
+    ir = _make_ir_from_emb("enum Foo:\n"
+                           "  NEGATIVE_ONE = -1\n")
+    self.assertEqual([], attribute_checker.normalize_and_verify(ir))
+    enum = ir.module[0].type[0]
+    is_signed_attr = ir_util.get_attribute(enum.attribute, _IS_SIGNED)
+    self.assertTrue(is_signed_attr.expression.HasField("boolean_constant"))
+    self.assertTrue(is_signed_attr.expression.boolean_constant.value)
+
+  def test_adds_max_bits_attribute(self):
+    ir = _make_ir_from_emb("enum Foo:\n"
+                           "  ZERO = 0\n")
+    self.assertEqual([], attribute_checker.normalize_and_verify(ir))
+    enum = ir.module[0].type[0]
+    max_bits_attr = ir_util.get_attribute(enum.attribute, _MAX_BITS)
+    self.assertTrue(max_bits_attr.expression.HasField("constant"))
+    self.assertEqual("64", max_bits_attr.expression.constant.value)
+
+  def test_leaves_max_bits_attribute(self):
+    ir = _make_ir_from_emb("enum Foo:\n"
+                           "  [maximum_bits: 32]\n"
+                           "  ZERO = 0\n")
+    self.assertEqual([], attribute_checker.normalize_and_verify(ir))
+    enum = ir.module[0].type[0]
+    max_bits_attr = ir_util.get_attribute(enum.attribute, _MAX_BITS)
+    self.assertTrue(max_bits_attr.expression.HasField("constant"))
+    self.assertEqual("32", max_bits_attr.expression.constant.value)
+
+  def test_rejects_too_small_max_bits(self):
+    ir = _make_ir_from_emb("enum Foo:\n"
+                           "  [maximum_bits: 0]\n"
+                           "  ZERO = 0\n")
+    attribute_ir = ir.module[0].type[0].attribute[0]
+    self.assertEqual(
+        [[error.error(
+            "m.emb", attribute_ir.value.source_location,
+            "'maximum_bits' on an 'enum' must be between 1 and 64.")]],
+        error.filter_errors(attribute_checker.normalize_and_verify(ir)))
+
+  def test_rejects_too_large_max_bits(self):
+    ir = _make_ir_from_emb("enum Foo:\n"
+                           "  [maximum_bits: 65]\n"
+                           "  ZERO = 0\n")
+    attribute_ir = ir.module[0].type[0].attribute[0]
+    self.assertEqual(
+        [[error.error(
+            "m.emb", attribute_ir.value.source_location,
+            "'maximum_bits' on an 'enum' must be between 1 and 64.")]],
         error.filter_errors(attribute_checker.normalize_and_verify(ir)))
 
 

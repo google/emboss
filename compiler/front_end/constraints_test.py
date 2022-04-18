@@ -282,7 +282,7 @@ class ConstraintsTest(unittest.TestCase):
     error_type = ir.module[0].type[0].structure.field[0].type
     self.assertEqual([[
         error.error("m.emb", error_type.source_location,
-                    "Enumeration type 'Bar' cannot be 0 bits; enumerations "
+                    "Enumeration type 'Bar' cannot be 0 bits; type 'Bar' "
                     "must be between 1 and 64 bits, inclusive."),
     ]], error.filter_errors(constraints.check_constraints(ir)))
 
@@ -331,8 +331,22 @@ class ConstraintsTest(unittest.TestCase):
     error_type = ir.module[0].type[0].structure.field[0].type
     self.assertEqual([[
         error.error("m.emb", error_type.source_location,
-                    "Enumeration type 'Bar' cannot be 72 bits; enumerations "
+                    "Enumeration type 'Bar' cannot be 72 bits; type 'Bar' " +
                     "must be between 1 and 64 bits, inclusive."),
+    ]], error.filter_errors(constraints.check_constraints(ir)))
+
+  def test_explicit_enumeration_size_too_big_for_small_enum(self):
+    ir = _make_ir_from_emb('[$default byte_order: "BigEndian"]\n'
+                           "struct Foo:\n"
+                           "  0 [+8]  Bar  sixty_four_bit\n"
+                           "enum Bar:\n"
+                           "  [maximum_bits: 63]\n"
+                           "  BAZ = 0\n")
+    error_type = ir.module[0].type[0].structure.field[0].type
+    self.assertEqual([[
+        error.error("m.emb", error_type.source_location,
+                    "Enumeration type 'Bar' cannot be 64 bits; type 'Bar' " +
+                    "must be between 1 and 63 bits, inclusive."),
     ]], error.filter_errors(constraints.check_constraints(ir)))
 
   def test_explicit_size_on_fixed_size_type(self):
@@ -417,7 +431,8 @@ class ConstraintsTest(unittest.TestCase):
             # TODO(bolms): Try to print numbers like 2**64 in hex?  (I.e., if a
             # number is a round number in hex, but not in decimal, print in
             # hex?)
-            "Value 18446744073709551616 is out of range for enumeration.")]
+            "Value 18446744073709551616 is out of range for 64-bit unsigned " +
+            "enumeration.")]
     ], constraints.check_constraints(ir))
 
   def test_enum_value_too_low(self):
@@ -428,7 +443,8 @@ class ConstraintsTest(unittest.TestCase):
     self.assertEqual([
         [error.error(
             "m.emb", error_value.source_location,
-            "Value -9223372036854775809 is out of range for enumeration.")]
+            "Value -9223372036854775809 is out of range for 64-bit signed " +
+            "enumeration.")]
     ], constraints.check_constraints(ir))
 
   def test_enum_value_too_wide(self):
@@ -436,11 +452,12 @@ class ConstraintsTest(unittest.TestCase):
                            "enum Foo:\n"
                            "  LOW = -1\n"
                            "  HIGH = 0x8000_0000_0000_0000\n")
-    error_value = ir.module[0].type[0].enumeration.value[0].value
+    error_value = ir.module[0].type[0].enumeration.value[1].value
     self.assertEqual([[
         error.error(
             "m.emb", error_value.source_location,
-            "Value -1 is out of range for unsigned enumeration.")
+            "Value 9223372036854775808 is out of range for 64-bit signed " +
+            "enumeration.")
     ]], error.filter_errors(constraints.check_constraints(ir)))
 
   def test_enum_value_too_wide_unsigned_error_message(self):
@@ -453,7 +470,33 @@ class ConstraintsTest(unittest.TestCase):
     self.assertEqual([[
         error.error(
             "m.emb", error_value.source_location,
-            "Value 9223372036854775808 is out of range for signed enumeration.")
+            "Value 9223372036854775808 is out of range for 64-bit signed " +
+            "enumeration.")
+    ]], error.filter_errors(constraints.check_constraints(ir)))
+
+  def test_enum_value_too_wide_small_size_error_message(self):
+    ir = _make_ir_from_emb('[$default byte_order: "LittleEndian"]\n'
+                           "enum Foo:\n"
+                           "  [maximum_bits: 8]\n"
+                           "  HIGH = 0x100\n")
+    error_value = ir.module[0].type[0].enumeration.value[0].value
+    self.assertEqual([[
+        error.error(
+            "m.emb", error_value.source_location,
+            "Value 256 is out of range for 8-bit unsigned enumeration.")
+    ]], error.filter_errors(constraints.check_constraints(ir)))
+
+  def test_enum_value_too_wide_small_size_signed_error_message(self):
+    ir = _make_ir_from_emb('[$default byte_order: "LittleEndian"]\n'
+                           "enum Foo:\n"
+                           "  [maximum_bits: 8]\n"
+                           "  [is_signed: true]\n"
+                           "  HIGH = 0x80\n")
+    error_value = ir.module[0].type[0].enumeration.value[0].value
+    self.assertEqual([[
+        error.error(
+            "m.emb", error_value.source_location,
+            "Value 128 is out of range for 8-bit signed enumeration.")
     ]], error.filter_errors(constraints.check_constraints(ir)))
 
   def test_enum_value_too_wide_multiple(self):
@@ -463,15 +506,17 @@ class ConstraintsTest(unittest.TestCase):
                            "  LOW2 = -1\n"
                            "  HIGH = 0x8000_0000_0000_0000\n"
                            "  HIGH2 = 0x8000_0000_0000_0001\n")
-    error_value = ir.module[0].type[0].enumeration.value[0].value
-    error_value2 = ir.module[0].type[0].enumeration.value[1].value
+    error_value = ir.module[0].type[0].enumeration.value[2].value
+    error_value2 = ir.module[0].type[0].enumeration.value[3].value
     self.assertEqual([
         [error.error(
             "m.emb", error_value.source_location,
-            "Value -2 is out of range for unsigned enumeration.")],
+            "Value 9223372036854775808 is out of range for 64-bit signed " +
+            "enumeration.")],
         [error.error(
             "m.emb", error_value2.source_location,
-            "Value -1 is out of range for unsigned enumeration.")]
+            "Value 9223372036854775809 is out of range for 64-bit signed " +
+            "enumeration.")]
     ], error.filter_errors(constraints.check_constraints(ir)))
 
   def test_enum_value_too_wide_multiple_signed_error_message(self):
@@ -487,11 +532,11 @@ class ConstraintsTest(unittest.TestCase):
     self.assertEqual([
         [error.error(
             "m.emb", error_value.source_location,
-            "Value 9223372036854775808 is out of range for signed "
+            "Value 9223372036854775808 is out of range for 64-bit signed "
             "enumeration.")],
         [error.error(
             "m.emb", error_value2.source_location,
-            "Value 9223372036854775809 is out of range for signed "
+            "Value 9223372036854775809 is out of range for 64-bit signed "
             "enumeration.")]
     ], error.filter_errors(constraints.check_constraints(ir)))
 
@@ -501,15 +546,55 @@ class ConstraintsTest(unittest.TestCase):
                            "  LOW = -1\n"
                            "  HIGH = 0x8000_0000_0000_0000\n"
                            "  HIGH2 = 0x1_0000_0000_0000_0000\n")
-    error_value = ir.module[0].type[0].enumeration.value[0].value
+    error_value1 = ir.module[0].type[0].enumeration.value[1].value
     error_value2 = ir.module[0].type[0].enumeration.value[2].value
     self.assertEqual([
         [error.error(
-            "m.emb", error_value.source_location,
-            "Value -1 is out of range for unsigned enumeration.")],
+            "m.emb", error_value1.source_location,
+            "Value 9223372036854775808 is out of range for 64-bit signed " +
+            "enumeration.")],
         [error.error(
             "m.emb", error_value2.source_location,
-            "Value 18446744073709551616 is out of range for enumeration.")]
+            "Value 18446744073709551616 is out of range for 64-bit signed " +
+            "enumeration.")]
+    ], error.filter_errors(constraints.check_constraints(ir)))
+
+  def test_enum_value_explicitly_signed_error_message(self):
+    ir = _make_ir_from_emb('[$default byte_order: "LittleEndian"]\n'
+                           "enum Foo:\n"
+                           "  [is_signed: true]\n"
+                           "  HIGH = 0x8000_0000_0000_0000\n"
+                           "  HIGH2 = 0x1_0000_0000_0000_0000\n")
+    error_value0 = ir.module[0].type[0].enumeration.value[0].value
+    error_value1 = ir.module[0].type[0].enumeration.value[1].value
+    self.assertEqual([
+        [error.error(
+            "m.emb", error_value0.source_location,
+            "Value 9223372036854775808 is out of range for 64-bit signed " +
+            "enumeration.")],
+        [error.error(
+            "m.emb", error_value1.source_location,
+            "Value 18446744073709551616 is out of range for 64-bit signed " +
+            "enumeration.")]
+    ], error.filter_errors(constraints.check_constraints(ir)))
+
+  def test_enum_value_explicitly_unsigned_error_message(self):
+    ir = _make_ir_from_emb('[$default byte_order: "LittleEndian"]\n'
+                           "enum Foo:\n"
+                           "  [is_signed: false]\n"
+                           "  LOW = -1\n"
+                           "  HIGH = 0x8000_0000_0000_0000\n"
+                           "  HIGH2 = 0x1_0000_0000_0000_0000\n")
+    error_value0 = ir.module[0].type[0].enumeration.value[0].value
+    error_value2 = ir.module[0].type[0].enumeration.value[2].value
+    self.assertEqual([
+        [error.error(
+            "m.emb", error_value0.source_location,
+            "Value -1 is out of range for 64-bit unsigned enumeration.")],
+        [error.error(
+            "m.emb", error_value2.source_location,
+            "Value 18446744073709551616 is out of range for 64-bit unsigned " +
+            "enumeration.")]
     ], error.filter_errors(constraints.check_constraints(ir)))
 
   def test_explicit_non_byte_size_array_element(self):

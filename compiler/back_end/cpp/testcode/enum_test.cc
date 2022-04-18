@@ -30,6 +30,49 @@ namespace emboss {
 namespace test {
 namespace {
 
+static_assert(
+    ::std::is_same</**/ ::std::uint64_t,
+                   ::std::underlying_type<OnlyShortValues>::type>::value,
+    "Emboss enums should default to 64-bit.");
+static_assert(
+    ::std::is_same</**/ ::std::int64_t,
+                   ::std::underlying_type<OnlyShortSignedValues>::type>::value,
+    "Emboss enums should default to 64-bit.");
+static_assert(
+    ::std::is_same</**/ ::std::int64_t,
+                   ::std::underlying_type<ExplicitlySigned>::type>::value,
+    "Emboss enum with explicit is_signed = true should be signed.");
+static_assert(
+    ::std::is_same</**/ ::std::int64_t,
+                   ::std::underlying_type<ExplicitlySigned>::type>::value,
+    "Emboss enum with explicit is_signed = true should be signed.");
+static_assert(
+    ::std::is_same</**/ ::std::uint64_t,
+                   ::std::underlying_type<ExplicitlySized64>::type>::value,
+    "Emboss enum with maximum_bits = 64 should be uint64_t.");
+static_assert(
+    ::std::is_same</**/ ::std::uint32_t,
+                   ::std::underlying_type<ExplicitlySized32>::type>::value,
+    "Emboss enum with maximum_bits = 32 should be uint32_t.");
+static_assert(
+    ::std::is_same</**/ ::std::uint16_t,
+                   ::std::underlying_type<ExplicitlySized16>::type>::value,
+    "Emboss enum with maximum_bits = 16 should be uint16_t.");
+static_assert(
+    ::std::is_same</**/ ::std::uint8_t,
+                   ::std::underlying_type<ExplicitlySized8>::type>::value,
+    "Emboss enum with maximum_bits = 8 should be uint8_t.");
+static_assert(
+    ::std::is_same<
+        /**/ ::std::int32_t,
+        ::std::underlying_type<ExplicitlySizedAndSigned>::type>::value,
+    "Emboss enum with maximum_bits = 32 and is_signed = true should be "
+    "int32_t.");
+static_assert(
+    ::std::is_same</**/ ::std::uint16_t,
+                   ::std::underlying_type<ExplicitlySized12>::type>::value,
+    "Emboss enum with maximum_bits = 12 should be uint16_t.");
+
 alignas(8) static const ::std::uint8_t kManifestEntry[14] = {
     0x01,                          // 0:1  Kind  kind == SPROCKET
     0x04, 0x00, 0x00, 0x00,        // 1:5  UInt  count == 4

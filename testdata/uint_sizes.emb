@@ -64,7 +64,27 @@ struct EnumSizes:
   28 [+8]  Enum  eight_byte
 
 
+struct ExplicitlySizedEnumSizes:
+  0  [+1]    ExplicitlySizedEnum  one_byte
+  1  [+2]    ExplicitlySizedEnum  two_byte
+  3  [+3]    ExplicitlySizedEnum  three_byte
+  6  [+4]    bits:
+    0 [+28]  ExplicitlySizedEnum  three_and_a_half_byte
+
+
 enum Enum:
+  VALUE1        = 1
+  VALUE10       = 10
+  VALUE100      = 100
+  VALUE1000     = 1000
+  VALUE10000    = 10000
+  VALUE100000   = 100000
+  VALUE1000000  = 1000000
+  VALUE10000000 = 10000000
+
+
+enum ExplicitlySizedEnum:
+  [maximum_bits: 28]
   VALUE1        = 1
   VALUE10       = 10
   VALUE100      = 100

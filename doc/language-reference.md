@@ -747,6 +747,44 @@ struct LittleOnly:
   0 [+1]  LittleAndBig:8  little_only  # Too small to hold LittleAndBig.BIG
 ```
 
+Emboss `enum`s are *open*: they may take values that are not defined in the
+`.emb`, as long as those values are in range.  The `is_signed` and
+`maximum_bits` attributes, below, may be used to control the allowed range of
+values.
+
+
+#### `is_signed` Attribute
+
+The attribute `is_signed` may be used to explicitly specify whether an `enum`
+is signed or unsigned.  Normally, an `enum` is signed if there is at least one
+negative value, and unsigned otherwise, but this behavior can be overridden:
+
+```
+enum ExplicitlySigned:
+  [is_signed: true]
+  POSITIVE = 10
+```
+
+
+#### `maximum_bits` Attribute
+
+The attribute `maximum_bits` may be used to specify the *maximum* width of an
+`enum`: fields of `enum` type may be smaller than `maximum_bits`, but never
+larger:
+
+```
+enum ExplicitlySized:
+  [maximum_bits: 32]
+  MAX_VALUE = 0xffff_ffff
+
+struct Foo:
+  0 [+4]  ExplicitlySized  four_bytes  # 32-bit is fine
+  #4 [+8]  ExplicitlySized  eight_bytes  # 64-bit field would be an error
+```
+
+This also allows back end code generators to use smaller types for `enum`s, in
+some cases.
+
 
 #### Inline `enum`
 
@@ -775,6 +813,9 @@ struct TurnSpecification:
 ```
 
 This can be useful when a particular `enum` is short and only used in one place.
+
+Note that `maximum_bits` and `is_signed` cannot be used on an inline `enum`.
+If you need to use either of these attributes, make a separate `enum`.
 
 
 ### `bits`
