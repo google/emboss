@@ -782,6 +782,8 @@ struct Foo:
   #4 [+8]  ExplicitlySized  eight_bytes  # 64-bit field would be an error
 ```
 
+If not specified, `maximum_bits` defaults to `64`.
+
 This also allows back end code generators to use smaller types for `enum`s, in
 some cases.
 
