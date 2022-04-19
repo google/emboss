@@ -443,6 +443,24 @@ def _cpp_integer_type_for_range(min_val, max_val):
   return None
 
 
+def _cpp_integer_type_for_enum(max_bits, is_signed):
+  """Returns the appropriate C++ integer type to hold an enum."""
+  # This is used to determine the `X` in `enum class : X`.
+  #
+  # Unlike _cpp_integer_type_for_range, the type chosen here is used for actual
+  # storage.  Further, sizes smaller than 64 are explicitly chosen by a human
+  # author, so take the smallest size that can hold the given number of bits.
+  #
+  # Technically, the C++ standard allows some of these sizes of integer to not
+  # exist, and other sizes (say, int24_t) might exist, but in practice this set
+  # is almost always available.  If you're compiling for some exotic DSP that
+  # uses unusual int sizes, email emboss-dev@google.com.
+  for size in (8, 16, 32, 64):
+    if max_bits <= size:
+      return "::std::{}int{}_t".format("" if is_signed else "u", size)
+  assert False, f"Invalid value {max_bits} for maximum_bits"
+
+
 def _render_builtin_operation(expression, ir, field_reader, subexpressions):
   """Renders a built-in operation (+, -, &&, etc.) into C++ code."""
   assert expression.function.function not in (
@@ -1220,20 +1238,11 @@ def _generate_enum_definition(type_ir):
   string_from_enum_statements = []
   enum_is_known_statements = []
   previously_seen_numeric_values = set()
-  # Because enum types in Emboss allow unknown values, the C++ enum has to be
-  # based on uint64_t or int64_t; otherwise, if the enum is used on a 64-bit
-  # field anywhere in any structure, then the return type of Read() (et al)
-  # would be too small to hold the full range of values.
-  #
-  # TODO(bolms): Should Emboss have a way to annotate enums as "known values
-  # only" or "32-bit only", so that the C++ enum can be 32 bits (or smaller)?
-  #
-  # TODO(bolms): Should the default type be int64_t?
-  enum_type = "::std::uint64_t"
+  max_bits = ir_util.get_integer_attribute(type_ir.attribute, "maximum_bits")
+  is_signed = ir_util.get_boolean_attribute(type_ir.attribute, "is_signed")
+  enum_type = _cpp_integer_type_for_enum(max_bits, is_signed)
   for value in type_ir.enumeration.value:
     numeric_value = ir_util.constant_value(value.value)
-    if numeric_value < 0:
-      enum_type = "::std::int64_t"
     enum_values.append(
         code_template.format_template(_TEMPLATES.enum_value,
                                       name=value.name.name.text,

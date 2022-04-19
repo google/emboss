@@ -337,6 +337,75 @@ TEST(SizesView, DecodeEnumsFromIntegerText) {
             ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
 }
 
+static const ::std::uint8_t kExplicitlySizedEnumSizes
+    [ExplicitlySizedEnumSizes::IntrinsicSizeInBytes()] = {
+        0x01,                    // 0:1    one_byte == VALUE1
+        0x0a, 0x00,              // 1:3    two_byte == VALUE10
+        0x10, 0x27, 0x00,        // 3:6    three_byte == VALUE10000
+        0x64, 0x00, 0x00, 0x00,  // 6:10   three_and_a_half_byte == VALUE100
+};
+
+TEST(SizesView, CanReadExplicitlySizedEnumSizes) {
+  auto view = ExplicitlySizedEnumSizesView(kExplicitlySizedEnumSizes,
+                                           sizeof kExplicitlySizedEnumSizes);
+  EXPECT_EQ(ExplicitlySizedEnum::VALUE1, view.one_byte().Read());
+  EXPECT_EQ(ExplicitlySizedEnum::VALUE10, view.two_byte().Read());
+  EXPECT_EQ(ExplicitlySizedEnum::VALUE10000, view.three_byte().Read());
+  EXPECT_EQ(ExplicitlySizedEnum::VALUE100, view.three_and_a_half_byte().Read());
+  // 28-bit explicitly-sized enum should be uint32_t.
+  EXPECT_EQ(4U, sizeof(view.one_byte().Read()));
+  EXPECT_EQ(4U, sizeof(view.two_byte().Read()));
+  EXPECT_EQ(4U, sizeof(view.three_byte().Read()));
+  EXPECT_EQ(4U, sizeof(view.three_and_a_half_byte().Read()));
+}
+
+TEST(SizesWriter, CanWriteExplicitlySizedEnumSizes) {
+  ::std::uint8_t buffer[sizeof kExplicitlySizedEnumSizes];
+  auto writer = ExplicitlySizedEnumSizesWriter(buffer, sizeof buffer);
+  writer.one_byte().Write(ExplicitlySizedEnum::VALUE1);
+  writer.two_byte().Write(ExplicitlySizedEnum::VALUE10);
+  writer.three_byte().Write(ExplicitlySizedEnum::VALUE10000);
+  writer.three_and_a_half_byte().Write(ExplicitlySizedEnum::VALUE100);
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(
+                kExplicitlySizedEnumSizes,
+                kExplicitlySizedEnumSizes + sizeof kExplicitlySizedEnumSizes),
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
+}
+
+TEST(SizesView, DecodeExplicitlySizedEnumsFromText) {
+  ::std::uint8_t buffer[sizeof kExplicitlySizedEnumSizes] = {0};
+  auto writer = ExplicitlySizedEnumSizesWriter(buffer, sizeof buffer);
+  EXPECT_TRUE(::emboss::UpdateFromText(writer, R"(
+    {
+      one_byte: VALUE1
+      two_byte: VALUE10
+      three_byte: VALUE10000
+      three_and_a_half_byte: VALUE100
+    }
+  )"));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(
+                kExplicitlySizedEnumSizes,
+                kExplicitlySizedEnumSizes + sizeof kExplicitlySizedEnumSizes),
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
+}
+
+TEST(SizesView, DecodeExplicitlySizedEnumsFromIntegerText) {
+  ::std::uint8_t buffer[sizeof kExplicitlySizedEnumSizes] = {0};
+  auto writer = ExplicitlySizedEnumSizesWriter(buffer, sizeof buffer);
+  EXPECT_TRUE(::emboss::UpdateFromText(writer, R"(
+    {
+      one_byte: 1
+      two_byte: 10
+      three_byte: 10000
+      three_and_a_half_byte: 100
+    }
+  )"));
+  EXPECT_EQ(::std::vector</**/ ::std::uint8_t>(
+                kExplicitlySizedEnumSizes,
+                kExplicitlySizedEnumSizes + sizeof kExplicitlySizedEnumSizes),
+            ::std::vector</**/ ::std::uint8_t>(buffer, buffer + sizeof buffer));
+}
+
 static const ::std::uint8_t kUIntArraySizes[72] = {
     0x02,                    // 0:2    one_byte[0] == 2
     0x03,                    // 0:2    one_byte[1] == 3

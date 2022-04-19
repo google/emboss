@@ -1,5 +1,11 @@
 # Design Sketch: Explicit Enum Sizes
 
+This document is provided for historical interest.  This feature is now
+implemented in the form of the `[maximum_bits]` attribute on `enum`s.  The
+`[signedness]` attribute referenced at the bottom of the doc is also
+implemented as `[is_signed]`.
+
+
 ## Overview
 
 Currently in Emboss, when rendering an Emboss `enum`, the corresponding C++

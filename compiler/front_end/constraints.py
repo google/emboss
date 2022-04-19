@@ -134,30 +134,29 @@ def _check_constancy_of_constant_references(expression, source_file_name,
     ])
 
 
-def _check_that_enum_values_are_representable(enum_type, source_file_name,
-                                              errors):
-  """Checks that enumeration values can fit in an int64 or uint64."""
+def _check_that_enum_values_are_representable(enum_type, type_definition,
+                                              source_file_name, errors):
+  """Checks that enumeration values can fit in their specified int type."""
   values = []
+  max_enum_size = ir_util.get_integer_attribute(
+      type_definition.attribute, attributes.ENUM_MAXIMUM_BITS)
+  is_signed = ir_util.get_boolean_attribute(
+      type_definition.attribute, attributes.IS_SIGNED)
+  if is_signed:
+    enum_range = (-(2**(max_enum_size-1)), 2**(max_enum_size-1)-1)
+  else:
+    enum_range = (0, 2**max_enum_size-1)
   for value in enum_type.value:
     values.append((ir_util.constant_value(value.value), value))
-  # Guess if the user intended a signed or unsigned enumeration based on how
-  # many values would be out of range given either type.
-  signed_out_of_range = [v for v in values if not -2**63 <= v[0] <= 2**63-1]
-  unsigned_out_of_range = [v for v in values if not 0 <= v[0] <= 2**64-1]
-  if len(signed_out_of_range) < len(unsigned_out_of_range):
-    out_of_range = signed_out_of_range
-    range_name = "signed "
-  else:
-    out_of_range = unsigned_out_of_range
-    range_name = "unsigned "
-  # If all values are in range for either a signed or an unsigned enumeration,
-  # this loop will have zero iterations.
+  out_of_range = [v for v in values
+                  if not enum_range[0] <= v[0] <= enum_range[1]]
+  # If all values are in range, this loop will have zero iterations.
   for value in out_of_range:
     errors.append([
         error.error(
             source_file_name, value[1].value.source_location,
-            "Value {} is out of range for {}enumeration.".format(
-                value[0], range_name if -2**63 <= value[0] <= 2**64-1 else ""))
+            "Value {} is out of range for {}-bit {} enumeration.".format(
+                value[0], max_enum_size, "signed" if is_signed else "unsigned"))
     ])
 
 
@@ -297,10 +296,6 @@ def _check_physical_type_requirements(
   """Checks that the given atomic `type_ir` is allowed to be `size` bits."""
   referenced_type_definition = ir_util.find_object(
       type_ir.atomic_type.reference, ir)
-  # TODO(bolms): replace this with a check against an automatically-generated
-  # `static_requirements` attribute on enum types.  (The main problem is that
-  # the generated attribute would have no source text, so there would be a crash
-  # when trying to display the error.)
   if referenced_type_definition.HasField("enumeration"):
     if size is None:
       return [[
@@ -309,14 +304,18 @@ def _check_physical_type_requirements(
               "Enumeration {} cannot be placed in a dynamically-sized "
               "field.".format(_render_type(type_ir, ir)))
       ]]
-    elif size < 1 or size > 64:
-      return [[
-          error.error(
-              source_file_name, type_ir.source_location,
-              "Enumeration {} cannot be {} bits; enumerations must be between "
-              "1 and 64 bits, inclusive.".format(
-                  _render_atomic_type_name(type_ir, ir), size))
-      ]]
+    else:
+      max_enum_size = ir_util.get_integer_attribute(
+          referenced_type_definition.attribute, attributes.ENUM_MAXIMUM_BITS)
+      if size < 1 or size > max_enum_size:
+        return [[
+            error.error(
+                source_file_name, type_ir.source_location,
+                "Enumeration {} cannot be {} bits; {} must be between "
+                "1 and {} bits, inclusive.".format(
+                    _render_atomic_type_name(type_ir, ir), size,
+                    _render_atomic_type_name(type_ir, ir), max_enum_size))
+        ]]
 
   if size is None:
     bindings = {"$is_statically_sized": False}
