@@ -24,4 +24,4 @@ let b:undo_ftplugin = 'setlocal comments< commentstring< formatoptions< iskeywor
 setlocal formatoptions-=t
 setlocal comments=b:--,:#
 setlocal iskeyword+=$
-setlocal commentstring=# %s
+setlocal commentstring=#\ %s
