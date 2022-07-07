@@ -18,9 +18,9 @@
 
 import argparse
 import os
-from os import path
 import subprocess
 import sys
+
 
 def _parse_args(argv):
   parser = argparse.ArgumentParser(description="Emboss compiler")
@@ -55,43 +55,50 @@ def _parse_args(argv):
 
 def main(argv):
   flags = _parse_args(argv)
-  base_path = path.dirname(__file__) or "."
+  base_path = os.path.dirname(__file__) or "."
   subprocess_environment = os.environ.copy()
+
   if subprocess_environment.get("PYTHONPATH"):
     subprocess_environment["PYTHONPATH"] = (
       base_path + ":" + subprocess_environment.get("PYTHONPATH"))
   else:
     subprocess_environment["PYTHONPATH"] = base_path
+
   front_end_args = [
       sys.executable,
-      path.join(base_path, "compiler", "front_end", "emboss_front_end.py"),
+      os.path.join(base_path, "compiler", "front_end", "emboss_front_end.py"),
       "--output-ir-to-stdout",
       "--color-output", flags.color_output,
   ]
+
   for import_dir in flags.import_dirs:
-    front_end_args.extend([
-        "--import-dir",
-        import_dir
-    ])
+    front_end_args.extend(["--import-dir", import_dir])
+
   front_end_args.append(flags.input_file[0])
   front_end_status = subprocess.run(front_end_args,
                                     stdout=subprocess.PIPE,
                                     env=subprocess_environment)
+
   if front_end_status.returncode != 0:
     return front_end_status.returncode
+
   back_end_status = subprocess.run(
-      [
-          sys.executable,
-          path.join(base_path, "compiler", "back_end", "cpp",
-                    "emboss_codegen_cpp.py"),
-      ],
-      input=front_end_status.stdout,
-      stdout=subprocess.PIPE,
-      env=subprocess_environment)
+    [
+      sys.executable,
+      os.path.join(base_path, "compiler", "back_end", "cpp",
+        "emboss_codegen_cpp.py"),
+    ],
+    input=front_end_status.stdout,
+    stdout=subprocess.PIPE,
+    env=subprocess_environment
+  )
+
   if back_end_status.returncode != 0:
     return back_end_status.returncode
-  output_file = path.join(flags.output_path[0], flags.input_file[0]) + ".h"
-  os.makedirs(path.dirname(output_file), exist_ok=True)
+
+  output_file = os.path.join(flags.output_path[0], flags.input_file[0]) + ".h"
+  os.makedirs(os.path.dirname(output_file), exist_ok=True)
+
   with open(output_file, "wb") as output:
     output.write(back_end_status.stdout)
   return 0
