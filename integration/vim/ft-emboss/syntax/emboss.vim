@@ -30,7 +30,7 @@ syn clear
 syn keyword embStructure struct union enum bits external
 syn keyword embKeyword $reserved $default
 syn keyword embKeyword $static_size_in_bits $is_statically_sized this
-syn keyword embKeyword $max $present $upper_bound $lower_bound
+syn keyword embKeyword $next $max $present $upper_bound $lower_bound
 syn keyword embKeyword import as
 syn keyword embKeyword if let
 syn keyword embBoolean true false
