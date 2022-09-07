@@ -1,0 +1,33 @@
+---
+name: Release
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-python@master
+        with:
+          python-version: '3.x'
+      - name: Set Release Version
+        id: set_release_version
+        run: python ./.github/scripts/set_release_version.py
+      - name: Create Archive Release
+        uses: thedoctor0/zip-release@master
+        with:
+          filename: 'emboss.zip'
+          exclusions: '*.git*'
+      - name: Automatic Release Upload
+        id: automatic_release
+        uses: 'marvinpinto/action-automatic-releases@latest'
+        with:
+          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          automatic_release_tag: ${{ steps.set_release_version.outputs.version }}
+          prerelease: false
+          title: ${{ steps.set_release_version.outputs.version }}
+          files: |
+            emboss.zip
