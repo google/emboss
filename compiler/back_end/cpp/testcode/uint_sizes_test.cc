@@ -360,7 +360,7 @@ TEST(SizesView, CanReadExplicitlySizedEnumSizes) {
 }
 
 TEST(SizesWriter, CanWriteExplicitlySizedEnumSizes) {
-  ::std::uint8_t buffer[sizeof kExplicitlySizedEnumSizes];
+  ::std::uint8_t buffer[sizeof kExplicitlySizedEnumSizes] = {0};
   auto writer = ExplicitlySizedEnumSizesWriter(buffer, sizeof buffer);
   writer.one_byte().Write(ExplicitlySizedEnum::VALUE1);
   writer.two_byte().Write(ExplicitlySizedEnum::VALUE10);
