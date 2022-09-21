@@ -67,9 +67,9 @@ class TextOutputOptions final {
     return result;
   }
 
-  TextOutputOptions WithNumericBase(int new_value) const {
+  TextOutputOptions WithNumericBase(uint8_t new_value) const {
     TextOutputOptions result = *this;
-    result.numeric_base_ = static_cast</**/ ::std::uint8_t>(new_value);
+    result.numeric_base_ = new_value;
     return result;
   }
 
