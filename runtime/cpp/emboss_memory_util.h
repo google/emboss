@@ -913,9 +913,10 @@ class OffsetBitBlock final {
 
  private:
   ValueType MaskInValue(ValueType original_value, ValueType new_value) const {
-    ValueType original_mask =
-        ~(MaskToNBits(static_cast<ValueType>(~ValueType{0}), size_) << offset_);
-    return (original_value & original_mask) | (new_value << offset_);
+    ValueType original_mask = static_cast<ValueType>(~(
+        MaskToNBits(static_cast<ValueType>(~ValueType{0}), size_) << offset_));
+    return static_cast<ValueType>((original_value & original_mask) |
+                                  (new_value << offset_));
   }
 
   const UnderlyingBitBlockType bit_block_;
