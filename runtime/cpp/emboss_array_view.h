@@ -338,6 +338,10 @@ void WriteShorthandArrayCommentToTextStream(
                            kAddressableUnitSize> *array,
     Stream *stream, const TextOutputOptions &options) {
   // Intentionally empty.  Overload for specific element types.
+  // Avoid unused parameters error:
+  static_cast<void>(array);
+  static_cast<void>(stream);
+  static_cast<void>(options);
 }
 
 // Prints out the elements of an 8-bit Int or UInt array as characters.
