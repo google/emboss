@@ -752,7 +752,11 @@ class FloatView final {
     buffer_.WriteUInt(ConvertToUInt(value));
     return true;
   }
-  static constexpr bool CouldWriteValue(ValueType value) { return true; }
+  static constexpr bool CouldWriteValue(ValueType value) {
+    // Avoid unused parameters error:
+    static_cast<void>(value);
+    return true;
+  }
   void UncheckedWrite(ValueType value) const {
     buffer_.UncheckedWriteUInt(ConvertToUInt(value));
   }
