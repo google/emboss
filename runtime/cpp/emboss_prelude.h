@@ -145,7 +145,7 @@ class UIntView final {
   ~UIntView() = default;
 
   ValueType Read() const {
-    ValueType result = buffer_.ReadUInt();
+    ValueType result = static_cast<ValueType>(buffer_.ReadUInt());
     EMBOSS_CHECK(Parameters::ValueIsOk(result));
     return result;
   }
@@ -197,7 +197,7 @@ class UIntView final {
   bool TryToWrite(IntT value) const {
     if (!CouldWriteValue(value)) return false;
     if (!IsComplete()) return false;
-    buffer_.WriteUInt(value);
+    buffer_.WriteUInt(static_cast<ValueType>(value));
     return true;
   }
 
