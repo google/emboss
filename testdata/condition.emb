@@ -112,6 +112,8 @@ struct EnumCondition:
   0 [+1]    OnOff  x
   if x == OnOff.ON:
     1 [+1]  UInt   xc
+  if x > OnOff.OFF:
+    1 [+1]  UInt   xc2
 
 
 struct NegativeEnumCondition:

@@ -111,8 +111,10 @@ def _type_check_operation(expression, source_file_name, ir, errors):
   for arg in expression.function.args:
     _type_check_expression(arg, source_file_name, ir, errors)
   function = expression.function.function
-  if function in (ir_pb2.Function.EQUALITY, ir_pb2.Function.INEQUALITY):
-    _type_check_equality_operator(expression, source_file_name, errors)
+  if function in (ir_pb2.Function.EQUALITY, ir_pb2.Function.INEQUALITY,
+                  ir_pb2.Function.LESS, ir_pb2.Function.LESS_OR_EQUAL,
+                  ir_pb2.Function.GREATER, ir_pb2.Function.GREATER_OR_EQUAL):
+    _type_check_comparison_operator(expression, source_file_name, errors)
   elif function == ir_pb2.Function.CHOICE:
     _type_check_choice_operator(expression, source_file_name, errors)
   else:
@@ -138,13 +140,6 @@ def _type_check_monomorphic_operator(expression, source_file_name, errors):
                                        "operator"),
       ir_pb2.Function.AND: (bool_result, bool_args, binary, 2, 2, "operator"),
       ir_pb2.Function.OR: (bool_result, bool_args, binary, 2, 2, "operator"),
-      ir_pb2.Function.LESS: (bool_result, int_args, binary, 2, 2, "operator"),
-      ir_pb2.Function.LESS_OR_EQUAL: (bool_result, int_args, binary, 2, 2,
-                                      "operator"),
-      ir_pb2.Function.GREATER: (bool_result, int_args, binary, 2, 2,
-                                "operator"),
-      ir_pb2.Function.GREATER_OR_EQUAL: (bool_result, int_args, binary, 2, 2,
-                                         "operator"),
       ir_pb2.Function.MAXIMUM: (int_result, int_args, n_ary, 1, None,
                                 "function"),
       ir_pb2.Function.PRESENCE: (bool_result, field_args, n_ary, 1, 1,
@@ -268,18 +263,28 @@ def _types_are_compatible(a, b):
     assert False, "_types_are_compatible works with enums, integers, booleans."
 
 
-def _type_check_equality_operator(expression, source_file_name, errors):
-  """Checks the type of an equality operator (== or !=)."""
+def _type_check_comparison_operator(expression, source_file_name, errors):
+  """Checks the type of a comparison operator (==, !=, <, >, >=, <=)."""
+  # Applying less than or greater than to a boolean is likely a mistake, so
+  # only equality and inequality are allowed for booleans.
+  if expression.function.function in (ir_pb2.Function.EQUALITY,
+                                      ir_pb2.Function.INEQUALITY):
+    acceptable_types = ("integer", "boolean", "enumeration")
+    acceptable_types_for_humans = "an integer, boolean, or enum"
+  else:
+    acceptable_types = ("integer", "enumeration")
+    acceptable_types_for_humans = "an integer or enum"
   left = expression.function.args[0]
-  if left.type.WhichOneof("type") not in ("integer", "boolean", "enumeration"):
-    errors.append([
-        error.error(source_file_name, left.source_location,
-                    "Left argument of operator '{}' must be an integer, "
-                    "boolean, or enum.".format(
-                        expression.function.function_name.text))
-    ])
-    return
   right = expression.function.args[1]
+  for (argument, name) in ((left, "Left"), (right, "Right")):
+    if argument.type.WhichOneof("type") not in acceptable_types:
+      errors.append([
+          error.error(source_file_name, argument.source_location,
+                      "{} argument of operator '{}' must be {}.".format(
+                          name, expression.function.function_name.text,
+                          acceptable_types_for_humans))
+      ])
+      return
   if not _types_are_compatible(left, right):
     errors.append([
         error.error(source_file_name, expression.source_location,

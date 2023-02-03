@@ -99,6 +99,20 @@ class TypeAnnotationTest(unittest.TestCase):
     self.assertEqual(expression.function.args[1].type.WhichOneof("type"),
                      "enumeration")
 
+  def test_adds_enum_comparison_operation_type(self):
+    ir = self._make_ir("struct Foo:\n"
+                       "  0 [+1]                   UInt      x\n"
+                       "  1 [+Enum.VAL>=Enum.VAL]  UInt:8[]  y\n"
+                       "enum Enum:\n"
+                       "  VAL = 1\n")
+    self.assertEqual([], error.filter_errors(type_check.annotate_types(ir)))
+    expression = ir.module[0].type[0].structure.field[1].location.size
+    self.assertEqual(expression.type.WhichOneof("type"), "boolean")
+    self.assertEqual(expression.function.args[0].type.WhichOneof("type"),
+                     "enumeration")
+    self.assertEqual(expression.function.args[1].type.WhichOneof("type"),
+                     "enumeration")
+
   def test_adds_integer_field_type(self):
     ir = self._make_ir("struct Foo:\n"
                        "  0 [+1]     UInt      x\n"
@@ -172,9 +186,9 @@ class TypeAnnotationTest(unittest.TestCase):
                        "  1 [+1==x]    UInt:8[]  y\n")
     expression = ir.module[0].type[0].structure.field[1].location.size
     self.assertEqual([
-        [error.error("m.emb", expression.source_location,
-                     "Both arguments of operator '==' must have the same "
-                     "type.")]
+        [error.error("m.emb", expression.function.args[1].source_location,
+                     "Right argument of operator '==' must be an integer, "
+                     "boolean, or enum.")]
     ], error.filter_errors(type_check.annotate_types(ir)))
 
   def test_error_on_equality_mismatched_operands_int_bool(self):
@@ -188,14 +202,27 @@ class TypeAnnotationTest(unittest.TestCase):
                      "type.")]
     ], error.filter_errors(type_check.annotate_types(ir)))
 
-  def test_error_on_equality_mismatched_operands_bool_int(self):
+  def test_error_on_mismatched_comparison_operands(self):
     ir = self._make_ir("struct Foo:\n"
-                       "  0 [+1]         UInt      x\n"
-                       "  1 [+true==1]   UInt:8[]  y\n")
+                       "  0 [+1]           UInt:8    x\n"
+                       "  1 [+x>=Bar.BAR]  UInt:8[]  y\n"
+                       "enum Bar:\n"
+                       "  BAR = 1\n")
     expression = ir.module[0].type[0].structure.field[1].location.size
     self.assertEqual([
         [error.error("m.emb", expression.source_location,
-                     "Both arguments of operator '==' must have the same "
+                     "Both arguments of operator '>=' must have the same "
+                     "type.")]
+    ], error.filter_errors(type_check.annotate_types(ir)))
+
+  def test_error_on_equality_mismatched_operands_bool_int(self):
+    ir = self._make_ir("struct Foo:\n"
+                       "  0 [+1]         UInt      x\n"
+                       "  1 [+true!=1]   UInt:8[]  y\n")
+    expression = ir.module[0].type[0].structure.field[1].location.size
+    self.assertEqual([
+        [error.error("m.emb", expression.source_location,
+                     "Both arguments of operator '!=' must have the same "
                      "type.")]
     ], error.filter_errors(type_check.annotate_types(ir)))
 
@@ -322,18 +349,20 @@ class TypeAnnotationTest(unittest.TestCase):
                        "  1 [+true<1]  UInt:8[]  y\n")
     expression = ir.module[0].type[0].structure.field[1].location.size
     self.assertEqual([
-        [error.error("m.emb", expression.function.args[0].source_location,
-                     "Left argument of operator '<' must be an integer.")]
+        [error.error(
+            "m.emb", expression.function.args[0].source_location,
+            "Left argument of operator '<' must be an integer or enum.")]
     ], error.filter_errors(type_check.annotate_types(ir)))
 
   def test_error_on_bad_right_comparison_operand_type(self):
     ir = self._make_ir("struct Foo:\n"
-                       "  0 [+1]       UInt      x\n"
+                       "  0 [+1]        UInt      x\n"
                        "  1 [+1>=true]  UInt:8[]  y\n")
     expression = ir.module[0].type[0].structure.field[1].location.size
     self.assertEqual([
-        [error.error("m.emb", expression.function.args[1].source_location,
-                     "Right argument of operator '>=' must be an integer.")]
+        [error.error(
+            "m.emb", expression.function.args[1].source_location,
+            "Right argument of operator '>=' must be an integer or enum.")]
     ], error.filter_errors(type_check.annotate_types(ir)))
 
   def test_error_on_bad_boolean_operand_type(self):
