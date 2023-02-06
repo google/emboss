@@ -439,7 +439,10 @@ TEST(Conditional, TrueEnumBasedCondition) {
   EXPECT_TRUE(writer.Ok());
   ASSERT_TRUE(writer.SizeIsKnown());
   EXPECT_EQ(2U, writer.SizeInBytes());
+  EXPECT_TRUE(writer.has_xc().Value());
   EXPECT_EQ(0, writer.xc().Read());
+  EXPECT_TRUE(writer.has_xc2().Value());
+  EXPECT_EQ(0, writer.xc2().Read());
 }
 
 TEST(Conditional, FalseEnumBasedCondition) {
@@ -449,6 +452,9 @@ TEST(Conditional, FalseEnumBasedCondition) {
   ASSERT_TRUE(writer.SizeIsKnown());
   EXPECT_EQ(1U, writer.SizeInBytes());
   EXPECT_FALSE(writer.xc().Ok());
+  EXPECT_FALSE(writer.has_xc().Value());
+  EXPECT_FALSE(writer.xc2().Ok());
+  EXPECT_FALSE(writer.has_xc2().Value());
 }
 
 TEST(Conditional, TrueEnumBasedNegativeCondition) {
