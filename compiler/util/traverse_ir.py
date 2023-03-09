@@ -21,8 +21,8 @@ from compiler.util import ir_pb2
 
 def _call_with_optional_args(function, positional_arg, keyword_args):
   """Calls function with whatever keyword_args it will accept."""
-  argspec = inspect.getargspec(function)
-  if argspec.keywords:
+  argspec = inspect.getfullargspec(function)
+  if argspec.kwonlyargs:
     # If the function accepts a kwargs parameter, then it will accept all
     # arguments.
     # Note: this isn't technically true if one of the keyword arguments has the
