@@ -22,7 +22,7 @@ from compiler.util import ir_pb2
 def _call_with_optional_args(function, positional_arg, keyword_args):
   """Calls function with whatever keyword_args it will accept."""
   argspec = inspect.getfullargspec(function)
-  if argspec.kwonlyargs:
+  if argspec.varkw:
     # If the function accepts a kwargs parameter, then it will accept all
     # arguments.
     # Note: this isn't technically true if one of the keyword arguments has the
@@ -31,7 +31,7 @@ def _call_with_optional_args(function, positional_arg, keyword_args):
   else:
     ok_arguments = {}
     for name in keyword_args:
-      if name in argspec.args[1:]:
+      if name in argspec.args[1:] or name in argspec.kwonlyargs:
         ok_arguments[name] = keyword_args[name]
     for name in argspec.args[1:len(argspec.args) - len(argspec.defaults or [])]:
       assert name in ok_arguments, (
