@@ -83,11 +83,11 @@ def _parse_command_line(argv):
   return parser.parse_args(argv[1:])
 
 
-def _show_errors(errors, ir, flags):
+def _show_errors(errors, debug_info, flags):
   """Prints errors with source code snippets."""
   source_codes = {}
-  for module in ir.module:
-    source_codes[module.source_file_name] = module.source_text
+  for source_file in debug_info.modules:
+    source_codes[source_file] = debug_info.modules[source_file].source_code
   use_color = (flags.color_output == "always" or
                (flags.color_output in ("auto", "if_tty") and
                 os.isatty(sys.stderr.fileno())))
@@ -129,7 +129,7 @@ def main(flags):
   ir, debug_info, errors = glue.parse_emboss_file(
       flags.input_file[0], _find_in_dirs_and_read(flags.import_dirs))
   if errors:
-    _show_errors(errors, flags)
+    _show_errors(errors, debug_info, flags)
     return 1
   main_module_debug_info = debug_info.modules[flags.input_file[0]]
   if flags.debug_show_tokenization:
