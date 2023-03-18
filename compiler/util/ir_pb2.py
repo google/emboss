@@ -991,8 +991,9 @@ class Module(Message):
   type = Repeated(TypeDefinition)          # Module-level type definitions.
   documentation = Repeated(Documentation)  # Module-level docs.
   foreign_import = Repeated(Import)        # Other modules imported.
-  source_location = Optional(Location)    # Source code covered by this IR.
-  source_file_name = Optional(_Text)    # Name of the source file.
+  source_text = Optional(_Text)            # The original source code.
+  source_location = Optional(Location)     # Source code covered by this IR.
+  source_file_name = Optional(_Text)       # Name of the source file.
 
 
 @message

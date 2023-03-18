@@ -47,8 +47,19 @@ py_test(
     python_version = "PY3",
     deps = [
         ":expression_parser",
-        ":ir_util",
         ":ir_pb2",
+        ":ir_util",
+    ],
+)
+
+py_library(
+    name = "attribute_util",
+    srcs = ["attribute_util.py"],
+    deps = [
+        ":error",
+        ":ir_pb2",
+        ":ir_util",
+        ":traverse_ir",
     ],
 )
 
