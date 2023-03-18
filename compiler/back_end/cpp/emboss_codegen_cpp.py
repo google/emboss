@@ -21,9 +21,14 @@ the result.
 from __future__ import print_function
 
 import argparse
+<<<<<<< HEAD
+=======
+import os
+>>>>>>> b313075 (Factor back-end attribute checking into the back end.)
 import sys
 
 from compiler.back_end.cpp import header_generator
+from compiler.util import error
 from compiler.util import ir_pb2
 
 
@@ -38,7 +43,23 @@ def _parse_command_line(argv):
                       type=str,
                       help="Write header to file.  If not specified, write " +
                            "header to stdout.")
+  parser.add_argument("--color-output",
+                      default="if_tty",
+                      choices=["always", "never", "if_tty", "auto"],
+                      help="Print error messages using color.  'auto' is a "
+                           "synonym for 'if_tty'.")
   return parser.parse_args(argv[1:])
+
+
+def _show_errors(errors, ir, flags):
+  """Prints errors with source code snippets."""
+  source_codes = {}
+  for module in ir.module:
+    source_codes[module.source_file_name] = module.source_text
+  use_color = (flags.color_output == "always" or
+               (flags.color_output in ("auto", "if_tty") and
+                os.isatty(sys.stderr.fileno())))
+  print(error.format_errors(errors, source_codes, use_color), file=sys.stderr)
 
 
 def main(flags):
@@ -47,7 +68,10 @@ def main(flags):
       ir = ir_pb2.EmbossIr.from_json(f.read())
   else:
     ir = ir_pb2.EmbossIr.from_json(sys.stdin.read())
-  header = header_generator.generate_header(ir)
+  header, errors = header_generator.generate_header(ir)
+  if errors:
+    _show_errors(errors, ir, flags)
+    return 1
   if flags.output_file:
     with open(flags.output_file, "w") as f:
       f.write(header)
