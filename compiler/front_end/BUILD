@@ -254,8 +254,9 @@ py_library(
     deps = [
         ":attributes",
         ":type_check",
-        "//compiler/util:ir_pb2",
+        "//compiler/util:attribute_util",
         "//compiler/util:error",
+        "//compiler/util:ir_pb2",
         "//compiler/util:ir_util",
         "//compiler/util:traverse_ir",
     ],

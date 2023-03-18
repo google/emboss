@@ -20,19 +20,11 @@ verifies attributes which may have been manually entered.
 
 from compiler.front_end import attributes
 from compiler.front_end import type_check
+from compiler.util import attribute_util
 from compiler.util import error
 from compiler.util import ir_pb2
 from compiler.util import ir_util
 from compiler.util import traverse_ir
-
-# The "namespace" attribute is C++-back-end specific, and so should not be used
-# by the front end.
-_NAMESPACE = "namespace"
-
-
-# Error messages used by multiple attribute type checkers.
-_BAD_TYPE_MESSAGE = "Attribute '{name}' must have {type} value."
-_MUST_BE_CONSTANT_MESSAGE = "Attribute '{name}' must have a constant value."
 
 
 # Default value for maximum_bits on an `enum`.
@@ -40,121 +32,54 @@ _DEFAULT_ENUM_MAXIMUM_BITS = 64
 
 
 # Attribute type checkers
-def _is_constant_boolean(attr, module_source_file):
-  """Checks if the given attr is a constant boolean."""
-  if not attr.value.expression.type.boolean.HasField("value"):
-    return [[error.error(module_source_file,
-                         attr.value.source_location,
-                         _BAD_TYPE_MESSAGE.format(name=attr.name.text,
-                                                  type="a constant boolean"))]]
-  return []
-
-
-def _is_boolean(attr, module_source_file):
-  """Checks if the given attr is a boolean."""
-  if attr.value.expression.type.WhichOneof("type") != "boolean":
-    return [[error.error(module_source_file,
-                         attr.value.source_location,
-                         _BAD_TYPE_MESSAGE.format(name=attr.name.text,
-                                                  type="a boolean"))]]
-  return []
-
-
-def _is_constant_integer(attr, module_source_file):
-  """Checks if the given attr is an integer constant expression."""
-  if (not attr.value.HasField("expression") or
-      attr.value.expression.type.WhichOneof("type") != "integer"):
-    return [[error.error(module_source_file,
-                         attr.value.source_location,
-                         _BAD_TYPE_MESSAGE.format(name=attr.name.text,
-                                                  type="an integer"))]]
-  if not ir_util.is_constant(attr.value.expression):
-    return [[error.error(module_source_file,
-                         attr.value.source_location,
-                         _MUST_BE_CONSTANT_MESSAGE.format(
-                             name=attr.name.text))]]
-  return []
-
-
-def _is_string(attr, module_source_file):
-  """Checks if the given attr is a string."""
-  if not attr.value.HasField("string_constant"):
-    return [[error.error(module_source_file,
-                         attr.value.source_location,
-                         _BAD_TYPE_MESSAGE.format(name=attr.name.text,
-                                                  type="a string"))]]
-  return []
-
-
-def _is_valid_byte_order(attr, module_source_file):
-  """Checks if the given attr is a valid byte_order."""
-  return _is_string_from_list(attr, module_source_file,
-                              {"BigEndian", "LittleEndian", "Null"})
-
-
-def _is_string_from_list(attr, module_source_file, valid_values):
-  """Checks if the given attr has one of the valid_values."""
-  if attr.value.string_constant.text not in valid_values:
-    return [[error.error(module_source_file,
-                         attr.value.source_location,
-                         "Attribute '{name}' must be '{options}'.".format(
-                             name=attr.name.text,
-                             options="' or '".join(sorted(valid_values))))]]
-  return []
-
-
-def _is_valid_text_output(attr, module_source_file):
-  """Checks if the given attr is a valid text_output."""
-  return _is_string_from_list(attr, module_source_file, {"Emit", "Skip"})
+_VALID_BYTE_ORDER = attribute_util.string_from_list(
+        {"BigEndian", "LittleEndian", "Null"})
+_VALID_TEXT_OUTPUT = attribute_util.string_from_list({"Emit", "Skip"})
 
 
 # Attributes must be the same type no matter where they occur.
 _ATTRIBUTE_TYPES = {
-    ("", attributes.ADDRESSABLE_UNIT_SIZE): _is_constant_integer,
-    ("", attributes.BYTE_ORDER): _is_valid_byte_order,
-    ("", attributes.ENUM_MAXIMUM_BITS): _is_constant_integer,
-    ("", attributes.FIXED_SIZE): _is_constant_integer,
-    ("", attributes.IS_INTEGER): _is_constant_boolean,
-    ("", attributes.IS_SIGNED): _is_constant_boolean,
-    ("", attributes.REQUIRES): _is_boolean,
-    ("", attributes.STATIC_REQUIREMENTS): _is_boolean,
-    ("", attributes.TEXT_OUTPUT): _is_valid_text_output,
-    ("cpp", _NAMESPACE): _is_string,
+    attributes.ADDRESSABLE_UNIT_SIZE: attribute_util.INTEGER_CONSTANT,
+    attributes.BYTE_ORDER: _VALID_BYTE_ORDER,
+    attributes.ENUM_MAXIMUM_BITS: attribute_util.INTEGER_CONSTANT,
+    attributes.FIXED_SIZE: attribute_util.INTEGER_CONSTANT,
+    attributes.IS_INTEGER: attribute_util.BOOLEAN_CONSTANT,
+    attributes.IS_SIGNED: attribute_util.BOOLEAN_CONSTANT,
+    attributes.REQUIRES: attribute_util.BOOLEAN,
+    attributes.STATIC_REQUIREMENTS: attribute_util.BOOLEAN,
+    attributes.TEXT_OUTPUT: _VALID_TEXT_OUTPUT,
 }
 
 _MODULE_ATTRIBUTES = {
-    ("", attributes.BYTE_ORDER, True),
-    # TODO(bolms): Allow back-end-specific attributes to be specified
-    # externally.
-    ("cpp", _NAMESPACE, False),
+    (attributes.BYTE_ORDER, True),
 }
 _BITS_ATTRIBUTES = {
-    ("", attributes.FIXED_SIZE, False),
-    ("", attributes.REQUIRES, False),
+    (attributes.FIXED_SIZE, False),
+    (attributes.REQUIRES, False),
 }
 _STRUCT_ATTRIBUTES = {
-    ("", attributes.FIXED_SIZE, False),
-    ("", attributes.BYTE_ORDER, True),
-    ("", attributes.REQUIRES, False),
+    (attributes.FIXED_SIZE, False),
+    (attributes.BYTE_ORDER, True),
+    (attributes.REQUIRES, False),
 }
 _ENUM_ATTRIBUTES = {
-    ("", attributes.ENUM_MAXIMUM_BITS, False),
-    ("", attributes.IS_SIGNED, False),
+    (attributes.ENUM_MAXIMUM_BITS, False),
+    (attributes.IS_SIGNED, False),
 }
 _EXTERNAL_ATTRIBUTES = {
-    ("", attributes.ADDRESSABLE_UNIT_SIZE, False),
-    ("", attributes.FIXED_SIZE, False),
-    ("", attributes.IS_INTEGER, False),
-    ("", attributes.STATIC_REQUIREMENTS, False),
+    (attributes.ADDRESSABLE_UNIT_SIZE, False),
+    (attributes.FIXED_SIZE, False),
+    (attributes.IS_INTEGER, False),
+    (attributes.STATIC_REQUIREMENTS, False),
 }
 _STRUCT_PHYSICAL_FIELD_ATTRIBUTES = {
-    ("", attributes.BYTE_ORDER, False),
-    ("", attributes.REQUIRES, False),
-    ("", attributes.TEXT_OUTPUT, False),
+    (attributes.BYTE_ORDER, False),
+    (attributes.REQUIRES, False),
+    (attributes.TEXT_OUTPUT, False),
 }
 _STRUCT_VIRTUAL_FIELD_ATTRIBUTES = {
-    ("", attributes.REQUIRES, False),
-    ("", attributes.TEXT_OUTPUT, False),
+    (attributes.REQUIRES, False),
+    (attributes.TEXT_OUTPUT, False),
 }
 
 
@@ -202,129 +127,6 @@ def _construct_string_attribute(name, value, source_location):
                                            source_location=source_location),
                           value=attr_value,
                           source_location=source_location)
-
-
-def _check_attributes_in_ir(ir):
-  """Performs basic checks on all attributes in the given ir.
-
-  This function calls _check_attributes on each attribute list in ir.
-
-  Arguments:
-    ir: An ir_pb2.EmbossIr to check.
-
-  Returns:
-    A list of lists of error.error, or an empty list if there were no errors.
-  """
-
-  def check_module(module, errors):
-    errors.extend(_check_attributes(
-        module.attribute, _MODULE_ATTRIBUTES, "module '{}'".format(
-            module.source_file_name), module.source_file_name))
-
-  def check_type_definition(type_definition, source_file_name, errors):
-    if type_definition.HasField("structure"):
-      if type_definition.addressable_unit == ir_pb2.TypeDefinition.BYTE:
-        errors.extend(_check_attributes(
-            type_definition.attribute, _STRUCT_ATTRIBUTES, "struct '{}'".format(
-                type_definition.name.name.text), source_file_name))
-      elif type_definition.addressable_unit == ir_pb2.TypeDefinition.BIT:
-        errors.extend(_check_attributes(
-            type_definition.attribute, _BITS_ATTRIBUTES, "bits '{}'".format(
-                type_definition.name.name.text), source_file_name))
-      else:
-        assert False, "Unexpected addressable_unit '{}'".format(
-            type_definition.addressable_unit)
-    elif type_definition.HasField("enumeration"):
-      errors.extend(_check_attributes(
-          type_definition.attribute, _ENUM_ATTRIBUTES, "enum '{}'".format(
-              type_definition.name.name.text), source_file_name))
-    elif type_definition.HasField("external"):
-      errors.extend(_check_attributes(
-          type_definition.attribute, _EXTERNAL_ATTRIBUTES,
-          "external '{}'".format(
-              type_definition.name.name.text), source_file_name))
-
-  def check_struct_field(field, source_file_name, errors):
-    if ir_util.field_is_virtual(field):
-      field_attributes = _STRUCT_VIRTUAL_FIELD_ATTRIBUTES
-      field_adjective = "virtual "
-    else:
-      field_attributes = _STRUCT_PHYSICAL_FIELD_ATTRIBUTES
-      field_adjective = ""
-    errors.extend(_check_attributes(
-        field.attribute, field_attributes,
-        "{}struct field '{}'".format(field_adjective, field.name.name.text),
-        source_file_name))
-
-  errors = []
-  # TODO(bolms): Add a check that only known $default'ed attributes are
-  # used.
-  traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Module], check_module,
-      parameters={"errors": errors})
-  traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.TypeDefinition], check_type_definition,
-      parameters={"errors": errors})
-  traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Field], check_struct_field,
-      parameters={"errors": errors})
-  return errors
-
-
-def _check_attributes(attribute_list, attribute_specs, context_name,
-                      module_source_file):
-  """Performs basic checks on the given list of attributes.
-
-  Checks the given attribute_list for duplicates, unknown attributes, attributes
-  with incorrect type, and attributes whose values are not constant.
-
-  Arguments:
-    attribute_list: An iterable of ir_pb2.Attribute.
-    attribute_specs: A dict of attribute names to _Attribute structures
-      specifying the allowed attributes.
-    context_name: A name for the context of these attributes, such as "struct
-      'Foo'" or "module 'm.emb'".  Used in error messages.
-    module_source_file: The value of module.source_file_name from the module
-      containing 'attribute_list'.  Used in error messages.
-
-  Returns:
-    A list of lists of error.Errors.  An empty list indicates no errors were
-    found.
-  """
-  errors = []
-  already_seen_attributes = {}
-  for attr in attribute_list:
-    if attr.back_end.text:
-      attribute_name = "({}) {}".format(attr.back_end.text, attr.name.text)
-    else:
-      attribute_name = attr.name.text
-    if (attr.name.text, attr.is_default) in already_seen_attributes:
-      original_attr = already_seen_attributes[attr.name.text, attr.is_default]
-      errors.append([
-          error.error(module_source_file,
-                      attr.source_location,
-                      "Duplicate attribute '{}'.".format(attribute_name)),
-          error.note(module_source_file,
-                     original_attr.source_location,
-                     "Original attribute")])
-      continue
-    already_seen_attributes[attr.name.text, attr.is_default] = attr
-
-    if ((attr.back_end.text, attr.name.text, attr.is_default) not in
-        attribute_specs):
-      if attr.is_default:
-        error_message = "Attribute '{}' may not be defaulted on {}.".format(
-            attribute_name, context_name)
-      else:
-        error_message = "Unknown attribute '{}' on {}.".format(attribute_name,
-                                                               context_name)
-      errors.append([error.error(module_source_file,
-                                 attr.name.source_location,
-                                 error_message)])
-    else:
-      attribute_check = _ATTRIBUTE_TYPES[attr.back_end.text, attr.name.text]
-      errors.extend(attribute_check(attr, module_source_file))
-  return errors
 
 
 def _fixed_size_of_struct_or_bits(struct, unit_size):
@@ -632,7 +434,16 @@ def normalize_and_verify(ir):
   Returns:
     A list of validation errors, or an empty list if no errors were encountered.
   """
-  errors = _check_attributes_in_ir(ir)
+  errors = attribute_util.check_attributes_in_ir(
+          ir,
+          types=_ATTRIBUTE_TYPES,
+          module_attributes=_MODULE_ATTRIBUTES,
+          struct_attributes=_STRUCT_ATTRIBUTES,
+          bits_attributes=_BITS_ATTRIBUTES,
+          enum_attributes=_ENUM_ATTRIBUTES,
+          external_attributes=_EXTERNAL_ATTRIBUTES,
+          structure_virtual_field_attributes=_STRUCT_VIRTUAL_FIELD_ATTRIBUTES,
+          structure_physical_field_attributes=_STRUCT_PHYSICAL_FIELD_ATTRIBUTES)
   if errors:
     return errors
   _add_missing_attributes_on_ir(ir)

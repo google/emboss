@@ -23,6 +23,7 @@ import pkgutil
 import re
 
 from compiler.back_end.util import code_template
+from compiler.util import attribute_util
 from compiler.util import ir_pb2
 from compiler.util import ir_util
 from compiler.util import name_conversion
@@ -1312,6 +1313,13 @@ def generate_header(ir):
     A string containing the text of a C++ header which implements Views for the
     types in the Emboss module.
   """
+  errors = attribute_util.check_attributes_in_ir(
+          ir,
+          back_end="cpp",
+          types={"namespace": attribute_util.STRING},
+          module_attributes={("namespace", False)})
+  if errors:
+    return None, errors
   type_declarations = []
   type_definitions = []
   method_definitions = []
@@ -1332,4 +1340,4 @@ def generate_header(ir):
       _TEMPLATES.outline,
       includes=includes,
       body=body,
-      header_guard=_generate_header_guard(ir.module[0].source_file_name))
+      header_guard=_generate_header_guard(ir.module[0].source_file_name)), []

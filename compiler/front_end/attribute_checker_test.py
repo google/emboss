@@ -267,22 +267,6 @@ class NormalizeIrTest(unittest.TestCase):
         ]],
         attribute_checker.normalize_and_verify(ir))
 
-  def test_accepts_string_attribute(self):
-    ir = _make_ir_from_emb('[(cpp) namespace: "foo"]\n')
-    self.assertEqual([], attribute_checker.normalize_and_verify(ir))
-
-  def test_rejects_wrong_type_for_string_attribute(self):
-    ir = _make_ir_from_emb("[(cpp) namespace: 9]\n")
-    attr = ir.module[0].attribute[0]
-    self.assertEqual([[
-        error.error("m.emb", attr.value.source_location,
-                    "Attribute 'namespace' must have a string value.")
-    ]], attribute_checker.normalize_and_verify(ir))
-
-  def test_accepts_back_end_qualified_attribute(self):
-    ir = _make_ir_from_emb('[(cpp) namespace: "abc"]\n')
-    self.assertEqual([], attribute_checker.normalize_and_verify(ir))
-
   def test_rejects_attribute_missing_required_back_end_specifier(self):
     ir = _make_ir_from_emb('[namespace: "abc"]\n')
     attr = ir.module[0].attribute[0]
@@ -291,21 +275,10 @@ class NormalizeIrTest(unittest.TestCase):
                     "Unknown attribute 'namespace' on module 'm.emb'.")
     ]], attribute_checker.normalize_and_verify(ir))
 
-  def test_rejects_attribute_with_wrong_back_end_specifier(self):
+  def test_accepts_attribute_with_wrong_back_end_specifier(self):
     ir = _make_ir_from_emb('[(c) namespace: "abc"]\n')
     attr = ir.module[0].attribute[0]
-    self.assertEqual([[
-        error.error("m.emb", attr.name.source_location,
-                    "Unknown attribute '(c) namespace' on module 'm.emb'.")
-    ]], attribute_checker.normalize_and_verify(ir))
-
-  def test_rejects_emboss_internal_attribute_with_back_end_specifier(self):
-    ir = _make_ir_from_emb('[(cpp) byte_order: "LittleEndian"]\n')
-    attr = ir.module[0].attribute[0]
-    self.assertEqual([[
-        error.error("m.emb", attr.name.source_location,
-                    "Unknown attribute '(cpp) byte_order' on module 'm.emb'.")
-    ]], attribute_checker.normalize_and_verify(ir))
+    self.assertEqual([], attribute_checker.normalize_and_verify(ir))
 
   def test_adds_byte_order_attributes_from_default(self):
     ir = _make_ir_from_emb('[$default byte_order: "BigEndian"]\n'

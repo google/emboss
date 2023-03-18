@@ -1083,5 +1083,6 @@
       "column": 1
     },
     "is_synthetic": false
-  }
+  },
+  "source_text": "# Copyright 2019 Google LLC\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#     https://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n\n-- This is a simple, real-world example structure.\n\n[$default byte_order: \"LittleEndian\"]\n[(cpp) namespace: \"emboss::test\"]\n\n\nstruct LogFileStatus:\n  0  [+4]   UInt        file_state\n  4  [+12]  UInt:8[12]  file_name\n  16 [+4]   UInt        file_size_kb\n  20 [+4]   UInt        media\n"
 }
