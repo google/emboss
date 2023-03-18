@@ -1310,8 +1310,10 @@ def generate_header(ir):
     ir: An EmbossIr of the module.
 
   Returns:
-    A string containing the text of a C++ header which implements Views for the
-    types in the Emboss module.
+    A tuple of (header, errors), where `header` is either a string containing
+    the text of a C++ header which implements Views for the types in the Emboss
+    module, or None, and `errors` is a possibly-empty list of error messages to
+    display to the user.
   """
   errors = attribute_util.check_attributes_in_ir(
           ir,
