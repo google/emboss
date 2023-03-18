@@ -20,4 +20,5 @@
 
 
 enum Foo:
+  [(cpp) namespace: "::emboss::test::leading_double_colon"]
   VALUE = 12

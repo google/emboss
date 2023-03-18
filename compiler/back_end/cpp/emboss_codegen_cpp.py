@@ -77,5 +77,5 @@ def main(flags):
   return 0
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
   sys.exit(main(_parse_command_line(sys.argv)))
