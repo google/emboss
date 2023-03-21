@@ -64,6 +64,9 @@ def _parse_command_line(argv):
   parser.add_argument("--output-ir-to-stdout",
                       action="store_true",
                       help="Dump serialized IR to stdout.")
+  parser.add_argument("--output-file",
+                      type=str,
+                      help="Write serialized IR to file.")
   parser.add_argument("--no-debug-show-header-lines",
                       dest="debug_show_header_lines",
                       action="store_false",
@@ -159,6 +162,9 @@ def main(flags):
         set(module_ir.PRODUCTIONS) - main_module_debug_info.used_productions))
   if flags.output_ir_to_stdout:
     print(ir.to_json())
+  if flags.output_file:
+    with open(flags.output_file, "w") as f:
+      f.write(ir.to_json())
   return 0
 
 

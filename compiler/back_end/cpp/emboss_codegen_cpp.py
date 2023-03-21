@@ -31,9 +31,15 @@ from compiler.util import ir_pb2
 
 def _parse_command_line(argv):
   """Parses the given command-line arguments."""
-  parser = argparse.ArgumentParser(
-          description="Emboss compiler C++ back end end.",
-          prog=argv[0])
+  parser = argparse.ArgumentParser(description="Emboss compiler C++ back end.",
+                                   prog=argv[0])
+  parser.add_argument("--input-file",
+                      type=str,
+                      help=".emb.ir file to compile.")
+  parser.add_argument("--output-file",
+                      type=str,
+                      help="Write header to file.  If not specified, write " +
+                           "header to stdout.")
   parser.add_argument("--color-output",
                       default="if_tty",
                       choices=["always", "never", "if_tty", "auto"],
@@ -54,14 +60,22 @@ def _show_errors(errors, ir, flags):
 
 
 def main(flags):
-  ir = ir_pb2.EmbossIr.from_json(sys.stdin.read())
+  if flags.input_file:
+    with open(flags.input_file) as f:
+      ir = ir_pb2.EmbossIr.from_json(f.read())
+  else:
+    ir = ir_pb2.EmbossIr.from_json(sys.stdin.read())
   header, errors = header_generator.generate_header(ir)
   if errors:
     _show_errors(errors, ir, flags)
     return 1
-  print(header)
+  if flags.output_file:
+    with open(flags.output_file, "w") as f:
+      f.write(header)
+  else:
+    print(header)
   return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
   sys.exit(main(_parse_command_line(sys.argv)))

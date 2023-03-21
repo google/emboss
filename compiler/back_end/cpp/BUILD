@@ -136,6 +136,17 @@ emboss_cc_test(
 )
 
 emboss_cc_test(
+    name = "importer2_test",
+    srcs = [
+        "testcode/importer2_test.cc",
+    ],
+    deps = [
+        "//testdata:importer2_emboss",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+emboss_cc_test(
     name = "uint_sizes_test",
     srcs = [
         "testcode/uint_sizes_test.cc",

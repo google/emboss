@@ -14,7 +14,11 @@
 
 # Shared test data for Emboss.
 
-load("//:build_defs.bzl", "emboss_cc_library")
+load("//:build_defs.bzl",
+     "emboss_cc_library",
+     "emboss_library",
+     "cc_emboss_library"
+)
 
 package(
     default_visibility = ["//:__subpackages__"],
@@ -67,10 +71,17 @@ filegroup(
     srcs = glob(["format/**"]),
 )
 
-emboss_cc_library(
-    name = "span_se_log_file_status_emboss",
+emboss_library(
+    name = "span_se_log_file_status_emb_ir",
     srcs = [
         "golden/span_se_log_file_status.emb",
+    ],
+)
+
+cc_emboss_library(
+    name = "span_se_log_file_status_emboss",
+    deps = [
+        ":span_se_log_file_status_emb_ir",
     ],
 )
 
@@ -143,6 +154,16 @@ emboss_cc_library(
     deps = [
         ":imported_emboss",
         ":imported_genfiles_emboss",
+    ],
+)
+
+emboss_cc_library(
+    name = "importer2_emboss",
+    srcs = [
+        "importer2.emb",
+    ],
+    deps = [
+        ":importer_emboss",
     ],
 )
 
