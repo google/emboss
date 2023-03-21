@@ -20,18 +20,41 @@ the result.
 
 from __future__ import print_function
 
+import argparse
 import sys
 
 from compiler.back_end.cpp import header_generator
 from compiler.util import ir_pb2
 
 
-def main(argv):
-  del argv  # Unused.
-  ir = ir_pb2.EmbossIr.from_json(sys.stdin.read())
-  print(header_generator.generate_header(ir))
+def _parse_command_line(argv):
+  """Parses the given command-line arguments."""
+  parser = argparse.ArgumentParser(description="Emboss compiler C++ back end.",
+                                   prog=argv[0])
+  parser.add_argument("--input-file",
+                      type=str,
+                      help=".emb.ir file to compile.")
+  parser.add_argument("--output-file",
+                      type=str,
+                      help="Write header to file.  If not specified, write " +
+                           "header to stdout.")
+  return parser.parse_args(argv[1:])
+
+
+def main(flags):
+  if flags.input_file:
+    with open(flags.input_file) as f:
+      ir = ir_pb2.EmbossIr.from_json(f.read())
+  else:
+    ir = ir_pb2.EmbossIr.from_json(sys.stdin.read())
+  header = header_generator.generate_header(ir)
+  if flags.output_file:
+    with open(flags.output_file, "w") as f:
+      f.write(header)
+  else:
+    print(header)
   return 0
 
 
-if __name__ == '__main__':
-  sys.exit(main(sys.argv))
+if __name__ == "__main__":
+  sys.exit(main(_parse_command_line(sys.argv)))
