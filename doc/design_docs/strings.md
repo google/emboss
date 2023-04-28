@@ -56,9 +56,9 @@ important for now.  This decision can be revisited later.
 
 Add three new types to the Prelude (names subject to change):
 
-1.  `FixString` represents a string whose contents should be the entire field
-    containing the `FixString`.  When writing to a `FixString`, the value must
-    be exactly the same length as the field.
+1.  `FixString`, a string whose contents should be the entire field containing
+    the `FixString`.  When writing to a `FixString`, the value must be exactly
+    the same length as the field.
 
     `CouldWriteValue()` should return `true` for all strings that are exactly
     the correct length.
@@ -66,13 +66,13 @@ Add three new types to the Prelude (names subject to change):
     `FixString` is very close to a notional `Blob` type or the current
     `UInt:8[]` type, except for differences in text format.
 
-2.  `ZString` represents a terminated string.  A `ZString` with no arguments
-    uses a null byte (`'\0'`) as the terminator.  An optional argument can be
-    used to specify the terminator -- a `ZString(36)`, for example, would be
-    terminated by `$`.  When reading, the value returned is all bytes up to, but
-    not including, the first terminator byte.  When writing, for compatibility,
-    the entire field should be written, using the terminator value for padding
-    if there is extra space.  A second optional parameter can be used to specify
+2.  `ZString`, a terminated string.  A `ZString` with no arguments uses a null
+    byte (`'\0'`) as the terminator.  An optional argument can be used to
+    specify the terminator -- a `ZString(36)`, for example, would be terminated
+    by `$`.  When reading, the value returned is all bytes up to, but not
+    including, the first terminator byte.  When writing, for compatibility, the
+    entire field should be written, using the terminator value for padding if
+    there is extra space.  A second optional parameter can be used to specify
     that the terminator is not required: `ZString(0, false)` can fill the
     underlying field with no terminator.
 
@@ -80,13 +80,13 @@ Add three new types to the Prelude (names subject to change):
     field and the value does not *contain* any instances of the terminator
     byte.
 
-3.  `PaddedString` represents a padded string.  A `PaddedString` with no
-    arguments uses space (`' '`, 32) as the padding value.  An optional argument
-    can be used to specify the padding -- a `PaddedString(0)`, for example,
-    would be padded with null bytes.  When reading, the end of the string is
-    discovered by walking *backwards* from the end until a non-padding byte is
-    found, then returning all bytes from the start of the string to the end.
-    When writing, any excess bytes will be filled with the padding value.
+3.  `PaddedString`, a padded string.  A `PaddedString` with no arguments uses
+    space (`' '`, 32) as the padding value.  An optional argument can be used to
+    specify the padding -- a `PaddedString(0)`, for example, would be padded
+    with null bytes.  When reading, the end of the string is discovered by
+    walking *backwards* from the end until a non-padding byte is found, then
+    returning all bytes from the start of the string to the end.  When writing,
+    any excess bytes will be filled with the padding value.
 
     Although, technically, "at least one byte of padding" could be enforced by
     making the `PaddedString` one byte shorter and following it with a one-byte
@@ -135,10 +135,10 @@ take two forms:
     2 and Java) have largely dropped support for the octal escapes.
 
     Based on a brief survey, only `\n`, `\t`, `\"`, `\\`, and `\'` appear to be
-    (nearly) universal.  <code>\x*hh*</code> is very common, though not
-    universal.  <code>\u*nnnn*</code>, where *nnnn* is a Unicode hex
-    value to be encoded as UTF-8 or UTF-16, also appears to be common, but only
-    for text strings.
+    (nearly) universal among popular programming languages.  <code>\x*hh*</code>
+    is very common, though not universal.  <code>\u*nnnn*</code>, where *nnnn*
+    is a Unicode hex value to be encoded as UTF-8 or UTF-16, also appears to be
+    common, but only for text strings.
 
     For now, only 7-bit ASCII printable characters character (byte values 32
     through 126) should be allowed in `"quoted strings"`, even though `.emb`
@@ -176,6 +176,9 @@ As an input type, `char *` is like to need explicit specialization.
 
 In many (most? all?) cases, methods should have no problem with some types that
 are not really "string" types, such as `std::vector<char>`.
+
+String types that use `signed char` or `unsigned char` instead of `char` (e.g.,
+`std::basic_string<unsigned char>`) should be explicitly supported.
 
 If the `BackingStorage` is not `ContiguousBuffer` (or some equivalent), it seems
 that it might be easy to hit undefined behavior with something like
@@ -248,10 +251,13 @@ bytes > 126 might be allowed in a `"quoted string"`.
 #### Type System Changes
 
 In order to facilitate `[requires]` on string types, the new types should have a
-new 'string' expression type, with 'max length' as a parameter.
+new 'string' expression type.
 
-For this proposal, no string manipulation will be allowed, so temporary strings
-(which might require memory allocation) are not necessary.
+
+#### Runtime Representation
+
+In this proposal, no string manipulation are allowed, so temporary strings
+(which might require memory allocation) will not be necessary.
 
 
 #### String Attribute Representation
@@ -280,7 +286,7 @@ each byte, with no regard for semantic collation.  That is, `"Z" < "a"`, since
 `'Z'` is 90 and `'a'` is 97.
 
 When one string is a strict prefix of another string, the shorter string should
-be "less than" the longer; e.g., `"abc" < "abcdef"`.  This is similar to the
+be "less than" the longer; e.g., `"abc" < "abcdef"`.  This is the same as the
 natural ordering for zero-terminated strings.
 
 
