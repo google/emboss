@@ -1,5 +1,7 @@
 # String Support for Emboss
 
+GitHub Issue [#28](https://github.com/google/emboss/issues/28)
+
 ## Background
 
 It is somewhat common to embed short strings into binary structures; examples
