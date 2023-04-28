@@ -2,10 +2,10 @@
 
 ## Background
 
-It is somewhat common to embed short strings into binary structures; common
-examples include serial numbers and firmware revisions, although in some cases
-even things like IP addresses can be encoded as ASCII text embedded in a larger
-binary message.
+It is somewhat common to embed short strings into binary structures; examples
+include serial numbers and firmware revisions, although in some cases even
+things like IP addresses are encoded as ASCII text embedded in a larger binary
+message.
 
 Historically, we have modeled such fields in Emboss by using `UInt:8[]`; that
 is, arrays of 8-bit uints.  This is more-or-less functional, but can be awkward
@@ -32,14 +32,7 @@ with no padding.
 
 There are, no doubt, other ways of delimiting strings.  These seem to be rare
 and sui generis, and can often be handled by modeling them as length-determined
-strings, then applying whatever logic in code.  An example of such a field is
-the amalgam of the IP\_address, netmask, and gateway strings in [the NovAtel
-OEM7 IPCONFIG
-command](https://docs.novatel.com/OEM7/Content/Commands/IPCONFIG.htm), since
-those strings use a variable-length-but-4-byte-aligned scheme.  (In Emboss, it
-is currently very difficult to model these three fields as separate strings;
-the most expedient method is to treat the trio as a single blob and parse it
-out in C++.)
+strings, then applying the necessary logic in code.
 
 There are also multiple *encodings* for strings, such as ASCII, ISO/IEC 8859-1
 ("Latin-1"), UTF-8, UTF-16, etc.  UTF-16 seems to be rare outside of
@@ -136,7 +129,7 @@ take two forms:
     *   <code>\x{*hh*}</code> => 0x*hh*
     *   <code>\d{*nnn*}</code> => *nnn*
 
-    Note that the standard C escape <code>\*nnn*</code> is explicitly not
+    Note that the standard C escape <code>\\*nnn*</code> is explicitly not
     supported.  C treats *nnn* as octal, which is often surprising, and modern
     languages (the cut off date appears to be about 1993 -- right between Python
     2 and Java) have largely dropped support for the octal escapes.
@@ -156,8 +149,8 @@ take two forms:
 
     For ease of transition from existing `UInt:8[]` fields, explicit index
     markers (`[8]:`) in the list should be allowed if the index exactly matches
-    the current cursor index; this matches (some) output from the current Emboss
-    text format for `UInt:8[]`.
+    the current cursor index; this matches output from the current Emboss text
+    format for `UInt:8[]`.
 
 The existing parameter system will need to be extended to allow default values,
 and to allow `external` types to accept parameters if they do not already.
