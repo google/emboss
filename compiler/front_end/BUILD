@@ -213,7 +213,6 @@ py_test(
     name = "symbol_resolver_test",
     srcs = ["symbol_resolver_test.py"],
     python_version = "PY3",
-    shard_count = 8,
     deps = [
         ":glue",
         ":symbol_resolver",
@@ -239,7 +238,6 @@ py_test(
     name = "write_inference_test",
     srcs = ["write_inference_test.py"],
     python_version = "PY3",
-    shard_count = 8,
     deps = [
         ":glue",
         ":test_util",
@@ -273,7 +271,6 @@ py_test(
     timeout = "long",
     srcs = ["attribute_checker_test.py"],
     python_version = "PY3",
-    shard_count = 16,
     deps = [
         ":attribute_checker",
         ":glue",
@@ -300,7 +297,6 @@ py_test(
     name = "type_check_test",
     srcs = ["type_check_test.py"],
     python_version = "PY3",
-    shard_count = 8,
     deps = [
         ":glue",
         ":test_util",
@@ -327,7 +323,6 @@ py_test(
     name = "expression_bounds_test",
     srcs = ["expression_bounds_test.py"],
     python_version = "PY3",
-    shard_count = 4,
     deps = [
         ":expression_bounds",
         ":glue",
@@ -354,7 +349,6 @@ py_test(
     name = "constraints_test",
     srcs = ["constraints_test.py"],
     python_version = "PY3",
-    shard_count = 8,
     deps = [
         ":constraints",
         ":glue",
@@ -378,7 +372,6 @@ py_test(
     name = "dependency_checker_test",
     srcs = ["dependency_checker_test.py"],
     python_version = "PY3",
-    shard_count = 8,
     deps = [
         ":dependency_checker",
         ":glue",

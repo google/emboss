@@ -18,6 +18,8 @@ The main entry point is normalize_and_verify(), which adds attributes and/or
 verifies attributes which may have been manually entered.
 """
 
+import re
+
 from compiler.front_end import attributes
 from compiler.front_end import type_check
 from compiler.util import attribute_util
@@ -30,11 +32,27 @@ from compiler.util import traverse_ir
 # Default value for maximum_bits on an `enum`.
 _DEFAULT_ENUM_MAXIMUM_BITS = 64
 
+# Default value for expected_back_ends -- mostly for legacy
+_DEFAULT_BACK_ENDS = "cpp"
 
 # Attribute type checkers
 _VALID_BYTE_ORDER = attribute_util.string_from_list(
         {"BigEndian", "LittleEndian", "Null"})
 _VALID_TEXT_OUTPUT = attribute_util.string_from_list({"Emit", "Skip"})
+
+
+def _valid_back_ends(attr, module_source_file):
+  if not re.match(
+      r"^(?:\s*[a-z][a-z0-9_]*\s*(?:,\s*[a-z][a-z0-9_]*\s*)*,?)?\s*$",
+      attr.value.string_constant.text):
+    return [[error.error(
+        module_source_file,
+        attr.value.source_location,
+        "Attribute '{name}' must be a comma-delimited list of back end "
+        "specifiers (like \"cpp, proto\")), not \"{value}\".".format(
+            name=attr.name.text,
+            value=attr.value.string_constant.text))]]
+  return []
 
 
 # Attributes must be the same type no matter where they occur.
@@ -48,10 +66,12 @@ _ATTRIBUTE_TYPES = {
     attributes.REQUIRES: attribute_util.BOOLEAN,
     attributes.STATIC_REQUIREMENTS: attribute_util.BOOLEAN,
     attributes.TEXT_OUTPUT: _VALID_TEXT_OUTPUT,
+    attributes.BACK_ENDS: _valid_back_ends,
 }
 
 _MODULE_ATTRIBUTES = {
     (attributes.BYTE_ORDER, True),
+    (attributes.BACK_ENDS, False),
 }
 _BITS_ATTRIBUTES = {
     (attributes.FIXED_SIZE, False),
@@ -233,6 +253,24 @@ def _add_missing_byte_order_attribute_on_field(field, type_definition, ir,
                                          field.source_location)])
 
 
+def _add_missing_back_ends_to_module(module):
+  """Sets the expected_back_ends attribute for a module, if not already set."""
+  back_ends_attr = ir_util.get_attribute(module.attribute, attributes.BACK_ENDS)
+  if back_ends_attr is None:
+    module.attribute.extend(
+        [_construct_string_attribute(attributes.BACK_ENDS, _DEFAULT_BACK_ENDS,
+                                     module.source_location)])
+
+
+def _gather_expected_back_ends(module):
+  """Captures the expected_back_ends attribute for `module`."""
+  back_ends_attr = ir_util.get_attribute(module.attribute, attributes.BACK_ENDS)
+  back_ends_str = back_ends_attr.string_constant.text
+  return {
+      "expected_back_ends": {x.strip() for x in back_ends_str.split(",")} | {""}
+  }
+
+
 def _add_addressable_unit_to_external(external, type_definition):
   """Sets the addressable_unit field for an external TypeDefinition."""
   # Strictly speaking, addressable_unit isn't an "attribute," but it's close
@@ -373,6 +411,8 @@ def _gather_default_attributes(obj, defaults):
 def _add_missing_attributes_on_ir(ir):
   """Adds missing attributes in a complete IR."""
   traverse_ir.fast_traverse_ir_top_down(
+      ir, [ir_pb2.Module], _add_missing_back_ends_to_module)
+  traverse_ir.fast_traverse_ir_top_down(
       ir, [ir_pb2.External], _add_addressable_unit_to_external)
   traverse_ir.fast_traverse_ir_top_down(
       ir, [ir_pb2.Enum], _add_missing_width_and_sign_attributes_on_enum)
@@ -402,9 +442,34 @@ def _verify_field_attributes(field, type_definition, source_file_name, ir,
   _verify_requires_attribute_on_field(field, source_file_name, ir, errors)
 
 
+def _verify_back_end_attributes(attribute, expected_back_ends, source_file_name,
+                                ir, errors):
+  back_end_text = attribute.back_end.text
+  if back_end_text not in expected_back_ends:
+    expected_back_ends_for_error = expected_back_ends - {""}
+    errors.append([error.error(
+        source_file_name, attribute.back_end.source_location,
+        "Back end specifier '{back_end}' does not match any expected back end "
+        "specifier for this file: '{expected_back_ends}'.  Add or update the "
+        "'[expected_back_ends: \"{new_expected_back_ends}\"]' attribute at the "
+        "file level if this back end specifier is intentional.".format(
+            back_end=attribute.back_end.text,
+            expected_back_ends="', '".join(
+                sorted(expected_back_ends_for_error)),
+            new_expected_back_ends=", ".join(
+                sorted(expected_back_ends_for_error | {back_end_text})),
+        ))])
+
+
 def _verify_attributes_on_ir(ir):
   """Verifies attributes in a complete IR."""
   errors = []
+  traverse_ir.fast_traverse_ir_top_down(
+      ir, [ir_pb2.Attribute], _verify_back_end_attributes,
+      incidental_actions={
+          ir_pb2.Module: _gather_expected_back_ends,
+      },
+      parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
       ir, [ir_pb2.Structure], _verify_size_attributes_on_structure,
       parameters={"errors": errors})

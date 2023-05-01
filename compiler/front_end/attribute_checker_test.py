@@ -275,9 +275,61 @@ class NormalizeIrTest(unittest.TestCase):
                     "Unknown attribute 'namespace' on module 'm.emb'.")
     ]], attribute_checker.normalize_and_verify(ir))
 
-  def test_accepts_attribute_with_wrong_back_end_specifier(self):
-    ir = _make_ir_from_emb('[(c) namespace: "abc"]\n')
+  def test_accepts_attribute_with_default_known_back_end_specifier(self):
+    ir = _make_ir_from_emb('[(cpp) namespace: "abc"]\n')
+    self.assertEqual([], attribute_checker.normalize_and_verify(ir))
+
+  def test_rejects_attribute_with_specified_back_end_specifier(self):
+    ir = _make_ir_from_emb('[(c) namespace: "abc"]\n'
+                           '[expected_back_ends: "c, cpp"]\n')
+    self.assertEqual([], attribute_checker.normalize_and_verify(ir))
+
+  def test_rejects_cpp_backend_attribute_when_not_in_expected_back_ends(self):
+    ir = _make_ir_from_emb('[(cpp) namespace: "abc"]\n'
+                           '[expected_back_ends: "c"]\n')
     attr = ir.module[0].attribute[0]
+    self.maxDiff = 200000
+    self.assertEqual([[
+        error.error(
+            "m.emb", attr.back_end.source_location,
+            "Back end specifier 'cpp' does not match any expected back end "
+            "specifier for this file: 'c'.  Add or update the "
+            "'[expected_back_ends: \"c, cpp\"]' attribute at the file level if "
+            "this back end specifier is intentional.")
+    ]], attribute_checker.normalize_and_verify(ir))
+
+  def test_rejects_expected_back_ends_with_bad_back_end(self):
+    ir = _make_ir_from_emb('[expected_back_ends: "c++"]\n')
+    attr = ir.module[0].attribute[0]
+    self.assertEqual([[
+        error.error(
+            "m.emb", attr.value.source_location,
+            "Attribute 'expected_back_ends' must be a comma-delimited list of "
+            "back end specifiers (like \"cpp, proto\")), not \"c++\".")
+    ]], attribute_checker.normalize_and_verify(ir))
+
+  def test_rejects_expected_back_ends_with_no_comma(self):
+    ir = _make_ir_from_emb('[expected_back_ends: "cpp z"]\n')
+    attr = ir.module[0].attribute[0]
+    self.assertEqual([[
+        error.error(
+            "m.emb", attr.value.source_location,
+            "Attribute 'expected_back_ends' must be a comma-delimited list of "
+            "back end specifiers (like \"cpp, proto\")), not \"cpp z\".")
+    ]], attribute_checker.normalize_and_verify(ir))
+
+  def test_rejects_expected_back_ends_with_extra_commas(self):
+    ir = _make_ir_from_emb('[expected_back_ends: "cpp,,z"]\n')
+    attr = ir.module[0].attribute[0]
+    self.assertEqual([[
+        error.error(
+            "m.emb", attr.value.source_location,
+            "Attribute 'expected_back_ends' must be a comma-delimited list of "
+            "back end specifiers (like \"cpp, proto\")), not \"cpp,,z\".")
+    ]], attribute_checker.normalize_and_verify(ir))
+
+  def test_accepts_empty_expected_back_ends(self):
+    ir = _make_ir_from_emb('[expected_back_ends: ""]\n')
     self.assertEqual([], attribute_checker.normalize_and_verify(ir))
 
   def test_adds_byte_order_attributes_from_default(self):
