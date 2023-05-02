@@ -21,10 +21,7 @@ the result.
 from __future__ import print_function
 
 import argparse
-<<<<<<< HEAD
-=======
 import os
->>>>>>> b313075 (Factor back-end attribute checking into the back end.)
 import sys
 
 from compiler.back_end.cpp import header_generator
