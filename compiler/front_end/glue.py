@@ -160,6 +160,7 @@ def parse_module_text(source_code, file_name):
     debug_info.parse_tree = parse_result.parse_tree
     used_productions = set()
     ir = module_ir.build_ir(parse_result.parse_tree, used_productions)
+    ir.source_text = source_code
     debug_info.used_productions = used_productions
     debug_info.ir = ir_pb2.Module()
     debug_info.ir.CopyFrom(ir)

@@ -27,11 +27,10 @@ from compiler.front_end import tokenizer
 from compiler.util import ir_pb2
 
 _TESTDATA_PATH = "testdata.golden"
+_MINIMAL_SOURCE = pkgutil.get_data(
+        _TESTDATA_PATH, "span_se_log_file_status.emb").decode(encoding="UTF-8")
 _MINIMAL_SAMPLE = parser.parse_module(
-    tokenizer.tokenize(
-        pkgutil.get_data(_TESTDATA_PATH, "span_se_log_file_status.emb").decode(
-            encoding="UTF-8"),
-        "")[0]).parse_tree
+    tokenizer.tokenize(_MINIMAL_SOURCE, "")[0]).parse_tree
 _MINIMAL_SAMPLE_IR = ir_pb2.Module.from_json(
     pkgutil.get_data(_TESTDATA_PATH, "span_se_log_file_status.ir.txt").decode(
         encoding="UTF-8")
@@ -4031,7 +4030,9 @@ class ModuleIrTest(unittest.TestCase):
   """Tests the module_ir.build_ir() function."""
 
   def test_build_ir(self):
-    self.assertEqual(module_ir.build_ir(_MINIMAL_SAMPLE), _MINIMAL_SAMPLE_IR)
+    ir = module_ir.build_ir(_MINIMAL_SAMPLE)
+    ir.source_text = _MINIMAL_SOURCE
+    self.assertEqual(ir, _MINIMAL_SAMPLE_IR)
 
   def test_production_coverage(self):
     """Checks that all grammar productions are used somewhere in tests."""
