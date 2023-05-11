@@ -100,7 +100,7 @@ Additionally, the same code would be emitted with either of the following:
 
 ```
 enum Foo:
-  [$default (cpp) enum_case: kCamelCase"]
+  [$default (cpp) enum_case: "kCamelCase"]
   BAR             = 1
   BAZ             = 2
   MULTI_WORD_ENUM = 4
@@ -109,7 +109,7 @@ enum Foo:
 or
 
 ```
-[$default (cpp) enum_case: kCamelCase"]
+[$default (cpp) enum_case: "kCamelCase"]
 
 ...
 
