@@ -680,6 +680,18 @@ class NormalizeIrTest(unittest.TestCase):
             "'maximum_bits' on an 'enum' must be between 1 and 64.")]],
         error.filter_errors(attribute_checker.normalize_and_verify(ir)))
 
+  def test_rejects_unknown_enum_value_attribute(self):
+      ir = _make_ir_from_emb("enum Foo:\n"
+                             "  BAR = 0  \n"
+                             "    [bad_attr: true]\n")
+      attribute_ir = ir.module[0].type[0].enumeration.value[0].attribute[0]
+      self.assertNotEqual([], attribute_checker.normalize_and_verify(ir))
+      self.assertEqual(
+          [[error.error(
+              "m.emb", attribute_ir.name.source_location,
+              "Unknown attribute 'bad_attr' on enum value 'BAR'.")]],
+          error.filter_errors(attribute_checker.normalize_and_verify(ir)))
+
 
 if __name__ == "__main__":
   unittest.main()

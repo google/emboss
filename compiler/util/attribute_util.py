@@ -116,6 +116,7 @@ def check_attributes_in_ir(ir,
                            struct_attributes=None,
                            bits_attributes=None,
                            enum_attributes=None,
+                           enum_value_attributes=None,
                            external_attributes=None,
                            structure_virtual_field_attributes=None,
                            structure_physical_field_attributes=None):
@@ -143,6 +144,8 @@ def check_attributes_in_ir(ir,
         the attributes that are allowed at `bits` scope.
     enum_attributes: A set of (attribute_name, is_default) tuples specifying
         the attributes that are allowed at `enum` scope.
+    enum_value_attributes: A set of (attribute_name, is_default) tuples
+        specifying the attributes that are allowed at the scope of enum values.
     external_attributes: A set of (attribute_name, is_default) tuples
         specifying the attributes that are allowed at `external` scope.
     structure_virtual_field_attributes: A set of (attribute_name, is_default)
@@ -200,6 +203,11 @@ def check_attributes_in_ir(ir,
         "{}struct field '{}'".format(field_adjective, field.name.name.text),
         source_file_name))
 
+  def check_enum_value(value, source_file_name, errors):
+    errors.extend(_check_attributes(
+        value.attribute, types, back_end, enum_value_attributes,
+        "enum value '{}'".format(value.name.name.text), source_file_name))
+
   errors = []
   # TODO(bolms): Add a check that only known $default'ed attributes are
   # used.
@@ -211,6 +219,9 @@ def check_attributes_in_ir(ir,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
       ir, [ir_pb2.Field], check_struct_field,
+      parameters={"errors": errors})
+  traverse_ir.fast_traverse_ir_top_down(
+      ir, [ir_pb2.EnumValue], check_enum_value,
       parameters={"errors": errors})
   return errors
 
