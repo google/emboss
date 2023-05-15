@@ -143,10 +143,16 @@ inline-enum-field-definition           -> field-location "enum" snake-name
                                           enum-body
 enum-body                              -> Indent doc-line* attribute-line*
                                           enum-value+ Dedent
-enum-value                             -> constant-name "=" expression doc?
-                                          Comment? eol enum-value-body?
-enum-value-body                        -> Indent doc-line* Dedent
+enum-value                             -> constant-name "=" expression attribute*
+                                          doc? Comment? eol enum-value-body?
+enum-value-body                        -> Indent doc-line* attribute-line* Dedent
 doc                                    -> Documentation
+attribute                              -> "[" attribute-context? "$default"?
+                                          snake-word ":" attribute-value "]"
+attribute-value                        -> expression
+                                        | string-constant
+string-constant                        -> String
+attribute-context                      -> "(" snake-word ")"
 constant-name                          -> constant-word
 inline-bits-field-definition           -> field-location "bits" snake-name
                                           abbreviation? ":" Comment? eol
@@ -169,12 +175,6 @@ conditional-bits-field-block           -> "if" expression ":" Comment? eol Inden
 field                                  -> field-location type snake-name
                                           abbreviation? attribute* doc? Comment?
                                           eol field-body?
-attribute                              -> "[" attribute-context? "$default"?
-                                          snake-word ":" attribute-value "]"
-attribute-value                        -> expression
-                                        | string-constant
-string-constant                        -> String
-attribute-context                      -> "(" snake-word ")"
 type                                   -> type-reference delimited-argument-list?
                                           type-size-specifier?
                                           array-length-specifier*

@@ -907,6 +907,7 @@ class EnumValue(Message):
   name = Optional(NameDefinition)          # The name of the enum value.
   value = Optional(Expression)             # The value of the enum value.
   documentation = Repeated(Documentation)  # Value-specific documentation.
+  attribute = Repeated(Attribute)          # Value-specific attributes.
 
   source_location = Optional(Location)
 
