@@ -118,6 +118,7 @@ py_library(
     name = "test_util",
     testonly = 1,
     srcs = ["test_util.py"],
+    visibility = ["//:__subpackages__"],
     deps = [
     ],
 )
