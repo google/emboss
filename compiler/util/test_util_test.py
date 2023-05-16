@@ -16,9 +16,9 @@
 
 import unittest
 
-from compiler.front_end import test_util
 from compiler.util import ir_pb2
 from compiler.util import parser_types
+from compiler.util import test_util
 
 
 class ProtoIsSupersetTest(unittest.TestCase):

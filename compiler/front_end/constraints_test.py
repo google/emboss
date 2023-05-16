@@ -18,9 +18,9 @@ import unittest
 from compiler.front_end import attributes
 from compiler.front_end import constraints
 from compiler.front_end import glue
-from compiler.front_end import test_util
 from compiler.util import error
 from compiler.util import ir_util
+from compiler.util import test_util
 
 
 def _make_ir_from_emb(emb_text, name="m.emb"):

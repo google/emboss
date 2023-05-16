@@ -17,9 +17,9 @@
 import unittest
 from compiler.front_end import glue
 from compiler.front_end import synthetics
-from compiler.front_end import test_util
 from compiler.util import error
 from compiler.util import ir_pb2
+from compiler.util import test_util
 
 
 class SyntheticsTest(unittest.TestCase):
