@@ -3852,6 +3852,98 @@ struct Foo:
     }
   ]
 }
+
+===
+enum value attribute
+---
+enum Foo:
+  BAR     = 1 [test: 0]
+  BAZ     = 2
+    [test: 1]
+    [different: "test"]
+  FOO_BAR = 4
+    -- foo bar doc
+    [test: 2]
+  FOO_BAZ = 8 [test: 3] -- foo baz doc
+  BAR_FOO = 16 [test: 4]
+    -- bar foo doc
+  BAZ_FOO = 32 -- baz foo doc
+    [test: 5]
+---
+{
+  "type": [
+    {
+      "enumeration": {
+        "value": [
+          {
+            "name": { "name": { "text": "BAR" } },
+            "attribute": [
+              {
+                "name": { "text": "test" },
+                "value": { "expression": { "constant": { "value": "0" } } }
+              }
+            ]
+          },
+          {
+            "name": { "name": { "text": "BAZ" } },
+            "attribute": [
+              {
+                "name": { "text": "test" },
+                "value": { "expression": { "constant": { "value": "1" } } }
+              },
+              {
+                "name": { "text": "different" },
+                "value": { "string_constant": { "text": "test" } }
+              }
+            ]
+          },
+          {
+            "name": { "name": { "text": "FOO_BAR" } },
+            "documentation": [ { "text": "foo bar doc" } ],
+            "attribute": [
+              {
+                "name": { "text": "test" },
+                "value": { "expression": { "constant": { "value": "2" } } }
+              }
+            ]
+          },
+          {
+            "name": { "name": { "text": "FOO_BAZ" } },
+            "documentation": [ { "text": "foo baz doc" } ],
+            "attribute": [
+              {
+                "name": { "text": "test" },
+                "value": { "expression": { "constant": { "value": "3" } } }
+              }
+            ]
+          },
+          {
+            "name": { "name": { "text": "BAR_FOO" } },
+            "documentation": [ { "text": "bar foo doc" } ],
+            "attribute": [
+              {
+                "name": { "text": "test" },
+                "value": { "expression": { "constant": { "value": "4" } } }
+              }
+            ]
+          },
+          {
+            "name": { "name": { "text": "BAZ_FOO" } },
+            "documentation": [ { "text": "baz foo doc" } ],
+            "attribute": [
+              {
+                "name": { "text": "test" },
+                "value": { "expression": { "constant": { "value": "5" } } }
+              }
+            ]
+          }
+        ]
+      },
+      "name": { "name": { "text": "Foo" } }
+    }
+  ]
+}
+
 """
 
 

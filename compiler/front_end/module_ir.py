@@ -1136,22 +1136,24 @@ def _enum_body(indent, docs, attributes, values, dedent):
 
 # name = value
 @_handles('enum-value -> '
-          '    constant-name "=" expression doc? Comment? eol enum-value-body?')
-def _enum_value(name, equals, expression, documentation, comment, newline,
+          '    constant-name "=" expression attribute* doc? Comment? eol enum-value-body?')
+def _enum_value(name, equals, expression, attribute, documentation, comment, newline,
                 body):
   del equals, comment, newline  # Unused.
   result = ir_pb2.EnumValue(name=name,
                             value=expression,
-                            documentation=documentation.list)
+                            documentation=documentation.list,
+                            attribute=attribute.list)
   if body.list:
-    result.documentation.extend(body.list[0].list)
+    result.documentation.extend(body.list[0].documentation)
+    result.attribute.extend(body.list[0].attribute)
   return result
 
 
-@_handles('enum-value-body -> Indent doc-line* Dedent')
-def _enum_value_body(indent, docs, dedent):
+@_handles('enum-value-body -> Indent doc-line* attribute-line* Dedent')
+def _enum_value_body(indent, docs, attributes, dedent):
   del indent, dedent  # Unused.
-  return docs
+  return ir_pb2.EnumValue(documentation=docs.list, attribute=attributes.list)
 
 
 # An external is just a declaration that a type exists and has certain

@@ -606,17 +606,17 @@ def _enum_values(value, block):
   return value + block
 
 
-@_formats('enum-value -> constant-name "=" expression doc? Comment? eol'
+@_formats('enum-value -> constant-name "=" expression attribute* doc? Comment? eol'
           '              enum-value-body?')
-def _enum_value(name, equals, value, docs, comment, eol, body):
-  return [_Block([], _Row('enum-value', [name, equals, value, docs, comment]),
+def _enum_value(name, equals, value, attributes, docs, comment, eol, body):
+  return [_Block([], _Row('enum-value', [name, equals, value, attributes, docs, comment]),
                  eol + body)]
 
 
-@_formats('enum-value-body -> Indent doc-line* Dedent')
-def _enum_value_body(indent, docs, dedent):
+@_formats('enum-value-body -> Indent doc-line* attribute-line* Dedent')
+def _enum_value_body(indent, docs, attributes, dedent):
   del indent, dedent  # Unused
-  return _indent_rows(docs)
+  return _indent_rows(docs + attributes)
 
 
 @_formats('external-body -> Indent doc-line* attribute-line* Dedent')

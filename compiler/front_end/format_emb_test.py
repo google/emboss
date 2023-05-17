@@ -127,6 +127,7 @@ def _make_golden_file_tests():
       "conditional_inline_bits_formatting",
       "dotted_names",
       "empty",
+      "enum_value_attributes",
       "enum_value_bodies",
       "enum_values_aligned",
       "equality_expressions",
