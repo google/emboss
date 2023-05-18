@@ -22,9 +22,9 @@ import unittest
 
 from compiler.front_end import module_ir
 from compiler.front_end import parser
-from compiler.front_end import test_util
 from compiler.front_end import tokenizer
 from compiler.util import ir_pb2
+from compiler.util import test_util
 
 _TESTDATA_PATH = "testdata.golden"
 _MINIMAL_SOURCE = pkgutil.get_data(

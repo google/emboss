@@ -18,8 +18,7 @@ import unittest
 from compiler.back_end.cpp import header_generator
 from compiler.front_end import glue
 from compiler.util import error
-from compiler.util import ir_pb2
-from compiler.util import ir_util
+from compiler.util import test_util
 
 
 def _make_ir_from_emb(emb_text, name="m.emb"):
@@ -50,4 +49,8 @@ class NormalizeIrTest(unittest.TestCase):
     self.assertEqual([[
         error.error("m.emb", attr.name.source_location,
                     "Unknown attribute '(cpp) byte_order' on module 'm.emb'.")
-    ]], attribute_checker.normalize_and_verify(ir))
+    ]], header_generator.generate_header(ir)[1])
+
+
+if __name__ == "__main__":
+    unittest.main()

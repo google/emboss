@@ -17,7 +17,7 @@
 import unittest
 from compiler.front_end import expression_bounds
 from compiler.front_end import glue
-from compiler.front_end import test_util
+from compiler.util import test_util
 
 
 class ComputeConstantsTest(unittest.TestCase):

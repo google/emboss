@@ -79,6 +79,24 @@ py_test(
 )
 
 py_library(
+    name = "test_util",
+    testonly = 1,
+    srcs = ["test_util.py"],
+    deps = [],
+)
+
+py_test(
+    name = "test_util_test",
+    srcs = ["test_util_test.py"],
+    python_version = "PY3",
+    deps = [
+        ":test_util",
+        "//compiler/util:ir_pb2",
+        "//compiler/util:parser_types",
+    ],
+)
+
+py_library(
     name = "traverse_ir",
     srcs = ["traverse_ir.py"],
     deps = [

@@ -17,10 +17,10 @@
 import unittest
 from compiler.front_end import attribute_checker
 from compiler.front_end import glue
-from compiler.front_end import test_util
 from compiler.util import error
 from compiler.util import ir_pb2
 from compiler.util import ir_util
+from compiler.util import test_util
 
 # These are not shared with attribute_checker.py because their values are part
 # of the contract with back ends.

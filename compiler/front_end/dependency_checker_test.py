@@ -17,8 +17,8 @@
 import unittest
 from compiler.front_end import dependency_checker
 from compiler.front_end import glue
-from compiler.front_end import test_util
 from compiler.util import error
+from compiler.util import test_util
 
 
 def _parse_snippet(emb_file):
