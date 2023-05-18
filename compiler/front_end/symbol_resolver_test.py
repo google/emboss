@@ -17,8 +17,8 @@
 import unittest
 from compiler.front_end import glue
 from compiler.front_end import symbol_resolver
-from compiler.front_end import test_util
 from compiler.util import error
+from compiler.util import test_util
 
 _HAPPY_EMB = """
 struct Foo:

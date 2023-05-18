@@ -82,9 +82,9 @@ py_test(
     deps = [
         ":module_ir",
         ":parser",
-        ":test_util",
         ":tokenizer",
         "//compiler/util:ir_pb2",
+        "//compiler/util:test_util",
     ],
 )
 
@@ -110,26 +110,6 @@ py_test(
         ":lr1",
         ":parser",
         ":tokenizer",
-        "//compiler/util:parser_types",
-    ],
-)
-
-py_library(
-    name = "test_util",
-    testonly = 1,
-    srcs = ["test_util.py"],
-    visibility = ["//:__subpackages__"],
-    deps = [
-    ],
-)
-
-py_test(
-    name = "test_util_test",
-    srcs = ["test_util_test.py"],
-    python_version = "PY3",
-    deps = [
-        ":test_util",
-        "//compiler/util:ir_pb2",
         "//compiler/util:parser_types",
     ],
 )
@@ -169,10 +149,10 @@ py_test(
     python_version = "PY3",
     deps = [
         ":glue",
-        ":test_util",
         "//compiler/util:ir_pb2",
         "//compiler/util:error",
         "//compiler/util:parser_types",
+        "//compiler/util:test_util",
     ],
 )
 
@@ -194,7 +174,7 @@ py_test(
     deps = [
         ":glue",
         ":synthetics",
-        ":test_util",
+        "//compiler/util:test_util",
     ],
 )
 
@@ -217,8 +197,8 @@ py_test(
     deps = [
         ":glue",
         ":symbol_resolver",
-        ":test_util",
         "//compiler/util:error",
+        "//compiler/util:test_util",
     ],
 )
 
@@ -241,9 +221,9 @@ py_test(
     python_version = "PY3",
     deps = [
         ":glue",
-        ":test_util",
         ":write_inference",
         "//compiler/util:ir_pb2",
+        "//compiler/util:test_util",
     ],
 )
 
@@ -275,10 +255,10 @@ py_test(
     deps = [
         ":attribute_checker",
         ":glue",
-        ":test_util",
         "//compiler/util:ir_pb2",
         "//compiler/util:error",
         "//compiler/util:ir_util",
+        "//compiler/util:test_util",
     ],
 )
 
@@ -300,9 +280,9 @@ py_test(
     python_version = "PY3",
     deps = [
         ":glue",
-        ":test_util",
         ":type_check",
         "//compiler/util:error",
+        "//compiler/util:test_util",
     ],
 )
 
@@ -327,7 +307,7 @@ py_test(
     deps = [
         ":expression_bounds",
         ":glue",
-        ":test_util",
+        "//compiler/util:test_util",
     ],
 )
 
@@ -353,8 +333,8 @@ py_test(
     deps = [
         ":constraints",
         ":glue",
-        ":test_util",
         "//compiler/util:error",
+        "//compiler/util:test_util",
     ],
 )
 
@@ -376,8 +356,8 @@ py_test(
     deps = [
         ":dependency_checker",
         ":glue",
-        ":test_util",
         "//compiler/util:error",
+        "//compiler/util:test_util",
     ],
 )
 

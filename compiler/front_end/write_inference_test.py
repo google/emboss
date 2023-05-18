@@ -16,9 +16,9 @@
 
 import unittest
 from compiler.front_end import glue
-from compiler.front_end import test_util
 from compiler.front_end import write_inference
 from compiler.util import ir_pb2
+from compiler.util import test_util
 
 
 class WriteInferenceTest(unittest.TestCase):

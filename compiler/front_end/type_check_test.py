@@ -16,9 +16,9 @@
 
 import unittest
 from compiler.front_end import glue
-from compiler.front_end import test_util
 from compiler.front_end import type_check
 from compiler.util import error
+from compiler.util import test_util
 
 
 class TypeAnnotationTest(unittest.TestCase):

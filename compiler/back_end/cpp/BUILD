@@ -55,7 +55,7 @@ py_test(
     deps = [
         ":header_generator",
         "//compiler/front_end:glue",
-        "//compiler/front_end:test_util",
+        "//compiler/util:test_util",
     ],
 )
 
