@@ -47,6 +47,7 @@ filegroup(
         "cpp_namespace.emb",
         "dynamic_size.emb",
         "enum.emb",
+        "enum_case.emb",
         "explicit_sizes.emb",
         "float.emb",
         "imported.emb",
@@ -103,6 +104,13 @@ emboss_cc_library(
     name = "enum_emboss",
     srcs = [
         "enum.emb",
+    ],
+)
+
+emboss_cc_library(
+    name = "enum_case_emboss",
+    srcs = [
+        "enum_case.emb",
     ],
 )
 

@@ -51,6 +51,44 @@ class NormalizeIrTest(unittest.TestCase):
                     "Unknown attribute '(cpp) byte_order' on module 'm.emb'.")
     ]], header_generator.generate_header(ir)[1])
 
+  def test_accepts_enum_case(self):
+    mod_ir = _make_ir_from_emb('[(cpp) $default enum_case: "kCamelCase"]')
+    self.assertEqual([], header_generator.generate_header(mod_ir)[1])
+    enum_ir = _make_ir_from_emb('enum Foo:\n'
+                                '  [(cpp) $default enum_case: "kCamelCase"]\n'
+                                '  BAR = 1\n'
+                                '  BAZ = 2\n')
+    self.assertEqual([], header_generator.generate_header(enum_ir)[1])
+    enum_value_ir = _make_ir_from_emb('enum Foo:\n'
+                                      '  BAR = 1  [(cpp) enum_case: "kCamelCase"]\n'
+                                      '  BAZ = 2\n'
+                                      '    [(cpp) enum_case: "kCamelCase"]\n')
+    self.assertEqual([], header_generator.generate_header(enum_value_ir)[1])
+    enum_in_struct_ir = _make_ir_from_emb('struct Outer:\n'
+                                          '  [(cpp) $default enum_case: "kCamelCase"]\n'
+                                          '  enum Inner:\n'
+                                          '    BAR = 1\n'
+                                          '    BAZ = 2\n')
+    self.assertEqual([], header_generator.generate_header(enum_in_struct_ir)[1])
+    enum_in_bits_ir = _make_ir_from_emb('bits Outer:\n'
+                                        '  [(cpp) $default enum_case: "kCamelCase"]\n'
+                                        '  enum Inner:\n'
+                                        '    BAR = 1\n'
+                                        '    BAZ = 2\n')
+    self.assertEqual([], header_generator.generate_header(enum_in_bits_ir)[1])
+
+  def test_rejects_bad_enum_case(self):
+    ir = _make_ir_from_emb('enum Foo:\n'
+                           '  [(cpp) $default enum_case: "SHORTY_CASE, kCamelCase"]\n'
+                           '  BAR = 1\n'
+                           '  BAZ = 2\n')
+    attr = ir.module[0].type[0].attribute[0]
+    self.assertEqual([[
+        error.error("m.emb", attr.value.source_location,
+                    'Unsupported enum case "SHORTY_CASE", '
+                    'supported cases are: SHOUTY_CASE, kCamelCase.')
+    ]], header_generator.generate_header(ir)[1])
+
 
 if __name__ == "__main__":
     unittest.main()
