@@ -222,6 +222,33 @@ this module.
 The `namespace` attribute may only be used at the module level; all structures
 and enums within a module will be placed in the same namespace.
 
+### `(cpp) enum_case`
+
+The `enum_case` attribute can be specified for the C++ backend to specify
+in which case the enum values should be emitted to generated source. It does
+not change the text representation, which always uses the original emboss
+definition name as the canonical name.
+
+Currently, the supported cases are`SHOUTY_CASE` and `kCamelCase`.
+
+A `$default` enum case can be set on a module, struct, bits, or enum and
+applies to all enum values within that module, struct, bits, or enum
+definition.
+
+For example, to use `kCamelCase` by default for all enum values in a module:
+
+```
+[$default enum_case: "kCamelCase"]
+```
+
+This will change enum names like `UPPER_CHANNEL_RANGE_LIMIT` to
+`kUpperChannelRangeLimit` in the C++ source for all enum values in the module.
+Multiple case names can be specified, which is especially useful when
+transitioning between two cases:
+
+```
+[enum_case: "SHOUTY_CASE, kCamelCase"]
+```
 
 ### `text_output`
 

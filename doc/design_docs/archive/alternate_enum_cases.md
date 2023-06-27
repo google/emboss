@@ -1,5 +1,9 @@
 # Design: Alternate Enum Field Cases
 
+This document is provided for historical interest.  This feature is now
+implemented in the form of the `[enum_case]` attribute on `enum` values, which
+can also be `$default`ed on module, struct, bits, and enum definitions.
+
 ## Motivation
 
 Currently, the Emboss compiler requires that enum fields are `SHOUTY_CASE`, but
