@@ -31,6 +31,11 @@ enum EnumDefault:
   THREE_WORD_ENUM      = 4
   LONG_ENUM_VALUE_NAME = 8
 
+struct UseKCamelEnumCase:
+  0 [+4] EnumDefault v
+  let first = EnumDefault.FIRST
+  let v_is_first = v == EnumDefault.FIRST
+
 enum EnumShoutyAndKCamel:
   [(cpp) $default enum_case: "SHOUTY_CASE, kCamelCase"]
   FIRST                = 0

@@ -18,8 +18,8 @@ import unittest
 from compiler.back_end.cpp import header_generator
 from compiler.front_end import glue
 from compiler.util import error
+from compiler.util import ir_pb2
 from compiler.util import test_util
-
 
 def _make_ir_from_emb(emb_text, name="m.emb"):
   ir, unused_debug_info, errors = glue.parse_emboss_file(
@@ -76,17 +76,152 @@ class NormalizeIrTest(unittest.TestCase):
                                         '    BAR = 1\n'
                                         '    BAZ = 2\n')
     self.assertEqual([], header_generator.generate_header(enum_in_bits_ir)[1])
+    enum_ir = _make_ir_from_emb('enum Foo:\n'
+                                '  [(cpp) $default enum_case: "SHOUTY_CASE,"]\n'
+                                '  BAR = 1\n'
+                                '  BAZ = 2\n')
+    self.assertEqual([], header_generator.generate_header(enum_ir)[1])
+    enum_ir = _make_ir_from_emb('enum Foo:\n'
+                                '  [(cpp) $default enum_case: "SHOUTY_CASE   ,kCamelCase"]\n'
+                                '  BAR = 1\n'
+                                '  BAZ = 2\n')
+    self.assertEqual([], header_generator.generate_header(enum_ir)[1])
 
-  def test_rejects_bad_enum_case(self):
+  def test_rejects_bad_enum_case_at_start(self):
     ir = _make_ir_from_emb('enum Foo:\n'
                            '  [(cpp) $default enum_case: "SHORTY_CASE, kCamelCase"]\n'
                            '  BAR = 1\n'
                            '  BAZ = 2\n')
     attr = ir.module[0].type[0].attribute[0]
+
+    bad_case_source_location = ir_pb2.Location()
+    bad_case_source_location.CopyFrom(attr.value.source_location)
+    # Location of SHORTY_CASE in the attribute line.
+    bad_case_source_location.start.column = 30
+    bad_case_source_location.end.column = 41
+
     self.assertEqual([[
-        error.error("m.emb", attr.value.source_location,
+        error.error("m.emb", bad_case_source_location,
                     'Unsupported enum case "SHORTY_CASE", '
                     'supported cases are: SHOUTY_CASE, kCamelCase.')
+    ]], header_generator.generate_header(ir)[1])
+
+  def test_rejects_bad_enum_case_in_middle(self):
+    ir = _make_ir_from_emb('enum Foo:\n'
+                           '  [(cpp) $default enum_case: "SHOUTY_CASE, bad_CASE, kCamelCase"]\n'
+                           '  BAR = 1\n'
+                           '  BAZ = 2\n')
+    attr = ir.module[0].type[0].attribute[0]
+
+    bad_case_source_location = ir_pb2.Location()
+    bad_case_source_location.CopyFrom(attr.value.source_location)
+    # Location of bad_CASE in the attribute line.
+    bad_case_source_location.start.column = 43
+    bad_case_source_location.end.column = 51
+
+    self.assertEqual([[
+        error.error("m.emb", bad_case_source_location,
+                    'Unsupported enum case "bad_CASE", '
+                    'supported cases are: SHOUTY_CASE, kCamelCase.')
+    ]], header_generator.generate_header(ir)[1])
+
+  def test_rejects_bad_enum_case_at_end(self):
+    ir = _make_ir_from_emb('enum Foo:\n'
+                           '  [(cpp) $default enum_case: "SHOUTY_CASE, kCamelCase, BAD_case"]\n'
+                           '  BAR = 1\n'
+                           '  BAZ = 2\n')
+    attr = ir.module[0].type[0].attribute[0]
+
+    bad_case_source_location = ir_pb2.Location()
+    bad_case_source_location.CopyFrom(attr.value.source_location)
+    # Location of BAD_case in the attribute line.
+    bad_case_source_location.start.column = 55
+    bad_case_source_location.end.column = 63
+
+    self.assertEqual([[
+        error.error("m.emb", bad_case_source_location,
+                    'Unsupported enum case "BAD_case", '
+                    'supported cases are: SHOUTY_CASE, kCamelCase.')
+    ]], header_generator.generate_header(ir)[1])
+
+  def test_rejects_duplicate_enum_case(self):
+    ir = _make_ir_from_emb('enum Foo:\n'
+                           '  [(cpp) $default enum_case: "SHOUTY_CASE, SHOUTY_CASE"]\n'
+                           '  BAR = 1\n'
+                           '  BAZ = 2\n')
+    attr = ir.module[0].type[0].attribute[0]
+
+    bad_case_source_location = ir_pb2.Location()
+    bad_case_source_location.CopyFrom(attr.value.source_location)
+    # Location of the second SHOUTY_CASE in the attribute line.
+    bad_case_source_location.start.column = 43
+    bad_case_source_location.end.column = 54
+
+    self.assertEqual([[
+        error.error("m.emb", bad_case_source_location,
+                    'Duplicate enum case "SHOUTY_CASE".')
+    ]], header_generator.generate_header(ir)[1])
+
+
+  def test_rejects_empty_enum_case(self):
+    # Double comma
+    ir = _make_ir_from_emb('enum Foo:\n'
+                           '  [(cpp) $default enum_case: "SHOUTY_CASE,, kCamelCase"]\n'
+                           '  BAR = 1\n'
+                           '  BAZ = 2\n')
+    attr = ir.module[0].type[0].attribute[0]
+
+    bad_case_source_location = ir_pb2.Location()
+    bad_case_source_location.CopyFrom(attr.value.source_location)
+    # Location excess comma.
+    bad_case_source_location.start.column = 42
+    bad_case_source_location.end.column = 42
+
+    self.assertEqual([[
+        error.error("m.emb", bad_case_source_location,
+                    'Empty enum case (excess comma).')
+    ]], header_generator.generate_header(ir)[1])
+
+    # Leading comma
+    ir = _make_ir_from_emb('enum Foo:\n'
+                           '  [(cpp) $default enum_case: ", SHOUTY_CASE, kCamelCase"]\n'
+                           '  BAR = 1\n'
+                           '  BAZ = 2\n')
+
+    bad_case_source_location.start.column = 30
+    bad_case_source_location.end.column = 30
+
+    self.assertEqual([[
+        error.error("m.emb", bad_case_source_location,
+                    'Empty enum case (excess comma).')
+    ]], header_generator.generate_header(ir)[1])
+
+    # Excess trailing comma
+    ir = _make_ir_from_emb('enum Foo:\n'
+                           '  [(cpp) $default enum_case: "SHOUTY_CASE, kCamelCase,,"]\n'
+                           '  BAR = 1\n'
+                           '  BAZ = 2\n')
+
+    bad_case_source_location.start.column = 54
+    bad_case_source_location.end.column = 54
+
+    self.assertEqual([[
+        error.error("m.emb", bad_case_source_location,
+                    'Empty enum case (excess comma).')
+    ]], header_generator.generate_header(ir)[1])
+
+    # Whitespace enum case
+    ir = _make_ir_from_emb('enum Foo:\n'
+                           '  [(cpp) $default enum_case: "SHOUTY_CASE,   , kCamelCase"]\n'
+                           '  BAR = 1\n'
+                           '  BAZ = 2\n')
+
+    bad_case_source_location.start.column = 45
+    bad_case_source_location.end.column = 45
+
+    self.assertEqual([[
+        error.error("m.emb", bad_case_source_location,
+                    'Empty enum case (excess comma).')
     ]], header_generator.generate_header(ir)[1])
 
 

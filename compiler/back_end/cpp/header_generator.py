@@ -1242,11 +1242,52 @@ def _generate_structure_definition(type_ir, ir):
           subtype_method_definitions + method_definitions)
 
 
+def _split_enum_case_values_into_spans(enum_case_value):
+  """Yields spans containing each enum case in an enum_case attribute value.
+
+  Each span is of the form (start, end), which is the start and end position
+  relative to the beginning of the enum_case_value string. To keep the grammar
+  of this attribute simple, this only splits on delimiters and trims whitespace
+  for each case.
+
+  Example: 'SHOUTY_CASE, kCamelCase' -> [(0, 11), (13, 23)]"""
+  # Scan the string from left to right, finding commas and trimming whitespace.
+  # This is essentially equivalent to (x.trim() fror x in str.split(','))
+  # except that this yields spans within the string rather than the strings
+  # themselves, and no span is yielded for a trailing comma.
+  start, end = 0, len(enum_case_value)
+  while start < end:
+    # Find a ',' delimiter to split on.
+    delimiter = enum_case_value.find(',', start, end)
+    if delimiter < 0:
+      delimiter = end
+
+    substr_start = start
+    substr_end = delimiter
+
+    # Drop leading whitespace
+    while (enum_case_value[substr_start].isspace() and
+           substr_start < substr_end):
+        substr_start += 1
+    # Drop trailing whitespace
+    while (enum_case_value[substr_end - 1].isspace() and
+           substr_start < substr_end):
+      substr_end -= 1
+
+    # Skip a trailing comma
+    if substr_start == end:
+      break
+
+    yield substr_start, substr_end
+    start = delimiter + 1
+
+
 def _split_enum_case_values(enum_case_value):
-  """Return all enum cases in an enum case value.
+  """Returns all enum cases in an enum case value.
 
   Example: 'SHOUTY_CASE, kCamelCase' -> ['SHOUTY_CASE', 'kCamelCase']"""
-  return [x.strip() for x in enum_case_value.split(',')]
+  return [enum_case_value[start:end] for start, end
+          in _split_enum_case_values_into_spans(enum_case_value)]
 
 
 def _get_enum_value_names(enum_value):
@@ -1273,20 +1314,26 @@ def _generate_enum_definition(type_ir):
   for value in type_ir.enumeration.value:
     numeric_value = ir_util.constant_value(value.value)
     enum_value_names = _get_enum_value_names(value)
+
     for enum_value_name in enum_value_names:
       enum_values.append(
           code_template.format_template(_TEMPLATES.enum_value,
                                         name=enum_value_name,
                                         value=_render_integer(numeric_value)))
+
       enum_from_string_statements.append(
           code_template.format_template(_TEMPLATES.enum_from_name_case,
                                         enum=type_ir.name.name.text,
-                                        name=enum_value_name))
+                                        value=enum_value_name,
+                                        name=value.name.name.text))
+
       if numeric_value not in previously_seen_numeric_values:
         string_from_enum_statements.append(
             code_template.format_template(_TEMPLATES.name_from_enum_case,
                                           enum=type_ir.name.name.text,
-                                          name=enum_value_name))
+                                          value=enum_value_name,
+                                          name=value.name.name.text))
+
         enum_is_known_statements.append(
             code_template.format_template(_TEMPLATES.enum_is_known_case,
                                           enum=type_ir.name.name.text,
@@ -1342,7 +1389,7 @@ def _add_missing_enum_case_attribute_on_enum_value(enum_value, defaults):
 
 
 def _propagate_defaults(ir, targets, ancestors, add_fn):
-  """Propagate default values
+  """Propagates default values
 
   Traverses the IR to propagate default values to target nodes.
 
@@ -1365,21 +1412,57 @@ def _propagate_defaults(ir, targets, ancestors, add_fn):
     parameters={"defaults": {}})
 
 
+def _offset_source_location_column(source_location, offset):
+  """Adds offsets from the start column of the supplied source location
+
+  Returns a new source location with all of the same properties as the provided
+  source location, but with the columns modified by offsets from the original
+  start column.
+
+  Offset should be a tuple of (start, end), which are the offsets relative to
+  source_location.start.column to set the new start.column and end.column."""
+
+  new_location = ir_pb2.Location()
+  new_location.CopyFrom(source_location)
+  new_location.start.column = source_location.start.column + offset[0]
+  new_location.end.column = source_location.start.column + offset[1]
+
+  return new_location
+
+
 def _verify_enum_case_attribute(attr, source_file_name, errors):
   """Verify that `enum_case` values are supported."""
   if attr.name.text != attributes.Attribute.ENUM_CASE:
     return
+
+  VALID_CASES = ', '.join(case for case in _SUPPORTED_ENUM_CASES)
   enum_case_value = attr.value.string_constant
-  cases = _split_enum_case_values(enum_case_value.text)
-  for case in cases:
-    if case not in _SUPPORTED_ENUM_CASES:
-      valid_cases = ', '.join(case for case in _SUPPORTED_ENUM_CASES)
-      # TODO: Get the exact source location of the bad token in the string.
-      # This should be sufficient for a user to discover the error, however.
+  case_spans = _split_enum_case_values_into_spans(enum_case_value.text)
+  seen_cases = set()
+
+  for start, end in case_spans:
+    case_source_location = _offset_source_location_column(
+        enum_case_value.source_location, (start, end))
+    case = enum_case_value.text[start:end]
+
+    if start == end:
       errors.append([error.error(
-          source_file_name, enum_case_value.source_location,
+          source_file_name, case_source_location,
+          'Empty enum case (excess comma).')])
+      continue
+
+    if case in seen_cases:
+      errors.append([error.error(
+          source_file_name, case_source_location,
+          f'Duplicate enum case "{case}".')])
+      continue
+    seen_cases.add(case)
+
+    if case not in _SUPPORTED_ENUM_CASES:
+      errors.append([error.error(
+          source_file_name, case_source_location,
           f'Unsupported enum case "{case}", '
-          f'supported cases are: {valid_cases}.')])
+          f'supported cases are: {VALID_CASES}.')])
 
 
 def _verify_attribute_values(ir):

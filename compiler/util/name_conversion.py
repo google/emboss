@@ -55,17 +55,17 @@ def camel_to_k_camel(name):
 @_case_conversion(Case.SNAKE, Case.K_CAMEL)
 @_case_conversion(Case.SHOUTY, Case.K_CAMEL)
 def snake_to_k_camel(name):
-  """Convert from snake_case to kCamelCase. Also works from SHOUTY_CASE."""
+  """Converts from snake_case to kCamelCase. Also works from SHOUTY_CASE."""
   return camel_to_k_camel(snake_to_camel(name))
 
 
 def convert_case(case_from, case_to, value):
-  """Convert cases based on runtime case values.
+  """Converts cases based on runtime case values.
 
   Note: Cases can be strings or enum values."""
   return _case_conversions[case_from, case_to](value)
 
 
 def is_case_conversion_supported(case_from, case_to):
-  """Determine if a case conversion would be supported"""
+  """Determines if a case conversion would be supported"""
   return (case_from, case_to) in _case_conversions

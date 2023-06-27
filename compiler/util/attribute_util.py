@@ -287,7 +287,7 @@ def _check_attributes(attribute_list, types, back_end, attribute_specs,
 
 
 def gather_default_attributes(obj, defaults):
-  """Gather default attributes for an IR object
+  """Gathers default attributes for an IR object
 
   This is designed to be able to be used as-is as an incidental action in an IR
   traversal to accumulate defaults for child nodes.
