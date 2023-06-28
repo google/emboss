@@ -173,7 +173,7 @@ class NormalizeIrTest(unittest.TestCase):
 
     bad_case_source_location = ir_pb2.Location()
     bad_case_source_location.CopyFrom(attr.value.source_location)
-    # Location excess comma.
+    # Location of excess comma.
     bad_case_source_location.start.column = 42
     bad_case_source_location.end.column = 42
 
