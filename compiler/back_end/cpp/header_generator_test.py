@@ -179,7 +179,7 @@ class NormalizeIrTest(unittest.TestCase):
 
     self.assertEqual([[
         error.error("m.emb", bad_case_source_location,
-                    'Empty enum case (excess comma).')
+                    'Empty enum case (or excess comma).')
     ]], header_generator.generate_header(ir)[1])
 
     # Leading comma
@@ -193,7 +193,7 @@ class NormalizeIrTest(unittest.TestCase):
 
     self.assertEqual([[
         error.error("m.emb", bad_case_source_location,
-                    'Empty enum case (excess comma).')
+                    'Empty enum case (or excess comma).')
     ]], header_generator.generate_header(ir)[1])
 
     # Excess trailing comma
@@ -207,7 +207,7 @@ class NormalizeIrTest(unittest.TestCase):
 
     self.assertEqual([[
         error.error("m.emb", bad_case_source_location,
-                    'Empty enum case (excess comma).')
+                    'Empty enum case (or excess comma).')
     ]], header_generator.generate_header(ir)[1])
 
     # Whitespace enum case
@@ -221,7 +221,49 @@ class NormalizeIrTest(unittest.TestCase):
 
     self.assertEqual([[
         error.error("m.emb", bad_case_source_location,
-                    'Empty enum case (excess comma).')
+                    'Empty enum case (or excess comma).')
+    ]], header_generator.generate_header(ir)[1])
+
+    # Empty enum_case string
+    ir = _make_ir_from_emb('enum Foo:\n'
+                           '  [(cpp) $default enum_case: ""]\n'
+                           '  BAR = 1\n'
+                           '  BAZ = 2\n')
+
+    bad_case_source_location.start.column = 30
+    bad_case_source_location.end.column = 30
+
+    self.assertEqual([[
+        error.error("m.emb", bad_case_source_location,
+                    'Empty enum case (or excess comma).')
+    ]], header_generator.generate_header(ir)[1])
+
+    # Whitespace enum_case string
+    ir = _make_ir_from_emb('enum Foo:\n'
+                           '  [(cpp) $default enum_case: "     "]\n'
+                           '  BAR = 1\n'
+                           '  BAZ = 2\n')
+
+    bad_case_source_location.start.column = 35
+    bad_case_source_location.end.column = 35
+
+    self.assertEqual([[
+        error.error("m.emb", bad_case_source_location,
+                    'Empty enum case (or excess comma).')
+    ]], header_generator.generate_header(ir)[1])
+
+    # One-character whitespace enum_case string
+    ir = _make_ir_from_emb('enum Foo:\n'
+                           '  [(cpp) $default enum_case: " "]\n'
+                           '  BAR = 1\n'
+                           '  BAZ = 2\n')
+
+    bad_case_source_location.start.column = 31
+    bad_case_source_location.end.column = 31
+
+    self.assertEqual([[
+        error.error("m.emb", bad_case_source_location,
+                    'Empty enum case (or excess comma).')
     ]], header_generator.generate_header(ir)[1])
 
 

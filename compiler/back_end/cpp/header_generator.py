@@ -1256,8 +1256,8 @@ def _split_enum_case_values_into_spans(enum_case_value):
   # except that this yields spans within the string rather than the strings
   # themselves, and no span is yielded for a trailing comma.
   start, end = 0, len(enum_case_value)
-  while start < end:
-    # Find a ',' delimiter to split on.
+  while start <= end:
+    # Find a ',' delimiter to split on
     delimiter = enum_case_value.find(',', start, end)
     if delimiter < 0:
       delimiter = end
@@ -1266,16 +1266,16 @@ def _split_enum_case_values_into_spans(enum_case_value):
     substr_end = delimiter
 
     # Drop leading whitespace
-    while (enum_case_value[substr_start].isspace() and
-           substr_start < substr_end):
-        substr_start += 1
+    while (substr_start < substr_end and
+           enum_case_value[substr_start].isspace()):
+      substr_start += 1
     # Drop trailing whitespace
-    while (enum_case_value[substr_end - 1].isspace() and
-           substr_start < substr_end):
+    while (substr_start < substr_end and
+           enum_case_value[substr_end - 1].isspace()):
       substr_end -= 1
 
     # Skip a trailing comma
-    if substr_start == end:
+    if substr_start == end and start != 0:
       break
 
     yield substr_start, substr_end
@@ -1448,7 +1448,7 @@ def _verify_enum_case_attribute(attr, source_file_name, errors):
     if start == end:
       errors.append([error.error(
           source_file_name, case_source_location,
-          'Empty enum case (excess comma).')])
+          'Empty enum case (or excess comma).')])
       continue
 
     if case in seen_cases:
