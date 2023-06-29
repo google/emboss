@@ -66,6 +66,11 @@ _CPP_RESERVED_WORDS = set((
 # Emboss C++ support classes.
 _SUPPORT_NAMESPACE = "::emboss::support"
 
+# Regex matching a C++ namespace component. Captures component name.
+_NS_COMPONENT_RE = r"(?:^\s*|::)\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*(?=\s*$|::)"
+# Regex matching a full C++ namespace (at least one namespace component).
+_NS_RE = fr"^\s*(?:{_NS_COMPONENT_RE})+\s*$"
+
 # TODO(bolms): This should be a command-line flag.
 _PRELUDE_INCLUDE_FILE = "runtime/cpp/emboss_prelude.h"
 
@@ -75,6 +80,22 @@ _SUPPORTED_ENUM_CASES = ("SHOUTY_CASE", "kCamelCase")
 # Verify that all supported enum cases have valid, implemented conversions.
 for _enum_case in _SUPPORTED_ENUM_CASES:
   assert name_conversion.is_case_conversion_supported("SHOUTY_CASE", _enum_case)
+
+
+def _get_namespace_components(namespace):
+  """Gets the components of a C++ namespace
+
+  Examples:
+    "::some::name::detail" -> ["some", "name", "detail"]
+    "product::name" -> ["product", "name"]
+    "simple" -> ["simple"]
+
+  Arguments:
+    namespace: A string containing the namespace. May be fully-qualified.
+
+  Returns:
+    A list of strings, one per namespace component."""
+  return re.findall(_NS_COMPONENT_RE, namespace)
 
 
 def _get_module_namespace(module):
@@ -92,19 +113,7 @@ def _get_module_namespace(module):
     namespace = namespace_attr.string_constant.text
   else:
     namespace = "emboss_generated_code"
-  if namespace[0:2] == "::":
-    # If the user explicitly specified the leading "::", trim it off: it will be
-    # re-added later, when the namespace is used as a prefix (as opposed to
-    # "namespace foo { }").
-    namespace = namespace[2:]
-  namespace_list = namespace.split("::")
-  for namespace_component in namespace_list:
-    assert re.match("[a-zA-Z_][a-zA-Z0-9_]*", namespace_component), (
-        "Bad namespace '{}'".format(namespace))
-    assert namespace_component not in _CPP_RESERVED_WORDS, (
-        "Reserved word '{}' is not allowed as a namespace component.".format(
-            namespace_component))
-  return namespace_list
+  return _get_namespace_components(namespace)
 
 
 def _cpp_string_escape(string):
@@ -1430,6 +1439,23 @@ def _offset_source_location_column(source_location, offset):
   return new_location
 
 
+def _verify_namespace_attribute(attr, source_file_name, errors):
+  if attr.name.text != attributes.Attribute.NAMESPACE:
+    return
+  namespace_value = attr.value.string_constant
+  if not re.match(_NS_RE, namespace_value.text):
+    errors.append([error.error(
+        source_file_name, namespace_value.source_location,
+        "Bad namespace, does not match expected format.")])
+    return
+  for word in _get_namespace_components(namespace_value.text):
+    if word in _CPP_RESERVED_WORDS:
+      errors.append([error.error(
+          source_file_name, namespace_value.source_location,
+          f'Reserved word "{word}" is not allowed as a namespace component.'
+      )])
+
+
 def _verify_enum_case_attribute(attr, source_file_name, errors):
   """Verify that `enum_case` values are supported."""
   if attr.name.text != attributes.Attribute.ENUM_CASE:
@@ -1468,11 +1494,14 @@ def _verify_enum_case_attribute(attr, source_file_name, errors):
 def _verify_attribute_values(ir):
   """Verify backend attribute values."""
   errors = []
-  # Note, this does not yet verify `namespace` attributes. Namespace
-  # verification is done in _get_module_namespace.
+
+  traverse_ir.fast_traverse_ir_top_down(
+      ir, [ir_pb2.Attribute], _verify_namespace_attribute,
+      parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
       ir, [ir_pb2.Attribute], _verify_enum_case_attribute,
       parameters={"errors": errors})
+
   return errors
 
 
