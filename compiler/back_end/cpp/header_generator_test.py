@@ -314,15 +314,27 @@ class NormalizeIrTest(unittest.TestCase):
       attr = ir.module[0].attribute[0]
       self.assertEqual([[
           error.error("m.emb", attr.value.source_location,
-                      'Bad namespace, does not match expected format.')
+                      'Invalid namespace, must be a valid C++ namespace, such '
+                      'as "abc", "abc::def", or "::abc::def::ghi" (ISO/IEC '
+                      '14882:2017 enclosing-namespace-specifier).')
       ]], header_generator.generate_header(ir)[1])
 
   def test_rejects_empty_namespace(self):
     for test in [
         '[(cpp) namespace: ""]\n',
-        '[(cpp) namespace: "::"]\n',
         '[(cpp) namespace: " "]\n',
         '[(cpp) namespace: "    "]\n',
+    ]:
+      ir = _make_ir_from_emb(test)
+      attr = ir.module[0].attribute[0]
+      self.assertEqual([[
+          error.error("m.emb", attr.value.source_location,
+                      'Empty namespace value is not allowed.')
+      ]], header_generator.generate_header(ir)[1])
+
+  def test_rejects_global_namespace(self):
+    for test in [
+        '[(cpp) namespace: "::"]\n',
         '[(cpp) namespace: "  ::"]\n',
         '[(cpp) namespace: ":: "]\n',
         '[(cpp) namespace: " ::  "]\n',
@@ -331,7 +343,7 @@ class NormalizeIrTest(unittest.TestCase):
       attr = ir.module[0].attribute[0]
       self.assertEqual([[
           error.error("m.emb", attr.value.source_location,
-                      'Bad namespace, does not match expected format.')
+                      'Global namespace is not allowed.')
       ]], header_generator.generate_header(ir)[1])
 
   def test_rejects_reserved_namespace(self):

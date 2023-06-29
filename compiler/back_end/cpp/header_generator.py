@@ -70,6 +70,10 @@ _SUPPORT_NAMESPACE = "::emboss::support"
 _NS_COMPONENT_RE = r"(?:^\s*|::)\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*(?=\s*$|::)"
 # Regex matching a full C++ namespace (at least one namespace component).
 _NS_RE = fr"^\s*(?:{_NS_COMPONENT_RE})+\s*$"
+# Regex matching an empty C++ namespace.
+_NS_EMPTY_RE = r"^\s*$"
+# Regex matching only the global C++ namespace.
+_NS_GLOBAL_RE = r"^\s*::\s*$"
 
 # TODO(bolms): This should be a command-line flag.
 _PRELUDE_INCLUDE_FILE = "runtime/cpp/emboss_prelude.h"
@@ -1444,9 +1448,20 @@ def _verify_namespace_attribute(attr, source_file_name, errors):
     return
   namespace_value = attr.value.string_constant
   if not re.match(_NS_RE, namespace_value.text):
-    errors.append([error.error(
-        source_file_name, namespace_value.source_location,
-        "Bad namespace, does not match expected format.")])
+    if re.match(_NS_EMPTY_RE, namespace_value.text):
+      errors.append([error.error(
+          source_file_name, namespace_value.source_location,
+          'Empty namespace value is not allowed.')])
+    elif re.match(_NS_GLOBAL_RE, namespace_value.text):
+      errors.append([error.error(
+          source_file_name, namespace_value.source_location,
+          'Global namespace is not allowed.')])
+    else:
+      errors.append([error.error(
+          source_file_name, namespace_value.source_location,
+          'Invalid namespace, must be a valid C++ namespace, such as "abc", '
+          '"abc::def", or "::abc::def::ghi" (ISO/IEC 14882:2017 '
+          'enclosing-namespace-specifier).')])
     return
   for word in _get_namespace_components(namespace_value.text):
     if word in _CPP_RESERVED_WORDS:
