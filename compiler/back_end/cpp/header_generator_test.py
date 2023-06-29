@@ -266,6 +266,110 @@ class NormalizeIrTest(unittest.TestCase):
                     'Empty enum case (or excess comma).')
     ]], header_generator.generate_header(ir)[1])
 
+  def test_accepts_namespace(self):
+    for test in [
+        '[(cpp) namespace: "basic"]\n',
+        '[(cpp) namespace: "multiple::components"]\n',
+        '[(cpp) namespace: "::absolute"]\n',
+        '[(cpp) namespace: "::fully::qualified"]\n',
+        '[(cpp) namespace: "CAN::Be::cAPITAL"]\n',
+        '[(cpp) namespace: "trailingNumbers54321"]\n',
+        '[(cpp) namespace: "containing4321numbers"]\n',
+        '[(cpp) namespace: "can_have_underscores"]\n',
+        '[(cpp) namespace: "_initial_underscore"]\n',
+        '[(cpp) namespace: "_initial::_underscore"]\n',
+        '[(cpp) namespace: "::_initial::_underscore"]\n',
+        '[(cpp) namespace: "trailing_underscore_"]\n',
+        '[(cpp) namespace: "trailing_::underscore_"]\n',
+        '[(cpp) namespace: "::trailing_::underscore_"]\n',
+        '[(cpp) namespace: " spaces "]\n',
+        '[(cpp) namespace: "with :: spaces"]\n',
+        '[(cpp) namespace: "   ::fully:: qualified :: with::spaces"]\n',
+    ]:
+      ir = _make_ir_from_emb(test)
+      self.assertEqual([], header_generator.generate_header(ir)[1])
+
+  def test_rejects_non_namespace_strings(self):
+    for test in [
+        '[(cpp) namespace: "5th::avenue"]\n',
+        '[(cpp) namespace: "can\'t::have::apostrophe"]\n',
+        '[(cpp) namespace: "cannot-have-dash"]\n',
+        '[(cpp) namespace: "no/slashes"]\n',
+        '[(cpp) namespace: "no\\\\slashes"]\n',
+        '[(cpp) namespace: "apostrophes*are*rejected"]\n',
+        '[(cpp) namespace: "avoid.dot"]\n',
+        '[(cpp) namespace: "does5+5"]\n',
+        '[(cpp) namespace: "=10"]\n',
+        '[(cpp) namespace: "?"]\n',
+        '[(cpp) namespace: "reject::spaces in::components"]\n',
+        '[(cpp) namespace: "totally::valid::but::extra         +"]\n',
+        '[(cpp) namespace: "totally::valid::but::extra         ::?"]\n',
+        '[(cpp) namespace: "< totally::valid::but::extra"]\n',
+        '[(cpp) namespace: "< ::totally::valid::but::extra"]\n',
+        '[(cpp) namespace: "::totally::valid::but::extra::"]\n',
+        '[(cpp) namespace: ":::extra::colon"]\n',
+        '[(cpp) namespace: "::extra:::colon"]\n',
+    ]:
+      ir = _make_ir_from_emb(test)
+      attr = ir.module[0].attribute[0]
+      self.assertEqual([[
+          error.error("m.emb", attr.value.source_location,
+                      'Invalid namespace, must be a valid C++ namespace, such '
+                      'as "abc", "abc::def", or "::abc::def::ghi" (ISO/IEC '
+                      '14882:2017 enclosing-namespace-specifier).')
+      ]], header_generator.generate_header(ir)[1])
+
+  def test_rejects_empty_namespace(self):
+    for test in [
+        '[(cpp) namespace: ""]\n',
+        '[(cpp) namespace: " "]\n',
+        '[(cpp) namespace: "    "]\n',
+    ]:
+      ir = _make_ir_from_emb(test)
+      attr = ir.module[0].attribute[0]
+      self.assertEqual([[
+          error.error("m.emb", attr.value.source_location,
+                      'Empty namespace value is not allowed.')
+      ]], header_generator.generate_header(ir)[1])
+
+  def test_rejects_global_namespace(self):
+    for test in [
+        '[(cpp) namespace: "::"]\n',
+        '[(cpp) namespace: "  ::"]\n',
+        '[(cpp) namespace: ":: "]\n',
+        '[(cpp) namespace: " ::  "]\n',
+    ]:
+      ir = _make_ir_from_emb(test)
+      attr = ir.module[0].attribute[0]
+      self.assertEqual([[
+          error.error("m.emb", attr.value.source_location,
+                      'Global namespace is not allowed.')
+      ]], header_generator.generate_header(ir)[1])
+
+  def test_rejects_reserved_namespace(self):
+    for test, expected in [
+        # Only component
+        ('[(cpp) namespace: "class"]\n', 'class'),
+        # Only component, fully qualified name
+        ('[(cpp) namespace: "::const"]\n', 'const'),
+        # First component
+        ('[(cpp) namespace: "if::valid"]\n', 'if'),
+        # First component, fully qualified name
+        ('[(cpp) namespace: "::auto::pilot"]\n', 'auto'),
+        # Last component
+        ('[(cpp) namespace: "make::do"]\n', 'do'),
+        # Middle component
+        ('[(cpp) namespace: "our::new::product"]\n', 'new'),
+    ]:
+      ir = _make_ir_from_emb(test)
+      attr = ir.module[0].attribute[0]
+
+      self.assertEqual([[
+          error.error("m.emb", attr.value.source_location,
+                      f'Reserved word "{expected}" is not allowed '
+                      f'as a namespace component.')]],
+          header_generator.generate_header(ir)[1])
+
 
 if __name__ == "__main__":
     unittest.main()
