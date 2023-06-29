@@ -840,12 +840,12 @@ static inline ::std::ostream &operator<<(
 
 // ** enum_from_name_case ** ///////////////////////////////////////////////////
     if (!strcmp("$_name_$", emboss_reserved_local_name)) {
-      *emboss_reserved_local_result = $_enum_$::$_name_$;
+      *emboss_reserved_local_result = $_enum_$::$_value_$;
       return true;
     }
 
 // ** name_from_enum_case ** ///////////////////////////////////////////////////
-      case $_enum_$::$_name_$: return "$_name_$";
+      case $_enum_$::$_value_$: return "$_name_$";
 
 // ** enum_is_known_case ** ////////////////////////////////////////////////////
       case $_enum_$::$_name_$: return true;

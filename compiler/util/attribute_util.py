@@ -284,3 +284,26 @@ def _check_attributes(attribute_list, types, back_end, attribute_specs,
     else:
       errors.extend(types[attr.name.text](attr, module_source_file))
   return errors
+
+
+def gather_default_attributes(obj, defaults):
+  """Gathers default attributes for an IR object
+
+  This is designed to be able to be used as-is as an incidental action in an IR
+  traversal to accumulate defaults for child nodes.
+
+  Arguments:
+    defaults: A dict of `{ "defaults": { attr.name.text: attr } }`
+
+  Returns:
+    A dict of `{ "defaults": { attr.name.text: attr } }` with any defaults
+    provided by `obj` added/overridden.
+  """
+  defaults = defaults.copy()
+  for attr in obj.attribute:
+    if attr.is_default:
+      defaulted_attr = ir_pb2.Attribute()
+      defaulted_attr.CopyFrom(attr)
+      defaulted_attr.is_default = False
+      defaults[attr.name.text] = defaulted_attr
+  return {"defaults": defaults}

@@ -1,0 +1,55 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+[$default byte_order: "LittleEndian"]
+[(cpp) namespace: "emboss::test"]
+[(cpp) $default enum_case: "kCamelCase"]
+
+enum EnumShouty:
+  [(cpp) $default enum_case: "SHOUTY_CASE"]
+  FIRST                = 0
+  SECOND               = 1
+  TWO_WORD             = 2
+  THREE_WORD_ENUM      = 4
+  LONG_ENUM_VALUE_NAME = 8
+
+enum EnumDefault:
+  FIRST                = 0
+  SECOND               = 1
+  TWO_WORD             = 2
+  THREE_WORD_ENUM      = 4
+  LONG_ENUM_VALUE_NAME = 8
+
+struct UseKCamelEnumCase:
+  0 [+4] EnumDefault v
+  let first = EnumDefault.FIRST
+  let v_is_first = v == EnumDefault.FIRST
+
+enum EnumShoutyAndKCamel:
+  [(cpp) $default enum_case: "SHOUTY_CASE, kCamelCase"]
+  FIRST                = 0
+  SECOND               = 1
+  TWO_WORD             = 2
+  THREE_WORD_ENUM      = 4
+  LONG_ENUM_VALUE_NAME = 8
+
+enum EnumMixed:
+  -- Tests mixing various `enum_case` values in the same enum definition.
+  FIRST                = 0  [(cpp) enum_case: "SHOUTY_CASE, kCamelCase"]
+  SECOND               = 1  [(cpp) enum_case: "SHOUTY_CASE"]
+  TWO_WORD             = 2
+      [(cpp) enum_case: "kCamelCase"]
+  THREE_WORD_ENUM      = 4
+      [(cpp) enum_case: "kCamelCase, SHOUTY_CASE"]
+  LONG_ENUM_VALUE_NAME = 8

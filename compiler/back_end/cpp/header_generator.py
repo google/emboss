@@ -22,11 +22,14 @@ import collections
 import pkgutil
 import re
 
+from compiler.back_end.cpp import attributes
 from compiler.back_end.util import code_template
 from compiler.util import attribute_util
+from compiler.util import error
 from compiler.util import ir_pb2
 from compiler.util import ir_util
 from compiler.util import name_conversion
+from compiler.util import traverse_ir
 
 _TEMPLATES = code_template.parse_templates(pkgutil.get_data(
     "compiler.back_end.cpp",
@@ -65,6 +68,13 @@ _SUPPORT_NAMESPACE = "::emboss::support"
 
 # TODO(bolms): This should be a command-line flag.
 _PRELUDE_INCLUDE_FILE = "runtime/cpp/emboss_prelude.h"
+
+# Cases allowed in the `enum_case` attribute.
+_SUPPORTED_ENUM_CASES = ("SHOUTY_CASE", "kCamelCase")
+
+# Verify that all supported enum cases have valid, implemented conversions.
+for _enum_case in _SUPPORTED_ENUM_CASES:
+  assert name_conversion.is_case_conversion_supported("SHOUTY_CASE", _enum_case)
 
 
 def _get_module_namespace(module):
@@ -1232,6 +1242,65 @@ def _generate_structure_definition(type_ir, ir):
           subtype_method_definitions + method_definitions)
 
 
+def _split_enum_case_values_into_spans(enum_case_value):
+  """Yields spans containing each enum case in an enum_case attribute value.
+
+  Each span is of the form (start, end), which is the start and end position
+  relative to the beginning of the enum_case_value string. To keep the grammar
+  of this attribute simple, this only splits on delimiters and trims whitespace
+  for each case.
+
+  Example: 'SHOUTY_CASE, kCamelCase' -> [(0, 11), (13, 23)]"""
+  # Scan the string from left to right, finding commas and trimming whitespace.
+  # This is essentially equivalent to (x.trim() fror x in str.split(','))
+  # except that this yields spans within the string rather than the strings
+  # themselves, and no span is yielded for a trailing comma.
+  start, end = 0, len(enum_case_value)
+  while start <= end:
+    # Find a ',' delimiter to split on
+    delimiter = enum_case_value.find(',', start, end)
+    if delimiter < 0:
+      delimiter = end
+
+    substr_start = start
+    substr_end = delimiter
+
+    # Drop leading whitespace
+    while (substr_start < substr_end and
+           enum_case_value[substr_start].isspace()):
+      substr_start += 1
+    # Drop trailing whitespace
+    while (substr_start < substr_end and
+           enum_case_value[substr_end - 1].isspace()):
+      substr_end -= 1
+
+    # Skip a trailing comma
+    if substr_start == end and start != 0:
+      break
+
+    yield substr_start, substr_end
+    start = delimiter + 1
+
+
+def _split_enum_case_values(enum_case_value):
+  """Returns all enum cases in an enum case value.
+
+  Example: 'SHOUTY_CASE, kCamelCase' -> ['SHOUTY_CASE', 'kCamelCase']"""
+  return [enum_case_value[start:end] for start, end
+          in _split_enum_case_values_into_spans(enum_case_value)]
+
+
+def _get_enum_value_names(enum_value):
+  """Determines one or more enum names based on attributes"""
+  cases = ["SHOUTY_CASE"]
+  name = enum_value.name.name.text
+  if enum_case := ir_util.get_attribute(enum_value.attribute,
+                                        attributes.Attribute.ENUM_CASE):
+    cases = _split_enum_case_values(enum_case.string_constant.text)
+  return [name_conversion.convert_case("SHOUTY_CASE", case, name)
+            for case in cases]
+
+
 def _generate_enum_definition(type_ir):
   """Generates C++ for an Emboss enum."""
   enum_values = []
@@ -1244,24 +1313,32 @@ def _generate_enum_definition(type_ir):
   enum_type = _cpp_integer_type_for_enum(max_bits, is_signed)
   for value in type_ir.enumeration.value:
     numeric_value = ir_util.constant_value(value.value)
-    enum_values.append(
-        code_template.format_template(_TEMPLATES.enum_value,
-                                      name=value.name.name.text,
-                                      value=_render_integer(numeric_value)))
-    enum_from_string_statements.append(
-        code_template.format_template(_TEMPLATES.enum_from_name_case,
-                                      enum=type_ir.name.name.text,
-                                      name=value.name.name.text))
-    if numeric_value not in previously_seen_numeric_values:
-      string_from_enum_statements.append(
-          code_template.format_template(_TEMPLATES.name_from_enum_case,
+    enum_value_names = _get_enum_value_names(value)
+
+    for enum_value_name in enum_value_names:
+      enum_values.append(
+          code_template.format_template(_TEMPLATES.enum_value,
+                                        name=enum_value_name,
+                                        value=_render_integer(numeric_value)))
+
+      enum_from_string_statements.append(
+          code_template.format_template(_TEMPLATES.enum_from_name_case,
                                         enum=type_ir.name.name.text,
+                                        value=enum_value_name,
                                         name=value.name.name.text))
-      enum_is_known_statements.append(
-          code_template.format_template(_TEMPLATES.enum_is_known_case,
-                                        enum=type_ir.name.name.text,
-                                        name=value.name.name.text))
-    previously_seen_numeric_values.add(numeric_value)
+
+      if numeric_value not in previously_seen_numeric_values:
+        string_from_enum_statements.append(
+            code_template.format_template(_TEMPLATES.name_from_enum_case,
+                                          enum=type_ir.name.name.text,
+                                          value=enum_value_name,
+                                          name=value.name.name.text))
+
+        enum_is_known_statements.append(
+            code_template.format_template(_TEMPLATES.enum_is_known_case,
+                                          enum=type_ir.name.name.text,
+                                          name=enum_value_name))
+      previously_seen_numeric_values.add(numeric_value)
   return (
       code_template.format_template(
           _TEMPLATES.enum_declaration,
@@ -1303,6 +1380,131 @@ def _generate_header_guard(file_path):
   return no_double_underscore_path
 
 
+def _add_missing_enum_case_attribute_on_enum_value(enum_value, defaults):
+  """Adds an `enum_case` attribute if there isn't one but a default is set."""
+  if ir_util.get_attribute(enum_value.attribute,
+                           attributes.Attribute.ENUM_CASE) is None:
+    if attributes.Attribute.ENUM_CASE in defaults:
+      enum_value.attribute.extend([defaults[attributes.Attribute.ENUM_CASE]])
+
+
+def _propagate_defaults(ir, targets, ancestors, add_fn):
+  """Propagates default values
+
+  Traverses the IR to propagate default values to target nodes.
+
+  Arguments:
+    targets: A list of target IR types to add attributes to.
+    ancestors: Ancestor types which may contain the default values.
+    add_fn: Function to add the attribute. May use any parameter available in
+      fast_traverse_ir_top_down actions as well as `defaults` containing the
+      default attributes set by ancestors.
+
+  Returns:
+    None
+  """
+  traverse_ir.fast_traverse_ir_top_down(
+    ir, targets, add_fn,
+    incidental_actions={
+      ancestor: attribute_util.gather_default_attributes
+        for ancestor in ancestors
+    },
+    parameters={"defaults": {}})
+
+
+def _offset_source_location_column(source_location, offset):
+  """Adds offsets from the start column of the supplied source location
+
+  Returns a new source location with all of the same properties as the provided
+  source location, but with the columns modified by offsets from the original
+  start column.
+
+  Offset should be a tuple of (start, end), which are the offsets relative to
+  source_location.start.column to set the new start.column and end.column."""
+
+  new_location = ir_pb2.Location()
+  new_location.CopyFrom(source_location)
+  new_location.start.column = source_location.start.column + offset[0]
+  new_location.end.column = source_location.start.column + offset[1]
+
+  return new_location
+
+
+def _verify_enum_case_attribute(attr, source_file_name, errors):
+  """Verify that `enum_case` values are supported."""
+  if attr.name.text != attributes.Attribute.ENUM_CASE:
+    return
+
+  VALID_CASES = ', '.join(case for case in _SUPPORTED_ENUM_CASES)
+  enum_case_value = attr.value.string_constant
+  case_spans = _split_enum_case_values_into_spans(enum_case_value.text)
+  seen_cases = set()
+
+  for start, end in case_spans:
+    case_source_location = _offset_source_location_column(
+        enum_case_value.source_location, (start, end))
+    case = enum_case_value.text[start:end]
+
+    if start == end:
+      errors.append([error.error(
+          source_file_name, case_source_location,
+          'Empty enum case (or excess comma).')])
+      continue
+
+    if case in seen_cases:
+      errors.append([error.error(
+          source_file_name, case_source_location,
+          f'Duplicate enum case "{case}".')])
+      continue
+    seen_cases.add(case)
+
+    if case not in _SUPPORTED_ENUM_CASES:
+      errors.append([error.error(
+          source_file_name, case_source_location,
+          f'Unsupported enum case "{case}", '
+          f'supported cases are: {VALID_CASES}.')])
+
+
+def _verify_attribute_values(ir):
+  """Verify backend attribute values."""
+  errors = []
+  # Note, this does not yet verify `namespace` attributes. Namespace
+  # verification is done in _get_module_namespace.
+  traverse_ir.fast_traverse_ir_top_down(
+      ir, [ir_pb2.Attribute], _verify_enum_case_attribute,
+      parameters={"errors": errors})
+  return errors
+
+
+def _propagate_defaults_and_verify_attributes(ir):
+  """Verify attributes and ensure defaults are set when not overridden.
+
+  Returns a list of errors if there are errors present, or an empty list if
+  verification completed successfully."""
+  if errors := attribute_util.check_attributes_in_ir(
+          ir,
+          back_end="cpp",
+          types=attributes.TYPES,
+          module_attributes=attributes.Scope.MODULE,
+          struct_attributes=attributes.Scope.STRUCT,
+          bits_attributes=attributes.Scope.BITS,
+          enum_attributes=attributes.Scope.ENUM,
+          enum_value_attributes=attributes.Scope.ENUM_VALUE):
+    return errors
+
+  if errors := _verify_attribute_values(ir):
+    return errors
+
+  # Ensure defaults are set on EnumValues for `enum_case`.
+  _propagate_defaults(
+      ir,
+      targets=[ir_pb2.EnumValue],
+      ancestors=[ir_pb2.Module, ir_pb2.TypeDefinition],
+      add_fn=_add_missing_enum_case_attribute_on_enum_value)
+
+  return []
+
+
 def generate_header(ir):
   """Generates a C++ header from an Emboss module.
 
@@ -1315,11 +1517,7 @@ def generate_header(ir):
     module, or None, and `errors` is a possibly-empty list of error messages to
     display to the user.
   """
-  errors = attribute_util.check_attributes_in_ir(
-          ir,
-          back_end="cpp",
-          types={"namespace": attribute_util.STRING},
-          module_attributes={("namespace", False)})
+  errors = _propagate_defaults_and_verify_attributes(ir)
   if errors:
     return None, errors
   type_declarations = []

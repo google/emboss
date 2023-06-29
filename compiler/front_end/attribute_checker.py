@@ -397,17 +397,6 @@ def _verify_width_attribute_on_enum(enum, type_definition, source_file_name,
     ])
 
 
-def _gather_default_attributes(obj, defaults):
-  defaults = defaults.copy()
-  for attr in obj.attribute:
-    if attr.is_default:
-      defaulted_attr = ir_pb2.Attribute()
-      defaulted_attr.CopyFrom(attr)
-      defaulted_attr.is_default = False
-      defaults[attr.name.text] = defaulted_attr
-  return {"defaults": defaults}
-
-
 def _add_missing_attributes_on_ir(ir):
   """Adds missing attributes in a complete IR."""
   traverse_ir.fast_traverse_ir_top_down(
@@ -419,17 +408,17 @@ def _add_missing_attributes_on_ir(ir):
   traverse_ir.fast_traverse_ir_top_down(
       ir, [ir_pb2.Structure], _add_missing_size_attributes_on_structure,
       incidental_actions={
-          ir_pb2.Module: _gather_default_attributes,
-          ir_pb2.TypeDefinition: _gather_default_attributes,
-          ir_pb2.Field: _gather_default_attributes,
+          ir_pb2.Module: attribute_util.gather_default_attributes,
+          ir_pb2.TypeDefinition: attribute_util.gather_default_attributes,
+          ir_pb2.Field: attribute_util.gather_default_attributes,
       },
       parameters={"defaults": {}})
   traverse_ir.fast_traverse_ir_top_down(
       ir, [ir_pb2.Field], _add_missing_byte_order_attribute_on_field,
       incidental_actions={
-          ir_pb2.Module: _gather_default_attributes,
-          ir_pb2.TypeDefinition: _gather_default_attributes,
-          ir_pb2.Field: _gather_default_attributes,
+          ir_pb2.Module: attribute_util.gather_default_attributes,
+          ir_pb2.TypeDefinition: attribute_util.gather_default_attributes,
+          ir_pb2.Field: attribute_util.gather_default_attributes,
       },
       parameters={"defaults": {}})
   return []

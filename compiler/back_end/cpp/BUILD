@@ -35,12 +35,19 @@ py_binary(
 )
 
 py_library(
+    name = "attributes",
+    srcs = ["attributes.py"],
+    deps = []
+)
+
+py_library(
     name = "header_generator",
     srcs = ["header_generator.py"],
     data = [
         "generated_code_templates",
     ],
     deps = [
+        ":attributes",
         "//compiler/back_end/util:code_template",
         "//compiler/util:attribute_util",
         "//compiler/util:ir_pb2",
@@ -110,6 +117,17 @@ emboss_cc_test(
     ],
     deps = [
         "//testdata:enum_emboss",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+emboss_cc_test(
+    name = "enum_case_test",
+    srcs = [
+        "testcode/enum_case_test.cc",
+    ],
+    deps = [
+        "//testdata:enum_case_emboss",
         "@com_google_googletest//:gtest_main",
     ],
 )
