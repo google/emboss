@@ -37,7 +37,9 @@
 
 $_includes_$
 
+// NOLINTBEGIN
 $_body_$
+// NOLINTEND
 
 #endif  // $_header_guard_$
 
