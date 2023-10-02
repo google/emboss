@@ -50,9 +50,9 @@ class ElementViewIterator {
   using pointer = typename ::std::add_pointer<value_type>::type;
   using reference = typename ::std::add_lvalue_reference<value_type>::type;
 
-  explicit ElementViewIterator(const GenericArrayView *array_view,
+  explicit ElementViewIterator(const GenericArrayView array_view,
                                ::std::ptrdiff_t index)
-      : array_view_(array_view), view_((*array_view)[index]), index_(index) {}
+      : array_view_(array_view), view_(array_view[index]), index_(index) {}
 
   ElementViewIterator() = default;
 
@@ -62,7 +62,7 @@ class ElementViewIterator {
 
   ElementViewIterator &operator+=(difference_type d) {
     index_ += (kDirection == ElementViewIteratorDirection::kForward ? d : -d);
-    view_ = (*array_view_)[index_];
+    view_ = array_view_[index_];
     return *this;
   }
 
@@ -135,7 +135,7 @@ class ElementViewIterator {
   }
 
  private:
-  const GenericArrayView *array_view_;
+  const GenericArrayView array_view_;
   typename GenericArrayView::ViewType view_;
   ::std::ptrdiff_t index_;
 };
@@ -179,12 +179,12 @@ class GenericArrayView final {
                                                     index);
   }
 
-  ForwardIterator begin() const { return ForwardIterator(this, 0); }
-  ForwardIterator end() const { return ForwardIterator(this, ElementCount()); }
+  ForwardIterator begin() const { return ForwardIterator(*this, 0); }
+  ForwardIterator end() const { return ForwardIterator(*this, ElementCount()); }
   ReverseIterator rbegin() const {
-    return ReverseIterator(this, ElementCount() - 1);
+    return ReverseIterator(*this, ElementCount() - 1);
   }
-  ReverseIterator rend() const { return ReverseIterator(this, -1); }
+  ReverseIterator rend() const { return ReverseIterator(*this, -1); }
 
   // In order to selectively enable SizeInBytes and SizeInBits, it is
   // necessary to make them into templates.  Further, it is necessary for
@@ -260,6 +260,10 @@ class GenericArrayView final {
   ToString() const {
     EMBOSS_CHECK(Ok());
     return BackingStorage().template ToString<String>();
+  }
+
+  bool operator==(const GenericArrayView &other) const {
+    return parameters_ == other.parameters_ && buffer_ == other.buffer_;
   }
 
  private:
