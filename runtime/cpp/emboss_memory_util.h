@@ -438,6 +438,35 @@ class ContiguousBuffer final {
       : bytes_{reinterpret_cast<Byte *>(other.data())},
         size_{other.SizeInBytes()} {}
 
+  // Compare a ContiguousBuffers to another, compatible ContiguousBuffer.
+  template <typename OtherByte, ::std::size_t kOtherAlignment,
+            ::std::size_t kOtherOffset,
+            typename = typename ::std::enable_if<
+                kOtherAlignment % kAlignment == 0 &&
+                kOtherOffset % kAlignment ==
+                    kOffset && ::std::is_same<
+                        typename AddSourceCV<OtherByte, Byte>::Type,
+                        Byte>::value>::type>
+  bool operator==(const ContiguousBuffer<OtherByte, kOtherAlignment,
+                                         kOtherOffset> &other) const {
+    return bytes_ == reinterpret_cast<Byte *>(other.data()) &&
+           size_ == other.SizeInBytes();
+  }
+
+  // Compare a ContiguousBuffers to another, compatible ContiguousBuffer.
+  template <typename OtherByte, ::std::size_t kOtherAlignment,
+            ::std::size_t kOtherOffset,
+            typename = typename ::std::enable_if<
+                kOtherAlignment % kAlignment == 0 &&
+                kOtherOffset % kAlignment ==
+                    kOffset && ::std::is_same<
+                        typename AddSourceCV<OtherByte, Byte>::Type,
+                        Byte>::value>::type>
+  bool operator!=(const ContiguousBuffer<OtherByte, kOtherAlignment,
+                                         kOtherOffset> &other) const {
+    return !(*this == other);
+  }
+
   // Assignment from a compatible ContiguousBuffer.
   template <typename OtherByte, ::std::size_t kOtherAlignment,
             ::std::size_t kOtherOffset,

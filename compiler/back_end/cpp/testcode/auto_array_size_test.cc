@@ -122,6 +122,22 @@ TEST(AutoSizeView, ForEach) {
   });
 }
 
+TEST(AutoSizeView, ForEachWithTemporaries) {
+  auto view = MakeAutoSizeView(kAutoSize, sizeof kAutoSize);
+
+  int i = 0;
+  ::std::for_each(view.four_struct_array().begin(),
+                  view.four_struct_array().end(), [&](ElementView element) {
+                    ASSERT_TRUE(element.Equals(view.four_struct_array()[i++]));
+                  });
+
+  i = view.four_struct_array().ElementCount() - 1;
+  ::std::for_each(view.four_struct_array().rbegin(),
+                  view.four_struct_array().rend(), [&](ElementView element) {
+                    ASSERT_TRUE(element.Equals(view.four_struct_array()[i--]));
+                  });
+}
+
 TEST(AutoSizeView, Find) {
   auto view = MakeAutoSizeView(kAutoSize, sizeof kAutoSize).four_struct_array();
 
