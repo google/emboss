@@ -31,7 +31,7 @@ TYPES = {
 }
 
 
-class Scope(set[tuple[Attribute, bool]], Enum):
+class Scope(set, Enum):
     """Allowed scopes for C++ backend attributes.
 
     Each entry is a set of (Attribute, default?) tuples, the first value being
