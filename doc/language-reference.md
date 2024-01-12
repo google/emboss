@@ -619,6 +619,20 @@ struct Message:
 This can be useful as a way to group related fields together.
 
 
+#### Using `struct` to define a C-like `union`
+
+Emboss doesn't support C-like `union`s directly via built in type
+definitions. However, you can use Emboss's overlapping fields feature to
+effectively create a `union`:
+
+```
+struct Foo:
+  0 [+1] UInt a
+  0 [+2] UInt b
+  0 [+4] UInt c
+```
+
+
 #### Automatically-Generated Fields
 
 A `struct` will have `$size_in_bytes`, `$max_size_in_bytes`, and
