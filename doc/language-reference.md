@@ -917,6 +917,61 @@ the entire field to be read or written -- something to keep in mind when reading
 or writing a memory-mapped register space.
 
 
+#### Anonymous `bits`
+
+It is possible to use an anonymous `bits` definition directly in a `struct`;
+for example:
+
+```
+struct Message:
+  [$default byte_order: "BigEndian"]
+  0 [+4]     UInt  message_length
+  4 [+4]     bits:
+    0 [+1]   Flag  incoming
+    1 [+1]   Flag  last_fragment
+    2 [+4]   UInt  scale_factor
+    31 [+1]  Flag  error
+```
+
+In this case, the fields of the `bits` will be treated as though they are fields
+of the outer struct.
+
+
+#### Inline `bits`
+
+Like `enum`s, it is also possible to define a named `bits` inline in a `struct`
+or `bits`.  For example:
+
+```
+struct Message:
+  [$default byte_order: "BigEndian"]
+  0 [+4]     UInt  message_length
+  4 [+4]     bits  payload:
+    0 [+1]   Flag  incoming
+    1 [+1]   Flag  last_fragment
+    2 [+4]   UInt  scale_factor
+    31 [+1]  Flag  error
+```
+
+This is equivalent to:
+
+```
+struct Message:
+  [$default byte_order: "BigEndian"]
+
+  bits  Payload:
+    0 [+1]   Flag  incoming
+    1 [+1]   Flag  last_fragment
+    2 [+4]   UInt  scale_factor
+    31 [+1]  Flag  error
+
+  0 [+4]  UInt     message_length
+  4 [+4]  Payload  payload
+```
+
+This can be useful as a way to group related fields together.
+
+
 #### Automatically-Generated Fields
 
 A `bits` will have `$size_in_bits`, `$max_size_in_bits`, and `$min_size_in_bits`
@@ -972,61 +1027,6 @@ value as `$size_in_bits`.  It is provided for consistency with
 Since `bits` must be fixed size, the `$min_size_in_bits` field has the same
 value as `$size_in_bits`.  It is provided for consistency with
 `$min_size_in_bytes`.
-
-
-#### Anonymous `bits`
-
-It is possible to use an anonymous `bits` definition directly in a `struct`;
-for example:
-
-```
-struct Message:
-  [$default byte_order: "BigEndian"]
-  0 [+4]     UInt  message_length
-  4 [+4]     bits:
-    0 [+1]   Flag  incoming
-    1 [+1]   Flag  last_fragment
-    2 [+4]   UInt  scale_factor
-    31 [+1]  Flag  error
-```
-
-In this case, the fields of the `bits` will be treated as though they are fields
-of the outer struct.
-
-
-#### Inline `bits`
-
-Like `enum`s, it is also possible to define a named `bits` inline in a `struct`
-or `bits`.  For example:
-
-```
-struct Message:
-  [$default byte_order: "BigEndian"]
-  0 [+4]     UInt  message_length
-  4 [+4]     bits  payload:
-    0 [+1]   Flag  incoming
-    1 [+1]   Flag  last_fragment
-    2 [+4]   UInt  scale_factor
-    31 [+1]  Flag  error
-```
-
-This is equivalent to:
-
-```
-struct Message:
-  [$default byte_order: "BigEndian"]
-
-  bits  Payload:
-    0 [+1]   Flag  incoming
-    1 [+1]   Flag  last_fragment
-    2 [+4]   UInt  scale_factor
-    31 [+1]  Flag  error
-
-  0 [+4]  UInt     message_length
-  4 [+4]  Payload  payload
-```
-
-This can be useful as a way to group related fields together.
 
 
 ### `external`
