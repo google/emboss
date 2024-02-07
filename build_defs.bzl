@@ -212,6 +212,7 @@ _cc_emboss_aspect = aspect(
             default = "@com_google_emboss//runtime/cpp:cpp_utils",
         ),
     },
+    toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
 )
 
 def _cc_emboss_library_impl(ctx):
