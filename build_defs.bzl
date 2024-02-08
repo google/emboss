@@ -79,11 +79,21 @@ def _emboss_library_impl(ctx):
         direct = [src],
         transitive = [dep.transitive_sources for dep in deps],
     )
-    dep_roots = depset(
-        direct = [src.root],
+
+    # If the file is in an external repo, we want to use the path to that repo
+    # as the root (e.g. ./external/my-repo) so that import paths are resolved
+    # relative to the external repo root.
+    fixed_src_root = src.root.path
+    if src.path.startswith("external/"):
+        path_segments = src.path.split("/")[:2]
+        fixed_src_root = "/".join(path_segments)
+
+    transitive_roots = depset(
+        direct = [fixed_src_root],
         transitive = [dep.transitive_roots for dep in deps],
     )
-    imports = ["--import-dir=" + root.path for root in dep_roots.to_list()]
+
+    imports = ["--import-dir=" + root for root in transitive_roots.to_list()]
     ctx.actions.run(
         inputs = inputs.to_list(),
         outputs = [out],
@@ -97,10 +107,6 @@ def _emboss_library_impl(ctx):
     transitive_ir = depset(
         direct = outs,
         transitive = [dep.transitive_ir for dep in deps],
-    )
-    transitive_roots = depset(
-        direct = [src.root],
-        transitive = [dep.transitive_roots for dep in deps],
     )
     return [
         EmbossInfo(
