@@ -175,8 +175,7 @@ def _cc_emboss_aspect_impl(target, ctx):
         transitive = [
                          dep[EmbossCcHeaderInfo].transitive_headers
                          for dep in ctx.rule.attr.deps
-                     ] +
-                     [runtime_cc_info.compilation_context.headers],
+                     ],
     )
     (cc_compilation_context, cc_compilation_outputs) = cc_common.compile(
         name = ctx.label.name,
@@ -185,6 +184,7 @@ def _cc_emboss_aspect_impl(target, ctx):
         cc_toolchain = cc_toolchain,
         public_hdrs = headers,
         private_hdrs = transitive_headers.to_list(),
+        compilation_contexts = [runtime_cc_info.compilation_context],
     )
     return [
         CcInfo(compilation_context = cc_compilation_context),
