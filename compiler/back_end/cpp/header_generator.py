@@ -29,11 +29,11 @@ from compiler.util import error
 from compiler.util import ir_pb2
 from compiler.util import ir_util
 from compiler.util import name_conversion
+from compiler.util import resources
 from compiler.util import traverse_ir
 
-_TEMPLATES = code_template.parse_templates(pkgutil.get_data(
-    "compiler.back_end.cpp",
-    "generated_code_templates").decode(encoding="UTF-8"))
+_TEMPLATES = code_template.parse_templates(resources.load(
+    "compiler.back_end.cpp", "generated_code_templates"))
 
 _CPP_RESERVED_WORDS = set((
     # C keywords.  A few of these are not (yet) C++ keywords, but some compilers

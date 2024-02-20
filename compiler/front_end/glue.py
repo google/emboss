@@ -19,7 +19,6 @@ and returns an IR or formatted error message.
 """
 
 import collections
-import pkgutil
 
 from compiler.front_end import attribute_checker
 from compiler.front_end import constraints
@@ -36,6 +35,7 @@ from compiler.front_end import write_inference
 from compiler.util import error
 from compiler.util import ir_pb2
 from compiler.util import parser_types
+from compiler.util import resources
 
 _IrDebugInfo = collections.namedtuple("IrDebugInfo", ["ir", "debug_info",
                                                       "errors"])
@@ -202,9 +202,7 @@ def parse_module(file_name, file_reader):
 def get_prelude():
   """Returns the module IR and debug info of the Emboss Prelude."""
   return parse_module_text(
-      pkgutil.get_data("compiler.front_end",
-                       "prelude.emb").decode(encoding="UTF-8"),
-      "")
+      resources.load("compiler.front_end", "prelude.emb"), "")
 
 
 def parse_emboss_file(file_name, file_reader, stop_before_step=None):

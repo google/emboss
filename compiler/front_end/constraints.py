@@ -14,12 +14,11 @@
 
 """Routines to check miscellaneous constraints on the IR."""
 
-import pkgutil
-
 from compiler.front_end import attributes
 from compiler.util import error
 from compiler.util import ir_pb2
 from compiler.util import ir_util
+from compiler.util import resources
 from compiler.util import traverse_ir
 
 
@@ -394,9 +393,8 @@ def _initialize_reserved_word_list():
   global _RESERVED_WORDS
   _RESERVED_WORDS = {}
   language = None
-  for line in pkgutil.get_data(
-      "compiler.front_end",
-      "reserved_words").decode(encoding="UTF-8").splitlines():
+  for line in resources.load(
+      "compiler.front_end", "reserved_words").splitlines():
     stripped_line = line.partition("#")[0].strip()
     if not stripped_line:
       continue

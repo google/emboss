@@ -167,3 +167,9 @@ py_test(
         ":name_conversion",
     ],
 )
+
+py_library(
+    name = "resources",
+    srcs = ["resources.py"],
+    deps = [],
+)

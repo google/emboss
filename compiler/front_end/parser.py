@@ -14,11 +14,10 @@
 
 """Routines to generate a shift-reduce parser from the module_ir module."""
 
-import pkgutil
-
 from compiler.front_end import lr1
 from compiler.front_end import module_ir
 from compiler.front_end import tokenizer
+from compiler.util import resources
 from compiler.util import simple_memoizer
 
 
@@ -104,9 +103,8 @@ def generate_parser(start_symbol, productions, error_examples):
 
 @simple_memoizer.memoize
 def _load_module_parser():
-  path = "compiler.front_end"
   error_examples = parse_error_examples(
-      pkgutil.get_data(path, "error_examples").decode("utf-8"))
+      resources.load("compiler.front_end", "error_examples"))
   return generate_parser(module_ir.START_SYMBOL, module_ir.PRODUCTIONS,
                          error_examples)
 

@@ -98,6 +98,7 @@ py_library(
         ":lr1",
         ":module_ir",
         ":tokenizer",
+        "//compiler/util:resources",
         "//compiler/util:simple_memoizer",
     ],
 )
@@ -137,6 +138,7 @@ py_library(
         "//compiler/util:ir_pb2",
         "//compiler/util:error",
         "//compiler/util:parser_types",
+        "//compiler/util:resources",
     ],
 )
 
@@ -322,6 +324,7 @@ py_library(
         "//compiler/util:ir_pb2",
         "//compiler/util:error",
         "//compiler/util:ir_util",
+        "//compiler/util:resources",
         "//compiler/util:traverse_ir",
     ],
 )
