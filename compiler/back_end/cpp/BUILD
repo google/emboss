@@ -53,6 +53,7 @@ py_library(
         "//compiler/util:ir_pb2",
         "//compiler/util:ir_util",
         "//compiler/util:name_conversion",
+        "//compiler/util:resources",
     ],
 )
 
