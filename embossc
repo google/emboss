@@ -45,7 +45,12 @@ def _parse_args(argv):
   parser.add_argument("--output-path",
                       nargs=1,
                       default=".",
-                      help="Prefix to use for the generated output file.")
+                      help="""Prefix path to use for the generated output file.
+                              Defaults to '.'""")
+  parser.add_argument("--output-file",
+                      nargs=1,
+                      help="""File name to be used for the generated output
+                              file. Defaults to input_file suffixed by '.h'""")
   parser.add_argument("input_file",
                       type=str,
                       nargs=1,
@@ -54,6 +59,7 @@ def _parse_args(argv):
 
 
 def main(argv):
+
   flags = _parse_args(argv)
   base_path = os.path.dirname(__file__) or "."
   subprocess_environment = os.environ.copy()
@@ -96,10 +102,15 @@ def main(argv):
   if back_end_status.returncode != 0:
     return back_end_status.returncode
 
-  output_file = os.path.join(flags.output_path[0], flags.input_file[0]) + ".h"
-  os.makedirs(os.path.dirname(output_file), exist_ok=True)
+  if flags.output_file:
+    output_file = flags.output_file[0]
+  else:
+    output_file = flags.input_file[0] + ".h"
 
-  with open(output_file, "wb") as output:
+  output_filepath = os.path.join(flags.output_path[0], output_file)
+  os.makedirs(os.path.dirname(output_filepath), exist_ok=True)
+
+  with open(output_filepath, "wb") as output:
     output.write(back_end_status.stdout)
   return 0
 
