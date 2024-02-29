@@ -26,7 +26,7 @@ There is also a convenience macro, `emboss_cc_library()`, which creates an
 
 load("@bazel_tools//tools/cpp:toolchain_utils.bzl", "find_cpp_toolchain")
 
-def emboss_cc_library(name, srcs, deps = [], visibility = None):
+def emboss_cc_library(name, srcs, deps = [], visibility = None, import_dirs = []):
     """Constructs a C++ library from an .emb file."""
     if len(srcs) != 1:
         fail(
@@ -38,6 +38,7 @@ def emboss_cc_library(name, srcs, deps = [], visibility = None):
         name = name + "_ir",
         srcs = srcs,
         deps = [dep + "_ir" for dep in deps],
+        import_dirs = import_dirs,
     )
 
     cc_emboss_library(
@@ -94,10 +95,11 @@ def _emboss_library_impl(ctx):
     )
 
     imports = ["--import-dir=" + root for root in transitive_roots.to_list()]
+    imports_arg = ["--import-dir=" + impt for impt in ctx.attr.import_dirs]
     ctx.actions.run(
         inputs = inputs.to_list(),
         outputs = [out],
-        arguments = [src.path, "--output-file=" + out.path] + imports,
+        arguments = [src.path, "--output-file=" + out.path] + imports + imports_arg,
         executable = ctx.executable._emboss_compiler,
     )
     transitive_sources = depset(
@@ -129,6 +131,9 @@ emboss_library = rule(
         ),
         "deps": attr.label_list(
             providers = [EmbossInfo],
+        ),
+        "import_dirs": attr.label_list(
+            allow_files = True,
         ),
         "licenses": attr.license() if hasattr(attr, "license") else attr.string_list(),
         "_emboss_compiler": attr.label(
