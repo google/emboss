@@ -53,6 +53,8 @@ filegroup(
         "imported.emb",
         "imported_genfiles.emb",
         "importer.emb",
+        "import_dir/project/imported.emb",
+        "import_dir/project/importer.emb",
         "int_sizes.emb",
         "nested_structure.emb",
         "no_cpp_namespace.emb",
@@ -128,6 +130,13 @@ emboss_cc_library(
     ],
 )
 
+emboss_cc_library(
+    name = "import_dir_imported_emboss",
+    srcs = [
+        "import_dir/project/imported.emb",
+    ],
+)
+
 # This rule is here to test that the Emboss Skylark macro sets eveything up
 # correctly for the Emboss front end to read generated .embs.
 #
@@ -164,6 +173,21 @@ emboss_cc_library(
         ":imported_genfiles_emboss",
     ],
 )
+
+# Tests that the `import_dirs` attribute works.
+emboss_cc_library(
+    name = "import_dir_importer_emboss",
+    srcs = [
+        "import_dir/project/importer.emb",
+    ],
+    deps = [
+        ":import_dir_imported_emboss",
+    ],
+    import_dirs = [
+        "import_dir",
+    ]
+)
+
 
 emboss_cc_library(
     name = "importer2_emboss",

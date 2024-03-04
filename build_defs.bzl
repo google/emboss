@@ -95,7 +95,7 @@ def _emboss_library_impl(ctx):
     )
 
     imports = ["--import-dir=" + root for root in transitive_roots.to_list()]
-    imports_arg = ["--import-dir=" + impt for impt in ctx.attr.import_dirs]
+    imports_arg = ["--import-dir=" + impt.path for impt in ctx.files.import_dirs]
     ctx.actions.run(
         inputs = inputs.to_list(),
         outputs = [out],
