@@ -33,7 +33,7 @@ from compiler.front_end import tokenizer
 from compiler.front_end import type_check
 from compiler.front_end import write_inference
 from compiler.util import error
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import parser_types
 from compiler.util import resources
 
@@ -142,7 +142,7 @@ def parse_module_text(source_code, file_name):
   # need to re-parse the prelude for every test .emb.
   if (source_code, file_name) in _cached_modules:
     debug_info = _cached_modules[source_code, file_name]
-    ir = ir_pb2.Module()
+    ir = ir_data.Module()
     ir.CopyFrom(debug_info.ir)
   else:
     debug_info = ModuleDebugInfo(file_name)
@@ -162,7 +162,7 @@ def parse_module_text(source_code, file_name):
     ir = module_ir.build_ir(parse_result.parse_tree, used_productions)
     ir.source_text = source_code
     debug_info.used_productions = used_productions
-    debug_info.ir = ir_pb2.Module()
+    debug_info.ir = ir_data.Module()
     debug_info.ir.CopyFrom(ir)
     _cached_modules[source_code, file_name] = debug_info
   ir.source_file_name = file_name
@@ -256,7 +256,7 @@ def only_parse_emboss_file(file_name, file_reader):
   file_queue = [file_name]
   files = {file_name}
   debug_info = DebugInfo()
-  ir = ir_pb2.EmbossIr(module=[])
+  ir = ir_data.EmbossIr(module=[])
   while file_queue:
     file_to_parse = file_queue[0]
     del file_queue[0]

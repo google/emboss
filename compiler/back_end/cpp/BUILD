@@ -33,7 +33,7 @@ py_binary(
     visibility = ["//visibility:public"],
     deps = [
         ":header_generator",
-        "//compiler/util:ir_pb2",
+        "//compiler/util:ir_data",
     ],
 )
 
@@ -53,7 +53,7 @@ py_library(
         ":attributes",
         "//compiler/back_end/util:code_template",
         "//compiler/util:attribute_util",
-        "//compiler/util:ir_pb2",
+        "//compiler/util:ir_data",
         "//compiler/util:ir_util",
         "//compiler/util:name_conversion",
         "//compiler/util:resources",

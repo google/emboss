@@ -16,7 +16,7 @@
 
 import operator
 
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 
 
 _FIXED_SIZE_ATTRIBUTE = "fixed_size_in_bits"
@@ -150,23 +150,23 @@ def _constant_value_of_function(function, bindings):
   # constant expression patterns built from non-constant subexpressions, such as
   # `0 * X` or `X == X` or `3 * X == X + X + X`.  I (bolms@) am not implementing
   # any further special cases because I do not see any practical use for them.
-  if function.function == ir_pb2.FunctionMapping.UNKNOWN:
+  if function.function == ir_data.FunctionMapping.UNKNOWN:
     return None
-  if function.function == ir_pb2.FunctionMapping.AND:
+  if function.function == ir_data.FunctionMapping.AND:
     if any(value is False for value in values):
       return False
     elif any(value is None for value in values):
       return None
     else:
       return True
-  elif function.function == ir_pb2.FunctionMapping.OR:
+  elif function.function == ir_data.FunctionMapping.OR:
     if any(value is True for value in values):
       return True
     elif any(value is None for value in values):
       return None
     else:
       return False
-  elif function.function == ir_pb2.FunctionMapping.CHOICE:
+  elif function.function == ir_data.FunctionMapping.CHOICE:
     if values[0] is None:
       return None
     else:
@@ -176,18 +176,18 @@ def _constant_value_of_function(function, bindings):
   if any(value is None for value in values):
     return None
   functions = {
-      ir_pb2.FunctionMapping.ADDITION: operator.add,
-      ir_pb2.FunctionMapping.SUBTRACTION: operator.sub,
-      ir_pb2.FunctionMapping.MULTIPLICATION: operator.mul,
-      ir_pb2.FunctionMapping.EQUALITY: operator.eq,
-      ir_pb2.FunctionMapping.INEQUALITY: operator.ne,
-      ir_pb2.FunctionMapping.LESS: operator.lt,
-      ir_pb2.FunctionMapping.LESS_OR_EQUAL: operator.le,
-      ir_pb2.FunctionMapping.GREATER: operator.gt,
-      ir_pb2.FunctionMapping.GREATER_OR_EQUAL: operator.ge,
+      ir_data.FunctionMapping.ADDITION: operator.add,
+      ir_data.FunctionMapping.SUBTRACTION: operator.sub,
+      ir_data.FunctionMapping.MULTIPLICATION: operator.mul,
+      ir_data.FunctionMapping.EQUALITY: operator.eq,
+      ir_data.FunctionMapping.INEQUALITY: operator.ne,
+      ir_data.FunctionMapping.LESS: operator.lt,
+      ir_data.FunctionMapping.LESS_OR_EQUAL: operator.le,
+      ir_data.FunctionMapping.GREATER: operator.gt,
+      ir_data.FunctionMapping.GREATER_OR_EQUAL: operator.ge,
       # Python's max([1, 2]) == 2; max(1, 2) == 2; max([1]) == 1; but max(1)
       # throws a TypeError ("'int' object is not iterable").
-      ir_pb2.FunctionMapping.MAXIMUM: lambda *x: max(x),
+      ir_data.FunctionMapping.MAXIMUM: lambda *x: max(x),
   }
   return functions[function.function](*values)
 
@@ -200,7 +200,7 @@ def hashable_form_of_reference(reference):
   """Returns a representation of reference that can be used as a dict key.
 
   Arguments:
-    reference: An ir_pb2.Reference or ir_pb2.NameDefinition.
+    reference: An ir_data.Reference or ir_data.NameDefinition.
 
   Returns:
     A tuple of the module_file and object_path.
@@ -212,7 +212,7 @@ def hashable_form_of_field_reference(field_reference):
   """Returns a representation of field_reference that can be used as a dict key.
 
   Arguments:
-    field_reference: An ir_pb2.FieldReference
+    field_reference: An ir_data.FieldReference
 
   Returns:
     A tuple of tuples of the module_files and object_paths.
@@ -289,10 +289,10 @@ def _find_path_in_module(path, module_ir):
 
 def find_object_or_none(name, ir):
   """Finds the object with the given canonical name, if it exists.."""
-  if (isinstance(name, ir_pb2.Reference) or
-      isinstance(name, ir_pb2.NameDefinition)):
+  if (isinstance(name, ir_data.Reference) or
+      isinstance(name, ir_data.NameDefinition)):
     path = _hashable_form_of_name(name.canonical_name)
-  elif isinstance(name, ir_pb2.CanonicalName):
+  elif isinstance(name, ir_data.CanonicalName):
     path = _hashable_form_of_name(name)
   else:
     path = name
@@ -313,10 +313,10 @@ def find_object(name, ir):
 
 def find_parent_object(name, ir):
   """Finds the parent object of the object with the given canonical name."""
-  if (isinstance(name, ir_pb2.Reference) or
-      isinstance(name, ir_pb2.NameDefinition)):
+  if (isinstance(name, ir_data.Reference) or
+      isinstance(name, ir_data.NameDefinition)):
     path = _hashable_form_of_name(name.canonical_name)
-  elif isinstance(name, ir_pb2.CanonicalName):
+  elif isinstance(name, ir_data.CanonicalName):
     path = _hashable_form_of_name(name)
   else:
     path = name

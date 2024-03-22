@@ -21,7 +21,7 @@ for all symbol references in an Emboss IR.
 import collections
 
 from compiler.util import error
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 
@@ -66,7 +66,7 @@ def noncomposite_subfield_error(file_name, location, name):
 
 def _nested_name(canonical_name, name):
   """Creates a new CanonicalName with name appended to the object_path."""
-  return ir_pb2.CanonicalName(
+  return ir_data.CanonicalName(
       module_file=canonical_name.module_file,
       object_path=list(canonical_name.object_path) + [name])
 
@@ -84,7 +84,7 @@ class _Scope(dict):
   Attributes:
     canonical_name: The absolute name of this symbol; e.g. ("file.emb",
       "TypeName", "SubTypeName", "field_name")
-    source_location: The ir_pb2.SourceLocation where this symbol is defined.
+    source_location: The ir_data.SourceLocation where this symbol is defined.
     visibility: LOCAL, PRIVATE, or SEARCHABLE; see below.
     alias: If set, this name is merely a pointer to another name.
   """
@@ -146,9 +146,9 @@ def _add_struct_field_to_scope(field, scope, errors):
     _add_name_to_scope(field.abbreviation, scope, new_scope.canonical_name,
                        _Scope.PRIVATE, errors)
 
-  value_builtin_name = ir_pb2.Word(
+  value_builtin_name = ir_data.Word(
       text="this",
-      source_location=ir_pb2.Location(is_synthetic=True),
+      source_location=ir_data.Location(is_synthetic=True),
   )
   # In "inside field" scope, the name `this` maps back to the field itself.
   # This is important for attributes like `[requires]`.
@@ -174,14 +174,14 @@ def _add_type_name_to_scope(type_definition, scope, errors):
 
 
 def _set_scope_for_type_definition(type_definition, scope):
-  """Sets the current scope for an ir_pb2.TypeDefinition."""
+  """Sets the current scope for an ir_data.AddressableUnit."""
   return {"scope": scope[type_definition.name.name.text]}
 
 
 def _add_module_to_scope(module, scope):
   """Adds the name of the module to the given scope."""
   module_symbol_table = _Scope(
-      ir_pb2.CanonicalName(module_file=module.source_file_name,
+      ir_data.CanonicalName(module_file=module.source_file_name,
                            object_path=[]),
       None,
       _Scope.SEARCHABLE)
@@ -208,11 +208,11 @@ def _construct_symbol_tables(ir):
   symbol_tables = {}
   errors = []
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Module], _add_module_to_scope,
+      ir, [ir_data.Module], _add_module_to_scope,
       parameters={"errors": errors, "scope": symbol_tables})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.TypeDefinition], _add_type_name_to_scope,
-      incidental_actions={ir_pb2.Module: _set_scope_for_module},
+      ir, [ir_data.TypeDefinition], _add_type_name_to_scope,
+      incidental_actions={ir_data.Module: _set_scope_for_module},
       parameters={"errors": errors, "scope": symbol_tables})
   if errors:
     # Ideally, we would find duplicate field names elsewhere in the module, even
@@ -223,24 +223,24 @@ def _construct_symbol_tables(ir):
     return symbol_tables, errors
 
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.EnumValue], _add_enum_value_to_scope,
+      ir, [ir_data.EnumValue], _add_enum_value_to_scope,
       incidental_actions={
-          ir_pb2.Module: _set_scope_for_module,
-          ir_pb2.TypeDefinition: _set_scope_for_type_definition,
+          ir_data.Module: _set_scope_for_module,
+          ir_data.TypeDefinition: _set_scope_for_type_definition,
       },
       parameters={"errors": errors, "scope": symbol_tables})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Field], _add_struct_field_to_scope,
+      ir, [ir_data.Field], _add_struct_field_to_scope,
       incidental_actions={
-          ir_pb2.Module: _set_scope_for_module,
-          ir_pb2.TypeDefinition: _set_scope_for_type_definition,
+          ir_data.Module: _set_scope_for_module,
+          ir_data.TypeDefinition: _set_scope_for_type_definition,
       },
       parameters={"errors": errors, "scope": symbol_tables})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.RuntimeParameter], _add_parameter_name_to_scope,
+      ir, [ir_data.RuntimeParameter], _add_parameter_name_to_scope,
       incidental_actions={
-          ir_pb2.Module: _set_scope_for_module,
-          ir_pb2.TypeDefinition: _set_scope_for_type_definition,
+          ir_data.Module: _set_scope_for_module,
+          ir_data.TypeDefinition: _set_scope_for_type_definition,
       },
       parameters={"errors": errors, "scope": symbol_tables})
   return symbol_tables, errors
@@ -416,7 +416,7 @@ def _resolve_field_reference(field_reference, source_file_name, errors, ir):
                                previous_reference.source_name[0].text))
       return
     assert previous_field.type.WhichOneof("type") == "atomic_type"
-    member_name = ir_pb2.CanonicalName()
+    member_name = ir_data.CanonicalName()
     member_name.CopyFrom(
         previous_field.type.atomic_type.reference.canonical_name)
     member_name.object_path.extend([ref.source_name[0].text])
@@ -446,7 +446,7 @@ def _set_visible_scopes_for_type_definition(type_definition, visible_scopes):
 
 def _set_visible_scopes_for_module(module):
   """Sets visible_scopes for the given module."""
-  self_scope = ir_pb2.CanonicalName(module_file=module.source_file_name)
+  self_scope = ir_data.CanonicalName(module_file=module.source_file_name)
   extra_visible_scopes = []
   for foreign_import in module.foreign_import:
     # Anonymous imports are searched for top-level names; named imports are not.
@@ -454,7 +454,7 @@ def _set_visible_scopes_for_module(module):
     # modules must be imported with names.
     if not foreign_import.local_name.text:
       extra_visible_scopes.append(
-          ir_pb2.CanonicalName(module_file=foreign_import.file_name.text))
+          ir_data.CanonicalName(module_file=foreign_import.file_name.text))
   return {"visible_scopes": (self_scope,) + tuple(extra_visible_scopes)}
 
 
@@ -477,9 +477,9 @@ def _resolve_symbols_from_table(ir, table):
   # Symbol resolution is broken into five passes.  First, this code resolves any
   # imports, and adds import aliases to modules.
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Import], _add_import_to_scope,
+      ir, [ir_data.Import], _add_import_to_scope,
       incidental_actions={
-          ir_pb2.Module: _module_source_from_table_action,
+          ir_data.Module: _module_source_from_table_action,
       },
       parameters={"errors": errors, "table": table})
   if errors:
@@ -487,21 +487,21 @@ def _resolve_symbols_from_table(ir, table):
   # Next, this resolves all absolute references (e.g., it resolves "UInt" in
   # "0:1  UInt  field" to [prelude]::UInt).
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Reference], _resolve_reference,
-      skip_descendants_of=(ir_pb2.FieldReference,),
+      ir, [ir_data.Reference], _resolve_reference,
+      skip_descendants_of=(ir_data.FieldReference,),
       incidental_actions={
-          ir_pb2.TypeDefinition: _set_visible_scopes_for_type_definition,
-          ir_pb2.Module: _set_visible_scopes_for_module,
-          ir_pb2.Attribute: _set_visible_scopes_for_attribute,
+          ir_data.TypeDefinition: _set_visible_scopes_for_type_definition,
+          ir_data.Module: _set_visible_scopes_for_module,
+          ir_data.Attribute: _set_visible_scopes_for_attribute,
       },
       parameters={"table": table, "errors": errors, "field": None})
   # Lastly, head References to fields (e.g., the `a` of `a.b.c`) are resolved.
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.FieldReference], _resolve_head_of_field_reference,
+      ir, [ir_data.FieldReference], _resolve_head_of_field_reference,
       incidental_actions={
-          ir_pb2.TypeDefinition: _set_visible_scopes_for_type_definition,
-          ir_pb2.Module: _set_visible_scopes_for_module,
-          ir_pb2.Attribute: _set_visible_scopes_for_attribute,
+          ir_data.TypeDefinition: _set_visible_scopes_for_type_definition,
+          ir_data.Module: _set_visible_scopes_for_module,
+          ir_data.Attribute: _set_visible_scopes_for_attribute,
       },
       parameters={"table": table, "errors": errors, "field": None})
   return errors
@@ -511,11 +511,11 @@ def resolve_field_references(ir):
   """Resolves structure member accesses ("field.subfield") in ir."""
   errors = []
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.FieldReference], _resolve_field_reference,
+      ir, [ir_data.FieldReference], _resolve_field_reference,
       incidental_actions={
-          ir_pb2.TypeDefinition: _set_visible_scopes_for_type_definition,
-          ir_pb2.Module: _set_visible_scopes_for_module,
-          ir_pb2.Attribute: _set_visible_scopes_for_attribute,
+          ir_data.TypeDefinition: _set_visible_scopes_for_type_definition,
+          ir_data.Module: _set_visible_scopes_for_module,
+          ir_data.Attribute: _set_visible_scopes_for_attribute,
       },
       parameters={"errors": errors, "field": None})
   return errors

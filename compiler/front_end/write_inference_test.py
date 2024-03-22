@@ -17,7 +17,7 @@
 import unittest
 from compiler.front_end import glue
 from compiler.front_end import write_inference
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import test_util
 
 
@@ -101,7 +101,7 @@ class WriteInferenceTest(unittest.TestCase):
     self.assertEqual(
         "x",
         transform.destination.path[0].canonical_name.object_path[-1])
-    self.assertEqual(ir_pb2.FunctionMapping.SUBTRACTION,
+    self.assertEqual(ir_data.FunctionMapping.SUBTRACTION,
                      transform.function_body.function.function)
     arg0, arg1 = transform.function_body.function.args
     self.assertEqual("$logical_value",
@@ -119,7 +119,7 @@ class WriteInferenceTest(unittest.TestCase):
     self.assertEqual(
         "x",
         transform.destination.path[0].canonical_name.object_path[-1])
-    self.assertEqual(ir_pb2.FunctionMapping.ADDITION,
+    self.assertEqual(ir_data.FunctionMapping.ADDITION,
                      transform.function_body.function.function)
     arg0, arg1 = transform.function_body.function.args
     self.assertEqual("$logical_value",
@@ -137,7 +137,7 @@ class WriteInferenceTest(unittest.TestCase):
     self.assertEqual(
         "x",
         transform.destination.path[0].canonical_name.object_path[-1])
-    self.assertEqual(ir_pb2.FunctionMapping.SUBTRACTION,
+    self.assertEqual(ir_data.FunctionMapping.SUBTRACTION,
                      transform.function_body.function.function)
     arg0, arg1 = transform.function_body.function.args
     self.assertEqual("$logical_value",
@@ -156,7 +156,7 @@ class WriteInferenceTest(unittest.TestCase):
     self.assertEqual(
         "x",
         transform.destination.path[0].canonical_name.object_path[-1])
-    self.assertEqual(ir_pb2.FunctionMapping.SUBTRACTION,
+    self.assertEqual(ir_data.FunctionMapping.SUBTRACTION,
                      transform.function_body.function.function)
     arg0, arg1 = transform.function_body.function.args
     self.assertEqual("50", arg0.constant.value)
@@ -174,11 +174,11 @@ class WriteInferenceTest(unittest.TestCase):
     self.assertEqual(
         "x",
         transform.destination.path[0].canonical_name.object_path[-1])
-    self.assertEqual(ir_pb2.FunctionMapping.SUBTRACTION,
+    self.assertEqual(ir_data.FunctionMapping.SUBTRACTION,
                      transform.function_body.function.function)
     arg0, arg1 = transform.function_body.function.args
     self.assertEqual("50", arg0.constant.value)
-    self.assertEqual(ir_pb2.FunctionMapping.SUBTRACTION, arg1.function.function)
+    self.assertEqual(ir_data.FunctionMapping.SUBTRACTION, arg1.function.function)
     arg10, arg11 = arg1.function.args
     self.assertEqual("$logical_value",
                      arg10.builtin_reference.canonical_name.object_path[0])
@@ -204,7 +204,7 @@ class WriteInferenceTest(unittest.TestCase):
     self.assertEqual(
         "x",
         transform.destination.path[0].canonical_name.object_path[-1])
-    self.assertEqual(ir_pb2.FunctionMapping.ADDITION,
+    self.assertEqual(ir_data.FunctionMapping.ADDITION,
                      transform.function_body.function.function)
     args = transform.function_body.function.args
     self.assertEqual("$logical_value",

@@ -17,20 +17,20 @@
 from compiler.front_end import attributes
 from compiler.util import error
 from compiler.util import expression_parser
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 
 
 def _mark_as_synthetic(proto):
   """Marks all source_locations in proto with is_synthetic=True."""
-  if not isinstance(proto, ir_pb2.Message):
+  if not isinstance(proto, ir_data.Message):
     return
   if hasattr(proto, "source_location"):
     proto.source_location.is_synthetic = True
   for name, value in proto.raw_fields.items():
     if name != "source_location":
-      if isinstance(value, ir_pb2.TypedScopedList):
+      if isinstance(value, ir_data.TypedScopedList):
         for i in range(len(value)):
           _mark_as_synthetic(value[i])
       else:
@@ -39,9 +39,9 @@ def _mark_as_synthetic(proto):
 
 def _skip_text_output_attribute():
   """Returns the IR for a [text_output: "Skip"] attribute."""
-  result = ir_pb2.Attribute(
-      name=ir_pb2.Word(text=attributes.TEXT_OUTPUT),
-      value=ir_pb2.AttributeValue(string_constant=ir_pb2.String(text="Skip")))
+  result = ir_data.Attribute(
+      name=ir_data.Word(text=attributes.TEXT_OUTPUT),
+      value=ir_data.AttributeValue(string_constant=ir_data.String(text="Skip")))
   _mark_as_synthetic(result)
   return result
 
@@ -79,8 +79,8 @@ def _add_anonymous_aliases(structure, type_definition):
   resolved -- so very little in ir_util will work at this point.
 
   Arguments:
-      structure: The ir_pb2.Structure on which to synthesize fields.
-      type_definition: The ir_pb2.TypeDefinition containing structure.
+      structure: The ir_data.Structure on which to synthesize fields.
+      type_definition: The ir_data.TypeDefinition containing structure.
 
   Returns:
       None
@@ -100,31 +100,31 @@ def _add_anonymous_aliases(structure, type_definition):
       assert False, ("Unable to find corresponding type {} for anonymous field "
                      "in {}.".format(
                          field.type.atomic_type.reference, type_definition))
-    anonymous_reference = ir_pb2.Reference(source_name=[field.name.name])
-    anonymous_field_reference = ir_pb2.FieldReference(
+    anonymous_reference = ir_data.Reference(source_name=[field.name.name])
+    anonymous_field_reference = ir_data.FieldReference(
         path=[anonymous_reference])
     for subfield in field_type.structure.field:
-      alias_field_reference = ir_pb2.FieldReference(
+      alias_field_reference = ir_data.FieldReference(
           path=[
               anonymous_reference,
-              ir_pb2.Reference(source_name=[subfield.name.name]),
+              ir_data.Reference(source_name=[subfield.name.name]),
           ]
       )
-      new_existence_condition = ir_pb2.Expression()
+      new_existence_condition = ir_data.Expression()
       new_existence_condition.CopyFrom(_ANONYMOUS_BITS_ALIAS_EXISTENCE_SKELETON)
       existence_clauses = new_existence_condition.function.args
       existence_clauses[0].function.args[0].field_reference.CopyFrom(
           anonymous_field_reference)
       existence_clauses[1].function.args[0].field_reference.CopyFrom(
           alias_field_reference)
-      new_read_transform = ir_pb2.Expression(
+      new_read_transform = ir_data.Expression(
           field_reference=alias_field_reference)
       # This treats *most* of the alias field as synthetic, but not its name(s):
       # leaving the name(s) as "real" means that symbol collisions with the
       # surrounding structure will be properly reported to the user.
       _mark_as_synthetic(new_existence_condition)
       _mark_as_synthetic(new_read_transform)
-      new_alias = ir_pb2.Field(
+      new_alias = ir_data.Field(
           read_transform=new_read_transform,
           existence_condition=new_existence_condition,
           name=subfield.name)
@@ -156,13 +156,13 @@ _SIZE_BOUNDS = {
 def _add_size_bound_virtuals(structure, type_definition):
   """Adds ${min,max}_size_in_{bits,bytes} virtual fields to structure."""
   names = {
-      ir_pb2.AddressableUnit.BIT: ("$max_size_in_bits", "$min_size_in_bits"),
-      ir_pb2.AddressableUnit.BYTE: ("$max_size_in_bytes", "$min_size_in_bytes"),
+      ir_data.AddressableUnit.BIT: ("$max_size_in_bits", "$min_size_in_bits"),
+      ir_data.AddressableUnit.BYTE: ("$max_size_in_bytes", "$min_size_in_bytes"),
   }
   for name in names[type_definition.addressable_unit]:
-    bound_field = ir_pb2.Field(
+    bound_field = ir_data.Field(
         read_transform=_SIZE_BOUNDS[name],
-        name=ir_pb2.NameDefinition(name=ir_pb2.Word(text=name)),
+        name=ir_data.NameDefinition(name=ir_data.Word(text=name)),
         existence_condition=expression_parser.parse("true"),
         attribute=[_skip_text_output_attribute()]
     )
@@ -184,8 +184,8 @@ _SIZE_SKELETON = expression_parser.parse("$max(0)")
 def _add_size_virtuals(structure, type_definition):
   """Adds a $size_in_bits or $size_in_bytes virtual field to structure."""
   names = {
-      ir_pb2.AddressableUnit.BIT: "$size_in_bits",
-      ir_pb2.AddressableUnit.BYTE: "$size_in_bytes",
+      ir_data.AddressableUnit.BIT: "$size_in_bits",
+      ir_data.AddressableUnit.BYTE: "$size_in_bytes",
   }
   size_field_name = names[type_definition.addressable_unit]
   size_clauses = []
@@ -194,22 +194,22 @@ def _add_size_virtuals(structure, type_definition):
     # to the size of the structure.
     if ir_util.field_is_virtual(field):
       continue
-    size_clause = ir_pb2.Expression()
+    size_clause = ir_data.Expression()
     size_clause.CopyFrom(_SIZE_CLAUSE_SKELETON)
     # Copy the appropriate clauses into `existence_condition ? start + size : 0`
     size_clause.function.args[0].CopyFrom(field.existence_condition)
     size_clause.function.args[1].function.args[0].CopyFrom(field.location.start)
     size_clause.function.args[1].function.args[1].CopyFrom(field.location.size)
     size_clauses.append(size_clause)
-  size_expression = ir_pb2.Expression()
+  size_expression = ir_data.Expression()
   size_expression.CopyFrom(_SIZE_SKELETON)
   size_expression.function.args.extend(size_clauses)
   _mark_as_synthetic(size_expression)
-  size_field = ir_pb2.Field(
+  size_field = ir_data.Field(
       read_transform=size_expression,
-      name=ir_pb2.NameDefinition(name=ir_pb2.Word(text=size_field_name)),
-      existence_condition=ir_pb2.Expression(
-          boolean_constant=ir_pb2.BooleanConstant(value=True)
+      name=ir_data.NameDefinition(name=ir_data.Word(text=size_field_name)),
+      existence_condition=ir_data.Expression(
+          boolean_constant=ir_data.BooleanConstant(value=True)
       ),
       attribute=[_skip_text_output_attribute()]
   )
@@ -266,7 +266,7 @@ def _replace_next_keyword(structure, source_file_name, errors):
       # instead.
       continue
     traverse_ir.fast_traverse_node_top_down(
-        field.location.size, [ir_pb2.Expression],
+        field.location.size, [ir_data.Expression],
         _check_for_bad_next_keyword_in_size,
         parameters={
             "errors": new_errors,
@@ -284,7 +284,7 @@ def _replace_next_keyword(structure, source_file_name, errors):
       errors.extend(new_errors)
       return
     traverse_ir.fast_traverse_node_top_down(
-        field.location.start, [ir_pb2.Expression],
+        field.location.start, [ir_data.Expression],
         _maybe_replace_next_keyword_in_expression,
         parameters={
             "last_location": last_physical_field_location,
@@ -323,10 +323,10 @@ def desugar(ir):
   """
   errors = []
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Structure], _replace_next_keyword,
+      ir, [ir_data.Structure], _replace_next_keyword,
       parameters={"errors": errors})
   if errors:
     return errors
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Structure], _add_virtuals_to_structure)
+      ir, [ir_data.Structure], _add_virtuals_to_structure)
   return []

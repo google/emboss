@@ -23,7 +23,7 @@ import unittest
 from compiler.front_end import module_ir
 from compiler.front_end import parser
 from compiler.front_end import tokenizer
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import test_util
 
 _TESTDATA_PATH = "testdata.golden"
@@ -31,7 +31,7 @@ _MINIMAL_SOURCE = pkgutil.get_data(
         _TESTDATA_PATH, "span_se_log_file_status.emb").decode(encoding="UTF-8")
 _MINIMAL_SAMPLE = parser.parse_module(
     tokenizer.tokenize(_MINIMAL_SOURCE, "")[0]).parse_tree
-_MINIMAL_SAMPLE_IR = ir_pb2.Module.from_json(
+_MINIMAL_SAMPLE_IR = ir_data.Module.from_json(
     pkgutil.get_data(_TESTDATA_PATH, "span_se_log_file_status.ir.txt").decode(
         encoding="UTF-8")
 )
@@ -3978,7 +3978,7 @@ def _get_test_cases():
     name, emb, ir_text = case.split("---")
     name = name.strip()
     try:
-      ir = ir_pb2.Module.from_json(ir_text)
+      ir = ir_data.Module.from_json(ir_text)
     except Exception:
       print(name)
       raise
@@ -4110,7 +4110,7 @@ def _check_all_source_locations(proto, path="", min_start=None, max_end=None):
           errors.extend(
               _check_all_source_locations(i, item_path, child_start, child_end))
     else:
-      if issubclass(spec.type, ir_pb2.Message):
+      if issubclass(spec.type, ir_data.Message):
         errors.extend(_check_all_source_locations(getattr(proto, name),
                                                   field_path, child_start,
                                                   child_end))

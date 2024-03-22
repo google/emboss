@@ -19,7 +19,7 @@ IR.
 """
 
 from compiler.util import error
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 
@@ -125,10 +125,10 @@ def check_attributes_in_ir(ir,
   This function calls _check_attributes on each attribute list in ir.
 
   Arguments:
-    ir: An ir_pb2.EmbossIr to check.
+    ir: An ir_data.EmbossIr to check.
     back_end: A string specifying the attribute qualifier to check (such as
         `cpp` for `[(cpp) namespace = "foo"]`), or None to check unqualified
-        attributes.  
+        attributes.
 
         Attributes with a different qualifier will not be checked.
     types: A map from attribute names to validators, such as:
@@ -167,12 +167,12 @@ def check_attributes_in_ir(ir,
 
   def check_type_definition(type_definition, source_file_name, errors):
     if type_definition.HasField("structure"):
-      if type_definition.addressable_unit == ir_pb2.AddressableUnit.BYTE:
+      if type_definition.addressable_unit == ir_data.AddressableUnit.BYTE:
         errors.extend(_check_attributes(
             type_definition.attribute, types, back_end, struct_attributes,
             "struct '{}'".format(
                 type_definition.name.name.text), source_file_name))
-      elif type_definition.addressable_unit == ir_pb2.AddressableUnit.BIT:
+      elif type_definition.addressable_unit == ir_data.AddressableUnit.BIT:
         errors.extend(_check_attributes(
             type_definition.attribute, types, back_end, bits_attributes,
             "bits '{}'".format(
@@ -212,16 +212,16 @@ def check_attributes_in_ir(ir,
   # TODO(bolms): Add a check that only known $default'ed attributes are
   # used.
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Module], check_module,
+      ir, [ir_data.Module], check_module,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.TypeDefinition], check_type_definition,
+      ir, [ir_data.TypeDefinition], check_type_definition,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Field], check_struct_field,
+      ir, [ir_data.Field], check_struct_field,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.EnumValue], check_enum_value,
+      ir, [ir_data.EnumValue], check_enum_value,
       parameters={"errors": errors})
   return errors
 
@@ -234,7 +234,7 @@ def _check_attributes(attribute_list, types, back_end, attribute_specs,
   with incorrect type, and attributes whose values are not constant.
 
   Arguments:
-    attribute_list: An iterable of ir_pb2.Attribute.
+    attribute_list: An iterable of ir_data.Attribute.
     back_end: The qualifier for attributes to check, or None.
     attribute_specs: A dict of attribute names to _Attribute structures
       specifying the allowed attributes.
@@ -302,7 +302,7 @@ def gather_default_attributes(obj, defaults):
   defaults = defaults.copy()
   for attr in obj.attribute:
     if attr.is_default:
-      defaulted_attr = ir_pb2.Attribute()
+      defaulted_attr = ir_data.Attribute()
       defaulted_attr.CopyFrom(attr)
       defaulted_attr.is_default = False
       defaults[attr.name.text] = defaulted_attr

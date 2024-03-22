@@ -21,54 +21,54 @@ dependencies, so they are defined here.
 """
 
 import collections
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 
 
 def _make_position(line, column):
-  """Makes an ir_pb2.Position from line, column ints."""
+  """Makes an ir_data.Position from line, column ints."""
   if not isinstance(line, int):
     raise ValueError("Bad line {!r}".format(line))
   elif not isinstance(column, int):
     raise ValueError("Bad column {!r}".format(column))
-  return ir_pb2.Position(line=line, column=column)
+  return ir_data.Position(line=line, column=column)
 
 
 def _parse_position(text):
-  """Parses an ir_pb2.Position from "line:column" (e.g., "1:2")."""
+  """Parses an ir_data.Position from "line:column" (e.g., "1:2")."""
   line, column = text.split(":")
   return _make_position(int(line), int(column))
 
 
 def format_position(position):
-  """formats an ir_pb2.Position to "line:column" form."""
+  """formats an ir_data.Position to "line:column" form."""
   return "{}:{}".format(position.line, position.column)
 
 
 def make_location(start, end, is_synthetic=False):
-  """Makes an ir_pb2.Location from (line, column) tuples or ir_pb2.Positions."""
+  """Makes an ir_data.Location from (line, column) tuples or ir_data.Positions."""
   if isinstance(start, tuple):
     start = _make_position(*start)
   if isinstance(end, tuple):
     end = _make_position(*end)
-  if not isinstance(start, ir_pb2.Position):
+  if not isinstance(start, ir_data.Position):
     raise ValueError("Bad start {!r}".format(start))
-  elif not isinstance(end, ir_pb2.Position):
+  elif not isinstance(end, ir_data.Position):
     raise ValueError("Bad end {!r}".format(end))
   elif start.line > end.line or (
       start.line == end.line and start.column > end.column):
     raise ValueError("Start {} is after end {}".format(format_position(start),
                                                        format_position(end)))
-  return ir_pb2.Location(start=start, end=end, is_synthetic=is_synthetic)
+  return ir_data.Location(start=start, end=end, is_synthetic=is_synthetic)
 
 
 def format_location(location):
-  """Formats an ir_pb2.Location in format "1:2-3:4" ("start-end")."""
+  """Formats an ir_data.Location in format "1:2-3:4" ("start-end")."""
   return "{}-{}".format(format_position(location.start),
                         format_position(location.end))
 
 
 def parse_location(text):
-  """Parses an ir_pb2.Location from format "1:2-3:4" ("start-end")."""
+  """Parses an ir_data.Location from format "1:2-3:4" ("start-end")."""
   start, end = text.split("-")
   return make_location(_parse_position(start), _parse_position(end))
 

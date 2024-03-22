@@ -15,7 +15,7 @@
 """Tests for parser_types."""
 
 import unittest
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import parser_types
 
 
@@ -24,42 +24,42 @@ class PositionTest(unittest.TestCase):
 
   def test_format_position(self):
     self.assertEqual(
-        "1:2", parser_types.format_position(ir_pb2.Position(line=1, column=2)))
+        "1:2", parser_types.format_position(ir_data.Position(line=1, column=2)))
 
 
 class LocationTest(unittest.TestCase):
   """Tests for Location-related functions in parser_types."""
 
   def test_make_location(self):
-    self.assertEqual(ir_pb2.Location(start=ir_pb2.Position(line=1,
+    self.assertEqual(ir_data.Location(start=ir_data.Position(line=1,
                                                            column=2),
-                                     end=ir_pb2.Position(line=3,
+                                     end=ir_data.Position(line=3,
                                                          column=4),
                                      is_synthetic=False),
                      parser_types.make_location((1, 2), (3, 4)))
     self.assertEqual(
-        ir_pb2.Location(start=ir_pb2.Position(line=1,
+        ir_data.Location(start=ir_data.Position(line=1,
                                               column=2),
-                        end=ir_pb2.Position(line=3,
+                        end=ir_data.Position(line=3,
                                             column=4),
                         is_synthetic=False),
-        parser_types.make_location(ir_pb2.Position(line=1,
+        parser_types.make_location(ir_data.Position(line=1,
                                                    column=2),
-                                   ir_pb2.Position(line=3,
+                                   ir_data.Position(line=3,
                                                    column=4)))
 
   def test_make_synthetic_location(self):
     self.assertEqual(
-        ir_pb2.Location(start=ir_pb2.Position(line=1, column=2),
-                        end=ir_pb2.Position(line=3, column=4),
+        ir_data.Location(start=ir_data.Position(line=1, column=2),
+                        end=ir_data.Position(line=3, column=4),
                         is_synthetic=True),
         parser_types.make_location((1, 2), (3, 4), True))
     self.assertEqual(
-        ir_pb2.Location(start=ir_pb2.Position(line=1, column=2),
-                        end=ir_pb2.Position(line=3, column=4),
+        ir_data.Location(start=ir_data.Position(line=1, column=2),
+                        end=ir_data.Position(line=3, column=4),
                         is_synthetic=True),
-        parser_types.make_location(ir_pb2.Position(line=1, column=2),
-                                   ir_pb2.Position(line=3, column=4),
+        parser_types.make_location(ir_data.Position(line=1, column=2),
+                                   ir_data.Position(line=3, column=4),
                                    True))
 
   def test_make_location_type_checks(self):

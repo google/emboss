@@ -18,7 +18,7 @@ import unittest
 from compiler.front_end import glue
 from compiler.front_end import synthetics
 from compiler.util import error
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import test_util
 
 
@@ -88,12 +88,12 @@ class SyntheticsTest(unittest.TestCase):
                      alias_field.existence_condition.function.args[1].function.
                      args[0].field_reference.path[1].source_name[-1].text)
     self.assertEqual(
-        ir_pb2.FunctionMapping.PRESENCE,
+        ir_data.FunctionMapping.PRESENCE,
         alias_field.existence_condition.function.args[0].function.function)
     self.assertEqual(
-        ir_pb2.FunctionMapping.PRESENCE,
+        ir_data.FunctionMapping.PRESENCE,
         alias_field.existence_condition.function.args[1].function.function)
-    self.assertEqual(ir_pb2.FunctionMapping.AND,
+    self.assertEqual(ir_data.FunctionMapping.AND,
                      alias_field.existence_condition.function.function)
 
   def test_adds_correct_read_transform(self):
@@ -177,15 +177,15 @@ class SyntheticsTest(unittest.TestCase):
     max_size_in_bytes_field = structure.field[3]
     min_size_in_bytes_field = structure.field[4]
     self.assertEqual("$size_in_bytes", size_in_bytes_field.name.name.text)
-    self.assertEqual(ir_pb2.FunctionMapping.MAXIMUM,
+    self.assertEqual(ir_data.FunctionMapping.MAXIMUM,
                      size_in_bytes_field.read_transform.function.function)
     self.assertEqual("$max_size_in_bytes",
                      max_size_in_bytes_field.name.name.text)
-    self.assertEqual(ir_pb2.FunctionMapping.UPPER_BOUND,
+    self.assertEqual(ir_data.FunctionMapping.UPPER_BOUND,
                      max_size_in_bytes_field.read_transform.function.function)
     self.assertEqual("$min_size_in_bytes",
                      min_size_in_bytes_field.name.name.text)
-    self.assertEqual(ir_pb2.FunctionMapping.LOWER_BOUND,
+    self.assertEqual(ir_data.FunctionMapping.LOWER_BOUND,
                      min_size_in_bytes_field.read_transform.function.function)
     # The correctness of $size_in_bytes et al are tested much further down
     # stream, in tests of the generated C++ code.
@@ -200,15 +200,15 @@ class SyntheticsTest(unittest.TestCase):
     max_size_in_bits_field = structure.field[3]
     min_size_in_bits_field = structure.field[4]
     self.assertEqual("$size_in_bits", size_in_bits_field.name.name.text)
-    self.assertEqual(ir_pb2.FunctionMapping.MAXIMUM,
+    self.assertEqual(ir_data.FunctionMapping.MAXIMUM,
                      size_in_bits_field.read_transform.function.function)
     self.assertEqual("$max_size_in_bits",
                      max_size_in_bits_field.name.name.text)
-    self.assertEqual(ir_pb2.FunctionMapping.UPPER_BOUND,
+    self.assertEqual(ir_data.FunctionMapping.UPPER_BOUND,
                      max_size_in_bits_field.read_transform.function.function)
     self.assertEqual("$min_size_in_bits",
                      min_size_in_bits_field.name.name.text)
-    self.assertEqual(ir_pb2.FunctionMapping.LOWER_BOUND,
+    self.assertEqual(ir_data.FunctionMapping.LOWER_BOUND,
                      min_size_in_bits_field.read_transform.function.function)
     # The correctness of $size_in_bits et al are tested much further down
     # stream, in tests of the generated C++ code.
@@ -232,7 +232,7 @@ class SyntheticsTest(unittest.TestCase):
     self.assertEqual([], synthetics.desugar(ir))
     offset_of_b = ir.module[0].type[0].structure.field[1].location.start
     self.assertTrue(offset_of_b.HasField("function"))
-    self.assertEqual(offset_of_b.function.function, ir_pb2.FunctionMapping.ADDITION)
+    self.assertEqual(offset_of_b.function.function, ir_data.FunctionMapping.ADDITION)
     self.assertEqual(offset_of_b.function.args[0].constant.value, "1")
     self.assertEqual(offset_of_b.function.args[1].constant.value, "2")
     offset_of_c = ir.module[0].type[0].structure.field[2].location.start

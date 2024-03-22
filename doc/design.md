@@ -8,9 +8,9 @@ this document.
 The Emboss compiler is divided into separate "front end" and "back end"
 programs.  The front end parses Emboss files (`.emb` files) and produces a
 stable intermediate representation (IR), which is consumed by the back ends.
-This IR is defined in [public/ir_pb2.py][ir_pb2_py].
+This IR is defined in [public/ir_data.py][ir_pb2_py].
 
-[ir_pb2_py]: public/ir_pb2.py
+[ir_pb2_py]: public/ir_data.py
 
 The back ends read the IR and emit code to view and manipulate Emboss-defined
 data structures.  Currently, only a C++ back-end exists.
