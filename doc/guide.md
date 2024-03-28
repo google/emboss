@@ -24,9 +24,11 @@ emails.
 
 #### Running the Emboss Compiler
 
-The Emboss compiler requires Python 3.6 or later.  On a Linux-like system with
-Python 3 installed in the usual place (`/usr/bin/python3`), you can run the
-embossc script at the top level on an `.emb` file to generate C++, like so:
+The Emboss compiler requires Python 3.8 or later -- the minimum supported
+version tracks the support timeline of the Python project.  On a Linux-like
+system with Python 3 installed in the usual place (`/usr/bin/python3`), you
+can run the embossc script at the top level on an `.emb` file to generate
+C++, like so:
 
 ```
 embossc --generate cc --output-path path/to/object/dir path/to/input.emb
