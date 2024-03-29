@@ -468,6 +468,8 @@ def _set_visible_scopes_for_attribute(attribute, field, visible_scopes):
       "visible_scopes": (field.name.canonical_name,) + visible_scopes,
   }
 
+def _module_source_from_table_action(m, table):
+  return {"module": table[m.source_file_name]}
 
 def _resolve_symbols_from_table(ir, table):
   """Resolves all references in the given IR, given the constructed table."""
@@ -477,7 +479,7 @@ def _resolve_symbols_from_table(ir, table):
   traverse_ir.fast_traverse_ir_top_down(
       ir, [ir_pb2.Import], _add_import_to_scope,
       incidental_actions={
-          ir_pb2.Module: lambda m, table: {"module": table[m.source_file_name]},
+          ir_pb2.Module: _module_source_from_table_action,
       },
       parameters={"errors": errors, "table": table})
   if errors:
@@ -490,7 +492,6 @@ def _resolve_symbols_from_table(ir, table):
       incidental_actions={
           ir_pb2.TypeDefinition: _set_visible_scopes_for_type_definition,
           ir_pb2.Module: _set_visible_scopes_for_module,
-          ir_pb2.Field: lambda f: {"field": f},
           ir_pb2.Attribute: _set_visible_scopes_for_attribute,
       },
       parameters={"table": table, "errors": errors, "field": None})
@@ -500,7 +501,6 @@ def _resolve_symbols_from_table(ir, table):
       incidental_actions={
           ir_pb2.TypeDefinition: _set_visible_scopes_for_type_definition,
           ir_pb2.Module: _set_visible_scopes_for_module,
-          ir_pb2.Field: lambda f: {"field": f},
           ir_pb2.Attribute: _set_visible_scopes_for_attribute,
       },
       parameters={"table": table, "errors": errors, "field": None})
@@ -515,7 +515,6 @@ def resolve_field_references(ir):
       incidental_actions={
           ir_pb2.TypeDefinition: _set_visible_scopes_for_type_definition,
           ir_pb2.Module: _set_visible_scopes_for_module,
-          ir_pb2.Field: lambda f: {"field": f},
           ir_pb2.Attribute: _set_visible_scopes_for_attribute,
       },
       parameters={"errors": errors, "field": None})

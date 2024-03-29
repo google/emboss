@@ -181,6 +181,17 @@ def _fields_to_scan_by_current_and_target():
 
 _FIELDS_TO_SCAN_BY_CURRENT_AND_TARGET = _fields_to_scan_by_current_and_target()
 
+def _emboss_ir_action(ir):
+  return {"ir": ir}
+
+def _module_action(m):
+  return {"source_file_name": m.source_file_name}
+
+def _type_definition_action(t):
+  return {"type_definition": t}
+
+def _field_action(f):
+  return {"field": f}
 
 def fast_traverse_ir_top_down(ir, pattern, action, incidental_actions=None,
                               skip_descendants_of=(), parameters=None):
@@ -269,10 +280,10 @@ def fast_traverse_ir_top_down(ir, pattern, action, incidental_actions=None,
     None
   """
   all_incidental_actions = {
-      ir_pb2.EmbossIr: [lambda ir: {"ir": ir}],
-      ir_pb2.Module: [lambda m: {"source_file_name": m.source_file_name}],
-      ir_pb2.TypeDefinition: [lambda t: {"type_definition": t}],
-      ir_pb2.Field: [lambda f: {"field": f}],
+      ir_pb2.EmbossIr: [_emboss_ir_action],
+      ir_pb2.Module: [_module_action],
+      ir_pb2.TypeDefinition: [_type_definition_action],
+      ir_pb2.Field: [_field_action],
   }
   if incidental_actions:
     for key, incidental_action in incidental_actions.items():
