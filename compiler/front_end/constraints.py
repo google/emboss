@@ -537,6 +537,8 @@ def _check_bounds_on_runtime_integer_expressions(expression, source_file_name,
   # errors are just returned, rather than appended to a shared list.
   errors += _integer_bounds_errors_for_expression(expression, source_file_name)
 
+def _attribute_in_attribute_action(a):
+  return {"in_attribute": a}
 
 def check_constraints(ir):
   """Checks miscellaneous validity constraints in ir.
@@ -597,7 +599,7 @@ def check_constraints(ir):
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
       ir, [ir_pb2.Expression], _check_bounds_on_runtime_integer_expressions,
-      incidental_actions={ir_pb2.Attribute: lambda a: {"in_attribute": a}},
+      incidental_actions={ir_pb2.Attribute: _attribute_in_attribute_action},
       skip_descendants_of={ir_pb2.EnumValue, ir_pb2.Expression},
       parameters={"errors": errors, "in_attribute": None})
   traverse_ir.fast_traverse_ir_top_down(
