@@ -1,3 +1,5 @@
+# Emboss doesn't (yet) support bzlmod.
+common --noenable_bzlmod
 # Emboss (at least notionally) supports C++11 until (at least) 2027.  However,
 # Googletest requires C++14, which means that all of the Emboss unit tests
 # require C++14 to run.
