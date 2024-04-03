@@ -174,13 +174,13 @@ TEST(ContiguousBuffer, OffsetStorageType) {
 // std::basic_string<> with non-default trailing template parameters.
 template <class T>
 struct NonstandardAllocator {
-  using value_type = typename ::std::allocator<T>::value_type;
-  using pointer = typename ::std::allocator<T>::pointer;
-  using const_pointer = typename ::std::allocator<T>::const_pointer;
-  using reference = typename ::std::allocator<T>::reference;
-  using const_reference = typename ::std::allocator<T>::const_reference;
-  using size_type = typename ::std::allocator<T>::size_type;
-  using difference_type = typename ::std::allocator<T>::difference_type;
+  using value_type = typename ::std::allocator_traits<::std::allocator<T>>::value_type;
+  using pointer = typename ::std::allocator_traits<::std::allocator<T>>::pointer;
+  using const_pointer = typename ::std::allocator_traits<::std::allocator<T>>::const_pointer;
+  using reference = typename ::std::allocator<T>::value_type &;
+  using const_reference = const typename ::std::allocator_traits<::std::allocator<T>>::value_type &;
+  using size_type = typename ::std::allocator_traits<::std::allocator<T>>::size_type;
+  using difference_type = typename ::std::allocator_traits<::std::allocator<T>>::difference_type;
 
   template <class U>
   struct rebind {
