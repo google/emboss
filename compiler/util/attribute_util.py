@@ -167,12 +167,12 @@ def check_attributes_in_ir(ir,
 
   def check_type_definition(type_definition, source_file_name, errors):
     if type_definition.HasField("structure"):
-      if type_definition.addressable_unit == ir_pb2.TypeDefinition.BYTE:
+      if type_definition.addressable_unit == ir_pb2.AddressableUnit.BYTE:
         errors.extend(_check_attributes(
             type_definition.attribute, types, back_end, struct_attributes,
             "struct '{}'".format(
                 type_definition.name.name.text), source_file_name))
-      elif type_definition.addressable_unit == ir_pb2.TypeDefinition.BIT:
+      elif type_definition.addressable_unit == ir_pb2.AddressableUnit.BIT:
         errors.extend(_check_attributes(
             type_definition.attribute, types, back_end, bits_attributes,
             "bits '{}'".format(

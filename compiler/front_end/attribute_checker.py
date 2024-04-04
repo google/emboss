@@ -218,7 +218,7 @@ def _field_needs_byte_order(field, type_definition, ir):
       ir_util.get_base_type(field.type).atomic_type.reference.canonical_name,
       ir)
   assert field_type is not None
-  assert field_type.addressable_unit != ir_pb2.TypeDefinition.NONE
+  assert field_type.addressable_unit != ir_pb2.AddressableUnit.NONE
   return field_type.addressable_unit != type_definition.addressable_unit
 
 
@@ -279,9 +279,9 @@ def _add_addressable_unit_to_external(external, type_definition):
   size = ir_util.get_integer_attribute(type_definition.attribute,
                                        attributes.ADDRESSABLE_UNIT_SIZE)
   if size == 1:
-    type_definition.addressable_unit = ir_pb2.TypeDefinition.BIT
+    type_definition.addressable_unit = ir_pb2.AddressableUnit.BIT
   elif size == 8:
-    type_definition.addressable_unit = ir_pb2.TypeDefinition.BYTE
+    type_definition.addressable_unit = ir_pb2.AddressableUnit.BYTE
   # If the addressable_unit_size is not in (1, 8), it will be caught by
   # _verify_addressable_unit_attribute_on_external, below.
 

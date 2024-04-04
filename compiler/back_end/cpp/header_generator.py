@@ -250,8 +250,8 @@ def _get_adapted_cpp_buffer_type_for_field(type_definition, size_in_bits,
                                            buffer_type, byte_order,
                                            parent_addressable_unit):
   """Returns the adapted C++ type information needed to construct a view."""
-  if (parent_addressable_unit == ir_pb2.TypeDefinition.BYTE and
-      type_definition.addressable_unit == ir_pb2.TypeDefinition.BIT):
+  if (parent_addressable_unit == ir_pb2.AddressableUnit.BYTE and
+      type_definition.addressable_unit == ir_pb2.AddressableUnit.BIT):
     assert byte_order
     return _bytes_to_bits_convertor(buffer_type, byte_order, size_in_bits)
   else:
@@ -374,7 +374,7 @@ def _get_cpp_view_type_for_physical_type(
             element_view_parameter_types="".join(
                 ", " + p for p in element_view_parameter_types),
             element_size=element_size,
-            addressable_unit_size=parent_addressable_unit,
+            addressable_unit_size=int(parent_addressable_unit),
             buffer_type=buffer_type),
         element_view_parameter_types,
         element_view_parameters
@@ -412,19 +412,19 @@ def _render_enum_value(enum_type, ir):
 def _builtin_function_name(function):
   """Returns the C++ operator name corresponding to an Emboss operator."""
   functions = {
-      ir_pb2.Function.ADDITION: "Sum",
-      ir_pb2.Function.SUBTRACTION: "Difference",
-      ir_pb2.Function.MULTIPLICATION: "Product",
-      ir_pb2.Function.EQUALITY: "Equal",
-      ir_pb2.Function.INEQUALITY: "NotEqual",
-      ir_pb2.Function.AND: "And",
-      ir_pb2.Function.OR: "Or",
-      ir_pb2.Function.LESS: "LessThan",
-      ir_pb2.Function.LESS_OR_EQUAL: "LessThanOrEqual",
-      ir_pb2.Function.GREATER: "GreaterThan",
-      ir_pb2.Function.GREATER_OR_EQUAL: "GreaterThanOrEqual",
-      ir_pb2.Function.CHOICE: "Choice",
-      ir_pb2.Function.MAXIMUM: "Maximum",
+      ir_pb2.FunctionMapping.ADDITION: "Sum",
+      ir_pb2.FunctionMapping.SUBTRACTION: "Difference",
+      ir_pb2.FunctionMapping.MULTIPLICATION: "Product",
+      ir_pb2.FunctionMapping.EQUALITY: "Equal",
+      ir_pb2.FunctionMapping.INEQUALITY: "NotEqual",
+      ir_pb2.FunctionMapping.AND: "And",
+      ir_pb2.FunctionMapping.OR: "Or",
+      ir_pb2.FunctionMapping.LESS: "LessThan",
+      ir_pb2.FunctionMapping.LESS_OR_EQUAL: "LessThanOrEqual",
+      ir_pb2.FunctionMapping.GREATER: "GreaterThan",
+      ir_pb2.FunctionMapping.GREATER_OR_EQUAL: "GreaterThanOrEqual",
+      ir_pb2.FunctionMapping.CHOICE: "Choice",
+      ir_pb2.FunctionMapping.MAXIMUM: "Maximum",
   }
   return functions[function]
 
@@ -488,9 +488,9 @@ def _cpp_integer_type_for_enum(max_bits, is_signed):
 def _render_builtin_operation(expression, ir, field_reader, subexpressions):
   """Renders a built-in operation (+, -, &&, etc.) into C++ code."""
   assert expression.function.function not in (
-      ir_pb2.Function.UPPER_BOUND, ir_pb2.Function.LOWER_BOUND), (
+      ir_pb2.FunctionMapping.UPPER_BOUND, ir_pb2.FunctionMapping.LOWER_BOUND), (
           "UPPER_BOUND and LOWER_BOUND should be constant.")
-  if expression.function.function == ir_pb2.Function.PRESENCE:
+  if expression.function.function == ir_pb2.FunctionMapping.PRESENCE:
     return field_reader.render_existence(expression.function.args[0],
                                          subexpressions)
   args = expression.function.args

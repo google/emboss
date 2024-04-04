@@ -151,10 +151,10 @@ def _invert_expression(expression, ir):
   # Note that any equation that can be solved here becomes part of Emboss's
   # contract, forever, so be conservative in expanding its solving capabilities!
   for index in reference_path:
-    if subexpression.function.function == ir_pb2.Function.ADDITION:
+    if subexpression.function.function == ir_pb2.FunctionMapping.ADDITION:
       result = ir_pb2.Expression(
           function=ir_pb2.Function(
-              function=ir_pb2.Function.SUBTRACTION,
+              function=ir_pb2.FunctionMapping.SUBTRACTION,
               args=[
                   result,
                   subexpression.function.args[1 - index],
@@ -162,11 +162,11 @@ def _invert_expression(expression, ir):
           ),
           type=ir_pb2.ExpressionType(integer=ir_pb2.IntegerType())
       )
-    elif subexpression.function.function == ir_pb2.Function.SUBTRACTION:
+    elif subexpression.function.function == ir_pb2.FunctionMapping.SUBTRACTION:
       if index == 0:
         result = ir_pb2.Expression(
             function=ir_pb2.Function(
-                function=ir_pb2.Function.ADDITION,
+                function=ir_pb2.FunctionMapping.ADDITION,
                 args=[
                     result,
                     subexpression.function.args[1],
@@ -177,7 +177,7 @@ def _invert_expression(expression, ir):
       else:
         result = ir_pb2.Expression(
             function=ir_pb2.Function(
-                function=ir_pb2.Function.SUBTRACTION,
+                function=ir_pb2.FunctionMapping.SUBTRACTION,
                 args=[
                     subexpression.function.args[0],
                     result,

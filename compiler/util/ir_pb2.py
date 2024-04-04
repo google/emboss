@@ -29,6 +29,7 @@ have a more explicit interface, but don't (currently) have time to refactor
 everything that touches the IR (i.e., the entire compiler).
 """
 
+import enum
 import json
 import sys
 
@@ -107,9 +108,12 @@ class Optional(object):
       self._set_value(obj, self._type(**value))
     elif isinstance(value, _Text) and self._decode_names:
       self._set_value(obj, self._type(self._decode_names(value)))
+    elif isinstance(value, _Text) and issubclass(self._type, enum.Enum):
+      self._set_value(obj, getattr(self._type, value))
     elif (not isinstance(value, self._type) and
           not (self._type == _Int and isinstance(value, _int_types)) and
-          not (self._type == _Text and isinstance(value, _text_types))):
+          not (self._type == _Text and isinstance(value, _text_types)) and
+          not (issubclass(self._type, enum.Enum) and isinstance(value, _int_types))):
       raise AttributeError("Cannot set {} (type {}) for type {}".format(
           value, value.__class__, self._type))
     elif issubclass(self._type, Message):
@@ -427,9 +431,8 @@ class NumericConstant(Message):
   source_location = Optional(Location)
 
 
-@message
-class Function(Message):
-  """IR for a single function (+, -, *, ==, $max, etc.) in an expression."""
+class FunctionMapping(int, enum.Enum):
+  """Enum of supported function types"""
   UNKNOWN = 0
   ADDITION = 1           # +
   SUBTRACTION = 2        # -
@@ -448,8 +451,13 @@ class Function(Message):
   UPPER_BOUND = 15       # $upper_bound()
   LOWER_BOUND = 16       # $lower_bound()
 
+
+@message
+class Function(Message):
+  """IR for a single function (+, -, *, ==, $max, etc.) in an expression."""
+
   # pylint:disable=undefined-variable
-  function = Optional(int, decode_names=lambda x: getattr(Function, x))
+  function = Optional(FunctionMapping)
   args = Repeated(lambda: Expression)
   function_name = Optional(Word)
   source_location = Optional(Location)
@@ -952,18 +960,21 @@ class RuntimeParameter(Message):
   source_location = Optional(Location)
 
 
-@message
-class TypeDefinition(Message):
-  """Container IR for a type definition (struct, union, etc.)"""
-
-  # The "addressable unit" is the size of the smallest unit that can be read
-  # from the backing store that this type expects.  For `struct`s, this is
-  # BYTE; for `enum`s and `bits`, this is BIT, and for `external`s it depends
-  # on the specific type.
+class AddressableUnit(int, enum.Enum):
+  """The "addressable unit" is the size of the smallest unit that can be read
+  from the backing store that this type expects.  For `struct`s, this is
+  BYTE; for `enum`s and `bits`, this is BIT, and for `external`s it depends
+  on the specific type
+  """
 
   NONE = 0
   BIT = 1
   BYTE = 8
+
+
+@message
+class TypeDefinition(Message):
+  """Container IR for a type definition (struct, union, etc.)"""
 
   external = Optional(External, "type")
   enumeration = Optional(Enum, "type")
@@ -974,8 +985,7 @@ class TypeDefinition(Message):
   documentation = Repeated(Documentation)     # Docs for the type.
   # pylint:disable=undefined-variable
   subtype = Repeated(lambda: TypeDefinition)  # Subtypes of this type.
-  addressable_unit = Optional(
-      int, decode_names=lambda x: getattr(TypeDefinition, x))
+  addressable_unit = Optional(AddressableUnit)
 
   # If the type requires parameters at runtime, these are its parameters.
   # These are currently only allowed on structures, but in the future they

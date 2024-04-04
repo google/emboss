@@ -192,17 +192,17 @@ def _make_prelude_import(position):
 def _text_to_operator(text):
   """Converts an operator's textual name to its corresponding enum."""
   operations = {
-      '+': ir_pb2.Function.ADDITION,
-      '-': ir_pb2.Function.SUBTRACTION,
-      '*': ir_pb2.Function.MULTIPLICATION,
-      '==': ir_pb2.Function.EQUALITY,
-      '!=': ir_pb2.Function.INEQUALITY,
-      '&&': ir_pb2.Function.AND,
-      '||': ir_pb2.Function.OR,
-      '>': ir_pb2.Function.GREATER,
-      '>=': ir_pb2.Function.GREATER_OR_EQUAL,
-      '<': ir_pb2.Function.LESS,
-      '<=': ir_pb2.Function.LESS_OR_EQUAL,
+      '+': ir_pb2.FunctionMapping.ADDITION,
+      '-': ir_pb2.FunctionMapping.SUBTRACTION,
+      '*': ir_pb2.FunctionMapping.MULTIPLICATION,
+      '==': ir_pb2.FunctionMapping.EQUALITY,
+      '!=': ir_pb2.FunctionMapping.INEQUALITY,
+      '&&': ir_pb2.FunctionMapping.AND,
+      '||': ir_pb2.FunctionMapping.OR,
+      '>': ir_pb2.FunctionMapping.GREATER,
+      '>=': ir_pb2.FunctionMapping.GREATER_OR_EQUAL,
+      '<': ir_pb2.FunctionMapping.LESS,
+      '<=': ir_pb2.FunctionMapping.LESS_OR_EQUAL,
   }
   return operations[text]
 
@@ -210,10 +210,10 @@ def _text_to_operator(text):
 def _text_to_function(text):
   """Converts a function's textual name to its corresponding enum."""
   functions = {
-      '$max': ir_pb2.Function.MAXIMUM,
-      '$present': ir_pb2.Function.PRESENCE,
-      '$upper_bound': ir_pb2.Function.UPPER_BOUND,
-      '$lower_bound': ir_pb2.Function.LOWER_BOUND,
+      '$max': ir_pb2.FunctionMapping.MAXIMUM,
+      '$present': ir_pb2.FunctionMapping.PRESENCE,
+      '$upper_bound': ir_pb2.FunctionMapping.UPPER_BOUND,
+      '$lower_bound': ir_pb2.FunctionMapping.LOWER_BOUND,
   }
   return functions[text]
 
@@ -438,7 +438,7 @@ def _choice_expression(condition, question, if_true, colon, if_false):
   # The function_name is a bit weird, but should suffice for any error messages
   # that might need it.
   return ir_pb2.Expression(
-      function=ir_pb2.Function(function=ir_pb2.Function.CHOICE,
+      function=ir_pb2.Function(function=ir_pb2.FunctionMapping.CHOICE,
                                args=[condition, if_true, if_false],
                                function_name=ir_pb2.Word(
                                    text='?:',
@@ -580,7 +580,7 @@ def _chained_comparison_expression(expression, expression_right):
         e.source_location.start, comparison.source_location.end)
     e = ir_pb2.Expression(
         function=ir_pb2.Function(
-            function=ir_pb2.Function.AND,
+            function=ir_pb2.FunctionMapping.AND,
             args=[e, comparison],
             function_name=ir_pb2.Word(
                 text='&&',
@@ -840,7 +840,7 @@ def _empty_parameter_definition_list():
 def _struct_body(indent, docs, attributes, types, fields, dedent):
   del indent, dedent  # Unused.
   return _structure_body(docs, attributes, types, fields,
-                         ir_pb2.TypeDefinition.BYTE)
+                         ir_pb2.AddressableUnit.BYTE)
 
 
 def _structure_body(docs, attributes, types, fields, addressable_unit):
@@ -941,7 +941,7 @@ def _conditional_field_block(if_keyword, expression, colon, comment, newline,
 def _bits_body(indent, docs, attributes, types, fields, dedent):
   del indent, dedent  # Unused.
   return _structure_body(docs, attributes, types, fields,
-                         ir_pb2.TypeDefinition.BIT)
+                         ir_pb2.AddressableUnit.BIT)
 
 
 # Inline bits (defined as part of a field) are more restricted than standalone
@@ -951,7 +951,7 @@ def _bits_body(indent, docs, attributes, types, fields, dedent):
 def _anonymous_bits_body(indent, attributes, fields, dedent):
   del indent, dedent  # Unused.
   return _structure_body(_List([]), attributes, _List([]), fields,
-                         ir_pb2.TypeDefinition.BIT)
+                         ir_pb2.AddressableUnit.BIT)
 
 
 # A field is:
@@ -1131,7 +1131,7 @@ def _enum_body(indent, docs, attributes, values, dedent):
       enumeration=ir_pb2.Enum(value=values.list),
       documentation=docs.list,
       attribute=attributes.list,
-      addressable_unit=ir_pb2.TypeDefinition.BIT)
+      addressable_unit=ir_pb2.AddressableUnit.BIT)
 
 
 # name = value
