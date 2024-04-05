@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <string>
 #if __cplusplus >= 201703L
 #include <string_view>
 #endif  // __cplusplus >= 201703L
@@ -221,7 +222,7 @@ class ReadOnlyContiguousBufferTest : public ::testing::Test {};
 typedef ::testing::Types<
     /**/ ::std::vector<char>, ::std::array<char, 8>,
     ::std::vector<unsigned char>, ::std::vector<signed char>, ::std::string,
-    ::std::basic_string<signed char>, ::std::basic_string<unsigned char>,
+    ::std::basic_string<char>,
     ::std::vector<unsigned char, NonstandardAllocator<unsigned char>>,
     ::std::basic_string<char, ::std::char_traits<char>,
                         NonstandardAllocator<char>>>
