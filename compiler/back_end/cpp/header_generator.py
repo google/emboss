@@ -21,6 +21,7 @@ classes for the ir.
 import collections
 import pkgutil
 import re
+from typing import NamedTuple
 
 from compiler.back_end.cpp import attributes
 from compiler.back_end.util import code_template
@@ -77,6 +78,8 @@ _NS_GLOBAL_RE = r"^\s*::\s*$"
 
 # TODO(bolms): This should be a command-line flag.
 _PRELUDE_INCLUDE_FILE = "runtime/cpp/emboss_prelude.h"
+_ENUM_VIEW_INCLUDE_FILE = "runtime/cpp/emboss_enum_view.h"
+_TEXT_UTIL_INCLUDE_FILE = "runtime/cpp/emboss_text_util.h"
 
 # Cases allowed in the `enum_case` attribute.
 _SUPPORTED_ENUM_CASES = ("SHOUTY_CASE", "kCamelCase")
@@ -84,6 +87,13 @@ _SUPPORTED_ENUM_CASES = ("SHOUTY_CASE", "kCamelCase")
 # Verify that all supported enum cases have valid, implemented conversions.
 for _enum_case in _SUPPORTED_ENUM_CASES:
   assert name_conversion.is_case_conversion_supported("SHOUTY_CASE", _enum_case)
+
+
+class Config(NamedTuple):
+  """Configuration for C++ header generation."""
+
+  include_enum_traits: bool = True
+  """Whether or not to include EnumTraits in the generated header."""
 
 
 def _get_namespace_components(namespace):
@@ -124,7 +134,7 @@ def _cpp_string_escape(string):
   return re.sub("['\"\\\\]", r"\\\0", string)
 
 
-def _get_includes(module):
+def _get_includes(module, config: Config):
   """Returns the appropriate #includes based on module's imports."""
   includes = []
   for import_ in module.foreign_import:
@@ -138,6 +148,13 @@ def _get_includes(module):
           code_template.format_template(
               _TEMPLATES.include,
               file_name=_cpp_string_escape(_PRELUDE_INCLUDE_FILE)))
+      if config.include_enum_traits:
+        includes.extend(
+          [code_template.format_template(
+              _TEMPLATES.include,
+              file_name=_cpp_string_escape(file_name))
+            for file_name in (_ENUM_VIEW_INCLUDE_FILE, _TEXT_UTIL_INCLUDE_FILE)
+          ])
   return "".join(includes)
 
 
@@ -1059,14 +1076,14 @@ def _generate_field_indirection(field_ir, parent_type_name, ir):
   return "", declaration, definition
 
 
-def _generate_subtype_definitions(type_ir, ir):
+def _generate_subtype_definitions(type_ir, ir, config: Config):
   """Generates C++ code for subtypes of type_ir."""
   subtype_bodies = []
   subtype_forward_declarations = []
   subtype_method_definitions = []
   type_name = type_ir.name.name.text
   for subtype in type_ir.subtype:
-    inner_defs = _generate_type_definition(subtype, ir)
+    inner_defs = _generate_type_definition(subtype, ir, config)
     subtype_forward_declaration, subtype_body, subtype_methods = inner_defs
     subtype_forward_declarations.append(subtype_forward_declaration)
     subtype_bodies.append(subtype_body)
@@ -1096,7 +1113,7 @@ def _cpp_field_name(name):
     return name
 
 
-def _generate_structure_definition(type_ir, ir):
+def _generate_structure_definition(type_ir, ir, config: Config):
   """Generates C++ for an Emboss structure (struct or bits).
 
   Arguments:
@@ -1108,7 +1125,7 @@ def _generate_structure_definition(type_ir, ir):
     suitable for insertion into the appropriate places in the generated header.
   """
   subtype_bodies, subtype_forward_declarations, subtype_method_definitions = (
-      _generate_subtype_definitions(type_ir, ir))
+      _generate_subtype_definitions(type_ir, ir, config))
   type_name = type_ir.name.name.text
   field_helper_type_definitions = []
   field_method_declarations = []
@@ -1221,6 +1238,15 @@ def _generate_structure_definition(type_ir, ir):
   else:
     requires_check = ""
 
+  if config.include_enum_traits:
+    text_stream_methods = code_template.format_template(
+      _TEMPLATES.struct_text_stream,
+      decode_fields="\n".join(decode_field_clauses),
+      write_fields="\n".join(write_field_clauses))
+  else:
+    text_stream_methods = ""
+
+
   class_forward_declarations = code_template.format_template(
       _TEMPLATES.structure_view_declaration,
       name=type_name)
@@ -1234,9 +1260,8 @@ def _generate_structure_definition(type_ir, ir):
       requires_check=requires_check,
       equals_method_body="\n".join(equals_method_clauses),
       unchecked_equals_method_body="\n".join(unchecked_equals_method_clauses),
-      decode_fields="\n".join(decode_field_clauses),
       enum_usings="\n".join(enum_using_statements),
-      write_fields="\n".join(write_field_clauses),
+      text_stream_methods=text_stream_methods,
       parameter_fields="\n".join(parameter_fields),
       constructor_parameters="".join(constructor_parameters),
       forwarded_parameters="".join(forwarded_parameters),
@@ -1314,7 +1339,7 @@ def _get_enum_value_names(enum_value):
             for case in cases]
 
 
-def _generate_enum_definition(type_ir):
+def _generate_enum_definition(type_ir, include_traits=True):
   """Generates C++ for an Emboss enum."""
   enum_values = []
   enum_from_string_statements = []
@@ -1333,48 +1358,52 @@ def _generate_enum_definition(type_ir):
           code_template.format_template(_TEMPLATES.enum_value,
                                         name=enum_value_name,
                                         value=_render_integer(numeric_value)))
-
-      enum_from_string_statements.append(
-          code_template.format_template(_TEMPLATES.enum_from_name_case,
-                                        enum=type_ir.name.name.text,
-                                        value=enum_value_name,
-                                        name=value.name.name.text))
-
-      if numeric_value not in previously_seen_numeric_values:
-        string_from_enum_statements.append(
-            code_template.format_template(_TEMPLATES.name_from_enum_case,
+      if include_traits:
+        enum_from_string_statements.append(
+            code_template.format_template(_TEMPLATES.enum_from_name_case,
                                           enum=type_ir.name.name.text,
                                           value=enum_value_name,
                                           name=value.name.name.text))
 
-        enum_is_known_statements.append(
-            code_template.format_template(_TEMPLATES.enum_is_known_case,
-                                          enum=type_ir.name.name.text,
-                                          name=enum_value_name))
+        if numeric_value not in previously_seen_numeric_values:
+          string_from_enum_statements.append(
+              code_template.format_template(_TEMPLATES.name_from_enum_case,
+                                            enum=type_ir.name.name.text,
+                                            value=enum_value_name,
+                                            name=value.name.name.text))
+
+          enum_is_known_statements.append(
+              code_template.format_template(_TEMPLATES.enum_is_known_case,
+                                            enum=type_ir.name.name.text,
+                                            name=enum_value_name))
       previously_seen_numeric_values.add(numeric_value)
-  return (
-      code_template.format_template(
+
+  declaration = code_template.format_template(
           _TEMPLATES.enum_declaration,
           enum=type_ir.name.name.text,
-          enum_type=enum_type),
-      code_template.format_template(
+          enum_type=enum_type)
+  definition = code_template.format_template(
           _TEMPLATES.enum_definition,
           enum=type_ir.name.name.text,
           enum_type=enum_type,
-          enum_values="".join(enum_values),
+          enum_values="".join(enum_values))
+  if include_traits:
+    definition += code_template.format_template(
+          _TEMPLATES.enum_traits,
+          enum=type_ir.name.name.text,
           enum_from_name_cases="\n".join(enum_from_string_statements),
           name_from_enum_cases="\n".join(string_from_enum_statements),
-          enum_is_known_cases="\n".join(enum_is_known_statements)),
-      ""
-  )
+          enum_is_known_cases="\n".join(enum_is_known_statements))
+
+  return (declaration, definition, "")
 
 
-def _generate_type_definition(type_ir, ir):
+def _generate_type_definition(type_ir, ir, config: Config):
   """Generates C++ for an Emboss type."""
   if type_ir.HasField("structure"):
-    return _generate_structure_definition(type_ir, ir)
+    return _generate_structure_definition(type_ir, ir, config)
   elif type_ir.HasField("enumeration"):
-    return _generate_enum_definition(type_ir)
+    return _generate_enum_definition(type_ir, config.include_enum_traits)
   elif type_ir.HasField("external"):
     # TODO(bolms): This should probably generate an #include.
     return "", "", ""
@@ -1549,7 +1578,7 @@ def _propagate_defaults_and_verify_attributes(ir):
   return []
 
 
-def generate_header(ir):
+def generate_header(ir, config=Config()):
   """Generates a C++ header from an Emboss module.
 
   Arguments:
@@ -1569,7 +1598,7 @@ def generate_header(ir):
   method_definitions = []
   for type_definition in ir.module[0].type:
     declaration, definition, methods = _generate_type_definition(
-        type_definition, ir)
+        type_definition, ir, config)
     type_declarations.append(declaration)
     type_definitions.append(definition)
     method_definitions.append(methods)
@@ -1579,7 +1608,7 @@ def generate_header(ir):
       type_definitions="".join(type_definitions),
       method_definitions="".join(method_definitions))
   body = _wrap_in_namespace(body, _get_module_namespace(ir.module[0]))
-  includes = _get_includes(ir.module[0])
+  includes = _get_includes(ir.module[0], config)
   return code_template.format_template(
       _TEMPLATES.outline,
       includes=includes,
