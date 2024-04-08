@@ -45,6 +45,11 @@ def _parse_command_line(argv):
                       choices=["always", "never", "if_tty", "auto"],
                       help="Print error messages using color.  'auto' is a "
                            "synonym for 'if_tty'.")
+  parser.add_argument("--cc-enum-traits",
+                      action=argparse.BooleanOptionalAction,
+                      default=True,
+                      help="""Controls generation of EnumTraits by the C++
+                              backend""")
   return parser.parse_args(argv[1:])
 
 
@@ -58,17 +63,18 @@ def _show_errors(errors, ir, color_output):
                 os.isatty(sys.stderr.fileno())))
   print(error.format_errors(errors, source_codes, use_color), file=sys.stderr)
 
-def generate_headers_and_log_errors(ir, color_output):
+def generate_headers_and_log_errors(ir, color_output, config: header_generator.Config):
   """Generates a C++ header and logs any errors.
 
   Arguments:
     ir: EmbossIr of the module.
     color_output: "always", "never", "if_tty", "auto"
+    config: Header generation configuration.
 
   Returns:
     A tuple of (header, errors)
   """
-  header, errors = header_generator.generate_header(ir)
+  header, errors = header_generator.generate_header(ir, config)
   if errors:
     _show_errors(errors, ir, color_output)
   return (header, errors)
@@ -79,7 +85,8 @@ def main(flags):
       ir = ir_pb2.EmbossIr.from_json(f.read())
   else:
     ir = ir_pb2.EmbossIr.from_json(sys.stdin.read())
-  header, errors = generate_headers_and_log_errors(ir, flags.color_output)
+  config = header_generator.Config(include_enum_traits=flags.cc_enum_traits)
+  header, errors = generate_headers_and_log_errors(ir, flags.color_output, config)
   if errors:
     return 1
   if flags.output_file:
