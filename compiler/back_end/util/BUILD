@@ -14,6 +14,9 @@
 
 # Shared utilities for Emboss back ends.
 
+load("@rules_python//python:py_library.bzl", "py_library")
+load("@rules_python//python:py_test.bzl", "py_test")
+
 package(
     default_visibility = ["//compiler:__subpackages__"],
 )

@@ -20,8 +20,8 @@
 filegroup(
     name = "grammar_md",
     srcs = [
-        "grammar.md",
         "__init__.py",
+        "grammar.md",
     ],
     # This should only be needed by docs_are_up_to_date_test.
     visibility = ["//:__subpackages__"],

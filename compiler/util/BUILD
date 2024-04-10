@@ -14,6 +14,9 @@
 
 # Shared utilities for Emboss back ends.
 
+load("@rules_python//python:py_library.bzl", "py_library")
+load("@rules_python//python:py_test.bzl", "py_test")
+
 package(
     default_visibility = ["//compiler:__subpackages__"],
 )
@@ -100,8 +103,8 @@ py_library(
     name = "traverse_ir",
     srcs = ["traverse_ir.py"],
     deps = [
-        ":simple_memoizer",
         ":ir_pb2",
+        ":simple_memoizer",
     ],
 )
 
@@ -110,8 +113,8 @@ py_test(
     srcs = ["traverse_ir_test.py"],
     python_version = "PY3",
     deps = [
-        ":traverse_ir",
         ":ir_pb2",
+        ":traverse_ir",
     ],
 )
 
@@ -128,8 +131,8 @@ py_test(
     srcs = ["parser_types_test.py"],
     python_version = "PY3",
     deps = [
-        ":parser_types",
         ":ir_pb2",
+        ":parser_types",
     ],
 )
 

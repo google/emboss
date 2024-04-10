@@ -19,8 +19,8 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         "//runtime/cpp:cpp_utils",
-        "@com_google_googletest//:gtest",
         "@com_google_absl//absl/memory",
+        "@com_google_googletest//:gtest",
     ],
 )
 
@@ -32,7 +32,7 @@ cc_test(
     copts = ["-Wsign-compare"],
     deps = [
         ":emboss_test_util",
-        "@com_google_googletest//:gtest_main",
         "//testdata:complex_structure_emboss",
+        "@com_google_googletest//:gtest_main",
     ],
 )
