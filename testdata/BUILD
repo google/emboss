@@ -14,10 +14,11 @@
 
 # Shared test data for Emboss.
 
-load("//:build_defs.bzl",
-     "emboss_cc_library",
-     "emboss_library",
-     "cc_emboss_library"
+load(
+    "//:build_defs.bzl",
+    "cc_emboss_library",
+    "emboss_cc_library",
+    "emboss_library",
 )
 
 package(
@@ -27,17 +28,18 @@ package(
 filegroup(
     name = "golden_files",
     srcs = [
+        "golden/__init__.py",
         "golden/span_se_log_file_status.emb",
         "golden/span_se_log_file_status.ir.txt",
         "golden/span_se_log_file_status.parse_tree.txt",
         "golden/span_se_log_file_status.tokens.txt",
-        "golden/__init__.py",
     ],
 )
 
 filegroup(
     name = "test_embs",
     srcs = [
+        "__init__.py",
         "absolute_cpp_namespace.emb",
         "anonymous_bits.emb",
         "bcd.emb",
@@ -50,22 +52,21 @@ filegroup(
         "enum_case.emb",
         "explicit_sizes.emb",
         "float.emb",
+        "import_dir/project/imported.emb",
+        "import_dir/project/importer.emb",
         "imported.emb",
         "imported_genfiles.emb",
         "importer.emb",
-        "import_dir/project/imported.emb",
-        "import_dir/project/importer.emb",
         "int_sizes.emb",
         "nested_structure.emb",
-        "no_cpp_namespace.emb",
         "next_keyword.emb",
+        "no_cpp_namespace.emb",
         "parameters.emb",
         "requires.emb",
         "subtypes.emb",
         "text_format.emb",
         "uint_sizes.emb",
         "virtual_field.emb",
-        "__init__.py",
     ],
 )
 
@@ -180,14 +181,13 @@ emboss_cc_library(
     srcs = [
         "import_dir/project/importer.emb",
     ],
+    import_dirs = [
+        "import_dir",
+    ],
     deps = [
         ":import_dir_imported_emboss",
     ],
-    import_dirs = [
-        "import_dir",
-    ]
 )
-
 
 emboss_cc_library(
     name = "importer2_emboss",

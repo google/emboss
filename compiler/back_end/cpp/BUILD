@@ -14,6 +14,9 @@
 
 # Emboss C++ code generator.
 
+load("@rules_python//python:py_binary.bzl", "py_binary")
+load("@rules_python//python:py_library.bzl", "py_library")
+load("@rules_python//python:py_test.bzl", "py_test")
 load(":build_defs.bzl", "emboss_cc_test")
 
 package(
@@ -37,7 +40,7 @@ py_binary(
 py_library(
     name = "attributes",
     srcs = ["attributes.py"],
-    deps = []
+    deps = [],
 )
 
 py_library(

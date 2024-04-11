@@ -18,6 +18,10 @@
 # intermediate representation (IR).  The IR is passed to back end code
 # generators to generate code in various languages.
 
+load("@rules_python//python:py_binary.bzl", "py_binary")
+load("@rules_python//python:py_library.bzl", "py_library")
+load("@rules_python//python:py_test.bzl", "py_test")
+
 package(
     default_visibility = [
         "//:__subpackages__",
@@ -135,8 +139,8 @@ py_library(
         ":tokenizer",
         ":type_check",
         ":write_inference",
-        "//compiler/util:ir_pb2",
         "//compiler/util:error",
+        "//compiler/util:ir_pb2",
         "//compiler/util:parser_types",
         "//compiler/util:resources",
     ],
@@ -151,8 +155,8 @@ py_test(
     python_version = "PY3",
     deps = [
         ":glue",
-        "//compiler/util:ir_pb2",
         "//compiler/util:error",
+        "//compiler/util:ir_pb2",
         "//compiler/util:parser_types",
         "//compiler/util:test_util",
     ],
@@ -163,8 +167,8 @@ py_library(
     srcs = ["synthetics.py"],
     visibility = ["//visibility:private"],
     deps = [
-        "//compiler/util:ir_pb2",
         "//compiler/util:expression_parser",
+        "//compiler/util:ir_pb2",
         "//compiler/util:traverse_ir",
     ],
 )
@@ -185,8 +189,8 @@ py_library(
     srcs = ["symbol_resolver.py"],
     visibility = ["//visibility:private"],
     deps = [
-        "//compiler/util:ir_pb2",
         "//compiler/util:error",
+        "//compiler/util:ir_pb2",
         "//compiler/util:ir_util",
         "//compiler/util:traverse_ir",
     ],
@@ -257,8 +261,8 @@ py_test(
     deps = [
         ":attribute_checker",
         ":glue",
-        "//compiler/util:ir_pb2",
         "//compiler/util:error",
+        "//compiler/util:ir_pb2",
         "//compiler/util:ir_util",
         "//compiler/util:test_util",
     ],
@@ -269,8 +273,8 @@ py_library(
     srcs = ["type_check.py"],
     deps = [
         ":attributes",
-        "//compiler/util:ir_pb2",
         "//compiler/util:error",
+        "//compiler/util:ir_pb2",
         "//compiler/util:ir_util",
         "//compiler/util:traverse_ir",
     ],
@@ -321,8 +325,8 @@ py_library(
     ],
     deps = [
         ":attributes",
-        "//compiler/util:ir_pb2",
         "//compiler/util:error",
+        "//compiler/util:ir_pb2",
         "//compiler/util:ir_util",
         "//compiler/util:resources",
         "//compiler/util:traverse_ir",
@@ -345,8 +349,8 @@ py_library(
     name = "dependency_checker",
     srcs = ["dependency_checker.py"],
     deps = [
-        "//compiler/util:ir_pb2",
         "//compiler/util:error",
+        "//compiler/util:ir_pb2",
         "//compiler/util:ir_util",
         "//compiler/util:traverse_ir",
     ],
