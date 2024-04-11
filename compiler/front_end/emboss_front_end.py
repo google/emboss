@@ -86,14 +86,14 @@ def _parse_command_line(argv):
   return parser.parse_args(argv[1:])
 
 
-def _show_errors(errors, ir, flags):
+def _show_errors(errors, ir, color_output):
   """Prints errors with source code snippets."""
   source_codes = {}
   if ir:
     for module in ir.module:
       source_codes[module.source_file_name] = module.source_text
-  use_color = (flags.color_output == "always" or
-               (flags.color_output in ("auto", "if_tty") and
+  use_color = (color_output == "always" or
+               (color_output in ("auto", "if_tty") and
                 os.isatty(sys.stderr.fileno())))
   print(error.format_errors(errors, source_codes, use_color), file=sys.stderr)
 
@@ -128,12 +128,28 @@ def _find_in_dirs_and_read(import_dirs):
 
   return _find_and_read
 
+def parse_and_log_errors(input_file, import_dirs, color_output):
+  """Fully parses an .emb and logs any errors.
+
+  Arguments:
+    input_file: The path of the module source file.
+    import_dirs: Directories to search for imported dependencies.
+    color_output: Used when logging errors: "always", "never", "if_tty", "auto"
+
+  Returns:
+    (ir, debug_info, errors)
+  """
+  ir, debug_info, errors = glue.parse_emboss_file(
+      input_file, _find_in_dirs_and_read(import_dirs))
+  if errors:
+    _show_errors(errors, ir, color_output)
+
+  return (ir, debug_info, errors)
 
 def main(flags):
-  ir, debug_info, errors = glue.parse_emboss_file(
-      flags.input_file[0], _find_in_dirs_and_read(flags.import_dirs))
+  ir, debug_info, errors = parse_and_log_errors(
+    flags.input_file[0], flags.import_dirs, flags.color_output)
   if errors:
-    _show_errors(errors, ir, flags)
     return 1
   main_module_debug_info = debug_info.modules[flags.input_file[0]]
   if flags.debug_show_tokenization:
