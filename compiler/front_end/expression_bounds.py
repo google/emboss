@@ -19,6 +19,7 @@ import fractions
 import operator
 
 from compiler.util import ir_data
+from compiler.util import ir_data_utils
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 
@@ -65,6 +66,7 @@ def _compute_constant_value_of_constant(expression):
 def _compute_constant_value_of_constant_reference(expression, ir):
   referred_object = ir_util.find_object(
       expression.constant_reference.canonical_name, ir)
+  expression = ir_data_utils.builder(expression)
   if isinstance(referred_object, ir_data.EnumValue):
     compute_constraints_of_expression(referred_object.value, ir)
     assert ir_util.is_constant(referred_object.value)
@@ -111,7 +113,7 @@ def _compute_constraints_of_existence_function(expression, ir):
   field_path = expression.function.args[0].field_reference.path[-1]
   field = ir_util.find_object(field_path, ir)
   compute_constraints_of_expression(field.existence_condition, ir)
-  expression.type.CopyFrom(field.existence_condition.type)
+  ir_data_utils.builder(expression).type.CopyFrom(field.existence_condition.type)
 
 
 def _compute_constraints_of_field_reference(expression, ir):
@@ -122,7 +124,7 @@ def _compute_constraints_of_field_reference(expression, ir):
     # References to virtual fields should have the virtual field's constraints
     # copied over.
     compute_constraints_of_expression(field.read_transform, ir)
-    expression.type.CopyFrom(field.read_transform.type)
+    ir_data_utils.builder(expression).type.CopyFrom(field.read_transform.type)
     return
   # Non-virtual non-integer fields do not (yet) have constraints.
   if expression.type.WhichOneof("type") == "integer":
@@ -633,6 +635,7 @@ def _shared_modular_value(left, right):
 def _compute_constraints_of_choice_operator(expression):
   """Computes the constraints of a choice operation '?:'."""
   condition, if_true, if_false = expression.function.args
+  expression = ir_data_utils.builder(expression)
   if condition.type.boolean.HasField("value"):
     # The generated expressions for $size_in_bits and $size_in_bytes look like
     #

@@ -29,3 +29,11 @@ class IrDataSerializer:
   def from_json(data_cls: type[ir_data.Message], data):
     """Constructs an IR data class from the given JSON string"""
     return data_cls.from_json(data)
+
+
+def builder(target: ir_data.Message) -> ir_data.Message:
+  """Provides a wrapper for building up IR data classes.
+
+  This is a no-op and just used for annotation for now.
+  """
+  return target

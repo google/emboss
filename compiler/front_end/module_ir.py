@@ -26,6 +26,7 @@ import re
 import sys
 
 from compiler.util import ir_data
+from compiler.util import ir_data_utils
 from compiler.util import name_conversion
 from compiler.util import parser_types
 
@@ -793,9 +794,9 @@ def _type_definition(type_definition):
 def _structure(struct, name, parameters, colon, comment, newline, struct_body):
   """Composes the top-level IR for an Emboss structure."""
   del colon, comment, newline  # Unused.
-  struct_body.structure.source_location.start.CopyFrom(
+  ir_data_utils.builder(struct_body.structure).source_location.start.CopyFrom(
       struct.source_location.start)
-  struct_body.structure.source_location.end.CopyFrom(
+  ir_data_utils.builder(struct_body.structure).source_location.end.CopyFrom(
       struct_body.source_location.end)
   struct_body.name.CopyFrom(name)
   if parameters.list:
@@ -879,11 +880,11 @@ def _conditional_block_plus_field_block(conditional_block, block):
           '    unconditional-anonymous-bits-field anonymous-bits-field-block')
 def _unconditional_block_plus_field_block(field, block):
   """Prepends an unconditional field to block."""
-  field.field.existence_condition.source_location.CopyFrom(
+  ir_data_utils.builder(field.field).existence_condition.source_location.CopyFrom(
       field.source_location)
-  field.field.existence_condition.boolean_constant.source_location.CopyFrom(
+  ir_data_utils.builder(field.field).existence_condition.boolean_constant.source_location.CopyFrom(
       field.source_location)
-  field.field.existence_condition.boolean_constant.value = True
+  ir_data_utils.builder(field.field).existence_condition.boolean_constant.value = True
   return _List([field] + block.list)
 
 
@@ -929,7 +930,7 @@ def _conditional_field_block(if_keyword, expression, colon, comment, newline,
   """Applies an existence_condition to each element of fields."""
   del if_keyword, newline, colon, comment, indent, dedent  # Unused.
   for field in fields.list:
-    condition = field.field.existence_condition
+    condition = ir_data_utils.builder(field.field).existence_condition
     condition.CopyFrom(expression)
     condition.source_location.is_disjoint_from_parent = True
   return fields
@@ -967,11 +968,12 @@ def _field(location, field_type, name, abbreviation, attributes, doc, comment,
            newline, field_body):
   """Constructs an ir_data.Field from the given components."""
   del comment  # Unused
-  field = ir_data.Field(location=location,
+  field_ir = ir_data.Field(location=location,
                        type=field_type,
                        name=name,
                        attribute=attributes.list,
                        documentation=doc.list)
+  field = ir_data_utils.builder(field_ir)
   if field_body.list:
     field.attribute.extend(field_body.list[0].attribute)
     field.documentation.extend(field_body.list[0].documentation)
@@ -982,7 +984,7 @@ def _field(location, field_type, name, abbreviation, attributes, doc, comment,
     field.source_location.end.CopyFrom(field_body.source_location.end)
   else:
     field.source_location.end.CopyFrom(newline.source_location.end)
-  return _FieldWithType(field=field)
+  return _FieldWithType(field=field_ir)
 
 
 # A "virtual field" is:
@@ -996,7 +998,8 @@ def _field(location, field_type, name, abbreviation, attributes, doc, comment,
 def _virtual_field(let, name, equals, value, comment, newline, field_body):
   """Constructs an ir_data.Field from the given components."""
   del equals, comment  # Unused
-  field = ir_data.Field(read_transform=value, name=name)
+  field_ir = ir_data.Field(read_transform=value, name=name)
+  field = ir_data_utils.builder(field_ir)
   if field_body.list:
     field.attribute.extend(field_body.list[0].attribute)
     field.documentation.extend(field_body.list[0].documentation)
@@ -1005,7 +1008,7 @@ def _virtual_field(let, name, equals, value, comment, newline, field_body):
     field.source_location.end.CopyFrom(field_body.source_location.end)
   else:
     field.source_location.end.CopyFrom(newline.source_location.end)
-  return _FieldWithType(field=field)
+  return _FieldWithType(field=field_ir)
 
 
 # An inline enum is:
@@ -1047,17 +1050,18 @@ def _inline_bits_field(location, bits, name, abbreviation, colon, comment,
 
 def _inline_type_field(location, name, abbreviation, body):
   """Shared implementation of _inline_enum_field and _anonymous_bit_field."""
-  field = ir_data.Field(location=location,
+  field_ir = ir_data.Field(location=location,
                        name=name,
                        attribute=body.attribute,
                        documentation=body.documentation)
+  field = ir_data_utils.builder(field_ir)
   # All attributes should be attached to the field, not the type definition: if
   # the user wants to use type attributes, they should create a separate type
   # definition and reference it.
   del body.attribute[:]
   type_name = ir_data.NameDefinition()
   type_name.CopyFrom(name)
-  type_name.name.text = name_conversion.snake_to_camel(type_name.name.text)
+  ir_data_utils.builder(type_name).name.text = name_conversion.snake_to_camel(type_name.name.text)
   field.type.atomic_type.reference.source_name.extend([type_name.name])
   field.type.atomic_type.reference.source_location.CopyFrom(
       type_name.source_location)
@@ -1067,17 +1071,17 @@ def _inline_type_field(location, name, abbreviation, body):
   if abbreviation.list:
     field.abbreviation.CopyFrom(abbreviation.list[0])
   field.source_location.start.CopyFrom(location.source_location.start)
-  body.source_location.start.CopyFrom(location.source_location.start)
+  ir_data_utils.builder(body.source_location).start.CopyFrom(location.source_location.start)
   if body.HasField('enumeration'):
-    body.enumeration.source_location.CopyFrom(body.source_location)
+    ir_data_utils.builder(body.enumeration).source_location.CopyFrom(body.source_location)
   else:
     assert body.HasField('structure')
-    body.structure.source_location.CopyFrom(body.source_location)
-  body.name.CopyFrom(type_name)
+    ir_data_utils.builder(body.structure).source_location.CopyFrom(body.source_location)
+  ir_data_utils.builder(body).name.CopyFrom(type_name)
   field.source_location.end.CopyFrom(body.source_location.end)
   subtypes = [body] + list(body.subtype)
   del body.subtype[:]
-  return _FieldWithType(field=field, subtypes=subtypes)
+  return _FieldWithType(field=field_ir, subtypes=subtypes)
 
 
 @_handles('anonymous-bits-field-definition ->'
@@ -1113,11 +1117,11 @@ def _abbreviation(open_paren, word, close_paren):
 @_handles('enum -> "enum" type-name ":" Comment? eol enum-body')
 def _enum(enum, name, colon, comment, newline, enum_body):
   del colon, comment, newline  # Unused.
-  enum_body.enumeration.source_location.start.CopyFrom(
+  ir_data_utils.builder(enum_body.enumeration).source_location.start.CopyFrom(
       enum.source_location.start)
-  enum_body.enumeration.source_location.end.CopyFrom(
+  ir_data_utils.builder(enum_body.enumeration).source_location.end.CopyFrom(
       enum_body.source_location.end)
-  enum_body.name.CopyFrom(name)
+  ir_data_utils.builder(enum_body).name.CopyFrom(name)
   return enum_body
 
 
@@ -1161,7 +1165,7 @@ def _enum_value_body(indent, docs, attributes, dedent):
 @_handles('external -> "external" type-name ":" Comment? eol external-body')
 def _external(external, name, colon, comment, newline, external_body):
   del colon, comment, newline  # Unused.
-  external_body.source_location.start.CopyFrom(external.source_location.start)
+  ir_data_utils.builder(external_body.source_location).start.CopyFrom(external.source_location.start)
   external_body.name.CopyFrom(name)
   return external_body
 

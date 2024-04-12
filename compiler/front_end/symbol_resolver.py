@@ -22,6 +22,7 @@ import collections
 
 from compiler.util import error
 from compiler.util import ir_data
+from compiler.util import ir_data_utils
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 
@@ -133,7 +134,7 @@ def _add_name_to_scope_and_normalize(name_ir, scope, visibility, errors):
   """Adds the given name_ir to scope and sets its canonical_name."""
   name = name_ir.name.text
   canonical_name = _nested_name(scope.canonical_name, name)
-  name_ir.canonical_name.CopyFrom(canonical_name)
+  ir_data_utils.builder(name_ir).canonical_name.CopyFrom(canonical_name)
   return _add_name_to_scope(name_ir.name, scope, canonical_name, visibility,
                             errors)
 
@@ -282,7 +283,7 @@ def _resolve_reference(reference, table, current_scope, visible_scopes,
                                      visible_scopes, source_file_name, errors)
   if target is not None:
     assert not target.alias
-    reference.canonical_name.CopyFrom(target.canonical_name)
+    ir_data_utils.builder(reference).canonical_name.CopyFrom(target.canonical_name)
 
 
 def _find_target_of_reference(reference, table, current_scope, visible_scopes,
@@ -419,7 +420,7 @@ def _resolve_field_reference(field_reference, source_file_name, errors, ir):
     member_name = ir_data.CanonicalName()
     member_name.CopyFrom(
         previous_field.type.atomic_type.reference.canonical_name)
-    member_name.object_path.extend([ref.source_name[0].text])
+    ir_data_utils.builder(member_name).object_path.extend([ref.source_name[0].text])
     previous_field = ir_util.find_object_or_none(member_name, ir)
     if previous_field is None:
       errors.append(
@@ -427,7 +428,7 @@ def _resolve_field_reference(field_reference, source_file_name, errors, ir):
                              ref.source_name[0].source_location,
                              ref.source_name[0].text))
       return
-    ref.canonical_name.CopyFrom(member_name)
+    ir_data_utils.builder(ref).canonical_name.CopyFrom(member_name)
     previous_reference = ref
 
 

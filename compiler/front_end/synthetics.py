@@ -18,6 +18,7 @@ from compiler.front_end import attributes
 from compiler.util import error
 from compiler.util import expression_parser
 from compiler.util import ir_data
+from compiler.util import ir_data_utils
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 
@@ -27,7 +28,7 @@ def _mark_as_synthetic(proto):
   if not isinstance(proto, ir_data.Message):
     return
   if hasattr(proto, "source_location"):
-    proto.source_location.is_synthetic = True
+    ir_data_utils.builder(proto).source_location.is_synthetic = True
   for name, value in proto.raw_fields.items():
     if name != "source_location":
       if isinstance(value, ir_data.TypedScopedList):
@@ -112,7 +113,7 @@ def _add_anonymous_aliases(structure, type_definition):
       )
       new_existence_condition = ir_data.Expression()
       new_existence_condition.CopyFrom(_ANONYMOUS_BITS_ALIAS_EXISTENCE_SKELETON)
-      existence_clauses = new_existence_condition.function.args
+      existence_clauses = ir_data_utils.builder(new_existence_condition).function.args
       existence_clauses[0].function.args[0].field_reference.CopyFrom(
           anonymous_field_reference)
       existence_clauses[1].function.args[0].field_reference.CopyFrom(
@@ -129,7 +130,7 @@ def _add_anonymous_aliases(structure, type_definition):
           existence_condition=new_existence_condition,
           name=subfield.name)
       if subfield.HasField("abbreviation"):
-        new_alias.abbreviation.CopyFrom(subfield.abbreviation)
+        ir_data_utils.builder(new_alias).abbreviation.CopyFrom(subfield.abbreviation)
       _mark_as_synthetic(new_alias.existence_condition)
       _mark_as_synthetic(new_alias.read_transform)
       new_fields.append(new_alias)
@@ -196,6 +197,7 @@ def _add_size_virtuals(structure, type_definition):
       continue
     size_clause = ir_data.Expression()
     size_clause.CopyFrom(_SIZE_CLAUSE_SKELETON)
+    size_clause = ir_data_utils.builder(size_clause)
     # Copy the appropriate clauses into `existence_condition ? start + size : 0`
     size_clause.function.args[0].CopyFrom(field.existence_condition)
     size_clause.function.args[1].function.args[0].CopyFrom(field.location.start)
@@ -221,20 +223,21 @@ def _add_size_virtuals(structure, type_definition):
 _NEXT_KEYWORD_REPLACEMENT_EXPRESSION = expression_parser.parse("x + y")
 
 
-def _maybe_replace_next_keyword_in_expression(expression, last_location,
+def _maybe_replace_next_keyword_in_expression(expression_ir, last_location,
                                               source_file_name, errors):
-  if not expression.HasField("builtin_reference"):
+  if not expression_ir.HasField("builtin_reference"):
     return
-  if expression.builtin_reference.canonical_name.object_path[0] != "$next":
+  if expression_ir.builtin_reference.canonical_name.object_path[0] != "$next":
     return
   if not last_location:
     errors.append([
-      error.error(source_file_name, expression.source_location,
+      error.error(source_file_name, expression_ir.source_location,
                   "`$next` may not be used in the first physical field of a " +
                   "structure; perhaps you meant `0`?")
     ])
     return
-  original_location = expression.source_location
+  original_location = expression_ir.source_location
+  expression = ir_data_utils.builder(expression_ir)
   expression.CopyFrom(_NEXT_KEYWORD_REPLACEMENT_EXPRESSION)
   expression.function.args[0].CopyFrom(last_location.start)
   expression.function.args[1].CopyFrom(last_location.size)
