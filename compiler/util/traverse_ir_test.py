@@ -19,9 +19,10 @@ import collections
 import unittest
 
 from compiler.util import ir_data
+from compiler.util import ir_data_utils
 from compiler.util import traverse_ir
 
-_EXAMPLE_IR = ir_data.EmbossIr.from_json("""{
+_EXAMPLE_IR = ir_data_utils.IrDataSerializer.from_json(ir_data.EmbossIr, """{
 "module": [
   {
     "type": [

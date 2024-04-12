@@ -27,6 +27,7 @@ import sys
 from compiler.back_end.cpp import header_generator
 from compiler.util import error
 from compiler.util import ir_data
+from compiler.util import ir_data_utils
 
 
 def _parse_command_line(argv):
@@ -82,9 +83,9 @@ def generate_headers_and_log_errors(ir, color_output, config: header_generator.C
 def main(flags):
   if flags.input_file:
     with open(flags.input_file) as f:
-      ir = ir_data.EmbossIr.from_json(f.read())
+      ir = ir_data_utils.IrDataSerializer.from_json(ir_data.EmbossIr, f.read())
   else:
-    ir = ir_data.EmbossIr.from_json(sys.stdin.read())
+    ir = ir_data_utils.IrDataSerializer.from_json(ir_data.EmbossIr, sys.stdin.read())
   config = header_generator.Config(include_enum_traits=flags.cc_enum_traits)
   header, errors = generate_headers_and_log_errors(ir, flags.color_output, config)
   if errors:
