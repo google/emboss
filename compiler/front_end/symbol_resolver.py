@@ -293,7 +293,7 @@ def _find_target_of_reference(reference, table, current_scope, visible_scopes,
   name = reference.source_name[0].text
   for scope in visible_scopes:
     scoped_table = table[scope.module_file]
-    for path_element in scope.object_path:
+    for path_element in scope.object_path or []:
       scoped_table = scoped_table[path_element]
     if (name in scoped_table and
         (scope == current_scope or
