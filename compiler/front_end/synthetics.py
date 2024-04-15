@@ -111,15 +111,14 @@ def _add_anonymous_aliases(structure, type_definition):
               ir_data.Reference(source_name=[subfield.name.name]),
           ]
       )
-      new_existence_condition = ir_data.Expression()
-      new_existence_condition.CopyFrom(_ANONYMOUS_BITS_ALIAS_EXISTENCE_SKELETON)
+      new_existence_condition = ir_data_utils.copy(_ANONYMOUS_BITS_ALIAS_EXISTENCE_SKELETON)
       existence_clauses = ir_data_utils.builder(new_existence_condition).function.args
       existence_clauses[0].function.args[0].field_reference.CopyFrom(
           anonymous_field_reference)
       existence_clauses[1].function.args[0].field_reference.CopyFrom(
           alias_field_reference)
       new_read_transform = ir_data.Expression(
-          field_reference=alias_field_reference)
+          field_reference=ir_data_utils.copy(alias_field_reference))
       # This treats *most* of the alias field as synthetic, but not its name(s):
       # leaving the name(s) as "real" means that symbol collisions with the
       # surrounding structure will be properly reported to the user.
@@ -128,7 +127,7 @@ def _add_anonymous_aliases(structure, type_definition):
       new_alias = ir_data.Field(
           read_transform=new_read_transform,
           existence_condition=new_existence_condition,
-          name=subfield.name)
+          name=ir_data_utils.copy(subfield.name))
       if subfield.HasField("abbreviation"):
         ir_data_utils.builder(new_alias).abbreviation.CopyFrom(subfield.abbreviation)
       _mark_as_synthetic(new_alias.existence_condition)
@@ -195,16 +194,14 @@ def _add_size_virtuals(structure, type_definition):
     # to the size of the structure.
     if ir_util.field_is_virtual(field):
       continue
-    size_clause = ir_data.Expression()
-    size_clause.CopyFrom(_SIZE_CLAUSE_SKELETON)
-    size_clause = ir_data_utils.builder(size_clause)
+    size_clause_ir = ir_data_utils.copy(_SIZE_CLAUSE_SKELETON)
+    size_clause = ir_data_utils.builder(size_clause_ir)
     # Copy the appropriate clauses into `existence_condition ? start + size : 0`
     size_clause.function.args[0].CopyFrom(field.existence_condition)
     size_clause.function.args[1].function.args[0].CopyFrom(field.location.start)
     size_clause.function.args[1].function.args[1].CopyFrom(field.location.size)
-    size_clauses.append(size_clause)
-  size_expression = ir_data.Expression()
-  size_expression.CopyFrom(_SIZE_SKELETON)
+    size_clauses.append(size_clause_ir)
+  size_expression = ir_data_utils.copy(_SIZE_SKELETON)
   size_expression.function.args.extend(size_clauses)
   _mark_as_synthetic(size_expression)
   size_field = ir_data.Field(

@@ -143,8 +143,7 @@ def parse_module_text(source_code, file_name):
   # need to re-parse the prelude for every test .emb.
   if (source_code, file_name) in _cached_modules:
     debug_info = _cached_modules[source_code, file_name]
-    ir = ir_data.Module()
-    ir.CopyFrom(debug_info.ir)
+    ir = ir_data_utils.copy(debug_info.ir)
   else:
     debug_info = ModuleDebugInfo(file_name)
     debug_info.source_code = source_code
@@ -163,8 +162,7 @@ def parse_module_text(source_code, file_name):
     ir = module_ir.build_ir(parse_result.parse_tree, used_productions)
     ir.source_text = source_code
     debug_info.used_productions = used_productions
-    debug_info.ir = ir_data.Module()
-    debug_info.ir.CopyFrom(ir)
+    debug_info.ir = ir_data_utils.copy(ir)
     _cached_modules[source_code, file_name] = debug_info
   ir.source_file_name = file_name
   return _IrDebugInfo(ir, debug_info, [])

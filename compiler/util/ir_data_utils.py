@@ -45,3 +45,18 @@ def reader(obj: ir_data.Message) -> ir_data.Message:
   This is a no-op and just used for annotation for now.
   """
   return obj
+
+
+def copy(ir: ir_data.Message | None) -> ir_data.Message | None:
+  """Creates a copy of the given IR data class"""
+  if not ir:
+    return None
+  ir_class = type(ir)
+  ir_copy = ir_class()
+  update(ir_copy, ir)
+  return ir_copy
+
+
+def update(ir: ir_data.Message, template: ir_data.Message):
+  """Updates `ir`s fields with all set fields in the template."""
+  ir.CopyFrom(template)

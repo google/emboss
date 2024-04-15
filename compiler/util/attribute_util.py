@@ -305,8 +305,7 @@ def gather_default_attributes(obj, defaults):
   defaults = defaults.copy()
   for attr in obj.attribute:
     if attr.is_default:
-      defaulted_attr = ir_data.Attribute()
-      defaulted_attr.CopyFrom(attr)
+      defaulted_attr = ir_data_utils.copy(attr)
       defaulted_attr.is_default = False
       defaults[attr.name.text] = defaulted_attr
   return {"defaults": defaults}
