@@ -634,7 +634,7 @@ def _shared_modular_value(left, right):
 
 def _compute_constraints_of_choice_operator(expression):
   """Computes the constraints of a choice operation '?:'."""
-  condition, if_true, if_false = expression.function.args
+  condition, if_true, if_false = ir_data_utils.reader(expression).function.args
   expression = ir_data_utils.builder(expression)
   if condition.type.boolean.HasField("value"):
     # The generated expressions for $size_in_bits and $size_in_bytes look like

@@ -220,12 +220,13 @@ def _add_write_method(field, ir):
     ir_data_utils.builder(field).write_method.physical = True
     return
 
+  field_checker = ir_data_utils.reader(field)
   field_builder = ir_data_utils.builder(field)
 
   # A virtual field cannot be a direct alias if it has an additional
   # requirement.
   requires_attr = ir_util.get_attribute(field.attribute, attributes.REQUIRES)
-  if (field.read_transform.WhichOneof("expression") != "field_reference" or
+  if (field_checker.read_transform.WhichOneof("expression") != "field_reference" or
       requires_attr is not None):
     inverse = _invert_expression(field.read_transform, ir)
     if inverse:

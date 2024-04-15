@@ -17,6 +17,7 @@
 import operator
 
 from compiler.util import ir_data
+from compiler.util import ir_data_utils
 
 
 _FIXED_SIZE_ATTRIBUTE = "fixed_size_in_bits"
@@ -79,6 +80,7 @@ def is_constant(expression, bindings=None):
 
 def is_constant_type(expression_type):
   """Returns True if expression_type is inhabited by a single value."""
+  expression_type = ir_data_utils.reader(expression_type)
   return (expression_type.integer.modulus == "infinity" or
           expression_type.boolean.HasField("value") or
           expression_type.enumeration.HasField("value"))
@@ -86,6 +88,7 @@ def is_constant_type(expression_type):
 
 def constant_value(expression, bindings=None):
   """Evaluates expression with the given bindings."""
+  expression = ir_data_utils.reader(expression)
   if expression.WhichOneof("expression") == "constant":
     return int(expression.constant.value)
   elif expression.WhichOneof("expression") == "constant_reference":
@@ -252,7 +255,7 @@ def _find_path_in_parameters(path, type_definition):
   if len(path) > 1:
     return None
   for parameter in type_definition.runtime_parameter:
-    if parameter.name.name.text == path[0]:
+    if ir_data_utils.reader(parameter).name.name.text == path[0]:
       return parameter
   return None
 
@@ -389,4 +392,4 @@ def field_is_read_only(field_ir):
   """Returns true if the field is read-only."""
   # For now, all virtual fields are read-only, and no non-virtual fields are
   # read-only.
-  return field_ir.write_method.read_only
+  return ir_data_utils.reader(field_ir).write_method.read_only

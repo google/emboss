@@ -24,7 +24,7 @@ from compiler.util import traverse_ir
 
 def _type_check_expression(expression, source_file_name, ir, errors):
   """Checks and annotates the type of an expression and all subexpressions."""
-  if expression.type.WhichOneof("type"):
+  if ir_data_utils.reader(expression).type.WhichOneof("type"):
     # This expression has already been type checked.
     return
   expression_variety = expression.WhichOneof("expression")
@@ -54,7 +54,7 @@ def _annotate_as_boolean(expression):
 
 def _type_check(expression, source_file_name, errors, type_oneof, type_name,
                 expression_name):
-  if expression.type.WhichOneof("type") != type_oneof:
+  if ir_data_utils.reader(expression).type.WhichOneof("type") != type_oneof:
     errors.append([
         error.error(source_file_name, expression.source_location,
                     "{} must be {}.".format(expression_name, type_name))

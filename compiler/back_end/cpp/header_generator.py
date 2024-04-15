@@ -28,6 +28,7 @@ from compiler.back_end.util import code_template
 from compiler.util import attribute_util
 from compiler.util import error
 from compiler.util import ir_data
+from compiler.util import ir_data_utils
 from compiler.util import ir_util
 from compiler.util import name_conversion
 from compiler.util import resources
@@ -1475,7 +1476,7 @@ def _offset_source_location_column(source_location, offset):
 def _verify_namespace_attribute(attr, source_file_name, errors):
   if attr.name.text != attributes.Attribute.NAMESPACE:
     return
-  namespace_value = attr.value.string_constant
+  namespace_value = ir_data_utils.reader(attr).value.string_constant
   if not re.match(_NS_RE, namespace_value.text):
     if re.match(_NS_EMPTY_RE, namespace_value.text):
       errors.append([error.error(

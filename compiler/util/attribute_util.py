@@ -20,6 +20,7 @@ IR.
 
 from compiler.util import error
 from compiler.util import ir_data
+from compiler.util import ir_data_utils
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 
@@ -30,7 +31,7 @@ _MUST_BE_CONSTANT_MESSAGE = "Attribute '{name}' must have a constant value."
 
 
 def _attribute_name_for_errors(attr):
-  if attr.back_end.text:
+  if ir_data_utils.reader(attr).back_end.text:
     return f"({attr.back_end.text}) {attr.name.text}"
   else:
     return attr.name.text
@@ -98,7 +99,7 @@ STRING = _is_string
 def string_from_list(valid_values):
   """Checks if the given attr has one of the valid_values."""
   def _string_from_list(attr, module_source_file):
-    if attr.value.string_constant.text not in valid_values:
+    if ir_data_utils.reader(attr).value.string_constant.text not in valid_values:
       return [[error.error(module_source_file,
                            attr.value.source_location,
                            "Attribute '{name}' must be '{options}'.".format(
@@ -252,15 +253,17 @@ def _check_attributes(attribute_list, types, back_end, attribute_specs,
   errors = []
   already_seen_attributes = {}
   for attr in attribute_list:
-    if attr.back_end.text:
+    field_checker = ir_data_utils.reader(attr)
+    if field_checker.back_end.text:
       if attr.back_end.text != back_end:
         continue
     else:
       if back_end is not None:
         continue
     attribute_name = _attribute_name_for_errors(attr)
-    if (attr.name.text, attr.is_default) in already_seen_attributes:
-      original_attr = already_seen_attributes[attr.name.text, attr.is_default]
+    attr_key = (field_checker.name.text, field_checker.is_default)
+    if attr_key in already_seen_attributes:
+      original_attr = already_seen_attributes[attr_key]
       errors.append([
           error.error(module_source_file,
                       attr.source_location,
@@ -269,9 +272,9 @@ def _check_attributes(attribute_list, types, back_end, attribute_specs,
                      original_attr.source_location,
                      "Original attribute")])
       continue
-    already_seen_attributes[attr.name.text, attr.is_default] = attr
+    already_seen_attributes[attr_key] = attr
 
-    if (attr.name.text, attr.is_default) not in attribute_specs:
+    if attr_key not in attribute_specs:
       if attr.is_default:
         error_message = "Attribute '{}' may not be defaulted on {}.".format(
             attribute_name, context_name)
