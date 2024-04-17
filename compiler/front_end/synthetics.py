@@ -156,8 +156,8 @@ _SIZE_BOUNDS = {
 def _add_size_bound_virtuals(structure, type_definition):
   """Adds ${min,max}_size_in_{bits,bytes} virtual fields to structure."""
   names = {
-      ir_pb2.TypeDefinition.BIT: ("$max_size_in_bits", "$min_size_in_bits"),
-      ir_pb2.TypeDefinition.BYTE: ("$max_size_in_bytes", "$min_size_in_bytes"),
+      ir_pb2.AddressableUnit.BIT: ("$max_size_in_bits", "$min_size_in_bits"),
+      ir_pb2.AddressableUnit.BYTE: ("$max_size_in_bytes", "$min_size_in_bytes"),
   }
   for name in names[type_definition.addressable_unit]:
     bound_field = ir_pb2.Field(
@@ -184,8 +184,8 @@ _SIZE_SKELETON = expression_parser.parse("$max(0)")
 def _add_size_virtuals(structure, type_definition):
   """Adds a $size_in_bits or $size_in_bytes virtual field to structure."""
   names = {
-      ir_pb2.TypeDefinition.BIT: "$size_in_bits",
-      ir_pb2.TypeDefinition.BYTE: "$size_in_bytes",
+      ir_pb2.AddressableUnit.BIT: "$size_in_bits",
+      ir_pb2.AddressableUnit.BYTE: "$size_in_bytes",
   }
   size_field_name = names[type_definition.addressable_unit]
   size_clauses = []

@@ -351,7 +351,7 @@ class IrUtilTest(unittest.TestCase):
             value=ir_pb2.AttributeValue(
                 expression=ir_pb2.Expression(
                     function=ir_pb2.Function(
-                        function=ir_pb2.Function.ADDITION,
+                        function=ir_pb2.FunctionMapping.ADDITION,
                         args=[
                             ir_pb2.Expression(
                                 constant=ir_pb2.NumericConstant(value="100"),

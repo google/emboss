@@ -85,22 +85,22 @@ def _compute_constraints_of_function(expression, ir):
   for arg in expression.function.args:
     compute_constraints_of_expression(arg, ir)
   op = expression.function.function
-  if op in (ir_pb2.Function.ADDITION, ir_pb2.Function.SUBTRACTION):
+  if op in (ir_pb2.FunctionMapping.ADDITION, ir_pb2.FunctionMapping.SUBTRACTION):
     _compute_constraints_of_additive_operator(expression)
-  elif op == ir_pb2.Function.MULTIPLICATION:
+  elif op == ir_pb2.FunctionMapping.MULTIPLICATION:
     _compute_constraints_of_multiplicative_operator(expression)
-  elif op in (ir_pb2.Function.EQUALITY, ir_pb2.Function.INEQUALITY,
-              ir_pb2.Function.LESS, ir_pb2.Function.LESS_OR_EQUAL,
-              ir_pb2.Function.GREATER, ir_pb2.Function.GREATER_OR_EQUAL,
-              ir_pb2.Function.AND, ir_pb2.Function.OR):
+  elif op in (ir_pb2.FunctionMapping.EQUALITY, ir_pb2.FunctionMapping.INEQUALITY,
+              ir_pb2.FunctionMapping.LESS, ir_pb2.FunctionMapping.LESS_OR_EQUAL,
+              ir_pb2.FunctionMapping.GREATER, ir_pb2.FunctionMapping.GREATER_OR_EQUAL,
+              ir_pb2.FunctionMapping.AND, ir_pb2.FunctionMapping.OR):
     _compute_constant_value_of_comparison_operator(expression)
-  elif op == ir_pb2.Function.CHOICE:
+  elif op == ir_pb2.FunctionMapping.CHOICE:
     _compute_constraints_of_choice_operator(expression)
-  elif op == ir_pb2.Function.MAXIMUM:
+  elif op == ir_pb2.FunctionMapping.MAXIMUM:
     _compute_constraints_of_maximum_function(expression)
-  elif op == ir_pb2.Function.PRESENCE:
+  elif op == ir_pb2.FunctionMapping.PRESENCE:
     _compute_constraints_of_existence_function(expression, ir)
-  elif op in (ir_pb2.Function.UPPER_BOUND, ir_pb2.Function.LOWER_BOUND):
+  elif op in (ir_pb2.FunctionMapping.UPPER_BOUND, ir_pb2.FunctionMapping.LOWER_BOUND):
     _compute_constraints_of_bound_function(expression)
   else:
     assert False, "Unknown operator {!r}".format(op)
@@ -317,8 +317,8 @@ def _min(a):
 def _compute_constraints_of_additive_operator(expression):
   """Computes the modular value of an additive expression."""
   funcs = {
-      ir_pb2.Function.ADDITION: _add,
-      ir_pb2.Function.SUBTRACTION: _sub,
+      ir_pb2.FunctionMapping.ADDITION: _add,
+      ir_pb2.FunctionMapping.SUBTRACTION: _sub,
   }
   func = funcs[expression.function.function]
   args = expression.function.args
@@ -337,7 +337,7 @@ def _compute_constraints_of_additive_operator(expression):
                                                 new_modulus)
   lmax = left.type.integer.maximum_value
   lmin = left.type.integer.minimum_value
-  if expression.function.function == ir_pb2.Function.SUBTRACTION:
+  if expression.function.function == ir_pb2.FunctionMapping.SUBTRACTION:
     rmax = right.type.integer.minimum_value
     rmin = right.type.integer.maximum_value
   else:
@@ -502,14 +502,14 @@ def _compute_constant_value_of_comparison_operator(expression):
   args = expression.function.args
   if all(ir_util.is_constant(arg) for arg in args):
     functions = {
-        ir_pb2.Function.EQUALITY: operator.eq,
-        ir_pb2.Function.INEQUALITY: operator.ne,
-        ir_pb2.Function.LESS: operator.lt,
-        ir_pb2.Function.LESS_OR_EQUAL: operator.le,
-        ir_pb2.Function.GREATER: operator.gt,
-        ir_pb2.Function.GREATER_OR_EQUAL: operator.ge,
-        ir_pb2.Function.AND: operator.and_,
-        ir_pb2.Function.OR: operator.or_,
+        ir_pb2.FunctionMapping.EQUALITY: operator.eq,
+        ir_pb2.FunctionMapping.INEQUALITY: operator.ne,
+        ir_pb2.FunctionMapping.LESS: operator.lt,
+        ir_pb2.FunctionMapping.LESS_OR_EQUAL: operator.le,
+        ir_pb2.FunctionMapping.GREATER: operator.gt,
+        ir_pb2.FunctionMapping.GREATER_OR_EQUAL: operator.ge,
+        ir_pb2.FunctionMapping.AND: operator.and_,
+        ir_pb2.FunctionMapping.OR: operator.or_,
     }
     func = functions[expression.function.function]
     expression.type.boolean.value = func(
@@ -518,9 +518,9 @@ def _compute_constant_value_of_comparison_operator(expression):
 
 def _compute_constraints_of_bound_function(expression):
   """Computes the constraints of $upper_bound or $lower_bound."""
-  if expression.function.function == ir_pb2.Function.UPPER_BOUND:
+  if expression.function.function == ir_pb2.FunctionMapping.UPPER_BOUND:
     value = expression.function.args[0].type.integer.maximum_value
-  elif expression.function.function == ir_pb2.Function.LOWER_BOUND:
+  elif expression.function.function == ir_pb2.FunctionMapping.LOWER_BOUND:
     value = expression.function.args[0].type.integer.minimum_value
   else:
     assert False, "Non-bound function"

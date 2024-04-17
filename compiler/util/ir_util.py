@@ -150,21 +150,23 @@ def _constant_value_of_function(function, bindings):
   # constant expression patterns built from non-constant subexpressions, such as
   # `0 * X` or `X == X` or `3 * X == X + X + X`.  I (bolms@) am not implementing
   # any further special cases because I do not see any practical use for them.
-  if function.function == ir_pb2.Function.AND:
+  if function.function == ir_pb2.FunctionMapping.UNKNOWN:
+    return None
+  if function.function == ir_pb2.FunctionMapping.AND:
     if any(value is False for value in values):
       return False
     elif any(value is None for value in values):
       return None
     else:
       return True
-  elif function.function == ir_pb2.Function.OR:
+  elif function.function == ir_pb2.FunctionMapping.OR:
     if any(value is True for value in values):
       return True
     elif any(value is None for value in values):
       return None
     else:
       return False
-  elif function.function == ir_pb2.Function.CHOICE:
+  elif function.function == ir_pb2.FunctionMapping.CHOICE:
     if values[0] is None:
       return None
     else:
@@ -174,18 +176,18 @@ def _constant_value_of_function(function, bindings):
   if any(value is None for value in values):
     return None
   functions = {
-      ir_pb2.Function.ADDITION: operator.add,
-      ir_pb2.Function.SUBTRACTION: operator.sub,
-      ir_pb2.Function.MULTIPLICATION: operator.mul,
-      ir_pb2.Function.EQUALITY: operator.eq,
-      ir_pb2.Function.INEQUALITY: operator.ne,
-      ir_pb2.Function.LESS: operator.lt,
-      ir_pb2.Function.LESS_OR_EQUAL: operator.le,
-      ir_pb2.Function.GREATER: operator.gt,
-      ir_pb2.Function.GREATER_OR_EQUAL: operator.ge,
+      ir_pb2.FunctionMapping.ADDITION: operator.add,
+      ir_pb2.FunctionMapping.SUBTRACTION: operator.sub,
+      ir_pb2.FunctionMapping.MULTIPLICATION: operator.mul,
+      ir_pb2.FunctionMapping.EQUALITY: operator.eq,
+      ir_pb2.FunctionMapping.INEQUALITY: operator.ne,
+      ir_pb2.FunctionMapping.LESS: operator.lt,
+      ir_pb2.FunctionMapping.LESS_OR_EQUAL: operator.le,
+      ir_pb2.FunctionMapping.GREATER: operator.gt,
+      ir_pb2.FunctionMapping.GREATER_OR_EQUAL: operator.ge,
       # Python's max([1, 2]) == 2; max(1, 2) == 2; max([1]) == 1; but max(1)
       # throws a TypeError ("'int' object is not iterable").
-      ir_pb2.Function.MAXIMUM: lambda *x: max(x),
+      ir_pb2.FunctionMapping.MAXIMUM: lambda *x: max(x),
   }
   return functions[function.function](*values)
 

@@ -111,11 +111,11 @@ def _type_check_operation(expression, source_file_name, ir, errors):
   for arg in expression.function.args:
     _type_check_expression(arg, source_file_name, ir, errors)
   function = expression.function.function
-  if function in (ir_pb2.Function.EQUALITY, ir_pb2.Function.INEQUALITY,
-                  ir_pb2.Function.LESS, ir_pb2.Function.LESS_OR_EQUAL,
-                  ir_pb2.Function.GREATER, ir_pb2.Function.GREATER_OR_EQUAL):
+  if function in (ir_pb2.FunctionMapping.EQUALITY, ir_pb2.FunctionMapping.INEQUALITY,
+                  ir_pb2.FunctionMapping.LESS, ir_pb2.FunctionMapping.LESS_OR_EQUAL,
+                  ir_pb2.FunctionMapping.GREATER, ir_pb2.FunctionMapping.GREATER_OR_EQUAL):
     _type_check_comparison_operator(expression, source_file_name, errors)
-  elif function == ir_pb2.Function.CHOICE:
+  elif function == ir_pb2.FunctionMapping.CHOICE:
     _type_check_choice_operator(expression, source_file_name, errors)
   else:
     _type_check_monomorphic_operator(expression, source_file_name, errors)
@@ -132,21 +132,21 @@ def _type_check_monomorphic_operator(expression, source_file_name, errors):
   binary = ("Left argument", "Right argument")
   n_ary = ("Argument {}".format(n) for n in range(len(args)))
   functions = {
-      ir_pb2.Function.ADDITION: (int_result, int_args, binary, 2, 2,
+      ir_pb2.FunctionMapping.ADDITION: (int_result, int_args, binary, 2, 2,
                                  "operator"),
-      ir_pb2.Function.SUBTRACTION: (int_result, int_args, binary, 2, 2,
+      ir_pb2.FunctionMapping.SUBTRACTION: (int_result, int_args, binary, 2, 2,
                                     "operator"),
-      ir_pb2.Function.MULTIPLICATION: (int_result, int_args, binary, 2, 2,
+      ir_pb2.FunctionMapping.MULTIPLICATION: (int_result, int_args, binary, 2, 2,
                                        "operator"),
-      ir_pb2.Function.AND: (bool_result, bool_args, binary, 2, 2, "operator"),
-      ir_pb2.Function.OR: (bool_result, bool_args, binary, 2, 2, "operator"),
-      ir_pb2.Function.MAXIMUM: (int_result, int_args, n_ary, 1, None,
+      ir_pb2.FunctionMapping.AND: (bool_result, bool_args, binary, 2, 2, "operator"),
+      ir_pb2.FunctionMapping.OR: (bool_result, bool_args, binary, 2, 2, "operator"),
+      ir_pb2.FunctionMapping.MAXIMUM: (int_result, int_args, n_ary, 1, None,
                                 "function"),
-      ir_pb2.Function.PRESENCE: (bool_result, field_args, n_ary, 1, 1,
+      ir_pb2.FunctionMapping.PRESENCE: (bool_result, field_args, n_ary, 1, 1,
                                  "function"),
-      ir_pb2.Function.UPPER_BOUND: (int_result, int_args, n_ary, 1, 1,
+      ir_pb2.FunctionMapping.UPPER_BOUND: (int_result, int_args, n_ary, 1, 1,
                                     "function"),
-      ir_pb2.Function.LOWER_BOUND: (int_result, int_args, n_ary, 1, 1,
+      ir_pb2.FunctionMapping.LOWER_BOUND: (int_result, int_args, n_ary, 1, 1,
                                     "function"),
   }
   function = expression.function.function
@@ -267,8 +267,8 @@ def _type_check_comparison_operator(expression, source_file_name, errors):
   """Checks the type of a comparison operator (==, !=, <, >, >=, <=)."""
   # Applying less than or greater than to a boolean is likely a mistake, so
   # only equality and inequality are allowed for booleans.
-  if expression.function.function in (ir_pb2.Function.EQUALITY,
-                                      ir_pb2.Function.INEQUALITY):
+  if expression.function.function in (ir_pb2.FunctionMapping.EQUALITY,
+                                      ir_pb2.FunctionMapping.INEQUALITY):
     acceptable_types = ("integer", "boolean", "enumeration")
     acceptable_types_for_humans = "an integer, boolean, or enum"
   else:
