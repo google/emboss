@@ -16,6 +16,7 @@
 
 #include "gtest/gtest.h"
 #include "runtime/cpp/emboss_prelude.h"
+#include "runtime/cpp/emboss_text_util.h"
 
 namespace emboss {
 namespace support {

@@ -25,7 +25,6 @@
 #include "runtime/cpp/emboss_defines.h"
 #include "runtime/cpp/emboss_enum_view.h"
 #include "runtime/cpp/emboss_memory_util.h"
-#include "runtime/cpp/emboss_text_util.h"
 #include "runtime/cpp/emboss_view_parameters.h"
 
 #endif  // EMBOSS_RUNTIME_CPP_EMBOSS_CPP_UTIL_H_

@@ -28,6 +28,30 @@
 
 #include "runtime/cpp/emboss_cpp_util.h"
 
+// Forward declarations for optional text processing helpers.
+namespace emboss {
+class TextOutputOptions;
+namespace support {
+template <class Stream, class View>
+bool ReadBooleanFromTextStream(View *view, Stream *stream);
+template <class Stream, class View>
+void WriteBooleanViewToTextStream(View *view, Stream *stream,
+                                  const TextOutputOptions &);
+
+template <class Stream, class View>
+bool ReadIntegerFromTextStream(View *view, Stream *stream);
+template <class Stream, class View>
+void WriteIntegerViewToTextStream(View *view, Stream *stream,
+                                  const TextOutputOptions &options);
+
+template <class Stream, class View>
+bool ReadFloatFromTextStream(View *view, Stream *stream);
+template <class Stream, class Float>
+void WriteFloatToTextStream(Float n, Stream *stream,
+                            const TextOutputOptions &options);
+}  // namespace support
+}  // namespace emboss
+
 // This namespace must match the [(cpp) namespace] in the Emboss prelude.
 namespace emboss {
 namespace prelude {
@@ -101,15 +125,7 @@ class FlagView final {
 
   template <class Stream>
   bool UpdateFromTextStream(Stream *stream) const {
-    ::std::string token;
-    if (!::emboss::support::ReadToken(stream, &token)) return false;
-    if (token == "true") {
-      return TryToWrite(true);
-    } else if (token == "false") {
-      return TryToWrite(false);
-    }
-    // TODO(bolms): Provide a way to get an error message on parse failure.
-    return false;
+    return ::emboss::support::ReadBooleanFromTextStream(this, stream);
   }
 
   template <class Stream>
@@ -136,7 +152,7 @@ class UIntView final {
       "UIntView requires sizeof(ValueType) * 8 >= Parameters::kBits.");
 
   template <typename... Args>
-  explicit UIntView(Args &&... args) : buffer_{::std::forward<Args>(args)...} {}
+  explicit UIntView(Args &&...args) : buffer_{::std::forward<Args>(args)...} {}
   UIntView() : buffer_() {}
   UIntView(const UIntView &) = default;
   UIntView(UIntView &&) = default;
@@ -295,7 +311,7 @@ class UIntView final {
 
   template <class Stream>
   void WriteToTextStream(Stream *stream,
-                         ::emboss::TextOutputOptions options) const {
+                         ::emboss::TextOutputOptions &options) const {
     support::WriteIntegerViewToTextStream(this, stream, options);
   }
 
@@ -318,7 +334,7 @@ class IntView final {
                 "IntView requires sizeof(ValueType) * 8 >= Parameters::kBits.");
 
   template <typename... Args>
-  explicit IntView(Args &&... args) : buffer_{::std::forward<Args>(args)...} {}
+  explicit IntView(Args &&...args) : buffer_{::std::forward<Args>(args)...} {}
   IntView() : buffer_() {}
   IntView(const IntView &) = default;
   IntView(IntView &&) = default;
@@ -460,7 +476,7 @@ class IntView final {
 
   template <class Stream>
   void WriteToTextStream(Stream *stream,
-                         ::emboss::TextOutputOptions options) const {
+                         ::emboss::TextOutputOptions &options) const {
     support::WriteIntegerViewToTextStream(this, stream, options);
   }
 
@@ -605,7 +621,7 @@ class BcdView final {
                 "BcdView requires sizeof(ValueType) * 8 >= Parameters::kBits.");
 
   template <typename... Args>
-  explicit BcdView(Args &&... args) : buffer_{::std::forward<Args>(args)...} {}
+  explicit BcdView(Args &&...args) : buffer_{::std::forward<Args>(args)...} {}
   BcdView() : buffer_() {}
   BcdView(const BcdView &) = default;
   BcdView(BcdView &&) = default;
@@ -645,7 +661,7 @@ class BcdView final {
 
   template <class Stream>
   void WriteToTextStream(Stream *stream,
-                         ::emboss::TextOutputOptions options) const {
+                         ::emboss::TextOutputOptions &options) const {
     // TODO(bolms): This shares the numeric_base() option with IntView and
     // UIntView (and EnumView, for unknown enum values).  It seems like an end
     // user might prefer to see BCD values in decimal, even if they want to see
@@ -728,8 +744,7 @@ class FloatView final {
   using ValueType = typename support::FloatType<Parameters::kBits>::Type;
 
   template <typename... Args>
-  explicit FloatView(Args &&... args)
-      : buffer_{::std::forward<Args>(args)...} {}
+  explicit FloatView(Args &&...args) : buffer_{::std::forward<Args>(args)...} {}
   FloatView() : buffer_() {}
   FloatView(const FloatView &) = default;
   FloatView(FloatView &&) = default;
@@ -797,7 +812,7 @@ class FloatView final {
 
   template <class Stream>
   void WriteToTextStream(Stream *stream,
-                         ::emboss::TextOutputOptions options) const {
+                         ::emboss::TextOutputOptions &options) const {
     support::WriteFloatToTextStream(Read(), stream, options);
   }
 

@@ -347,6 +347,19 @@ void WriteIntegerViewToTextStream(View *view, Stream *stream,
   }
 }
 
+template <class Stream, class View>
+bool ReadBooleanFromTextStream(View *view, Stream *stream) {
+  ::std::string token;
+  if (!::emboss::support::ReadToken(stream, &token)) return false;
+  if (token == "true") {
+    return view->TryToWrite(true);
+  } else if (token == "false") {
+    return view->TryToWrite(false);
+  }
+  // TODO(bolms): Provide a way to get an error message on parse failure.
+  return false;
+}
+
 // The TextOutputOptions parameter is present so that it can be passed in by
 // generated code that uses the same form for WriteBooleanViewToTextStream,
 // WriteIntegerViewToTextStream, and WriteEnumViewToTextStream.
@@ -596,6 +609,29 @@ void WriteFloatToTextStream(Float n, Stream *stream,
 }
 
 template <class Stream, class View>
+bool ReadEnumViewFromTextStream(View *view, Stream *stream) {
+  ::std::string token;
+  if (!ReadToken(stream, &token)) return false;
+  if (token.empty()) return false;
+  if (::std::isdigit(token[0])) {
+    ::std::uint64_t value;
+    if (!DecodeInteger(token, &value)) return false;
+    // TODO(bolms): Fix the static_cast<ValueType> for signed ValueType.
+    // TODO(bolms): Should values between 2**63 and 2**64-1 actually be
+    // allowed in the text format when ValueType is signed?
+    return view->TryToWrite(static_cast<typename View::ValueType>(value));
+  } else if (token[0] == '-') {
+    ::std::int64_t value;
+    if (!DecodeInteger(token, &value)) return false;
+    return view->TryToWrite(static_cast<typename View::ValueType>(value));
+  } else {
+    typename View::ValueType value;
+    if (!TryToGetEnumFromName(token.c_str(), &value)) return false;
+    return view->TryToWrite(value);
+  }
+}
+
+template <class Stream, class View>
 void WriteEnumViewToTextStream(View *view, Stream *stream,
                                const TextOutputOptions &options) {
   const char *name = TryToGetNameFromEnum(view->Read());
@@ -679,6 +715,30 @@ bool ReadArrayFromTextStream(Array *array, Stream *stream) {
       if (c != '}') return false;
       if (!stream->Unread(c)) return false;
     }
+  }
+}
+
+// Prints out the elements of an 8-bit Int or UInt array as characters.
+template <class Array, class Stream>
+void WriteShorthandAsciiArrayCommentToTextStream(
+    const Array *array, Stream *stream, const TextOutputOptions &options) {
+  if (!options.multiline()) return;
+  if (!options.comments()) return;
+  if (array->ElementCount() == 0) return;
+  static constexpr int kCharsPerBlock = 64;
+  static constexpr char kStandInForNonPrintableChar = '.';
+  auto start_new_line = [&]() {
+    stream->Write("\n");
+    stream->Write(options.current_indent());
+    stream->Write("# ");
+  };
+  for (int i = 0, n = array->ElementCount(); i < n; ++i) {
+    const int c = (*array)[i].Read();
+    const bool c_is_printable = (c >= 32 && c <= 126);
+    const bool starting_new_block = ((i % kCharsPerBlock) == 0);
+    if (starting_new_block) start_new_line();
+    stream->Write(c_is_printable ? static_cast<char>(c)
+                                 : kStandInForNonPrintableChar);
   }
 }
 
