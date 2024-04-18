@@ -14,48 +14,41 @@
 
 """Tests for code_template."""
 
+import string
 import unittest
 from compiler.back_end.util import code_template
 
+def _format_template_str(template: str, **kwargs) -> str:
+  return code_template.format_template(string.Template(template), **kwargs)
 
 class FormatTest(unittest.TestCase):
   """Tests for code_template.format."""
 
   def test_no_replacement_fields(self):
-    self.assertEqual("foo", code_template.format_template("foo"))
-    self.assertEqual("{foo}", code_template.format_template("{foo}"))
-    self.assertEqual("$foo$", code_template.format_template("$foo$"))
-    self.assertEqual("$_foo$", code_template.format_template("$_foo$"))
-    self.assertEqual("$foo_$", code_template.format_template("$foo_$"))
+    self.assertEqual("foo", _format_template_str("foo"))
+    self.assertEqual("{foo}", _format_template_str("{foo}"))
+    self.assertEqual("${foo}", _format_template_str("$${foo}"))
 
   def test_one_replacement_field(self):
-    self.assertEqual("foo", code_template.format_template("$_bar_$", bar="foo"))
+    self.assertEqual("foo", _format_template_str("${bar}", bar="foo"))
     self.assertEqual("bazfoo",
-                     code_template.format_template("baz$_bar_$", bar="foo"))
+                     _format_template_str("baz${bar}", bar="foo"))
     self.assertEqual("foobaz",
-                     code_template.format_template("$_bar_$baz", bar="foo"))
+                     _format_template_str("${bar}baz", bar="foo"))
     self.assertEqual("bazfooqux",
-                     code_template.format_template("baz$_bar_$qux", bar="foo"))
+                     _format_template_str("baz${bar}qux", bar="foo"))
 
   def test_one_replacement_field_with_formatting(self):
-    self.assertEqual("1.000000",
-                     code_template.format_template("$_bar:.6f_$", bar=1))
-    self.assertEqual("'foo'",
-                     code_template.format_template("$_bar!r_$", bar="foo"))
-    self.assertEqual("==foo==",
-                     code_template.format_template("$_bar:=^7_$", bar="foo"))
-    self.assertEqual("=='foo'==",
-                     code_template.format_template("$_bar!r:=^9_$", bar="foo"))
-    self.assertEqual("xx=='foo'==yy",
-                     code_template.format_template("xx$_bar!r:=^9_$yy",
-                                                   bar="foo"))
+    # Basic string.Templates don't support formatting values.
+    self.assertRaises(ValueError,
+                     _format_template_str, "${bar:.6f}", bar=1)
 
   def test_one_replacement_field_value_missing(self):
-    self.assertRaises(KeyError, code_template.format_template, "$_bar_$")
+    self.assertRaises(KeyError, _format_template_str, "${bar}")
 
   def test_multiple_replacement_fields(self):
     self.assertEqual(" aaa  bbb   ",
-                     code_template.format_template(" $_bar_$  $_baz_$   ",
+                     _format_template_str(" ${bar}  ${baz}   ",
                                                    bar="aaa",
                                                    baz="bbb"))
 
@@ -63,36 +56,44 @@ class FormatTest(unittest.TestCase):
 class ParseTemplatesTest(unittest.TestCase):
   """Tests for code_template.parse_templates."""
 
+  def assertTemplatesEqual(self, expected, actual): # pylint:disable=invalid-name
+    """Compares the results of a parse_templates"""
+    # Extract the name and template from the result tuple
+    actual = {
+        k: v.template for k, v in actual._asdict().items()
+    }
+    self.assertEqual(expected, actual)
+
   def test_handles_no_template_case(self):
-    self.assertEqual({}, code_template.parse_templates("")._asdict())
-    self.assertEqual({}, code_template.parse_templates(
-        "this is not a template")._asdict())
+    self.assertTemplatesEqual({}, code_template.parse_templates(""))
+    self.assertTemplatesEqual({}, code_template.parse_templates(
+        "this is not a template"))
 
   def test_handles_one_template_at_start(self):
-    self.assertEqual({"foo": "bar"},
-                     code_template.parse_templates("** foo **\nbar")._asdict())
+    self.assertTemplatesEqual({"foo": "bar"},
+                     code_template.parse_templates("** foo **\nbar"))
 
   def test_handles_one_template_after_start(self):
-    self.assertEqual(
+    self.assertTemplatesEqual(
         {"foo": "bar"},
-        code_template.parse_templates("text\n** foo **\nbar")._asdict())
+        code_template.parse_templates("text\n** foo **\nbar"))
 
   def test_handles_delimiter_with_other_text(self):
-    self.assertEqual(
+    self.assertTemplatesEqual(
         {"foo": "bar"},
-        code_template.parse_templates("text\n// ** foo ** ////\nbar")._asdict())
-    self.assertEqual(
+        code_template.parse_templates("text\n// ** foo ** ////\nbar"))
+    self.assertTemplatesEqual(
         {"foo": "bar"},
-        code_template.parse_templates("text\n# ** foo ** #####\nbar")._asdict())
+        code_template.parse_templates("text\n# ** foo ** #####\nbar"))
 
   def test_handles_multiple_delimiters(self):
-    self.assertEqual({"foo": "bar",
+    self.assertTemplatesEqual({"foo": "bar",
                       "baz": "qux"}, code_template.parse_templates(
-                          "** foo **\nbar\n** baz **\nqux")._asdict())
+                          "** foo **\nbar\n** baz **\nqux"))
 
   def test_returns_object_with_attributes(self):
     self.assertEqual("bar", code_template.parse_templates(
-        "** foo **\nbar\n** baz **\nqux").foo)
+        "** foo **\nbar\n** baz **\nqux").foo.template)
 
 if __name__ == "__main__":
   unittest.main()
