@@ -26,7 +26,7 @@ There is also a convenience macro, `emboss_cc_library()`, which creates an
 
 load("@bazel_tools//tools/cpp:toolchain_utils.bzl", "find_cpp_toolchain")
 
-def emboss_cc_library(name, srcs, deps = [], visibility = None, import_dirs = []):
+def emboss_cc_library(name, srcs, deps = [], visibility = None, import_dirs = [], enable_enum_traits = True):
     """Constructs a C++ library from an .emb file."""
     if len(srcs) != 1:
         fail(
@@ -45,6 +45,7 @@ def emboss_cc_library(name, srcs, deps = [], visibility = None, import_dirs = []
         name = name,
         deps = [":" + name + "_ir"],
         visibility = visibility,
+        enable_enum_traits = enable_enum_traits,
     )
 
 # Full Starlark rules for emboss_library and cc_emboss_library.
@@ -174,6 +175,8 @@ def _cc_emboss_aspect_impl(target, ctx):
     args.add_all(emboss_info.direct_ir)
     args.add("--output-file")
     args.add_all(headers)
+    if not ctx.attr.enable_enum_traits:
+      args.add("--no-cc-enum-traits")
     ctx.actions.run(
         executable = emboss_cc_compiler,
         arguments = [args],
@@ -222,6 +225,9 @@ _cc_emboss_aspect = aspect(
         "_emboss_cc_runtime": attr.label(
             default = "@com_google_emboss//runtime/cpp:cpp_utils",
         ),
+        "enable_enum_traits": attr.bool(
+            default = True,
+        ),
     },
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
 )
@@ -243,6 +249,9 @@ cc_emboss_library = rule(
             aspects = [_cc_emboss_aspect],
             allow_rules = ["emboss_library"],
             allow_files = False,
+        ),
+        "enable_enum_traits": attr.bool(
+            default = True,
         ),
     },
     provides = [CcInfo, EmbossInfo],

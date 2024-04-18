@@ -225,6 +225,17 @@ emboss_cc_test(
 )
 
 emboss_cc_test(
+    name = "no_enum_traits_test",
+    srcs = [
+        "testcode/no_enum_traits_test.cc",
+    ],
+    deps = [
+        "//testdata:no_enum_traits_emboss",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+emboss_cc_test(
     name = "start_size_range_test",
     srcs = [
         "testcode/start_size_range_test.cc",

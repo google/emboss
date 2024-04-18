@@ -242,6 +242,14 @@ emboss_cc_library(
 )
 
 emboss_cc_library(
+    name = "no_enum_traits_emboss",
+    srcs = [
+        "no_enum_traits.emb",
+    ],
+    enable_enum_traits = False,
+)
+
+emboss_cc_library(
     name = "start_size_range_emboss",
     srcs = [
         "start_size_range.emb",
