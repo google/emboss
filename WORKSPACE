@@ -31,6 +31,14 @@ http_archive(
     url = "https://github.com/bazelbuild/rules_python/releases/download/0.31.0/rules_python-0.31.0.tar.gz",
 )
 
-load("@rules_python//python:repositories.bzl", "py_repositories")
+load("@rules_python//python:repositories.bzl", "py_repositories", "python_register_toolchains")
 
 py_repositories()
+
+# Use Python 3.9 for bazel Python rules.
+python_register_toolchains(
+    name = "python3",
+    python_version = "3.9",
+)
+
+load("@python3//:defs.bzl", "interpreter")
