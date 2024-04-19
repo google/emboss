@@ -1,2 +1,11 @@
+# Bazel
 bazel-*
+MODULE.bazel.lock
+
+# Python
 __pycache__
+.venv
+
+# IDEs
+.vscode
+
