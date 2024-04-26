@@ -59,6 +59,23 @@ def parse_templates(text):
   of the template.  [name] should match [A-Za-z][A-Za-z0-9_]* -- that is, it
   should be a valid ASCII Python identifier.
 
+  Additionally any `//` style comment without leading space of the form:
+  ```C++
+  // This is an emboss developer related comment, it's useful internally
+  // but not relevant to end-users of generated code.
+  ```
+  will be stripped out of the generated code.
+
+  If a template wants to define a comment that will be included in the
+  generated code a C-style comment is recommended:
+  ```C++
+  /** This will be included in the generated source. */
+
+  /**
+   * So will this!
+   */
+  ```
+
   Arguments:
     text: The text to parse into templates.
 
@@ -66,6 +83,7 @@ def parse_templates(text):
     A namedtuple object whose attributes are the templates from text.
   """
   delimiter_re = re.compile(r"^\W*\*\* ([A-Za-z][A-Za-z0-9_]*) \*\*\W*$")
+  comment_re = re.compile(r"^\s*//.*$")
   templates = {}
   name = None
   template = []
@@ -79,7 +97,8 @@ def parse_templates(text):
       name = delimiter_re.match(line).group(1)
       template = []
     else:
-      template.append(line)
+      if not comment_re.match(line):
+        template.append(line)
   if name:
     templates[name] = finish_template(template)
   return collections.namedtuple("Templates",
