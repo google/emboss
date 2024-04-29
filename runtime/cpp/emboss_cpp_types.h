@@ -17,6 +17,7 @@
 #define EMBOSS_RUNTIME_CPP_EMBOSS_CPP_TYPES_H_
 
 #include <climits>
+#include <cstddef>
 #include <cstdint>
 #include <type_traits>
 
@@ -77,21 +78,23 @@ struct LeastWidthInteger<8> final {
   using Signed = ::std::int8_t;
 };
 
-// IsChar<T>::value is true if T is a character type; i.e. const? volatile?
-// (signed|unsigned)? char.
+// IsAliasSafe<T>::value is true if T is an alias safe type; i.e. const?
+// volatile? (unsigned)? char | std::byte.
 template <typename T>
-struct IsChar {
+struct IsAliasSafe {
   // Note that 'char' is a distinct type from 'signed char' and 'unsigned char'.
   static constexpr bool value =
       ::std::is_same<char, typename ::std::remove_cv<T>::type>::value ||
-      ::std::is_same<unsigned char,
-                     typename ::std::remove_cv<T>::type>::value ||
-      ::std::is_same<signed char, typename ::std::remove_cv<T>::type>::value;
+      ::std::is_same<unsigned char, typename ::std::remove_cv<T>::type>::value
+#if __cplusplus >= 201703
+      || ::std::is_same<::std::byte, typename ::std::remove_cv<T>::type>::value
+#endif
+      ;
 };
 
 // The static member variable requires a definition.
 template <typename T>
-constexpr bool IsChar<T>::value;
+constexpr bool IsAliasSafe<T>::value;
 
 // AddSourceConst<SourceT, DestT>::Type is DestT's base type with const added if
 // SourceT is const.

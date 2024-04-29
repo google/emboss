@@ -100,30 +100,37 @@ TEST(LeastWidthInteger, Types) {
       (::std::is_same<LeastWidthInteger<64>::Signed, ::std::int64_t>::value));
 }
 
-TEST(IsChar, CharTypes) {
-  EXPECT_TRUE(IsChar<char>::value);
-  EXPECT_TRUE(IsChar<unsigned char>::value);
-  EXPECT_TRUE(IsChar<signed char>::value);
-  EXPECT_TRUE(IsChar<const char>::value);
-  EXPECT_TRUE(IsChar<const unsigned char>::value);
-  EXPECT_TRUE(IsChar<const signed char>::value);
-  EXPECT_TRUE(IsChar<volatile char>::value);
-  EXPECT_TRUE(IsChar<volatile unsigned char>::value);
-  EXPECT_TRUE(IsChar<volatile signed char>::value);
-  EXPECT_TRUE(IsChar<const volatile char>::value);
-  EXPECT_TRUE(IsChar<const volatile unsigned char>::value);
-  EXPECT_TRUE(IsChar<const volatile signed char>::value);
+TEST(IsAliasSafe, CharTypes) {
+  EXPECT_TRUE(IsAliasSafe<char>::value);
+  EXPECT_TRUE(IsAliasSafe<unsigned char>::value);
+  EXPECT_TRUE(IsAliasSafe<const char>::value);
+  EXPECT_TRUE(IsAliasSafe<const unsigned char>::value);
+  EXPECT_TRUE(IsAliasSafe<volatile char>::value);
+  EXPECT_TRUE(IsAliasSafe<volatile unsigned char>::value);
+  EXPECT_TRUE(IsAliasSafe<const volatile char>::value);
+  EXPECT_TRUE(IsAliasSafe<const volatile unsigned char>::value);
+#if __cplusplus >= 201703
+  EXPECT_TRUE(IsAliasSafe<::std::byte>::value);
+  EXPECT_TRUE(IsAliasSafe<const ::std::byte>::value);
+  EXPECT_TRUE(IsAliasSafe<volatile ::std::byte>::value);
+  EXPECT_TRUE(IsAliasSafe<const volatile ::std::byte>::value);
+#endif
 }
 
-TEST(IsChar, NonCharTypes) {
+TEST(IsAliasSafe, NonCharTypes) {
   struct OneByte {
     char c;
   };
   EXPECT_EQ(1U, sizeof(OneByte));
-  EXPECT_FALSE(IsChar<int>::value);
-  EXPECT_FALSE(IsChar<unsigned>::value);
-  EXPECT_FALSE(IsChar<const int>::value);
-  EXPECT_FALSE(IsChar<OneByte>::value);
+  EXPECT_FALSE(IsAliasSafe<int>::value);
+  EXPECT_FALSE(IsAliasSafe<unsigned>::value);
+  EXPECT_FALSE(IsAliasSafe<const int>::value);
+  EXPECT_FALSE(IsAliasSafe<OneByte>::value);
+
+  EXPECT_FALSE(IsAliasSafe<signed char>::value);
+  EXPECT_FALSE(IsAliasSafe<const signed char>::value);
+  EXPECT_FALSE(IsAliasSafe<volatile signed char>::value);
+  EXPECT_FALSE(IsAliasSafe<const volatile signed char>::value);
 }
 
 TEST(AddSourceConst, AddSourceConst) {

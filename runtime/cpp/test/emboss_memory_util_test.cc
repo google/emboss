@@ -15,6 +15,7 @@
 #include <array>
 #include <string>
 #if __cplusplus >= 201703L
+#include <cstddef>  // std::byte
 #include <string_view>
 #endif  // __cplusplus >= 201703L
 #include <vector>
@@ -38,6 +39,18 @@ template </**/ ::std::size_t kBits>
 using LittleEndianBitBlockN =
     BitBlock<LittleEndianByteOrderer<ReadWriteContiguousBuffer>, kBits>;
 
+template <typename T, typename... Args>
+std::array<T, sizeof...(Args)> constexpr init_array(Args &&...args) {
+  return {T(std::forward<Args>(args))...};
+}
+
+template <typename Container, typename... Args>
+auto constexpr init_container(Args &&...args) -> Container {
+  using CharType =
+      typename ::std::remove_reference<decltype(*Container().data())>::type;
+  return {CharType(std::forward<Args>(args))...};
+}
+
 TEST(GreatestCommonDivisor, GreatestCommonDivisor) {
   EXPECT_EQ(4U, GreatestCommonDivisor(12, 20));
   EXPECT_EQ(4U, GreatestCommonDivisor(20, 12));
@@ -56,42 +69,42 @@ TEST(GreatestCommonDivisor, GreatestCommonDivisor) {
 template <typename CharT, ::std::size_t kAlignment, ::std::size_t kOffset,
           ::std::size_t kBits>
 void TestMemoryAccessor() {
-  alignas(kAlignment)
-      CharT bytes[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
+  alignas(kAlignment) auto bytes =
+      init_array<CharT>(0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08);
   EXPECT_EQ(
       0x0807060504030201UL & (~0x0UL >> (64 - kBits)),
       (MemoryAccessor<CharT, kAlignment, kOffset, kBits>::ReadLittleEndianUInt(
-          bytes)))
+          bytes.data())))
       << "kAlignment = " << kAlignment << "; kOffset = " << kOffset
       << "; kBits = " << kBits;
   EXPECT_EQ(
       0x0102030405060708UL >> (64 - kBits),
       (MemoryAccessor<CharT, kAlignment, kOffset, kBits>::ReadBigEndianUInt(
-          bytes)))
+          bytes.data())))
       << "kAlignment = " << kAlignment << "; kOffset = " << kOffset
       << "; kBits = " << kBits;
 
   MemoryAccessor<CharT, kAlignment, kOffset, kBits>::WriteLittleEndianUInt(
-      bytes, 0x7172737475767778UL & (~0x0UL >> (64 - kBits)));
-  ::std::vector<CharT> expected_vector_after_write = {
-      {0x78, 0x77, 0x76, 0x75, 0x74, 0x73, 0x72, 0x71}};
+      bytes.data(), 0x7172737475767778UL & (~0x0UL >> (64 - kBits)));
+  auto expected_vector_after_write = init_container<std::vector<CharT>>(
+      0x78, 0x77, 0x76, 0x75, 0x74, 0x73, 0x72, 0x71);
   for (int i = kBits / 8; i < 8; ++i) {
-    expected_vector_after_write[i] = i + 1;
+    expected_vector_after_write[i] = CharT(i + 1);
   }
   EXPECT_EQ(expected_vector_after_write,
-            ::std::vector<CharT>(bytes, bytes + sizeof bytes))
+            ::std::vector<CharT>(std::begin(bytes), std::end(bytes)))
       << "kAlignment = " << kAlignment << "; kOffset = " << kOffset
       << "; kBits = " << kBits;
 
   MemoryAccessor<CharT, kAlignment, kOffset, kBits>::WriteBigEndianUInt(
-      bytes, 0x7172737475767778UL >> (64 - kBits));
-  expected_vector_after_write = {
-      {0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78}};
+      bytes.data(), 0x7172737475767778UL >> (64 - kBits));
+  expected_vector_after_write = init_container<std::vector<CharT>>(
+      0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78);
   for (int i = kBits / 8; i < 8; ++i) {
-    expected_vector_after_write[i] = i + 1;
+    expected_vector_after_write[i] = CharT(i + 1);
   }
   EXPECT_EQ(expected_vector_after_write,
-            ::std::vector<CharT>(bytes, bytes + sizeof bytes))
+            ::std::vector<CharT>(std::begin(bytes), std::end(bytes)))
       << "kAlignment = " << kAlignment << "; kOffset = " << kOffset
       << "; kBits = " << kBits;
 
@@ -119,15 +132,19 @@ void TestMemoryAccessor() {
 template <>
 void TestMemoryAccessor<char, 0, 0, 64>() {}
 
+#if __cplusplus >= 201703L
 template <>
-void TestMemoryAccessor<signed char, 0, 0, 64>() {}
+void TestMemoryAccessor<std::byte, 0, 0, 64>() {}
+#endif
 
 template <>
 void TestMemoryAccessor<unsigned char, 0, 0, 64>() {}
 
 TEST(MemoryAccessor, LittleEndianReads) {
   TestMemoryAccessor<char, 8, 0, 64>();
-  TestMemoryAccessor<signed char, 8, 0, 64>();
+#if __cplusplus >= 201703L
+  TestMemoryAccessor<std::byte, 8, 0, 64>();
+#endif
   TestMemoryAccessor<unsigned char, 8, 0, 64>();
 }
 
@@ -227,8 +244,11 @@ template <typename T>
 class ReadOnlyContiguousBufferTest : public ::testing::Test {};
 typedef ::testing::Types<
     /**/ ::std::vector<char>, ::std::array<char, 8>,
-    ::std::vector<unsigned char>, ::std::vector<signed char>, ::std::string,
-    ::std::basic_string<char>,
+    ::std::vector<unsigned char>,
+#if __cplusplus >= 201703L
+    ::std::vector<std::byte>,
+#endif
+    ::std::string, ::std::basic_string<char>,
     ::std::vector<unsigned char, NonstandardAllocator<unsigned char>>,
     ::std::basic_string<char, ::std::char_traits<char>,
                         NonstandardAllocator<char>>>
@@ -237,7 +257,8 @@ TYPED_TEST_SUITE(ReadOnlyContiguousBufferTest,
                  ReadOnlyContiguousContainerTypes);
 
 TYPED_TEST(ReadOnlyContiguousBufferTest, ConstructionFromContainers) {
-  const TypeParam bytes = {{0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01}};
+  const TypeParam bytes =
+      init_container<TypeParam>(0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01);
   using CharType =
       typename ::std::remove_reference<decltype(*bytes.data())>::type;
   const auto buffer = ContiguousBuffer<const CharType, 1, 0>{&bytes};
@@ -263,14 +284,17 @@ TYPED_TEST(ReadOnlyContiguousBufferTest, ConstructionFromContainers) {
 template <typename T>
 class ReadWriteContiguousBufferTest : public ::testing::Test {};
 typedef ::testing::Types</**/ ::std::vector<char>, ::std::array<char, 8>,
-                         ::std::vector<unsigned char>,
-                         ::std::vector<signed char>>
+#if __cplusplus >= 201703L
+                         ::std::vector<std::byte>,
+#endif
+                         ::std::vector<unsigned char>>
     ReadWriteContiguousContainerTypes;
 TYPED_TEST_SUITE(ReadWriteContiguousBufferTest,
                  ReadWriteContiguousContainerTypes);
 
 TYPED_TEST(ReadWriteContiguousBufferTest, ConstructionFromContainers) {
-  TypeParam bytes = {{0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01}};
+  TypeParam bytes =
+      init_container<TypeParam>(0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01);
   using CharType =
       typename ::std::remove_reference<decltype(*bytes.data())>::type;
   const auto buffer = ContiguousBuffer<CharType, 1, 0>{&bytes};
@@ -281,7 +305,8 @@ TYPED_TEST(ReadWriteContiguousBufferTest, ConstructionFromContainers) {
   EXPECT_EQ(0x0807060504030201UL, buffer.template ReadBigEndianUInt<64>());
 
   buffer.template WriteBigEndianUInt<64>(0x0102030405060708UL);
-  EXPECT_EQ((TypeParam{{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08}}),
+  EXPECT_EQ((init_container<TypeParam>(0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+                                       0x08)),
             bytes);
 
   bytes[4] = static_cast<CharType>(255);
@@ -457,11 +482,11 @@ TEST(ContiguousBuffer, AssignmentFromCompatibleContiguousBuffers) {
   EXPECT_TRUE(buffer.Ok());
   EXPECT_EQ(buffer.data(), reinterpret_cast<unsigned char *>(data + 1));
 
-  ContiguousBuffer<const signed char, 2, 1> aligned_buffer;
+  ContiguousBuffer<const unsigned char, 2, 1> aligned_buffer;
   aligned_buffer =
       ContiguousBuffer<unsigned char, 4, 3>(data + 3, sizeof data - 3);
   EXPECT_TRUE(aligned_buffer.Ok());
-  EXPECT_EQ(aligned_buffer.data(), reinterpret_cast<signed char *>(data + 3));
+  EXPECT_EQ(aligned_buffer.data(), reinterpret_cast<unsigned char *>(data + 3));
 }
 
 TEST(ContiguousBuffer, ConstructionFromCompatibleContiguousBuffers) {
@@ -471,10 +496,10 @@ TEST(ContiguousBuffer, ConstructionFromCompatibleContiguousBuffers) {
   EXPECT_TRUE(buffer.Ok());
   EXPECT_EQ(buffer.data(), reinterpret_cast<unsigned char *>(data + 1));
 
-  ContiguousBuffer<const signed char, 2, 1> aligned_buffer{
+  ContiguousBuffer<const char, 2, 1> aligned_buffer{
       ContiguousBuffer<unsigned char, 4, 3>(data + 3, sizeof data - 3)};
   EXPECT_TRUE(aligned_buffer.Ok());
-  EXPECT_EQ(aligned_buffer.data(), reinterpret_cast<signed char *>(data + 3));
+  EXPECT_EQ(aligned_buffer.data(), reinterpret_cast<char *>(data + 3));
 }
 
 TEST(ContiguousBuffer, ToString) {
