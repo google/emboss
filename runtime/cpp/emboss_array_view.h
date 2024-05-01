@@ -22,12 +22,16 @@
 #include <type_traits>
 
 #include "runtime/cpp/emboss_arithmetic.h"
-#include "runtime/cpp/emboss_array_view.h"
-#include "runtime/cpp/emboss_text_util.h"
 
 namespace emboss {
 
 // Forward declarations for use by WriteShorthandArrayCommentToTextStream.
+class TextOutputOptions;
+namespace support {
+template <class Array, class Stream>
+void WriteShorthandAsciiArrayCommentToTextStream(
+    const Array *array, Stream *stream, const TextOutputOptions &options);
+}
 namespace prelude {
 template <class Parameters, class BitViewType>
 class UIntView;
@@ -169,7 +173,7 @@ class GenericArrayView final {
                           ElementViewIteratorDirection::kReverse>;
 
   GenericArrayView() : buffer_() {}
-  explicit GenericArrayView(const ElementViewParameterTypes &... parameters,
+  explicit GenericArrayView(const ElementViewParameterTypes &...parameters,
                             BufferType buffer)
       : parameters_{parameters...}, buffer_{buffer} {}
 
@@ -346,30 +350,6 @@ void WriteShorthandArrayCommentToTextStream(
   static_cast<void>(array);
   static_cast<void>(stream);
   static_cast<void>(options);
-}
-
-// Prints out the elements of an 8-bit Int or UInt array as characters.
-template <class Array, class Stream>
-void WriteShorthandAsciiArrayCommentToTextStream(
-    const Array *array, Stream *stream, const TextOutputOptions &options) {
-  if (!options.multiline()) return;
-  if (!options.comments()) return;
-  if (array->ElementCount() == 0) return;
-  static constexpr int kCharsPerBlock = 64;
-  static constexpr char kStandInForNonPrintableChar = '.';
-  auto start_new_line = [&]() {
-    stream->Write("\n");
-    stream->Write(options.current_indent());
-    stream->Write("# ");
-  };
-  for (int i = 0, n = array->ElementCount(); i < n; ++i) {
-    const int c = (*array)[i].Read();
-    const bool c_is_printable = (c >= 32 && c <= 126);
-    const bool starting_new_block = ((i % kCharsPerBlock) == 0);
-    if (starting_new_block) start_new_line();
-    stream->Write(c_is_printable ? static_cast<char>(c)
-                                 : kStandInForNonPrintableChar);
-  }
 }
 
 // Overload for arrays of UInt.

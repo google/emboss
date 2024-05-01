@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <array>
 #include <string>
 #if __cplusplus >= 201703L
 #include <string_view>
 #endif  // __cplusplus >= 201703L
 #include <vector>
 
-#include "runtime/cpp/emboss_memory_util.h"
-
 #include "gtest/gtest.h"
+#include "runtime/cpp/emboss_memory_util.h"
 #include "runtime/cpp/emboss_prelude.h"
 
 namespace emboss {
@@ -175,13 +175,19 @@ TEST(ContiguousBuffer, OffsetStorageType) {
 // std::basic_string<> with non-default trailing template parameters.
 template <class T>
 struct NonstandardAllocator {
-  using value_type = typename ::std::allocator_traits<::std::allocator<T>>::value_type;
-  using pointer = typename ::std::allocator_traits<::std::allocator<T>>::pointer;
-  using const_pointer = typename ::std::allocator_traits<::std::allocator<T>>::const_pointer;
+  using value_type =
+      typename ::std::allocator_traits<::std::allocator<T>>::value_type;
+  using pointer =
+      typename ::std::allocator_traits<::std::allocator<T>>::pointer;
+  using const_pointer =
+      typename ::std::allocator_traits<::std::allocator<T>>::const_pointer;
   using reference = typename ::std::allocator<T>::value_type &;
-  using const_reference = const typename ::std::allocator_traits<::std::allocator<T>>::value_type &;
-  using size_type = typename ::std::allocator_traits<::std::allocator<T>>::size_type;
-  using difference_type = typename ::std::allocator_traits<::std::allocator<T>>::difference_type;
+  using const_reference =
+      const typename ::std::allocator_traits<::std::allocator<T>>::value_type &;
+  using size_type =
+      typename ::std::allocator_traits<::std::allocator<T>>::size_type;
+  using difference_type =
+      typename ::std::allocator_traits<::std::allocator<T>>::difference_type;
 
   template <class U>
   struct rebind {

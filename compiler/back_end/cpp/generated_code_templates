@@ -179,57 +179,7 @@ ${size_method}
         emboss_reserved_local_other.IntrinsicSizeIn${units}().Read());
   }
 
-  template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
-    ::std::string emboss_reserved_local_brace;
-    if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
-                                      &emboss_reserved_local_brace))
-      return false;
-    if (emboss_reserved_local_brace != "{") return false;
-    for (;;) {
-      ::std::string emboss_reserved_local_name;
-      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
-                                        &emboss_reserved_local_name))
-        return false;
-      if (emboss_reserved_local_name == ",")
-        if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
-                                          &emboss_reserved_local_name))
-          return false;
-      if (emboss_reserved_local_name == "}") return true;
-      ::std::string emboss_reserved_local_colon;
-      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
-                                        &emboss_reserved_local_colon))
-        return false;
-      if (emboss_reserved_local_colon != ":") return false;
-${decode_fields}
-      // decode_fields will `continue` if it successfully finds a field.
-      return false;
-    }
-  }
-
-  template <class Stream>
-  void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
-      ::emboss::TextOutputOptions emboss_reserved_local_options) const {
-    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
-        emboss_reserved_local_options.PlusOneIndent();
-    if (emboss_reserved_local_options.multiline()) {
-      emboss_reserved_local_stream->Write("{\n");
-    } else {
-      emboss_reserved_local_stream->Write("{");
-    }
-    bool emboss_reserved_local_wrote_field = false;
-${write_fields}
-    // Avoid unused variable warnings for empty structures:
-    (void)emboss_reserved_local_wrote_field;
-    if (emboss_reserved_local_options.multiline()) {
-      emboss_reserved_local_stream->Write(
-          emboss_reserved_local_options.current_indent());
-      emboss_reserved_local_stream->Write("}");
-    } else {
-      emboss_reserved_local_stream->Write(" }");
-    }
-  }
+${text_stream_methods}
 
   static constexpr bool IsAggregate() { return true; }
 
@@ -300,6 +250,60 @@ MakeAligned${name}View(
       ${forwarded_parameters} emboss_reserved_local_data,
       emboss_reserved_local_size);
 }
+
+// ** struct_text_stream ** ////////////////////////////////////////////////////
+  template <class Stream>
+  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+    ::std::string emboss_reserved_local_brace;
+    if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                      &emboss_reserved_local_brace))
+      return false;
+    if (emboss_reserved_local_brace != "{") return false;
+    for (;;) {
+      ::std::string emboss_reserved_local_name;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_name))
+        return false;
+      if (emboss_reserved_local_name == ",")
+        if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                          &emboss_reserved_local_name))
+          return false;
+      if (emboss_reserved_local_name == "}") return true;
+      ::std::string emboss_reserved_local_colon;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_colon))
+        return false;
+      if (emboss_reserved_local_colon != ":") return false;
+${decode_fields}
+      // decode_fields will `continue` if it successfully finds a field.
+      return false;
+    }
+  }
+
+  template <class Stream>
+  void WriteToTextStream(
+      Stream *emboss_reserved_local_stream,
+      ::emboss::TextOutputOptions emboss_reserved_local_options) const {
+    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
+        emboss_reserved_local_options.PlusOneIndent();
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write("{\n");
+    } else {
+      emboss_reserved_local_stream->Write("{");
+    }
+    bool emboss_reserved_local_wrote_field = false;
+${write_fields}
+    // Avoid unused variable warnings for empty structures:
+    (void)emboss_reserved_local_wrote_field;
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write(
+          emboss_reserved_local_options.current_indent());
+      emboss_reserved_local_stream->Write("}");
+    } else {
+      emboss_reserved_local_stream->Write(" }");
+    }
+  }
+
 
 // ** decode_field ** //////////////////////////////////////////////////////////
       // If the field name matches ${field_name}, handle it, otherwise fall
@@ -772,6 +776,7 @@ ${enum_values}
 // "the output of this rule is an indeterminate number of files, all of which
 // should be used as input to this other rule," which would be necessary to
 // generate all the .cc files and then build and link them into a library.
+// ** enum_traits ** ///////////////////////////////////////////////////////////
 template <class Enum>
 class EnumTraits;
 

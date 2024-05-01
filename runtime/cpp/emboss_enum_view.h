@@ -21,8 +21,20 @@
 #include <string>
 #include <utility>
 
-#include "runtime/cpp/emboss_text_util.h"
+#include "runtime/cpp/emboss_defines.h"
 #include "runtime/cpp/emboss_view_parameters.h"
+
+// Forward declarations for optional text processing helpers.
+namespace emboss {
+class TextOutputOptions;
+namespace support {
+template <class Stream, class View>
+bool ReadEnumViewFromTextStream(View *view, Stream *stream);
+template <class Stream, class View>
+void WriteEnumViewToTextStream(View *view, Stream *stream,
+                               const TextOutputOptions &options);
+}  // namespace support
+}  // namespace emboss
 
 namespace emboss {
 namespace support {
@@ -36,7 +48,7 @@ class EnumView final {
       Parameters::kBits <= sizeof(ValueType) * 8,
       "EnumView requires sizeof(ValueType) * 8 >= Parameters::kBits.");
   template <typename... Args>
-  explicit EnumView(Args &&... args) : buffer_{::std::forward<Args>(args)...} {}
+  explicit EnumView(Args &&...args) : buffer_{::std::forward<Args>(args)...} {}
   EnumView() : buffer_() {}
   EnumView(const EnumView &) = default;
   EnumView(EnumView &&) = default;
@@ -124,25 +136,7 @@ class EnumView final {
 
   template <class Stream>
   bool UpdateFromTextStream(Stream *stream) const {
-    ::std::string token;
-    if (!ReadToken(stream, &token)) return false;
-    if (token.empty()) return false;
-    if (::std::isdigit(token[0])) {
-      ::std::uint64_t value;
-      if (!DecodeInteger(token, &value)) return false;
-      // TODO(bolms): Fix the static_cast<ValueType> for signed ValueType.
-      // TODO(bolms): Should values between 2**63 and 2**64-1 actually be
-      // allowed in the text format when ValueType is signed?
-      return TryToWrite(static_cast<ValueType>(value));
-    } else if (token[0] == '-') {
-      ::std::int64_t value;
-      if (!DecodeInteger(token, &value)) return false;
-      return TryToWrite(static_cast<ValueType>(value));
-    } else {
-      ValueType value;
-      if (!TryToGetEnumFromName(token.c_str(), &value)) return false;
-      return TryToWrite(value);
-    }
+    return ::emboss::support::ReadEnumViewFromTextStream(this, stream);
   }
 
   template <class Stream>

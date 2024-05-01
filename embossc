@@ -20,6 +20,7 @@ import argparse
 import os
 import sys
 
+
 def _parse_args(argv):
   parser = argparse.ArgumentParser(description="Emboss compiler")
   parser.add_argument("--color-output",
@@ -49,6 +50,11 @@ def _parse_args(argv):
                       nargs=1,
                       help="""File name to be used for the generated output
                               file. Defaults to input_file suffixed by '.h'""")
+  parser.add_argument("--cc-enum-traits",
+                      action=argparse.BooleanOptionalAction,
+                      default=True,
+                      help="""Controls generation of EnumTraits by the C++
+                              backend""")
   parser.add_argument("input_file",
                       type=str,
                       nargs=1,
@@ -62,7 +68,7 @@ def main(argv):
   sys.path.append(base_path)
 
   from compiler.back_end.cpp import ( # pylint:disable=import-outside-toplevel
-    emboss_codegen_cpp
+    emboss_codegen_cpp, header_generator
   )
   from compiler.front_end import ( # pylint:disable=import-outside-toplevel
     emboss_front_end
@@ -74,8 +80,9 @@ def main(argv):
   if errors:
     return 1
 
+  config = header_generator.Config(include_enum_traits=flags.cc_enum_traits)
   header, errors = emboss_codegen_cpp.generate_headers_and_log_errors(
-      ir, flags.color_output)
+      ir, flags.color_output, config)
 
   if errors:
     return 1
