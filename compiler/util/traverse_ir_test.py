@@ -18,10 +18,10 @@ import collections
 
 import unittest
 
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import traverse_ir
 
-_EXAMPLE_IR = ir_pb2.EmbossIr.from_json("""{
+_EXAMPLE_IR = ir_data.EmbossIr.from_json("""{
 "module": [
   {
     "type": [
@@ -217,7 +217,7 @@ class TraverseIrTest(unittest.TestCase):
   def test_filter_on_type(self):
     constants = []
     traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_pb2.NumericConstant], _record_constant,
+        _EXAMPLE_IR, [ir_data.NumericConstant], _record_constant,
         parameters={"constant_list": constants})
     self.assertEqual(
         _count_entries([0, 8, 8, 8, 16, 24, 32, 16, 32, 320, 1, 1, 1, 64]),
@@ -227,7 +227,7 @@ class TraverseIrTest(unittest.TestCase):
     constants = []
     traverse_ir.fast_traverse_ir_top_down(
         _EXAMPLE_IR,
-        [ir_pb2.Function, ir_pb2.Expression, ir_pb2.NumericConstant],
+        [ir_data.Function, ir_data.Expression, ir_data.NumericConstant],
         _record_constant,
         parameters={"constant_list": constants})
     self.assertEqual([1, 1], constants)
@@ -235,22 +235,22 @@ class TraverseIrTest(unittest.TestCase):
   def test_filter_on_type_star_type(self):
     struct_constants = []
     traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_pb2.Structure, ir_pb2.NumericConstant],
+        _EXAMPLE_IR, [ir_data.Structure, ir_data.NumericConstant],
         _record_constant,
         parameters={"constant_list": struct_constants})
     self.assertEqual(_count_entries([0, 8, 8, 8, 16, 24, 32, 16, 32, 320]),
                      _count_entries(struct_constants))
     enum_constants = []
     traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_pb2.Enum, ir_pb2.NumericConstant], _record_constant,
+        _EXAMPLE_IR, [ir_data.Enum, ir_data.NumericConstant], _record_constant,
         parameters={"constant_list": enum_constants})
     self.assertEqual(_count_entries([1, 1, 1]), _count_entries(enum_constants))
 
   def test_filter_on_not_type(self):
     notstruct_constants = []
     traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_pb2.NumericConstant], _record_constant,
-        skip_descendants_of=(ir_pb2.Structure,),
+        _EXAMPLE_IR, [ir_data.NumericConstant], _record_constant,
+        skip_descendants_of=(ir_data.Structure,),
         parameters={"constant_list": notstruct_constants})
     self.assertEqual(_count_entries([1, 1, 1, 64]),
                      _count_entries(notstruct_constants))
@@ -258,7 +258,7 @@ class TraverseIrTest(unittest.TestCase):
   def test_field_is_populated(self):
     constants = []
     traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_pb2.Field, ir_pb2.NumericConstant],
+        _EXAMPLE_IR, [ir_data.Field, ir_data.NumericConstant],
         _record_field_name_and_constant,
         parameters={"constant_list": constants})
     self.assertEqual(_count_entries([
@@ -270,7 +270,7 @@ class TraverseIrTest(unittest.TestCase):
   def test_file_name_is_populated(self):
     constants = []
     traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_pb2.NumericConstant], _record_file_name_and_constant,
+        _EXAMPLE_IR, [ir_data.NumericConstant], _record_file_name_and_constant,
         parameters={"constant_list": constants})
     self.assertEqual(_count_entries([
         ("t.emb", 0), ("t.emb", 8), ("t.emb", 8), ("t.emb", 8), ("t.emb", 16),
@@ -281,7 +281,7 @@ class TraverseIrTest(unittest.TestCase):
   def test_type_definition_is_populated(self):
     constants = []
     traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_pb2.NumericConstant], _record_kind_and_constant,
+        _EXAMPLE_IR, [ir_data.NumericConstant], _record_kind_and_constant,
         parameters={"constant_list": constants})
     self.assertEqual(_count_entries([
         ("structure", 0), ("structure", 8), ("structure", 8), ("structure", 8),
@@ -305,11 +305,11 @@ class TraverseIrTest(unittest.TestCase):
       call_counts["not"] += 1
 
     traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_pb2.Field, ir_pb2.Type], check_field_is_populated)
+        _EXAMPLE_IR, [ir_data.Field, ir_data.Type], check_field_is_populated)
     self.assertEqual(7, call_counts["populated"])
 
     traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_pb2.Enum, ir_pb2.EnumValue],
+        _EXAMPLE_IR, [ir_data.Enum, ir_data.EnumValue],
         check_field_is_not_populated)
     self.assertEqual(2, call_counts["not"])
 
@@ -323,9 +323,9 @@ class TraverseIrTest(unittest.TestCase):
       }
 
     traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_pb2.NumericConstant],
+        _EXAMPLE_IR, [ir_data.NumericConstant],
         _record_location_parameter_and_constant,
-        incidental_actions={ir_pb2.Field: pass_location_down},
+        incidental_actions={ir_data.Field: pass_location_down},
         parameters={"constant_list": constants, "location": None})
     self.assertEqual(_count_entries([
         ((0, 8), 0), ((0, 8), 8), ((8, 16), 8), ((8, 16), 8), ((8, 16), 16),

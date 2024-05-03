@@ -18,7 +18,7 @@ import unittest
 from compiler.back_end.cpp import header_generator
 from compiler.front_end import glue
 from compiler.util import error
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import test_util
 
 def _make_ir_from_emb(emb_text, name="m.emb"):
@@ -94,7 +94,7 @@ class NormalizeIrTest(unittest.TestCase):
                            '  BAZ = 2\n')
     attr = ir.module[0].type[0].attribute[0]
 
-    bad_case_source_location = ir_pb2.Location()
+    bad_case_source_location = ir_data.Location()
     bad_case_source_location.CopyFrom(attr.value.source_location)
     # Location of SHORTY_CASE in the attribute line.
     bad_case_source_location.start.column = 30
@@ -113,7 +113,7 @@ class NormalizeIrTest(unittest.TestCase):
                            '  BAZ = 2\n')
     attr = ir.module[0].type[0].attribute[0]
 
-    bad_case_source_location = ir_pb2.Location()
+    bad_case_source_location = ir_data.Location()
     bad_case_source_location.CopyFrom(attr.value.source_location)
     # Location of bad_CASE in the attribute line.
     bad_case_source_location.start.column = 43
@@ -132,7 +132,7 @@ class NormalizeIrTest(unittest.TestCase):
                            '  BAZ = 2\n')
     attr = ir.module[0].type[0].attribute[0]
 
-    bad_case_source_location = ir_pb2.Location()
+    bad_case_source_location = ir_data.Location()
     bad_case_source_location.CopyFrom(attr.value.source_location)
     # Location of BAD_case in the attribute line.
     bad_case_source_location.start.column = 55
@@ -151,7 +151,7 @@ class NormalizeIrTest(unittest.TestCase):
                            '  BAZ = 2\n')
     attr = ir.module[0].type[0].attribute[0]
 
-    bad_case_source_location = ir_pb2.Location()
+    bad_case_source_location = ir_data.Location()
     bad_case_source_location.CopyFrom(attr.value.source_location)
     # Location of the second SHOUTY_CASE in the attribute line.
     bad_case_source_location.start.column = 43
@@ -171,7 +171,7 @@ class NormalizeIrTest(unittest.TestCase):
                            '  BAZ = 2\n')
     attr = ir.module[0].type[0].attribute[0]
 
-    bad_case_source_location = ir_pb2.Location()
+    bad_case_source_location = ir_data.Location()
     bad_case_source_location.CopyFrom(attr.value.source_location)
     # Location of excess comma.
     bad_case_source_location.start.column = 42

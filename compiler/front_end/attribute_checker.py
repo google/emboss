@@ -24,7 +24,7 @@ from compiler.front_end import attributes
 from compiler.front_end import type_check
 from compiler.util import attribute_util
 from compiler.util import error
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 
@@ -105,18 +105,18 @@ _STRUCT_VIRTUAL_FIELD_ATTRIBUTES = {
 
 def _construct_integer_attribute(name, value, source_location):
   """Constructs an integer Attribute with the given name and value."""
-  attr_value = ir_pb2.AttributeValue(
-      expression=ir_pb2.Expression(
-          constant=ir_pb2.NumericConstant(value=str(value),
+  attr_value = ir_data.AttributeValue(
+      expression=ir_data.Expression(
+          constant=ir_data.NumericConstant(value=str(value),
                                           source_location=source_location),
-          type=ir_pb2.ExpressionType(
-              integer=ir_pb2.IntegerType(modular_value=str(value),
+          type=ir_data.ExpressionType(
+              integer=ir_data.IntegerType(modular_value=str(value),
                                          modulus="infinity",
                                          minimum_value=str(value),
                                          maximum_value=str(value))),
           source_location=source_location),
       source_location=source_location)
-  return ir_pb2.Attribute(name=ir_pb2.Word(text=name,
+  return ir_data.Attribute(name=ir_data.Word(text=name,
                                            source_location=source_location),
                           value=attr_value,
                           source_location=source_location)
@@ -124,14 +124,14 @@ def _construct_integer_attribute(name, value, source_location):
 
 def _construct_boolean_attribute(name, value, source_location):
   """Constructs a boolean Attribute with the given name and value."""
-  attr_value = ir_pb2.AttributeValue(
-      expression=ir_pb2.Expression(
-          boolean_constant=ir_pb2.BooleanConstant(
+  attr_value = ir_data.AttributeValue(
+      expression=ir_data.Expression(
+          boolean_constant=ir_data.BooleanConstant(
               value=value, source_location=source_location),
-          type=ir_pb2.ExpressionType(boolean=ir_pb2.BooleanType(value=value)),
+          type=ir_data.ExpressionType(boolean=ir_data.BooleanType(value=value)),
           source_location=source_location),
       source_location=source_location)
-  return ir_pb2.Attribute(name=ir_pb2.Word(text=name,
+  return ir_data.Attribute(name=ir_data.Word(text=name,
                                            source_location=source_location),
                           value=attr_value,
                           source_location=source_location)
@@ -139,11 +139,11 @@ def _construct_boolean_attribute(name, value, source_location):
 
 def _construct_string_attribute(name, value, source_location):
   """Constructs a string Attribute with the given name and value."""
-  attr_value = ir_pb2.AttributeValue(
-      string_constant=ir_pb2.String(text=value,
+  attr_value = ir_data.AttributeValue(
+      string_constant=ir_data.String(text=value,
                                     source_location=source_location),
       source_location=source_location)
-  return ir_pb2.Attribute(name=ir_pb2.Word(text=name,
+  return ir_data.Attribute(name=ir_data.Word(text=name,
                                            source_location=source_location),
                           value=attr_value,
                           source_location=source_location)
@@ -218,7 +218,7 @@ def _field_needs_byte_order(field, type_definition, ir):
       ir_util.get_base_type(field.type).atomic_type.reference.canonical_name,
       ir)
   assert field_type is not None
-  assert field_type.addressable_unit != ir_pb2.AddressableUnit.NONE
+  assert field_type.addressable_unit != ir_data.AddressableUnit.NONE
   return field_type.addressable_unit != type_definition.addressable_unit
 
 
@@ -279,9 +279,9 @@ def _add_addressable_unit_to_external(external, type_definition):
   size = ir_util.get_integer_attribute(type_definition.attribute,
                                        attributes.ADDRESSABLE_UNIT_SIZE)
   if size == 1:
-    type_definition.addressable_unit = ir_pb2.AddressableUnit.BIT
+    type_definition.addressable_unit = ir_data.AddressableUnit.BIT
   elif size == 8:
-    type_definition.addressable_unit = ir_pb2.AddressableUnit.BYTE
+    type_definition.addressable_unit = ir_data.AddressableUnit.BYTE
   # If the addressable_unit_size is not in (1, 8), it will be caught by
   # _verify_addressable_unit_attribute_on_external, below.
 
@@ -400,25 +400,25 @@ def _verify_width_attribute_on_enum(enum, type_definition, source_file_name,
 def _add_missing_attributes_on_ir(ir):
   """Adds missing attributes in a complete IR."""
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Module], _add_missing_back_ends_to_module)
+      ir, [ir_data.Module], _add_missing_back_ends_to_module)
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.External], _add_addressable_unit_to_external)
+      ir, [ir_data.External], _add_addressable_unit_to_external)
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Enum], _add_missing_width_and_sign_attributes_on_enum)
+      ir, [ir_data.Enum], _add_missing_width_and_sign_attributes_on_enum)
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Structure], _add_missing_size_attributes_on_structure,
+      ir, [ir_data.Structure], _add_missing_size_attributes_on_structure,
       incidental_actions={
-          ir_pb2.Module: attribute_util.gather_default_attributes,
-          ir_pb2.TypeDefinition: attribute_util.gather_default_attributes,
-          ir_pb2.Field: attribute_util.gather_default_attributes,
+          ir_data.Module: attribute_util.gather_default_attributes,
+          ir_data.TypeDefinition: attribute_util.gather_default_attributes,
+          ir_data.Field: attribute_util.gather_default_attributes,
       },
       parameters={"defaults": {}})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Field], _add_missing_byte_order_attribute_on_field,
+      ir, [ir_data.Field], _add_missing_byte_order_attribute_on_field,
       incidental_actions={
-          ir_pb2.Module: attribute_util.gather_default_attributes,
-          ir_pb2.TypeDefinition: attribute_util.gather_default_attributes,
-          ir_pb2.Field: attribute_util.gather_default_attributes,
+          ir_data.Module: attribute_util.gather_default_attributes,
+          ir_data.TypeDefinition: attribute_util.gather_default_attributes,
+          ir_data.Field: attribute_util.gather_default_attributes,
       },
       parameters={"defaults": {}})
   return []
@@ -454,22 +454,22 @@ def _verify_attributes_on_ir(ir):
   """Verifies attributes in a complete IR."""
   errors = []
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Attribute], _verify_back_end_attributes,
+      ir, [ir_data.Attribute], _verify_back_end_attributes,
       incidental_actions={
-          ir_pb2.Module: _gather_expected_back_ends,
+          ir_data.Module: _gather_expected_back_ends,
       },
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Structure], _verify_size_attributes_on_structure,
+      ir, [ir_data.Structure], _verify_size_attributes_on_structure,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Enum], _verify_width_attribute_on_enum,
+      ir, [ir_data.Enum], _verify_width_attribute_on_enum,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.External], _verify_addressable_unit_attribute_on_external,
+      ir, [ir_data.External], _verify_addressable_unit_attribute_on_external,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Field], _verify_field_attributes,
+      ir, [ir_data.Field], _verify_field_attributes,
       parameters={"errors": errors})
   return errors
 

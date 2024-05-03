@@ -15,7 +15,7 @@
 """Checks for dependency cycles in Emboss IR."""
 
 from compiler.util import error
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 
@@ -52,28 +52,28 @@ def _find_dependencies(ir):
   dependencies = {}
   errors = []
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Reference], _add_reference_to_dependencies,
+      ir, [ir_data.Reference], _add_reference_to_dependencies,
       # TODO(bolms): Add handling for references inside of attributes, once
       # there are attributes with non-constant values.
       skip_descendants_of={
-          ir_pb2.AtomicType, ir_pb2.Attribute, ir_pb2.FieldReference
+          ir_data.AtomicType, ir_data.Attribute, ir_data.FieldReference
       },
       incidental_actions={
-          ir_pb2.Field: _add_name_to_dependencies,
-          ir_pb2.EnumValue: _add_name_to_dependencies,
-          ir_pb2.RuntimeParameter: _add_name_to_dependencies,
+          ir_data.Field: _add_name_to_dependencies,
+          ir_data.EnumValue: _add_name_to_dependencies,
+          ir_data.RuntimeParameter: _add_name_to_dependencies,
       },
       parameters={
           "dependencies": dependencies,
           "errors": errors,
       })
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.FieldReference], _add_field_reference_to_dependencies,
-      skip_descendants_of={ir_pb2.Attribute},
+      ir, [ir_data.FieldReference], _add_field_reference_to_dependencies,
+      skip_descendants_of={ir_data.Attribute},
       incidental_actions={
-          ir_pb2.Field: _add_name_to_dependencies,
-          ir_pb2.EnumValue: _add_name_to_dependencies,
-          ir_pb2.RuntimeParameter: _add_name_to_dependencies,
+          ir_data.Field: _add_name_to_dependencies,
+          ir_data.EnumValue: _add_name_to_dependencies,
+          ir_data.RuntimeParameter: _add_name_to_dependencies,
       },
       parameters={"dependencies": dependencies})
   return dependencies, errors
@@ -120,16 +120,16 @@ def _find_dependency_ordering_for_fields(ir):
   # TODO(bolms): This duplicates work in _find_dependencies that could be
   # shared.
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.FieldReference], _add_field_reference_to_dependencies,
-      skip_descendants_of={ir_pb2.Attribute},
+      ir, [ir_data.FieldReference], _add_field_reference_to_dependencies,
+      skip_descendants_of={ir_data.Attribute},
       incidental_actions={
-          ir_pb2.Field: _add_name_to_dependencies,
-          ir_pb2.EnumValue: _add_name_to_dependencies,
-          ir_pb2.RuntimeParameter: _add_name_to_dependencies,
+          ir_data.Field: _add_name_to_dependencies,
+          ir_data.EnumValue: _add_name_to_dependencies,
+          ir_data.RuntimeParameter: _add_name_to_dependencies,
       },
       parameters={"dependencies": dependencies})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Structure],
+      ir, [ir_data.Structure],
       _find_dependency_ordering_for_fields_in_structure,
       parameters={"dependencies": dependencies})
 

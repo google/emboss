@@ -18,7 +18,7 @@ import math
 import fractions
 import operator
 
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 
@@ -65,12 +65,12 @@ def _compute_constant_value_of_constant(expression):
 def _compute_constant_value_of_constant_reference(expression, ir):
   referred_object = ir_util.find_object(
       expression.constant_reference.canonical_name, ir)
-  if isinstance(referred_object, ir_pb2.EnumValue):
+  if isinstance(referred_object, ir_data.EnumValue):
     compute_constraints_of_expression(referred_object.value, ir)
     assert ir_util.is_constant(referred_object.value)
     new_value = str(ir_util.constant_value(referred_object.value))
     expression.type.enumeration.value = new_value
-  elif isinstance(referred_object, ir_pb2.Field):
+  elif isinstance(referred_object, ir_data.Field):
     assert ir_util.field_is_virtual(referred_object), (
         "Non-virtual non-enum-value constant reference should have been caught "
         "in type_check.py")
@@ -85,22 +85,22 @@ def _compute_constraints_of_function(expression, ir):
   for arg in expression.function.args:
     compute_constraints_of_expression(arg, ir)
   op = expression.function.function
-  if op in (ir_pb2.FunctionMapping.ADDITION, ir_pb2.FunctionMapping.SUBTRACTION):
+  if op in (ir_data.FunctionMapping.ADDITION, ir_data.FunctionMapping.SUBTRACTION):
     _compute_constraints_of_additive_operator(expression)
-  elif op == ir_pb2.FunctionMapping.MULTIPLICATION:
+  elif op == ir_data.FunctionMapping.MULTIPLICATION:
     _compute_constraints_of_multiplicative_operator(expression)
-  elif op in (ir_pb2.FunctionMapping.EQUALITY, ir_pb2.FunctionMapping.INEQUALITY,
-              ir_pb2.FunctionMapping.LESS, ir_pb2.FunctionMapping.LESS_OR_EQUAL,
-              ir_pb2.FunctionMapping.GREATER, ir_pb2.FunctionMapping.GREATER_OR_EQUAL,
-              ir_pb2.FunctionMapping.AND, ir_pb2.FunctionMapping.OR):
+  elif op in (ir_data.FunctionMapping.EQUALITY, ir_data.FunctionMapping.INEQUALITY,
+              ir_data.FunctionMapping.LESS, ir_data.FunctionMapping.LESS_OR_EQUAL,
+              ir_data.FunctionMapping.GREATER, ir_data.FunctionMapping.GREATER_OR_EQUAL,
+              ir_data.FunctionMapping.AND, ir_data.FunctionMapping.OR):
     _compute_constant_value_of_comparison_operator(expression)
-  elif op == ir_pb2.FunctionMapping.CHOICE:
+  elif op == ir_data.FunctionMapping.CHOICE:
     _compute_constraints_of_choice_operator(expression)
-  elif op == ir_pb2.FunctionMapping.MAXIMUM:
+  elif op == ir_data.FunctionMapping.MAXIMUM:
     _compute_constraints_of_maximum_function(expression)
-  elif op == ir_pb2.FunctionMapping.PRESENCE:
+  elif op == ir_data.FunctionMapping.PRESENCE:
     _compute_constraints_of_existence_function(expression, ir)
-  elif op in (ir_pb2.FunctionMapping.UPPER_BOUND, ir_pb2.FunctionMapping.LOWER_BOUND):
+  elif op in (ir_data.FunctionMapping.UPPER_BOUND, ir_data.FunctionMapping.LOWER_BOUND):
     _compute_constraints_of_bound_function(expression)
   else:
     assert False, "Unknown operator {!r}".format(op)
@@ -118,7 +118,7 @@ def _compute_constraints_of_field_reference(expression, ir):
   """Computes the constraints of a reference to a structure's field."""
   field_path = expression.field_reference.path[-1]
   field = ir_util.find_object(field_path, ir)
-  if isinstance(field, ir_pb2.Field) and ir_util.field_is_virtual(field):
+  if isinstance(field, ir_data.Field) and ir_util.field_is_virtual(field):
     # References to virtual fields should have the virtual field's constraints
     # copied over.
     compute_constraints_of_expression(field.read_transform, ir)
@@ -131,7 +131,7 @@ def _compute_constraints_of_field_reference(expression, ir):
     expression.type.integer.modulus = "1"
     expression.type.integer.modular_value = "0"
     type_definition = ir_util.find_parent_object(field_path, ir)
-    if isinstance(field, ir_pb2.Field):
+    if isinstance(field, ir_data.Field):
       referrent_type = field.type
     else:
       referrent_type = field.physical_type_alias
@@ -317,8 +317,8 @@ def _min(a):
 def _compute_constraints_of_additive_operator(expression):
   """Computes the modular value of an additive expression."""
   funcs = {
-      ir_pb2.FunctionMapping.ADDITION: _add,
-      ir_pb2.FunctionMapping.SUBTRACTION: _sub,
+      ir_data.FunctionMapping.ADDITION: _add,
+      ir_data.FunctionMapping.SUBTRACTION: _sub,
   }
   func = funcs[expression.function.function]
   args = expression.function.args
@@ -337,7 +337,7 @@ def _compute_constraints_of_additive_operator(expression):
                                                 new_modulus)
   lmax = left.type.integer.maximum_value
   lmin = left.type.integer.minimum_value
-  if expression.function.function == ir_pb2.FunctionMapping.SUBTRACTION:
+  if expression.function.function == ir_data.FunctionMapping.SUBTRACTION:
     rmax = right.type.integer.minimum_value
     rmin = right.type.integer.maximum_value
   else:
@@ -502,14 +502,14 @@ def _compute_constant_value_of_comparison_operator(expression):
   args = expression.function.args
   if all(ir_util.is_constant(arg) for arg in args):
     functions = {
-        ir_pb2.FunctionMapping.EQUALITY: operator.eq,
-        ir_pb2.FunctionMapping.INEQUALITY: operator.ne,
-        ir_pb2.FunctionMapping.LESS: operator.lt,
-        ir_pb2.FunctionMapping.LESS_OR_EQUAL: operator.le,
-        ir_pb2.FunctionMapping.GREATER: operator.gt,
-        ir_pb2.FunctionMapping.GREATER_OR_EQUAL: operator.ge,
-        ir_pb2.FunctionMapping.AND: operator.and_,
-        ir_pb2.FunctionMapping.OR: operator.or_,
+        ir_data.FunctionMapping.EQUALITY: operator.eq,
+        ir_data.FunctionMapping.INEQUALITY: operator.ne,
+        ir_data.FunctionMapping.LESS: operator.lt,
+        ir_data.FunctionMapping.LESS_OR_EQUAL: operator.le,
+        ir_data.FunctionMapping.GREATER: operator.gt,
+        ir_data.FunctionMapping.GREATER_OR_EQUAL: operator.ge,
+        ir_data.FunctionMapping.AND: operator.and_,
+        ir_data.FunctionMapping.OR: operator.or_,
     }
     func = functions[expression.function.function]
     expression.type.boolean.value = func(
@@ -518,9 +518,9 @@ def _compute_constant_value_of_comparison_operator(expression):
 
 def _compute_constraints_of_bound_function(expression):
   """Computes the constraints of $upper_bound or $lower_bound."""
-  if expression.function.function == ir_pb2.FunctionMapping.UPPER_BOUND:
+  if expression.function.function == ir_data.FunctionMapping.UPPER_BOUND:
     value = expression.function.args[0].type.integer.maximum_value
-  elif expression.function.function == ir_pb2.FunctionMapping.LOWER_BOUND:
+  elif expression.function.function == ir_data.FunctionMapping.LOWER_BOUND:
     value = expression.function.args[0].type.integer.minimum_value
   else:
     assert False, "Non-bound function"
@@ -716,9 +716,9 @@ def compute_constants(ir):
       A (possibly empty) list of errors.
   """
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Expression], compute_constraints_of_expression,
-      skip_descendants_of={ir_pb2.Expression})
+      ir, [ir_data.Expression], compute_constraints_of_expression,
+      skip_descendants_of={ir_data.Expression})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.RuntimeParameter], _compute_constraints_of_parameter,
-      skip_descendants_of={ir_pb2.Expression})
+      ir, [ir_data.RuntimeParameter], _compute_constraints_of_parameter,
+      skip_descendants_of={ir_data.Expression})
   return []

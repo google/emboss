@@ -25,7 +25,7 @@ fed to lr1.Grammar in order to create a parser for the Emboss language.
 import re
 import sys
 
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import name_conversion
 from compiler.util import parser_types
 
@@ -38,7 +38,7 @@ class _List(object):
   def __init__(self, l):
     assert isinstance(l, list), "_List object must wrap list, not '%r'" % l
     self.list = l
-    self.source_location = ir_pb2.Location()
+    self.source_location = ir_data.Location()
 
 
 class _ExpressionTail(object):
@@ -53,7 +53,7 @@ class _ExpressionTail(object):
   Expressions.
 
   Attributes:
-    operator: An ir_pb2.Word of the operator's name.
+    operator: An ir_data.Word of the operator's name.
     expression: The expression on the right side of the operator.
     source_location: The source location of the operation fragment.
   """
@@ -62,7 +62,7 @@ class _ExpressionTail(object):
   def __init__(self, operator, expression):
     self.operator = operator
     self.expression = expression
-    self.source_location = ir_pb2.Location()
+    self.source_location = ir_data.Location()
 
 
 class _FieldWithType(object):
@@ -72,7 +72,7 @@ class _FieldWithType(object):
   def __init__(self, field, subtypes=None):
     self.field = field
     self.subtypes = subtypes or []
-    self.source_location = ir_pb2.Location()
+    self.source_location = ir_data.Location()
 
 
 def build_ir(parse_tree, used_productions=None):
@@ -181,28 +181,28 @@ def _handles(production_text):
 
 
 def _make_prelude_import(position):
-  """Helper function to construct a synthetic ir_pb2.Import for the prelude."""
+  """Helper function to construct a synthetic ir_data.Import for the prelude."""
   location = parser_types.make_location(position, position)
-  return ir_pb2.Import(
-      file_name=ir_pb2.String(text='', source_location=location),
-      local_name=ir_pb2.Word(text='', source_location=location),
+  return ir_data.Import(
+      file_name=ir_data.String(text='', source_location=location),
+      local_name=ir_data.Word(text='', source_location=location),
       source_location=location)
 
 
 def _text_to_operator(text):
   """Converts an operator's textual name to its corresponding enum."""
   operations = {
-      '+': ir_pb2.FunctionMapping.ADDITION,
-      '-': ir_pb2.FunctionMapping.SUBTRACTION,
-      '*': ir_pb2.FunctionMapping.MULTIPLICATION,
-      '==': ir_pb2.FunctionMapping.EQUALITY,
-      '!=': ir_pb2.FunctionMapping.INEQUALITY,
-      '&&': ir_pb2.FunctionMapping.AND,
-      '||': ir_pb2.FunctionMapping.OR,
-      '>': ir_pb2.FunctionMapping.GREATER,
-      '>=': ir_pb2.FunctionMapping.GREATER_OR_EQUAL,
-      '<': ir_pb2.FunctionMapping.LESS,
-      '<=': ir_pb2.FunctionMapping.LESS_OR_EQUAL,
+      '+': ir_data.FunctionMapping.ADDITION,
+      '-': ir_data.FunctionMapping.SUBTRACTION,
+      '*': ir_data.FunctionMapping.MULTIPLICATION,
+      '==': ir_data.FunctionMapping.EQUALITY,
+      '!=': ir_data.FunctionMapping.INEQUALITY,
+      '&&': ir_data.FunctionMapping.AND,
+      '||': ir_data.FunctionMapping.OR,
+      '>': ir_data.FunctionMapping.GREATER,
+      '>=': ir_data.FunctionMapping.GREATER_OR_EQUAL,
+      '<': ir_data.FunctionMapping.LESS,
+      '<=': ir_data.FunctionMapping.LESS_OR_EQUAL,
   }
   return operations[text]
 
@@ -210,10 +210,10 @@ def _text_to_operator(text):
 def _text_to_function(text):
   """Converts a function's textual name to its corresponding enum."""
   functions = {
-      '$max': ir_pb2.FunctionMapping.MAXIMUM,
-      '$present': ir_pb2.FunctionMapping.PRESENCE,
-      '$upper_bound': ir_pb2.FunctionMapping.UPPER_BOUND,
-      '$lower_bound': ir_pb2.FunctionMapping.LOWER_BOUND,
+      '$max': ir_data.FunctionMapping.MAXIMUM,
+      '$present': ir_data.FunctionMapping.PRESENCE,
+      '$upper_bound': ir_data.FunctionMapping.UPPER_BOUND,
+      '$lower_bound': ir_data.FunctionMapping.LOWER_BOUND,
   }
   return functions[text]
 
@@ -267,7 +267,7 @@ def _file(leading_newlines, docs, imports, attributes, type_definitions):
   else:
     module_source_location = None
 
-  return ir_pb2.Module(
+  return ir_data.Module(
       documentation=docs.list,
       foreign_import=[_make_prelude_import(position)] + imports.list,
       attribute=attributes.list,
@@ -279,7 +279,7 @@ def _file(leading_newlines, docs, imports, attributes, type_definitions):
           '    "import" string-constant "as" snake-word Comment? eol')
 def _import(import_, file_name, as_, local_name, comment, eol):
   del import_, as_, comment, eol  # Unused
-  return ir_pb2.Import(file_name=file_name, local_name=local_name)
+  return ir_data.Import(file_name=file_name, local_name=local_name)
 
 
 @_handles('doc-line -> doc Comment? eol')
@@ -299,7 +299,7 @@ def _doc(documentation):
   assert doc_text[0:3] == '-- ', (
       "Documentation token '{}' in unknown format.".format(
           documentation.text))
-  return ir_pb2.Documentation(text=doc_text[3:])
+  return ir_data.Documentation(text=doc_text[3:])
 
 
 # A attribute-line is just a attribute on its own line.
@@ -316,12 +316,12 @@ def _attribute(open_bracket, context_specifier, default_specifier, name, colon,
                attribute_value, close_bracket):
   del open_bracket, colon, close_bracket  # Unused.
   if context_specifier.list:
-    return ir_pb2.Attribute(name=name,
+    return ir_data.Attribute(name=name,
                             value=attribute_value,
                             is_default=bool(default_specifier.list),
                             back_end=context_specifier.list[0])
   else:
-    return ir_pb2.Attribute(name=name,
+    return ir_data.Attribute(name=name,
                             value=attribute_value,
                             is_default=bool(default_specifier.list))
 
@@ -334,28 +334,28 @@ def _attribute_context(open_paren, context_name, close_paren):
 
 @_handles('attribute-value -> expression')
 def _attribute_value_expression(expression):
-  return ir_pb2.AttributeValue(expression=expression)
+  return ir_data.AttributeValue(expression=expression)
 
 
 @_handles('attribute-value -> string-constant')
 def _attribute_value_string(string):
-  return ir_pb2.AttributeValue(string_constant=string)
+  return ir_data.AttributeValue(string_constant=string)
 
 
 @_handles('boolean-constant -> BooleanConstant')
 def _boolean_constant(boolean):
-  return ir_pb2.BooleanConstant(value=(boolean.text == 'true'))
+  return ir_data.BooleanConstant(value=(boolean.text == 'true'))
 
 
 @_handles('string-constant -> String')
 def _string_constant(string):
-  """Turns a String token into an ir_pb2.String, with proper unescaping.
+  """Turns a String token into an ir_data.String, with proper unescaping.
 
   Arguments:
     string: A String token.
 
   Returns:
-    An ir_pb2.String with the "text" field set to the unescaped value of
+    An ir_data.String with the "text" field set to the unescaped value of
     string.text.
   """
   # TODO(bolms): If/when this logic becomes more complex (e.g., to handle \NNN
@@ -370,7 +370,7 @@ def _string_constant(string):
       result.append({'\\': '\\', '"': '"', 'n': '\n'}[substring[1]])
     else:
       result.append(substring)
-  return ir_pb2.String(text=''.join(result))
+  return ir_data.String(text=''.join(result))
 
 
 # In Emboss, '&&' and '||' may not be mixed without parentheses.  These are all
@@ -437,10 +437,10 @@ def _choice_expression(condition, question, if_true, colon, if_false):
       question.source_location.start, colon.source_location.end)
   # The function_name is a bit weird, but should suffice for any error messages
   # that might need it.
-  return ir_pb2.Expression(
-      function=ir_pb2.Function(function=ir_pb2.FunctionMapping.CHOICE,
+  return ir_data.Expression(
+      function=ir_data.Function(function=ir_data.FunctionMapping.CHOICE,
                                args=[condition, if_true, if_false],
-                               function_name=ir_pb2.Word(
+                               function_name=ir_data.Word(
                                    text='?:',
                                    source_location=operator_location),
                                source_location=location))
@@ -456,8 +456,8 @@ def _no_op_comparative_expression(expression):
 def _comparative_expression(left, operator, right):
   location = parser_types.make_location(
       left.source_location.start, right.source_location.end)
-  return ir_pb2.Expression(
-      function=ir_pb2.Function(function=_text_to_operator(operator.text),
+  return ir_data.Expression(
+      function=ir_data.Function(function=_text_to_operator(operator.text),
                                args=[left, right],
                                function_name=operator,
                                source_location=location))
@@ -487,21 +487,21 @@ def _binary_operator_expression(expression, expression_right):
   productions handles a different precedence level, but are identical in form.
 
   Arguments:
-    expression: An ir_pb2.Expression which is the head of the (expr, operator,
+    expression: An ir_data.Expression which is the head of the (expr, operator,
         expr, operator, expr, ...) list.
     expression_right: A list of _ExpressionTails corresponding to the (operator,
         expr, operator, expr, ...) list that comes after expression.
 
   Returns:
-    An ir_pb2.Expression with the correct recursive structure to represent a
+    An ir_data.Expression with the correct recursive structure to represent a
     list of left-associative operations.
   """
   e = expression
   for right in expression_right.list:
     location = parser_types.make_location(
         e.source_location.start, right.source_location.end)
-    e = ir_pb2.Expression(
-        function=ir_pb2.Function(
+    e = ir_data.Expression(
+        function=ir_data.Function(
             function=_text_to_operator(right.operator.text),
             args=[e, right.expression],
             function_name=right.operator,
@@ -549,13 +549,13 @@ def _chained_comparison_expression(expression, expression_right):
   not allowed.
 
   Arguments:
-    expression: An ir_pb2.Expression which is the head of the (expr, operator,
+    expression: An ir_data.Expression which is the head of the (expr, operator,
         expr, operator, expr, ...) list.
     expression_right: A list of _ExpressionTails corresponding to the (operator,
         expr, operator, expr, ...) list that comes after expression.
 
   Returns:
-    An ir_pb2.Expression with the correct recursive structure to represent a
+    An ir_data.Expression with the correct recursive structure to represent a
     chain of left-associative comparison operations.
   """
   sequence = [expression]
@@ -567,8 +567,8 @@ def _chained_comparison_expression(expression, expression_right):
     left, operator, right = sequence[i:i+3]
     location = parser_types.make_location(
         left.source_location.start, right.source_location.end)
-    comparisons.append(ir_pb2.Expression(
-        function=ir_pb2.Function(
+    comparisons.append(ir_data.Expression(
+        function=ir_data.Function(
             function=_text_to_operator(operator.text),
             args=[left, right],
             function_name=operator,
@@ -578,11 +578,11 @@ def _chained_comparison_expression(expression, expression_right):
   for comparison in comparisons[1:]:
     location = parser_types.make_location(
         e.source_location.start, comparison.source_location.end)
-    e = ir_pb2.Expression(
-        function=ir_pb2.Function(
-            function=ir_pb2.FunctionMapping.AND,
+    e = ir_data.Expression(
+        function=ir_data.Function(
+            function=ir_data.FunctionMapping.AND,
             args=[e, comparison],
-            function_name=ir_pb2.Word(
+            function_name=ir_data.Word(
                 text='&&',
                 source_location=comparison.function.args[0].source_location),
             source_location=location),
@@ -659,18 +659,18 @@ def _expression_right_production(operator, expression):
 # allowed, but "+-5" or "-+-something" are not.
 @_handles('negation-expression -> additive-operator bottom-expression')
 def _negation_expression_with_operator(operator, expression):
-  phantom_zero_location = ir_pb2.Location(start=operator.source_location.start,
+  phantom_zero_location = ir_data.Location(start=operator.source_location.start,
                                           end=operator.source_location.start)
-  return ir_pb2.Expression(
-      function=ir_pb2.Function(
+  return ir_data.Expression(
+      function=ir_data.Function(
           function=_text_to_operator(operator.text),
-          args=[ir_pb2.Expression(
-              constant=ir_pb2.NumericConstant(
+          args=[ir_data.Expression(
+              constant=ir_data.NumericConstant(
                   value='0',
                   source_location=phantom_zero_location),
               source_location=phantom_zero_location), expression],
           function_name=operator,
-          source_location=ir_pb2.Location(
+          source_location=ir_data.Location(
               start=operator.source_location.start,
               end=expression.source_location.end)))
 
@@ -689,12 +689,12 @@ def _bottom_expression_parentheses(open_paren, expression, close_paren):
 @_handles('bottom-expression -> function-name "(" argument-list ")"')
 def _bottom_expression_function(function, open_paren, arguments, close_paren):
   del open_paren  # Unused.
-  return ir_pb2.Expression(
-      function=ir_pb2.Function(
+  return ir_data.Expression(
+      function=ir_data.Function(
           function=_text_to_function(function.text),
           args=arguments.list,
           function_name=function,
-          source_location=ir_pb2.Location(
+          source_location=ir_data.Location(
               start=function.source_location.start,
               end=close_paren.source_location.end)))
 
@@ -718,22 +718,22 @@ def _empty_argument_list():
 
 @_handles('bottom-expression -> numeric-constant')
 def _bottom_expression_from_numeric_constant(constant):
-  return ir_pb2.Expression(constant=constant)
+  return ir_data.Expression(constant=constant)
 
 
 @_handles('bottom-expression -> constant-reference')
 def _bottom_expression_from_constant_reference(reference):
-  return ir_pb2.Expression(constant_reference=reference)
+  return ir_data.Expression(constant_reference=reference)
 
 
 @_handles('bottom-expression -> builtin-reference')
 def _bottom_expression_from_builtin(reference):
-  return ir_pb2.Expression(builtin_reference=reference)
+  return ir_data.Expression(builtin_reference=reference)
 
 
 @_handles('bottom-expression -> boolean-constant')
 def _bottom_expression_from_boolean_constant(boolean):
-  return ir_pb2.Expression(boolean_constant=boolean)
+  return ir_data.Expression(boolean_constant=boolean)
 
 
 @_handles('bottom-expression -> field-reference')
@@ -747,7 +747,7 @@ def _indirect_field_reference(field_reference, field_references):
     end_location = field_references.source_location.end
   else:
     end_location = field_reference.source_location.end
-  return ir_pb2.Expression(field_reference=ir_pb2.FieldReference(
+  return ir_data.Expression(field_reference=ir_data.FieldReference(
       path=[field_reference] + field_references.list,
       source_location=parser_types.make_location(
           field_reference.source_location.start, end_location)))
@@ -771,7 +771,7 @@ def _numeric_constant(number):
     n = int(number.text.replace('_', '')[2:], 16)
   else:
     n = int(number.text.replace('_', ''), 10)
-  return ir_pb2.NumericConstant(value=str(n))
+  return ir_data.NumericConstant(value=str(n))
 
 
 @_handles('type-definition -> struct')
@@ -813,7 +813,7 @@ def _delimited_parameter_definition_list(open_paren, parameters, close_paren):
 @_handles('parameter-definition -> snake-name ":" type')
 def _parameter_definition(name, double_colon, parameter_type):
   del double_colon  # Unused
-  return ir_pb2.RuntimeParameter(name=name, physical_type_alias=parameter_type)
+  return ir_data.RuntimeParameter(name=name, physical_type_alias=parameter_type)
 
 
 @_handles('parameter-definition-list-tail -> "," parameter-definition')
@@ -840,13 +840,13 @@ def _empty_parameter_definition_list():
 def _struct_body(indent, docs, attributes, types, fields, dedent):
   del indent, dedent  # Unused.
   return _structure_body(docs, attributes, types, fields,
-                         ir_pb2.AddressableUnit.BYTE)
+                         ir_data.AddressableUnit.BYTE)
 
 
 def _structure_body(docs, attributes, types, fields, addressable_unit):
   """Constructs the body of a structure (bits or struct) definition."""
-  return ir_pb2.TypeDefinition(
-      structure=ir_pb2.Structure(field=[field.field for field in fields.list]),
+  return ir_data.TypeDefinition(
+      structure=ir_data.Structure(field=[field.field for field in fields.list]),
       documentation=docs.list,
       attribute=attributes.list,
       subtype=types.list + [subtype for field in fields.list for subtype in
@@ -941,7 +941,7 @@ def _conditional_field_block(if_keyword, expression, colon, comment, newline,
 def _bits_body(indent, docs, attributes, types, fields, dedent):
   del indent, dedent  # Unused.
   return _structure_body(docs, attributes, types, fields,
-                         ir_pb2.AddressableUnit.BIT)
+                         ir_data.AddressableUnit.BIT)
 
 
 # Inline bits (defined as part of a field) are more restricted than standalone
@@ -951,7 +951,7 @@ def _bits_body(indent, docs, attributes, types, fields, dedent):
 def _anonymous_bits_body(indent, attributes, fields, dedent):
   del indent, dedent  # Unused.
   return _structure_body(_List([]), attributes, _List([]), fields,
-                         ir_pb2.AddressableUnit.BIT)
+                         ir_data.AddressableUnit.BIT)
 
 
 # A field is:
@@ -965,9 +965,9 @@ def _anonymous_bits_body(indent, attributes, fields, dedent):
           '    Comment? eol field-body?')
 def _field(location, field_type, name, abbreviation, attributes, doc, comment,
            newline, field_body):
-  """Constructs an ir_pb2.Field from the given components."""
+  """Constructs an ir_data.Field from the given components."""
   del comment  # Unused
-  field = ir_pb2.Field(location=location,
+  field = ir_data.Field(location=location,
                        type=field_type,
                        name=name,
                        attribute=attributes.list,
@@ -994,9 +994,9 @@ def _field(location, field_type, name, abbreviation, attributes, doc, comment,
 @_handles('virtual-field ->'
           '    "let" snake-name "=" expression Comment? eol field-body?')
 def _virtual_field(let, name, equals, value, comment, newline, field_body):
-  """Constructs an ir_pb2.Field from the given components."""
+  """Constructs an ir_data.Field from the given components."""
   del equals, comment  # Unused
-  field = ir_pb2.Field(read_transform=value, name=name)
+  field = ir_data.Field(read_transform=value, name=name)
   if field_body.list:
     field.attribute.extend(field_body.list[0].attribute)
     field.documentation.extend(field_body.list[0].documentation)
@@ -1021,7 +1021,7 @@ def _virtual_field(let, name, equals, value, comment, newline, field_body):
           '    enum-body')
 def _inline_enum_field(location, enum, name, abbreviation, colon, comment,
                        newline, enum_body):
-  """Constructs an ir_pb2.Field for an inline enum field."""
+  """Constructs an ir_data.Field for an inline enum field."""
   del enum, colon, comment, newline  # Unused.
   return _inline_type_field(location, name, abbreviation, enum_body)
 
@@ -1047,7 +1047,7 @@ def _inline_bits_field(location, bits, name, abbreviation, colon, comment,
 
 def _inline_type_field(location, name, abbreviation, body):
   """Shared implementation of _inline_enum_field and _anonymous_bit_field."""
-  field = ir_pb2.Field(location=location,
+  field = ir_data.Field(location=location,
                        name=name,
                        attribute=body.attribute,
                        documentation=body.documentation)
@@ -1055,7 +1055,7 @@ def _inline_type_field(location, name, abbreviation, body):
   # the user wants to use type attributes, they should create a separate type
   # definition and reference it.
   del body.attribute[:]
-  type_name = ir_pb2.NameDefinition()
+  type_name = ir_data.NameDefinition()
   type_name.CopyFrom(name)
   type_name.name.text = name_conversion.snake_to_camel(type_name.name.text)
   field.type.atomic_type.reference.source_name.extend([type_name.name])
@@ -1084,10 +1084,10 @@ def _inline_type_field(location, name, abbreviation, body):
           '    field-location "bits" ":" Comment? eol anonymous-bits-body')
 def _anonymous_bit_field(location, bits_keyword, colon, comment, newline,
                          bits_body):
-  """Constructs an ir_pb2.Field for an anonymous bit field."""
+  """Constructs an ir_data.Field for an anonymous bit field."""
   del colon, comment, newline  # Unused.
-  name = ir_pb2.NameDefinition(
-      name=ir_pb2.Word(
+  name = ir_data.NameDefinition(
+      name=ir_data.Word(
           text=_get_anonymous_field_name(),
           source_location=bits_keyword.source_location),
       source_location=bits_keyword.source_location,
@@ -1098,7 +1098,7 @@ def _anonymous_bit_field(location, bits_keyword, colon, comment, newline,
 @_handles('field-body -> Indent doc-line* attribute-line* Dedent')
 def _field_body(indent, docs, attributes, dedent):
   del indent, dedent  # Unused.
-  return ir_pb2.Field(documentation=docs.list, attribute=attributes.list)
+  return ir_data.Field(documentation=docs.list, attribute=attributes.list)
 
 
 # A parenthetically-denoted abbreviation.
@@ -1127,11 +1127,11 @@ def _enum(enum, name, colon, comment, newline, enum_body):
 @_handles('enum-body -> Indent doc-line* attribute-line* enum-value+ Dedent')
 def _enum_body(indent, docs, attributes, values, dedent):
   del indent, dedent  # Unused.
-  return ir_pb2.TypeDefinition(
-      enumeration=ir_pb2.Enum(value=values.list),
+  return ir_data.TypeDefinition(
+      enumeration=ir_data.Enum(value=values.list),
       documentation=docs.list,
       attribute=attributes.list,
-      addressable_unit=ir_pb2.AddressableUnit.BIT)
+      addressable_unit=ir_data.AddressableUnit.BIT)
 
 
 # name = value
@@ -1140,7 +1140,7 @@ def _enum_body(indent, docs, attributes, values, dedent):
 def _enum_value(name, equals, expression, attribute, documentation, comment, newline,
                 body):
   del equals, comment, newline  # Unused.
-  result = ir_pb2.EnumValue(name=name,
+  result = ir_data.EnumValue(name=name,
                             value=expression,
                             documentation=documentation.list,
                             attribute=attribute.list)
@@ -1153,7 +1153,7 @@ def _enum_value(name, equals, expression, attribute, documentation, comment, new
 @_handles('enum-value-body -> Indent doc-line* attribute-line* Dedent')
 def _enum_value_body(indent, docs, attributes, dedent):
   del indent, dedent  # Unused.
-  return ir_pb2.EnumValue(documentation=docs.list, attribute=attributes.list)
+  return ir_data.EnumValue(documentation=docs.list, attribute=attributes.list)
 
 
 # An external is just a declaration that a type exists and has certain
@@ -1170,10 +1170,10 @@ def _external(external, name, colon, comment, newline, external_body):
 # line, or it won't parse (because no Indent/Dedent tokens will be emitted).
 @_handles('external-body -> Indent doc-line* attribute-line* Dedent')
 def _external_body(indent, docs, attributes, dedent):
-  return ir_pb2.TypeDefinition(
-      external=ir_pb2.External(
+  return ir_data.TypeDefinition(
+      external=ir_data.External(
           # Set source_location here, since it won't be set automatically.
-          source_location=ir_pb2.Location(start=indent.source_location.start,
+          source_location=ir_data.Location(start=indent.source_location.start,
                                           end=dedent.source_location.end)),
       documentation=docs.list,
       attribute=attributes.list)
@@ -1182,7 +1182,7 @@ def _external_body(indent, docs, attributes, dedent):
 @_handles('field-location -> expression "[" "+" expression "]"')
 def _field_location(start, open_bracket, plus, size, close_bracket):
   del open_bracket, plus, close_bracket  # Unused.
-  return ir_pb2.FieldLocation(start=start, size=size)
+  return ir_data.FieldLocation(start=start, size=size)
 
 
 @_handles('delimited-argument-list -> "(" argument-list ")"')
@@ -1212,8 +1212,8 @@ def _type(reference, parameters, size, array_spec):
   atomic_type_location = parser_types.make_location(
       reference.source_location.start,
       atomic_type_source_location_end)
-  t = ir_pb2.Type(
-      atomic_type=ir_pb2.AtomicType(
+  t = ir_data.Type(
+      atomic_type=ir_data.AtomicType(
           reference=reference,
           source_location=atomic_type_location,
           runtime_parameter=parameters.list[0].list if parameters.list else []),
@@ -1222,15 +1222,15 @@ def _type(reference, parameters, size, array_spec):
   for length in array_spec.list:
     location = parser_types.make_location(
         t.source_location.start, length.source_location.end)
-    if isinstance(length, ir_pb2.Expression):
-      t = ir_pb2.Type(
-          array_type=ir_pb2.ArrayType(base_type=t,
+    if isinstance(length, ir_data.Expression):
+      t = ir_data.Type(
+          array_type=ir_data.ArrayType(base_type=t,
                                       element_count=length,
                                       source_location=location),
           source_location=location)
-    elif isinstance(length, ir_pb2.Empty):
-      t = ir_pb2.Type(
-          array_type=ir_pb2.ArrayType(base_type=t,
+    elif isinstance(length, ir_data.Empty):
+      t = ir_data.Type(
+          array_type=ir_data.ArrayType(base_type=t,
                                       automatic=length,
                                       source_location=location),
           source_location=location)
@@ -1245,7 +1245,7 @@ def _type(reference, parameters, size, array_spec):
 def _type_size_specifier(colon, numeric_constant):
   """handles the ":32" part of a type specifier like "UInt:32"."""
   del colon
-  return ir_pb2.Expression(constant=numeric_constant)
+  return ir_data.Expression(constant=numeric_constant)
 
 
 # The distinctions between different formats of NameDefinitions, Words, and
@@ -1254,7 +1254,7 @@ def _type_size_specifier(colon, numeric_constant):
 @_handles('snake-name -> snake-word')
 @_handles('constant-name -> constant-word')
 def _name(word):
-  return ir_pb2.NameDefinition(name=word)
+  return ir_data.NameDefinition(name=word)
 
 
 @_handles('type-word -> CamelWord')
@@ -1285,7 +1285,7 @@ def _name(word):
 @_handles('function-name -> "$upper_bound"')
 @_handles('function-name -> "$lower_bound"')
 def _word(word):
-  return ir_pb2.Word(text=word.text)
+  return ir_data.Word(text=word.text)
 
 
 @_handles('type-reference -> type-reference-tail')
@@ -1299,13 +1299,13 @@ def _un_module_qualified_type_reference(reference):
 @_handles('snake-reference -> snake-word')
 @_handles('snake-reference -> builtin-field-word')
 def _reference(word):
-  return ir_pb2.Reference(source_name=[word])
+  return ir_data.Reference(source_name=[word])
 
 
 @_handles('builtin-reference -> builtin-word')
 def _builtin_reference(word):
-  return ir_pb2.Reference(source_name=[word],
-                          canonical_name=ir_pb2.CanonicalName(
+  return ir_data.Reference(source_name=[word],
+                          canonical_name=ir_data.CanonicalName(
                               object_path=[word.text]))
 
 
@@ -1357,8 +1357,8 @@ def _array_length_specifier(open_bracket, length, close_bracket):
 def _auto_array_length_specifier(open_bracket, close_bracket):
   # Note that the Void's source_location is the space between the brackets (if
   # any).
-  return ir_pb2.Empty(
-      source_location=ir_pb2.Location(start=open_bracket.source_location.end,
+  return ir_data.Empty(
+      source_location=ir_data.Location(start=open_bracket.source_location.end,
                                       end=close_bracket.source_location.start))
 
 

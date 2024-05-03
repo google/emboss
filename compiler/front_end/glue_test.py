@@ -19,7 +19,7 @@ import unittest
 
 from compiler.front_end import glue
 from compiler.util import error
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import parser_types
 from compiler.util import test_util
 
@@ -33,7 +33,7 @@ _SPAN_SE_LOG_FILE_EMB = pkgutil.get_data(
     _ROOT_PACKAGE, _SPAN_SE_LOG_FILE_PATH).decode(encoding="UTF-8")
 _SPAN_SE_LOG_FILE_READER = test_util.dict_file_reader(
     {_SPAN_SE_LOG_FILE_PATH: _SPAN_SE_LOG_FILE_EMB})
-_SPAN_SE_LOG_FILE_IR = ir_pb2.Module.from_json(
+_SPAN_SE_LOG_FILE_IR = ir_data.Module.from_json(
     pkgutil.get_data(
         _ROOT_PACKAGE,
         _GOLDEN_PATH + "span_se_log_file_status.ir.txt"
@@ -140,7 +140,7 @@ class FrontEndGlueTest(unittest.TestCase):
     self.assertFalse(ir)
 
   def test_ir_from_parse_module(self):
-    log_file_path_ir = ir_pb2.Module()
+    log_file_path_ir = ir_data.Module()
     log_file_path_ir.CopyFrom(_SPAN_SE_LOG_FILE_IR)
     log_file_path_ir.source_file_name = _SPAN_SE_LOG_FILE_PATH
     self.assertEqual(log_file_path_ir, glue.parse_module(

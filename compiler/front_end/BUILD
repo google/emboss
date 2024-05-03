@@ -70,7 +70,7 @@ py_library(
     name = "module_ir",
     srcs = ["module_ir.py"],
     deps = [
-        "//compiler/util:ir_pb2",
+        "//compiler/util:ir_data",
         "//compiler/util:name_conversion",
         "//compiler/util:parser_types",
     ],
@@ -87,7 +87,7 @@ py_test(
         ":module_ir",
         ":parser",
         ":tokenizer",
-        "//compiler/util:ir_pb2",
+        "//compiler/util:ir_data",
         "//compiler/util:test_util",
     ],
 )
@@ -140,7 +140,7 @@ py_library(
         ":type_check",
         ":write_inference",
         "//compiler/util:error",
-        "//compiler/util:ir_pb2",
+        "//compiler/util:ir_data",
         "//compiler/util:parser_types",
         "//compiler/util:resources",
     ],
@@ -156,7 +156,7 @@ py_test(
     deps = [
         ":glue",
         "//compiler/util:error",
-        "//compiler/util:ir_pb2",
+        "//compiler/util:ir_data",
         "//compiler/util:parser_types",
         "//compiler/util:test_util",
     ],
@@ -168,7 +168,7 @@ py_library(
     visibility = ["//visibility:private"],
     deps = [
         "//compiler/util:expression_parser",
-        "//compiler/util:ir_pb2",
+        "//compiler/util:ir_data",
         "//compiler/util:traverse_ir",
     ],
 )
@@ -190,7 +190,7 @@ py_library(
     visibility = ["//visibility:private"],
     deps = [
         "//compiler/util:error",
-        "//compiler/util:ir_pb2",
+        "//compiler/util:ir_data",
         "//compiler/util:ir_util",
         "//compiler/util:traverse_ir",
     ],
@@ -215,7 +215,7 @@ py_library(
     deps = [
         ":attributes",
         ":expression_bounds",
-        "//compiler/util:ir_pb2",
+        "//compiler/util:ir_data",
         "//compiler/util:ir_util",
         "//compiler/util:traverse_ir",
     ],
@@ -228,7 +228,7 @@ py_test(
     deps = [
         ":glue",
         ":write_inference",
-        "//compiler/util:ir_pb2",
+        "//compiler/util:ir_data",
         "//compiler/util:test_util",
     ],
 )
@@ -241,7 +241,7 @@ py_library(
         ":type_check",
         "//compiler/util:attribute_util",
         "//compiler/util:error",
-        "//compiler/util:ir_pb2",
+        "//compiler/util:ir_data",
         "//compiler/util:ir_util",
         "//compiler/util:traverse_ir",
     ],
@@ -262,7 +262,7 @@ py_test(
         ":attribute_checker",
         ":glue",
         "//compiler/util:error",
-        "//compiler/util:ir_pb2",
+        "//compiler/util:ir_data",
         "//compiler/util:ir_util",
         "//compiler/util:test_util",
     ],
@@ -274,7 +274,7 @@ py_library(
     deps = [
         ":attributes",
         "//compiler/util:error",
-        "//compiler/util:ir_pb2",
+        "//compiler/util:ir_data",
         "//compiler/util:ir_util",
         "//compiler/util:traverse_ir",
     ],
@@ -300,7 +300,7 @@ py_library(
     ],
     deps = [
         ":attributes",
-        "//compiler/util:ir_pb2",
+        "//compiler/util:ir_data",
         "//compiler/util:ir_util",
         "//compiler/util:traverse_ir",
     ],
@@ -326,7 +326,7 @@ py_library(
     deps = [
         ":attributes",
         "//compiler/util:error",
-        "//compiler/util:ir_pb2",
+        "//compiler/util:ir_data",
         "//compiler/util:ir_util",
         "//compiler/util:resources",
         "//compiler/util:traverse_ir",
@@ -350,7 +350,7 @@ py_library(
     srcs = ["dependency_checker.py"],
     deps = [
         "//compiler/util:error",
-        "//compiler/util:ir_pb2",
+        "//compiler/util:ir_data",
         "//compiler/util:ir_util",
         "//compiler/util:traverse_ir",
     ],

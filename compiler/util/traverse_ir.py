@@ -16,7 +16,7 @@
 
 import inspect
 
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import simple_memoizer
 
 
@@ -175,25 +175,25 @@ def _fields_to_scan_by_current_and_target():
   # IR.  With branch culling, that goes down to 6% (0.7s out of 12.2s).
 
   # type_to_fields is a map of types to maps of field names to field types.
-  # That is, type_to_fields[ir_pb2.Module]["type"] == ir_pb2.TypeDefinition.
+  # That is, type_to_fields[ir_data.Module]["type"] == ir_data.AddressableUnit.
   type_to_fields = {}
 
   # Later, we need to know which fields are singular and which are repeated,
   # because the access methods are not uniform.  This maps (type, field_name)
-  # tuples to descriptor labels: type_fields_to_cardinality[ir_pb2.Module,
-  # "type"] == ir_pb2.Repeated.
+  # tuples to descriptor labels: type_fields_to_cardinality[ir_data.Module,
+  # "type"] == ir_data.Repeated.
   type_fields_to_cardinality = {}
 
   # Fill out the above maps by recursively walking the IR type tree, starting
   # from the root.
-  types_to_check = [ir_pb2.EmbossIr]
+  types_to_check = [ir_data.EmbossIr]
   while types_to_check:
     type_to_check = types_to_check.pop()
     if type_to_check in type_to_fields:
       continue
     fields = {}
     for field_name, field_type in type_to_check.field_specs.items():
-      if issubclass(field_type.type, ir_pb2.Message):
+      if issubclass(field_type.type, ir_data.Message):
         fields[field_name] = field_type.type
         types_to_check.append(field_type.type)
         type_fields_to_cardinality[type_to_check, field_name] = (
@@ -201,10 +201,10 @@ def _fields_to_scan_by_current_and_target():
     type_to_fields[type_to_check] = fields
 
   # type_to_descendant_types is a map of all types that can be reached from a
-  # particular type.  After the setup, type_to_descendant_types[ir_pb2.EmbossIr]
-  # == set(<all types>) and type_to_descendant_types[ir_pb2.Reference] ==
-  # {ir_pb2.CanonicalName, ir_pb2.Word, ir_pb2.Location} and
-  # type_to_descendant_types[ir_pb2.Word] == set().
+  # particular type.  After the setup, type_to_descendant_types[ir_data.EmbossIr]
+  # == set(<all types>) and type_to_descendant_types[ir_data.Reference] ==
+  # {ir_data.CanonicalName, ir_data.Word, ir_data.Location} and
+  # type_to_descendant_types[ir_data.Word] == set().
   #
   # The while loop basically ors in the known descendants of each known
   # descendant of each type until the dict stops changing, which is a bit
@@ -240,7 +240,7 @@ def _fields_to_scan_by_current_and_target():
           # Singular and repeated fields go to different lists, so that they can
           # be handled separately.
           if (type_fields_to_cardinality[current_node_type, field_name] ==
-              ir_pb2.Optional):
+              ir_data.Optional):
             singular_fields_to_scan.append(field_name)
           else:
             repeated_fields_to_scan.append(field_name)
@@ -273,14 +273,14 @@ def fast_traverse_ir_top_down(ir, pattern, action, incidental_actions=None,
   `pattern`.  For every node which matches `pattern`, `action` will be called.
 
   `pattern` is just a list of node types.  For example, to execute `print` on
-  every `ir_pb2.Word` in the IR:
+  every `ir_data.Word` in the IR:
 
-      fast_traverse_ir_top_down(ir, [ir_pb2.Word], print)
+      fast_traverse_ir_top_down(ir, [ir_data.Word], print)
 
   If more than one type is specified, then each one must be found inside the
   previous.  For example, to print only the Words inside of import statements:
 
-      fast_traverse_ir_top_down(ir, [ir_pb2.Import, ir_pb2.Word], print)
+      fast_traverse_ir_top_down(ir, [ir_data.Import, ir_data.Word], print)
 
   The optional arguments provide additional control.
 
@@ -289,8 +289,8 @@ def fast_traverse_ir_top_down(ir, pattern, action, incidental_actions=None,
   nodes with any ancestor node whose type is in `skip_descendants_of`.  For
   example, to `do_something` only on outermost `Expression`s:
 
-      fast_traverse_ir_top_down(ir, [ir_pb2.Expression], do_something,
-                                skip_descendants_of={ir_pb2.Expression})
+      fast_traverse_ir_top_down(ir, [ir_data.Expression], do_something,
+                                skip_descendants_of={ir_data.Expression})
 
   `parameters` specifies a dictionary of initial parameters which can be passed
   as arguments to `action` and `incidental_actions`.  Note that the parameters
@@ -303,7 +303,7 @@ def fast_traverse_ir_top_down(ir, pattern, action, incidental_actions=None,
           errors.append(error_for_structure(structure))
 
       errors = []
-      fast_traverse_ir_top_down(ir, [ir_pb2.Structure], check_structure,
+      fast_traverse_ir_top_down(ir, [ir_data.Structure], check_structure,
                                 parameters={"errors": errors})
       if errors:
         print("Errors: {}".format(errors))
@@ -324,21 +324,21 @@ def fast_traverse_ir_top_down(ir, pattern, action, incidental_actions=None,
           print("Found {} not in any field".format(expression))
 
       fast_traverse_ir_top_down(
-          ir, [ir_pb2.Expression], do_something,
-          incidental_actions={ir_pb2.Field: lambda f: {"field_name": f.name}})
+          ir, [ir_data.Expression], do_something,
+          incidental_actions={ir_data.Field: lambda f: {"field_name": f.name}})
 
   (The `action` may also return a dict in the same way.)
 
   A few `incidental_actions` are built into `fast_traverse_ir_top_down`, so
   that certain parameters are contextually available with well-known names:
 
-      ir: The complete IR (the root ir_pb2.EmbossIr node).
+      ir: The complete IR (the root ir_data.EmbossIr node).
       source_file_name: The file name from which the current node was sourced.
       type_definition: The most-immediate ancestor type definition.
       field: The field containing the current node, if any.
 
   Arguments:
-    ir: An ir_pb2.Ir object to walk.
+    ir: An ir_data.Ir object to walk.
     pattern: A list of node types to match.
     action: A callable, which will be called on nodes matching `pattern`.
     incidental_actions: A dict of node types to callables, which can be used to
@@ -351,10 +351,10 @@ def fast_traverse_ir_top_down(ir, pattern, action, incidental_actions=None,
     None
   """
   all_incidental_actions = {
-      ir_pb2.EmbossIr: [_emboss_ir_action],
-      ir_pb2.Module: [_module_action],
-      ir_pb2.TypeDefinition: [_type_definition_action],
-      ir_pb2.Field: [_field_action],
+      ir_data.EmbossIr: [_emboss_ir_action],
+      ir_data.Module: [_module_action],
+      ir_data.TypeDefinition: [_type_definition_action],
+      ir_data.Field: [_field_action],
   }
   if incidental_actions:
     for key, incidental_action in incidental_actions.items():
@@ -376,7 +376,7 @@ def fast_traverse_node_top_down(node, pattern, action, incidental_actions=None,
   It does not have any built-in incidental actions.
 
   Arguments:
-    node: An ir_pb2.Ir object to walk.
+    node: An ir_data.Ir object to walk.
     pattern: A list of node types to match.
     action: A callable, which will be called on nodes matching `pattern`.
     incidental_actions: A dict of node types to callables, which can be used to

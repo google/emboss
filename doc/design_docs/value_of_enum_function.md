@@ -60,7 +60,7 @@ be small.
 `$from_int()` would require changes in pretty much the same places, but a few
 of them would be significantly more complex.
 
-Basically anywhere that walks or evaluates an `ir_pb2.Expression` would need to
+Basically anywhere that walks or evaluates an `ir_data.Expression` would need to
 be updated to know about the new function.  A probably-incomplete list:
 
     compiler/back_end/header_generator.py

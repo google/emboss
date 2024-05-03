@@ -16,7 +16,7 @@
 
 import unittest
 
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import parser_types
 from compiler.util import test_util
 
@@ -28,45 +28,45 @@ class ProtoIsSupersetTest(unittest.TestCase):
     self.assertEqual(
         (True, ""),
         test_util.proto_is_superset(
-            ir_pb2.Structure(
-                field=[ir_pb2.Field()],
+            ir_data.Structure(
+                field=[ir_data.Field()],
                 source_location=parser_types.parse_location("1:2-3:4")),
-            ir_pb2.Structure(field=[ir_pb2.Field()])))
+            ir_data.Structure(field=[ir_data.Field()])))
 
   def test_superset_extra_repeated_field(self):
     self.assertEqual(
         (True, ""),
         test_util.proto_is_superset(
-            ir_pb2.Structure(
-                field=[ir_pb2.Field(), ir_pb2.Field()],
+            ir_data.Structure(
+                field=[ir_data.Field(), ir_data.Field()],
                 source_location=parser_types.parse_location("1:2-3:4")),
-            ir_pb2.Structure(field=[ir_pb2.Field()])))
+            ir_data.Structure(field=[ir_data.Field()])))
 
   def test_superset_missing_empty_repeated_field(self):
     self.assertEqual(
         (False, "field[0] missing"),
         test_util.proto_is_superset(
-            ir_pb2.Structure(
+            ir_data.Structure(
                 field=[],
                 source_location=parser_types.parse_location("1:2-3:4")),
-            ir_pb2.Structure(field=[ir_pb2.Field(), ir_pb2.Field()])))
+            ir_data.Structure(field=[ir_data.Field(), ir_data.Field()])))
 
   def test_superset_missing_empty_optional_field(self):
     self.assertEqual((False, "source_location missing"),
                      test_util.proto_is_superset(
-                         ir_pb2.Structure(field=[]),
-                         ir_pb2.Structure(source_location=ir_pb2.Location())))
+                         ir_data.Structure(field=[]),
+                         ir_data.Structure(source_location=ir_data.Location())))
 
   def test_array_element_differs(self):
     self.assertEqual(
         (False,
          "field[0].source_location.start.line differs: found 1, expected 2"),
         test_util.proto_is_superset(
-            ir_pb2.Structure(
-                field=[ir_pb2.Field(source_location=parser_types.parse_location(
+            ir_data.Structure(
+                field=[ir_data.Field(source_location=parser_types.parse_location(
                     "1:2-3:4"))]),
-            ir_pb2.Structure(
-                field=[ir_pb2.Field(source_location=parser_types.parse_location(
+            ir_data.Structure(
+                field=[ir_data.Field(source_location=parser_types.parse_location(
                     "2:2-3:4"))])))
 
   def test_equal(self):
@@ -79,9 +79,9 @@ class ProtoIsSupersetTest(unittest.TestCase):
     self.assertEqual(
         (False, "source_location missing"),
         test_util.proto_is_superset(
-            ir_pb2.Structure(field=[ir_pb2.Field()]),
-            ir_pb2.Structure(
-                field=[ir_pb2.Field()],
+            ir_data.Structure(field=[ir_data.Field()]),
+            ir_data.Structure(
+                field=[ir_data.Field()],
                 source_location=parser_types.parse_location("1:2-3:4"))))
 
   def test_optional_field_differs(self):
@@ -93,8 +93,8 @@ class ProtoIsSupersetTest(unittest.TestCase):
   def test_non_message_repeated_field_equal(self):
     self.assertEqual((True, ""),
                      test_util.proto_is_superset(
-                         ir_pb2.CanonicalName(object_path=[]),
-                         ir_pb2.CanonicalName(object_path=[])))
+                         ir_data.CanonicalName(object_path=[]),
+                         ir_data.CanonicalName(object_path=[])))
 
   def test_non_message_repeated_field_missing_element(self):
     self.assertEqual(
@@ -102,8 +102,8 @@ class ProtoIsSupersetTest(unittest.TestCase):
             none=[],
             a=[u"a"])),
         test_util.proto_is_superset(
-            ir_pb2.CanonicalName(object_path=[]),
-            ir_pb2.CanonicalName(object_path=[u"a"])))
+            ir_data.CanonicalName(object_path=[]),
+            ir_data.CanonicalName(object_path=[u"a"])))
 
   def test_non_message_repeated_field_element_differs(self):
     self.assertEqual(
@@ -111,8 +111,8 @@ class ProtoIsSupersetTest(unittest.TestCase):
             aa=[u"a", u"a"],
             ab=[u"a", u"b"])),
         test_util.proto_is_superset(
-            ir_pb2.CanonicalName(object_path=[u"a", u"a"]),
-            ir_pb2.CanonicalName(object_path=[u"a", u"b"])))
+            ir_data.CanonicalName(object_path=[u"a", u"a"]),
+            ir_data.CanonicalName(object_path=[u"a", u"b"])))
 
   def test_non_message_repeated_field_extra_element(self):
     # For repeated fields of int/bool/str values, the entire list is treated as
@@ -122,16 +122,16 @@ class ProtoIsSupersetTest(unittest.TestCase):
          "object_path differs: found {!r}, expected {!r}".format(
              [u"a", u"a"], [u"a"])),
         test_util.proto_is_superset(
-            ir_pb2.CanonicalName(object_path=["a", "a"]),
-            ir_pb2.CanonicalName(object_path=["a"])))
+            ir_data.CanonicalName(object_path=["a", "a"]),
+            ir_data.CanonicalName(object_path=["a"])))
 
   def test_non_message_repeated_field_no_expected_value(self):
     # When a repeated field is empty, it is the same as if it were entirely
     # missing -- there is no way to differentiate those two conditions.
     self.assertEqual((True, ""),
                      test_util.proto_is_superset(
-                         ir_pb2.CanonicalName(object_path=["a", "a"]),
-                         ir_pb2.CanonicalName(object_path=[])))
+                         ir_data.CanonicalName(object_path=["a", "a"]),
+                         ir_data.CanonicalName(object_path=[])))
 
 
 class DictFileReaderTest(unittest.TestCase):

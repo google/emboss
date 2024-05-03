@@ -16,7 +16,7 @@
 
 from compiler.front_end import attributes
 from compiler.front_end import expression_bounds
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 
@@ -36,7 +36,7 @@ def _find_field_reference_path(expression):
   expression.
 
   Arguments:
-    expression: an ir_pb2.Expression to walk
+    expression: an ir_data.Expression to walk
 
   Returns:
     A list of indexes to find a field_reference, or None.
@@ -98,7 +98,7 @@ def _invert_expression(expression, ir):
   it set `raw_value` to the appropriate value.
 
   Arguments:
-    expression: an ir_pb2.Expression to be inverted.
+    expression: an ir_data.Expression to be inverted.
     ir: the full IR, for looking up symbols.
 
   Returns:
@@ -109,20 +109,20 @@ def _invert_expression(expression, ir):
   if reference_path is None:
     return None
   subexpression = expression
-  result = ir_pb2.Expression(
-      builtin_reference=ir_pb2.Reference(
-          canonical_name=ir_pb2.CanonicalName(
+  result = ir_data.Expression(
+      builtin_reference=ir_data.Reference(
+          canonical_name=ir_data.CanonicalName(
               module_file="",
               object_path=["$logical_value"]
           ),
-          source_name=[ir_pb2.Word(
+          source_name=[ir_data.Word(
               text="$logical_value",
-              source_location=ir_pb2.Location(is_synthetic=True)
+              source_location=ir_data.Location(is_synthetic=True)
           )],
-          source_location=ir_pb2.Location(is_synthetic=True)
+          source_location=ir_data.Location(is_synthetic=True)
       ),
       type=expression.type,
-      source_location=ir_pb2.Location(is_synthetic=True)
+      source_location=ir_data.Location(is_synthetic=True)
   )
 
   # This loop essentially starts with:
@@ -151,39 +151,39 @@ def _invert_expression(expression, ir):
   # Note that any equation that can be solved here becomes part of Emboss's
   # contract, forever, so be conservative in expanding its solving capabilities!
   for index in reference_path:
-    if subexpression.function.function == ir_pb2.FunctionMapping.ADDITION:
-      result = ir_pb2.Expression(
-          function=ir_pb2.Function(
-              function=ir_pb2.FunctionMapping.SUBTRACTION,
+    if subexpression.function.function == ir_data.FunctionMapping.ADDITION:
+      result = ir_data.Expression(
+          function=ir_data.Function(
+              function=ir_data.FunctionMapping.SUBTRACTION,
               args=[
                   result,
                   subexpression.function.args[1 - index],
               ]
           ),
-          type=ir_pb2.ExpressionType(integer=ir_pb2.IntegerType())
+          type=ir_data.ExpressionType(integer=ir_data.IntegerType())
       )
-    elif subexpression.function.function == ir_pb2.FunctionMapping.SUBTRACTION:
+    elif subexpression.function.function == ir_data.FunctionMapping.SUBTRACTION:
       if index == 0:
-        result = ir_pb2.Expression(
-            function=ir_pb2.Function(
-                function=ir_pb2.FunctionMapping.ADDITION,
+        result = ir_data.Expression(
+            function=ir_data.Function(
+                function=ir_data.FunctionMapping.ADDITION,
                 args=[
                     result,
                     subexpression.function.args[1],
                 ]
             ),
-            type=ir_pb2.ExpressionType(integer=ir_pb2.IntegerType())
+            type=ir_data.ExpressionType(integer=ir_data.IntegerType())
         )
       else:
-        result = ir_pb2.Expression(
-            function=ir_pb2.Function(
-                function=ir_pb2.FunctionMapping.SUBTRACTION,
+        result = ir_data.Expression(
+            function=ir_data.Function(
+                function=ir_data.FunctionMapping.SUBTRACTION,
                 args=[
                     subexpression.function.args[0],
                     result,
                 ]
             ),
-            type=ir_pb2.ExpressionType(integer=ir_pb2.IntegerType())
+            type=ir_data.ExpressionType(integer=ir_data.IntegerType())
         )
     else:
       return None
@@ -204,7 +204,7 @@ def _add_write_method(field, ir):
   be writeable.
 
   Arguments:
-    field: an ir_pb2.Field to which to add a write_method.
+    field: an ir_data.Field to which to add a write_method.
     ir: The IR in which to look up field_references.
 
   Returns:
@@ -229,7 +229,7 @@ def _add_write_method(field, ir):
       field_reference, function_body = inverse
       referenced_field = ir_util.find_object(
           field_reference.field_reference.path[-1], ir)
-      if not isinstance(referenced_field, ir_pb2.Field):
+      if not isinstance(referenced_field, ir_data.Field):
         reference_is_read_only = True
       else:
         _add_write_method(referenced_field, ir)
@@ -250,7 +250,7 @@ def _add_write_method(field, ir):
 
   referenced_field = ir_util.find_object(
       field.read_transform.field_reference.path[-1], ir)
-  if not isinstance(referenced_field, ir_pb2.Field):
+  if not isinstance(referenced_field, ir_data.Field):
     # If the virtual field aliases a non-field (i.e., a parameter), it is
     # read-only.
     field.write_method.read_only = True
@@ -268,7 +268,7 @@ def _add_write_method(field, ir):
 
 
 def set_write_methods(ir):
-  """Sets the write_method member of all ir_pb2.Fields in ir.
+  """Sets the write_method member of all ir_data.Fields in ir.
 
   Arguments:
       ir: The IR to which to add write_methods.
@@ -276,5 +276,5 @@ def set_write_methods(ir):
   Returns:
       A list of errors, or an empty list.
   """
-  traverse_ir.fast_traverse_ir_top_down(ir, [ir_pb2.Field], _add_write_method)
+  traverse_ir.fast_traverse_ir_top_down(ir, [ir_data.Field], _add_write_method)
   return []

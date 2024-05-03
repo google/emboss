@@ -27,7 +27,7 @@ from compiler.back_end.cpp import attributes
 from compiler.back_end.util import code_template
 from compiler.util import attribute_util
 from compiler.util import error
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import ir_util
 from compiler.util import name_conversion
 from compiler.util import resources
@@ -267,8 +267,8 @@ def _get_adapted_cpp_buffer_type_for_field(type_definition, size_in_bits,
                                            buffer_type, byte_order,
                                            parent_addressable_unit):
   """Returns the adapted C++ type information needed to construct a view."""
-  if (parent_addressable_unit == ir_pb2.AddressableUnit.BYTE and
-      type_definition.addressable_unit == ir_pb2.AddressableUnit.BIT):
+  if (parent_addressable_unit == ir_data.AddressableUnit.BYTE and
+      type_definition.addressable_unit == ir_data.AddressableUnit.BIT):
     assert byte_order
     return _bytes_to_bits_convertor(buffer_type, byte_order, size_in_bits)
   else:
@@ -288,7 +288,7 @@ def _get_cpp_view_type_for_type_definition(
   C++ types of its parameters, if any.
 
   Arguments:
-      type_definition: The ir_pb2.TypeDefinition whose view should be
+      type_definition: The ir_data.TypeDefinition whose view should be
           constructed.
       size: The size, in type_definition.addressable_units, of the instantiated
           type, or None if it is not known at compile time.
@@ -346,11 +346,11 @@ def _get_cpp_view_type_for_physical_type(
     validator):
   """Returns the C++ type information needed to construct a field's view.
 
-  Returns the C++ type of an ir_pb2.Type, and the C++ types of its parameters,
+  Returns the C++ type of an ir_data.Type, and the C++ types of its parameters,
   if any.
 
   Arguments:
-      type_ir: The ir_pb2.Type whose view should be constructed.
+      type_ir: The ir_data.Type whose view should be constructed.
       size: The size, in type_definition.addressable_units, of the instantiated
           type, or None if it is not known at compile time.
       byte_order: For BIT types which are direct children of BYTE types,
@@ -429,19 +429,19 @@ def _render_enum_value(enum_type, ir):
 def _builtin_function_name(function):
   """Returns the C++ operator name corresponding to an Emboss operator."""
   functions = {
-      ir_pb2.FunctionMapping.ADDITION: "Sum",
-      ir_pb2.FunctionMapping.SUBTRACTION: "Difference",
-      ir_pb2.FunctionMapping.MULTIPLICATION: "Product",
-      ir_pb2.FunctionMapping.EQUALITY: "Equal",
-      ir_pb2.FunctionMapping.INEQUALITY: "NotEqual",
-      ir_pb2.FunctionMapping.AND: "And",
-      ir_pb2.FunctionMapping.OR: "Or",
-      ir_pb2.FunctionMapping.LESS: "LessThan",
-      ir_pb2.FunctionMapping.LESS_OR_EQUAL: "LessThanOrEqual",
-      ir_pb2.FunctionMapping.GREATER: "GreaterThan",
-      ir_pb2.FunctionMapping.GREATER_OR_EQUAL: "GreaterThanOrEqual",
-      ir_pb2.FunctionMapping.CHOICE: "Choice",
-      ir_pb2.FunctionMapping.MAXIMUM: "Maximum",
+      ir_data.FunctionMapping.ADDITION: "Sum",
+      ir_data.FunctionMapping.SUBTRACTION: "Difference",
+      ir_data.FunctionMapping.MULTIPLICATION: "Product",
+      ir_data.FunctionMapping.EQUALITY: "Equal",
+      ir_data.FunctionMapping.INEQUALITY: "NotEqual",
+      ir_data.FunctionMapping.AND: "And",
+      ir_data.FunctionMapping.OR: "Or",
+      ir_data.FunctionMapping.LESS: "LessThan",
+      ir_data.FunctionMapping.LESS_OR_EQUAL: "LessThanOrEqual",
+      ir_data.FunctionMapping.GREATER: "GreaterThan",
+      ir_data.FunctionMapping.GREATER_OR_EQUAL: "GreaterThanOrEqual",
+      ir_data.FunctionMapping.CHOICE: "Choice",
+      ir_data.FunctionMapping.MAXIMUM: "Maximum",
   }
   return functions[function]
 
@@ -505,9 +505,9 @@ def _cpp_integer_type_for_enum(max_bits, is_signed):
 def _render_builtin_operation(expression, ir, field_reader, subexpressions):
   """Renders a built-in operation (+, -, &&, etc.) into C++ code."""
   assert expression.function.function not in (
-      ir_pb2.FunctionMapping.UPPER_BOUND, ir_pb2.FunctionMapping.LOWER_BOUND), (
+      ir_data.FunctionMapping.UPPER_BOUND, ir_data.FunctionMapping.LOWER_BOUND), (
           "UPPER_BOUND and LOWER_BOUND should be constant.")
-  if expression.function.function == ir_pb2.FunctionMapping.PRESENCE:
+  if expression.function.function == ir_data.FunctionMapping.PRESENCE:
     return field_reader.render_existence(expression.function.args[0],
                                          subexpressions)
   args = expression.function.args
@@ -1464,7 +1464,7 @@ def _offset_source_location_column(source_location, offset):
   Offset should be a tuple of (start, end), which are the offsets relative to
   source_location.start.column to set the new start.column and end.column."""
 
-  new_location = ir_pb2.Location()
+  new_location = ir_data.Location()
   new_location.CopyFrom(source_location)
   new_location.start.column = source_location.start.column + offset[0]
   new_location.end.column = source_location.start.column + offset[1]
@@ -1540,10 +1540,10 @@ def _verify_attribute_values(ir):
   errors = []
 
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Attribute], _verify_namespace_attribute,
+      ir, [ir_data.Attribute], _verify_namespace_attribute,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Attribute], _verify_enum_case_attribute,
+      ir, [ir_data.Attribute], _verify_enum_case_attribute,
       parameters={"errors": errors})
 
   return errors
@@ -1571,8 +1571,8 @@ def _propagate_defaults_and_verify_attributes(ir):
   # Ensure defaults are set on EnumValues for `enum_case`.
   _propagate_defaults(
       ir,
-      targets=[ir_pb2.EnumValue],
-      ancestors=[ir_pb2.Module, ir_pb2.TypeDefinition],
+      targets=[ir_data.EnumValue],
+      ancestors=[ir_data.Module, ir_data.TypeDefinition],
       add_fn=_add_missing_enum_case_attribute_on_enum_value)
 
   return []

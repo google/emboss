@@ -87,9 +87,9 @@ Assuming the "new symbol" approach:
 4.  Add a new compiler pass before `synthetics.synthesize_fields`, to replace
     the new symbol with the expanded representation.  This should be relatively
     straightforward -- something that uses `fast_traverse_ir_top_down()` to
-    find all `ir_pb2.Structure` elements in the IR, then iterates over the
+    find all `ir_data.Structure` elements in the IR, then iterates over the
     field offsets within each structure, and recursively replaces any
-    `ir_pb2.Expression`s with a
+    `ir_data.Expression`s with a
     `builtin_reference.canonical_name.object_path[0]` equal to
     `"$new_symbol"`.  It would probably be useful to make
     `traverse_ir._fast_traverse_proto_top_down()` into a public function, so

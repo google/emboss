@@ -18,7 +18,7 @@ import unittest
 from compiler.front_end import attribute_checker
 from compiler.front_end import glue
 from compiler.util import error
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import ir_util
 from compiler.util import test_util
 
@@ -550,14 +550,14 @@ class NormalizeIrTest(unittest.TestCase):
     external_ir = _make_ir_from_emb("external Foo:\n"
                                     "  [addressable_unit_size: 1]\n")
     self.assertEqual([], attribute_checker.normalize_and_verify(external_ir))
-    self.assertEqual(ir_pb2.AddressableUnit.BIT,
+    self.assertEqual(ir_data.AddressableUnit.BIT,
                      external_ir.module[0].type[0].addressable_unit)
 
   def test_adds_byte_addressable_unit_to_external(self):
     external_ir = _make_ir_from_emb("external Foo:\n"
                                     "  [addressable_unit_size: 8]\n")
     self.assertEqual([], attribute_checker.normalize_and_verify(external_ir))
-    self.assertEqual(ir_pb2.AddressableUnit.BYTE,
+    self.assertEqual(ir_data.AddressableUnit.BYTE,
                      external_ir.module[0].type[0].addressable_unit)
 
   def test_rejects_requires_using_array(self):

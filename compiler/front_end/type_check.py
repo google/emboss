@@ -16,7 +16,7 @@
 
 from compiler.front_end import attributes
 from compiler.util import error
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 
@@ -44,11 +44,11 @@ def _type_check_expression(expression, source_file_name, ir, errors):
 
 
 def _annotate_as_integer(expression):
-  expression.type.integer.CopyFrom(ir_pb2.IntegerType())
+  expression.type.integer.CopyFrom(ir_data.IntegerType())
 
 
 def _annotate_as_boolean(expression):
-  expression.type.boolean.CopyFrom(ir_pb2.BooleanType())
+  expression.type.boolean.CopyFrom(ir_data.BooleanType())
 
 
 def _type_check(expression, source_file_name, errors, type_oneof, type_name,
@@ -87,10 +87,10 @@ def _type_check_constant_reference(expression, source_file_name, ir, errors):
   """Annotates the type of a constant reference."""
   referred_name = expression.constant_reference.canonical_name
   referred_object = ir_util.find_object(referred_name, ir)
-  if isinstance(referred_object, ir_pb2.EnumValue):
+  if isinstance(referred_object, ir_data.EnumValue):
     expression.type.enumeration.name.CopyFrom(expression.constant_reference)
     del expression.type.enumeration.name.canonical_name.object_path[-1]
-  elif isinstance(referred_object, ir_pb2.Field):
+  elif isinstance(referred_object, ir_data.Field):
     if not ir_util.field_is_virtual(referred_object):
       errors.append([
           error.error(source_file_name, expression.source_location,
@@ -111,11 +111,11 @@ def _type_check_operation(expression, source_file_name, ir, errors):
   for arg in expression.function.args:
     _type_check_expression(arg, source_file_name, ir, errors)
   function = expression.function.function
-  if function in (ir_pb2.FunctionMapping.EQUALITY, ir_pb2.FunctionMapping.INEQUALITY,
-                  ir_pb2.FunctionMapping.LESS, ir_pb2.FunctionMapping.LESS_OR_EQUAL,
-                  ir_pb2.FunctionMapping.GREATER, ir_pb2.FunctionMapping.GREATER_OR_EQUAL):
+  if function in (ir_data.FunctionMapping.EQUALITY, ir_data.FunctionMapping.INEQUALITY,
+                  ir_data.FunctionMapping.LESS, ir_data.FunctionMapping.LESS_OR_EQUAL,
+                  ir_data.FunctionMapping.GREATER, ir_data.FunctionMapping.GREATER_OR_EQUAL):
     _type_check_comparison_operator(expression, source_file_name, errors)
-  elif function == ir_pb2.FunctionMapping.CHOICE:
+  elif function == ir_data.FunctionMapping.CHOICE:
     _type_check_choice_operator(expression, source_file_name, errors)
   else:
     _type_check_monomorphic_operator(expression, source_file_name, errors)
@@ -132,21 +132,21 @@ def _type_check_monomorphic_operator(expression, source_file_name, errors):
   binary = ("Left argument", "Right argument")
   n_ary = ("Argument {}".format(n) for n in range(len(args)))
   functions = {
-      ir_pb2.FunctionMapping.ADDITION: (int_result, int_args, binary, 2, 2,
+      ir_data.FunctionMapping.ADDITION: (int_result, int_args, binary, 2, 2,
                                  "operator"),
-      ir_pb2.FunctionMapping.SUBTRACTION: (int_result, int_args, binary, 2, 2,
+      ir_data.FunctionMapping.SUBTRACTION: (int_result, int_args, binary, 2, 2,
                                     "operator"),
-      ir_pb2.FunctionMapping.MULTIPLICATION: (int_result, int_args, binary, 2, 2,
+      ir_data.FunctionMapping.MULTIPLICATION: (int_result, int_args, binary, 2, 2,
                                        "operator"),
-      ir_pb2.FunctionMapping.AND: (bool_result, bool_args, binary, 2, 2, "operator"),
-      ir_pb2.FunctionMapping.OR: (bool_result, bool_args, binary, 2, 2, "operator"),
-      ir_pb2.FunctionMapping.MAXIMUM: (int_result, int_args, n_ary, 1, None,
+      ir_data.FunctionMapping.AND: (bool_result, bool_args, binary, 2, 2, "operator"),
+      ir_data.FunctionMapping.OR: (bool_result, bool_args, binary, 2, 2, "operator"),
+      ir_data.FunctionMapping.MAXIMUM: (int_result, int_args, n_ary, 1, None,
                                 "function"),
-      ir_pb2.FunctionMapping.PRESENCE: (bool_result, field_args, n_ary, 1, 1,
+      ir_data.FunctionMapping.PRESENCE: (bool_result, field_args, n_ary, 1, 1,
                                  "function"),
-      ir_pb2.FunctionMapping.UPPER_BOUND: (int_result, int_args, n_ary, 1, 1,
+      ir_data.FunctionMapping.UPPER_BOUND: (int_result, int_args, n_ary, 1, 1,
                                     "function"),
-      ir_pb2.FunctionMapping.LOWER_BOUND: (int_result, int_args, n_ary, 1, 1,
+      ir_data.FunctionMapping.LOWER_BOUND: (int_result, int_args, n_ary, 1, 1,
                                     "function"),
   }
   function = expression.function.function
@@ -180,7 +180,7 @@ def _type_check_local_reference(expression, ir, errors):
   """Annotates the type of a local reference."""
   referrent = ir_util.find_object(expression.field_reference.path[-1], ir)
   assert referrent, "Local reference should be non-None after name resolution."
-  if isinstance(referrent, ir_pb2.RuntimeParameter):
+  if isinstance(referrent, ir_data.RuntimeParameter):
     parameter = referrent
     _set_expression_type_from_physical_type_reference(
         expression, parameter.physical_type_alias.atomic_type.reference, ir)
@@ -192,7 +192,7 @@ def _type_check_local_reference(expression, ir, errors):
     expression.type.CopyFrom(field.read_transform.type)
     return
   if not field.type.HasField("atomic_type"):
-    expression.type.opaque.CopyFrom(ir_pb2.OpaqueType())
+    expression.type.opaque.CopyFrom(ir_data.OpaqueType())
   else:
     _set_expression_type_from_physical_type_reference(
         expression, field.type.atomic_type.reference, ir)
@@ -202,10 +202,10 @@ def unbounded_expression_type_for_physical_type(type_definition):
   """Gets the ExpressionType for a field of the given TypeDefinition.
 
   Arguments:
-    type_definition: an ir_pb2.TypeDefinition.
+    type_definition: an ir_data.AddressableUnit.
 
   Returns:
-    An ir_pb2.ExpressionType with the corresponding expression type filled in:
+    An ir_data.ExpressionType with the corresponding expression type filled in:
     for example, [prelude].UInt will result in an ExpressionType with the
     `integer` field filled in.
 
@@ -214,17 +214,17 @@ def unbounded_expression_type_for_physical_type(type_definition):
   # TODO(bolms): Add a `[value_type]` attribute for `external`s.
   if ir_util.get_boolean_attribute(type_definition.attribute,
                                    attributes.IS_INTEGER):
-    return ir_pb2.ExpressionType(integer=ir_pb2.IntegerType())
+    return ir_data.ExpressionType(integer=ir_data.IntegerType())
   elif tuple(type_definition.name.canonical_name.object_path) == ("Flag",):
     # This is a hack: the Flag type should say that it is a boolean.
-    return ir_pb2.ExpressionType(boolean=ir_pb2.BooleanType())
+    return ir_data.ExpressionType(boolean=ir_data.BooleanType())
   elif type_definition.HasField("enumeration"):
-    return ir_pb2.ExpressionType(
-        enumeration=ir_pb2.EnumType(
-            name=ir_pb2.Reference(
+    return ir_data.ExpressionType(
+        enumeration=ir_data.EnumType(
+            name=ir_data.Reference(
                 canonical_name=type_definition.name.canonical_name)))
   else:
-    return ir_pb2.ExpressionType(opaque=ir_pb2.OpaqueType())
+    return ir_data.ExpressionType(opaque=ir_data.OpaqueType())
 
 
 def _set_expression_type_from_physical_type_reference(expression,
@@ -267,8 +267,8 @@ def _type_check_comparison_operator(expression, source_file_name, errors):
   """Checks the type of a comparison operator (==, !=, <, >, >=, <=)."""
   # Applying less than or greater than to a boolean is likely a mistake, so
   # only equality and inequality are allowed for booleans.
-  if expression.function.function in (ir_pb2.FunctionMapping.EQUALITY,
-                                      ir_pb2.FunctionMapping.INEQUALITY):
+  if expression.function.function in (ir_data.FunctionMapping.EQUALITY,
+                                      ir_data.FunctionMapping.INEQUALITY):
     acceptable_types = ("integer", "boolean", "enumeration")
     acceptable_types_for_humans = "an integer, boolean, or enum"
   else:
@@ -440,11 +440,11 @@ def annotate_types(ir):
   """
   errors = []
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Expression], _type_check_expression,
-      skip_descendants_of={ir_pb2.Expression},
+      ir, [ir_data.Expression], _type_check_expression,
+      skip_descendants_of={ir_data.Expression},
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.RuntimeParameter], _annotate_parameter_type,
+      ir, [ir_data.RuntimeParameter], _annotate_parameter_type,
       parameters={"errors": errors})
   return errors
 
@@ -464,19 +464,19 @@ def check_types(ir):
   """
   errors = []
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.FieldLocation], _type_check_field_location,
+      ir, [ir_data.FieldLocation], _type_check_field_location,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.ArrayType, ir_pb2.Expression], _type_check_array_size,
-      skip_descendants_of={ir_pb2.AtomicType},
+      ir, [ir_data.ArrayType, ir_data.Expression], _type_check_array_size,
+      skip_descendants_of={ir_data.AtomicType},
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Field], _type_check_field_existence_condition,
+      ir, [ir_data.Field], _type_check_field_existence_condition,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.RuntimeParameter], _type_check_parameter,
+      ir, [ir_data.RuntimeParameter], _type_check_parameter,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.AtomicType], _type_check_passed_parameters,
+      ir, [ir_data.AtomicType], _type_check_passed_parameters,
       parameters={"errors": errors})
   return errors

@@ -16,7 +16,7 @@
 
 import unittest
 from compiler.util import expression_parser
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import ir_util
 
 
@@ -31,58 +31,58 @@ class IrUtilTest(unittest.TestCase):
     self.assertTrue(ir_util.is_constant(_parse_expression("6")))
     expression = _parse_expression("12")
     # The type information should be ignored for constants like this one.
-    expression.type.integer.CopyFrom(ir_pb2.IntegerType())
+    expression.type.integer.CopyFrom(ir_data.IntegerType())
     self.assertTrue(ir_util.is_constant(expression))
 
   def test_is_constant_boolean(self):
     self.assertTrue(ir_util.is_constant(_parse_expression("true")))
     expression = _parse_expression("true")
     # The type information should be ignored for constants like this one.
-    expression.type.boolean.CopyFrom(ir_pb2.BooleanType())
+    expression.type.boolean.CopyFrom(ir_data.BooleanType())
     self.assertTrue(ir_util.is_constant(expression))
 
   def test_is_constant_enum(self):
-    self.assertTrue(ir_util.is_constant(ir_pb2.Expression(
-        constant_reference=ir_pb2.Reference(),
-        type=ir_pb2.ExpressionType(enumeration=ir_pb2.EnumType(value="12")))))
+    self.assertTrue(ir_util.is_constant(ir_data.Expression(
+        constant_reference=ir_data.Reference(),
+        type=ir_data.ExpressionType(enumeration=ir_data.EnumType(value="12")))))
 
   def test_is_constant_integer_type(self):
-    self.assertFalse(ir_util.is_constant_type(ir_pb2.ExpressionType(
-        integer=ir_pb2.IntegerType(
+    self.assertFalse(ir_util.is_constant_type(ir_data.ExpressionType(
+        integer=ir_data.IntegerType(
             modulus="10",
             modular_value="5",
             minimum_value="-5",
             maximum_value="15"))))
-    self.assertTrue(ir_util.is_constant_type(ir_pb2.ExpressionType(
-        integer=ir_pb2.IntegerType(
+    self.assertTrue(ir_util.is_constant_type(ir_data.ExpressionType(
+        integer=ir_data.IntegerType(
             modulus="infinity",
             modular_value="5",
             minimum_value="5",
             maximum_value="5"))))
 
   def test_is_constant_boolean_type(self):
-    self.assertFalse(ir_util.is_constant_type(ir_pb2.ExpressionType(
-        boolean=ir_pb2.BooleanType())))
-    self.assertTrue(ir_util.is_constant_type(ir_pb2.ExpressionType(
-        boolean=ir_pb2.BooleanType(value=True))))
-    self.assertTrue(ir_util.is_constant_type(ir_pb2.ExpressionType(
-        boolean=ir_pb2.BooleanType(value=False))))
+    self.assertFalse(ir_util.is_constant_type(ir_data.ExpressionType(
+        boolean=ir_data.BooleanType())))
+    self.assertTrue(ir_util.is_constant_type(ir_data.ExpressionType(
+        boolean=ir_data.BooleanType(value=True))))
+    self.assertTrue(ir_util.is_constant_type(ir_data.ExpressionType(
+        boolean=ir_data.BooleanType(value=False))))
 
   def test_is_constant_enumeration_type(self):
-    self.assertFalse(ir_util.is_constant_type(ir_pb2.ExpressionType(
-        enumeration=ir_pb2.EnumType())))
-    self.assertTrue(ir_util.is_constant_type(ir_pb2.ExpressionType(
-        enumeration=ir_pb2.EnumType(value="0"))))
+    self.assertFalse(ir_util.is_constant_type(ir_data.ExpressionType(
+        enumeration=ir_data.EnumType())))
+    self.assertTrue(ir_util.is_constant_type(ir_data.ExpressionType(
+        enumeration=ir_data.EnumType(value="0"))))
 
   def test_is_constant_opaque_type(self):
-    self.assertFalse(ir_util.is_constant_type(ir_pb2.ExpressionType(
-        opaque=ir_pb2.OpaqueType())))
+    self.assertFalse(ir_util.is_constant_type(ir_data.ExpressionType(
+        opaque=ir_data.OpaqueType())))
 
   def test_constant_value_of_integer(self):
     self.assertEqual(6, ir_util.constant_value(_parse_expression("6")))
 
   def test_constant_value_of_none(self):
-    self.assertIsNone(ir_util.constant_value(ir_pb2.Expression()))
+    self.assertIsNone(ir_util.constant_value(ir_data.Expression()))
 
   def test_constant_value_of_addition(self):
     self.assertEqual(6, ir_util.constant_value(_parse_expression("2+4")))
@@ -146,27 +146,27 @@ class IrUtilTest(unittest.TestCase):
     self.assertFalse(ir_util.constant_value(_parse_expression("false")))
 
   def test_constant_value_of_enum(self):
-    self.assertEqual(12, ir_util.constant_value(ir_pb2.Expression(
-        constant_reference=ir_pb2.Reference(),
-        type=ir_pb2.ExpressionType(enumeration=ir_pb2.EnumType(value="12")))))
+    self.assertEqual(12, ir_util.constant_value(ir_data.Expression(
+        constant_reference=ir_data.Reference(),
+        type=ir_data.ExpressionType(enumeration=ir_data.EnumType(value="12")))))
 
   def test_constant_value_of_integer_reference(self):
-    self.assertEqual(12, ir_util.constant_value(ir_pb2.Expression(
-        constant_reference=ir_pb2.Reference(),
-        type=ir_pb2.ExpressionType(
-            integer=ir_pb2.IntegerType(modulus="infinity",
+    self.assertEqual(12, ir_util.constant_value(ir_data.Expression(
+        constant_reference=ir_data.Reference(),
+        type=ir_data.ExpressionType(
+            integer=ir_data.IntegerType(modulus="infinity",
                                        modular_value="12")))))
 
   def test_constant_value_of_boolean_reference(self):
-    self.assertTrue(ir_util.constant_value(ir_pb2.Expression(
-        constant_reference=ir_pb2.Reference(),
-        type=ir_pb2.ExpressionType(boolean=ir_pb2.BooleanType(value=True)))))
+    self.assertTrue(ir_util.constant_value(ir_data.Expression(
+        constant_reference=ir_data.Reference(),
+        type=ir_data.ExpressionType(boolean=ir_data.BooleanType(value=True)))))
 
   def test_constant_value_of_builtin_reference(self):
     self.assertEqual(12, ir_util.constant_value(
-        ir_pb2.Expression(
-            builtin_reference=ir_pb2.Reference(
-                canonical_name=ir_pb2.CanonicalName(object_path=["$foo"]))),
+        ir_data.Expression(
+            builtin_reference=ir_data.Reference(
+                canonical_name=ir_data.CanonicalName(object_path=["$foo"]))),
         {"$foo": 12}))
 
   def test_constant_value_of_field_reference(self):
@@ -216,72 +216,72 @@ class IrUtilTest(unittest.TestCase):
 
   def test_is_array(self):
     self.assertTrue(
-        ir_util.is_array(ir_pb2.Type(array_type=ir_pb2.ArrayType())))
+        ir_util.is_array(ir_data.Type(array_type=ir_data.ArrayType())))
     self.assertFalse(
-        ir_util.is_array(ir_pb2.Type(atomic_type=ir_pb2.AtomicType())))
+        ir_util.is_array(ir_data.Type(atomic_type=ir_data.AtomicType())))
 
   def test_get_attribute(self):
-    type_def = ir_pb2.TypeDefinition(attribute=[
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(expression=ir_pb2.Expression()),
-            name=ir_pb2.Word(text="phil")),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(expression=_parse_expression("false")),
-            name=ir_pb2.Word(text="bob"),
+    type_def = ir_data.TypeDefinition(attribute=[
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(expression=ir_data.Expression()),
+            name=ir_data.Word(text="phil")),
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(expression=_parse_expression("false")),
+            name=ir_data.Word(text="bob"),
             is_default=True),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(expression=_parse_expression("true")),
-            name=ir_pb2.Word(text="bob")),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(expression=_parse_expression("false")),
-            name=ir_pb2.Word(text="bob2")),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(expression=_parse_expression("true")),
-            name=ir_pb2.Word(text="bob2"),
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(expression=_parse_expression("true")),
+            name=ir_data.Word(text="bob")),
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(expression=_parse_expression("false")),
+            name=ir_data.Word(text="bob2")),
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(expression=_parse_expression("true")),
+            name=ir_data.Word(text="bob2"),
             is_default=True),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(expression=_parse_expression("false")),
-            name=ir_pb2.Word(text="bob3"),
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(expression=_parse_expression("false")),
+            name=ir_data.Word(text="bob3"),
             is_default=True),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(expression=_parse_expression("false")),
-            name=ir_pb2.Word()),
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(expression=_parse_expression("false")),
+            name=ir_data.Word()),
     ])
     self.assertEqual(
-        ir_pb2.AttributeValue(expression=_parse_expression("true")),
+        ir_data.AttributeValue(expression=_parse_expression("true")),
         ir_util.get_attribute(type_def.attribute, "bob"))
     self.assertEqual(
-        ir_pb2.AttributeValue(expression=_parse_expression("false")),
+        ir_data.AttributeValue(expression=_parse_expression("false")),
         ir_util.get_attribute(type_def.attribute, "bob2"))
     self.assertEqual(None, ir_util.get_attribute(type_def.attribute, "Bob"))
     self.assertEqual(None, ir_util.get_attribute(type_def.attribute, "bob3"))
 
   def test_get_boolean_attribute(self):
-    type_def = ir_pb2.TypeDefinition(attribute=[
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(expression=ir_pb2.Expression()),
-            name=ir_pb2.Word(text="phil")),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(expression=_parse_expression("false")),
-            name=ir_pb2.Word(text="bob"),
+    type_def = ir_data.TypeDefinition(attribute=[
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(expression=ir_data.Expression()),
+            name=ir_data.Word(text="phil")),
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(expression=_parse_expression("false")),
+            name=ir_data.Word(text="bob"),
             is_default=True),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(expression=_parse_expression("true")),
-            name=ir_pb2.Word(text="bob")),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(expression=_parse_expression("false")),
-            name=ir_pb2.Word(text="bob2")),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(expression=_parse_expression("true")),
-            name=ir_pb2.Word(text="bob2"),
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(expression=_parse_expression("true")),
+            name=ir_data.Word(text="bob")),
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(expression=_parse_expression("false")),
+            name=ir_data.Word(text="bob2")),
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(expression=_parse_expression("true")),
+            name=ir_data.Word(text="bob2"),
             is_default=True),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(expression=_parse_expression("false")),
-            name=ir_pb2.Word(text="bob3"),
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(expression=_parse_expression("false")),
+            name=ir_data.Word(text="bob3"),
             is_default=True),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(expression=_parse_expression("false")),
-            name=ir_pb2.Word()),
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(expression=_parse_expression("false")),
+            name=ir_data.Word()),
     ])
     self.assertTrue(ir_util.get_boolean_attribute(type_def.attribute, "bob"))
     self.assertTrue(ir_util.get_boolean_attribute(type_def.attribute,
@@ -298,86 +298,86 @@ class IrUtilTest(unittest.TestCase):
     self.assertIsNone(ir_util.get_boolean_attribute(type_def.attribute, "bob3"))
 
   def test_get_integer_attribute(self):
-    type_def = ir_pb2.TypeDefinition(attribute=[
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(
-                expression=ir_pb2.Expression(
-                    type=ir_pb2.ExpressionType(integer=ir_pb2.IntegerType()))),
-            name=ir_pb2.Word(text="phil")),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(
-                expression=ir_pb2.Expression(
-                    constant=ir_pb2.NumericConstant(value="20"),
-                    type=ir_pb2.ExpressionType(integer=ir_pb2.IntegerType(
+    type_def = ir_data.TypeDefinition(attribute=[
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(
+                expression=ir_data.Expression(
+                    type=ir_data.ExpressionType(integer=ir_data.IntegerType()))),
+            name=ir_data.Word(text="phil")),
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(
+                expression=ir_data.Expression(
+                    constant=ir_data.NumericConstant(value="20"),
+                    type=ir_data.ExpressionType(integer=ir_data.IntegerType(
                         modular_value="20",
                         modulus="infinity")))),
-            name=ir_pb2.Word(text="bob"),
+            name=ir_data.Word(text="bob"),
             is_default=True),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(
-                expression=ir_pb2.Expression(
-                    constant=ir_pb2.NumericConstant(value="10"),
-                    type=ir_pb2.ExpressionType(integer=ir_pb2.IntegerType(
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(
+                expression=ir_data.Expression(
+                    constant=ir_data.NumericConstant(value="10"),
+                    type=ir_data.ExpressionType(integer=ir_data.IntegerType(
                         modular_value="10",
                         modulus="infinity")))),
-            name=ir_pb2.Word(text="bob")),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(
-                expression=ir_pb2.Expression(
-                    constant=ir_pb2.NumericConstant(value="5"),
-                    type=ir_pb2.ExpressionType(integer=ir_pb2.IntegerType(
+            name=ir_data.Word(text="bob")),
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(
+                expression=ir_data.Expression(
+                    constant=ir_data.NumericConstant(value="5"),
+                    type=ir_data.ExpressionType(integer=ir_data.IntegerType(
                         modular_value="5",
                         modulus="infinity")))),
-            name=ir_pb2.Word(text="bob2")),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(
-                expression=ir_pb2.Expression(
-                    constant=ir_pb2.NumericConstant(value="0"),
-                    type=ir_pb2.ExpressionType(integer=ir_pb2.IntegerType(
+            name=ir_data.Word(text="bob2")),
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(
+                expression=ir_data.Expression(
+                    constant=ir_data.NumericConstant(value="0"),
+                    type=ir_data.ExpressionType(integer=ir_data.IntegerType(
                         modular_value="0",
                         modulus="infinity")))),
-            name=ir_pb2.Word(text="bob2"),
+            name=ir_data.Word(text="bob2"),
             is_default=True),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(
-                expression=ir_pb2.Expression(
-                    constant=ir_pb2.NumericConstant(value="30"),
-                    type=ir_pb2.ExpressionType(integer=ir_pb2.IntegerType(
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(
+                expression=ir_data.Expression(
+                    constant=ir_data.NumericConstant(value="30"),
+                    type=ir_data.ExpressionType(integer=ir_data.IntegerType(
                         modular_value="30",
                         modulus="infinity")))),
-            name=ir_pb2.Word(text="bob3"),
+            name=ir_data.Word(text="bob3"),
             is_default=True),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(
-                expression=ir_pb2.Expression(
-                    function=ir_pb2.Function(
-                        function=ir_pb2.FunctionMapping.ADDITION,
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(
+                expression=ir_data.Expression(
+                    function=ir_data.Function(
+                        function=ir_data.FunctionMapping.ADDITION,
                         args=[
-                            ir_pb2.Expression(
-                                constant=ir_pb2.NumericConstant(value="100"),
-                                type=ir_pb2.ExpressionType(
-                                    integer=ir_pb2.IntegerType(
+                            ir_data.Expression(
+                                constant=ir_data.NumericConstant(value="100"),
+                                type=ir_data.ExpressionType(
+                                    integer=ir_data.IntegerType(
                                         modular_value="100",
                                         modulus="infinity"))),
-                            ir_pb2.Expression(
-                                constant=ir_pb2.NumericConstant(value="100"),
-                                type=ir_pb2.ExpressionType(
-                                    integer=ir_pb2.IntegerType(
+                            ir_data.Expression(
+                                constant=ir_data.NumericConstant(value="100"),
+                                type=ir_data.ExpressionType(
+                                    integer=ir_data.IntegerType(
                                         modular_value="100",
                                         modulus="infinity")))
                         ]),
-                    type=ir_pb2.ExpressionType(integer=ir_pb2.IntegerType(
+                    type=ir_data.ExpressionType(integer=ir_data.IntegerType(
                         modular_value="200",
                         modulus="infinity")))),
-            name=ir_pb2.Word(text="bob4")),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(
-                expression=ir_pb2.Expression(
-                    constant=ir_pb2.NumericConstant(value="40"),
-                    type=ir_pb2.ExpressionType(integer=ir_pb2.IntegerType(
+            name=ir_data.Word(text="bob4")),
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(
+                expression=ir_data.Expression(
+                    constant=ir_data.NumericConstant(value="40"),
+                    type=ir_data.ExpressionType(integer=ir_data.IntegerType(
                         modular_value="40",
                         modulus="infinity")))),
-            name=ir_pb2.Word()),
+            name=ir_data.Word()),
     ])
     self.assertEqual(10,
                      ir_util.get_integer_attribute(type_def.attribute, "bob"))
@@ -392,25 +392,25 @@ class IrUtilTest(unittest.TestCase):
                                                         "bob4"))
 
   def test_get_duplicate_attribute(self):
-    type_def = ir_pb2.TypeDefinition(attribute=[
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(expression=ir_pb2.Expression()),
-            name=ir_pb2.Word(text="phil")),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(expression=_parse_expression("true")),
-            name=ir_pb2.Word(text="bob")),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(expression=_parse_expression("false")),
-            name=ir_pb2.Word(text="bob")),
-        ir_pb2.Attribute(
-            value=ir_pb2.AttributeValue(expression=_parse_expression("false")),
-            name=ir_pb2.Word()),
+    type_def = ir_data.TypeDefinition(attribute=[
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(expression=ir_data.Expression()),
+            name=ir_data.Word(text="phil")),
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(expression=_parse_expression("true")),
+            name=ir_data.Word(text="bob")),
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(expression=_parse_expression("false")),
+            name=ir_data.Word(text="bob")),
+        ir_data.Attribute(
+            value=ir_data.AttributeValue(expression=_parse_expression("false")),
+            name=ir_data.Word()),
     ])
     self.assertRaises(AssertionError, ir_util.get_attribute, type_def.attribute,
                       "bob")
 
   def test_find_object(self):
-    ir = ir_pb2.EmbossIr.from_json(
+    ir = ir_data.EmbossIr.from_json(
         """{
           "module": [
             {
@@ -492,12 +492,12 @@ class IrUtilTest(unittest.TestCase):
         }""")
 
     # Test that find_object works with any of its four "name" types.
-    canonical_name_of_foo = ir_pb2.CanonicalName(module_file="test.emb",
+    canonical_name_of_foo = ir_data.CanonicalName(module_file="test.emb",
                                                  object_path=["Foo"])
     self.assertEqual(ir.module[0].type[0], ir_util.find_object(
-        ir_pb2.Reference(canonical_name=canonical_name_of_foo), ir))
+        ir_data.Reference(canonical_name=canonical_name_of_foo), ir))
     self.assertEqual(ir.module[0].type[0], ir_util.find_object(
-        ir_pb2.NameDefinition(canonical_name=canonical_name_of_foo), ir))
+        ir_data.NameDefinition(canonical_name=canonical_name_of_foo), ir))
     self.assertEqual(ir.module[0].type[0],
                      ir_util.find_object(canonical_name_of_foo, ir))
     self.assertEqual(ir.module[0].type[0],
@@ -533,9 +533,9 @@ class IrUtilTest(unittest.TestCase):
 
     # Test that find_parent_object works with any of its four "name" types.
     self.assertEqual(ir.module[0], ir_util.find_parent_object(
-        ir_pb2.Reference(canonical_name=canonical_name_of_foo), ir))
+        ir_data.Reference(canonical_name=canonical_name_of_foo), ir))
     self.assertEqual(ir.module[0], ir_util.find_parent_object(
-        ir_pb2.NameDefinition(canonical_name=canonical_name_of_foo), ir))
+        ir_data.NameDefinition(canonical_name=canonical_name_of_foo), ir))
     self.assertEqual(ir.module[0],
                      ir_util.find_parent_object(canonical_name_of_foo, ir))
     self.assertEqual(ir.module[0],
@@ -554,17 +554,17 @@ class IrUtilTest(unittest.TestCase):
   def test_hashable_form_of_reference(self):
     self.assertEqual(
         ("t.emb", "Foo", "Bar"),
-        ir_util.hashable_form_of_reference(ir_pb2.Reference(
-            canonical_name=ir_pb2.CanonicalName(module_file="t.emb",
+        ir_util.hashable_form_of_reference(ir_data.Reference(
+            canonical_name=ir_data.CanonicalName(module_file="t.emb",
                                                 object_path=["Foo", "Bar"]))))
     self.assertEqual(
         ("t.emb", "Foo", "Bar"),
-        ir_util.hashable_form_of_reference(ir_pb2.NameDefinition(
-            canonical_name=ir_pb2.CanonicalName(module_file="t.emb",
+        ir_util.hashable_form_of_reference(ir_data.NameDefinition(
+            canonical_name=ir_data.CanonicalName(module_file="t.emb",
                                                 object_path=["Foo", "Bar"]))))
 
   def test_get_base_type(self):
-    array_type_ir = ir_pb2.Type.from_json(
+    array_type_ir = ir_data.Type.from_json(
         """{
           "array_type": {
             "element_count": { "constant": { "value": "20" } },
@@ -590,7 +590,7 @@ class IrUtilTest(unittest.TestCase):
     self.assertEqual(base_type_ir, ir_util.get_base_type(base_type_ir))
 
   def test_size_of_type_in_bits(self):
-    ir = ir_pb2.EmbossIr.from_json(
+    ir = ir_data.EmbossIr.from_json(
         """{
           "module": [{
             "type": [{
@@ -638,7 +638,7 @@ class IrUtilTest(unittest.TestCase):
           }]
         }""")
 
-    fixed_size_type = ir_pb2.Type.from_json(
+    fixed_size_type = ir_data.Type.from_json(
         """{
           "atomic_type": {
             "reference": {
@@ -648,7 +648,7 @@ class IrUtilTest(unittest.TestCase):
         }""")
     self.assertEqual(8, ir_util.fixed_size_of_type_in_bits(fixed_size_type, ir))
 
-    explicit_size_type = ir_pb2.Type.from_json(
+    explicit_size_type = ir_data.Type.from_json(
         """{
           "atomic_type": {
             "reference": {
@@ -665,7 +665,7 @@ class IrUtilTest(unittest.TestCase):
     self.assertEqual(32,
                      ir_util.fixed_size_of_type_in_bits(explicit_size_type, ir))
 
-    fixed_size_array = ir_pb2.Type.from_json(
+    fixed_size_array = ir_data.Type.from_json(
         """{
           "array_type": {
             "base_type": {
@@ -686,7 +686,7 @@ class IrUtilTest(unittest.TestCase):
     self.assertEqual(40,
                      ir_util.fixed_size_of_type_in_bits(fixed_size_array, ir))
 
-    fixed_size_2d_array = ir_pb2.Type.from_json(
+    fixed_size_2d_array = ir_data.Type.from_json(
         """{
           "array_type": {
             "base_type": {
@@ -720,7 +720,7 @@ class IrUtilTest(unittest.TestCase):
     self.assertEqual(
         80, ir_util.fixed_size_of_type_in_bits(fixed_size_2d_array, ir))
 
-    automatic_size_array = ir_pb2.Type.from_json(
+    automatic_size_array = ir_data.Type.from_json(
         """{
           "array_type": {
             "base_type": {
@@ -749,7 +749,7 @@ class IrUtilTest(unittest.TestCase):
     self.assertIsNone(
         ir_util.fixed_size_of_type_in_bits(automatic_size_array, ir))
 
-    variable_size_type = ir_pb2.Type.from_json(
+    variable_size_type = ir_data.Type.from_json(
         """{
           "atomic_type": {
             "reference": {
@@ -760,7 +760,7 @@ class IrUtilTest(unittest.TestCase):
     self.assertIsNone(
         ir_util.fixed_size_of_type_in_bits(variable_size_type, ir))
 
-    no_size_type = ir_pb2.Type.from_json(
+    no_size_type = ir_data.Type.from_json(
         """{
           "atomic_type": {
             "reference": {
@@ -774,21 +774,21 @@ class IrUtilTest(unittest.TestCase):
     self.assertIsNone(ir_util.fixed_size_of_type_in_bits(no_size_type, ir))
 
   def test_field_is_virtual(self):
-    self.assertTrue(ir_util.field_is_virtual(ir_pb2.Field()))
+    self.assertTrue(ir_util.field_is_virtual(ir_data.Field()))
 
   def test_field_is_not_virtual(self):
     self.assertFalse(ir_util.field_is_virtual(
-        ir_pb2.Field(location=ir_pb2.FieldLocation())))
+        ir_data.Field(location=ir_data.FieldLocation())))
 
   def test_field_is_read_only(self):
-    self.assertTrue(ir_util.field_is_read_only(ir_pb2.Field(
-        write_method=ir_pb2.WriteMethod(read_only=True))))
+    self.assertTrue(ir_util.field_is_read_only(ir_data.Field(
+        write_method=ir_data.WriteMethod(read_only=True))))
 
   def test_field_is_not_read_only(self):
     self.assertFalse(ir_util.field_is_read_only(
-        ir_pb2.Field(location=ir_pb2.FieldLocation())))
-    self.assertFalse(ir_util.field_is_read_only(ir_pb2.Field(
-        write_method=ir_pb2.WriteMethod())))
+        ir_data.Field(location=ir_data.FieldLocation())))
+    self.assertFalse(ir_util.field_is_read_only(ir_data.Field(
+        write_method=ir_data.WriteMethod())))
 
 
 if __name__ == "__main__":

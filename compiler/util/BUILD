@@ -22,9 +22,9 @@ package(
 )
 
 py_library(
-    name = "ir_pb2",
+    name = "ir_data",
     srcs = [
-        "ir_pb2.py",
+        "ir_data.py",
     ],
 )
 
@@ -41,7 +41,7 @@ py_library(
 py_library(
     name = "ir_util",
     srcs = ["ir_util.py"],
-    deps = [":ir_pb2"],
+    deps = [":ir_data"],
 )
 
 py_test(
@@ -50,7 +50,7 @@ py_test(
     python_version = "PY3",
     deps = [
         ":expression_parser",
-        ":ir_pb2",
+        ":ir_data",
         ":ir_util",
     ],
 )
@@ -60,7 +60,7 @@ py_library(
     srcs = ["attribute_util.py"],
     deps = [
         ":error",
-        ":ir_pb2",
+        ":ir_data",
         ":ir_util",
         ":traverse_ir",
     ],
@@ -94,7 +94,7 @@ py_test(
     python_version = "PY3",
     deps = [
         ":test_util",
-        "//compiler/util:ir_pb2",
+        "//compiler/util:ir_data",
         "//compiler/util:parser_types",
     ],
 )
@@ -103,8 +103,8 @@ py_library(
     name = "traverse_ir",
     srcs = ["traverse_ir.py"],
     deps = [
-        ":ir_pb2",
         ":simple_memoizer",
+        ":ir_data",
     ],
 )
 
@@ -113,8 +113,8 @@ py_test(
     srcs = ["traverse_ir_test.py"],
     python_version = "PY3",
     deps = [
-        ":ir_pb2",
         ":traverse_ir",
+        ":ir_data",
     ],
 )
 
@@ -122,7 +122,7 @@ py_library(
     name = "parser_types",
     srcs = ["parser_types.py"],
     deps = [
-        ":ir_pb2",
+        ":ir_data",
     ],
 )
 
@@ -131,8 +131,8 @@ py_test(
     srcs = ["parser_types_test.py"],
     python_version = "PY3",
     deps = [
-        ":ir_pb2",
         ":parser_types",
+        ":ir_data",
     ],
 )
 

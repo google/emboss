@@ -16,7 +16,7 @@
 
 from compiler.front_end import attributes
 from compiler.util import error
-from compiler.util import ir_pb2
+from compiler.util import ir_data
 from compiler.util import ir_util
 from compiler.util import resources
 from compiler.util import traverse_ir
@@ -105,7 +105,7 @@ def _check_that_array_base_types_in_structs_are_multiples_of_bytes(
       return
     base_type_size = fixed_size
   if base_type_size % type_definition.addressable_unit != 0:
-    assert type_definition.addressable_unit == ir_pb2.AddressableUnit.BYTE
+    assert type_definition.addressable_unit == ir_data.AddressableUnit.BYTE
     errors.append([error.error(source_file_name,
                                type_ir.base_type.source_location,
                                "Array elements in structs must have sizes "
@@ -352,9 +352,9 @@ def _check_allowed_in_bits(type_ir, type_definition, source_file_name, ir,
       type_ir.atomic_type.reference, ir)
   if (type_definition.addressable_unit %
       referenced_type_definition.addressable_unit != 0):
-    assert type_definition.addressable_unit == ir_pb2.AddressableUnit.BIT
+    assert type_definition.addressable_unit == ir_data.AddressableUnit.BIT
     assert (referenced_type_definition.addressable_unit ==
-            ir_pb2.AddressableUnit.BYTE)
+            ir_data.AddressableUnit.BYTE)
     errors.append([
         error.error(source_file_name, type_ir.source_location,
                     "Byte-oriented {} cannot be used in a bits field.".format(
@@ -365,7 +365,7 @@ def _check_allowed_in_bits(type_ir, type_definition, source_file_name, ir,
 def _check_size_of_bits(type_ir, type_definition, source_file_name, errors):
   """Checks that `bits` types are fixed size, less than 64 bits."""
   del type_ir  # Unused
-  if type_definition.addressable_unit != ir_pb2.AddressableUnit.BIT:
+  if type_definition.addressable_unit != ir_data.AddressableUnit.BIT:
     return
   fixed_size = ir_util.get_integer_attribute(
       type_definition.attribute, attributes.FIXED_SIZE)
@@ -554,56 +554,56 @@ def check_constraints(ir):
   Checks that only constant-size types are used in arrays.
 
   Arguments:
-    ir: An ir_pb2.EmbossIr object to check.
+    ir: An ir_data.EmbossIr object to check.
 
   Returns:
     A list of ConstraintViolations, or an empty list if there are none.
   """
   errors = []
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Structure, ir_pb2.Type], _check_allowed_in_bits,
+      ir, [ir_data.Structure, ir_data.Type], _check_allowed_in_bits,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      # TODO(bolms): look for [ir_pb2.ArrayType], [ir_pb2.AtomicType], and
+      # TODO(bolms): look for [ir_data.ArrayType], [ir_data.AtomicType], and
       # simplify _check_that_array_base_types_are_fixed_size.
-      ir, [ir_pb2.ArrayType], _check_that_array_base_types_are_fixed_size,
+      ir, [ir_data.ArrayType], _check_that_array_base_types_are_fixed_size,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Structure, ir_pb2.ArrayType],
+      ir, [ir_data.Structure, ir_data.ArrayType],
       _check_that_array_base_types_in_structs_are_multiples_of_bytes,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.ArrayType, ir_pb2.ArrayType],
+      ir, [ir_data.ArrayType, ir_data.ArrayType],
       _check_that_inner_array_dimensions_are_constant,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Structure], _check_size_of_bits,
+      ir, [ir_data.Structure], _check_size_of_bits,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Structure, ir_pb2.Type], _check_type_requirements_for_field,
+      ir, [ir_data.Structure, ir_data.Type], _check_type_requirements_for_field,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Field], _check_field_name_for_reserved_words,
+      ir, [ir_data.Field], _check_field_name_for_reserved_words,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.EnumValue], _check_enum_name_for_reserved_words,
+      ir, [ir_data.EnumValue], _check_enum_name_for_reserved_words,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.TypeDefinition], _check_type_name_for_reserved_words,
+      ir, [ir_data.TypeDefinition], _check_type_name_for_reserved_words,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Expression], _check_constancy_of_constant_references,
+      ir, [ir_data.Expression], _check_constancy_of_constant_references,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Enum], _check_that_enum_values_are_representable,
+      ir, [ir_data.Enum], _check_that_enum_values_are_representable,
       parameters={"errors": errors})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.Expression], _check_bounds_on_runtime_integer_expressions,
-      incidental_actions={ir_pb2.Attribute: _attribute_in_attribute_action},
-      skip_descendants_of={ir_pb2.EnumValue, ir_pb2.Expression},
+      ir, [ir_data.Expression], _check_bounds_on_runtime_integer_expressions,
+      incidental_actions={ir_data.Attribute: _attribute_in_attribute_action},
+      skip_descendants_of={ir_data.EnumValue, ir_data.Expression},
       parameters={"errors": errors, "in_attribute": None})
   traverse_ir.fast_traverse_ir_top_down(
-      ir, [ir_pb2.RuntimeParameter],
+      ir, [ir_data.RuntimeParameter],
       _check_type_requirements_for_parameter_type,
       parameters={"errors": errors})
   return errors
