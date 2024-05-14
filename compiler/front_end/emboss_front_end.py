@@ -30,6 +30,7 @@ import sys
 from compiler.front_end import glue
 from compiler.front_end import module_ir
 from compiler.util import error
+from compiler.util import ir_data_utils
 
 
 def _parse_command_line(argv):
@@ -178,10 +179,10 @@ def main(flags):
     print(glue.format_production_set(
         set(module_ir.PRODUCTIONS) - main_module_debug_info.used_productions))
   if flags.output_ir_to_stdout:
-    print(ir.to_json())
+    print(ir_data_utils.IrDataSerializer(ir).to_json())
   if flags.output_file:
     with open(flags.output_file, "w") as f:
-      f.write(ir.to_json())
+      f.write(ir_data_utils.IrDataSerializer(ir).to_json())
   return 0
 
 

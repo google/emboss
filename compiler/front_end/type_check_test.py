@@ -18,6 +18,7 @@ import unittest
 from compiler.front_end import glue
 from compiler.front_end import type_check
 from compiler.util import error
+from compiler.util import ir_data_utils
 from compiler.util import test_util
 
 
@@ -44,7 +45,7 @@ class TypeAnnotationTest(unittest.TestCase):
                        "  0 [+1]     UInt      x\n"
                        "  1 [+true]  UInt:8[]  y\n")
     self.assertEqual([], error.filter_errors(type_check.annotate_types(ir)),
-                     ir.to_json(indent=2))
+                     ir_data_utils.IrDataSerializer(ir).to_json(indent=2))
     expression = ir.module[0].type[0].structure.field[1].location.size
     self.assertEqual(expression.type.WhichOneof("type"), "boolean")
 

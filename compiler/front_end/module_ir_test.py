@@ -24,6 +24,7 @@ from compiler.front_end import module_ir
 from compiler.front_end import parser
 from compiler.front_end import tokenizer
 from compiler.util import ir_data
+from compiler.util import ir_data_utils
 from compiler.util import test_util
 
 _TESTDATA_PATH = "testdata.golden"
@@ -31,7 +32,7 @@ _MINIMAL_SOURCE = pkgutil.get_data(
         _TESTDATA_PATH, "span_se_log_file_status.emb").decode(encoding="UTF-8")
 _MINIMAL_SAMPLE = parser.parse_module(
     tokenizer.tokenize(_MINIMAL_SOURCE, "")[0]).parse_tree
-_MINIMAL_SAMPLE_IR = ir_data.Module.from_json(
+_MINIMAL_SAMPLE_IR = ir_data_utils.IrDataSerializer.from_json(ir_data.Module,
     pkgutil.get_data(_TESTDATA_PATH, "span_se_log_file_status.ir.txt").decode(
         encoding="UTF-8")
 )
@@ -3978,7 +3979,7 @@ def _get_test_cases():
     name, emb, ir_text = case.split("---")
     name = name.strip()
     try:
-      ir = ir_data.Module.from_json(ir_text)
+      ir = ir_data_utils.IrDataSerializer.from_json(ir_data.Module, ir_text)
     except Exception:
       print(name)
       raise
@@ -4152,10 +4153,11 @@ def _make_superset_tests():
     def test_case(self):
       ir = module_ir.build_ir(test.parse_tree)
       is_superset, error_message = test_util.proto_is_superset(ir, test.ir)
+
       self.assertTrue(
           is_superset,
-          error_message + "\n" + ir.to_json(indent=2) + "\n" +
-          test.ir.to_json(indent=2))
+          error_message + "\n" + ir_data_utils.IrDataSerializer(ir).to_json(indent=2) + "\n" +
+          ir_data_utils.IrDataSerializer(test.ir).to_json(indent=2))
 
     return test_case
 

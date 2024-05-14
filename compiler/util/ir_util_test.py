@@ -17,6 +17,7 @@
 import unittest
 from compiler.util import expression_parser
 from compiler.util import ir_data
+from compiler.util import ir_data_utils
 from compiler.util import ir_util
 
 
@@ -410,7 +411,7 @@ class IrUtilTest(unittest.TestCase):
                       "bob")
 
   def test_find_object(self):
-    ir = ir_data.EmbossIr.from_json(
+    ir = ir_data_utils.IrDataSerializer.from_json(ir_data.EmbossIr,
         """{
           "module": [
             {
@@ -564,7 +565,7 @@ class IrUtilTest(unittest.TestCase):
                                                 object_path=["Foo", "Bar"]))))
 
   def test_get_base_type(self):
-    array_type_ir = ir_data.Type.from_json(
+    array_type_ir = ir_data_utils.IrDataSerializer.from_json(ir_data.Type,
         """{
           "array_type": {
             "element_count": { "constant": { "value": "20" } },
@@ -590,7 +591,7 @@ class IrUtilTest(unittest.TestCase):
     self.assertEqual(base_type_ir, ir_util.get_base_type(base_type_ir))
 
   def test_size_of_type_in_bits(self):
-    ir = ir_data.EmbossIr.from_json(
+    ir = ir_data_utils.IrDataSerializer.from_json(ir_data.EmbossIr,
         """{
           "module": [{
             "type": [{
@@ -638,7 +639,7 @@ class IrUtilTest(unittest.TestCase):
           }]
         }""")
 
-    fixed_size_type = ir_data.Type.from_json(
+    fixed_size_type = ir_data_utils.IrDataSerializer.from_json(ir_data.Type,
         """{
           "atomic_type": {
             "reference": {
@@ -648,7 +649,7 @@ class IrUtilTest(unittest.TestCase):
         }""")
     self.assertEqual(8, ir_util.fixed_size_of_type_in_bits(fixed_size_type, ir))
 
-    explicit_size_type = ir_data.Type.from_json(
+    explicit_size_type = ir_data_utils.IrDataSerializer.from_json(ir_data.Type,
         """{
           "atomic_type": {
             "reference": {
@@ -665,7 +666,7 @@ class IrUtilTest(unittest.TestCase):
     self.assertEqual(32,
                      ir_util.fixed_size_of_type_in_bits(explicit_size_type, ir))
 
-    fixed_size_array = ir_data.Type.from_json(
+    fixed_size_array = ir_data_utils.IrDataSerializer.from_json(ir_data.Type,
         """{
           "array_type": {
             "base_type": {
@@ -686,7 +687,7 @@ class IrUtilTest(unittest.TestCase):
     self.assertEqual(40,
                      ir_util.fixed_size_of_type_in_bits(fixed_size_array, ir))
 
-    fixed_size_2d_array = ir_data.Type.from_json(
+    fixed_size_2d_array = ir_data_utils.IrDataSerializer.from_json(ir_data.Type,
         """{
           "array_type": {
             "base_type": {
@@ -720,7 +721,7 @@ class IrUtilTest(unittest.TestCase):
     self.assertEqual(
         80, ir_util.fixed_size_of_type_in_bits(fixed_size_2d_array, ir))
 
-    automatic_size_array = ir_data.Type.from_json(
+    automatic_size_array = ir_data_utils.IrDataSerializer.from_json(ir_data.Type,
         """{
           "array_type": {
             "base_type": {
@@ -749,7 +750,7 @@ class IrUtilTest(unittest.TestCase):
     self.assertIsNone(
         ir_util.fixed_size_of_type_in_bits(automatic_size_array, ir))
 
-    variable_size_type = ir_data.Type.from_json(
+    variable_size_type = ir_data_utils.IrDataSerializer.from_json(ir_data.Type,
         """{
           "atomic_type": {
             "reference": {
@@ -760,7 +761,7 @@ class IrUtilTest(unittest.TestCase):
     self.assertIsNone(
         ir_util.fixed_size_of_type_in_bits(variable_size_type, ir))
 
-    no_size_type = ir_data.Type.from_json(
+    no_size_type = ir_data_utils.IrDataSerializer.from_json(ir_data.Type,
         """{
           "atomic_type": {
             "reference": {

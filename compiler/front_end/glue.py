@@ -34,6 +34,7 @@ from compiler.front_end import type_check
 from compiler.front_end import write_inference
 from compiler.util import error
 from compiler.util import ir_data
+from compiler.util import ir_data_utils
 from compiler.util import parser_types
 from compiler.util import resources
 
@@ -111,7 +112,7 @@ class ModuleDebugInfo(object):
 
   def format_module_ir(self):
     """Renders self.ir in a human-readable format."""
-    return self.ir.to_json(indent=2)
+    return ir_data_utils.IrDataSerializer(self.ir).to_json(indent=2)
 
 
 def format_production_set(productions):

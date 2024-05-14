@@ -25,6 +25,7 @@ py_library(
     name = "ir_data",
     srcs = [
         "ir_data.py",
+        "ir_data_utils.py",
     ],
 )
 
