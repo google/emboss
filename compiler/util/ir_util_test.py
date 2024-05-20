@@ -32,14 +32,14 @@ class IrUtilTest(unittest.TestCase):
     self.assertTrue(ir_util.is_constant(_parse_expression("6")))
     expression = _parse_expression("12")
     # The type information should be ignored for constants like this one.
-    expression.type.integer.CopyFrom(ir_data.IntegerType())
+    ir_data_utils.builder(expression).type.integer.CopyFrom(ir_data.IntegerType())
     self.assertTrue(ir_util.is_constant(expression))
 
   def test_is_constant_boolean(self):
     self.assertTrue(ir_util.is_constant(_parse_expression("true")))
     expression = _parse_expression("true")
     # The type information should be ignored for constants like this one.
-    expression.type.boolean.CopyFrom(ir_data.BooleanType())
+    ir_data_utils.builder(expression).type.boolean.CopyFrom(ir_data.BooleanType())
     self.assertTrue(ir_util.is_constant(expression))
 
   def test_is_constant_enum(self):

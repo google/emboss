@@ -17,6 +17,7 @@
 from compiler.front_end import attributes
 from compiler.front_end import expression_bounds
 from compiler.util import ir_data
+from compiler.util import ir_data_utils
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 
@@ -216,8 +217,10 @@ def _add_write_method(field, ir):
 
   if not ir_util.field_is_virtual(field):
     # If the field is not virtual, writes are physical.
-    field.write_method.physical = True
+    ir_data_utils.builder(field).write_method.physical = True
     return
+
+  field_builder = ir_data_utils.builder(field)
 
   # A virtual field cannot be a direct alias if it has an additional
   # requirement.
@@ -235,17 +238,17 @@ def _add_write_method(field, ir):
         _add_write_method(referenced_field, ir)
         reference_is_read_only = referenced_field.write_method.read_only
       if not reference_is_read_only:
-        field.write_method.transform.destination.CopyFrom(
+        field_builder.write_method.transform.destination.CopyFrom(
             field_reference.field_reference)
-        field.write_method.transform.function_body.CopyFrom(function_body)
+        field_builder.write_method.transform.function_body.CopyFrom(function_body)
       else:
         # If the virtual field's expression is invertible, but its target field
         # is read-only, it is also read-only.
-        field.write_method.read_only = True
+        field_builder.write_method.read_only = True
     else:
       # If the virtual field's expression is not invertible, it is
       # read-only.
-      field.write_method.read_only = True
+      field_builder.write_method.read_only = True
     return
 
   referenced_field = ir_util.find_object(
@@ -253,17 +256,17 @@ def _add_write_method(field, ir):
   if not isinstance(referenced_field, ir_data.Field):
     # If the virtual field aliases a non-field (i.e., a parameter), it is
     # read-only.
-    field.write_method.read_only = True
+    field_builder.write_method.read_only = True
     return
 
   _add_write_method(referenced_field, ir)
   if referenced_field.write_method.read_only:
     # If the virtual field directly aliases a read-only field, it is read-only.
-    field.write_method.read_only = True
+    field_builder.write_method.read_only = True
     return
 
   # Otherwise, it can be written as a direct alias.
-  field.write_method.alias.CopyFrom(
+  field_builder.write_method.alias.CopyFrom(
       field.read_transform.field_reference)
 
 

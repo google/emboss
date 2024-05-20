@@ -17,6 +17,7 @@
 from compiler.front_end import attributes
 from compiler.util import error
 from compiler.util import ir_data
+from compiler.util import ir_data_utils
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 
@@ -44,11 +45,11 @@ def _type_check_expression(expression, source_file_name, ir, errors):
 
 
 def _annotate_as_integer(expression):
-  expression.type.integer.CopyFrom(ir_data.IntegerType())
+  ir_data_utils.builder(expression).type.integer.CopyFrom(ir_data.IntegerType())
 
 
 def _annotate_as_boolean(expression):
-  expression.type.boolean.CopyFrom(ir_data.BooleanType())
+   ir_data_utils.builder(expression).type.boolean.CopyFrom(ir_data.BooleanType())
 
 
 def _type_check(expression, source_file_name, errors, type_oneof, type_name,
@@ -88,7 +89,7 @@ def _type_check_constant_reference(expression, source_file_name, ir, errors):
   referred_name = expression.constant_reference.canonical_name
   referred_object = ir_util.find_object(referred_name, ir)
   if isinstance(referred_object, ir_data.EnumValue):
-    expression.type.enumeration.name.CopyFrom(expression.constant_reference)
+    ir_data_utils.builder(expression).type.enumeration.name.CopyFrom(expression.constant_reference)
     del expression.type.enumeration.name.canonical_name.object_path[-1]
   elif isinstance(referred_object, ir_data.Field):
     if not ir_util.field_is_virtual(referred_object):
@@ -102,7 +103,7 @@ def _type_check_constant_reference(expression, source_file_name, ir, errors):
       return
     _type_check_expression(referred_object.read_transform,
                            referred_name.module_file, ir, errors)
-    expression.type.CopyFrom(referred_object.read_transform.type)
+    ir_data_utils.builder(expression).type.CopyFrom(referred_object.read_transform.type)
   else:
     assert False, "Unexpected constant reference type."
 
@@ -189,10 +190,10 @@ def _type_check_local_reference(expression, ir, errors):
   if ir_util.field_is_virtual(field):
     _type_check_expression(field.read_transform,
                            expression.field_reference.path[0], ir, errors)
-    expression.type.CopyFrom(field.read_transform.type)
+    ir_data_utils.builder(expression).type.CopyFrom(field.read_transform.type)
     return
   if not field.type.HasField("atomic_type"):
-    expression.type.opaque.CopyFrom(ir_data.OpaqueType())
+    ir_data_utils.builder(expression).type.opaque.CopyFrom(ir_data.OpaqueType())
   else:
     _set_expression_type_from_physical_type_reference(
         expression, field.type.atomic_type.reference, ir)
@@ -232,7 +233,7 @@ def _set_expression_type_from_physical_type_reference(expression,
   """Sets the type of an expression to match a physical type."""
   field_type = ir_util.find_object(type_reference, ir)
   assert field_type, "Field type should be non-None after name resolution."
-  expression.type.CopyFrom(
+  ir_data_utils.builder(expression).type.CopyFrom(
       unbounded_expression_type_for_physical_type(field_type))
 
 
@@ -323,7 +324,7 @@ def _type_check_choice_operator(expression, source_file_name, errors):
   elif if_true.type.WhichOneof("type") == "boolean":
     _annotate_as_boolean(expression)
   elif if_true.type.WhichOneof("type") == "enumeration":
-    expression.type.enumeration.name.CopyFrom(if_true.type.enumeration.name)
+    ir_data_utils.builder(expression).type.enumeration.name.CopyFrom(if_true.type.enumeration.name)
   else:
     assert False, "Unexpected type for if_true."
 
