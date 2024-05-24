@@ -227,7 +227,7 @@ def _maybe_replace_next_keyword_in_expression(expression_ir, last_location,
                                               source_file_name, errors):
   if not expression_ir.HasField("builtin_reference"):
     return
-  if expression_ir.builtin_reference.canonical_name.object_path[0] != "$next":
+  if ir_data_utils.reader(expression_ir).builtin_reference.canonical_name.object_path[0] != "$next":
     return
   if not last_location:
     errors.append([

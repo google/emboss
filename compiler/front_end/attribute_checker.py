@@ -25,6 +25,7 @@ from compiler.front_end import type_check
 from compiler.util import attribute_util
 from compiler.util import error
 from compiler.util import ir_data
+from compiler.util import ir_data_utils
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 
@@ -433,7 +434,7 @@ def _verify_field_attributes(field, type_definition, source_file_name, ir,
 
 def _verify_back_end_attributes(attribute, expected_back_ends, source_file_name,
                                 ir, errors):
-  back_end_text = attribute.back_end.text
+  back_end_text = ir_data_utils.reader(attribute).back_end.text
   if back_end_text not in expected_back_ends:
     expected_back_ends_for_error = expected_back_ends - {""}
     errors.append([error.error(

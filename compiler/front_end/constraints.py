@@ -17,6 +17,7 @@
 from compiler.front_end import attributes
 from compiler.util import error
 from compiler.util import ir_data
+from compiler.util import ir_data_utils
 from compiler.util import ir_util
 from compiler.util import resources
 from compiler.util import traverse_ir
@@ -52,7 +53,8 @@ def _check_that_inner_array_dimensions_are_constant(
   """Checks that inner array dimensions are constant."""
   if type_ir.WhichOneof("size") == "automatic":
     errors.append([error.error(
-        source_file_name, type_ir.element_count.source_location,
+        source_file_name,
+        ir_data_utils.reader(type_ir).element_count.source_location,
         "Array dimensions can only be omitted for the outermost dimension.")])
   elif type_ir.WhichOneof("size") == "element_count":
     if not ir_util.is_constant(type_ir.element_count):

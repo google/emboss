@@ -37,3 +37,11 @@ def builder(target: ir_data.Message) -> ir_data.Message:
   This is a no-op and just used for annotation for now.
   """
   return target
+
+
+def reader(obj: ir_data.Message) -> ir_data.Message:
+  """A read-only wrapper for querying chains of IR data fields.
+
+  This is a no-op and just used for annotation for now.
+  """
+  return obj
