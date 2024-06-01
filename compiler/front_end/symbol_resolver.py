@@ -417,8 +417,7 @@ def _resolve_field_reference(field_reference, source_file_name, errors, ir):
                                previous_reference.source_name[0].text))
       return
     assert previous_field.type.WhichOneof("type") == "atomic_type"
-    member_name = ir_data.CanonicalName()
-    member_name.CopyFrom(
+    member_name = ir_data_utils.copy(
         previous_field.type.atomic_type.reference.canonical_name)
     ir_data_utils.builder(member_name).object_path.extend([ref.source_name[0].text])
     previous_field = ir_util.find_object_or_none(member_name, ir)

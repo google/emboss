@@ -1465,8 +1465,7 @@ def _offset_source_location_column(source_location, offset):
   Offset should be a tuple of (start, end), which are the offsets relative to
   source_location.start.column to set the new start.column and end.column."""
 
-  new_location = ir_data.Location()
-  new_location.CopyFrom(source_location)
+  new_location = ir_data_utils.copy(source_location)
   new_location.start.column = source_location.start.column + offset[0]
   new_location.end.column = source_location.start.column + offset[1]
 

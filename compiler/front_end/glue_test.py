@@ -141,8 +141,7 @@ class FrontEndGlueTest(unittest.TestCase):
     self.assertFalse(ir)
 
   def test_ir_from_parse_module(self):
-    log_file_path_ir = ir_data.Module()
-    log_file_path_ir.CopyFrom(_SPAN_SE_LOG_FILE_IR)
+    log_file_path_ir = ir_data_utils.copy(_SPAN_SE_LOG_FILE_IR)
     log_file_path_ir.source_file_name = _SPAN_SE_LOG_FILE_PATH
     self.assertEqual(log_file_path_ir, glue.parse_module(
         _SPAN_SE_LOG_FILE_PATH, _SPAN_SE_LOG_FILE_READER).ir)

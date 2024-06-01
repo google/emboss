@@ -150,7 +150,10 @@ def _really_build_ir(parse_tree, used_productions):
     used_productions.add(parse_tree.production)
     result = _handlers[parse_tree.production](*parsed_children)
     if parse_tree.source_location is not None:
-      result.source_location.CopyFrom(parse_tree.source_location)
+      if result.source_location:
+        ir_data_utils.update(result.source_location, parse_tree.source_location)
+      else:
+        result.source_location = ir_data_utils.copy(parse_tree.source_location)
     return result
   else:
     # For leaf nodes, the temporary "IR" is just the token.  Higher-level rules
@@ -798,7 +801,10 @@ def _structure(struct, name, parameters, colon, comment, newline, struct_body):
       struct.source_location.start)
   ir_data_utils.builder(struct_body.structure).source_location.end.CopyFrom(
       struct_body.source_location.end)
-  struct_body.name.CopyFrom(name)
+  if struct_body.name:
+    ir_data_utils.update(struct_body.name, name)
+  else:
+    struct_body.name = ir_data_utils.copy(name)
   if parameters.list:
     struct_body.runtime_parameter.extend(parameters.list[0].list)
   return struct_body
@@ -1059,8 +1065,7 @@ def _inline_type_field(location, name, abbreviation, body):
   # the user wants to use type attributes, they should create a separate type
   # definition and reference it.
   del body.attribute[:]
-  type_name = ir_data.NameDefinition()
-  type_name.CopyFrom(name)
+  type_name = ir_data_utils.copy(name)
   ir_data_utils.builder(type_name).name.text = name_conversion.snake_to_camel(type_name.name.text)
   field.type.atomic_type.reference.source_name.extend([type_name.name])
   field.type.atomic_type.reference.source_location.CopyFrom(
@@ -1166,7 +1171,10 @@ def _enum_value_body(indent, docs, attributes, dedent):
 def _external(external, name, colon, comment, newline, external_body):
   del colon, comment, newline  # Unused.
   ir_data_utils.builder(external_body.source_location).start.CopyFrom(external.source_location.start)
-  external_body.name.CopyFrom(name)
+  if external_body.name:
+    ir_data_utils.update(external_body.name, name)
+  else:
+    external_body.name = ir_data_utils.copy(name)
   return external_body
 
 
@@ -1218,7 +1226,7 @@ def _type(reference, parameters, size, array_spec):
       atomic_type_source_location_end)
   t = ir_data.Type(
       atomic_type=ir_data.AtomicType(
-          reference=reference,
+          reference=ir_data_utils.copy(reference),
           source_location=atomic_type_location,
           runtime_parameter=parameters.list[0].list if parameters.list else []),
       size_in_bits=size.list[0] if size.list else None,
