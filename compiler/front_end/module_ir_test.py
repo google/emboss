@@ -4102,8 +4102,8 @@ def _check_all_source_locations(proto, path="", min_start=None, max_end=None):
     if not proto.HasField(name):
       continue
     field_path = "{}{}".format(path, name)
-    if isinstance(spec, ir_pb2.Repeated):
-      if issubclass(spec.type, ir_pb2.Message):
+    if isinstance(spec, ir_data.Repeated):
+      if issubclass(spec.type, ir_data.Message):
         index = 0
         for i in getattr(proto, name):
           item_path = "{}[{}]".format(field_path, index)
