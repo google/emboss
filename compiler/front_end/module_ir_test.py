@@ -4194,12 +4194,12 @@ def _make_negative_tests():
 
     return test_case
 
-  for test in _get_test_cases():
+  for test in _get_negative_test_cases():
     test_name = "test " + test.name + " compilation failure"
     assert not hasattr(ModuleIrTest, test_name)
     setattr(ModuleIrTest, test_name, _make_negative_test(test))
 
-
+_make_negative_tests()
 _make_superset_tests()
 _make_source_location_tests()
 
