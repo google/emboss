@@ -17,6 +17,8 @@
 import inspect
 
 from compiler.util import ir_data
+from compiler.util import ir_data_fields
+from compiler.util import ir_data_utils
 from compiler.util import simple_memoizer
 
 
@@ -157,7 +159,7 @@ def _fast_traverse_proto_top_down(proto, incidental_actions, pattern,
                                     incidental_actions, new_pattern,
                                     skip_descendants_of, action, parameters)
   for member_name in repeated_fields:
-    for array_element in getattr(proto, member_name):
+    for array_element in getattr(proto, member_name) or []:
       _fast_traverse_proto_top_down(array_element, incidental_actions,
                                     new_pattern, skip_descendants_of, action,
                                     parameters)
@@ -192,12 +194,12 @@ def _fields_to_scan_by_current_and_target():
     if type_to_check in type_to_fields:
       continue
     fields = {}
-    for field_name, field_type in type_to_check.field_specs.items():
-      if issubclass(field_type.type, ir_data.Message):
-        fields[field_name] = field_type.type
-        types_to_check.append(field_type.type)
+    for field_name, field_type in ir_data_utils.field_specs(type_to_check).items():
+      if field_type.is_dataclass:
+        fields[field_name] = field_type.data_type
+        types_to_check.append(field_type.data_type)
         type_fields_to_cardinality[type_to_check, field_name] = (
-            field_type.__class__)
+            field_type.container)
     type_to_fields[type_to_check] = fields
 
   # type_to_descendant_types is a map of all types that can be reached from a
@@ -239,8 +241,8 @@ def _fields_to_scan_by_current_and_target():
             target_node_type in type_to_descendant_types[field_type]):
           # Singular and repeated fields go to different lists, so that they can
           # be handled separately.
-          if (type_fields_to_cardinality[current_node_type, field_name] ==
-              ir_data.Optional):
+          if (type_fields_to_cardinality[current_node_type, field_name] is not
+              ir_data_fields.FieldContainer.LIST):
             singular_fields_to_scan.append(field_name)
           else:
             repeated_fields_to_scan.append(field_name)

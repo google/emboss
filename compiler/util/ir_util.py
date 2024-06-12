@@ -25,6 +25,8 @@ _FIXED_SIZE_ATTRIBUTE = "fixed_size_in_bits"
 
 def get_attribute(attribute_list, name):
   """Finds name in attribute_list and returns a AttributeValue or None."""
+  if not attribute_list:
+    return None
   attribute_value = None
   for attr in attribute_list:
     if attr.name.text == name and not attr.is_default:
@@ -88,9 +90,11 @@ def is_constant_type(expression_type):
 
 def constant_value(expression, bindings=None):
   """Evaluates expression with the given bindings."""
+  if expression is None:
+    return None
   expression = ir_data_utils.reader(expression)
   if expression.WhichOneof("expression") == "constant":
-    return int(expression.constant.value)
+    return int(expression.constant.value or 0)
   elif expression.WhichOneof("expression") == "constant_reference":
     # We can't look up the constant reference without the IR, but by the time
     # constant_value is called, the actual values should have been propagated to
@@ -252,7 +256,7 @@ def _find_path_in_enumeration(path, type_definition):
 
 
 def _find_path_in_parameters(path, type_definition):
-  if len(path) > 1:
+  if len(path) > 1 or not type_definition.HasField("runtime_parameter"):
     return None
   for parameter in type_definition.runtime_parameter:
     if ir_data_utils.reader(parameter).name.name.text == path[0]:
@@ -274,7 +278,7 @@ def _find_path_in_type_definition(path, type_definition):
   if obj:
     return obj
   else:
-    return _find_path_in_type_list(path, type_definition.subtype)
+    return _find_path_in_type_list(path, type_definition.subtype or [])
 
 
 def _find_path_in_type_list(path, type_list):

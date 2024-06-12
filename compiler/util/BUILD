@@ -25,8 +25,22 @@ py_library(
     name = "ir_data",
     srcs = [
         "ir_data.py",
+        "ir_data_fields.py",
         "ir_data_utils.py",
     ],
+    deps = [],
+)
+
+py_test(
+    name = "ir_data_fields_test",
+    srcs = ["ir_data_fields_test.py"],
+    deps = [":ir_data"],
+)
+
+py_test(
+    name = "ir_data_utils_test",
+    srcs = ["ir_data_utils_test.py"],
+    deps = [":expression_parser", ":ir_data"],
 )
 
 py_library(

@@ -14,7 +14,7 @@
 
 """Utilities for test code."""
 
-from compiler.util import ir_data
+from compiler.util import ir_data_utils
 
 
 def proto_is_superset(proto, expected_values, path=""):
@@ -47,11 +47,12 @@ def proto_is_superset(proto, expected_values, path=""):
   """
   if path:
     path += "."
-  for name, expected_value in expected_values.raw_fields.items():
+  for spec, expected_value in ir_data_utils.get_set_fields(expected_values):
+    name = spec.name
     field_path = "{}{}".format(path, name)
     value = getattr(proto, name)
-    if issubclass(proto.field_specs[name].type, ir_data.Message):
-      if isinstance(proto.field_specs[name], ir_data.Repeated):
+    if spec.is_dataclass:
+      if spec.is_sequence:
         if len(expected_value) > len(value):
           return False, "{}[{}] missing".format(field_path,
                                                 len(getattr(proto, name)))
@@ -71,9 +72,9 @@ def proto_is_superset(proto, expected_values, path=""):
       # Zero-length repeated fields and not-there repeated fields are "the
       # same."
       if (expected_value != value and
-          (isinstance(proto.field_specs[name], ir_data.Optional) or
+          (not spec.is_sequence or
            len(expected_value))):
-        if isinstance(proto.field_specs[name], ir_data.Repeated):
+        if spec.is_sequence:
           return False, "{} differs: found {}, expected {}".format(
               field_path, list(value), list(expected_value))
         else:

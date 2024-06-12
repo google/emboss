@@ -29,11 +29,11 @@ def _mark_as_synthetic(proto):
     return
   if hasattr(proto, "source_location"):
     ir_data_utils.builder(proto).source_location.is_synthetic = True
-  for name, value in proto.raw_fields.items():
-    if name != "source_location":
-      if isinstance(value, ir_data.TypedScopedList):
-        for i in range(len(value)):
-          _mark_as_synthetic(value[i])
+  for spec, value in ir_data_utils.get_set_fields(proto):
+    if spec.name != "source_location" and spec.is_dataclass:
+      if spec.is_sequence:
+        for i in value:
+          _mark_as_synthetic(i)
       else:
         _mark_as_synthetic(value)
 

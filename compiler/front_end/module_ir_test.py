@@ -24,6 +24,7 @@ from compiler.front_end import module_ir
 from compiler.front_end import parser
 from compiler.front_end import tokenizer
 from compiler.util import ir_data
+from compiler.util import ir_data_fields
 from compiler.util import ir_data_utils
 from compiler.util import test_util
 
@@ -4089,21 +4090,21 @@ def _check_all_source_locations(proto, path="", min_start=None, max_end=None):
   child_end = None
   # Only check the source_location value if this proto message actually has a
   # source_location field.
-  if "source_location" in proto.raw_fields:
+  if proto.HasField("source_location"):
     errors.extend(_check_source_location(proto.source_location,
                                          path + "source_location",
                                          min_start, max_end))
     child_start = proto.source_location.start
     child_end = proto.source_location.end
 
-  for name, spec in proto.field_specs.items():
+  for name, spec in ir_data_fields.field_specs(proto).items():
     if name == "source_location":
       continue
     if not proto.HasField(name):
       continue
     field_path = "{}{}".format(path, name)
-    if isinstance(spec, ir_pb2.Repeated):
-      if issubclass(spec.type, ir_pb2.Message):
+    if spec.is_sequence:
+      if spec.is_dataclass:
         index = 0
         for i in getattr(proto, name):
           item_path = "{}[{}]".format(field_path, index)
@@ -4111,7 +4112,7 @@ def _check_all_source_locations(proto, path="", min_start=None, max_end=None):
           errors.extend(
               _check_all_source_locations(i, item_path, child_start, child_end))
     else:
-      if issubclass(spec.type, ir_data.Message):
+      if spec.is_dataclass:
         errors.extend(_check_all_source_locations(getattr(proto, name),
                                                   field_path, child_start,
                                                   child_end))
