@@ -89,7 +89,7 @@ template <typename IntermediateT, typename ResultT, typename OperatorT,
           typename... ArgsT>
 inline constexpr Maybe<ResultT> MaybeDo(Maybe<ArgsT>... args) {
   return AllKnown(args...)
-             ? Maybe<ResultT>(static_cast<ResultT>(OperatorT::template Do(
+             ? Maybe<ResultT>(static_cast<ResultT>(OperatorT::template Do<>(
                    static_cast<IntermediateT>(args.ValueOrDefault())...)))
              : Maybe<ResultT>();
 }
