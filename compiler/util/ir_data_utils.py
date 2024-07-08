@@ -410,7 +410,6 @@ def _extract_ir(
     if isinstance(ir_or_spec, ir_data_fields.FieldSpec):
       # This is a placeholder entry, no fields are set.
       return None
-    # return cast(ir_data_fields.IrDataclassInstance, ir_or_spec)
     ir_or_wrapper = ir_or_spec
   elif isinstance(ir_or_wrapper, _IrDataBuilder):
     ir_or_wrapper = ir_or_wrapper.ir
@@ -427,8 +426,7 @@ def fields_and_values(
     ir: The IR data class or a read-only wrapper of an IR data class.
     value_filt: Optional filter used to exclude values.
   """
-  ir = _extract_ir(ir_wrapper)
-  if not ir:
+  if (ir := _extract_ir(ir_wrapper)) is None:
     return []
 
   return ir_data_fields.fields_and_values(ir, value_filt)
