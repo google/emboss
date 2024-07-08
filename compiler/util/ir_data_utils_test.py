@@ -208,7 +208,7 @@ class IrDataUtilsTest(unittest.TestCase):
     # But not the same instance
     self.assertIsNot(attribute, attribute_copy)
 
-    # Lets do a sequence
+    # Let's do a sequence
     type_def = ir_data.TypeDefinition(attribute=[attribute])
     type_def_copy = ir_data_utils.copy(type_def)
 
@@ -332,7 +332,6 @@ class IrDataBuilderTest(unittest.TestCase):
         expression.function.args, ir_data_utils._IrDataSequenceBuilder
     )
     self.assertTrue(expression_ir.function.args)
-    expression.function.args[0].CopyFrom(ir_data.Expression())
 
   def test_copy_from_list(self):
     specs = ir_data_utils.field_specs(ir_data.Function)
