@@ -644,19 +644,8 @@ class ReadOnlyFieldCheckerTest(unittest.TestCase):
     self.assertRaises(AttributeError, set_field)
 
 
-def _cache_message_specs():
-  # This needs to be done after the dataclass decorators run and create the
-  # wrapped classes.
-  for data_class in ir_data_fields.all_ir_classes(
-      sys.modules[ReadOnlyFieldCheckerTest.__module__]
-  ):
-    if data_class is not ir_data.Message:
-      data_class.field_specs = ir_data_fields.IrDataclassSpecs.get_specs(
-          data_class
-      )
-
-
-_cache_message_specs()
+ir_data_fields.cache_message_specs(
+  sys.modules[ReadOnlyFieldCheckerTest.__module__], ir_data.Message)
 
 if __name__ == "__main__":
   unittest.main()

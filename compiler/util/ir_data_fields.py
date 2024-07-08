@@ -219,6 +219,20 @@ class IrDataclassSpecs:
     return cls.spec_cache[data_class]
 
 
+def cache_message_specs(mod, cls):
+  """Adds a cached `field_specs` attribute to IR dataclasses in `mod`
+  excluding the given base `cls`.
+
+  This needs to be done after the dataclass decorators run and create the
+  wrapped classes.
+  """
+  for data_class in all_ir_classes(mod):
+    if data_class is not cls:
+      data_class.field_specs = IrDataclassSpecs.get_specs(
+          data_class
+      )
+
+
 def _field_specs(cls: type[T]) -> Mapping[str, FieldSpec]:
   """Gets the IR data field names and types for the given IR data class"""
   # Get the dataclass fields

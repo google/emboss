@@ -75,17 +75,6 @@ class Message:
     return None
 
 
-def _cache_message_specs():
-  # This needs to be done after the dataclass decorators run and create the wrapped classes.
-  for data_class in ir_data_fields.all_ir_classes(
-      sys.modules[Message.__module__]
-  ):
-    if data_class is not Message:
-      data_class.field_specs = ir_data_fields.IrDataclassSpecs.get_specs(
-          data_class
-      )
-
-
 ################################################################################
 # From here to the end of the file are actual structure definitions.
 
@@ -875,4 +864,4 @@ class EmbossIr(Message):
 
 
 # Post-process the dataclasses to add cached fields.
-_cache_message_specs()
+ir_data_fields.cache_message_specs(sys.modules[Message.__module__], Message)

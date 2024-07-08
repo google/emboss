@@ -85,18 +85,6 @@ class OneofFieldTest(ir_data.Message):
   normal_field: bool = True
 
 
-def _cache_message_specs():
-  # This needs to be done after the dataclass decorators run and create the
-  # wrapped classes.
-  for data_class in ir_data_fields.all_ir_classes(
-      sys.modules[OneofFieldTest.__module__]
-  ):
-    if data_class is not ir_data.Message:
-      data_class.field_specs = ir_data_fields.IrDataclassSpecs.get_specs(
-          data_class
-      )
-
-
 class OneOfTest(unittest.TestCase):
   """Tests for the the various oneof field helpers"""
 
@@ -259,7 +247,8 @@ class IrDataFieldsTest(unittest.TestCase):
     self.assertEqual(oneof_test.normal_field, False)
 
 
-_cache_message_specs()
+ir_data_fields.cache_message_specs(
+  sys.modules[OneofFieldTest.__module__], ir_data.Message)
 
 if __name__ == "__main__":
   unittest.main()
