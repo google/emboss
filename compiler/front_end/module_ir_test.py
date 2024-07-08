@@ -4103,16 +4103,15 @@ def _check_all_source_locations(proto, path="", min_start=None, max_end=None):
     if not proto.HasField(name):
       continue
     field_path = "{}{}".format(path, name)
-    if spec.is_sequence:
-      if spec.is_dataclass:
+    if spec.is_dataclass:
+      if spec.is_sequence:
         index = 0
         for i in getattr(proto, name):
           item_path = "{}[{}]".format(field_path, index)
           index += 1
           errors.extend(
               _check_all_source_locations(i, item_path, child_start, child_end))
-    else:
-      if spec.is_dataclass:
+      else:
         errors.extend(_check_all_source_locations(getattr(proto, name),
                                                   field_path, child_start,
                                                   child_end))
