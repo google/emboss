@@ -19,8 +19,10 @@ from compiler.front_end import attributes
 from compiler.front_end import constraints
 from compiler.front_end import glue
 from compiler.util import error
+from compiler.util import ir_data_utils
 from compiler.util import ir_util
 from compiler.util import test_util
+
 
 
 def _make_ir_from_emb(emb_text, name="m.emb"):
@@ -38,10 +40,17 @@ class ConstraintsTest(unittest.TestCase):
   def test_error_on_missing_inner_array_size(self):
     ir = _make_ir_from_emb("struct Foo:\n"
                            "  0 [+1]  UInt:8[][1]  one_byte\n")
+    # There is a latent issue here where the source location reported in this
+    # error is using a default value of 0:0. An issue is filed at
+    # https://github.com/google/emboss/issues/153 for further investigation.
+    # In the meantime we use `ir_data_utils.reader` to mimic this legacy
+    # behavior.
+    error_array = ir_data_utils.reader(
+        ir.module[0].type[0].structure.field[0].type.array_type)
     self.assertEqual([[
         error.error(
             "m.emb",
-            None, # This is probably a latent bug
+            error_array.base_type.array_type.element_count.source_location,
             "Array dimensions can only be omitted for the outermost dimension.")
     ]], error.filter_errors(constraints.check_constraints(ir)))
 
