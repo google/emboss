@@ -27,7 +27,17 @@ from compiler.util import ir_data_fields
 
 @dataclasses.dataclass
 class Message:
-  """Base class for proto "message"-like objects."""
+  """Base class for IR data objects.
+
+  Historically protocol buffers were used for serializing this data which has
+  led to some legacy naming conventions and references. In particular this
+  class is named `Message` in the sense of a protocol buffer message,
+  indicating that it is intended to just be data that is used by other higher
+  level services.
+
+  There are some other legacy idioms leftover from the protocol buffer-based
+  definition such as support for "oneof" and optional fields.
+  """
 
   IR_DATACLASS: ClassVar[object] = object()
   field_specs: ClassVar[ir_data_fields.FilteredIrFieldSpecs]
@@ -37,7 +47,7 @@ class Message:
 
     Post-processes any lists passed in to use our custom list type.
     """
-    # Convert any lists passed in to CopyValueList
+    # Convert any lists passed in to CopyValuesList
     for spec in self.field_specs.sequence_field_specs:
       cur_val = getattr(self, spec.name)
       if isinstance(cur_val, ir_data_fields.TemporaryCopyValuesList):
@@ -225,9 +235,8 @@ class CanonicalName(Message):
   """The module_file is the Module.source_file_name of the Module in which this
   object's definition appears.
 
-  Note that the Prelude always has a
-  Module.source_file_name of "", and thus references to Prelude names will
-  have module_file == "".
+  Note that the Prelude always has a Module.source_file_name of "", and thus
+  references to Prelude names will have module_file == "".
   """
 
   object_path: list[str] = ir_data_fields.list_field(str)
@@ -262,17 +271,17 @@ class NameDefinition(Message):
 
   name: Optional[Word] = None
   """The name, as directly generated from the source text.
-  name.text will
-  match the last element of canonical_name.object_path.  Note that in some
-  cases, the exact string in name.text may not appear in the source text.
+
+  name.text will match the last element of canonical_name.object_path. Note
+  that in some cases, the exact string in name.text may not appear in the
+  source text.
   """
 
   canonical_name: Optional[CanonicalName] = None
   """The CanonicalName that will appear in References.
-  This field is
-  technically redundant: canonical_name.module_file should always match the
-  source_file_name of the enclosing Module, and canonical_name.object_path
-  should always match the names of parent nodes.
+  This field is technically redundant: canonical_name.module_file should always
+  match the source_file_name of the enclosing Module, and
+  canonical_name.object_path should always match the names of parent nodes.
   """
 
   is_anonymous: Optional[bool] = None
@@ -311,19 +320,17 @@ class Reference(Message):
   source_name: list[Word] = ir_data_fields.list_field(Word)
   """The source_name is the name the user entered in the source file.
 
-  The source_name could
-  be either relative or absolute, and may be an alias (and thus not match
-  any part of the canonical_name).  Back ends should use canonical_name for
-  name lookup, and reserve source_name for error messages.
+  The source_name could be either relative or absolute, and may be an alias
+  (and thus not match any part of the canonical_name).  Back ends should use
+  canonical_name for name lookup, and reserve source_name for error messages.
   """
 
   is_local_name: Optional[bool] = None
   """If true, then symbol resolution should only look at local names when
   resolving source_name.
 
-  This is used so that the names of inline types
-  aren't "ambiguous" if there happens to be another type with the same name
-  at a parent scope.
+  This is used so that the names of inline types aren't "ambiguous" if there
+  happens to be another type with the same name at a parent scope.
   """
 
   # TODO(bolms): Allow absolute paths starting with ".".
@@ -634,8 +641,7 @@ class Field(Message):  # pylint:disable=too-many-instance-attributes
   existence_condition: Optional[Expression] = None
   """The field only exists when existence_condition evaluates to true.
 
-  For
-  example:
+  For example:
   ```
   struct Message:
     0 [+4]  UInt         length
