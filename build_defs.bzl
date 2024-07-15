@@ -26,7 +26,7 @@ There is also a convenience macro, `emboss_cc_library()`, which creates an
 
 load("@bazel_tools//tools/cpp:toolchain_utils.bzl", "find_cpp_toolchain")
 
-def emboss_cc_library(name, srcs, deps = [], visibility = None, import_dirs = [], enable_enum_traits = True):
+def emboss_cc_library(name, srcs, deps = [], visibility = None, import_dirs = [], enable_enum_traits = True, **kwargs):
     """Constructs a C++ library from an .emb file."""
     if len(srcs) != 1:
         fail(
@@ -39,6 +39,7 @@ def emboss_cc_library(name, srcs, deps = [], visibility = None, import_dirs = []
         srcs = srcs,
         deps = [dep + "_ir" for dep in deps],
         import_dirs = import_dirs,
+        **kwargs
     )
 
     cc_emboss_library(
@@ -46,6 +47,7 @@ def emboss_cc_library(name, srcs, deps = [], visibility = None, import_dirs = []
         deps = [":" + name + "_ir"],
         visibility = visibility,
         enable_enum_traits = enable_enum_traits,
+        **kwargs
     )
 
 # Full Starlark rules for emboss_library and cc_emboss_library.
