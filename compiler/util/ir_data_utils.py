@@ -14,6 +14,13 @@
 
 """Provides a helpers for working with IR data elements.
 
+Historical note: At one point protocol buffers were used for IR data. The
+codebase still expects the IR data classes to behave similarly, particularly
+with respect to "autovivification" where accessing an undefined field will
+create it temporarily and add it if assigned to. Though, perhaps not fully
+following the Pythonic ethos, we provide this behavior via the `builder` and
+`reader` helpers to remain compatible with the rest of the codebase.
+
 builder
 -------
 Instead of:
