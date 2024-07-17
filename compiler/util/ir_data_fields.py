@@ -64,7 +64,7 @@ class IrDataclassInstance(Protocol):
   field_specs: ClassVar["FilteredIrFieldSpecs"]
 
 
-T = TypeVar("T", bound=IrDataclassInstance)
+IrDataT = TypeVar("IrDataT", bound=IrDataclassInstance)
 
 CopyValuesListT = TypeVar("CopyValuesListT", bound=type)
 
@@ -233,7 +233,7 @@ def cache_message_specs(mod, cls):
       )
 
 
-def _field_specs(cls: type[T]) -> Mapping[str, FieldSpec]:
+def _field_specs(cls: type[IrDataT]) -> Mapping[str, FieldSpec]:
   """Gets the IR data field names and types for the given IR data class"""
   # Get the dataclass fields
   class_fields = dataclasses.fields(cast(Any, cls))
@@ -289,7 +289,7 @@ def _field_specs(cls: type[T]) -> Mapping[str, FieldSpec]:
   return result
 
 
-def field_specs(obj: T | type[T]) -> Mapping[str, FieldSpec]:
+def field_specs(obj: IrDataT | type[IrDataT]) -> Mapping[str, FieldSpec]:
   """Retrieves the fields specs for the the give data type.
 
   The results of this method are cached to reduce lookup overhead.
@@ -301,7 +301,7 @@ def field_specs(obj: T | type[T]) -> Mapping[str, FieldSpec]:
 
 
 def fields_and_values(
-    ir: T,
+    ir: IrDataT,
     value_filt: Optional[Callable[[Any], bool]] = None,
 ):
   """Retrieves the fields and their values for a given IR data class.
@@ -334,7 +334,7 @@ def fields_and_values(
 # 4. `FieldSpec` checks are cached including `is_dataclass` and `is_sequence`.
 # 5. None checks are only done in `copy()`, `_copy_set_fields` only
 #    references `_copy()` to avoid this step.
-def _copy_set_fields(ir: T):
+def _copy_set_fields(ir: IrDataT):
   values: MutableMapping[str, Any] = {}
 
   specs: FilteredIrFieldSpecs = ir.field_specs
@@ -354,18 +354,18 @@ def _copy_set_fields(ir: T):
   return values
 
 
-def _copy(ir: T) -> T:
+def _copy(ir: IrDataT) -> IrDataT:
   return type(ir)(**_copy_set_fields(ir))  # type: ignore[misc]
 
 
-def copy(ir: T) -> T | None:
+def copy(ir: IrDataT) -> IrDataT | None:
   """Creates a copy of the given IR data class"""
   if not ir:
     return None
   return _copy(ir)
 
 
-def update(ir: T, template: T):
+def update(ir: IrDataT, template: IrDataT):
   """Updates `ir`s fields with all set fields in the template."""
   for k, v in _copy_set_fields(template).items():
     if isinstance(v, TemporaryCopyValuesList):
