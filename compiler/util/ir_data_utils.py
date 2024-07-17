@@ -99,7 +99,9 @@ class IrDataSerializer:
   def _to_dict(
       self,
       ir: MessageT,
-      field_func: Callable[[MessageT], list[Tuple[ir_data_fields.FieldSpec, Any]]],
+      field_func: Callable[
+          [MessageT], list[Tuple[ir_data_fields.FieldSpec, Any]]
+      ],
   ) -> MutableMapping[str, Any]:
     assert ir is not None
     values: MutableMapping[str, Any] = {}
@@ -379,7 +381,6 @@ class _ReadOnlyFieldChecker:
 
 def reader(obj: MessageT | _ReadOnlyFieldChecker) -> MessageT:
   """Builds a read-only wrapper that can be used to check chains of possibly
-
   unset fields.
 
   This wrapper explicitly does not alter the wrapped object and is only
