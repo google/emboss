@@ -108,7 +108,6 @@ class CopyValuesList(list[CopyValuesListT]):
 
 class TemporaryCopyValuesList(NamedTuple):
   """Class used to temporarily hold a CopyValuesList while copying and
-
   constructing an IR dataclass.
   """
 
@@ -197,6 +196,7 @@ def all_ir_classes(mod):
       if isinstance(type, v.__class__) and _is_ir_dataclass(v)
   )
 
+
 class IrDataclassSpecs:
   """Maintains a cache of all IR dataclass specs."""
 
@@ -206,8 +206,8 @@ class IrDataclassSpecs:
   def get_mod_specs(cls, mod):
     """Gets the IR dataclass specs for the given module."""
     return {
-      ir_class: FilteredIrFieldSpecs(_field_specs(ir_class))
-      for ir_class in all_ir_classes(mod)
+        ir_class: FilteredIrFieldSpecs(_field_specs(ir_class))
+        for ir_class in all_ir_classes(mod)
     }
 
   @classmethod
@@ -228,9 +228,7 @@ def cache_message_specs(mod, cls):
   """
   for data_class in all_ir_classes(mod):
     if data_class is not cls:
-      data_class.field_specs = IrDataclassSpecs.get_specs(
-          data_class
-      )
+      data_class.field_specs = IrDataclassSpecs.get_specs(data_class)
 
 
 def _field_specs(cls: type[IrDataT]) -> Mapping[str, FieldSpec]:
