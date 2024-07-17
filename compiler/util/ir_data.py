@@ -58,6 +58,33 @@ class Message:
           copy_val.shallow_copy(cur_val)
       setattr(self, spec.name, copy_val)
 
+  # This hook adds a 15% overhead to end-to-end code generation in some cases
+  # so we guard it in a `__debug__` block. Users can opt-out of this check by
+  # running python with the `-O` flag, ie: `python3 -O ./embossc`.
+  if __debug__:
+    def __setattr__(self, name: str, value) -> None:
+      """Debug-only hook that adds basic type checking for ir_data fields."""
+      if spec := self.field_specs.all_field_specs.get(name):
+        if (
+            # Check if it's the expected type
+            not isinstance(value, spec.data_type) and
+            # Oneof fields are a special case
+            not spec.is_oneof and
+            # Optional fields can be set to None
+            not (spec.container is ir_data_fields.FieldContainer.OPTIONAL and
+                 value is None) and
+            # Sequences can be a few variants of lists
+            not (spec.is_sequence and
+                 isinstance(value, (
+                    list, ir_data_fields.TemporaryCopyValuesList,
+                    ir_data_fields.CopyValuesList))) and
+            # An enum value can be an int
+            not (spec.is_enum and isinstance(value, int))):
+          raise AttributeError(
+            f"Cannot set {value} (type {value.__class__}) for type"
+             "{spec.data_type}")
+      object.__setattr__(self, name, value)
+
   # Non-PEP8 name to mimic the Google Protobuf interface.
   def HasField(self, name):  # pylint:disable=invalid-name
     """Indicates if this class has the given field defined and it is set."""
