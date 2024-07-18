@@ -24,7 +24,6 @@ from compiler.util import ir_util
 from compiler.util import test_util
 
 
-
 def _make_ir_from_emb(emb_text, name="m.emb"):
   ir, unused_debug_info, errors = glue.parse_emboss_file(
       name,
