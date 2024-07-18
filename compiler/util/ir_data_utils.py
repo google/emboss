@@ -80,7 +80,7 @@ from compiler.util import ir_data
 from compiler.util import ir_data_fields
 
 
-MessageT = TypeVar("MessaageT", bound=ir_data.Message)
+MessageT = TypeVar("MessageT", bound=ir_data.Message)
 
 
 def field_specs(ir: MessageT | type[MessageT]):
