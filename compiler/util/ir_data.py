@@ -14,411 +14,170 @@
 
 """Intermediate representation (IR) for Emboss.
 
-This was originally a Google Protocol Buffer file, but as of 2019 it turns
-out that a) the public Google Python Protocol Buffer implementation is
-extremely slow, and b) all the ways of getting Bazel+Python+Protocol Buffers
-to play nice are hacky and fragile.
-
-Thus, this file, which presents a similar-enough interface that the rest of
-Emboss can use it with minimal changes.
-
-Protobufs have a really, really strange, un-Pythonic interface, with tricky
-implicit semantics -- mostly around magically instantiating protos when you
-assign to some deeply-nested field.  I (bolms@) would *strongly* prefer to
-have a more explicit interface, but don't (currently) have time to refactor
-everything that touches the IR (i.e., the entire compiler).
+This is limited to purely data and type annotations.
 """
 
+import dataclasses
 import enum
-import json
 import sys
+from typing import ClassVar, Optional
+
+from compiler.util import ir_data_fields
 
 
-if sys.version_info[0] == 2:
-  _Text = unicode
-  _text_types = (unicode, str)
-  _Int = long
-  _int_types = (int, long)
-else:
-  _Text = str
-  _text_types = (str,)
-  _Int = int
-  _int_types = (int,)
+@dataclasses.dataclass
+class Message:
+  """Base class for IR data objects.
 
+  Historically protocol buffers were used for serializing this data which has
+  led to some legacy naming conventions and references. In particular this
+  class is named `Message` in the sense of a protocol buffer message,
+  indicating that it is intended to just be data that is used by other higher
+  level services.
 
-_BASIC_TYPES = _text_types + _int_types + (bool,)
-
-
-class Optional(object):
-  """Property implementation for "optional"-like fields."""
-
-  def __init__(self, type_, oneof=None, decode_names=None):
-    """Creates a Proto "optional"-like data member.
-
-    Args:
-      type_: The type of the field; e.g., _Int or _Text.
-      oneof: If set, the name of the proto-like "oneof" that this field is a
-          member of.  Within a structure, at most one field of a particular
-          "oneof" may be set at a time; setting a member of the "oneof" will
-          clear any other member that might be set.
-      decode_names: An optional callable that takes a str and returns a
-          value of type type_; allows strs to be used to set "enums" using
-          their symbolic names.
-    """
-    self._type = type_
-    self._oneof = oneof
-    self._decode_names = decode_names
-
-  def __get__(self, obj, type_=None):
-    result = obj.raw_fields.get(self.name, None)
-    if result is not None:
-      return result
-    if self.type in _BASIC_TYPES:
-      return self._type()
-    result = self._type()
-
-    def on_write():
-      self._set_value(obj, result)
-
-    result.set_on_write(on_write)
-    return result
-
-  def __set__(self, obj, value):
-    if issubclass(self._type, _BASIC_TYPES):
-      self.set(obj, value)
-    else:
-      raise AttributeError("Cannot set {} (type {}) for type {}".format(
-          value, value.__class__, self._type))
-
-  def _set_value(self, obj, value):
-    if self._oneof is not None:
-      current = obj.oneofs.get(self._oneof)
-      if current in obj.raw_fields:
-        del obj.raw_fields[current]
-      obj.oneofs[self._oneof] = self.name
-    obj.raw_fields[self.name] = value
-    obj.on_write()
-
-  def set(self, obj, value):
-    """Sets the given value to the property."""
-
-    if value is None:
-      return
-    if isinstance(value, dict):
-      self._set_value(obj, self._type(**value))
-    elif isinstance(value, _Text) and self._decode_names:
-      self._set_value(obj, self._type(self._decode_names(value)))
-    elif isinstance(value, _Text) and issubclass(self._type, enum.Enum):
-      self._set_value(obj, getattr(self._type, value))
-    elif (not isinstance(value, self._type) and
-          not (self._type == _Int and isinstance(value, _int_types)) and
-          not (self._type == _Text and isinstance(value, _text_types)) and
-          not (issubclass(self._type, enum.Enum) and isinstance(value, _int_types))):
-      raise AttributeError("Cannot set {} (type {}) for type {}".format(
-          value, value.__class__, self._type))
-    elif issubclass(self._type, Message):
-      self._set_value(obj, self._type(**value.raw_fields))
-    else:
-      self._set_value(obj, self._type(value))
-
-  def resolve_type(self):
-    if isinstance(self._type, type(lambda: None)):
-      self._type = self._type()
-
-  @property
-  def type(self):
-    return self._type
-
-
-class TypedScopedList(object):
-  """A list with typechecking that notifies its parent when written to.
-
-  TypedScopedList implements roughly the same semantics as the value of a
-  Protobuf repeated field.  In particular, it checks that any values added
-  to the list are of the correct type, and it calls the on_write callable
-  when a value is added to the list, in order to implement the Protobuf
-  "autovivification" semantics.
+  There are some other legacy idioms leftover from the protocol buffer-based
+  definition such as support for "oneof" and optional fields.
   """
 
-  def __init__(self, type_, on_write=lambda: None):
-    self._type = type_
-    self._list = []
-    self._on_write = on_write
+  IR_DATACLASS: ClassVar[object] = object()
+  field_specs: ClassVar[ir_data_fields.FilteredIrFieldSpecs]
 
-  def __iter__(self):
-    return iter(self._list)
+  def __post_init__(self):
+    """Called by dataclass subclasses after init.
 
-  def __delitem__(self, key):
-    del self._list[key]
-
-  def __getitem__(self, key):
-    return self._list[key]
-
-  def extend(self, values):
-    """list-like extend()."""
-
-    for value in values:
-      if isinstance(value, dict):
-        self._list.append(self._type(**value))
-      elif (not isinstance(value, self._type) and
-            not (self._type == _Int and isinstance(value, _int_types)) and
-            not (self._type == _Text and isinstance(value, _text_types))):
-        raise TypeError(
-            "Needed {}, got {} ({!r})".format(
-                self._type, value.__class__, value))
+    Post-processes any lists passed in to use our custom list type.
+    """
+    # Convert any lists passed in to CopyValuesList
+    for spec in self.field_specs.sequence_field_specs:
+      cur_val = getattr(self, spec.name)
+      if isinstance(cur_val, ir_data_fields.TemporaryCopyValuesList):
+        copy_val = cur_val.temp_list
       else:
-        if self._type in _BASIC_TYPES:
-          self._list.append(self._type(value))
-        else:
-          self._list.append(self._type(**value.raw_fields))
-    self._on_write()
+        copy_val = ir_data_fields.CopyValuesList(spec.data_type)
+        if cur_val:
+          copy_val.shallow_copy(cur_val)
+      setattr(self, spec.name, copy_val)
 
-  def __repr__(self):
-    return repr(self._list)
-
-  def __len__(self):
-    return len(self._list)
-
-  def __eq__(self, other):
-    return ((self.__class__ == other.__class__ and
-             self._list == other._list) or  # pylint:disable=protected-access
-            (isinstance(other, list) and self._list == other))
-
-  def __ne__(self, other):
-    return not (self == other)  # pylint:disable=superfluous-parens
-
-
-class Repeated(object):
-  """A proto-"repeated"-like property."""
-
-  def __init__(self, type_):
-    self._type = type_
-
-  def __get__(self, obj, type_=None):
-    return obj.raw_fields[self.name]
-
-  def __set__(self, obj, value):
-    raise AttributeError("Cannot set {}".format(self.name))
-
-  def set(self, obj, values):
-    typed_list = obj.raw_fields[self.name]
-    if not isinstance(values, (list, TypedScopedList)):
-      raise TypeError("Cannot initialize repeated field {} from {}".format(
-          self.name, values.__class__))
-    del typed_list[:]
-    typed_list.extend(values)
-
-  def resolve_type(self):
-    if isinstance(self._type, type(lambda: None)):
-      self._type = self._type()
-
-  @property
-  def type(self):
-    return self._type
-
-
-_deferred_specs = []
-
-
-def message(cls):
-  # TODO(bolms): move this into __init_subclass__ after dropping Python 2
-  # support.
-  _deferred_specs.append(cls)
-  return cls
-
-
-class Message(object):
-  """Base class for proto "message"-like objects."""
-
-  def __init__(self, **field_values):
-    self.oneofs = {}
-    self._on_write = lambda: None
-    self._initialize_raw_fields_from(field_values)
-
-  def _initialize_raw_fields_from(self, field_values):
-    self.raw_fields = {}
-    for name, type_ in self.repeated_fields.items():
-      self.raw_fields[name] = TypedScopedList(type_, self.on_write)
-    for k, v in field_values.items():
-      spec = self.field_specs.get(k)
-      if spec is None:
-        raise AttributeError("No field {} on {}.".format(
-            k, self.__class__.__name__))
-      spec.set(self, v)
-
-  @classmethod
-  def from_json(cls, text):
-    as_dict = json.loads(text)
-    return cls(**as_dict)
-
-  def on_write(self):
-    self._on_write()
-    self._on_write = lambda: None
-
-  def set_on_write(self, on_write):
-    self._on_write = on_write
-
-  def __eq__(self, other):
-    return (self.__class__ == other.__class__ and
-            self.raw_fields == other.raw_fields)
-
-  # Non-PEP8 name to mimic the Google Protobuf interface.
-  def CopyFrom(self, other):  # pylint:disable=invalid-name
-    if self.__class__ != other.__class__:
-      raise TypeError("{} cannot CopyFrom {}".format(
-          self.__class__.__name__, other.__class__.__name__))
-    self._initialize_raw_fields_from(other.raw_fields)
-    self.on_write()
+  # This hook adds a 15% overhead to end-to-end code generation in some cases
+  # so we guard it in a `__debug__` block. Users can opt-out of this check by
+  # running python with the `-O` flag, ie: `python3 -O ./embossc`.
+  if __debug__:
+    def __setattr__(self, name: str, value) -> None:
+      """Debug-only hook that adds basic type checking for ir_data fields."""
+      if spec := self.field_specs.all_field_specs.get(name):
+        if not (
+            # Check if it's the expected type
+            isinstance(value, spec.data_type) or
+            # Oneof fields are a special case
+            spec.is_oneof or
+            # Optional fields can be set to None
+            (spec.container is ir_data_fields.FieldContainer.OPTIONAL and
+                 value is None) or
+            # Sequences can be a few variants of lists
+            (spec.is_sequence and
+                 isinstance(value, (
+                    list, ir_data_fields.TemporaryCopyValuesList,
+                    ir_data_fields.CopyValuesList))) or
+            # An enum value can be an int
+            (spec.is_enum and isinstance(value, int))):
+          raise AttributeError(
+            f"Cannot set {value} (type {value.__class__}) for type"
+             "{spec.data_type}")
+      object.__setattr__(self, name, value)
 
   # Non-PEP8 name to mimic the Google Protobuf interface.
   def HasField(self, name):  # pylint:disable=invalid-name
-    return name in self.raw_fields
+    """Indicates if this class has the given field defined and it is set."""
+    return getattr(self, name, None) is not None
 
   # Non-PEP8 name to mimic the Google Protobuf interface.
   def WhichOneof(self, oneof_name):  # pylint:disable=invalid-name
-    return self.oneofs.get(oneof_name)
+    """Indicates which field has been set for the oneof value.
 
-  def to_dict(self):
-    """Converts the message to a dict."""
-
-    result = {}
-    for k, v in self.raw_fields.items():
-      if isinstance(v, _BASIC_TYPES):
-        result[k] = v
-      elif isinstance(v, TypedScopedList):
-        if v:
-          # For compatibility with the proto world, empty lists are just
-          # elided.
-          result[k] = [
-              item if isinstance(item, _BASIC_TYPES) else item.to_dict()
-              for item in v
-          ]
-      else:
-        result[k] = v.to_dict()
-    return result
-
-  def __repr__(self):
-    return self.to_json(separators=(",", ":"), sort_keys=True)
-
-  def to_json(self, *args, **kwargs):
-    return json.dumps(self.to_dict(), *args, **kwargs)
-
-  def __str__(self):
-    return _Text(self.to_dict())
-
-
-def _initialize_deferred_specs():
-  """Calls any lambdas in specs, to facilitate late binding.
-
-  When two Message subclasses are mutually recursive, the standard way of
-  referencing one of the classes will not work, because its name is not
-  yet defined.  E.g.:
-
-  class A(Message):
-    b = Optional(B)
-
-  class B(Message):
-    a = Optional(A)
-
-  In this case, Python complains when trying to construct the class A,
-  because it cannot resolve B.
-
-  To accommodate this, Optional and Repeated will accept callables instead of
-  types, like:
-
-  class A(Message):
-    b = Optional(lambda: B)
-
-  class B(Message):
-    a = Optional(A)
-
-  Once all of the message classes have been defined, it is safe to go back and
-  resolve all of the names by calling all of the lambdas that were used in place
-  of types.  This function just iterates through the message types, and asks
-  their Optional and Repeated properties to call the lambdas that were used in
-  place of types.
-  """
-
-  for cls in _deferred_specs:
-    field_specs = {}
-    repeated_fields = {}
-    for k, v in cls.__dict__.items():
-      if k.startswith("_"):
-        continue
-      if isinstance(v, (Optional, Repeated)):
-        v.name = k
-        v.resolve_type()
-        field_specs[k] = v
-        if isinstance(v, Repeated):
-          repeated_fields[k] = v.type
-    cls.field_specs = field_specs
-    cls.repeated_fields = repeated_fields
+    Returns None if no field has been set.
+    """
+    for field_name, oneof in self.field_specs.oneof_mappings:
+      if oneof == oneof_name and self.HasField(field_name):
+        return field_name
+    return None
 
 
 ################################################################################
-# From here to (nearly) the end of the file are actual structure definitions.
+# From here to the end of the file are actual structure definitions.
 
 
-@message
+@dataclasses.dataclass
 class Position(Message):
   """A zero-width position within a source file."""
-  line = Optional(int)    # Line (starts from 1).
-  column = Optional(int)  # Column (starts from 1).
+
+  line: int = 0
+  """Line (starts from 1)."""
+  column: int = 0
+  """Column (starts from 1)."""
 
 
-@message
+@dataclasses.dataclass
 class Location(Message):
   """A half-open start:end range within a source file."""
-  start = Optional(Position)  # Beginning of the range.
-  end = Optional(Position)    # One column past the end of the range.
 
-  # True if this Location is outside of the parent object's Location.
-  is_disjoint_from_parent = Optional(bool)
+  start: Optional[Position] = None
+  """Beginning of the range"""
+  end: Optional[Position] = None
+  """One column past the end of the range."""
 
-  # True if this Location's parent was synthesized, and does not directly
-  # appear in the source file.  The Emboss front end uses this field to cull
-  # irrelevant error messages.
-  is_synthetic = Optional(bool)
+  is_disjoint_from_parent: Optional[bool] = None
+  """True if this Location is outside of the parent object's Location."""
+
+  is_synthetic: Optional[bool] = None
+  """True if this Location's parent was synthesized, and does not directly
+  appear in the source file.
+
+  The Emboss front end uses this field to cull
+  irrelevant error messages.
+  """
 
 
-@message
+@dataclasses.dataclass
 class Word(Message):
   """IR for a bare word in the source file.
 
   This is used in NameDefinitions and References.
   """
 
-  text = Optional(_Text)
-  source_location = Optional(Location)
+  text: Optional[str] = None
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class String(Message):
   """IR for a string in the source file."""
-  text = Optional(_Text)
-  source_location = Optional(Location)
+
+  text: Optional[str] = None
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class Documentation(Message):
-  text = Optional(_Text)
-  source_location = Optional(Location)
+  text: Optional[str] = None
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class BooleanConstant(Message):
   """IR for a boolean constant."""
-  value = Optional(bool)
-  source_location = Optional(Location)
+
+  value: Optional[bool] = None
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class Empty(Message):
   """Placeholder message for automatic element counts for arrays."""
-  source_location = Optional(Location)
+
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class NumericConstant(Message):
   """IR for any numeric constant."""
 
@@ -427,43 +186,59 @@ class NumericConstant(Message):
   #
   # TODO(bolms): switch back to int, and just use strings during
   # serialization, now that we're free of proto.
-  value = Optional(_Text)
-  source_location = Optional(Location)
+  value: Optional[str] = None
+  source_location: Optional[Location] = None
 
 
 class FunctionMapping(int, enum.Enum):
   """Enum of supported function types"""
+
   UNKNOWN = 0
-  ADDITION = 1           # +
-  SUBTRACTION = 2        # -
-  MULTIPLICATION = 3     # *
-  EQUALITY = 4           # ==
-  INEQUALITY = 5         # !=
-  AND = 6                # &&
-  OR = 7                 # ||
-  LESS = 8               # <
-  LESS_OR_EQUAL = 9      # <=
-  GREATER = 10           # >
-  GREATER_OR_EQUAL = 11  # >=
-  CHOICE = 12            # ?:
-  MAXIMUM = 13           # $max()
-  PRESENCE = 14          # $present()
-  UPPER_BOUND = 15       # $upper_bound()
-  LOWER_BOUND = 16       # $lower_bound()
+  ADDITION = 1
+  """`+`"""
+  SUBTRACTION = 2
+  """`-`"""
+  MULTIPLICATION = 3
+  """`*`"""
+  EQUALITY = 4
+  """`==`"""
+  INEQUALITY = 5
+  """`!=`"""
+  AND = 6
+  """`&&`"""
+  OR = 7
+  """`||`"""
+  LESS = 8
+  """`<`"""
+  LESS_OR_EQUAL = 9
+  """`<=`"""
+  GREATER = 10
+  """`>`"""
+  GREATER_OR_EQUAL = 11
+  """`>=`"""
+  CHOICE = 12
+  """`?:`"""
+  MAXIMUM = 13
+  """`$max()`"""
+  PRESENCE = 14
+  """`$present()`"""
+  UPPER_BOUND = 15
+  """`$upper_bound()`"""
+  LOWER_BOUND = 16
+  """`$lower_bound()`"""
 
 
-@message
+@dataclasses.dataclass
 class Function(Message):
   """IR for a single function (+, -, *, ==, $max, etc.) in an expression."""
 
-  # pylint:disable=undefined-variable
-  function = Optional(FunctionMapping)
-  args = Repeated(lambda: Expression)
-  function_name = Optional(Word)
-  source_location = Optional(Location)
+  function: Optional[FunctionMapping] = None
+  args: list["Expression"] = ir_data_fields.list_field(lambda: Expression)
+  function_name: Optional[Word] = None
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class CanonicalName(Message):
   """CanonicalName is the unique, absolute name for some object.
 
@@ -472,32 +247,37 @@ class CanonicalName(Message):
   Foo"), and in references to objects (a field of type "Foo").
   """
 
-  # The module_file is the Module.source_file_name of the Module in which this
-  # object's definition appears.  Note that the Prelude always has a
-  # Module.source_file_name of "", and thus references to Prelude names will
-  # have module_file == "".
-  module_file = Optional(_Text)
+  module_file: str = ir_data_fields.str_field()
+  """The module_file is the Module.source_file_name of the Module in which this
+  object's definition appears.
 
-  # The object_path is the canonical path to the object definition within its
-  # module file.  For example, the field "bar" would have an object path of
-  # ["Foo", "bar"]:
-  #
-  # struct Foo:
-  #   0:3  UInt  bar
-  #
-  #
-  # The enumerated name "BOB" would have an object path of ["Baz", "Qux",
-  # "BOB"]:
-  #
-  # struct Baz:
-  #   0:3  Qux   qux
-  #
-  #   enum Qux:
-  #     BOB = 0
-  object_path = Repeated(_Text)
+  Note that the Prelude always has a Module.source_file_name of "", and thus
+  references to Prelude names will have module_file == "".
+  """
+
+  object_path: list[str] = ir_data_fields.list_field(str)
+  """The object_path is the canonical path to the object definition within its
+  module file.
+
+  For example, the field "bar" would have an object path of
+  ["Foo", "bar"]:
+
+  struct Foo:
+    0:3  UInt  bar
 
 
-@message
+  The enumerated name "BOB" would have an object path of ["Baz", "Qux",
+  "BOB"]:
+
+  struct Baz:
+    0:3  Qux   qux
+
+    enum Qux:
+      BOB = 0
+  """
+
+
+@dataclasses.dataclass
 class NameDefinition(Message):
   """NameDefinition is IR for the name of an object, within the object.
 
@@ -505,26 +285,31 @@ class NameDefinition(Message):
   name.
   """
 
-  # The name, as directly generated from the source text.  name.text will
-  # match the last element of canonical_name.object_path.  Note that in some
-  # cases, the exact string in name.text may not appear in the source text.
-  name = Optional(Word)
+  name: Optional[Word] = None
+  """The name, as directly generated from the source text.
 
-  # The CanonicalName that will appear in References.  This field is
-  # technically redundant: canonical_name.module_file should always match the
-  # source_file_name of the enclosing Module, and canonical_name.object_path
-  # should always match the names of parent nodes.
-  canonical_name = Optional(CanonicalName)
+  name.text will match the last element of canonical_name.object_path. Note
+  that in some cases, the exact string in name.text may not appear in the
+  source text.
+  """
 
-  # If true, indicates that this is an automatically-generated name, which
-  # should not be visible outside of its immediate namespace.
-  is_anonymous = Optional(bool)
+  canonical_name: Optional[CanonicalName] = None
+  """The CanonicalName that will appear in References.
+  This field is technically redundant: canonical_name.module_file should always
+  match the source_file_name of the enclosing Module, and
+  canonical_name.object_path should always match the names of parent nodes.
+  """
 
-  # The location of this NameDefinition in source code.
-  source_location = Optional(Location)
+  is_anonymous: Optional[bool] = None
+  """If true, indicates that this is an automatically-generated name, which
+  should not be visible outside of its immediate namespace.
+  """
+
+  source_location: Optional[Location] = None
+  """The location of this NameDefinition in source code."""
 
 
-@message
+@dataclasses.dataclass
 class Reference(Message):
   """A Reference holds the canonical name of something defined elsewhere.
 
@@ -542,30 +327,37 @@ class Reference(Message):
   what appears in the .emb.
   """
 
-  # The canonical name of the object being referred to.  This name should be
-  # used to find the object in the IR.
-  canonical_name = Optional(CanonicalName)
+  canonical_name: Optional[CanonicalName] = None
+  """The canonical name of the object being referred to.
 
-  # The source_name is the name the user entered in the source file; it could
-  # be either relative or absolute, and may be an alias (and thus not match
-  # any part of the canonical_name).  Back ends should use canonical_name for
-  # name lookup, and reserve source_name for error messages.
-  source_name = Repeated(Word)
+  This name should be used to find the object in the IR.
+  """
 
-  # If true, then symbol resolution should only look at local names when
-  # resolving source_name.  This is used so that the names of inline types
-  # aren't "ambiguous" if there happens to be another type with the same name
-  # at a parent scope.
-  is_local_name = Optional(bool)
+  source_name: list[Word] = ir_data_fields.list_field(Word)
+  """The source_name is the name the user entered in the source file.
+
+  The source_name could be either relative or absolute, and may be an alias
+  (and thus not match any part of the canonical_name).  Back ends should use
+  canonical_name for name lookup, and reserve source_name for error messages.
+  """
+
+  is_local_name: Optional[bool] = None
+  """If true, then symbol resolution should only look at local names when
+  resolving source_name.
+
+  This is used so that the names of inline types aren't "ambiguous" if there
+  happens to be another type with the same name at a parent scope.
+  """
 
   # TODO(bolms): Allow absolute paths starting with ".".
 
-  # Note that this is the source_location of the *Reference*, not of the
-  # object to which it refers.
-  source_location = Optional(Location)
+  source_location: Optional[Location] = None
+  """Note that this is the source_location of the *Reference*, not of the
+  object to which it refers.
+  """
 
 
-@message
+@dataclasses.dataclass
 class FieldReference(Message):
   """IR for a "field" or "field.sub.subsub" reference in an expression.
 
@@ -608,16 +400,16 @@ class FieldReference(Message):
 
   # TODO(bolms): Make the above change before declaring the IR to be "stable".
 
-  path = Repeated(Reference)
-  source_location = Optional(Location)
+  path: list[Reference] = ir_data_fields.list_field(Reference)
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class OpaqueType(Message):
   pass
 
 
-@message
+@dataclasses.dataclass
 class IntegerType(Message):
   """Type of an integer expression."""
 
@@ -639,8 +431,21 @@ class IntegerType(Message):
   # the value from C's '%' operator when the dividend is negative: in C, -7 %
   # 4 == -3, but the modular_value here would be 1.  Python uses modulus: in
   # Python, -7 % 4 == 1.
-  modulus = Optional(_Text)
-  modular_value = Optional(_Text)
+  modulus: Optional[str] = None
+  """The modulus portion of the modular congruence of an integer expression.
+
+  The modulus may be the special value "infinity" to indicate that the
+  expression's value is exactly modular_value; otherwise, it should be a
+  positive integer.
+
+  A modulus of 1 places no constraints on the value.
+  """
+  modular_value: Optional[str] = None
+  """ The modular_value portion of the modular congruence of an integer expression.
+
+  The modular_value should always be a nonnegative integer that is smaller
+  than the modulus.
+  """
 
   # The minimum and maximum values of an integer are tracked and checked so
   # that Emboss can implement reliable arithmetic with no operations
@@ -657,30 +462,30 @@ class IntegerType(Message):
   # Expression may only be evaluated during compilation; the back end should
   # never need to compile such an expression into the target language (e.g.,
   # C++).
-  minimum_value = Optional(_Text)
-  maximum_value = Optional(_Text)
+  minimum_value: Optional[str] = None
+  maximum_value: Optional[str] = None
 
 
-@message
+@dataclasses.dataclass
 class BooleanType(Message):
-  value = Optional(bool)
+  value: Optional[bool] = None
 
 
-@message
+@dataclasses.dataclass
 class EnumType(Message):
-  name = Optional(Reference)
-  value = Optional(_Text)
+  name: Optional[Reference] = None
+  value: Optional[str] = None
 
 
-@message
+@dataclasses.dataclass
 class ExpressionType(Message):
-  opaque = Optional(OpaqueType, "type")
-  integer = Optional(IntegerType, "type")
-  boolean = Optional(BooleanType, "type")
-  enumeration = Optional(EnumType, "type")
+  opaque: Optional[OpaqueType] = ir_data_fields.oneof_field("type")
+  integer: Optional[IntegerType] = ir_data_fields.oneof_field("type")
+  boolean: Optional[BooleanType] = ir_data_fields.oneof_field("type")
+  enumeration: Optional[EnumType] = ir_data_fields.oneof_field("type")
 
 
-@message
+@dataclasses.dataclass
 class Expression(Message):
   """IR for an expression.
 
@@ -689,68 +494,81 @@ class Expression(Message):
   other Expressions (function).
   """
 
-  constant = Optional(NumericConstant, "expression")
-  constant_reference = Optional(Reference, "expression")
-  function = Optional(Function, "expression")
-  field_reference = Optional(FieldReference, "expression")
-  boolean_constant = Optional(BooleanConstant, "expression")
-  builtin_reference = Optional(Reference, "expression")
+  constant: Optional[NumericConstant] = ir_data_fields.oneof_field("expression")
+  constant_reference: Optional[Reference] = ir_data_fields.oneof_field(
+      "expression"
+  )
+  function: Optional[Function] = ir_data_fields.oneof_field("expression")
+  field_reference: Optional[FieldReference] = ir_data_fields.oneof_field(
+      "expression"
+  )
+  boolean_constant: Optional[BooleanConstant] = ir_data_fields.oneof_field(
+      "expression"
+  )
+  builtin_reference: Optional[Reference] = ir_data_fields.oneof_field(
+      "expression"
+  )
 
-  type = Optional(ExpressionType)
-  source_location = Optional(Location)
+  type: Optional[ExpressionType] = None
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class ArrayType(Message):
   """IR for an array type ("Int:8[12]" or "Message[2]" or "UInt[3][2]")."""
-  base_type = Optional(lambda: Type)
 
-  element_count = Optional(Expression, "size")
-  automatic = Optional(Empty, "size")
+  base_type: Optional["Type"] = None
 
-  source_location = Optional(Location)
+  element_count: Optional[Expression] = ir_data_fields.oneof_field("size")
+  automatic: Optional[Empty] = ir_data_fields.oneof_field("size")
+
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class AtomicType(Message):
   """IR for a non-array type ("UInt" or "Foo(Version.SIX)")."""
-  reference = Optional(Reference)
-  runtime_parameter = Repeated(Expression)
-  source_location = Optional(Location)
+
+  reference: Optional[Reference] = None
+  runtime_parameter: list[Expression] = ir_data_fields.list_field(Expression)
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class Type(Message):
   """IR for a type reference ("UInt", "Int:8[12]", etc.)."""
-  atomic_type = Optional(AtomicType, "type")
-  array_type = Optional(ArrayType, "type")
 
-  size_in_bits = Optional(Expression)
-  source_location = Optional(Location)
+  atomic_type: Optional[AtomicType] = ir_data_fields.oneof_field("type")
+  array_type: Optional[ArrayType] = ir_data_fields.oneof_field("type")
+
+  size_in_bits: Optional[Expression] = None
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class AttributeValue(Message):
   """IR for a attribute value."""
+
   # TODO(bolms): Make String a type of Expression, and replace
   # AttributeValue with Expression.
-  expression = Optional(Expression, "value")
-  string_constant = Optional(String, "value")
+  expression: Optional[Expression] = ir_data_fields.oneof_field("value")
+  string_constant: Optional[String] = ir_data_fields.oneof_field("value")
 
-  source_location = Optional(Location)
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class Attribute(Message):
   """IR for a [name = value] attribute."""
-  name = Optional(Word)
-  value = Optional(AttributeValue)
-  back_end = Optional(Word)
-  is_default = Optional(bool)
-  source_location = Optional(Location)
+
+  name: Optional[Word] = None
+  value: Optional[AttributeValue] = None
+  back_end: Optional[Word] = None
+  is_default: Optional[bool] = None
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class WriteTransform(Message):
   """IR which defines an expression-based virtual field write scheme.
 
@@ -764,43 +582,48 @@ class WriteTransform(Message):
   `function_body` and `x` for `destination`.
   """
 
-  function_body = Optional(Expression)
-  destination = Optional(FieldReference)
+  function_body: Optional[Expression] = None
+  destination: Optional[FieldReference] = None
 
 
-@message
+@dataclasses.dataclass
 class WriteMethod(Message):
   """IR which defines the method used for writing to a virtual field."""
 
-  # A physical Field can be written directly.
-  physical = Optional(bool, "method")
+  physical: Optional[bool] = ir_data_fields.oneof_field("method")
+  """A physical Field can be written directly."""
 
-  # A read_only Field cannot be written.
-  read_only = Optional(bool, "method")
+  read_only: Optional[bool] = ir_data_fields.oneof_field("method")
+  """A read_only Field cannot be written."""
 
-  # An alias is a direct, untransformed forward of another field; it can be
-  # implemented by directly returning a reference to the aliased field.
-  #
-  # Aliases are the only kind of virtual field that may have an opaque type.
-  alias = Optional(FieldReference, "method")
+  alias: Optional[FieldReference] = ir_data_fields.oneof_field("method")
+  """An alias is a direct, untransformed forward of another field; it can be
+  implemented by directly returning a reference to the aliased field.
 
-  # A transform is a way of turning a logical value into a value which should
-  # be written to another field: A virtual field like `let y = x + 1` would
-  # have a transform WriteMethod to subtract 1 from the new `y` value, and
-  # write that to `x`.
-  transform = Optional(WriteTransform, "method")
+  Aliases are the only kind of virtual field that may have an opaque type.
+  """
+
+  transform: Optional[WriteTransform] = ir_data_fields.oneof_field("method")
+  """A transform is a way of turning a logical value into a value which should
+  be written to another field.
+
+  A virtual field like `let y = x + 1` would
+  have a transform WriteMethod to subtract 1 from the new `y` value, and
+  write that to `x`.
+  """
 
 
-@message
+@dataclasses.dataclass
 class FieldLocation(Message):
   """IR for a field location."""
-  start = Optional(Expression)
-  size = Optional(Expression)
-  source_location = Optional(Location)
+
+  start: Optional[Expression] = None
+  size: Optional[Expression] = None
+  source_location: Optional[Location] = None
 
 
-@message
-class Field(Message):
+@dataclasses.dataclass
+class Field(Message):  # pylint:disable=too-many-instance-attributes
   """IR for a field in a struct definition.
 
   There are two kinds of Field: physical fields have location and (physical)
@@ -809,159 +632,189 @@ class Field(Message):
   and they can be freely intermingled in the source file.
   """
 
-  location = Optional(FieldLocation)  # The physical location of the field.
-  type = Optional(Type)               # The physical type of the field.
+  location: Optional[FieldLocation] = None
+  """The physical location of the field."""
+  type: Optional[Type] = None
+  """The physical type of the field."""
 
-  read_transform = Optional(Expression)  # The value of a virtual field.
+  read_transform: Optional[Expression] = None
+  """The value of a virtual field."""
 
-  # How this virtual field should be written.
-  write_method = Optional(WriteMethod)
+  write_method: Optional[WriteMethod] = None
+  """How this virtual field should be written."""
 
-  name = Optional(NameDefinition)  # The name of the field.
-  abbreviation = Optional(Word)  # An optional short name for the field, only
-                  # visible inside the enclosing bits/struct.
-  attribute = Repeated(Attribute)          # Field-specific attributes.
-  documentation = Repeated(Documentation)  # Field-specific documentation.
+  name: Optional[NameDefinition] = None
+  """The name of the field."""
+  abbreviation: Optional[Word] = None
+  """An optional short name for the field, only visible inside the enclosing bits/struct."""
+  attribute: list[Attribute] = ir_data_fields.list_field(Attribute)
+  """Field-specific attributes."""
+  documentation: list[Documentation] = ir_data_fields.list_field(Documentation)
+  """Field-specific documentation."""
 
-  # The field only exists when existence_condition evaluates to true.  For
-  # example:
-  #
-  # struct Message:
-  #   0 [+4]  UInt         length
-  #   4 [+8]  MessageType  message_type
-  #   if message_type == MessageType.FOO:
-  #     8 [+length]  Foo   foo
-  #   if message_type == MessageType.BAR:
-  #     8 [+length]  Bar   bar
-  #   8+length [+4]  UInt  crc
-  #
-  # For length, message_type, and crc, existence_condition will be
-  # "boolean_constant { value: true }"
-  #
-  # For "foo", existence_condition will be:
-  #     function { function: EQUALITY
-  #                args: [reference to message_type]
-  #                args: { [reference to MessageType.FOO] } }
-  #
-  # The "bar" field will have a similar existence_condition to "foo":
-  #     function { function: EQUALITY
-  #                args: [reference to message_type]
-  #                args: { [reference to MessageType.BAR] } }
-  #
-  # When message_type is MessageType.BAR, the Message struct does not contain
-  # field "foo", and vice versa for message_type == MessageType.FOO and field
-  # "bar": those fields only conditionally exist in the structure.
-  #
   # TODO(bolms): Document conditional fields better, and replace some of this
   # explanation with a reference to the documentation.
-  existence_condition = Optional(Expression)
-  source_location = Optional(Location)
+  existence_condition: Optional[Expression] = None
+  """The field only exists when existence_condition evaluates to true.
+
+  For example:
+  ```
+  struct Message:
+    0 [+4]  UInt         length
+    4 [+8]  MessageType  message_type
+    if message_type == MessageType.FOO:
+      8 [+length]  Foo   foo
+    if message_type == MessageType.BAR:
+      8 [+length]  Bar   bar
+    8+length [+4]  UInt  crc
+  ```
+  For `length`, `message_type`, and `crc`, existence_condition will be
+  `boolean_constant { value: true }`
+
+  For `foo`, existence_condition will be:
+  ```
+      function { function: EQUALITY
+                 args: [reference to message_type]
+                 args: { [reference to MessageType.FOO] } }
+  ```
+
+  The `bar` field will have a similar existence_condition to `foo`:
+  ```
+      function { function: EQUALITY
+                 args: [reference to message_type]
+                 args: { [reference to MessageType.BAR] } }
+  ```
+
+  When `message_type` is `MessageType.BAR`, the `Message` struct does not contain
+  field `foo`, and vice versa for `message_type == MessageType.FOO` and field
+  `bar`: those fields only conditionally exist in the structure.
+  """
+
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class Structure(Message):
   """IR for a bits or struct definition."""
-  field = Repeated(Field)
 
-  # The fields in `field` are listed in the order they appear in the original
-  # .emb.
-  #
-  # For text format output, this can lead to poor results.  Take the following
-  # struct:
-  #
-  #     struct Foo:
-  #       b [+4]  UInt  a
-  #       0 [+4]  UInt  b
-  #
-  # Here, the location of `a` depends on the current value of `b`.  Because of
-  # this, if someone calls
-  #
-  #     emboss::UpdateFromText(foo_view, "{ a: 10, b: 4 }");
-  #
-  # then foo_view will not be updated the way one would expect: if `b`'s value
-  # was something other than 4 to start with, then `UpdateFromText` will write
-  # the 10 to some other location, then update `b` to 4.
-  #
-  # To avoid surprises, `emboss::DumpAsText` should return `"{ b: 4, a: 10
-  # }"`.
-  #
-  # The `fields_in_dependency_order` field provides a permutation of `field`
-  # such that each field appears after all of its dependencies.  For example,
-  # `struct Foo`, above, would have `{ 1, 0 }` in
-  # `fields_in_dependency_order`.
-  #
-  # The exact ordering of `fields_in_dependency_order` is not guaranteed, but
-  # some effort is made to keep the order close to the order fields are listed
-  # in the original `.emb` file.  In particular, if the ordering 0, 1, 2, 3,
-  # ... satisfies dependency ordering, then `fields_in_dependency_order` will
-  # be `{ 0, 1, 2, 3, ... }`.
-  fields_in_dependency_order = Repeated(int)
+  field: list[Field] = ir_data_fields.list_field(Field)
 
-  source_location = Optional(Location)
+  fields_in_dependency_order: list[int] = ir_data_fields.list_field(int)
+  """The fields in `field` are listed in the order they appear in the original
+  .emb.
+
+  For text format output, this can lead to poor results.  Take the following
+  struct:
+  ```
+      struct Foo:
+        b [+4]  UInt  a
+        0 [+4]  UInt  b
+  ```
+  Here, the location of `a` depends on the current value of `b`.  Because of
+  this, if someone calls
+  ```
+      emboss::UpdateFromText(foo_view, "{ a: 10, b: 4 }");
+  ```
+  then foo_view will not be updated the way one would expect: if `b`'s value
+  was something other than 4 to start with, then `UpdateFromText` will write
+  the 10 to some other location, then update `b` to 4.
+
+  To avoid surprises, `emboss::DumpAsText` should return `"{ b: 4, a: 10
+  }"`.
+
+  The `fields_in_dependency_order` field provides a permutation of `field`
+  such that each field appears after all of its dependencies.  For example,
+  `struct Foo`, above, would have `{ 1, 0 }` in
+  `fields_in_dependency_order`.
+
+  The exact ordering of `fields_in_dependency_order` is not guaranteed, but
+  some effort is made to keep the order close to the order fields are listed
+  in the original `.emb` file.  In particular, if the ordering 0, 1, 2, 3,
+  ... satisfies dependency ordering, then `fields_in_dependency_order` will
+  be `{ 0, 1, 2, 3, ... }`.
+  """
+
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class External(Message):
   """IR for an external type declaration."""
+
   # Externals have no values other than name and attribute list, which are
   # common to all type definitions.
 
-  source_location = Optional(Location)
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class EnumValue(Message):
   """IR for a single value within an enumerated type."""
-  name = Optional(NameDefinition)          # The name of the enum value.
-  value = Optional(Expression)             # The value of the enum value.
-  documentation = Repeated(Documentation)  # Value-specific documentation.
-  attribute = Repeated(Attribute)          # Value-specific attributes.
 
-  source_location = Optional(Location)
+  name: Optional[NameDefinition] = None
+  """The name of the enum value."""
+  value: Optional[Expression] = None
+  """The value of the enum value."""
+  documentation: list[Documentation] = ir_data_fields.list_field(Documentation)
+  """Value-specific documentation."""
+  attribute: list[Attribute] = ir_data_fields.list_field(Attribute)
+  """Value-specific attributes."""
+
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class Enum(Message):
   """IR for an enumerated type definition."""
-  value = Repeated(EnumValue)
-  source_location = Optional(Location)
+
+  value: list[EnumValue] = ir_data_fields.list_field(EnumValue)
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class Import(Message):
   """IR for an import statement in a module."""
-  file_name = Optional(String)  # The file to import.
-  local_name = Optional(Word)   # The name to use within this module.
-  source_location = Optional(Location)
+
+  file_name: Optional[String] = None
+  """The file to import."""
+  local_name: Optional[Word] = None
+  """The name to use within this module."""
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class RuntimeParameter(Message):
   """IR for a runtime parameter definition."""
-  name = Optional(NameDefinition)  # The name of the parameter.
-  type = Optional(ExpressionType)  # The type of the parameter.
 
-  # For convenience and readability, physical types may be used in the .emb
-  # source instead of a full expression type.  That way, users can write
-  # something like:
-  #
-  #     struct Foo(version :: UInt:8):
-  #
-  # instead of:
-  #
-  #     struct Foo(version :: {$int x |: 0 <= x <= 255}):
-  #
-  # In these cases, physical_type_alias holds the user-supplied type, and type
-  # is filled in after initial parsing is finished.
-  #
+  name: Optional[NameDefinition] = None
+  """The name of the parameter."""
+  type: Optional[ExpressionType] = None
+  """The type of the parameter."""
+
   # TODO(bolms): Actually implement the set builder type notation.
-  physical_type_alias = Optional(Type)
+  physical_type_alias: Optional[Type] = None
+  """For convenience and readability, physical types may be used in the .emb
+  source instead of a full expression type.
 
-  source_location = Optional(Location)
+  That way, users can write
+  something like:
+  ```
+      struct Foo(version :: UInt:8):
+  ```
+  instead of:
+  ```
+      struct Foo(version :: {$int x |: 0 <= x <= 255}):
+  ```
+  In these cases, physical_type_alias holds the user-supplied type, and type
+  is filled in after initial parsing is finished.
+  """
+
+  source_location: Optional[Location] = None
 
 
 class AddressableUnit(int, enum.Enum):
   """The "addressable unit" is the size of the smallest unit that can be read
+
   from the backing store that this type expects.  For `struct`s, this is
   BYTE; for `enum`s and `bits`, this is BIT, and for `external`s it depends
   on the specific type
@@ -972,48 +825,70 @@ class AddressableUnit(int, enum.Enum):
   BYTE = 8
 
 
-@message
+@dataclasses.dataclass
 class TypeDefinition(Message):
   """Container IR for a type definition (struct, union, etc.)"""
 
-  external = Optional(External, "type")
-  enumeration = Optional(Enum, "type")
-  structure = Optional(Structure, "type")
+  external: Optional[External] = ir_data_fields.oneof_field("type")
+  enumeration: Optional[Enum] = ir_data_fields.oneof_field("type")
+  structure: Optional[Structure] = ir_data_fields.oneof_field("type")
 
-  name = Optional(NameDefinition)  # The name of the type.
-  attribute = Repeated(Attribute)  # All attributes attached to the type.
-  documentation = Repeated(Documentation)     # Docs for the type.
+  name: Optional[NameDefinition] = None
+  """The name of the type."""
+  attribute: list[Attribute] = ir_data_fields.list_field(Attribute)
+  """All attributes attached to the type."""
+  documentation: list[Documentation] = ir_data_fields.list_field(Documentation)
+  """Docs for the type."""
   # pylint:disable=undefined-variable
-  subtype = Repeated(lambda: TypeDefinition)  # Subtypes of this type.
-  addressable_unit = Optional(AddressableUnit)
+  subtype: list["TypeDefinition"] = ir_data_fields.list_field(
+      lambda: TypeDefinition
+  )
+  """Subtypes of this type."""
+  addressable_unit: Optional[AddressableUnit] = None
 
-  # If the type requires parameters at runtime, these are its parameters.
-  # These are currently only allowed on structures, but in the future they
-  # should be allowed on externals.
-  runtime_parameter = Repeated(RuntimeParameter)
+  runtime_parameter: list[RuntimeParameter] = ir_data_fields.list_field(
+      RuntimeParameter
+  )
+  """If the type requires parameters at runtime, these are its parameters.
 
-  source_location = Optional(Location)
+  These are currently only allowed on structures, but in the future they
+  should be allowed on externals.
+  """
+  source_location: Optional[Location] = None
 
 
-@message
+@dataclasses.dataclass
 class Module(Message):
   """The IR for an individual Emboss module (file)."""
-  attribute = Repeated(Attribute)          # Module-level attributes.
-  type = Repeated(TypeDefinition)          # Module-level type definitions.
-  documentation = Repeated(Documentation)  # Module-level docs.
-  foreign_import = Repeated(Import)        # Other modules imported.
-  source_text = Optional(_Text)            # The original source code.
-  source_location = Optional(Location)     # Source code covered by this IR.
-  source_file_name = Optional(_Text)       # Name of the source file.
+
+  attribute: list[Attribute] = ir_data_fields.list_field(Attribute)
+  """Module-level attributes."""
+  type: list[TypeDefinition] = ir_data_fields.list_field(TypeDefinition)
+  """Module-level type definitions."""
+  documentation: list[Documentation] = ir_data_fields.list_field(Documentation)
+  """Module-level docs."""
+  foreign_import: list[Import] = ir_data_fields.list_field(Import)
+  """Other modules imported."""
+  source_text: Optional[str] = None
+  """The original source code."""
+  source_location: Optional[Location] = None
+  """Source code covered by this IR."""
+  source_file_name: Optional[str] = None
+  """Name of the source file."""
 
 
-@message
+@dataclasses.dataclass
 class EmbossIr(Message):
   """The top-level IR for an Emboss module and all of its dependencies."""
-  # All modules.  The first entry will be the main module; back ends should
-  # generate code corresponding to that module.  The second entry will be the
-  # prelude module.
-  module = Repeated(Module)
+
+  module: list[Module] = ir_data_fields.list_field(Module)
+  """All modules.
+
+  The first entry will be the main module; back ends should
+  generate code corresponding to that module.  The second entry will be the
+  prelude module.
+  """
 
 
-_initialize_deferred_specs()
+# Post-process the dataclasses to add cached fields.
+ir_data_fields.cache_message_specs(sys.modules[Message.__module__], Message)
