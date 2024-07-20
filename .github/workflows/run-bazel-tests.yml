@@ -1,0 +1,14 @@
+name: Run Bazel tests
+on: [pull_request]
+
+jobs:
+  run-bazel-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: bazel-contrib/setup-bazel@0.8.5
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}
+          repository-cache: true
+      - run: bazel test ...
