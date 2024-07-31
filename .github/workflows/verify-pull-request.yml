@@ -1,14 +1,19 @@
-name: Run Bazel tests
+name: Verify PR
 on: [pull_request]
 
 jobs:
   run-bazel-tests:
+    name: "Run Bazel tests"
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        cpp-compiler: ["clang", "gcc"]
     steps:
       - uses: actions/checkout@v4
       - uses: bazel-contrib/setup-bazel@0.8.5
         with:
           bazelisk-cache: true
-          disk-cache: ${{ github.workflow }}
+          disk-cache: "verify-pr:run-bazel-tests:${{ matrix.cpp-compiler }}"
           repository-cache: true
+      - run: echo "CC=${{ matrix.cpp-compiler }}" >> $GITHUB_ENV
       - run: bazel test ...
