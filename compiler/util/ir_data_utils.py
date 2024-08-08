@@ -73,6 +73,7 @@ from typing import (
     Optional,
     Tuple,
     TypeVar,
+    Union,
     cast,
 )
 
@@ -83,7 +84,7 @@ from compiler.util import ir_data_fields
 MessageT = TypeVar("MessageT", bound=ir_data.Message)
 
 
-def field_specs(ir: MessageT | type[MessageT]):
+def field_specs(ir: Union[MessageT, type[MessageT]]):
   """Retrieves the field specs for the IR data class"""
   data_type = ir if isinstance(ir, type) else type(ir)
   return ir_data_fields.IrDataclassSpecs.get_specs(data_type).all_field_specs
@@ -322,7 +323,7 @@ def _field_checker_from_spec(spec: ir_data_fields.FieldSpec):
   return ir_data_fields.build_default(spec)
 
 
-def _field_type(ir_or_spec: MessageT | ir_data_fields.FieldSpec) -> type:
+def _field_type(ir_or_spec: Union[MessageT, ir_data_fields.FieldSpec]) -> type:
   if isinstance(ir_or_spec, ir_data_fields.FieldSpec):
     return ir_or_spec.data_type
   return type(ir_or_spec)
@@ -331,7 +332,7 @@ def _field_type(ir_or_spec: MessageT | ir_data_fields.FieldSpec) -> type:
 class _ReadOnlyFieldChecker:
   """Class used the chain calls to fields that aren't set"""
 
-  def __init__(self, ir_or_spec: MessageT | ir_data_fields.FieldSpec) -> None:
+  def __init__(self, ir_or_spec: Union[MessageT, ir_data_fields.FieldSpec]) -> None:
     self.ir_or_spec = ir_or_spec
 
   def __setattr__(self, name: str, value: Any) -> None:
@@ -379,7 +380,7 @@ class _ReadOnlyFieldChecker:
     return not self == other
 
 
-def reader(obj: MessageT | _ReadOnlyFieldChecker) -> MessageT:
+def reader(obj: Union[MessageT, _ReadOnlyFieldChecker]) -> MessageT:
   """Builds a read-only wrapper that can be used to check chains of possibly
   unset fields.
 
@@ -411,8 +412,8 @@ def reader(obj: MessageT | _ReadOnlyFieldChecker) -> MessageT:
 
 
 def _extract_ir(
-    ir_or_wrapper: MessageT | _ReadOnlyFieldChecker | _IrDataBuilder | None,
-) -> ir_data_fields.IrDataclassInstance | None:
+    ir_or_wrapper: Union[MessageT, _ReadOnlyFieldChecker, _IrDataBuilder, None],
+) -> Optional[ir_data_fields.IrDataclassInstance]:
   if isinstance(ir_or_wrapper, _ReadOnlyFieldChecker):
     ir_or_spec = ir_or_wrapper.ir_or_spec
     if isinstance(ir_or_spec, ir_data_fields.FieldSpec):
@@ -425,7 +426,7 @@ def _extract_ir(
 
 
 def fields_and_values(
-    ir_wrapper: MessageT | _ReadOnlyFieldChecker,
+    ir_wrapper: Union[MessageT, _ReadOnlyFieldChecker],
     value_filt: Optional[Callable[[Any], bool]] = None,
 ) -> list[Tuple[ir_data_fields.FieldSpec, Any]]:
   """Retrieves the fields and their values for a given IR data class.
@@ -448,7 +449,7 @@ def get_set_fields(ir: MessageT):
   return fields_and_values(ir, lambda v: v is not None)
 
 
-def copy(ir_wrapper: MessageT | None) -> MessageT | None:
+def copy(ir_wrapper: Optional[MessageT]) -> Optional[MessageT]:
   """Creates a copy of the given IR data class"""
   if (ir := _extract_ir(ir_wrapper)) is None:
     return None

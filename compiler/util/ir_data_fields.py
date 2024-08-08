@@ -287,7 +287,7 @@ def _field_specs(cls: type[IrDataT]) -> Mapping[str, FieldSpec]:
   return result
 
 
-def field_specs(obj: IrDataT | type[IrDataT]) -> Mapping[str, FieldSpec]:
+def field_specs(obj: Union[IrDataT, type[IrDataT]]) -> Mapping[str, FieldSpec]:
   """Retrieves the fields specs for the the give data type.
 
   The results of this method are cached to reduce lookup overhead.
@@ -356,7 +356,7 @@ def _copy(ir: IrDataT) -> IrDataT:
   return type(ir)(**_copy_set_fields(ir))  # type: ignore[misc]
 
 
-def copy(ir: IrDataT) -> IrDataT | None:
+def copy(ir: IrDataT) -> Optional[IrDataT]:
   """Creates a copy of the given IR data class"""
   if not ir:
     return None
