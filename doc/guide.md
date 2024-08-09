@@ -24,7 +24,7 @@ emails.
 
 #### Running the Emboss Compiler
 
-The Emboss compiler requires Python 3.8 or later -- the minimum supported
+The Emboss compiler requires Python 3.9 or later -- the minimum supported
 version tracks the support timeline of the Python project.  On a Linux-like
 system with Python 3 installed in the usual place (`/usr/bin/python3`), you
 can run the embossc script at the top level on an `.emb` file to generate
