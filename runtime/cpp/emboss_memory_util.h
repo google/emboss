@@ -411,9 +411,9 @@ class ContiguousBuffer final {
   // TODO(bolms): Update callers and remove this constructor.
   explicit ContiguousBuffer(::std::nullptr_t) : bytes_{nullptr}, size_{0} {}
 
-  // Implicitly constructs a ContiguousBuffer from an identical
-  // ContiguousBuffer.
+  // Implicitly construct or assign a ContiguousBuffer from a ContiguousBuffer.
   ContiguousBuffer(const ContiguousBuffer &other) = default;
+  ContiguousBuffer& operator=(const ContiguousBuffer& other) = default;
 
   // Explicitly construct a ContiguousBuffers from another, compatible
   // ContiguousBuffer.  A compatible ContiguousBuffer has an
