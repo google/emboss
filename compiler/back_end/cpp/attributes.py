@@ -20,6 +20,7 @@ from compiler.util import attribute_util
 
 class Attribute(str, Enum):
     """Attributes available in the C++ backend."""
+
     NAMESPACE = "namespace"
     ENUM_CASE = "enum_case"
 
@@ -37,6 +38,7 @@ class Scope(set, Enum):
     Each entry is a set of (Attribute, default?) tuples, the first value being
     the attribute itself, the second value being a boolean value indicating
     whether the attribute is allowed to be defaulted in that scope."""
+
     BITS = {
         # Bits may contain an enum definition.
         (Attribute.ENUM_CASE, True)
@@ -47,10 +49,12 @@ class Scope(set, Enum):
     ENUM_VALUE = {
         (Attribute.ENUM_CASE, False),
     }
-    MODULE = {
-        (Attribute.NAMESPACE, False),
-        (Attribute.ENUM_CASE, True),
-    },
+    MODULE = (
+        {
+            (Attribute.NAMESPACE, False),
+            (Attribute.ENUM_CASE, True),
+        },
+    )
     STRUCT = {
         # Struct may contain an enum definition.
         (Attribute.ENUM_CASE, True),

@@ -22,7 +22,9 @@ from compiler.util import ir_data
 from compiler.util import ir_data_utils
 from compiler.util import traverse_ir
 
-_EXAMPLE_IR = ir_data_utils.IrDataSerializer.from_json(ir_data.EmbossIr, """{
+_EXAMPLE_IR = ir_data_utils.IrDataSerializer.from_json(
+    ir_data.EmbossIr,
+    """{
 "module": [
   {
     "type": [
@@ -175,165 +177,252 @@ _EXAMPLE_IR = ir_data_utils.IrDataSerializer.from_json(ir_data.EmbossIr, """{
     "source_file_name": ""
   }
 ]
-}""")
+}""",
+)
 
 
 def _count_entries(sequence):
-  counts = collections.Counter()
-  for entry in sequence:
-    counts[entry] += 1
-  return counts
+    counts = collections.Counter()
+    for entry in sequence:
+        counts[entry] += 1
+    return counts
 
 
 def _record_constant(constant, constant_list):
-  constant_list.append(int(constant.value))
+    constant_list.append(int(constant.value))
 
 
 def _record_field_name_and_constant(constant, constant_list, field):
-  constant_list.append((field.name.name.text, int(constant.value)))
+    constant_list.append((field.name.name.text, int(constant.value)))
 
 
 def _record_file_name_and_constant(constant, constant_list, source_file_name):
-  constant_list.append((source_file_name, int(constant.value)))
+    constant_list.append((source_file_name, int(constant.value)))
 
 
-def _record_location_parameter_and_constant(constant, constant_list,
-                                            location=None):
-  constant_list.append((location, int(constant.value)))
+def _record_location_parameter_and_constant(constant, constant_list, location=None):
+    constant_list.append((location, int(constant.value)))
 
 
 def _record_kind_and_constant(constant, constant_list, type_definition):
-  if type_definition.HasField("enumeration"):
-    constant_list.append(("enumeration", int(constant.value)))
-  elif type_definition.HasField("structure"):
-    constant_list.append(("structure", int(constant.value)))
-  elif type_definition.HasField("external"):
-    constant_list.append(("external", int(constant.value)))
-  else:
-    assert False, "Shouldn't be here."
+    if type_definition.HasField("enumeration"):
+        constant_list.append(("enumeration", int(constant.value)))
+    elif type_definition.HasField("structure"):
+        constant_list.append(("structure", int(constant.value)))
+    elif type_definition.HasField("external"):
+        constant_list.append(("external", int(constant.value)))
+    else:
+        assert False, "Shouldn't be here."
 
 
 class TraverseIrTest(unittest.TestCase):
 
-  def test_filter_on_type(self):
-    constants = []
-    traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_data.NumericConstant], _record_constant,
-        parameters={"constant_list": constants})
-    self.assertEqual(
-        _count_entries([0, 8, 8, 8, 16, 24, 32, 16, 32, 320, 1, 1, 1, 64]),
-        _count_entries(constants))
+    def test_filter_on_type(self):
+        constants = []
+        traverse_ir.fast_traverse_ir_top_down(
+            _EXAMPLE_IR,
+            [ir_data.NumericConstant],
+            _record_constant,
+            parameters={"constant_list": constants},
+        )
+        self.assertEqual(
+            _count_entries([0, 8, 8, 8, 16, 24, 32, 16, 32, 320, 1, 1, 1, 64]),
+            _count_entries(constants),
+        )
 
-  def test_filter_on_type_in_type(self):
-    constants = []
-    traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR,
-        [ir_data.Function, ir_data.Expression, ir_data.NumericConstant],
-        _record_constant,
-        parameters={"constant_list": constants})
-    self.assertEqual([1, 1], constants)
+    def test_filter_on_type_in_type(self):
+        constants = []
+        traverse_ir.fast_traverse_ir_top_down(
+            _EXAMPLE_IR,
+            [ir_data.Function, ir_data.Expression, ir_data.NumericConstant],
+            _record_constant,
+            parameters={"constant_list": constants},
+        )
+        self.assertEqual([1, 1], constants)
 
-  def test_filter_on_type_star_type(self):
-    struct_constants = []
-    traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_data.Structure, ir_data.NumericConstant],
-        _record_constant,
-        parameters={"constant_list": struct_constants})
-    self.assertEqual(_count_entries([0, 8, 8, 8, 16, 24, 32, 16, 32, 320]),
-                     _count_entries(struct_constants))
-    enum_constants = []
-    traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_data.Enum, ir_data.NumericConstant], _record_constant,
-        parameters={"constant_list": enum_constants})
-    self.assertEqual(_count_entries([1, 1, 1]), _count_entries(enum_constants))
+    def test_filter_on_type_star_type(self):
+        struct_constants = []
+        traverse_ir.fast_traverse_ir_top_down(
+            _EXAMPLE_IR,
+            [ir_data.Structure, ir_data.NumericConstant],
+            _record_constant,
+            parameters={"constant_list": struct_constants},
+        )
+        self.assertEqual(
+            _count_entries([0, 8, 8, 8, 16, 24, 32, 16, 32, 320]),
+            _count_entries(struct_constants),
+        )
+        enum_constants = []
+        traverse_ir.fast_traverse_ir_top_down(
+            _EXAMPLE_IR,
+            [ir_data.Enum, ir_data.NumericConstant],
+            _record_constant,
+            parameters={"constant_list": enum_constants},
+        )
+        self.assertEqual(_count_entries([1, 1, 1]), _count_entries(enum_constants))
 
-  def test_filter_on_not_type(self):
-    notstruct_constants = []
-    traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_data.NumericConstant], _record_constant,
-        skip_descendants_of=(ir_data.Structure,),
-        parameters={"constant_list": notstruct_constants})
-    self.assertEqual(_count_entries([1, 1, 1, 64]),
-                     _count_entries(notstruct_constants))
+    def test_filter_on_not_type(self):
+        notstruct_constants = []
+        traverse_ir.fast_traverse_ir_top_down(
+            _EXAMPLE_IR,
+            [ir_data.NumericConstant],
+            _record_constant,
+            skip_descendants_of=(ir_data.Structure,),
+            parameters={"constant_list": notstruct_constants},
+        )
+        self.assertEqual(
+            _count_entries([1, 1, 1, 64]), _count_entries(notstruct_constants)
+        )
 
-  def test_field_is_populated(self):
-    constants = []
-    traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_data.Field, ir_data.NumericConstant],
-        _record_field_name_and_constant,
-        parameters={"constant_list": constants})
-    self.assertEqual(_count_entries([
-        ("field1", 0), ("field1", 8), ("field2", 8), ("field2", 8),
-        ("field2", 16), ("bar_field1", 24), ("bar_field1", 32),
-        ("bar_field2", 16), ("bar_field2", 32), ("bar_field2", 320)
-    ]), _count_entries(constants))
+    def test_field_is_populated(self):
+        constants = []
+        traverse_ir.fast_traverse_ir_top_down(
+            _EXAMPLE_IR,
+            [ir_data.Field, ir_data.NumericConstant],
+            _record_field_name_and_constant,
+            parameters={"constant_list": constants},
+        )
+        self.assertEqual(
+            _count_entries(
+                [
+                    ("field1", 0),
+                    ("field1", 8),
+                    ("field2", 8),
+                    ("field2", 8),
+                    ("field2", 16),
+                    ("bar_field1", 24),
+                    ("bar_field1", 32),
+                    ("bar_field2", 16),
+                    ("bar_field2", 32),
+                    ("bar_field2", 320),
+                ]
+            ),
+            _count_entries(constants),
+        )
 
-  def test_file_name_is_populated(self):
-    constants = []
-    traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_data.NumericConstant], _record_file_name_and_constant,
-        parameters={"constant_list": constants})
-    self.assertEqual(_count_entries([
-        ("t.emb", 0), ("t.emb", 8), ("t.emb", 8), ("t.emb", 8), ("t.emb", 16),
-        ("t.emb", 24), ("t.emb", 32), ("t.emb", 16), ("t.emb", 32),
-        ("t.emb", 320), ("t.emb", 1), ("t.emb", 1), ("t.emb", 1), ("", 64)
-    ]), _count_entries(constants))
+    def test_file_name_is_populated(self):
+        constants = []
+        traverse_ir.fast_traverse_ir_top_down(
+            _EXAMPLE_IR,
+            [ir_data.NumericConstant],
+            _record_file_name_and_constant,
+            parameters={"constant_list": constants},
+        )
+        self.assertEqual(
+            _count_entries(
+                [
+                    ("t.emb", 0),
+                    ("t.emb", 8),
+                    ("t.emb", 8),
+                    ("t.emb", 8),
+                    ("t.emb", 16),
+                    ("t.emb", 24),
+                    ("t.emb", 32),
+                    ("t.emb", 16),
+                    ("t.emb", 32),
+                    ("t.emb", 320),
+                    ("t.emb", 1),
+                    ("t.emb", 1),
+                    ("t.emb", 1),
+                    ("", 64),
+                ]
+            ),
+            _count_entries(constants),
+        )
 
-  def test_type_definition_is_populated(self):
-    constants = []
-    traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_data.NumericConstant], _record_kind_and_constant,
-        parameters={"constant_list": constants})
-    self.assertEqual(_count_entries([
-        ("structure", 0), ("structure", 8), ("structure", 8), ("structure", 8),
-        ("structure", 16), ("structure", 24), ("structure", 32),
-        ("structure", 16), ("structure", 32), ("structure", 320),
-        ("enumeration", 1), ("enumeration", 1), ("enumeration", 1),
-        ("external", 64)
-    ]), _count_entries(constants))
+    def test_type_definition_is_populated(self):
+        constants = []
+        traverse_ir.fast_traverse_ir_top_down(
+            _EXAMPLE_IR,
+            [ir_data.NumericConstant],
+            _record_kind_and_constant,
+            parameters={"constant_list": constants},
+        )
+        self.assertEqual(
+            _count_entries(
+                [
+                    ("structure", 0),
+                    ("structure", 8),
+                    ("structure", 8),
+                    ("structure", 8),
+                    ("structure", 16),
+                    ("structure", 24),
+                    ("structure", 32),
+                    ("structure", 16),
+                    ("structure", 32),
+                    ("structure", 320),
+                    ("enumeration", 1),
+                    ("enumeration", 1),
+                    ("enumeration", 1),
+                    ("external", 64),
+                ]
+            ),
+            _count_entries(constants),
+        )
 
-  def test_keyword_args_dict_in_action(self):
-    call_counts = {"populated": 0, "not": 0}
+    def test_keyword_args_dict_in_action(self):
+        call_counts = {"populated": 0, "not": 0}
 
-    def check_field_is_populated(node, **kwargs):
-      del node  # Unused.
-      self.assertTrue(kwargs["field"])
-      call_counts["populated"] += 1
+        def check_field_is_populated(node, **kwargs):
+            del node  # Unused.
+            self.assertTrue(kwargs["field"])
+            call_counts["populated"] += 1
 
-    def check_field_is_not_populated(node, **kwargs):
-      del node  # Unused.
-      self.assertFalse("field" in kwargs)
-      call_counts["not"] += 1
+        def check_field_is_not_populated(node, **kwargs):
+            del node  # Unused.
+            self.assertFalse("field" in kwargs)
+            call_counts["not"] += 1
 
-    traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_data.Field, ir_data.Type], check_field_is_populated)
-    self.assertEqual(7, call_counts["populated"])
+        traverse_ir.fast_traverse_ir_top_down(
+            _EXAMPLE_IR, [ir_data.Field, ir_data.Type], check_field_is_populated
+        )
+        self.assertEqual(7, call_counts["populated"])
 
-    traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_data.Enum, ir_data.EnumValue],
-        check_field_is_not_populated)
-    self.assertEqual(2, call_counts["not"])
+        traverse_ir.fast_traverse_ir_top_down(
+            _EXAMPLE_IR, [ir_data.Enum, ir_data.EnumValue], check_field_is_not_populated
+        )
+        self.assertEqual(2, call_counts["not"])
 
-  def test_pass_only_to_sub_nodes(self):
-    constants = []
+    def test_pass_only_to_sub_nodes(self):
+        constants = []
 
-    def pass_location_down(field):
-      return {
-          "location": (int(field.location.start.constant.value),
-                       int(field.location.size.constant.value))
-      }
+        def pass_location_down(field):
+            return {
+                "location": (
+                    int(field.location.start.constant.value),
+                    int(field.location.size.constant.value),
+                )
+            }
 
-    traverse_ir.fast_traverse_ir_top_down(
-        _EXAMPLE_IR, [ir_data.NumericConstant],
-        _record_location_parameter_and_constant,
-        incidental_actions={ir_data.Field: pass_location_down},
-        parameters={"constant_list": constants, "location": None})
-    self.assertEqual(_count_entries([
-        ((0, 8), 0), ((0, 8), 8), ((8, 16), 8), ((8, 16), 8), ((8, 16), 16),
-        ((24, 32), 24), ((24, 32), 32), ((32, 320), 16), ((32, 320), 32),
-        ((32, 320), 320), (None, 1), (None, 1), (None, 1), (None, 64)
-    ]), _count_entries(constants))
+        traverse_ir.fast_traverse_ir_top_down(
+            _EXAMPLE_IR,
+            [ir_data.NumericConstant],
+            _record_location_parameter_and_constant,
+            incidental_actions={ir_data.Field: pass_location_down},
+            parameters={"constant_list": constants, "location": None},
+        )
+        self.assertEqual(
+            _count_entries(
+                [
+                    ((0, 8), 0),
+                    ((0, 8), 8),
+                    ((8, 16), 8),
+                    ((8, 16), 8),
+                    ((8, 16), 16),
+                    ((24, 32), 24),
+                    ((24, 32), 32),
+                    ((32, 320), 16),
+                    ((32, 320), 32),
+                    ((32, 320), 320),
+                    (None, 1),
+                    (None, 1),
+                    (None, 1),
+                    (None, 64),
+                ]
+            ),
+            _count_entries(constants),
+        )
 
 
 if __name__ == "__main__":
-  unittest.main()
+    unittest.main()

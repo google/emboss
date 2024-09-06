@@ -21,22 +21,22 @@ from compiler.front_end import generate_grammar_md
 
 
 class DocsAreUpToDateTest(unittest.TestCase):
-  """Tests that auto-generated, checked-in documentation is up to date."""
+    """Tests that auto-generated, checked-in documentation is up to date."""
 
-  def test_grammar_md(self):
-    doc_md = pkgutil.get_data("doc", "grammar.md").decode(encoding="UTF-8")
-    correct_md = generate_grammar_md.generate_grammar_md()
-    # If this fails, run:
-    #
-    # bazel run //compiler/front_end:generate_grammar_md > doc/grammar.md
-    #
-    # Be sure to check that the results look good before committing!
-    doc_md_lines = doc_md.splitlines()
-    correct_md_lines = correct_md.splitlines()
-    for i in range(len(doc_md_lines)):
-      self.assertEqual(correct_md_lines[i], doc_md_lines[i])
-    self.assertEqual(correct_md, doc_md)
+    def test_grammar_md(self):
+        doc_md = pkgutil.get_data("doc", "grammar.md").decode(encoding="UTF-8")
+        correct_md = generate_grammar_md.generate_grammar_md()
+        # If this fails, run:
+        #
+        # bazel run //compiler/front_end:generate_grammar_md > doc/grammar.md
+        #
+        # Be sure to check that the results look good before committing!
+        doc_md_lines = doc_md.splitlines()
+        correct_md_lines = correct_md.splitlines()
+        for i in range(len(doc_md_lines)):
+            self.assertEqual(correct_md_lines[i], doc_md_lines[i])
+        self.assertEqual(correct_md, doc_md)
 
 
 if __name__ == "__main__":
-  unittest.main()
+    unittest.main()
