@@ -17,3 +17,12 @@ jobs:
           repository-cache: true
       - run: echo "CC=${{ matrix.cpp-compiler }}" >> $GITHUB_ENV
       - run: bazel test ...
+  check-formatting:
+    name: "Check Python formatting"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: psf/black@stable
+        with:
+          options: "--check --verbose"
+          version: "24.8.0"
