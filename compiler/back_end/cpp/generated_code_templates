@@ -479,8 +479,8 @@ ${support_namespace}::GenericArrayView<
 struct ${name} {
   template <typename ValueType>
   static constexpr bool ValueIsOk(ValueType emboss_reserved_local_value) {
-    (void)emboss_reserved_local_value;  // Silence -Wunused-parameter
-    return (${expression}).ValueOrDefault();
+    return (void)emboss_reserved_local_value,  // Silence -Wunused-parameter
+           (${expression}).ValueOrDefault();
   }
 };
 
@@ -669,8 +669,8 @@ ${read_subexpressions}
 
     static constexpr bool ValueIsOk(
         ${logical_type} emboss_reserved_local_value) {
-      (void)emboss_reserved_local_value;  // Silence -Wunused-parameter
-      return ${value_is_ok}.ValueOr(false);
+      return (void)emboss_reserved_local_value,  // Silence -Wunused-parameter
+             ${value_is_ok}.ValueOr(false);
     }
 
     const Generic${parent_type}View view_;
