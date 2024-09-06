@@ -22,7 +22,8 @@
 OVERLOADS = 64
 
 # Copyright header in the generated code complies with Google policies.
-print("""// Copyright 2020 Google LLC
+print(
+    """// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,18 +38,27 @@ print("""// Copyright 2020 Google LLC
 // limitations under the License.
 
 // GENERATED CODE.  DO NOT EDIT.  REGENERATE WITH
-// runtime/cpp/generators/all_known.py""")
+// runtime/cpp/generators/all_known.py"""
+)
 
 for i in range(1, OVERLOADS + 1):
-  print("""
+    print(
+        """
 template <{}>
 inline constexpr bool AllKnown({}) {{
   return {};
 }}""".format(
-    ", ".join(["typename T{}".format(n) for n in range(i)] +
-              (["typename... RestT"] if i == OVERLOADS else [])),
-    ", ".join(["T{} v{}".format(n, n) for n in range(i)] +
-              (["RestT... rest"] if i == OVERLOADS else [])),
-    " && ".join(["v{}.Known()".format(n) for n in range(i)] +
-                (["AllKnown(rest...)"] if i == OVERLOADS else []))))
-
+            ", ".join(
+                ["typename T{}".format(n) for n in range(i)]
+                + (["typename... RestT"] if i == OVERLOADS else [])
+            ),
+            ", ".join(
+                ["T{} v{}".format(n, n) for n in range(i)]
+                + (["RestT... rest"] if i == OVERLOADS else [])
+            ),
+            " && ".join(
+                ["v{}.Known()".format(n) for n in range(i)]
+                + (["AllKnown(rest...)"] if i == OVERLOADS else [])
+            ),
+        )
+    )

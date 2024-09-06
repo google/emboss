@@ -36,87 +36,123 @@ from compiler.util import parser_types
 
 
 def tokenize(text, file_name):
-  # TODO(bolms): suppress end-of-line, indent, and dedent tokens between matched
-  # delimiters ([], (), and {}).
-  """Tokenizes its argument.
+    # TODO(bolms): suppress end-of-line, indent, and dedent tokens between matched
+    # delimiters ([], (), and {}).
+    """Tokenizes its argument.
 
-  Arguments:
-    text: The raw text of a .emb file.
-    file_name: The name of the file to use in errors.
+    Arguments:
+      text: The raw text of a .emb file.
+      file_name: The name of the file to use in errors.
 
-  Returns:
-    A tuple of:
-      a list of parser_types.Tokens or None
-      a possibly-empty list of errors.
-  """
-  tokens = []
-  indent_stack = [""]
-  line_number = 0
-  for line in text.splitlines():
-    line_number += 1
+    Returns:
+      A tuple of:
+        a list of parser_types.Tokens or None
+        a possibly-empty list of errors.
+    """
+    tokens = []
+    indent_stack = [""]
+    line_number = 0
+    for line in text.splitlines():
+        line_number += 1
 
-    # _tokenize_line splits the actual text into tokens.
-    line_tokens, errors = _tokenize_line(line, line_number, file_name)
-    if errors:
-      return None, errors
+        # _tokenize_line splits the actual text into tokens.
+        line_tokens, errors = _tokenize_line(line, line_number, file_name)
+        if errors:
+            return None, errors
 
-    # Lines with only whitespace and comments are not used for Indent/Dedent
-    # calculation, and do not produce end-of-line tokens.
-    for token in line_tokens:
-      if token.symbol != "Comment":
-        break
-    else:
-      tokens.extend(line_tokens)
-      tokens.append(parser_types.Token(
-          '"\\n"', "\n", parser_types.make_location(
-              (line_number, len(line) + 1), (line_number, len(line) + 1))))
-      continue
+        # Lines with only whitespace and comments are not used for Indent/Dedent
+        # calculation, and do not produce end-of-line tokens.
+        for token in line_tokens:
+            if token.symbol != "Comment":
+                break
+        else:
+            tokens.extend(line_tokens)
+            tokens.append(
+                parser_types.Token(
+                    '"\\n"',
+                    "\n",
+                    parser_types.make_location(
+                        (line_number, len(line) + 1), (line_number, len(line) + 1)
+                    ),
+                )
+            )
+            continue
 
-    # Leading whitespace is whatever .lstrip() removes.
-    leading_whitespace = line[0:len(line) - len(line.lstrip())]
-    if leading_whitespace == indent_stack[-1]:
-      # If the current leading whitespace is equal to the last leading
-      # whitespace, do not emit an Indent or Dedent token.
-      pass
-    elif leading_whitespace.startswith(indent_stack[-1]):
-      # If the current leading whitespace is longer than the last leading
-      # whitespace, emit an Indent token.  For the token text, take the new
-      # part of the whitespace.
-      tokens.append(
-          parser_types.Token(
-              "Indent", leading_whitespace[len(indent_stack[-1]):],
-              parser_types.make_location(
-                  (line_number, len(indent_stack[-1]) + 1),
-                  (line_number, len(leading_whitespace) + 1))))
-      indent_stack.append(leading_whitespace)
-    else:
-      # Otherwise, search for the unclosed indentation level that matches
-      # the current indentation level.  Emit a Dedent token for each
-      # newly-closed indentation level.
-      for i in range(len(indent_stack) - 1, -1, -1):
-        if leading_whitespace == indent_stack[i]:
-          break
+        # Leading whitespace is whatever .lstrip() removes.
+        leading_whitespace = line[0 : len(line) - len(line.lstrip())]
+        if leading_whitespace == indent_stack[-1]:
+            # If the current leading whitespace is equal to the last leading
+            # whitespace, do not emit an Indent or Dedent token.
+            pass
+        elif leading_whitespace.startswith(indent_stack[-1]):
+            # If the current leading whitespace is longer than the last leading
+            # whitespace, emit an Indent token.  For the token text, take the new
+            # part of the whitespace.
+            tokens.append(
+                parser_types.Token(
+                    "Indent",
+                    leading_whitespace[len(indent_stack[-1]) :],
+                    parser_types.make_location(
+                        (line_number, len(indent_stack[-1]) + 1),
+                        (line_number, len(leading_whitespace) + 1),
+                    ),
+                )
+            )
+            indent_stack.append(leading_whitespace)
+        else:
+            # Otherwise, search for the unclosed indentation level that matches
+            # the current indentation level.  Emit a Dedent token for each
+            # newly-closed indentation level.
+            for i in range(len(indent_stack) - 1, -1, -1):
+                if leading_whitespace == indent_stack[i]:
+                    break
+                tokens.append(
+                    parser_types.Token(
+                        "Dedent",
+                        "",
+                        parser_types.make_location(
+                            (line_number, len(leading_whitespace) + 1),
+                            (line_number, len(leading_whitespace) + 1),
+                        ),
+                    )
+                )
+                del indent_stack[i]
+            else:
+                return None, [
+                    [
+                        error.error(
+                            file_name,
+                            parser_types.make_location(
+                                (line_number, 1),
+                                (line_number, len(leading_whitespace) + 1),
+                            ),
+                            "Bad indentation",
+                        )
+                    ]
+                ]
+
+        tokens.extend(line_tokens)
+
+        # Append an end-of-line token (for non-whitespace lines).
         tokens.append(
-            parser_types.Token("Dedent", "", parser_types.make_location(
-                (line_number, len(leading_whitespace) + 1),
-                (line_number, len(leading_whitespace) + 1))))
-        del indent_stack[i]
-      else:
-        return None, [[error.error(
-            file_name, parser_types.make_location(
-                (line_number, 1), (line_number, len(leading_whitespace) + 1)),
-            "Bad indentation")]]
+            parser_types.Token(
+                '"\\n"',
+                "\n",
+                parser_types.make_location(
+                    (line_number, len(line) + 1), (line_number, len(line) + 1)
+                ),
+            )
+        )
+    for i in range(len(indent_stack) - 1):
+        tokens.append(
+            parser_types.Token(
+                "Dedent",
+                "",
+                parser_types.make_location((line_number + 1, 1), (line_number + 1, 1)),
+            )
+        )
+    return tokens, []
 
-    tokens.extend(line_tokens)
-
-    # Append an end-of-line token (for non-whitespace lines).
-    tokens.append(parser_types.Token(
-        '"\\n"', "\n", parser_types.make_location(
-            (line_number, len(line) + 1), (line_number, len(line) + 1))))
-  for i in range(len(indent_stack) - 1):
-    tokens.append(parser_types.Token("Dedent", "", parser_types.make_location(
-        (line_number + 1, 1), (line_number + 1, 1))))
-  return tokens, []
 
 # Token patterns used by _tokenize_line.
 LITERAL_TOKEN_PATTERNS = (
@@ -125,7 +161,8 @@ LITERAL_TOKEN_PATTERNS = (
     "$max $present $upper_bound $lower_bound $next "
     "$size_in_bits $size_in_bytes "
     "$max_size_in_bits $max_size_in_bytes $min_size_in_bits $min_size_in_bytes "
-    "$default struct bits enum external import as if let").split()
+    "$default struct bits enum external import as if let"
+).split()
 _T = collections.namedtuple("T", ["regex", "symbol"])
 REGEX_TOKEN_PATTERNS = [
     # Words starting with variations of "emboss reserved" are reserved for
@@ -168,56 +205,68 @@ del _T
 
 
 def _tokenize_line(line, line_number, file_name):
-  """Tokenizes a single line of input.
+    """Tokenizes a single line of input.
 
-  Arguments:
-    line: The line of text to tokenize.
-    line_number: The line number (used when constructing token objects).
-    file_name: The name of a file to use in errors.
+    Arguments:
+      line: The line of text to tokenize.
+      line_number: The line number (used when constructing token objects).
+      file_name: The name of a file to use in errors.
 
-  Returns:
-    A tuple of:
-      A list of token objects or None.
-      A possibly-empty list of errors.
-  """
-  tokens = []
-  offset = 0
-  while offset < len(line):
-    best_candidate = ""
-    best_candidate_symbol = None
-    # Find the longest match.  Ties go to the first match.  This way, keywords
-    # ("struct") are matched as themselves, but words that only happen to start
-    # with keywords ("structure") are matched as words.
-    #
-    # There is never a reason to try to match a literal after a regex that
-    # could also match that literal, so check literals first.
-    for literal in LITERAL_TOKEN_PATTERNS:
-      if line[offset:].startswith(literal) and len(literal) > len(
-          best_candidate):
-        best_candidate = literal
-        # For Emboss, the name of a literal token is just the literal in quotes,
-        # so that the grammar can read a little more naturally, e.g.:
+    Returns:
+      A tuple of:
+        A list of token objects or None.
+        A possibly-empty list of errors.
+    """
+    tokens = []
+    offset = 0
+    while offset < len(line):
+        best_candidate = ""
+        best_candidate_symbol = None
+        # Find the longest match.  Ties go to the first match.  This way, keywords
+        # ("struct") are matched as themselves, but words that only happen to start
+        # with keywords ("structure") are matched as words.
         #
-        #     expression -> expression "+" expression
-        #
-        # instead of
-        #
-        #     expression -> expression Plus expression
-        best_candidate_symbol = '"' + literal + '"'
-    for pattern in REGEX_TOKEN_PATTERNS:
-      match_result = pattern.regex.match(line[offset:])
-      if match_result and len(match_result.group(0)) > len(best_candidate):
-        best_candidate = match_result.group(0)
-        best_candidate_symbol = pattern.symbol
-    if not best_candidate:
-      return None, [[error.error(
-          file_name, parser_types.make_location(
-              (line_number, offset + 1), (line_number, offset + 2)),
-          "Unrecognized token")]]
-    if best_candidate_symbol:
-      tokens.append(parser_types.Token(
-          best_candidate_symbol, best_candidate, parser_types.make_location(
-              (line_number, offset + 1),
-              (line_number, offset + len(best_candidate) + 1))))
-    offset += len(best_candidate)
-  return tokens, None
+        # There is never a reason to try to match a literal after a regex that
+        # could also match that literal, so check literals first.
+        for literal in LITERAL_TOKEN_PATTERNS:
+            if line[offset:].startswith(literal) and len(literal) > len(best_candidate):
+                best_candidate = literal
+                # For Emboss, the name of a literal token is just the literal in quotes,
+                # so that the grammar can read a little more naturally, e.g.:
+                #
+                #     expression -> expression "+" expression
+                #
+                # instead of
+                #
+                #     expression -> expression Plus expression
+                best_candidate_symbol = '"' + literal + '"'
+        for pattern in REGEX_TOKEN_PATTERNS:
+            match_result = pattern.regex.match(line[offset:])
+            if match_result and len(match_result.group(0)) > len(best_candidate):
+                best_candidate = match_result.group(0)
+                best_candidate_symbol = pattern.symbol
+        if not best_candidate:
+            return None, [
+                [
+                    error.error(
+                        file_name,
+                        parser_types.make_location(
+                            (line_number, offset + 1), (line_number, offset + 2)
+                        ),
+                        "Unrecognized token",
+                    )
+                ]
+            ]
+        if best_candidate_symbol:
+            tokens.append(
+                parser_types.Token(
+                    best_candidate_symbol,
+                    best_candidate,
+                    parser_types.make_location(
+                        (line_number, offset + 1),
+                        (line_number, offset + len(best_candidate) + 1),
+                    ),
+                )
+            )
+        offset += len(best_candidate)
+    return tokens, None

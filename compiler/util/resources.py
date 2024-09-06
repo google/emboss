@@ -16,8 +16,10 @@
 
 import importlib.resources
 
+
 def load(package, file, encoding="utf-8"):
-  """Returns the contents of `file` from the Python package loader."""
-  with importlib.resources.files(
-      package).joinpath(file).open("r", encoding=encoding) as f:
-    return f.read()
+    """Returns the contents of `file` from the Python package loader."""
+    with importlib.resources.files(package).joinpath(file).open(
+        "r", encoding=encoding
+    ) as f:
+        return f.read()

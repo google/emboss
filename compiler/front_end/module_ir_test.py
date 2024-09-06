@@ -30,12 +30,16 @@ from compiler.util import test_util
 
 _TESTDATA_PATH = "testdata.golden"
 _MINIMAL_SOURCE = pkgutil.get_data(
-        _TESTDATA_PATH, "span_se_log_file_status.emb").decode(encoding="UTF-8")
+    _TESTDATA_PATH, "span_se_log_file_status.emb"
+).decode(encoding="UTF-8")
 _MINIMAL_SAMPLE = parser.parse_module(
-    tokenizer.tokenize(_MINIMAL_SOURCE, "")[0]).parse_tree
-_MINIMAL_SAMPLE_IR = ir_data_utils.IrDataSerializer.from_json(ir_data.Module,
+    tokenizer.tokenize(_MINIMAL_SOURCE, "")[0]
+).parse_tree
+_MINIMAL_SAMPLE_IR = ir_data_utils.IrDataSerializer.from_json(
+    ir_data.Module,
     pkgutil.get_data(_TESTDATA_PATH, "span_se_log_file_status.ir.txt").decode(
-        encoding="UTF-8")
+        encoding="UTF-8"
+    ),
 )
 
 # _TEST_CASES contains test cases, separated by '===', that ensure that specific
@@ -3974,230 +3978,253 @@ struct Foo:
 
 
 def _get_test_cases():
-  test_case = collections.namedtuple("test_case", ["name", "parse_tree", "ir"])
-  result = []
-  for case in _TEST_CASES.split("==="):
-    name, emb, ir_text = case.split("---")
-    name = name.strip()
-    try:
-      ir = ir_data_utils.IrDataSerializer.from_json(ir_data.Module, ir_text)
-    except Exception:
-      print(name)
-      raise
-    parse_result = parser.parse_module(tokenizer.tokenize(emb, "")[0])
-    assert not parse_result.error, "{}:\n{}".format(name, parse_result.error)
-    result.append(test_case(name, parse_result.parse_tree, ir))
-  return result
+    test_case = collections.namedtuple("test_case", ["name", "parse_tree", "ir"])
+    result = []
+    for case in _TEST_CASES.split("==="):
+        name, emb, ir_text = case.split("---")
+        name = name.strip()
+        try:
+            ir = ir_data_utils.IrDataSerializer.from_json(ir_data.Module, ir_text)
+        except Exception:
+            print(name)
+            raise
+        parse_result = parser.parse_module(tokenizer.tokenize(emb, "")[0])
+        assert not parse_result.error, "{}:\n{}".format(name, parse_result.error)
+        result.append(test_case(name, parse_result.parse_tree, ir))
+    return result
 
 
 def _get_negative_test_cases():
-  test_case = collections.namedtuple("test_case",
-                                     ["name", "text", "error_token"])
-  result = []
-  for case in _NEGATIVE_TEST_CASES.split("==="):
-    name, error_token, text = case.split("---")
-    name = name.strip()
-    error_token = error_token.strip()
-    result.append(test_case(name, text, error_token))
-  return result
+    test_case = collections.namedtuple("test_case", ["name", "text", "error_token"])
+    result = []
+    for case in _NEGATIVE_TEST_CASES.split("==="):
+        name, error_token, text = case.split("---")
+        name = name.strip()
+        error_token = error_token.strip()
+        result.append(test_case(name, text, error_token))
+    return result
 
 
 def _check_source_location(source_location, path, min_start, max_end):
-  """Performs sanity checks on a source_location field.
+    """Performs sanity checks on a source_location field.
 
-  Arguments:
-    source_location: The source_location to check.
-    path: The path, to use in error messages.
-    min_start: A minimum value for source_location.start, or None.
-    max_end: A maximum value for source_location.end, or None.
+    Arguments:
+      source_location: The source_location to check.
+      path: The path, to use in error messages.
+      min_start: A minimum value for source_location.start, or None.
+      max_end: A maximum value for source_location.end, or None.
 
-  Returns:
-    A list of error messages, or an empty list if no errors.
-  """
-  if source_location.is_disjoint_from_parent:
-    # If source_location.is_disjoint_from_parent, then this source_location is
-    # allowed to be outside of the parent's source_location.
-    return []
+    Returns:
+      A list of error messages, or an empty list if no errors.
+    """
+    if source_location.is_disjoint_from_parent:
+        # If source_location.is_disjoint_from_parent, then this source_location is
+        # allowed to be outside of the parent's source_location.
+        return []
 
-  result = []
-  start = None
-  end = None
-  if not source_location.HasField("start"):
-    result.append("{}.start missing".format(path))
-  else:
-    start = source_location.start
-  if not source_location.HasField("end"):
-    result.append("{}.end missing".format(path))
-  else:
-    end = source_location.end
-
-  if start and end:
-    if start.HasField("line") and end.HasField("line"):
-      if start.line > end.line:
-        result.append("{}.start.line > {}.end.line ({} vs {})".format(
-            path, path, start.line, end.line))
-      elif start.line == end.line:
-        if (start.HasField("column") and end.HasField("column") and
-            start.column > end.column):
-          result.append("{}.start.column > {}.end.column ({} vs {})".format(
-              path, path, start.column, end.column))
-
-  for name, field in (("start", start), ("end", end)):
-    if not field:
-      continue
-    if field.HasField("line"):
-      if field.line <= 0:
-        result.append("{}.{}.line <= 0 ({})".format(path, name, field.line))
+    result = []
+    start = None
+    end = None
+    if not source_location.HasField("start"):
+        result.append("{}.start missing".format(path))
     else:
-      result.append("{}.{}.line missing".format(path, name))
-    if field.HasField("column"):
-      if field.column <= 0:
-        result.append("{}.{}.column <= 0 ({})".format(path, name, field.column))
+        start = source_location.start
+    if not source_location.HasField("end"):
+        result.append("{}.end missing".format(path))
     else:
-      result.append("{}.{}.column missing".format(path, name))
+        end = source_location.end
 
-  if min_start and start:
-    if min_start.line > start.line or (
-        min_start.line == start.line and min_start.column > start.column):
-      result.append("{}.start before parent start".format(path))
+    if start and end:
+        if start.HasField("line") and end.HasField("line"):
+            if start.line > end.line:
+                result.append(
+                    "{}.start.line > {}.end.line ({} vs {})".format(
+                        path, path, start.line, end.line
+                    )
+                )
+            elif start.line == end.line:
+                if (
+                    start.HasField("column")
+                    and end.HasField("column")
+                    and start.column > end.column
+                ):
+                    result.append(
+                        "{}.start.column > {}.end.column ({} vs {})".format(
+                            path, path, start.column, end.column
+                        )
+                    )
 
-  if max_end and end:
-    if max_end.line < end.line or (
-        max_end.line == end.line and max_end.column < end.column):
-      result.append("{}.end after parent end".format(path))
+    for name, field in (("start", start), ("end", end)):
+        if not field:
+            continue
+        if field.HasField("line"):
+            if field.line <= 0:
+                result.append("{}.{}.line <= 0 ({})".format(path, name, field.line))
+        else:
+            result.append("{}.{}.line missing".format(path, name))
+        if field.HasField("column"):
+            if field.column <= 0:
+                result.append("{}.{}.column <= 0 ({})".format(path, name, field.column))
+        else:
+            result.append("{}.{}.column missing".format(path, name))
 
-  return result
+    if min_start and start:
+        if min_start.line > start.line or (
+            min_start.line == start.line and min_start.column > start.column
+        ):
+            result.append("{}.start before parent start".format(path))
+
+    if max_end and end:
+        if max_end.line < end.line or (
+            max_end.line == end.line and max_end.column < end.column
+        ):
+            result.append("{}.end after parent end".format(path))
+
+    return result
 
 
 def _check_all_source_locations(proto, path="", min_start=None, max_end=None):
-  """Performs sanity checks on all source_locations in proto.
+    """Performs sanity checks on all source_locations in proto.
 
-  Arguments:
-    proto: The proto to recursively check.
-    path: The path, to use in error messages.
-    min_start: A minimum value for source_location.start, or None.
-    max_end: A maximum value for source_location.end, or None.
+    Arguments:
+      proto: The proto to recursively check.
+      path: The path, to use in error messages.
+      min_start: A minimum value for source_location.start, or None.
+      max_end: A maximum value for source_location.end, or None.
 
-  Returns:
-    A list of error messages, or an empty list if no errors.
-  """
-  if path:
-    path += "."
+    Returns:
+      A list of error messages, or an empty list if no errors.
+    """
+    if path:
+        path += "."
 
-  errors = []
+    errors = []
 
-  child_start = None
-  child_end = None
-  # Only check the source_location value if this proto message actually has a
-  # source_location field.
-  if proto.HasField("source_location"):
-    errors.extend(_check_source_location(proto.source_location,
-                                         path + "source_location",
-                                         min_start, max_end))
-    child_start = proto.source_location.start
-    child_end = proto.source_location.end
+    child_start = None
+    child_end = None
+    # Only check the source_location value if this proto message actually has a
+    # source_location field.
+    if proto.HasField("source_location"):
+        errors.extend(
+            _check_source_location(
+                proto.source_location, path + "source_location", min_start, max_end
+            )
+        )
+        child_start = proto.source_location.start
+        child_end = proto.source_location.end
 
-  for name, spec in ir_data_fields.field_specs(proto).items():
-    if name == "source_location":
-      continue
-    if not proto.HasField(name):
-      continue
-    field_path = "{}{}".format(path, name)
-    if spec.is_dataclass:
-      if spec.is_sequence:
-        index = 0
-        for i in getattr(proto, name):
-          item_path = "{}[{}]".format(field_path, index)
-          index += 1
-          errors.extend(
-              _check_all_source_locations(i, item_path, child_start, child_end))
-      else:
-        errors.extend(_check_all_source_locations(getattr(proto, name),
-                                                  field_path, child_start,
-                                                  child_end))
+    for name, spec in ir_data_fields.field_specs(proto).items():
+        if name == "source_location":
+            continue
+        if not proto.HasField(name):
+            continue
+        field_path = "{}{}".format(path, name)
+        if spec.is_dataclass:
+            if spec.is_sequence:
+                index = 0
+                for i in getattr(proto, name):
+                    item_path = "{}[{}]".format(field_path, index)
+                    index += 1
+                    errors.extend(
+                        _check_all_source_locations(
+                            i, item_path, child_start, child_end
+                        )
+                    )
+            else:
+                errors.extend(
+                    _check_all_source_locations(
+                        getattr(proto, name), field_path, child_start, child_end
+                    )
+                )
 
-  return errors
+    return errors
 
 
 class ModuleIrTest(unittest.TestCase):
-  """Tests the module_ir.build_ir() function."""
+    """Tests the module_ir.build_ir() function."""
 
-  def test_build_ir(self):
-    ir = module_ir.build_ir(_MINIMAL_SAMPLE)
-    ir.source_text = _MINIMAL_SOURCE
-    self.assertEqual(ir, _MINIMAL_SAMPLE_IR)
+    def test_build_ir(self):
+        ir = module_ir.build_ir(_MINIMAL_SAMPLE)
+        ir.source_text = _MINIMAL_SOURCE
+        self.assertEqual(ir, _MINIMAL_SAMPLE_IR)
 
-  def test_production_coverage(self):
-    """Checks that all grammar productions are used somewhere in tests."""
-    used_productions = set()
-    module_ir.build_ir(_MINIMAL_SAMPLE, used_productions)
-    for test in _get_test_cases():
-      module_ir.build_ir(test.parse_tree, used_productions)
-    self.assertEqual(set(module_ir.PRODUCTIONS) - used_productions, set([]))
+    def test_production_coverage(self):
+        """Checks that all grammar productions are used somewhere in tests."""
+        used_productions = set()
+        module_ir.build_ir(_MINIMAL_SAMPLE, used_productions)
+        for test in _get_test_cases():
+            module_ir.build_ir(test.parse_tree, used_productions)
+        self.assertEqual(set(module_ir.PRODUCTIONS) - used_productions, set([]))
 
-  def test_double_negative_non_compilation(self):
-    """Checks that unparenthesized double unary minus/plus is a parse error."""
-    for example in ("[x: - -3]", "[x: + -3]", "[x: - +3]", "[x: + +3]"):
-      parse_result = parser.parse_module(tokenizer.tokenize(example, "")[0])
-      self.assertTrue(parse_result.error)
-      self.assertEqual(7, parse_result.error.token.source_location.start.column)
-    for example in ("[x:-(-3)]", "[x:+(-3)]", "[x:-(+3)]", "[x:+(+3)]"):
-      parse_result = parser.parse_module(tokenizer.tokenize(example, "")[0])
-      self.assertFalse(parse_result.error)
+    def test_double_negative_non_compilation(self):
+        """Checks that unparenthesized double unary minus/plus is a parse error."""
+        for example in ("[x: - -3]", "[x: + -3]", "[x: - +3]", "[x: + +3]"):
+            parse_result = parser.parse_module(tokenizer.tokenize(example, "")[0])
+            self.assertTrue(parse_result.error)
+            self.assertEqual(7, parse_result.error.token.source_location.start.column)
+        for example in ("[x:-(-3)]", "[x:+(-3)]", "[x:-(+3)]", "[x:+(+3)]"):
+            parse_result = parser.parse_module(tokenizer.tokenize(example, "")[0])
+            self.assertFalse(parse_result.error)
 
 
 def _make_superset_tests():
 
-  def _make_superset_test(test):
+    def _make_superset_test(test):
 
-    def test_case(self):
-      ir = module_ir.build_ir(test.parse_tree)
-      is_superset, error_message = test_util.proto_is_superset(ir, test.ir)
+        def test_case(self):
+            ir = module_ir.build_ir(test.parse_tree)
+            is_superset, error_message = test_util.proto_is_superset(ir, test.ir)
 
-      self.assertTrue(
-          is_superset,
-          error_message + "\n" + ir_data_utils.IrDataSerializer(ir).to_json(indent=2) + "\n" +
-          ir_data_utils.IrDataSerializer(test.ir).to_json(indent=2))
+            self.assertTrue(
+                is_superset,
+                error_message
+                + "\n"
+                + ir_data_utils.IrDataSerializer(ir).to_json(indent=2)
+                + "\n"
+                + ir_data_utils.IrDataSerializer(test.ir).to_json(indent=2),
+            )
 
-    return test_case
+        return test_case
 
-  for test in _get_test_cases():
-    test_name = "test " + test.name + " proto superset"
-    assert not hasattr(ModuleIrTest, test_name)
-    setattr(ModuleIrTest, test_name, _make_superset_test(test))
+    for test in _get_test_cases():
+        test_name = "test " + test.name + " proto superset"
+        assert not hasattr(ModuleIrTest, test_name)
+        setattr(ModuleIrTest, test_name, _make_superset_test(test))
 
 
 def _make_source_location_tests():
 
-  def _make_source_location_test(test):
+    def _make_source_location_test(test):
 
-    def test_case(self):
-      error_list = _check_all_source_locations(
-          module_ir.build_ir(test.parse_tree))
-      self.assertFalse(error_list, "\n".join([test.name] + error_list))
+        def test_case(self):
+            error_list = _check_all_source_locations(
+                module_ir.build_ir(test.parse_tree)
+            )
+            self.assertFalse(error_list, "\n".join([test.name] + error_list))
 
-    return test_case
+        return test_case
 
-  for test in _get_test_cases():
-    test_name = "test " + test.name + " source location"
-    assert not hasattr(ModuleIrTest, test_name)
-    setattr(ModuleIrTest, test_name, _make_source_location_test(test))
+    for test in _get_test_cases():
+        test_name = "test " + test.name + " source location"
+        assert not hasattr(ModuleIrTest, test_name)
+        setattr(ModuleIrTest, test_name, _make_source_location_test(test))
 
 
 def _make_negative_tests():
 
-  def _make_negative_test(test):
+    def _make_negative_test(test):
 
-    def test_case(self):
-      parse_result = parser.parse_module(tokenizer.tokenize(test.text, "")[0])
-      self.assertEqual(test.error_token, parse_result.error.token.text.strip())
+        def test_case(self):
+            parse_result = parser.parse_module(tokenizer.tokenize(test.text, "")[0])
+            self.assertEqual(test.error_token, parse_result.error.token.text.strip())
 
-    return test_case
+        return test_case
 
-  for test in _get_negative_test_cases():
-    test_name = "test " + test.name + " compilation failure"
-    assert not hasattr(ModuleIrTest, test_name)
-    setattr(ModuleIrTest, test_name, _make_negative_test(test))
+    for test in _get_negative_test_cases():
+        test_name = "test " + test.name + " compilation failure"
+        assert not hasattr(ModuleIrTest, test_name)
+        setattr(ModuleIrTest, test_name, _make_negative_test(test))
+
 
 _make_negative_tests()
 _make_superset_tests()
@@ -4205,4 +4232,4 @@ _make_source_location_tests()
 
 
 if __name__ == "__main__":
-  unittest.main()
+    unittest.main()

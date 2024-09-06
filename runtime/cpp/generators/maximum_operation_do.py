@@ -24,7 +24,8 @@
 OVERLOADS = 64
 
 # Copyright header in the generated code complies with Google policies.
-print("""// Copyright 2020 Google LLC
+print(
+    """// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,17 +40,21 @@ print("""// Copyright 2020 Google LLC
 // limitations under the License.
 
 // GENERATED CODE.  DO NOT EDIT.  REGENERATE WITH
-// runtime/cpp/generators/maximum_operation_do.py""")
+// runtime/cpp/generators/maximum_operation_do.py"""
+)
 
 for i in range(5, OVERLOADS + 1):
-  print("""
+    print(
+        """
   template <typename T>
   static inline constexpr T Do({0}) {{
     return Do(Do({1}), Do({2}));
   }}""".strip().format(
-    ", ".join(["T v{}".format(n) for n in range(i)]),
-    ", ".join(["v{}".format(n) for n in range(i // 2)]),
-    ", ".join(["v{}".format(n) for n in range(i // 2, i)])))
+            ", ".join(["T v{}".format(n) for n in range(i)]),
+            ", ".join(["v{}".format(n) for n in range(i // 2)]),
+            ", ".join(["v{}".format(n) for n in range(i // 2, i)]),
+        )
+    )
 
 # The "more than OVERLOADS arguments" overload uses a variadic template to
 # handle the remaining arguments, even though all arguments should have the
@@ -59,11 +64,14 @@ for i in range(5, OVERLOADS + 1):
 #
 # This also uses one explicit argument, rest0, to ensure that it does not get
 # confused with the last non-variadic overload.
-print("""
+print(
+    """
   template <typename T, typename... RestT>
   static inline constexpr T Do({0}, T rest0, RestT... rest) {{
     return Do(Do({1}), Do(rest0, rest...));
   }}""".format(
-    ", ".join(["T v{}".format(n) for n in range(OVERLOADS)]),
-    ", ".join(["v{}".format(n) for n in range(OVERLOADS)]),
-    OVERLOADS))
+        ", ".join(["T v{}".format(n) for n in range(OVERLOADS)]),
+        ", ".join(["v{}".format(n) for n in range(OVERLOADS)]),
+        OVERLOADS,
+    )
+)
