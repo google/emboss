@@ -14,11 +14,11 @@
 
 """Attributes in the C++ backend and associated metadata."""
 
-from enum import Enum
+import enum
 from compiler.util import attribute_util
 
 
-class Attribute(str, Enum):
+class Attribute(str, enum.Enum):
     """Attributes available in the C++ backend."""
 
     NAMESPACE = "namespace"
@@ -32,7 +32,7 @@ TYPES = {
 }
 
 
-class Scope(set, Enum):
+class Scope(set, enum.Enum):
     """Allowed scopes for C++ backend attributes.
 
     Each entry is a set of (Attribute, default?) tuples, the first value being
