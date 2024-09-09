@@ -44,8 +44,8 @@ _VALID_TEXT_OUTPUT = attribute_util.string_from_list({"Emit", "Skip"})
 
 
 def _valid_back_ends(attr, module_source_file):
-    if not re.match(
-        r"^(?:\s*[a-z][a-z0-9_]*\s*(?:,\s*[a-z][a-z0-9_]*\s*)*,?)?\s*$",
+    if not re.fullmatch(
+        r"(?:\s*[a-z][a-z0-9_]*\s*(?:,\s*[a-z][a-z0-9_]*\s*)*,?)?\s*",
         attr.value.string_constant.text,
     ):
         return [

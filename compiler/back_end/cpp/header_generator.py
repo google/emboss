@@ -1739,8 +1739,8 @@ def _verify_namespace_attribute(attr, source_file_name, errors):
     if attr.name.text != attributes.Attribute.NAMESPACE:
         return
     namespace_value = ir_data_utils.reader(attr).value.string_constant
-    if not re.match(_NS_RE, namespace_value.text):
-        if re.match(_NS_EMPTY_RE, namespace_value.text):
+    if not re.fullmatch(_NS_RE, namespace_value.text):
+        if re.fullmatch(_NS_EMPTY_RE, namespace_value.text):
             errors.append(
                 [
                     error.error(
@@ -1750,7 +1750,7 @@ def _verify_namespace_attribute(attr, source_file_name, errors):
                     )
                 ]
             )
-        elif re.match(_NS_GLOBAL_RE, namespace_value.text):
+        elif re.fullmatch(_NS_GLOBAL_RE, namespace_value.text):
             errors.append(
                 [
                     error.error(
