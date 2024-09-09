@@ -1745,10 +1745,10 @@ def _offset_source_location_column(source_location, offset):
             end.column.
 
     Returns:
-
-    A new source location with all of the same properties as the provided
-    source location, but with the columns modified by offsets from the original
-    start column."""
+        A new source location with all of the same properties as the provided
+        source location, but with the columns modified by offsets from the
+        original start column.
+    """
 
     new_location = ir_data_utils.copy(source_location)
     new_location.start.column = source_location.start.column + offset[0]
@@ -1885,8 +1885,12 @@ def _verify_attribute_values(ir):
 def _propagate_defaults_and_verify_attributes(ir):
     """Verify attributes and ensure defaults are set when not overridden.
 
-    Returns a list of errors if there are errors present, or an empty list if
-    verification completed successfully."""
+    Arguments:
+        ir: The IR to process.
+
+    Returns:
+        A list of errors if there are errors present, or an empty list if
+        verification completed successfully."""
     if errors := attribute_util.check_attributes_in_ir(
         ir,
         back_end="cpp",
