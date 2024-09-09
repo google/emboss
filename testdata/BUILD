@@ -108,7 +108,7 @@ emboss_cc_library(
     srcs = [
         "enum.emb",
     ],
-    # This tag is arbitrary, and exists to ensure you can pass atributes common
+    # This tag is arbitrary, and exists to ensure you can pass attributes common
     # to all build rules to the underlying rules.
     tags = ["an_arbitrary_tag"],
 )

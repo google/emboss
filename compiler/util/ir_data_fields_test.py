@@ -86,7 +86,7 @@ class OneofFieldTest(ir_data.Message):
 
 
 class OneOfTest(unittest.TestCase):
-    """Tests for the the various oneof field helpers"""
+    """Tests for the various oneof field helpers"""
 
     def test_field_attribute(self):
         """Test the `oneof_field` helper."""
