@@ -270,7 +270,7 @@ class IrDataBuilderTest(unittest.TestCase):
         # We start with an empty type
         type_def = ir_data.TypeDefinition()
         self.assertTrue(type_def.HasField("attribute"))
-        self.assertEqual(len(type_def.attribute), 0)
+        self.assertEmpty(type_def.attribute)
 
         # Now setup a builder
         builder = ir_data_utils.builder(type_def)
@@ -284,12 +284,12 @@ class IrDataBuilderTest(unittest.TestCase):
         builder.attribute.append(attribute)
         self.assertEqual(builder.attribute, [attribute])
         self.assertTrue(type_def.HasField("attribute"))
-        self.assertEqual(len(type_def.attribute), 1)
+        self.assertLen(type_def.attribute, 1)
         self.assertEqual(type_def.attribute[0], attribute)
 
         # Lets make it longer and then try iterating
         builder.attribute.append(attribute)
-        self.assertEqual(len(type_def.attribute), 2)
+        self.assertLen(type_def.attribute, 2)
         for attr in builder.attribute:
             # Modify the attributes
             attr.name.text = "bob"
@@ -305,7 +305,7 @@ class IrDataBuilderTest(unittest.TestCase):
             name=ir_data.Word(text="bob"),
         )
 
-        self.assertEqual(len(type_def.attribute), 3)
+        self.assertLen(type_def.attribute, 3)
         for attr in type_def.attribute:
             self.assertEqual(attr, new_attribute)
 
@@ -380,7 +380,7 @@ class IrDataBuilderTest(unittest.TestCase):
         builder.fields_in_dependency_order.append(11)
 
         self.assertTrue(structure.HasField("fields_in_dependency_order"))
-        self.assertEqual(len(structure.fields_in_dependency_order), 2)
+        self.assertLen(structure.fields_in_dependency_order, 2)
         self.assertEqual(structure.fields_in_dependency_order[0], 12)
         self.assertEqual(structure.fields_in_dependency_order[1], 11)
         self.assertEqual(builder.fields_in_dependency_order, [12, 11])
