@@ -30,7 +30,7 @@ Token = collections.namedtuple("Token", ["symbol", "source_location"])
 
 
 def _tokenize(text):
-    """ "Tokenizes" text by making each character into a token."""
+    """"Tokenizes" text by making each character into a token."""
     result = []
     for i in range(len(text)):
         result.append(

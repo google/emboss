@@ -133,6 +133,7 @@ def _type_check_constant_reference(expression, source_file_name, ir, errors):
 
 
 def _type_check_operation(expression, source_file_name, ir, errors):
+    """Type checks a function or operator expression."""
     for arg in expression.function.args:
         _type_check_expression(arg, source_file_name, ir, errors)
     function = expression.function.function

@@ -76,7 +76,7 @@ def _is_ir_dataclass(obj):
 
 
 class CopyValuesList(list[CopyValuesListT]):
-    """A list that makes copies of any value that is inserted"""
+    """A list that makes copies of any value that is inserted."""
 
     def __init__(
         self, value_type: CopyValuesListT, iterable: Optional[Iterable] = None
@@ -96,7 +96,7 @@ class CopyValuesList(list[CopyValuesListT]):
         return super().extend([self._copy(i) for i in iterable])
 
     def shallow_copy(self, iterable: Iterable) -> None:
-        """Explicitly performs a shallow copy of the provided list"""
+        """Explicitly performs a shallow copy of the provided list."""
         return super().extend(iterable)
 
     def append(self, obj: Any) -> None:
@@ -107,15 +107,13 @@ class CopyValuesList(list[CopyValuesListT]):
 
 
 class TemporaryCopyValuesList(NamedTuple):
-    """Class used to temporarily hold a CopyValuesList while copying and
-    constructing an IR dataclass.
-    """
+    """Holder for a CopyValuesList while copying/constructing an IR dataclass."""
 
     temp_list: CopyValuesList
 
 
 class FieldContainer(enum.Enum):
-    """Indicates a fields container type"""
+    """Indicates a fields container type."""
 
     NONE = 0
     OPTIONAL = 1
@@ -125,8 +123,8 @@ class FieldContainer(enum.Enum):
 class FieldSpec(NamedTuple):
     """Indicates the container and type of a field.
 
-    `FieldSpec` objects are accessed millions of times during runs so we cache as
-    many operations as possible.
+    `FieldSpec` objects are accessed millions of times during runs so we cache
+    as many operations as possible.
       - `is_dataclass`: `dataclasses.is_dataclass(data_type)`
       - `is_sequence`: `container is FieldContainer.LIST`
       - `is_enum`: `issubclass(data_type, enum.Enum)`
@@ -162,7 +160,7 @@ def make_field_spec(
 
 
 def build_default(field_spec: FieldSpec):
-    """Builds a default instance of the given field"""
+    """Builds a default instance of the given field."""
     if field_spec.is_sequence:
         return CopyValuesList(field_spec.data_type)
     if field_spec.is_enum:
@@ -216,11 +214,20 @@ class IrDataclassSpecs:
 
 
 def cache_message_specs(mod, cls):
-    """Adds a cached `field_specs` attribute to IR dataclasses in `mod`
-    excluding the given base `cls`.
+    """Adds `field_specs` to `mod`, excluding `cls`.
+
+    Adds a cached `field_specs` attribute to IR dataclasses in module `mod`
+    excluding the given base class `cls`.
 
     This needs to be done after the dataclass decorators run and create the
     wrapped classes.
+
+    Arguments:
+        mod: The module to process.
+        cls: The base class to exclude.
+
+    Returns:
+        None
     """
     for data_class in all_ir_classes(mod):
         if data_class is not cls:
@@ -228,7 +235,7 @@ def cache_message_specs(mod, cls):
 
 
 def _field_specs(cls: type[IrDataT]) -> Mapping[str, FieldSpec]:
-    """Gets the IR data field names and types for the given IR data class"""
+    """Gets the IR data field names and types for the given IR data class."""
     # Get the dataclass fields
     class_fields = dataclasses.fields(cast(Any, cls))
 
@@ -287,6 +294,12 @@ def field_specs(obj: Union[IrDataT, type[IrDataT]]) -> Mapping[str, FieldSpec]:
     """Retrieves the fields specs for the the give data type.
 
     The results of this method are cached to reduce lookup overhead.
+
+    Arguments:
+        obj: Either an IR dataclass type, or an instance of such a type.
+
+    Returns:
+        The field specs for `obj`.
     """
     cls = obj if isinstance(obj, type) else type(obj)
     if cls is type(None):
@@ -301,8 +314,11 @@ def fields_and_values(
     """Retrieves the fields and their values for a given IR data class.
 
     Args:
-      ir: The IR data class or a read-only wrapper of an IR data class.
-      value_filt: Optional filter used to exclude values.
+        ir: The IR data class or a read-only wrapper of an IR data class.
+        value_filt: Optional filter used to exclude values.
+
+    Returns:
+        None
     """
     set_fields: list[Tuple[FieldSpec, Any]] = []
     specs: FilteredIrFieldSpecs = ir.field_specs
@@ -329,6 +345,7 @@ def fields_and_values(
 # 5. None checks are only done in `copy()`, `_copy_set_fields` only
 #    references `_copy()` to avoid this step.
 def _copy_set_fields(ir: IrDataT):
+    """Deep copies fields from IR node `ir`."""
     values: MutableMapping[str, Any] = {}
 
     specs: FilteredIrFieldSpecs = ir.field_specs
@@ -355,7 +372,7 @@ def _copy(ir: IrDataT) -> IrDataT:
 
 
 def copy(ir: IrDataT) -> Optional[IrDataT]:
-    """Creates a copy of the given IR data class"""
+    """Creates a copy of the given IR data class."""
     if not ir:
         return None
     return _copy(ir)
@@ -413,14 +430,14 @@ class OneOfField:
 
 
 def oneof_field(name: str):
-    """Alternative for `datclasses.field` that sets up a oneof variable"""
+    """Alternative for `datclasses.field` that sets up a oneof variable."""
     return dataclasses.field(  # pylint:disable=invalid-field-call
         default=OneOfField(name), metadata={"oneof": name}, init=True
     )
 
 
 def str_field():
-    """Helper used to define a defaulted str field"""
+    """Helper used to define a defaulted str field."""
     return dataclasses.field(default_factory=str)  # pylint:disable=invalid-field-call
 
 
@@ -436,7 +453,10 @@ def list_field(cls_or_fn):
     ```
 
     Args:
-      cls_or_fn: The class type or a function that resolves to the class type.
+        cls_or_fn: The class type or a function that resolves to the class type.
+
+    Returns:
+        A field with a `default_factory` that produces an appropriate list.
     """
 
     def list_factory(c):

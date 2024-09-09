@@ -91,7 +91,7 @@ def field_specs(ir: Union[MessageT, type[MessageT]]):
 
 
 class IrDataSerializer:
-    """Provides methods for serializing IR data objects"""
+    """Provides methods for serializing IR data objects."""
 
     def __init__(self, ir: MessageT):
         assert ir is not None
@@ -102,6 +102,7 @@ class IrDataSerializer:
         ir: MessageT,
         field_func: Callable[[MessageT], list[Tuple[ir_data_fields.FieldSpec, Any]]],
     ) -> MutableMapping[str, Any]:
+        """Translates the IR to a standard Python `dict`."""
         assert ir is not None
         values: MutableMapping[str, Any] = {}
         for spec, value in field_func(ir):
@@ -117,12 +118,12 @@ class IrDataSerializer:
         """Converts the IR data class to a dictionary."""
 
         def non_empty(ir):
-            return fields_and_values(
+            return _fields_and_values(
                 ir, lambda v: v is not None and (not isinstance(v, list) or len(v))
             )
 
         def all_fields(ir):
-            return fields_and_values(ir)
+            return _fields_and_values(ir)
 
         # It's tempting to use `dataclasses.asdict` here, but that does a deep
         # copy which is overkill for the current usage; mainly as an intermediary
@@ -130,17 +131,17 @@ class IrDataSerializer:
         return self._to_dict(self.ir, non_empty if exclude_none else all_fields)
 
     def to_json(self, *args, **kwargs):
-        """Converts the IR data class to a JSON string"""
+        """Converts the IR data class to a JSON string."""
         return json.dumps(self.to_dict(exclude_none=True), *args, **kwargs)
 
     @staticmethod
     def from_json(data_cls, data):
-        """Constructs an IR data class from the given JSON string"""
+        """Constructs an IR data class from the given JSON string."""
         as_dict = json.loads(data)
         return IrDataSerializer.from_dict(data_cls, as_dict)
 
     def copy_from_dict(self, data):
-        """Deserializes the data and overwrites the IR data class with it"""
+        """Deserializes the data and overwrites the IR data class with it."""
         cls = type(self.ir)
         data_copy = IrDataSerializer.from_dict(cls, data)
         for k in field_specs(cls):
@@ -148,6 +149,7 @@ class IrDataSerializer:
 
     @staticmethod
     def _enum_type_converter(enum_cls: type[enum.Enum], val: Any) -> enum.Enum:
+        """Converts `val` to an instance of `enum_cls`."""
         if isinstance(val, str):
             return getattr(enum_cls, val)
         return enum_cls(val)
@@ -158,6 +160,7 @@ class IrDataSerializer:
 
     @staticmethod
     def _from_dict(data_cls: type[MessageT], data):
+        """Translates the given `data` dict to an instance of `data_cls`."""
         class_fields: MutableMapping[str, Any] = {}
         for name, spec in ir_data_fields.field_specs(data_cls).items():
             if (value := data.get(name)) is not None:
@@ -188,12 +191,12 @@ class IrDataSerializer:
 
     @staticmethod
     def from_dict(data_cls: type[MessageT], data):
-        """Creates a new IR data instance from a serialized dict"""
+        """Creates a new IR data instance from a serialized dict."""
         return IrDataSerializer._from_dict(data_cls, data)
 
 
 class _IrDataSequenceBuilder(MutableSequence[MessageT]):
-    """Wrapper for a list of IR elements
+    """Wrapper for a list of IR elements.
 
     Simply wraps the returned values during indexed access and iteration with
     IrDataBuilders.
@@ -236,7 +239,7 @@ class _IrDataSequenceBuilder(MutableSequence[MessageT]):
 
 
 class _IrDataBuilder(Generic[MessageT]):
-    """Wrapper for an IR element"""
+    """Wrapper for an IR element."""
 
     def __init__(self, ir: MessageT) -> None:
         assert ir is not None
@@ -254,10 +257,15 @@ class _IrDataBuilder(Generic[MessageT]):
     def __getattribute__(self, name: str) -> Any:
         """Hook for `getattr` that handles adding missing fields.
 
-        If the field is missing inserts it, and then returns either the raw value
-        for basic types
-        or a new IrBuilder wrapping the field to handle the next field access in a
-        longer chain.
+        If the field is missing inserts it, and then returns either the raw
+        value for basic types or a new IrBuilder wrapping the field to handle
+        the next field access in a longer chain.
+
+        Arguments:
+            name: the name of the attribute to set/retrieve
+
+        Returns:
+            The value of the attribute `name`.
         """
 
         # Check if getting one of the builder attributes
@@ -294,12 +302,12 @@ class _IrDataBuilder(Generic[MessageT]):
         return obj
 
     def CopyFrom(self, template: MessageT):  # pylint:disable=invalid-name
-        """Updates the fields of this class with values set in the template"""
+        """Updates the fields of this class with values set in the template."""
         update(cast(type[MessageT], self), template)
 
 
 def builder(target: MessageT) -> MessageT:
-    """Create a wrapper around the target to help build an IR Data structure"""
+    """Create a wrapper around the target to help build an IR Data structure."""
     # Check if the target is already a builder.
     if isinstance(target, (_IrDataBuilder, _IrDataSequenceBuilder)):
         return target
@@ -314,7 +322,7 @@ def builder(target: MessageT) -> MessageT:
 
 
 def _field_checker_from_spec(spec: ir_data_fields.FieldSpec):
-    """Helper that builds an FieldChecker that pretends to be an IR class"""
+    """Helper that builds an FieldChecker that pretends to be an IR class."""
     if spec.is_sequence:
         return []
     if spec.is_dataclass:
@@ -323,13 +331,14 @@ def _field_checker_from_spec(spec: ir_data_fields.FieldSpec):
 
 
 def _field_type(ir_or_spec: Union[MessageT, ir_data_fields.FieldSpec]) -> type:
+    """Returns the Python type of the given field."""
     if isinstance(ir_or_spec, ir_data_fields.FieldSpec):
         return ir_or_spec.data_type
     return type(ir_or_spec)
 
 
 class _ReadOnlyFieldChecker:
-    """Class used the chain calls to fields that aren't set"""
+    """Class used to chain calls to fields that aren't set."""
 
     def __init__(self, ir_or_spec: Union[MessageT, ir_data_fields.FieldSpec]) -> None:
         self.ir_or_spec = ir_or_spec
@@ -382,8 +391,7 @@ class _ReadOnlyFieldChecker:
 
 
 def reader(obj: Union[MessageT, _ReadOnlyFieldChecker]) -> MessageT:
-    """Builds a read-only wrapper that can be used to check chains of possibly
-    unset fields.
+    """Builds a wrapper that can be used to read chains of possibly unset fields.
 
     This wrapper explicitly does not alter the wrapped object and is only
     intended for reading contents.
@@ -391,18 +399,36 @@ def reader(obj: Union[MessageT, _ReadOnlyFieldChecker]) -> MessageT:
     For example, a `reader` lets you do:
     ```
     def get_function_name_end_column(function: ir_data.Function):
-      return reader(function).function_name.source_location.end.column
+        return reader(function).function_name.source_location.end.column
     ```
 
     Instead of:
     ```
     def get_function_name_end_column(function: ir_data.Function):
-      if function.function_name:
-        if function.function_name.source_location:
-          if function.function_name.source_location.end:
-            return function.function_name.source_location.end.column
-      return 0
+        if function.function_name:
+            if function.function_name.source_location:
+                if function.function_name.source_location.end:
+                    return function.function_name.source_location.end.column
+        return 0
     ```
+
+    Arguments:
+        obj: The IR node to wrap.
+
+    Returns:
+        An object whose attributes return either:
+
+        The value of `obj.attr` if `attr` is an atomic type and is set on
+        `obj`.
+
+        A default value for `obj.attr` if `obj.attr` is not set, but is of an
+        atomic type.
+
+        A read-only wrapper around `obj.attr` if `obj.attr` is set and is an IR
+        node type.
+
+        A read-only wrapper around an empty IR node object if `obj.attr` is not
+        set, and is of an IR node type.
     """
     # Create a read-only wrapper if it's not already one.
     if not isinstance(obj, _ReadOnlyFieldChecker):
@@ -426,15 +452,19 @@ def _extract_ir(
     return cast(ir_data_fields.IrDataclassInstance, ir_or_wrapper)
 
 
-def fields_and_values(
+def _fields_and_values(
     ir_wrapper: Union[MessageT, _ReadOnlyFieldChecker],
     value_filt: Optional[Callable[[Any], bool]] = None,
 ) -> list[Tuple[ir_data_fields.FieldSpec, Any]]:
     """Retrieves the fields and their values for a given IR data class.
 
     Args:
-      ir: The IR data class or a read-only wrapper of an IR data class.
-      value_filt: Optional filter used to exclude values.
+        ir: The IR data class or a read-only wrapper of an IR data class.
+        value_filt: Optional filter used to exclude values.
+
+    Returns:
+        Fields and their values for the IR held by `ir_wrapper`, optionally
+        filtered by `value_filt`.
     """
     if (ir := _extract_ir(ir_wrapper)) is None:
         return []
@@ -443,15 +473,22 @@ def fields_and_values(
 
 
 def get_set_fields(ir: MessageT):
-    """Retrieves the field spec and value of fields that are set in the given IR data class.
+    """Retrieves the field specs and values of fields that are set in `ir`.
 
     A value is considered "set" if it is not None.
+
+    Arguments:
+        ir: The IR node to operate on.
+
+    Returns:
+        The field specs and values of fields that are set in the given IR data
+        class.
     """
-    return fields_and_values(ir, lambda v: v is not None)
+    return _fields_and_values(ir, lambda v: v is not None)
 
 
 def copy(ir_wrapper: Optional[MessageT]) -> Optional[MessageT]:
-    """Creates a copy of the given IR data class"""
+    """Creates a copy of the given IR data class."""
     if (ir := _extract_ir(ir_wrapper)) is None:
         return None
     ir_copy = ir_data_fields.copy(ir)
