@@ -189,6 +189,12 @@ class OneOfTest(unittest.TestCase):
 class IrDataFieldsTest(unittest.TestCase):
     """Tests misc methods in ir_data_fields"""
 
+    def assertEmpty(self, obj):
+        self.assertEqual(len(obj), 0, msg=f"{obj} is not empty.")
+
+    def assertLen(self, obj, length):
+        self.assertEqual(len(obj), length, msg=f"{obj} has length {len(obj)}.")
+
     def test_copy(self):
         """Tests copying a data class works as expected"""
         union = ClassWithTwoUnions(
