@@ -267,7 +267,7 @@ class UIntView final {
            static_cast</**/ ::std::uint64_t>(value) <=
                ((static_cast<ValueType>(1) << (Parameters::kBits - 1)) << 1) -
                    1 &&
-           Parameters::ValueIsOk(value);
+           Parameters::ValueIsOk(static_cast<ValueType>(value));
   }
   void UncheckedWrite(ValueType value) const {
     buffer_.UncheckedWriteUInt(value);
@@ -429,7 +429,8 @@ class IntView final {
                     : ((static_cast<ValueType>(1) << (Parameters::kBits - 2)) -
                        1) * 2 +
                           1) &&
-           Parameters::ValueIsOk(value);
+           Parameters::ValueIsOk(static_cast<ValueType>(value));
+
   }
 
   void UncheckedWrite(ValueType value) const {
