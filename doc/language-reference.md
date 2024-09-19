@@ -1178,11 +1178,11 @@ Emboss operators have the following precedence (tightest binding to loosest
 binding):
 
 1.  `()` `$max()` `$present()` `$upper_bound()` `$lower_bound()`
-2.  unary `+` and `-` ([see note 1](#note-1-unary-plus-minus-precedence))
+2.  unary `+` and `-` ([see note 1](#note-1-unary-plusminus-precedence))
 3.  `*`
 4.  `+` `-`
 5.  `<` `>` `==` `!=` `>=` `<=` ([see note 2](#note-2-chained-and-mixed-comparisons))
-6.  `&&` `||` ([see note 3](#note-3-logical-and-or-precedence))
+6.  `&&` `||` ([see note 3](#note-3-logical-andor-precedence))
 7.  `?:` ([see note 4](#note-4-choice-operator-precedence))
 
 
