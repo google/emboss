@@ -250,7 +250,7 @@ static constexpr auto MinSizeInBytes() const;
 ```
 
 The `MinSizeInBytes` method is the [field method](#struct-field-methods)
-for [`$min_size_in_bytes`](language-reference.md#max_size_in_bytes).  The `Read`
+for [`$min_size_in_bytes`](language-reference.md#min_size_in_bytes).  The `Read`
 method of the result returns the minimum size of the `struct`, and the `Ok`
 always method returns `true`.
 
