@@ -330,7 +330,7 @@ def _field_checker_from_spec(spec: ir_data_fields.FieldSpec):
     return ir_data_fields.build_default(spec)
 
 
-def _field_type(ir_or_spec: Union[MessageT, ir_data_fields.FieldSpec]) -> type:
+def _field_type(ir_or_spec: Union[MessageT, ir_data_fields.FieldSpec]) -> type[Any]:
     """Returns the Python type of the given field."""
     if isinstance(ir_or_spec, ir_data_fields.FieldSpec):
         return ir_or_spec.data_type

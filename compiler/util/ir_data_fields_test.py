@@ -115,17 +115,17 @@ class OneOfTest(unittest.TestCase):
         one_of_field_test = OneofFieldTest()
         one_of_field_test.int_field_1 = 10
         self.assertEqual(one_of_field_test.int_field_1, 10)
-        self.assertEqual(one_of_field_test.int_field_2, None)
+        self.assertIsNone(one_of_field_test.int_field_2)
         one_of_field_test.int_field_2 = 20
-        self.assertEqual(one_of_field_test.int_field_1, None)
+        self.assertIsNone(one_of_field_test.int_field_1)
         self.assertEqual(one_of_field_test.int_field_2, 20)
 
         # Do it again
         one_of_field_test.int_field_1 = 10
         self.assertEqual(one_of_field_test.int_field_1, 10)
-        self.assertEqual(one_of_field_test.int_field_2, None)
+        self.assertIsNone(one_of_field_test.int_field_2)
         one_of_field_test.int_field_2 = 20
-        self.assertEqual(one_of_field_test.int_field_1, None)
+        self.assertIsNone(one_of_field_test.int_field_1)
         self.assertEqual(one_of_field_test.int_field_2, 20)
 
         # Now create a new instance and make sure changes to it are not
@@ -133,8 +133,8 @@ class OneOfTest(unittest.TestCase):
         one_of_field_test_2 = OneofFieldTest()
         one_of_field_test_2.int_field_1 = 1000
         self.assertEqual(one_of_field_test_2.int_field_1, 1000)
-        self.assertEqual(one_of_field_test_2.int_field_2, None)
-        self.assertEqual(one_of_field_test.int_field_1, None)
+        self.assertIsNone(one_of_field_test_2.int_field_2)
+        self.assertIsNone(one_of_field_test.int_field_1)
         self.assertEqual(one_of_field_test.int_field_2, 20)
 
     def test_set_to_none(self):
@@ -189,6 +189,12 @@ class OneOfTest(unittest.TestCase):
 class IrDataFieldsTest(unittest.TestCase):
     """Tests misc methods in ir_data_fields."""
 
+    def assertEmpty(self, obj):
+        self.assertEqual(len(obj), 0, msg=f"{obj} is not empty.")
+
+    def assertLen(self, obj, length):
+        self.assertEqual(len(obj), length, msg=f"{obj} has length {len(obj)}.")
+
     def test_copy(self):
         """Tests copying a data class works as expected."""
         union = ClassWithTwoUnions(
@@ -206,12 +212,12 @@ class IrDataFieldsTest(unittest.TestCase):
     def test_copy_values_list(self):
         """Tests that CopyValuesList copies values."""
         data_list = ir_data_fields.CopyValuesList(ListCopyTestClass)
-        self.assertEqual(len(data_list), 0)
+        self.assertEmpty(data_list)
 
         list_test = ListCopyTestClass(non_union_field=2, seq_field=[5, 6, 7])
         list_tests = [ir_data_fields.copy(list_test) for _ in range(4)]
         data_list.extend(list_tests)
-        self.assertEqual(len(data_list), 4)
+        self.assertLen(data_list, 4)
         for i in data_list:
             self.assertEqual(i, list_test)
 
@@ -219,10 +225,10 @@ class IrDataFieldsTest(unittest.TestCase):
         """Test that lists passed to constructors are converted to CopyValuesList."""
         seq_field = [5, 6, 7]
         list_test = ListCopyTestClass(non_union_field=2, seq_field=seq_field)
-        self.assertEqual(len(list_test.seq_field), len(seq_field))
+        self.assertLen(list_test.seq_field, len(seq_field))
         self.assertIsNot(list_test.seq_field, seq_field)
         self.assertEqual(list_test.seq_field, seq_field)
-        self.assertTrue(isinstance(list_test.seq_field, ir_data_fields.CopyValuesList))
+        self.assertIsInstance(list_test.seq_field, ir_data_fields.CopyValuesList)
 
     def test_copy_oneof(self):
         """Tests copying an IR data class that has oneof fields."""

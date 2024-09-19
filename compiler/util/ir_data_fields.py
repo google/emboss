@@ -79,7 +79,7 @@ class CopyValuesList(list[CopyValuesListT]):
     """A list that makes copies of any value that is inserted."""
 
     def __init__(
-        self, value_type: CopyValuesListT, iterable: Optional[Iterable] = None
+        self, value_type: CopyValuesListT, iterable: Optional[Iterable[Any]] = None
     ):
         if iterable:
             super().__init__(iterable)
