@@ -35,12 +35,12 @@ class TestEnum(enum.Enum):
 
 @dataclasses.dataclass
 class Opaque(ir_data.Message):
-    """Used for testing data field helpers"""
+    """Used for testing data field helpers."""
 
 
 @dataclasses.dataclass
 class ClassWithUnion(ir_data.Message):
-    """Used for testing data field helpers"""
+    """Used for testing data field helpers."""
 
     opaque: Optional[Opaque] = ir_data_fields.oneof_field("type")
     integer: Optional[int] = ir_data_fields.oneof_field("type")
@@ -51,7 +51,7 @@ class ClassWithUnion(ir_data.Message):
 
 @dataclasses.dataclass
 class ClassWithTwoUnions(ir_data.Message):
-    """Used for testing data field helpers"""
+    """Used for testing data field helpers."""
 
     opaque: Optional[Opaque] = ir_data_fields.oneof_field("type_1")
     integer: Optional[int] = ir_data_fields.oneof_field("type_1")
@@ -65,7 +65,7 @@ class IrDataUtilsTest(unittest.TestCase):
     """Tests for the miscellaneous utility functions in ir_data_utils.py."""
 
     def test_field_specs(self):
-        """Tests the `field_specs` method"""
+        """Tests the `field_specs` method."""
         fields = ir_data_utils.field_specs(ir_data.TypeDefinition)
         self.assertIsNotNone(fields)
         expected_fields = (
@@ -132,7 +132,7 @@ class IrDataUtilsTest(unittest.TestCase):
         self.assertEqual(fields["base_type"], expected_field)
 
     def test_is_sequence(self):
-        """Tests for the `FieldSpec.is_sequence` helper"""
+        """Tests for the `FieldSpec.is_sequence` helper."""
         type_def = ir_data.TypeDefinition(
             attribute=[
                 ir_data.Attribute(
@@ -151,7 +151,7 @@ class IrDataUtilsTest(unittest.TestCase):
         self.assertFalse(fields["is_default"].is_sequence)
 
     def test_is_dataclass(self):
-        """Tests FieldSpec.is_dataclass against ir_data"""
+        """Tests FieldSpec.is_dataclass against ir_data."""
         type_def = ir_data.TypeDefinition(
             attribute=[
                 ir_data.Attribute(
@@ -173,7 +173,7 @@ class IrDataUtilsTest(unittest.TestCase):
         self.assertFalse(fields["fields_in_dependency_order"].is_dataclass)
 
     def test_get_set_fields(self):
-        """Tests that get set fields works"""
+        """Tests that get set fields works."""
         type_def = ir_data.TypeDefinition(
             attribute=[
                 ir_data.Attribute(
@@ -196,7 +196,7 @@ class IrDataUtilsTest(unittest.TestCase):
         self.assertSetEqual(found_fields, expected_fields)
 
     def test_copy(self):
-        """Tests the `copy` helper"""
+        """Tests the `copy` helper."""
         attribute = ir_data.Attribute(
             value=ir_data.AttributeValue(expression=ir_data.Expression()),
             name=ir_data.Word(text="phil"),
@@ -219,7 +219,7 @@ class IrDataUtilsTest(unittest.TestCase):
         self.assertIsNot(type_def.attribute, type_def_copy.attribute)
 
     def test_update(self):
-        """Tests the `update` helper"""
+        """Tests the `update` helper."""
         attribute_template = ir_data.Attribute(
             value=ir_data.AttributeValue(expression=ir_data.Expression()),
             name=ir_data.Word(text="phil"),
@@ -236,10 +236,16 @@ class IrDataUtilsTest(unittest.TestCase):
 
 
 class IrDataBuilderTest(unittest.TestCase):
-    """Tests for IrDataBuilder"""
+    """Tests for IrDataBuilder."""
+
+    def assertEmpty(self, obj):
+        self.assertEqual(len(obj), 0, msg=f"{obj} is not empty.")
+
+    def assertLen(self, obj, length):
+        self.assertEqual(len(obj), length, msg=f"{obj} has length {len(obj)}.")
 
     def test_ir_data_builder(self):
-        """Tests that basic builder chains work"""
+        """Tests that basic builder chains work."""
         # We start with an empty type
         type_def = ir_data.TypeDefinition()
         self.assertFalse(type_def.HasField("name"))
@@ -258,7 +264,7 @@ class IrDataBuilderTest(unittest.TestCase):
         self.assertEqual(type_def.name.name.text, "phil")
 
     def test_ir_data_builder_bad_field(self):
-        """Tests accessing an undefined field name fails"""
+        """Tests accessing an undefined field name fails."""
         type_def = ir_data.TypeDefinition()
         builder = ir_data_utils.builder(type_def)
         self.assertRaises(AttributeError, lambda: builder.foo)
@@ -266,11 +272,11 @@ class IrDataBuilderTest(unittest.TestCase):
         self.assertRaises(AttributeError, getattr, type_def, "foo")
 
     def test_ir_data_builder_sequence(self):
-        """Tests that sequences are properly wrapped"""
+        """Tests that sequences are properly wrapped."""
         # We start with an empty type
         type_def = ir_data.TypeDefinition()
         self.assertTrue(type_def.HasField("attribute"))
-        self.assertEqual(len(type_def.attribute), 0)
+        self.assertEmpty(type_def.attribute)
 
         # Now setup a builder
         builder = ir_data_utils.builder(type_def)
@@ -284,12 +290,12 @@ class IrDataBuilderTest(unittest.TestCase):
         builder.attribute.append(attribute)
         self.assertEqual(builder.attribute, [attribute])
         self.assertTrue(type_def.HasField("attribute"))
-        self.assertEqual(len(type_def.attribute), 1)
+        self.assertLen(type_def.attribute, 1)
         self.assertEqual(type_def.attribute[0], attribute)
 
         # Lets make it longer and then try iterating
         builder.attribute.append(attribute)
-        self.assertEqual(len(type_def.attribute), 2)
+        self.assertLen(type_def.attribute, 2)
         for attr in builder.attribute:
             # Modify the attributes
             attr.name.text = "bob"
@@ -305,7 +311,7 @@ class IrDataBuilderTest(unittest.TestCase):
             name=ir_data.Word(text="bob"),
         )
 
-        self.assertEqual(len(type_def.attribute), 3)
+        self.assertLen(type_def.attribute, 3)
         for attr in type_def.attribute:
             self.assertEqual(attr, new_attribute)
 
@@ -368,7 +374,7 @@ class IrDataBuilderTest(unittest.TestCase):
         )
 
     def test_ir_data_builder_sequence_scalar(self):
-        """Tests that sequences of scalars function properly"""
+        """Tests that sequences of scalars function properly."""
         # We start with an empty type
         structure = ir_data.Structure()
 
@@ -380,7 +386,7 @@ class IrDataBuilderTest(unittest.TestCase):
         builder.fields_in_dependency_order.append(11)
 
         self.assertTrue(structure.HasField("fields_in_dependency_order"))
-        self.assertEqual(len(structure.fields_in_dependency_order), 2)
+        self.assertLen(structure.fields_in_dependency_order, 2)
         self.assertEqual(structure.fields_in_dependency_order[0], 12)
         self.assertEqual(structure.fields_in_dependency_order[1], 11)
         self.assertEqual(builder.fields_in_dependency_order, [12, 11])
@@ -404,10 +410,10 @@ class IrDataBuilderTest(unittest.TestCase):
 
 
 class IrDataSerializerTest(unittest.TestCase):
-    """Tests for IrDataSerializer"""
+    """Tests for IrDataSerializer."""
 
     def test_ir_data_serializer_to_dict(self):
-        """Tests serialization with `IrDataSerializer.to_dict` with default settings"""
+        """Tests serialization with `IrDataSerializer.to_dict` with default settings."""
         attribute = ir_data.Attribute(
             value=ir_data.AttributeValue(expression=ir_data.Expression()),
             name=ir_data.Word(text="phil"),
@@ -438,7 +444,7 @@ class IrDataSerializerTest(unittest.TestCase):
         self.assertDictEqual(raw_dict, expected)
 
     def test_ir_data_serializer_to_dict_exclude_none(self):
-        """Tests serialization with `IrDataSerializer.to_dict` when excluding None values"""
+        """.Tests serialization with `IrDataSerializer.to_dict` when excluding None values"""
         attribute = ir_data.Attribute(
             value=ir_data.AttributeValue(expression=ir_data.Expression()),
             name=ir_data.Word(text="phil"),
@@ -449,7 +455,7 @@ class IrDataSerializerTest(unittest.TestCase):
         self.assertDictEqual(raw_dict, expected)
 
     def test_ir_data_serializer_to_dict_enum(self):
-        """Tests that serialization of `enum.Enum` values works properly"""
+        """Tests that serialization of `enum.Enum` values works properly."""
         type_def = ir_data.TypeDefinition(addressable_unit=ir_data.AddressableUnit.BYTE)
         serializer = ir_data_utils.IrDataSerializer(type_def)
         raw_dict = serializer.to_dict(exclude_none=True)
@@ -457,7 +463,7 @@ class IrDataSerializerTest(unittest.TestCase):
         self.assertDictEqual(raw_dict, expected)
 
     def test_ir_data_serializer_from_dict(self):
-        """Tests deserializing IR data from a serialized dict"""
+        """Tests deserializing IR data from a serialized dict."""
         attribute = ir_data.Attribute(
             value=ir_data.AttributeValue(expression=ir_data.Expression()),
             name=ir_data.Word(text="phil"),
@@ -468,7 +474,7 @@ class IrDataSerializerTest(unittest.TestCase):
         self.assertEqual(attribute, new_attribute)
 
     def test_ir_data_serializer_from_dict_enum(self):
-        """Tests that deserializing `enum.Enum` values works properly"""
+        """Tests that deserializing `enum.Enum` values works properly."""
         type_def = ir_data.TypeDefinition(addressable_unit=ir_data.AddressableUnit.BYTE)
 
         serializer = ir_data_utils.IrDataSerializer(type_def)
@@ -477,7 +483,7 @@ class IrDataSerializerTest(unittest.TestCase):
         self.assertEqual(type_def, new_type_def)
 
     def test_ir_data_serializer_from_dict_enum_is_str(self):
-        """Tests that deserializing `enum.Enum` values works properly when string constant is used"""
+        """Tests that deserializing `enum.Enum` values works properly when string constant is used."""
         type_def = ir_data.TypeDefinition(addressable_unit=ir_data.AddressableUnit.BYTE)
         raw_dict = {"addressable_unit": "BYTE"}
         serializer = ir_data_utils.IrDataSerializer(type_def)
@@ -485,7 +491,7 @@ class IrDataSerializerTest(unittest.TestCase):
         self.assertEqual(type_def, new_type_def)
 
     def test_ir_data_serializer_from_dict_exclude_none(self):
-        """Tests that deserializing from a dict that excluded None values works properly"""
+        """Tests that deserializing from a dict that excluded None values works properly."""
         attribute = ir_data.Attribute(
             value=ir_data.AttributeValue(expression=ir_data.Expression()),
             name=ir_data.Word(text="phil"),
@@ -552,7 +558,7 @@ class IrDataSerializerTest(unittest.TestCase):
         self.assertIsNotNone(func)
 
     def test_ir_data_serializer_copy_from_dict(self):
-        """Tests that updating an IR data struct from a dict works properly"""
+        """Tests that updating an IR data struct from a dict works properly."""
         attribute = ir_data.Attribute(
             value=ir_data.AttributeValue(expression=ir_data.Expression()),
             name=ir_data.Word(text="phil"),
@@ -567,10 +573,10 @@ class IrDataSerializerTest(unittest.TestCase):
 
 
 class ReadOnlyFieldCheckerTest(unittest.TestCase):
-    """Tests the ReadOnlyFieldChecker"""
+    """Tests the ReadOnlyFieldChecker."""
 
     def test_basic_wrapper(self):
-        """Tests basic field checker actions"""
+        """Tests basic field checker actions."""
         union = ClassWithTwoUnions(opaque=Opaque(), boolean=True, non_union_field=10)
         field_checker = ir_data_utils.reader(union)
 
@@ -591,7 +597,7 @@ class ReadOnlyFieldCheckerTest(unittest.TestCase):
         self.assertTrue(field_checker.HasField("non_union_field"))
 
     def test_construct_from_field_checker(self):
-        """Tests that constructing from another field checker works"""
+        """Tests that constructing from another field checker works."""
         union = ClassWithTwoUnions(opaque=Opaque(), boolean=True, non_union_field=10)
         field_checker_orig = ir_data_utils.reader(union)
         field_checker = ir_data_utils.reader(field_checker_orig)
@@ -615,7 +621,7 @@ class ReadOnlyFieldCheckerTest(unittest.TestCase):
         self.assertTrue(field_checker.HasField("non_union_field"))
 
     def test_read_only(self) -> None:
-        """Tests that the read only wrapper really is read only"""
+        """Tests that the read only wrapper really is read only."""
         union = ClassWithTwoUnions(opaque=Opaque(), boolean=True, non_union_field=10)
         field_checker = ir_data_utils.reader(union)
 

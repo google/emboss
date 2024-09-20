@@ -236,6 +236,7 @@ _NEXT_KEYWORD_REPLACEMENT_EXPRESSION = expression_parser.parse("x + y")
 def _maybe_replace_next_keyword_in_expression(
     expression_ir, last_location, source_file_name, errors
 ):
+    """Replaces the `$next` keyword in an expression."""
     if not expression_ir.HasField("builtin_reference"):
         return
     if (

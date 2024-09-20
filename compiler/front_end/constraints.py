@@ -436,6 +436,7 @@ def _check_physical_type_requirements(
 
 
 def _check_allowed_in_bits(type_ir, type_definition, source_file_name, ir, errors):
+    """Verifies that atomic fields have types that are allowed in `bits`."""
     if not type_ir.HasField("atomic_type"):
         return
     referenced_type_definition = ir_util.find_object(type_ir.atomic_type.reference, ir)

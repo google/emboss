@@ -651,7 +651,7 @@ struct Outer:
 ```
 
 
-##### `$size_in_bytes` {#size-in-bytes}
+##### `$size_in_bytes`
 
 An Emboss `struct` has an *intrinsic* size, which is the size required to hold
 every field in the `struct`, regardless of how many bytes are in the buffer that
@@ -702,7 +702,7 @@ struct Envelope2:
 ```
 
 
-##### `$max_size_in_bytes` {#max-size-in-bytes}
+##### `$max_size_in_bytes`
 
 The `$max_size_in_bytes` virtual field is a constant value that is at least as
 large as the largest possible value for `$size_in_bytes`.  In most cases, it
@@ -720,7 +720,7 @@ struct PaddedContainer:
 ```
 
 
-##### `$min_size_in_bytes` {#min-size-in-bytes}
+##### `$min_size_in_bytes`
 
 The `$min_size_in_bytes` virtual field is a constant value that is no larger
 than the smallest possible value for `$size_in_bytes`.  In most cases, it will
@@ -1004,7 +1004,7 @@ struct Outer:
 ```
 
 
-##### `$size_in_bits` {#size-in-bits}
+##### `$size_in_bits`
 
 Like a `struct`, an Emboss `bits` has an *intrinsic* size, which is the size
 required to hold every field in the `bits`, regardless of how many bits are
@@ -1029,14 +1029,14 @@ Unlike `struct`s, the size of `bits` must known at compile time; there are no
 dynamic `$size_in_bits` fields.
 
 
-##### `$max_size_in_bits` {#max-size-in-bits}
+##### `$max_size_in_bits`
 
 Since `bits` must be fixed size, the `$max_size_in_bits` field has the same
 value as `$size_in_bits`.  It is provided for consistency with
 `$max_size_in_bytes`.
 
 
-##### `$min_size_in_bits` {#min-size-in-bits}
+##### `$min_size_in_bits`
 
 Since `bits` must be fixed size, the `$min_size_in_bits` field has the same
 value as `$size_in_bits`.  It is provided for consistency with
@@ -1178,15 +1178,15 @@ Emboss operators have the following precedence (tightest binding to loosest
 binding):
 
 1.  `()` `$max()` `$present()` `$upper_bound()` `$lower_bound()`
-2.  unary `+` and `-` ([see note 1](#precedence-note-unary-plus-minus))
+2.  unary `+` and `-` ([see note 1](#note-1-unary-plusminus-precedence))
 3.  `*`
 4.  `+` `-`
-5.  `<` `>` `==` `!=` `>=` `<=` ([see note 2](#precedence-note-comparisons))
-6.  `&&` `||` ([see note 3](#precedence-note-and-or))
-7.  `?:` ([see note 4](#precedence-note-choice))
+5.  `<` `>` `==` `!=` `>=` `<=` ([see note 2](#note-2-chained-and-mixed-comparisons))
+6.  `&&` `||` ([see note 3](#note-3-logical-andor-precedence))
+7.  `?:` ([see note 4](#note-4-choice-operator-precedence))
 
 
-###### Note 1 {#precedence-note-unary-plus-minus}
+###### Note 1 (Unary Plus/Minus Precedence)
 
 Only one unary `+` or `-` may be applied to an expression without parentheses.
 These expressions are valid:
@@ -1207,7 +1207,7 @@ These are not:
 ```
 
 
-###### Note 2 {#precedence-note-comparisons}
+###### Note 2 (Chained and Mixed Comparisons)
 
 The relational operators may be chained like so:
 
@@ -1240,7 +1240,7 @@ A chain may contain either `<`, `<=`, and/or `==`, or `>`, `>=`, and/or `==`.
 Greater-than comparisons may not be mixed with less-than comparisons.
 
 
-###### Note 3 {#precedence-note-and-or}
+###### Note 3 (Logical And/Or Precedence)
 
 The boolean logical operators have the same precedence, but may not be mixed
 without parentheses.  The following are allowed:
@@ -1260,7 +1260,7 @@ x && y || z
 ```
 
 
-###### Note 4 {#precedence-note-choice}
+###### Note 4 (Choice Operator Precedence)
 
 The choice operator `?:` may not be chained without parentheses.  These are OK:
 

@@ -339,6 +339,7 @@ def _attribute(
     attribute_value,
     close_bracket,
 ):
+    """Assembles an attribute IR node."""
     del open_bracket, colon, close_bracket  # Unused.
     if context_specifier.list:
         return ir_data.Attribute(
@@ -460,14 +461,15 @@ def _expression(expression):
     '                                        ":" logical-expression'
 )
 def _choice_expression(condition, question, if_true, colon, if_false):
+    """Constructs an IR node for a choice operator (`?:`) expression."""
     location = parser_types.make_location(
         condition.source_location.start, if_false.source_location.end
     )
     operator_location = parser_types.make_location(
         question.source_location.start, colon.source_location.end
     )
-    # The function_name is a bit weird, but should suffice for any error messages
-    # that might need it.
+    # The function_name is a bit weird, but should suffice for any error
+    # messages that might need it.
     return ir_data.Expression(
         function=ir_data.Function(
             function=ir_data.FunctionMapping.CHOICE,
@@ -1284,6 +1286,7 @@ def _enum_body(indent, docs, attributes, values, dedent):
 def _enum_value(
     name, equals, expression, attribute, documentation, comment, newline, body
 ):
+    """Constructs an IR node for an enum value statement (`NAME = value`)."""
     del equals, comment, newline  # Unused.
     result = ir_data.EnumValue(
         name=name,

@@ -63,10 +63,19 @@ def snake_to_k_camel(name):
 def convert_case(case_from, case_to, value):
     """Converts cases based on runtime case values.
 
-    Note: Cases can be strings or enum values."""
+    Note: Cases can be strings or enum values.
+
+    Arguments:
+        case_from: the name of the original case
+        case_to: the name of the desired case
+        value: the value to convert
+
+    Returns:
+        `value` converted from `case_from` to `case_to`.
+    """
     return _case_conversions[case_from, case_to](value)
 
 
 def is_case_conversion_supported(case_from, case_to):
-    """Determines if a case conversion would be supported"""
+    """Determines if a case conversion would be supported."""
     return (case_from, case_to) in _case_conversions
