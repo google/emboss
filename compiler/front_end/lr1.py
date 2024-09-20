@@ -36,16 +36,17 @@ class Item(
 ):
     """An Item is an LR(1) Item: a production, a cursor location, and a terminal.
 
-    An Item represents a partially-parsed production, and a lookahead symbol.  The
-    position of the dot indicates what portion of the production has been parsed.
-    Generally, Items are an internal implementation detail, but they can be useful
-    elsewhere, particularly for debugging.
+    An Item represents a partially-parsed production, and a lookahead symbol.
+    The position of the dot indicates what portion of the production has been
+    parsed.  Generally, Items are an internal implementation detail, but they
+    can be useful elsewhere, particularly for debugging.
 
     Attributes:
-      production: The Production this Item covers.
-      dot: The index of the "dot" in production's rhs.
-      terminal: The terminal lookahead symbol that follows the production in the
-          input stream.
+        production: The Production this Item covers.
+        dot: The index of the "dot" in production's rhs.
+        terminal: The terminal lookahead symbol that follows the production in
+            the input stream.
+        next_symbol: The lookahead symbol.
     """
 
     def __str__(self):

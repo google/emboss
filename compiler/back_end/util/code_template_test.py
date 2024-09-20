@@ -55,7 +55,7 @@ class ParseTemplatesTest(unittest.TestCase):
     """Tests for code_template.parse_templates."""
 
     def assertTemplatesEqual(self, expected, actual):  # pylint:disable=invalid-name
-        """Compares the results of a parse_templates"""
+        """Compares the results of a parse_templates."""
         # Extract the name and template from the result tuple
         actual = {k: v.template for k, v in actual._asdict().items()}
         self.assertEqual(expected, actual)

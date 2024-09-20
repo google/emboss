@@ -188,7 +188,7 @@ class Config(NamedTuple):
 
 
 def _get_namespace_components(namespace):
-    """Gets the components of a C++ namespace
+    """Gets the components of a C++ namespace.
 
     Examples:
       "::some::name::detail" -> ["some", "name", "detail"]
@@ -1339,10 +1339,12 @@ def _generate_structure_definition(type_ir, ir, config: Config):
     Arguments:
       type_ir: The IR for the struct definition.
       ir: The full IR; used for type lookups.
+      config: The code generation configuration to use.
 
     Returns:
-      A tuple of: (forward declaration for classes, class bodies, method bodies),
-      suitable for insertion into the appropriate places in the generated header.
+      A tuple of: (forward declaration for classes, class bodies, method
+      bodies), suitable for insertion into the appropriate places in the
+      generated header.
     """
     subtype_bodies, subtype_forward_declarations, subtype_method_definitions = (
         _generate_subtype_definitions(type_ir, ir, config)
@@ -1530,10 +1532,17 @@ def _generate_structure_definition(type_ir, ir, config: Config):
 def _split_enum_case_values_into_spans(enum_case_value):
     """Yields spans containing each enum case in an enum_case attribute value.
 
-    Each span is of the form (start, end), which is the start and end position
-    relative to the beginning of the enum_case_value string. To keep the grammar
-    of this attribute simple, this only splits on delimiters and trims whitespace
-    for each case.
+    Arguments:
+        enum_case_value: the value of the `enum_case` attribute to be parsed.
+
+    Returns:
+        An iterator over spans, where each span covers one enum case name.
+        Each span is a half-open range of the form [start, end), which is the
+        start and end position relative to the beginning of the enum_case_value
+        string.  The name can be retrieved with `enum_case_value[start:end]`.
+
+        To keep the grammar of this attribute simple, this only splits on
+        delimiters and trims whitespace for each case.
 
     Example: 'SHOUTY_CASE, kCamelCase' -> [(0, 11), (13, 23)]"""
     # Scan the string from left to right, finding commas and trimming whitespace.
@@ -1568,6 +1577,12 @@ def _split_enum_case_values_into_spans(enum_case_value):
 def _split_enum_case_values(enum_case_value):
     """Returns all enum cases in an enum case value.
 
+    Arguments:
+        enum_case_value: the value of the enum case attribute to parse.
+
+    Returns:
+        All enum case names from `enum_case_value`.
+
     Example: 'SHOUTY_CASE, kCamelCase' -> ['SHOUTY_CASE', 'kCamelCase']"""
     return [
         enum_case_value[start:end]
@@ -1576,7 +1591,7 @@ def _split_enum_case_values(enum_case_value):
 
 
 def _get_enum_value_names(enum_value):
-    """Determines one or more enum names based on attributes"""
+    """Determines one or more enum names based on attributes."""
     cases = ["SHOUTY_CASE"]
     name = enum_value.name.name.text
     if enum_case := ir_util.get_attribute(
@@ -1698,14 +1713,16 @@ def _propagate_defaults(ir, targets, ancestors, add_fn):
     Traverses the IR to propagate default values to target nodes.
 
     Arguments:
-      targets: A list of target IR types to add attributes to.
-      ancestors: Ancestor types which may contain the default values.
-      add_fn: Function to add the attribute. May use any parameter available in
-        fast_traverse_ir_top_down actions as well as `defaults` containing the
-        default attributes set by ancestors.
+        ir: The IR to process.
+        targets: A list of target IR types to add attributes to.
+        ancestors: Ancestor types which may contain the default values.
+        add_fn: Function to add the attribute. May use any parameter available
+            in fast_traverse_ir_top_down actions as well as `defaults`
+            containing the
+            default attributes set by ancestors.
 
     Returns:
-      None
+        None
     """
     traverse_ir.fast_traverse_ir_top_down(
         ir,
@@ -1719,14 +1736,19 @@ def _propagate_defaults(ir, targets, ancestors, add_fn):
 
 
 def _offset_source_location_column(source_location, offset):
-    """Adds offsets from the start column of the supplied source location
+    """Adds offsets from the start column of the supplied source location.
 
-    Returns a new source location with all of the same properties as the provided
-    source location, but with the columns modified by offsets from the original
-    start column.
+    Arguments:
+        source_location: the initial source location
+        offset: a tuple of (start, end), which are the offsets relative to
+            source_location.start.column to set the new start.column and
+            end.column.
 
-    Offset should be a tuple of (start, end), which are the offsets relative to
-    source_location.start.column to set the new start.column and end.column."""
+    Returns:
+        A new source location with all of the same properties as the provided
+        source location, but with the columns modified by offsets from the
+        original start column.
+    """
 
     new_location = ir_data_utils.copy(source_location)
     new_location.start.column = source_location.start.column + offset[0]
@@ -1863,8 +1885,12 @@ def _verify_attribute_values(ir):
 def _propagate_defaults_and_verify_attributes(ir):
     """Verify attributes and ensure defaults are set when not overridden.
 
-    Returns a list of errors if there are errors present, or an empty list if
-    verification completed successfully."""
+    Arguments:
+        ir: The IR to process.
+
+    Returns:
+        A list of errors if there are errors present, or an empty list if
+        verification completed successfully."""
     if errors := attribute_util.check_attributes_in_ir(
         ir,
         back_end="cpp",

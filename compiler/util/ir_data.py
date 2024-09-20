@@ -110,7 +110,10 @@ class Message:
     def WhichOneof(self, oneof_name):  # pylint:disable=invalid-name
         """Indicates which field has been set for the oneof value.
 
-        Returns None if no field has been set.
+        Args:
+            oneof_name: the name of the oneof construct to test.
+
+        Returns: the field name, or None if no field has been set.
         """
         for field_name, oneof in self.field_specs.oneof_mappings:
             if oneof == oneof_name and self.HasField(field_name):
@@ -207,7 +210,7 @@ class NumericConstant(Message):
 
 
 class FunctionMapping(int, enum.Enum):
-    """Enum of supported function types"""
+    """Enum of supported function types."""
 
     UNKNOWN = 0
     ADDITION = 1
@@ -823,8 +826,9 @@ class RuntimeParameter(Message):
 
 
 class AddressableUnit(int, enum.Enum):
-    """The "addressable unit" is the size of the smallest unit that can be read
+    """The 'atom size' for a structure.
 
+    The "addressable unit" is the size of the smallest unit that can be read
     from the backing store that this type expects.  For `struct`s, this is
     BYTE; for `enum`s and `bits`, this is BIT, and for `external`s it depends
     on the specific type

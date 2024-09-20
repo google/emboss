@@ -23,14 +23,15 @@ from compiler.util import traverse_ir
 def _add_reference_to_dependencies(
     reference, dependencies, name, source_file_name, errors
 ):
+    """Adds the specified `reference` to the `dependencies` set."""
     if reference.canonical_name.object_path[0] in {
         "$is_statically_sized",
         "$static_size_in_bits",
         "$next",
     }:
-        # This error is a bit opaque, but given that the compiler used to crash on
-        # this case -- for a couple of years -- and no one complained, it seems
-        # safe to assume that this is a rare error.
+        # This error is a bit opaque, but given that the compiler used to crash
+        # on this case -- for a couple of years -- and no one complained, it
+        # seems safe to assume that this is a rare error.
         errors.append(
             [
                 error.error(
