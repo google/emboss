@@ -127,18 +127,19 @@ by some, and 4 (as in all common programming languages other than Go) by
 others.
 
 
-#### Emboss
+#### Proposal
 
 Emboss's operator precedence is not a strict ordering: certain operators (such
 as `&&` and `||`) are neither higher, lower, or equal in precedence to each
 other, and as such cannot be mixed without parentheses.
 
-Given the developer confusion around `>>` vs `+`, Emboss's precedence should be:
+Given the developer confusion around `>>` vs `+`, Emboss's precedence should be
+(changes in **bold**):
 
 1.  `()` `$max()` `$present()` `$upper_bound()` `$lower_bound()`
 2.  unary `+` and `-` (cannot be combined without parentheses)
 3.  `*`
-4.  **{`+` `-`} / {`<<` `>>`} (`+` and `-` cannot be combined with `>>` or `<<`
+4.  {`+` `-`} **/ {`<<` `>>`} (`+` and `-` cannot be combined with `>>` or `<<`
     without parentheses)**
 5.  {`!=`} / {`<` `<=` `==`} / {`>` `>=` `==`} (comparisons in the same
     direction can be *chained*; comparisons in opposite directions cannot be
@@ -172,13 +173,18 @@ shift as undefined when the left operand is negative.  This is contrary to
 every other language checked, including x86 and ARM assembly (both 32- and
 64-bit).
 
+In the table below, "UB" indicates undefined behavior (e.g., a program that
+performs that operation is not valid), and "IDB" indicates
+implementation-defined behavior (a program that performs the operation is
+valid, but the result varies depending on the implementation).
+
 | Language   | `<< 64`? | `<< 0`? | `>> 64`? | `>> 0`? | `-2 <<`? | `>> -1`?  |
 | ---------- | -------- | ------- | -------- | ------- | -------- | --------- |
 | ASM (x86)  | `<< 0`   | Yes     | `>> 0`   | Yes     | Yes      | `>> 63`   |
 | ASM (ARM)  | `<< 0`   | Yes     | `>> 0`   | Yes     | Yes      | `>> 63`   |
 | C++11      | No (UB)  | Yes     | No (UB)  | Yes     | No (UB)  | No (UB)   |
 | C++20      | No (UB)  | Yes     | No (UB)  | Yes     | Yes      | No (UB)   |
-| C          | No (UB)  | Yes     | No (UB)  | Yes     | No (UB)  | Yes (IDB) |
+| C          | No (UB)  | Yes     | No (UB)  | Yes     | No (UB)  | No (UB)   |
 | C#         | `<< 0`   | Yes     | `>> 0`   | Yes     | Yes      | `>> 31`   |
 | Go         | `0`      | Yes     | `0`      | Yes     | Yes      | No        |
 | Fortran    | No (UB)  | Yes     | No (UB)  | Yes     | Yes      | No (UB)   |
@@ -187,14 +193,14 @@ every other language checked, including x86 and ARM assembly (both 32- and
 | JavaScript | `<< 0`   | Yes     | `>> 0`   | Yes     | Yes      | `>> 31`   |
 | Lua        | Yes      | Yes     | Yes      | Yes     | Yes      | `<< 1`    |
 | MatLab     | Yes      | Yes     | Yes      | Yes     | Yes      | `<< 1`    |
-| OCaml      | No (IDB) | Yes     | No (IDB) | Yes     | Yes      | No (IDB)  |
+| OCaml      | IDB      | Yes     | IDB      | Yes     | Yes      | IDB       |
 | Perl       | Yes      | Yes     | Yes      | Yes     | Yes      | `<< 1`    |
 | PHP        | Yes      | Yes     | Yes      | Yes     | Yes      | Exception |
 | Python     | N/A      | Yes     | N/A      | Yes     | Yes      | Exception |
 | Rust       | No (UB)  | Yes     | No (UB)  | Yes     | Yes      | Overflow  |
 
 
-#### Emboss
+#### Proposal
 
 Emboss can use its bounds system to ensure that no shifts by too-large or
 negative amounts can happen at runtime.  This ensures that no surprising or
@@ -216,9 +222,9 @@ For a shift `x << y`, there are several cases to consider:
 1.  `x` and `y` are both constants: in this case, the result is also a
     (pre-computed) constant.
 2.  Only `y` is a constant: when `y` is a constant, `x << y` is equivalent to
-    `x * [2**y]`.  The minimum value, maximum value, modulus, and modular value
-    of the result are all equal to 2^y multiplied by the respective bound on
-    `x`.
+    `x` × 2<sup>y</sup>.  The minimum value, maximum value, modulus, and
+    modular value of the result are all equal to 2<sup>y</sup> multiplied by
+    the respective bound on `x`.
 3.  Otherwise:
     *   `minimum_value` is either `minimum value of x << maximum value of y` or
         `minimum value of x << minimum value of y`, depending on signs
@@ -228,13 +234,13 @@ For a shift `x << y`, there are several cases to consider:
     *   `modulus` is:
         *   `infinity` if the `modulus` of `x` is `infinity` and the
             `modular_value` of `x` is 0
-        *   2^(minimum value of `y`) × (largest power-of-2 factor of
+        *   2<sup>minimum value of `y`</sup> × (largest power-of-2 factor of
             the `modular_value` of `x`) if the `modulus` of `x` is
             `infinity`
-        *   2^(minimum value of `y`) × (largest power-of-2 factor of the
-            modulus of `x`) if the `modular_value` of `x` is 0
-        *   2^(minimum value of `y`) × min(largest power-of-2 factor of the
-            `modular_value` of `x`, largest power-of-2 factor of the
+        *   2<sup>minimum value of `y`</sup> × (largest power-of-2 factor of
+            the modulus of `x`) if the `modular_value` of `x` is 0
+        *   2<sup>minimum value of `y`</sup> × min(largest power-of-2 factor
+            of the `modular_value` of `x`, largest power-of-2 factor of the
             `modulus` of `x`) if the `modular_value` of `x` is not 0
 
 These rules have been prototyped and tested against all valid bounds and
@@ -248,8 +254,10 @@ For a shift `x >> y`, there are several cases to consider:
 1.  `x` and `y` are both constants: in this case, the result is also a
     (pre-computed) constant.
 2.  `y` is a constant and the `modulus` and `modular_value` of `x` are both
-    evenly divisible by 2^(y): in this case, the bounds of the result are equal
-    to the corresponding bounds on `x` divided by 2^(y).
+    evenly divisible by 2<sup>y</sup>: in this case, the bounds of the result
+    are equal to the corresponding bounds on `x` divided by 2<sup>y</sup>.
+    Note that this is a special case of computing the bounds for
+    [division](./division_and_modulus.md#division).
 3.  Otherwise:
     *   `minimum_value` is either `minimum value of x >> maximum value of y` or
         `minimum value of x >> minimum value of y`, depending on signs
