@@ -178,26 +178,25 @@ performs that operation is not valid), and "IDB" indicates
 implementation-defined behavior (a program that performs the operation is
 valid, but the result varies depending on the implementation).
 
-| Language   | `<< 64`? | `<< 0`? | `>> 64`? | `>> 0`? | `-2 <<`? | `>> -1`?  |
-| ---------- | -------- | ------- | -------- | ------- | -------- | --------- |
-| ASM (x86)  | `<< 0`   | Yes     | `>> 0`   | Yes     | Yes      | `>> 63`   |
-| ASM (ARM)  | `<< 0`   | Yes     | `>> 0`   | Yes     | Yes      | `>> 63`   |
-| C++11      | No (UB)  | Yes     | No (UB)  | Yes     | No (UB)  | No (UB)   |
-| C++20      | No (UB)  | Yes     | No (UB)  | Yes     | Yes      | No (UB)   |
-| C          | No (UB)  | Yes     | No (UB)  | Yes     | No (UB)  | No (UB)   |
-| C#         | `<< 0`   | Yes     | `>> 0`   | Yes     | Yes      | `>> 31`   |
-| Go         | `0`      | Yes     | `0`      | Yes     | Yes      | No        |
-| Fortran    | No (UB)  | Yes     | No (UB)  | Yes     | Yes      | No (UB)   |
-| Haskell    | `0`      | Yes     | `0`      | Yes     | Yes      | Panic     |
-| Java       | `<< 0`   | Yes     | `>> 0`   | Yes     | Yes      | `>> 31`   |
-| JavaScript | `<< 0`   | Yes     | `>> 0`   | Yes     | Yes      | `>> 31`   |
-| Lua        | Yes      | Yes     | Yes      | Yes     | Yes      | `<< 1`    |
-| MatLab     | Yes      | Yes     | Yes      | Yes     | Yes      | `<< 1`    |
-| OCaml      | IDB      | Yes     | IDB      | Yes     | Yes      | IDB       |
-| Perl       | Yes      | Yes     | Yes      | Yes     | Yes      | `<< 1`    |
-| PHP        | Yes      | Yes     | Yes      | Yes     | Yes      | Exception |
-| Python     | N/A      | Yes     | N/A      | Yes     | Yes      | Exception |
-| Rust       | No (UB)  | Yes     | No (UB)  | Yes     | Yes      | Overflow  |
+| Language   | `x>>0` | `x<<0` | `-2<<x` | `x<<64`  | `x>>64`  | `x>>-1`   |
+| ---------- | ------ | ------ | ------- | -------- | -------- | --------- |
+| ASM (x86)  | `x`    | `x`    | `-2<<x` | `x<<0`   | `0`      | `x>>63`   |
+| ASM (ARM)  | `x`    | `x`    | `-2<<x` | `x<<0`   | `0`      | `x>>63`   |
+| C++11      | `x`    | `x`    | UB      | UB       | UB       | UB        |
+| C++20      | `x`    | `x`    | `-2<<x` | UB       | UB       | UB        |
+| C          | `x`    | `x`    | UB      | UB       | UB       | UB        |
+| C#         | `x`    | `x`    | `-2<<x` | `x<<0`   | `0`      | `x>>63`   |
+| Go         | `x`    | `x`    | `-2<<x` | `0`      | `0`      | ?         |
+| Fortran    | `x`    | `x`    | `-2<<x` | UB       | UB       | UB        |
+| Haskell    | `x`    | `x`    | `-2<<x` | `0`      | `0`      | Panic     |
+| Java       | `x`    | `x`    | `-2<<x` | `x<<0`   | `0`      | `x>>63`   |
+| JavaScript | `x`    | `x`    | `-2<<x` | `x<<0`   | `0`      | `x>>63`   |
+| Lua        | `x`    | `x`    | `-2<<x` | `0`      | `0`      | `x<<1`    |
+| OCaml      | `x`    | `x`    | `-2<<x` | IDB      | IDB      | IDB       |
+| Perl       | `x`    | `x`    | `-2<<x` | Varies   | `x>>64`  | `x<<1`    |
+| PHP        | `x`    | `x`    | `-2<<x` | `0`      | `0`      | Exception |
+| Python     | `x`    | `x`    | `-2<<x` | `x>>64`  | `x>>64`  | Exception |
+| Rust       | `x`    | `x`    | `-2<<x` | UB       | UB       | Overflow  |
 
 
 #### Proposal
@@ -208,9 +207,6 @@ undefined behavior can occur in generated code.
 
 This may prove to be overly restrictive, but it can be loosened in the future,
 if necessary.
-
-When implementing the C++ runtime support, left shifts must first cast to
-unsigned, then cast back to signed.
 
 
 ### Expression Bounds and Modular Value Calculations
@@ -244,7 +240,8 @@ For a shift `x << y`, there are several cases to consider:
             `modulus` of `x`) if the `modular_value` of `x` is not 0
 
 These rules have been prototyped and tested against all valid bounds and
-inhabiting values from -32 through +32.
+inhabiting values of those bounds with bound values from -32 through +32,
+inclusive.
 
 
 #### Right Shift
@@ -267,10 +264,32 @@ For a shift `x >> y`, there are several cases to consider:
     *   `modulus` is 1
 
 These rules have been prototyped and tested against all valid bounds and
-inhabiting values from -32 through +32.
+inhabiting values of those bounds with bound values from -32 through +32,
+inclusive.
 
 There are definitely tighter bounds that can be inferred in some cases (e.g., a
 shift of a constant `x` by a `y` that can only take 2 values will have a result
 that can only take 2 values, but will not, in general, have an inferred bound
 that only covers those two values), but these rules seem to cover most cases
 without being particularly computationally expensive.
+
+
+## Implementation Notes
+
+### Parser
+
+The parser can be modified by putting in parallel rules for `shift-`
+nonterminals wherever a rule references any `additive-` nonterminal.  This will
+automatically create a set of rules that put the `<<` and `>>` operators into a
+new precedence that is at the same level as, but cannot be mixed with, the
+additive operators.
+
+
+### Runtime
+
+The C++ implementation of the left shift operator should avoid undefined
+behavior by using `static_cast<std::make_unsigned<T>::type>()` on its operands
+before shifting, and then convert back to `T` for the result.  Note that the
+conversion back to `T` cannot (always) be done with a simple cast until C++17.
+There is some code in `IntView` that properly implements the conversion for ISO
+C++11, which should be factored out so that it can be shared.
