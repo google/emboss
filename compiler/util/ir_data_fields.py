@@ -241,7 +241,7 @@ def _field_specs(cls: type[IrDataT]) -> Mapping[str, FieldSpec]:
 
     # Pre-python 3.11 (maybe pre 3.10) `get_type_hints` will substitute
     # `builtins.Expression` for 'Expression' rather than `ir_data.Expression`.
-    # Instead we manually subsitute the type by extracting the list of classes
+    # Instead we manually substitute the type by extracting the list of classes
     # from the class' module and manually substituting.
     mod_ns = {
         k: v
@@ -291,7 +291,7 @@ def _field_specs(cls: type[IrDataT]) -> Mapping[str, FieldSpec]:
 
 
 def field_specs(obj: Union[IrDataT, type[IrDataT]]) -> Mapping[str, FieldSpec]:
-    """Retrieves the fields specs for the the give data type.
+    """Retrieves the fields specs for the give data type.
 
     The results of this method are cached to reduce lookup overhead.
 
@@ -339,7 +339,7 @@ def fields_and_values(
 #    `all_field_specs` dict.
 # 3. Copied lists are wrapped in a `TemporaryCopyValuesList`. This is used to
 #    signal to consumers that they can take ownership of the contained list
-#    rather than copying it again. See `ir_data.Message()` and `udpate()` for
+#    rather than copying it again. See `ir_data.Message()` and `update()` for
 #    where this is used.
 # 4. `FieldSpec` checks are cached including `is_dataclass` and `is_sequence`.
 # 5. None checks are only done in `copy()`, `_copy_set_fields` only

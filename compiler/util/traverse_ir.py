@@ -26,8 +26,9 @@ class _FunctionCaller:
     """Provides a template for setting up a generic call to a function.
 
     The function parameters are inspected at run-time to build up a set of valid
-    and required arguments. When invoking the function unneccessary parameters
-    will be trimmed out. If arguments are missing an assertion will be triggered.
+    and required arguments. When invoking the function unnecessary parameters
+    will be trimmed out. If arguments are missing an assertion will be
+    triggered.
 
     This is currently limited to functions that have at least one positional
     parameter.
