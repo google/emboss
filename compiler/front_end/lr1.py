@@ -652,7 +652,7 @@ class Parser(object):
                 )
                 return ParseResult(stack[-1][1], None)
             elif isinstance(next_action, Reduce):
-                # Reduce means that there is a c][plete production on the stack, and
+                # Reduce means that there is a complete production on the stack, and
                 # that the next symbol implies that the completed production is the
                 # correct production.
                 #
