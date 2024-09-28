@@ -34,12 +34,12 @@ class TestEnum(enum.Enum):
 
 @dataclasses.dataclass
 class Opaque(ir_data.Message):
-    """Used for testing data field helpers"""
+    """Used for testing data field helpers."""
 
 
 @dataclasses.dataclass
 class ClassWithUnion(ir_data.Message):
-    """Used for testing data field helpers"""
+    """Used for testing data field helpers."""
 
     opaque: Optional[Opaque] = ir_data_fields.oneof_field("type")
     integer: Optional[int] = ir_data_fields.oneof_field("type")
@@ -50,7 +50,7 @@ class ClassWithUnion(ir_data.Message):
 
 @dataclasses.dataclass
 class ClassWithTwoUnions(ir_data.Message):
-    """Used for testing data field helpers"""
+    """Used for testing data field helpers."""
 
     opaque: Optional[Opaque] = ir_data_fields.oneof_field("type_1")
     integer: Optional[int] = ir_data_fields.oneof_field("type_1")
@@ -62,7 +62,7 @@ class ClassWithTwoUnions(ir_data.Message):
 
 @dataclasses.dataclass
 class NestedClass(ir_data.Message):
-    """Used for testing data field helpers"""
+    """Used for testing data field helpers."""
 
     one_union_class: Optional[ClassWithUnion] = None
     two_union_class: Optional[ClassWithTwoUnions] = None
@@ -78,7 +78,7 @@ class ListCopyTestClass(ir_data.Message):
 
 @dataclasses.dataclass
 class OneofFieldTest(ir_data.Message):
-    """Basic test class for oneof fields"""
+    """Basic test class for oneof fields."""
 
     int_field_1: Optional[int] = ir_data_fields.oneof_field("type_1")
     int_field_2: Optional[int] = ir_data_fields.oneof_field("type_1")
@@ -86,7 +86,7 @@ class OneofFieldTest(ir_data.Message):
 
 
 class OneOfTest(unittest.TestCase):
-    """Tests for the the various oneof field helpers"""
+    """Tests for the various oneof field helpers."""
 
     def test_field_attribute(self):
         """Test the `oneof_field` helper."""
@@ -97,48 +97,48 @@ class OneOfTest(unittest.TestCase):
         self.assertEqual(test_field.metadata.get("oneof"), "type_1")
 
     def test_init_default(self):
-        """Test creating an instance with default fields"""
+        """Test creating an instance with default fields."""
         one_of_field_test = OneofFieldTest()
         self.assertIsNone(one_of_field_test.int_field_1)
         self.assertIsNone(one_of_field_test.int_field_2)
         self.assertTrue(one_of_field_test.normal_field)
 
     def test_init(self):
-        """Test creating an instance with non-default fields"""
+        """Test creating an instance with non-default fields."""
         one_of_field_test = OneofFieldTest(int_field_1=10, normal_field=False)
         self.assertEqual(one_of_field_test.int_field_1, 10)
         self.assertIsNone(one_of_field_test.int_field_2)
         self.assertFalse(one_of_field_test.normal_field)
 
     def test_set_oneof_field(self):
-        """Tests setting oneof fields causes others in the group to be unset"""
+        """Tests setting oneof fields causes others in the group to be unset."""
         one_of_field_test = OneofFieldTest()
         one_of_field_test.int_field_1 = 10
         self.assertEqual(one_of_field_test.int_field_1, 10)
-        self.assertEqual(one_of_field_test.int_field_2, None)
+        self.assertIsNone(one_of_field_test.int_field_2)
         one_of_field_test.int_field_2 = 20
-        self.assertEqual(one_of_field_test.int_field_1, None)
+        self.assertIsNone(one_of_field_test.int_field_1)
         self.assertEqual(one_of_field_test.int_field_2, 20)
 
         # Do it again
         one_of_field_test.int_field_1 = 10
         self.assertEqual(one_of_field_test.int_field_1, 10)
-        self.assertEqual(one_of_field_test.int_field_2, None)
+        self.assertIsNone(one_of_field_test.int_field_2)
         one_of_field_test.int_field_2 = 20
-        self.assertEqual(one_of_field_test.int_field_1, None)
+        self.assertIsNone(one_of_field_test.int_field_1)
         self.assertEqual(one_of_field_test.int_field_2, 20)
 
-        # Now create a new instance and make sure changes to it are not reflected
-        # on the original object.
+        # Now create a new instance and make sure changes to it are not
+        # reflected on the original object.
         one_of_field_test_2 = OneofFieldTest()
         one_of_field_test_2.int_field_1 = 1000
         self.assertEqual(one_of_field_test_2.int_field_1, 1000)
-        self.assertEqual(one_of_field_test_2.int_field_2, None)
-        self.assertEqual(one_of_field_test.int_field_1, None)
+        self.assertIsNone(one_of_field_test_2.int_field_2)
+        self.assertIsNone(one_of_field_test.int_field_1)
         self.assertEqual(one_of_field_test.int_field_2, 20)
 
     def test_set_to_none(self):
-        """Tests explicitly setting a oneof field to None"""
+        """Tests explicitly setting a oneof field to None."""
         one_of_field_test = OneofFieldTest(int_field_1=10, normal_field=False)
         self.assertEqual(one_of_field_test.int_field_1, 10)
         self.assertIsNone(one_of_field_test.int_field_2)
@@ -163,7 +163,7 @@ class OneOfTest(unittest.TestCase):
         self.assertFalse(one_of_field_test.normal_field)
 
     def test_oneof_specs(self):
-        """Tests the `oneof_field_specs` filter"""
+        """Tests the `oneof_field_specs` filter."""
         expected = {
             "int_field_1": ir_data_fields.make_field_spec(
                 "int_field_1", int, ir_data_fields.FieldContainer.OPTIONAL, "type_1"
@@ -178,7 +178,7 @@ class OneOfTest(unittest.TestCase):
         self.assertDictEqual(actual, expected)
 
     def test_oneof_mappings(self):
-        """Tests the `oneof_mappings` function"""
+        """Tests the `oneof_mappings` function."""
         expected = (("int_field_1", "type_1"), ("int_field_2", "type_1"))
         actual = ir_data_fields.IrDataclassSpecs.get_specs(
             OneofFieldTest
@@ -187,10 +187,16 @@ class OneOfTest(unittest.TestCase):
 
 
 class IrDataFieldsTest(unittest.TestCase):
-    """Tests misc methods in ir_data_fields"""
+    """Tests misc methods in ir_data_fields."""
+
+    def assertEmpty(self, obj):
+        self.assertEqual(len(obj), 0, msg=f"{obj} is not empty.")
+
+    def assertLen(self, obj, length):
+        self.assertEqual(len(obj), length, msg=f"{obj} has length {len(obj)}.")
 
     def test_copy(self):
-        """Tests copying a data class works as expected"""
+        """Tests copying a data class works as expected."""
         union = ClassWithTwoUnions(
             opaque=Opaque(), boolean=True, non_union_field=10, seq_field=[1, 2, 3]
         )
@@ -204,25 +210,25 @@ class IrDataFieldsTest(unittest.TestCase):
         self.assertIsNone(empty_copy)
 
     def test_copy_values_list(self):
-        """Tests that CopyValuesList copies values"""
+        """Tests that CopyValuesList copies values."""
         data_list = ir_data_fields.CopyValuesList(ListCopyTestClass)
-        self.assertEqual(len(data_list), 0)
+        self.assertEmpty(data_list)
 
         list_test = ListCopyTestClass(non_union_field=2, seq_field=[5, 6, 7])
         list_tests = [ir_data_fields.copy(list_test) for _ in range(4)]
         data_list.extend(list_tests)
-        self.assertEqual(len(data_list), 4)
+        self.assertLen(data_list, 4)
         for i in data_list:
             self.assertEqual(i, list_test)
 
     def test_list_param_is_copied(self):
-        """Test that lists passed to constructors are converted to CopyValuesList"""
+        """Test that lists passed to constructors are converted to CopyValuesList."""
         seq_field = [5, 6, 7]
         list_test = ListCopyTestClass(non_union_field=2, seq_field=seq_field)
-        self.assertEqual(len(list_test.seq_field), len(seq_field))
+        self.assertLen(list_test.seq_field, len(seq_field))
         self.assertIsNot(list_test.seq_field, seq_field)
         self.assertEqual(list_test.seq_field, seq_field)
-        self.assertTrue(isinstance(list_test.seq_field, ir_data_fields.CopyValuesList))
+        self.assertIsInstance(list_test.seq_field, ir_data_fields.CopyValuesList)
 
     def test_copy_oneof(self):
         """Tests copying an IR data class that has oneof fields."""

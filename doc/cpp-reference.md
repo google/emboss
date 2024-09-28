@@ -173,7 +173,7 @@ static constexpr auto IntrinsicSizeInBytes() const;
 ```
 
 The `IntrinsicSizeInBytes` method is the [field method](#struct-field-methods)
-for [`$size_in_bytes`](language-reference.md#size-in-bytes).  The `Read` method
+for [`$size_in_bytes`](language-reference.md#size_in_bytes).  The `Read` method
 of the result returns the size of the `struct`, and the `Ok` method returns
 `true` if the `struct`'s intrinsic size is known; i.e.:
 
@@ -212,7 +212,7 @@ static constexpr auto MaxSizeInBytes() const;
 ```
 
 The `MaxSizeInBytes` method is the [field method](#struct-field-methods)
-for [`$max_size_in_bytes`](language-reference.md#max-size-in-bytes).  The `Read`
+for [`$max_size_in_bytes`](language-reference.md#max_size_in_bytes).  The `Read`
 method of the result returns the maximum size of the `struct`, and the `Ok`
 always method returns `true`.
 
@@ -250,7 +250,7 @@ static constexpr auto MinSizeInBytes() const;
 ```
 
 The `MinSizeInBytes` method is the [field method](#struct-field-methods)
-for [`$min_size_in_bytes`](language-reference.md#max-size-in-bytes).  The `Read`
+for [`$min_size_in_bytes`](language-reference.md#min_size_in_bytes).  The `Read`
 method of the result returns the minimum size of the `struct`, and the `Ok`
 always method returns `true`.
 
@@ -367,7 +367,7 @@ Returns the backing storage for the view.  The return type of `BackingStorage()`
 is a template parameter on the view.
 
 
-### Field methods {#struct-field-methods}
+### `struct` field methods
 
 Each physical field and virtual field in the `struct` will have a corresponding
 method in the generated view for that `struct`, which returns a subview of that
@@ -635,7 +635,7 @@ static constexpr auto IntrinsicSizeInBits() const;
 ```
 
 The `IntrinsicSizeInBits` method is the [field method](#bits-field-methods) for
-[`$size_in_bits`](language-reference.md#size-in-bits).  The `Read` method of
+[`$size_in_bits`](language-reference.md#size_in_bits).  The `Read` method of
 the result returns the size of the `struct`, and the `Ok` method returns `true`
 if the `struct`'s intrinsic size is known; i.e.:
 
@@ -666,7 +666,7 @@ static constexpr auto MaxSizeInBits() const;
 ```
 
 The `MaxSizeInBits` method is the [field method](#struct-field-methods)
-for [`$max_size_in_bits`](language-reference.md#max-size-in-bits).  The `Read`
+for [`$max_size_in_bits`](language-reference.md#max_size_in_bits).  The `Read`
 method of the result returns the maximum size of the `bits`, and the `Ok`
 always method returns `true`.
 
@@ -704,7 +704,7 @@ static constexpr auto MinSizeInBits() const;
 ```
 
 The `MinSizeInBits` method is the [field method](#struct-field-methods)
-for [`$min_size_in_bits`](language-reference.md#min-size-in-bits).  The `Read`
+for [`$min_size_in_bits`](language-reference.md#min_size_in_bits).  The `Read`
 method of the result returns the minimum size of the `bits`, and the `Ok`
 always method returns `true`.
 
@@ -773,7 +773,7 @@ form that can be decoded by `UpdateFromTextStream`. Generally, applications
 would not call this directly; instead, use the global `WriteToString` method,
 which handles setting up the stream and returning the resulting string.
 
-### Field methods {#bits-field-methods}
+### `bits` field methods
 
 As with `struct`, each field in a `bits` will have a corresponding method of the
 same name generated, and each such method will return a view of the given field.

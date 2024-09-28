@@ -485,6 +485,7 @@ def _type(struct, name, colon, comment, eol, body):
     "               type-definition* struct-field-block Dedent"
 )
 def _structure_body(indent, docs, attributes, type_definitions, fields, dedent, config):
+    """Formats a structure (`bits` or `struct`) body."""
     del indent, dedent  # Unused.
     spacing = [_Row("field-separator")] if _should_add_blank_lines(fields) else []
     columnized_fields = _columnize(fields, config.indent_width, indent_columns=2)
@@ -609,6 +610,7 @@ def _field_body(indent, docs, attributes, dedent):
     '    field-location "bits" ":" Comment? eol anonymous-bits-body'
 )
 def _inline_bits(location, bits, colon, comment, eol, body):
+    """Formats an inline `bits` definition."""
     # Even though an anonymous bits field technically defines a new, anonymous
     # type, conceptually it's more like defining a bunch of fields on the
     # surrounding type, so it is treated as an inline list of blocks, instead of
@@ -1017,6 +1019,7 @@ def _concatenate(*elements):
 @_formats("or-expression-right -> or-operator comparison-expression")
 @_formats("and-expression-right -> and-operator comparison-expression")
 def _concatenate_with_prefix_spaces(*elements):
+    """Concatenates non-empty `elements` with leading spaces."""
     return "".join(" " + element for element in elements if element)
 
 
@@ -1032,10 +1035,12 @@ def _concatenate_with_prefix_spaces(*elements):
 )
 @_formats('parameter-definition-list-tail -> "," parameter-definition')
 def _concatenate_with_spaces(*elements):
+    """Concatenates non-empty `elements` with spaces between."""
     return _concatenate_with(" ", *elements)
 
 
 def _concatenate_with(joiner, *elements):
+    """Concatenates non-empty `elements` with `joiner` between."""
     return joiner.join(element for element in elements if element)
 
 
