@@ -198,11 +198,9 @@ class Grammar(object):
     def _set_productions_by_lhs(self):
         # Prepopulating _productions_by_lhs speeds up _closure_of_item by about 30%,
         # which is significant on medium-to-large grammars.
-        self._productions_by_lhs = {}
+        self._productions_by_lhs = collections.defaultdict(list)
         for production in self.productions:
-            self._productions_by_lhs.setdefault(production.lhs, list()).append(
-                production
-            )
+            self._productions_by_lhs[production.lhs].append(production)
 
     def _populate_item_cache(self):
         # There are a relatively small number of possible Items for a grammar, and
@@ -456,7 +454,7 @@ class Grammar(object):
             )
         ]
         items = {item_list[0]: 0}
-        goto_table = {}
+        goto_table = collections.defaultdict(dict)
         i = 0
         # For each state, figure out what the new state when each symbol is added to
         # the top of the parsing stack (see the comments in parser._parse).  See
@@ -469,7 +467,6 @@ class Grammar(object):
                 if goto not in items:
                     items[goto] = len(item_list)
                     item_list.append(goto)
-                goto_table.setdefault(i, {})
                 goto_table[i][symbol] = items[goto]
             i += 1
         return item_list, goto_table
@@ -495,7 +492,7 @@ class Grammar(object):
           A Parser.
         """
         item_sets, goto = self._items()
-        action = {}
+        action = collections.defaultdict(dict)
         conflicts = set()
         end_item = self._item_cache[self._seed_production, 1, END_OF_INPUT]
         for i in range(len(item_sets)):
@@ -512,7 +509,6 @@ class Grammar(object):
                     assert goto[i][terminal] is not None
                     new_action = Shift(goto[i][terminal], item_sets[goto[i][terminal]])
                 if new_action:
-                    action.setdefault(i, {})
                     if action[i].get(terminal, new_action) != new_action:
                         conflicts.add(
                             Conflict(
@@ -524,14 +520,12 @@ class Grammar(object):
                     action[i][terminal] = new_action
                 if item == end_item:
                     new_action = Accept()
-                    action.setdefault(i, {})
                     assert action[i].get(END_OF_INPUT, new_action) == new_action
                     action[i][END_OF_INPUT] = new_action
-        trimmed_goto = {}
+        trimmed_goto = collections.defaultdict(dict)
         for k in goto:
             for l in goto[k]:
                 if l in self.nonterminals:
-                    trimmed_goto.setdefault(k, {})
                     trimmed_goto[k][l] = goto[k][l]
         return Parser(
             item_sets,
@@ -816,7 +810,6 @@ class Parser(object):
                         )
                     )
             else:
-                self.action.setdefault(result.error.state, {})
                 self.action[result.error.state][error_symbol] = Error(error_code)
                 return None
         assert False, "All other paths should lead to return."
