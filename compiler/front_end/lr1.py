@@ -74,10 +74,9 @@ class Item(
 
            symbol -> foo . bar baz, qux
 
-        where "symbol -> foo bar baz" will be taken as the production, the
-        position of the "." is taken as "dot" (in this case 1), and the symbol
-        after "," is taken as the "terminal".  The following are also valid
-        items:
+        where "symbol -> foo bar baz" will be taken as the production, the position
+        of the "." is taken as "dot" (in this case 1), and the symbol after "," is
+        taken as the "terminal".  The following are also valid items:
 
            sym -> ., foo
            sym -> . foo bar, baz
@@ -152,38 +151,37 @@ class Reduction(
     """A Reduction is a non-leaf node in a parse tree.
 
     Attributes:
-        symbol: The name of this element in the parse.
-        children: The child elements of this parse.
-        production: The grammar production to which this reduction corresponds.
-        source_location: If known, the range in the source text corresponding
-            to the tokens from which this reduction was parsed.  May be 'None'
-            if this reduction was produced from no symbols, or if the tokens
-            fed to `parse` did not include source_location.
+      symbol: The name of this element in the parse.
+      children: The child elements of this parse.
+      production: The grammar production to which this reduction corresponds.
+      source_location: If known, the range in the source text corresponding to the
+        tokens from which this reduction was parsed.  May be 'None' if this
+        reduction was produced from no symbols, or if the tokens fed to `parse`
+        did not include source_location.
     """
 
     pass
 
 
-class Grammar:
+class Grammar(object):
     """Grammar is an LR(1) context-free grammar.
 
     Attributes:
-        start: The start symbol for the grammar.
-        productions: A list of productions in the grammar, including the S' ->
-            start production.
-        symbols: A set of all symbols in the grammar, including $ and S'.
-        nonterminals: A set of all nonterminal symbols in the grammar,
-            including S'.
-        terminals: A set of all terminal symbols in the grammar, including $.
+      start: The start symbol for the grammar.
+      productions: A list of productions in the grammar, including the S' -> start
+        production.
+      symbols: A set of all symbols in the grammar, including $ and S'.
+      nonterminals: A set of all nonterminal symbols in the grammar, including S'.
+      terminals: A set of all terminal symbols in the grammar, including $.
     """
 
     def __init__(self, start_symbol, productions):
         """Constructs a Grammar object.
 
         Arguments:
-            start_symbol: The start symbol for the grammar.
-            productions: A list of productions (not including the "S' ->
-                start_symbol" production).
+          start_symbol: The start symbol for the grammar.
+          productions: A list of productions (not including the "S' -> start_symbol"
+              production).
         """
         object.__init__(self)
         self.start = start_symbol
@@ -198,17 +196,17 @@ class Grammar:
         self._populate_item_cache()
 
     def _set_productions_by_lhs(self):
+        # Prepopulating _productions_by_lhs speeds up _closure_of_item by about 30%,
+        # which is significant on medium-to-large grammars.
         self._productions_by_lhs = collections.defaultdict(list)
-        # Prepopulating _productions_by_lhs speeds up _closure_of_item by about
-        # 30%, which is significant on medium-to-large grammars.
         for production in self.productions:
             self._productions_by_lhs[production.lhs].append(production)
 
     def _populate_item_cache(self):
-        # There are a relatively small number of possible Items for a grammar,
-        # and the algorithm needs to get Items from their constituent
-        # components very frequently.  As it turns out, pre-caching all
-        # possible Items results in a ~35% overall speedup to Grammar.parser().
+        # There are a relatively small number of possible Items for a grammar, and
+        # the algorithm needs to get Items from their constituent components very
+        # frequently.  As it turns out, pre-caching all possible Items results in a
+        # ~35% overall speedup to Grammar.parser().
         self._item_cache = {}
         for symbol in self.terminals:
             for production in self.productions:
@@ -218,8 +216,7 @@ class Grammar:
                     )
 
     def _compute_symbols(self):
-        """Finds all grammar symbols, and sorts them into terminal and
-        non-terminal.
+        """Finds all grammar symbols, and sorts them into terminal and non-terminal.
 
         Nonterminal symbols are those which appear on the left side of any
         production.  Terminal symbols are those which do not.
@@ -238,14 +235,14 @@ class Grammar:
     def _compute_seed_firsts(self):
         """Computes FIRST (ALSU p221) for all terminal and nonterminal symbols.
 
-        The algorithm for computing FIRST is an iterative one that terminates
-        when it reaches a fixed point (that is, when further iterations stop
-        changing state).  _compute_seed_firsts computes the fixed point for all
-        single-symbol strings, by repeatedly calling _first and updating the
-        internal _firsts table with the results.
+        The algorithm for computing FIRST is an iterative one that terminates when
+        it reaches a fixed point (that is, when further iterations stop changing
+        state).  _compute_seed_firsts computes the fixed point for all single-symbol
+        strings, by repeatedly calling _first and updating the internal _firsts
+        table with the results.
 
-        Once _compute_seed_firsts has completed, _first will return correct
-        results for both single- and multi-symbol strings.
+        Once _compute_seed_firsts has completed, _first will return correct results
+        for both single- and multi-symbol strings.
 
         _compute_seed_firsts is used during __init__.
         """
@@ -257,16 +254,15 @@ class Grammar:
             self.firsts[nonterminal] = set()
         while True:
             # The first iteration picks up all the productions that start with
-            # terminal symbols.  The second iteration picks up productions that
-            # start with nonterminals that the first iteration picked up.  The
-            # third iteration picks up nonterminals that the first and second
-            # picked up, and so on.
+            # terminal symbols.  The second iteration picks up productions that start
+            # with nonterminals that the first iteration picked up.  The third
+            # iteration picks up nonterminals that the first and second picked up, and
+            # so on.
             #
             # This is guaranteed to end, in the worst case, when every terminal
             # symbol and epsilon has been added to the _firsts set for every
-            # nonterminal symbol.  This would be slow, but requires a
-            # pathological grammar; useful grammars should complete in only a
-            # few iterations.
+            # nonterminal symbol.  This would be slow, but requires a pathological
+            # grammar; useful grammars should complete in only a few iterations.
             firsts_to_add = {}
             for production in self.productions:
                 for first in self._first(production.rhs):
@@ -283,18 +279,18 @@ class Grammar:
         """The FIRST function from ALSU p221.
 
         _first takes a string of symbols (both terminals and nonterminals) and
-        returns the set of terminal symbols which could be the first terminal
-        symbol of a string produced by the given list of symbols.
+        returns the set of terminal symbols which could be the first terminal symbol
+        of a string produced by the given list of symbols.
 
         _first will not give fully-correct results until _compute_seed_firsts
-        finishes, but is called by _compute_seed_firsts, and must provide
-        partial results during that method's execution.
+        finishes, but is called by _compute_seed_firsts, and must provide partial
+        results during that method's execution.
 
         Args:
-            symbols: A list of symbols.
+          symbols: A list of symbols.
 
         Returns:
-            A set of terminals which could be the first terminal in "symbols."
+          A set of terminals which could be the first terminal in "symbols."
         """
         result = set()
         all_contain_epsilon = True
@@ -306,37 +302,36 @@ class Grammar:
                 all_contain_epsilon = False
                 break
         if all_contain_epsilon:
-            # "None" seems like a Pythonic way of representing epsilon (no
-            # symbol).
+            # "None" seems like a Pythonic way of representing epsilon (no symbol).
             result.add(None)
         return result
 
     def _closure_of_item(self, root_item):
         """Modified implementation of CLOSURE from ALSU p261.
 
-        _closure_of_item performs the CLOSURE function with a single seed item,
-        with memoization.  In the algorithm as presented in ALSU, CLOSURE is
-        called with a different set of items every time, which is unhelpful for
-        memoization.  Instead, we let _parallel_goto merge the sets returned by
-        _closure_of_item, which results in a ~40% speedup.
+        _closure_of_item performs the CLOSURE function with a single seed item, with
+        memoization.  In the algorithm as presented in ALSU, CLOSURE is called with
+        a different set of items every time, which is unhelpful for memoization.
+        Instead, we let _parallel_goto merge the sets returned by _closure_of_item,
+        which results in a ~40% speedup.
 
-        CLOSURE, roughly, computes the set of LR(1) Items which might be active
-        when a "seed" set of Items is active.
+        CLOSURE, roughly, computes the set of LR(1) Items which might be active when
+        a "seed" set of Items is active.
 
         Technically, it is the epsilon-closure of the NFA states represented by
-        "items," where an epsilon transition (a transition that does not
-        consume any symbols) occurs from a->Z.bY,q to b->.X,p when p is in
-        FIRST(Yq).  (a and b are nonterminals, X, Y, and Z are arbitrary
-        strings of symbols, and p and q are terminals.)  That is, it is the set
-        of all NFA states which can be reached from "items" without consuming
-        any input.  This set corresponds to a single DFA state.
+        "items," where an epsilon transition (a transition that does not consume any
+        symbols) occurs from a->Z.bY,q to b->.X,p when p is in FIRST(Yq).  (a and b
+        are nonterminals, X, Y, and Z are arbitrary strings of symbols, and p and q
+        are terminals.)  That is, it is the set of all NFA states which can be
+        reached from "items" without consuming any input.  This set corresponds to a
+        single DFA state.
 
         Args:
-            root_item: The initial LR(1) Item.
+          root_item: The initial LR(1) Item.
 
         Returns:
-            A set of LR(1) items which may be active at the time when the
-            provided item is active.
+          A set of LR(1) items which may be active at the time when the provided
+          item is active.
         """
         if root_item in self._closure_of_item_cache:
             return self._closure_of_item_cache[root_item]
@@ -344,28 +339,26 @@ class Grammar:
         item_list = [root_item]
         i = 0
         # Each newly-added Item may trigger the addition of further Items, so
-        # iterate until no new Items are added.  In the worst case, a new Item
-        # will be added for each production.
+        # iterate until no new Items are added.  In the worst case, a new Item will
+        # be added for each production.
         #
-        # This algorithm is really looking for "next" nonterminals in the
-        # existing items, and adding new items corresponding to their
-        # productions.
+        # This algorithm is really looking for "next" nonterminals in the existing
+        # items, and adding new items corresponding to their productions.
         while i < len(item_list):
             item = item_list[i]
             i += 1
             if not item.next_symbol:
                 continue
-            # If _closure_of_item_cache contains the full closure of item, then
-            # we can add its full closure to the result set, and skip checking
-            # any of its items: any item that would be added by any item in the
-            # cached result will already be in the _closure_of_item_cache
-            # entry.
+            # If _closure_of_item_cache contains the full closure of item, then we can
+            # add its full closure to the result set, and skip checking any of its
+            # items: any item that would be added by any item in the cached result
+            # will already be in the _closure_of_item_cache entry.
             if item in self._closure_of_item_cache:
                 item_set |= self._closure_of_item_cache[item]
                 continue
             # Even if we don't have the full closure of item, we may have the
-            # immediate closure of item.  It turns out that memoizing just this
-            # step speeds up this function by about 50%, even after the
+            # immediate closure of item.  It turns out that memoizing just this step
+            # speeds up this function by about 50%, even after the
             # _closure_of_item_cache check.
             if item not in self._single_level_closure_of_item_cache:
                 new_items = set()
@@ -383,17 +376,17 @@ class Grammar:
         # Typically, _closure_of_item() will be called on items whose closures
         # bring in the greatest number of additional items, then on items which
         # close over fewer and fewer other items.  Since items are not added to
-        # _closure_of_item_cache unless _closure_of_item() is called directly
-        # on them, this means that it is unlikely that items brought in will
-        # (without intervention) have entries in _closure_of_item_cache, which
-        # slows down the computation of the larger closures.
+        # _closure_of_item_cache unless _closure_of_item() is called directly on
+        # them, this means that it is unlikely that items brought in will (without
+        # intervention) have entries in _closure_of_item_cache, which slows down the
+        # computation of the larger closures.
         #
-        # Although it is not guaranteed, items added to item_list last will
-        # tend to close over fewer items, and therefore be easier to compute.
-        # By forcibly re-calculating closures from last to first, and adding
-        # the results to _closure_of_item_cache at each step, we get a modest
-        # performance improvement: roughly 50% less time spent in
-        # _closure_of_item, which translates to about 5% less time in parser().
+        # Although it is not guaranteed, items added to item_list last will tend to
+        # close over fewer items, and therefore be easier to compute.  By forcibly
+        # re-calculating closures from last to first, and adding the results to
+        # _closure_of_item_cache at each step, we get a modest performance
+        # improvement: roughly 50% less time spent in _closure_of_item, which
+        # translates to about 5% less time in parser().
         for item in item_list[::-1]:
             self._closure_of_item(item)
         return item_set
@@ -401,22 +394,20 @@ class Grammar:
     def _parallel_goto(self, items):
         """The GOTO function from ALSU p261, executed on all symbols.
 
-        _parallel_goto takes a set of Items, and returns a dict from every
-        symbol in self.symbols to the set of Items that would be active after a
-        shift operation (if symbol is a terminal) or after a reduction
-        operation (if symbol is a nonterminal).
+        _parallel_goto takes a set of Items, and returns a dict from every symbol in
+        self.symbols to the set of Items that would be active after a shift
+        operation (if symbol is a terminal) or after a reduction operation (if
+        symbol is a nonterminal).
 
-        _parallel_goto is used in lieu of the single-symbol GOTO from ALSU
-        because it eliminates the outer loop over self.terminals, and thereby
-        reduces the number of next_symbol calls by a factor of
-        len(self.terminals).
+        _parallel_goto is used in lieu of the single-symbol GOTO from ALSU because
+        it eliminates the outer loop over self.terminals, and thereby reduces the
+        number of next_symbol calls by a factor of len(self.terminals).
 
         Args:
-            items: The set of items representing the initial DFA state.
+          items: The set of items representing the initial DFA state.
 
         Returns:
-            A dict from symbols to sets of items representing the new DFA
-            states.
+          A dict from symbols to sets of items representing the new DFA states.
         """
         results = collections.defaultdict(set)
         # Sorting `items` is necessary in order for the state numbers in the
@@ -429,36 +420,35 @@ class Grammar:
             if next_symbol is None:
                 continue
             item = self._item_cache[item.production, item.dot + 1, item.terminal]
-            # Inlining the cache check results in a ~25% speedup in this
-            # function, and about 10% overall speedup to parser().
+            # Inlining the cache check results in a ~25% speedup in this function, and
+            # about 10% overall speedup to parser().
             if item in self._closure_of_item_cache:
                 closure = self._closure_of_item_cache[item]
             else:
                 closure = self._closure_of_item(item)
-            # _closure will add newly-started Items (Items with dot=0) to the
-            # result set.  After this operation, the result set will correspond
-            # to the new state.
+            # _closure will add newly-started Items (Items with dot=0) to the result
+            # set.  After this operation, the result set will correspond to the new
+            # state.
             results[next_symbol].update(closure)
         return results
 
     def _items(self):
         """The items function from ALSU p261.
 
-        _items computes the set of sets of LR(1) items for a shift-reduce
-        parser that matches the grammar.  Each set of LR(1) items corresponds
-        to a single DFA state.
+        _items computes the set of sets of LR(1) items for a shift-reduce parser
+        that matches the grammar.  Each set of LR(1) items corresponds to a single
+        DFA state.
 
         Returns:
-            A tuple.
+          A tuple.
 
-            The first element of the tuple is a list of sets of LR(1) items
-            (each set corresponding to a DFA state).
+          The first element of the tuple is a list of sets of LR(1) items (each set
+          corresponding to a DFA state).
 
-            The second element of the tuple is a dictionary from (int, symbol)
-            pairs to ints, where all the ints are indexes into the list of sets
-            of LR(1) items.  This dictionary is based on the results of the
-            _parallel_goto function, where item_sets[dict[i, sym]] ==
-            self._parallel_goto(item_sets[i])[sym].
+          The second element of the tuple is a dictionary from (int, symbol) pairs
+          to ints, where all the ints are indexes into the list of sets of LR(1)
+          items.  This dictionary is based on the results of the _Goto function,
+          where item_sets[dict[i, sym]] == self._Goto(item_sets[i], sym).
         """
         # The list of states is seeded with the marker S' production.
         item_list = [
@@ -471,13 +461,14 @@ class Grammar:
         items = {item_list[0]: 0}
         goto_table = collections.defaultdict(dict)
         i = 0
-        # For each state, figure out the new state when each symbol is added to
-        # the top of the parsing stack (see the comments in parser.parse).
-        # See _parallel_goto for an explanation of how that is actually
-        # computed.
+        # For each state, figure out what the new state when each symbol is added to
+        # the top of the parsing stack (see the comments in parser.parse).  See
+        # _Goto for an explanation of how that is actually computed.
         while i < len(item_list):
             item_set = item_list[i]
             gotos = self._parallel_goto(item_set)
+            # Sort the gotos so that the state numbering in the generated
+            # parser is deterministic.
             for symbol, goto in sorted(gotos.items()):
                 goto = frozenset(goto)
                 if goto not in items:
@@ -490,23 +481,22 @@ class Grammar:
     def parser(self):
         """parser returns an LR(1) parser for the Grammar.
 
-        This implements the Canonical LR(1) ("LR(1)") parser algorithm
-        ("Algorithm 4.56", ALSU p265), rather than the more common Lookahead
-        LR(1) ("LALR(1)") algorithm.  LALR(1) produces smaller tables, but is
-        more complex and does not cover all LR(1) grammars.  When the LR(1) and
-        LALR(1) algorithms were invented, table sizes were an important
-        consideration; now, the difference between a few hundred and a few
-        thousand entries is unlikely to matter.
+        This implements the Canonical LR(1) ("LR(1)") parser algorithm ("Algorithm
+        4.56", ALSU p265), rather than the more common Lookahead LR(1) ("LALR(1)")
+        algorithm.  LALR(1) produces smaller tables, but is more complex and does
+        not cover all LR(1) grammars.  When the LR(1) and LALR(1) algorithms were
+        invented, table sizes were an important consideration; now, the difference
+        between a few hundred and a few thousand entries is unlikely to matter.
 
-        At this time, Grammar does not handle ambiguous grammars, which are
-        commonly used to handle precedence, associativity, and the "dangling
-        else" problem.  Formally, these can always be handled by an unambiguous
-        grammar, though doing so can be cumbersome, particularly for expression
-        languages with many levels of precedence.  ALSU section 4.8 (pp278-287)
-        contains some techniques for handling these kinds of ambiguity.
+        At this time, Grammar does not handle ambiguous grammars, which are commonly
+        used to handle precedence, associativity, and the "dangling else" problem.
+        Formally, these can always be handled by an unambiguous grammar, though
+        doing so can be cumbersome, particularly for expression languages with many
+        levels of precedence.  ALSU section 4.8 (pp278-287) contains some techniques
+        for handling these kinds of ambiguity.
 
         Returns:
-            A Parser.
+          A Parser.
         """
         item_sets, goto = self._items()
         action = collections.defaultdict(dict)
@@ -561,7 +551,7 @@ ParseError = collections.namedtuple(
 ParseResult = collections.namedtuple("ParseResult", ["parse_tree", "error"])
 
 
-class Parser:
+class Parser(object):
     """Parser is a shift-reduce LR(1) parser.
 
     Generally, clients will want to get a Parser from a Grammar, rather than
@@ -571,21 +561,21 @@ class Parser:
     but can also be used directly for parsing.
 
     Attributes:
-        item_sets: A list of item sets which correspond to the state numbers in
-            the action and goto tables.  This is not necessary for parsing, but
-            is useful for debugging parsers.
-        goto: The GOTO table for this parser.
-        action: The ACTION table for this parser.
-        expected: A table of terminal symbols that are expected (that is, that
-            have a non-Error action) for each state.  This can be used to
-            provide more helpful error messages for parse errors.
-        conflicts: A set of unresolved conflicts found during table generation.
-        terminals: A set of terminal symbols in the grammar.
-        nonterminals: A set of nonterminal symbols in the grammar.
-        productions: A list of productions in the grammar.
-        default_errors: A dict of states to default error codes to use when
-            encountering an error in that state, when a more-specific Error for
-            the state/terminal pair has not been set.
+      item_sets: A list of item sets which correspond to the state numbers in
+        the action and goto tables.  This is not necessary for parsing, but is
+        useful for debugging parsers.
+      goto: The GOTO table for this parser.
+      action: The ACTION table for this parser.
+      expected: A table of terminal symbols that are expected (that is, that
+        have a non-Error action) for each state.  This can be used to provide
+        more helpful error messages for parse errors.
+      conflicts: A set of unresolved conflicts found during table generation.
+      terminals: A set of terminal symbols in the grammar.
+      nonterminals: A set of nonterminal symbols in the grammar.
+      productions: A list of productions in the grammar.
+      default_errors: A dict of states to default error codes to use when
+        encountering an error in that state, when a more-specific Error for the
+        state/terminal pair has not been set.
     """
 
     def __init__(
@@ -599,6 +589,7 @@ class Parser:
         productions,
         default_errors=None,
     ):
+        super(Parser, self).__init__()
         self.item_sets = item_sets
         self.goto = goto
         self.action = action
@@ -606,13 +597,10 @@ class Parser:
         self.terminals = terminals
         self.nonterminals = nonterminals
         self.productions = productions
-        if default_errors is None:
-            self.default_errors = {}
-        else:
-            self.default_errors = default_errors
+        self.default_errors = default_errors or {}
 
     def parse(self, tokens):
-        """parse implements Shift-Reduce parsing algorithm.
+        """parse implements the Shift-Reduce parsing algorithm.
 
         parse implements the standard shift-reduce algorithm outlined on ASLU
         pp236-237.
@@ -623,16 +611,16 @@ class Parser:
         Returns:
           A ParseResult.
         """
-        # The END_OF_INPUT token is explicitly added to avoid explicit "cursor
-        # < len(tokens)" checks.
+        # The END_OF_INPUT token is explicitly added to avoid explicit "cursor <
+        # len(tokens)" checks.
         tokens = list(tokens) + [Symbol(END_OF_INPUT)]
 
         # Each element of stack is a parse state and a (possibly partial) parse
-        # tree.  The state at the top of the stack encodes which productions
-        # are "active" (that is, which ones the parser has seen partial input
-        # which matches some prefix of the production, in a place where that
-        # production might be valid), and, for each active production, how much
-        # of the production has been completed.
+        # tree.  The state at the top of the stack encodes which productions are
+        # "active" (that is, which ones the parser has seen partial input which
+        # matches some prefix of the production, in a place where that production
+        # might be valid), and, for each active production, how much of the
+        # production has been completed.
         stack = [(0, None)]
 
         def state():
@@ -644,8 +632,8 @@ class Parser:
         # perform the corresponding action.
         while True:
             if tokens[cursor].symbol not in self.action.get(state(), {}):
-                # Most state/symbol entries would be Errors, so rather than
-                # exhaustively adding error entries, we just check here.
+                # Most state/symbol entries would be Errors, so rather than exhaustively
+                # adding error entries, we just check here.
                 if state() in self.default_errors:
                     next_action = Error(self.default_errors[state()])
                 else:
@@ -654,10 +642,9 @@ class Parser:
                 next_action = self.action[state()][tokens[cursor].symbol]
 
             if isinstance(next_action, Shift):
-                # Shift means that there are no "complete" productions on the
-                # stack, and so the current token should be shifted onto the
-                # stack, with a new state indicating the new set of "active"
-                # productions.
+                # Shift means that there are no "complete" productions on the stack,
+                # and so the current token should be shifted onto the stack, with a new
+                # state indicating the new set of "active" productions.
                 stack.append((next_action.state, tokens[cursor]))
                 cursor += 1
             elif isinstance(next_action, Accept):
@@ -668,41 +655,39 @@ class Parser:
                 )
                 return ParseResult(stack[-1][1], None)
             elif isinstance(next_action, Reduce):
-                # Reduce means that there is a complete production on the
-                # stack, and that the next symbol implies that the completed
-                # production is the correct production.
+                # Reduce means that there is a complete production on the stack, and
+                # that the next symbol implies that the completed production is the
+                # correct production.
                 #
-                # Per ALSU, we would simply pop an element off the state stack
-                # for each symbol on the rhs of the production, and then push a
-                # new state by looking up the (post-pop) current state and the
-                # lhs of the production in GOTO.  The GOTO table, in some
-                # sense, is equivalent to shift actions for nonterminal
-                # symbols.
+                # Per ALSU, we would simply pop an element off the state stack for each
+                # symbol on the rhs of the production, and then push a new state by
+                # looking up the (post-pop) current state and the lhs of the production
+                # in GOTO.  The GOTO table, in some sense, is equivalent to shift
+                # actions for nonterminal symbols.
                 #
-                # Here, we attach a new partial parse tree, with the production
-                # lhs as the "name" of the tree, and the popped trees as the
-                # "children" of the new tree.
+                # Here, we attach a new partial parse tree, with the production lhs as
+                # the "name" of the tree, and the popped trees as the "children" of the
+                # new tree.
                 children = [
                     item[1] for item in stack[len(stack) - len(next_action.rule.rhs) :]
                 ]
-                # Attach source_location, if known.  The source location will
-                # not be known if the reduction consumes no symbols (empty rhs)
-                # or if the client did not specify source_locations for tokens.
+                # Attach source_location, if known.  The source location will not be
+                # known if the reduction consumes no symbols (empty rhs) or if the
+                # client did not specify source_locations for tokens.
                 #
                 # It is necessary to loop in order to handle cases like:
                 #
                 # C -> c D
                 # D ->
                 #
-                # The D child of the C reduction will not have a source
-                # location (because it is not produced from any source), so it
-                # is necessary to scan backwards through C's children to find
-                # the end position.  The opposite is required in the case where
-                # initial children have no source.
+                # The D child of the C reduction will not have a source location
+                # (because it is not produced from any source), so it is necessary to
+                # scan backwards through C's children to find the end position.  The
+                # opposite is required in the case where initial children have no
+                # source.
                 #
-                # These loops implicitly handle the case where the reduction
-                # has no children, setting the source_location to None in that
-                # case.
+                # These loops implicitly handle the case where the reduction has no
+                # children, setting the source_location to None in that case.
                 start_position = None
                 end_position = None
                 for child in children:
@@ -731,10 +716,10 @@ class Parser:
                 del stack[len(stack) - len(next_action.rule.rhs) :]
                 stack.append((self.goto[state()][next_action.rule.lhs], reduction))
             elif isinstance(next_action, Error):
-                # Error means that the parse is impossible.  For typical
-                # grammars and texts, this usually happens within a few tokens
-                # after the mistake in the input stream, which is convenient
-                # (though imperfect) for error reporting.
+                # Error means that the parse is impossible.  For typical grammars and
+                # texts, this usually happens within a few tokens after the mistake in
+                # the input stream, which is convenient (though imperfect) for error
+                # reporting.
                 return ParseResult(
                     None,
                     ParseError(
@@ -762,18 +747,18 @@ class Parser:
         message itself.
 
         Arguments:
-            tokens: a list of tokens to parse.
-            error_token: the token where the parse should fail, or None if the
-                parse should fail at the implicit end-of-input token.
+          tokens: a list of tokens to parse.
+          error_token: the token where the parse should fail, or None if the parse
+            should fail at the implicit end-of-input token.
 
-                If the error_token is the special ANY_TOKEN, then the error
-                will be recorded as the default error for the error state.
-            error_code: a value to record for the error state reached by
-                parsing tokens.
+            If the error_token is the special ANY_TOKEN, then the error will be
+            recorded as the default error for the error state.
+          error_code: a value to record for the error state reached by parsing
+            tokens.
 
         Returns:
-            None if error_code was successfully recorded, or an error message
-            if there was a problem.
+          None if error_code was successfully recorded, or an error message if there
+          was a problem.
         """
         result = self.parse(tokens)
 
@@ -781,8 +766,8 @@ class Parser:
         if not result.error:
             return "Input successfully parsed."
 
-        # Check if the error occurred at the specified token; if not, then this
-        # was not the expected error.
+        # Check if the error occurred at the specified token; if not, then this was
+        # not the expected error.
         if error_token is None:
             error_symbol = END_OF_INPUT
             if result.error.token.symbol != END_OF_INPUT:
@@ -796,9 +781,9 @@ class Parser:
                     result.error.token.symbol, error_token.symbol
                 )
 
-        # If the expected error was found, attempt to mark it.  It is
-        # acceptable if the given error_code is already set as the error code
-        # for the given parse, but not if a different code is set.
+        # If the expected error was found, attempt to mark it.  It is acceptable if
+        # the given error_code is already set as the error code for the given parse,
+        # but not if a different code is set.
         if result.error.token == ANY_TOKEN:
             # For ANY_TOKEN, mark it as a default error.
             if result.error.state in self.default_errors:
@@ -806,8 +791,8 @@ class Parser:
                     return None
                 else:
                     return (
-                        "Attempted to overwrite existing default error code "
-                        "{!r} with new error code {!r} for state {}".format(
+                        "Attempted to overwrite existing default error code {!r} "
+                        "with new error code {!r} for state {}".format(
                             self.default_errors[result.error.state],
                             error_code,
                             result.error.state,
@@ -824,8 +809,8 @@ class Parser:
                     return None
                 else:
                     return (
-                        "Attempted to overwrite existing error code {!r} with "
-                        "new error code {!r} for state {}, terminal {}".format(
+                        "Attempted to overwrite existing error code {!r} with new "
+                        "error code {!r} for state {}, terminal {}".format(
                             existing_error.code,
                             error_code,
                             result.error.state,
@@ -835,3 +820,4 @@ class Parser:
             else:
                 self.action[result.error.state][error_symbol] = Error(error_code)
                 return None
+        assert False, "All other paths should lead to return."
