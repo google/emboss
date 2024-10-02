@@ -835,4 +835,3 @@ class Parser:
             else:
                 self.action[result.error.state][error_symbol] = Error(error_code)
                 return None
-  

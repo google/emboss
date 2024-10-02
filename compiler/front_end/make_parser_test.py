@@ -168,7 +168,9 @@ class ParserGeneratorTest(unittest.TestCase):
         )
 
     def test_generate_parser(self):
-        self.assertTrue(make_parser.generate_parser("C", _parse_productions("C -> s"), []))
+        self.assertTrue(
+            make_parser.generate_parser("C", _parse_productions("C -> s"), [])
+        )
         self.assertTrue(
             make_parser.generate_parser("C", _parse_productions("C -> s", "C -> d"), [])
         )
