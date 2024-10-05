@@ -51,7 +51,7 @@ def _render_atomic_type_name(type_ir, ir, suffix=None):
 
 def _check_that_inner_array_dimensions_are_constant(type_ir, source_file_name, errors):
     """Checks that inner array dimensions are constant."""
-    if type_ir.WhichOneof("size") == "automatic":
+    if type_ir.which_size == "automatic":
         errors.append(
             [
                 error.error(
@@ -61,7 +61,7 @@ def _check_that_inner_array_dimensions_are_constant(type_ir, source_file_name, e
                 )
             ]
         )
-    elif type_ir.WhichOneof("size") == "element_count":
+    elif type_ir.which_size == "element_count":
         if not ir_util.is_constant(type_ir.element_count):
             errors.append(
                 [
@@ -140,7 +140,7 @@ def _check_that_array_base_types_in_structs_are_multiples_of_bytes(
 
 def _check_constancy_of_constant_references(expression, source_file_name, errors, ir):
     """Checks that constant_references are constant."""
-    if expression.WhichOneof("expression") != "constant_reference":
+    if expression.which_expression != "constant_reference":
         return
     # This is a bit of a hack: really, we want to know that the referred-to object
     # has no dependencies on any instance variables of its parent structure; i.e.,
@@ -326,7 +326,7 @@ def _check_type_requirements_for_parameter_type(
     physical_type = runtime_parameter.physical_type_alias
     logical_type = runtime_parameter.type
     size = ir_util.constant_value(physical_type.size_in_bits)
-    if logical_type.WhichOneof("type") == "integer":
+    if logical_type.which_type == "integer":
         integer_errors = _integer_bounds_errors(
             logical_type.integer,
             "parameter",
@@ -345,7 +345,7 @@ def _check_type_requirements_for_parameter_type(
                 source_file_name,
             )
         )
-    elif logical_type.WhichOneof("type") == "enumeration":
+    elif logical_type.which_type == "enumeration":
         if physical_type.HasField("size_in_bits"):
             # This seems a little weird: for `UInt`, `Int`, etc., the explicit size is
             # required, but for enums it is banned.  This is because enums have a
@@ -567,9 +567,7 @@ def _bounds_can_fit_any_64_bit_integer_type(minimum, maximum):
 def _integer_bounds_errors_for_expression(expression, source_file_name):
     """Checks that `expression` is in range for int64_t or uint64_t."""
     # Only check non-constant subexpressions.
-    if expression.WhichOneof(
-        "expression"
-    ) == "function" and not ir_util.is_constant_type(expression.type):
+    if expression.which_expression == "function" and not ir_util.is_constant_type(expression.type):
         errors = []
         for arg in expression.function.args:
             errors += _integer_bounds_errors_for_expression(arg, source_file_name)
@@ -577,7 +575,7 @@ def _integer_bounds_errors_for_expression(expression, source_file_name):
             # Don't cascade bounds errors: report them at the lowest level they
             # appear.
             return errors
-    if expression.type.WhichOneof("type") == "integer":
+    if expression.type.which_type == "integer":
         errors = _integer_bounds_errors(
             expression.type.integer,
             "expression",
@@ -586,13 +584,11 @@ def _integer_bounds_errors_for_expression(expression, source_file_name):
         )
         if errors:
             return errors
-    if expression.WhichOneof(
-        "expression"
-    ) == "function" and not ir_util.is_constant_type(expression.type):
+    if expression.which_expression == "function" and not ir_util.is_constant_type(expression.type):
         int64_only_clauses = []
         uint64_only_clauses = []
         for clause in [expression] + list(expression.function.args):
-            if clause.type.WhichOneof("type") == "integer":
+            if clause.type.which_type == "integer":
                 arg_minimum = int(clause.type.integer.minimum_value)
                 arg_maximum = int(clause.type.integer.maximum_value)
                 if not _bounds_can_fit_64_bit_signed(arg_minimum, arg_maximum):

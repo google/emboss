@@ -24,10 +24,10 @@ from compiler.util import traverse_ir
 
 def _type_check_expression(expression, source_file_name, ir, errors):
     """Checks and annotates the type of an expression and all subexpressions."""
-    if ir_data_utils.reader(expression).type.WhichOneof("type"):
+    if ir_data_utils.reader(expression).type.which_type:
         # This expression has already been type checked.
         return
-    expression_variety = expression.WhichOneof("expression")
+    expression_variety = expression.which_expression
     if expression_variety == "constant":
         _type_check_integer_constant(expression)
     elif expression_variety == "constant_reference":
@@ -55,7 +55,7 @@ def _annotate_as_boolean(expression):
 def _type_check(
     expression, source_file_name, errors, type_oneof, type_name, expression_name
 ):
-    if ir_data_utils.reader(expression).type.WhichOneof("type") != type_oneof:
+    if ir_data_utils.reader(expression).type.which_type != type_oneof:
         errors.append(
             [
                 error.error(
@@ -80,7 +80,7 @@ def _type_check_boolean(expression, source_file_name, errors, expression_name):
 
 
 def _kind_check_field_reference(expression, source_file_name, errors, expression_name):
-    if expression.WhichOneof("expression") != "field_reference":
+    if expression.which_expression != "field_reference":
         errors.append(
             [
                 error.error(
@@ -286,7 +286,7 @@ def _type_check_local_reference(expression, ir, errors):
         )
         ir_data_utils.builder(expression).type.CopyFrom(field.read_transform.type)
         return
-    if not field.type.HasField("atomic_type"):
+    if field.type.atomic_type is None:
         ir_data_utils.builder(expression).type.opaque.CopyFrom(ir_data.OpaqueType())
     else:
         _set_expression_type_from_physical_type_reference(
@@ -313,7 +313,7 @@ def unbounded_expression_type_for_physical_type(type_definition):
     elif tuple(type_definition.name.canonical_name.object_path) == ("Flag",):
         # This is a hack: the Flag type should say that it is a boolean.
         return ir_data.ExpressionType(boolean=ir_data.BooleanType())
-    elif type_definition.HasField("enumeration"):
+    elif type_definition.enumeration is not None:
         return ir_data.ExpressionType(
             enumeration=ir_data.EnumType(
                 name=ir_data.Reference(
@@ -335,7 +335,7 @@ def _set_expression_type_from_physical_type_reference(expression, type_reference
 
 
 def _annotate_parameter_type(parameter, ir, source_file_name, errors):
-    if parameter.physical_type_alias.WhichOneof("type") != "atomic_type":
+    if parameter.physical_type_alias.which_type != "atomic_type":
         errors.append(
             [
                 error.error(
@@ -353,13 +353,13 @@ def _annotate_parameter_type(parameter, ir, source_file_name, errors):
 
 def _types_are_compatible(a, b):
     """Returns true if a and b have compatible types."""
-    if a.type.WhichOneof("type") != b.type.WhichOneof("type"):
+    if a.type.which_type != b.type.which_type:
         return False
-    elif a.type.WhichOneof("type") == "enumeration":
+    elif a.type.which_type == "enumeration":
         return ir_util.hashable_form_of_reference(
             a.type.enumeration.name
         ) == ir_util.hashable_form_of_reference(b.type.enumeration.name)
-    elif a.type.WhichOneof("type") in ("integer", "boolean"):
+    elif a.type.which_type in ("integer", "boolean"):
         # All integers are compatible with integers; booleans are compatible with
         # booleans
         return True
@@ -383,7 +383,7 @@ def _type_check_comparison_operator(expression, source_file_name, errors):
     left = expression.function.args[0]
     right = expression.function.args[1]
     for argument, name in ((left, "Left"), (right, "Right")):
-        if argument.type.WhichOneof("type") not in acceptable_types:
+        if argument.type.which_type not in acceptable_types:
             errors.append(
                 [
                     error.error(
@@ -415,7 +415,7 @@ def _type_check_comparison_operator(expression, source_file_name, errors):
 def _type_check_choice_operator(expression, source_file_name, errors):
     """Checks the type of the choice operator cond ? if_true : if_false."""
     condition = expression.function.args[0]
-    if condition.type.WhichOneof("type") != "boolean":
+    if condition.type.which_type != "boolean":
         errors.append(
             [
                 error.error(
@@ -426,7 +426,7 @@ def _type_check_choice_operator(expression, source_file_name, errors):
             ]
         )
     if_true = expression.function.args[1]
-    if if_true.type.WhichOneof("type") not in ("integer", "boolean", "enumeration"):
+    if if_true.type.which_type not in ("integer", "boolean", "enumeration"):
         errors.append(
             [
                 error.error(
@@ -450,11 +450,11 @@ def _type_check_choice_operator(expression, source_file_name, errors):
                 )
             ]
         )
-    if if_true.type.WhichOneof("type") == "integer":
+    if if_true.type.which_type == "integer":
         _annotate_as_integer(expression)
-    elif if_true.type.WhichOneof("type") == "boolean":
+    elif if_true.type.which_type == "boolean":
         _annotate_as_boolean(expression)
-    elif if_true.type.WhichOneof("type") == "enumeration":
+    elif if_true.type.which_type == "enumeration":
         ir_data_utils.builder(expression).type.enumeration.name.CopyFrom(
             if_true.type.enumeration.name
         )
@@ -492,9 +492,9 @@ def _type_check_field_existence_condition(field, source_file_name, errors):
 
 
 def _type_name_for_error_messages(expression_type):
-    if expression_type.WhichOneof("type") == "integer":
+    if expression_type.which_type == "integer":
         return "integer"
-    elif expression_type.WhichOneof("type") == "enumeration":
+    elif expression_type.which_type == "enumeration":
         # TODO(bolms): Should this be the fully-qualified name?
         return expression_type.enumeration.name.canonical_name.object_path[-1]
     assert False, "Shouldn't be here."
@@ -526,7 +526,7 @@ def _type_check_passed_parameters(atomic_type, ir, source_file_name, errors):
         )
         return
     for i in range(len(referenced_type.runtime_parameter)):
-        if referenced_type.runtime_parameter[i].type.WhichOneof("type") not in (
+        if referenced_type.runtime_parameter[i].type.which_type not in (
             "integer",
             "boolean",
             "enumeration",
@@ -535,9 +535,7 @@ def _type_check_passed_parameters(atomic_type, ir, source_file_name, errors):
             # definition site; no need for another, probably-confusing error at any
             # usage sites.
             continue
-        if atomic_type.runtime_parameter[i].type.WhichOneof(
-            "type"
-        ) != referenced_type.runtime_parameter[i].type.WhichOneof("type"):
+        if atomic_type.runtime_parameter[i].type.which_type != referenced_type.runtime_parameter[i].type.which_type:
             errors.append(
                 [
                     error.error(
@@ -565,7 +563,7 @@ def _type_check_passed_parameters(atomic_type, ir, source_file_name, errors):
 
 def _type_check_parameter(runtime_parameter, source_file_name, errors):
     """Checks the type of a parameter to a physical type."""
-    if runtime_parameter.type.WhichOneof("type") not in ("integer", "enumeration"):
+    if runtime_parameter.type.which_type not in ("integer", "enumeration"):
         errors.append(
             [
                 error.error(
