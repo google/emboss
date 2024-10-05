@@ -811,7 +811,7 @@ def _bottom_expression_from_reference(reference):
 
 @_handles("field-reference -> snake-reference field-reference-tail*")
 def _indirect_field_reference(field_reference, field_references):
-    if field_references.source_location.end is not None:
+    if field_references.source_location.HasField("end"):
         end_location = field_references.source_location.end
     else:
         end_location = field_reference.source_location.end
@@ -1097,7 +1097,7 @@ def _field(
     if abbreviation.list:
         field.abbreviation.CopyFrom(abbreviation.list[0])
     field.source_location.start.CopyFrom(location.source_location.start)
-    if field_body.source_location.end is not None:
+    if field_body.source_location.HasField("end"):
         field.source_location.end.CopyFrom(field_body.source_location.end)
     else:
         field.source_location.end.CopyFrom(newline.source_location.end)
@@ -1122,7 +1122,7 @@ def _virtual_field(let, name, equals, value, comment, newline, field_body):
         field.attribute.extend(field_body.list[0].attribute)
         field.documentation.extend(field_body.list[0].documentation)
     field.source_location.start.CopyFrom(let.source_location.start)
-    if field_body.source_location.end is not None:
+    if field_body.source_location.HasField("end"):
         field.source_location.end.CopyFrom(field_body.source_location.end)
     else:
         field.source_location.end.CopyFrom(newline.source_location.end)
@@ -1202,12 +1202,12 @@ def _inline_type_field(location, name, abbreviation, body):
     ir_data_utils.builder(body.source_location).start.CopyFrom(
         location.source_location.start
     )
-    if body.enumeration is not None:
+    if body.HasField("enumeration"):
         ir_data_utils.builder(body.enumeration).source_location.CopyFrom(
             body.source_location
         )
     else:
-        assert body.structure is not None
+        assert body.HasField("structure")
         ir_data_utils.builder(body.structure).source_location.CopyFrom(
             body.source_location
         )
