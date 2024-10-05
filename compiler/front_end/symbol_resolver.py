@@ -459,10 +459,7 @@ def _resolve_field_reference(field_reference, source_file_name, errors, ir):
     previous_reference = field_reference.path[0]
     for ref in field_reference.path[1:]:
         while ir_util.field_is_virtual(previous_field):
-            if (
-                previous_field.read_transform.which_expression
-                == "field_reference"
-            ):
+            if previous_field.read_transform.which_expression == "field_reference":
                 # Pass a separate error list into the recursive _resolve_field_reference
                 # call so that only one copy of the error for a particular reference
                 # will actually surface: in particular, the one that results from a

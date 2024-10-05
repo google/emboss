@@ -103,12 +103,8 @@ class TypeAnnotationTest(unittest.TestCase):
         self.assertEqual([], error.filter_errors(type_check.annotate_types(ir)))
         expression = ir.module[0].type[0].structure.field[1].location.size
         self.assertEqual(expression.type.which_type, "boolean")
-        self.assertEqual(
-            expression.function.args[0].type.which_type, "enumeration"
-        )
-        self.assertEqual(
-            expression.function.args[1].type.which_type, "enumeration"
-        )
+        self.assertEqual(expression.function.args[0].type.which_type, "enumeration")
+        self.assertEqual(expression.function.args[1].type.which_type, "enumeration")
 
     def test_adds_enum_comparison_operation_type(self):
         ir = self._make_ir(
@@ -121,12 +117,8 @@ class TypeAnnotationTest(unittest.TestCase):
         self.assertEqual([], error.filter_errors(type_check.annotate_types(ir)))
         expression = ir.module[0].type[0].structure.field[1].location.size
         self.assertEqual(expression.type.which_type, "boolean")
-        self.assertEqual(
-            expression.function.args[0].type.which_type, "enumeration"
-        )
-        self.assertEqual(
-            expression.function.args[1].type.which_type, "enumeration"
-        )
+        self.assertEqual(expression.function.args[0].type.which_type, "enumeration")
+        self.assertEqual(expression.function.args[1].type.which_type, "enumeration")
 
     def test_adds_integer_field_type(self):
         ir = self._make_ir(

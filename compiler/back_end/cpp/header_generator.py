@@ -842,9 +842,7 @@ def _render_expression(expression, ir, field_reader=None, subexpressions=None):
             )
     else:
         # There shouldn't be any "opaque" type expressions here.
-        assert False, "Unhandled expression type {}".format(
-            expression.type.which_type
-        )
+        assert False, "Unhandled expression type {}".format(expression.type.which_type)
 
     result = None
     # Otherwise, render the operation.

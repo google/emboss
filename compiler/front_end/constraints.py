@@ -567,7 +567,9 @@ def _bounds_can_fit_any_64_bit_integer_type(minimum, maximum):
 def _integer_bounds_errors_for_expression(expression, source_file_name):
     """Checks that `expression` is in range for int64_t or uint64_t."""
     # Only check non-constant subexpressions.
-    if expression.which_expression == "function" and not ir_util.is_constant_type(expression.type):
+    if expression.which_expression == "function" and not ir_util.is_constant_type(
+        expression.type
+    ):
         errors = []
         for arg in expression.function.args:
             errors += _integer_bounds_errors_for_expression(arg, source_file_name)
@@ -584,7 +586,9 @@ def _integer_bounds_errors_for_expression(expression, source_file_name):
         )
         if errors:
             return errors
-    if expression.which_expression == "function" and not ir_util.is_constant_type(expression.type):
+    if expression.which_expression == "function" and not ir_util.is_constant_type(
+        expression.type
+    ):
         int64_only_clauses = []
         uint64_only_clauses = []
         for clause in [expression] + list(expression.function.args):

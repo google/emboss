@@ -535,7 +535,10 @@ def _type_check_passed_parameters(atomic_type, ir, source_file_name, errors):
             # definition site; no need for another, probably-confusing error at any
             # usage sites.
             continue
-        if atomic_type.runtime_parameter[i].type.which_type != referenced_type.runtime_parameter[i].type.which_type:
+        if (
+            atomic_type.runtime_parameter[i].type.which_type
+            != referenced_type.runtime_parameter[i].type.which_type
+        ):
             errors.append(
                 [
                     error.error(
