@@ -26,16 +26,12 @@ class DocsAreUpToDateTest(unittest.TestCase):
     def test_grammar_md(self):
         doc_md = pkgutil.get_data("doc", "grammar.md").decode(encoding="UTF-8")
         correct_md = generate_grammar_md.generate_grammar_md()
-        # If this fails, run:
-        #
-        # bazel run //compiler/front_end:generate_grammar_md > doc/grammar.md
-        #
-        # Be sure to check that the results look good before committing!
+        msg = "Run:\n\nbazel run //compiler/front_end:generate_grammar_md > doc/grammar.md"
         doc_md_lines = doc_md.splitlines()
         correct_md_lines = correct_md.splitlines()
         for i in range(len(doc_md_lines)):
-            self.assertEqual(correct_md_lines[i], doc_md_lines[i])
-        self.assertEqual(correct_md, doc_md)
+            self.assertEqual(correct_md_lines[i], doc_md_lines[i], msg=msg)
+        self.assertEqual(correct_md, doc_md, msg=msg)
 
 
 if __name__ == "__main__":
