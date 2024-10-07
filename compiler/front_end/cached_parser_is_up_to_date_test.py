@@ -1,4 +1,4 @@
-# Copyright 2019 Google LLC
+# Copyright 2024 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,10 +28,11 @@ class CachedParserIsUpToDateTest(unittest.TestCase):
             "compiler.front_end", "cached_parser.py"
         ).decode(encoding="UTF-8")
         correct_parser_text = generate_cached_parser.generate_parser_file_text()
-        # If this fails, run:
-        #
-        # bazel run //compiler/front_end:generate_cached_parser > compiler/front_end/cached_parser.py
-        self.assertEqual(cached_parser_text, correct_parser_text)
+        self.assertEqual(
+            cached_parser_text,
+            correct_parser_text,
+            msg="Run\n\nbazel run //compiler/front_end:generate_cached_parser > compiler/front_end/cached_parser.py",
+        )
 
 
 if __name__ == "__main__":
