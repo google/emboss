@@ -164,7 +164,9 @@ def parse_and_log_errors(input_file, import_dirs, color_output, stop_before_step
       (ir, debug_info, errors)
     """
     ir, debug_info, errors = glue.parse_emboss_file(
-        input_file, _find_in_dirs_and_read(import_dirs), stop_before_step=stop_before_step
+        input_file,
+        _find_in_dirs_and_read(import_dirs),
+        stop_before_step=stop_before_step,
     )
     if errors:
         _show_errors(errors, ir, color_output)
@@ -174,7 +176,10 @@ def parse_and_log_errors(input_file, import_dirs, color_output, stop_before_step
 
 def main(flags):
     ir, debug_info, errors = parse_and_log_errors(
-        flags.input_file[0], flags.import_dirs, flags.color_output, stop_before_step=flags.debug_stop_before_step[0],
+        flags.input_file[0],
+        flags.import_dirs,
+        flags.color_output,
+        stop_before_step=flags.debug_stop_before_step[0],
     )
     if errors:
         return 1

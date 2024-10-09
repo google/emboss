@@ -325,7 +325,10 @@ def process_ir(ir, stop_before_step):
         write_inference.set_write_methods,
     )
     valid_step_names = [f.__name__ for f in passes]
-    assert stop_before_step in [None] + valid_step_names, f"Bad value '{stop_before_step}' for stop_before_step.  Valid values: " + " ".join(valid_step_names)
+    assert stop_before_step in [None] + valid_step_names, (
+        f"Bad value '{stop_before_step}' for stop_before_step.  Valid values: "
+        + " ".join(valid_step_names)
+    )
     # Some parts of the IR are synthesized from "natural" parts of the IR, before
     # the natural parts have been fully error checked.  Because of this, the
     # synthesized parts can have errors; in a couple of cases, they can have
