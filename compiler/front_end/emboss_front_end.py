@@ -58,7 +58,6 @@ def _parse_command_line(argv):
     parser.add_argument(
         "--debug-stop-before-step",
         type=str,
-        nargs=1,
         help="Stop processing before the specified step.",
     )
     parser.add_argument(
@@ -179,7 +178,7 @@ def main(flags):
         flags.input_file[0],
         flags.import_dirs,
         flags.color_output,
-        stop_before_step=flags.debug_stop_before_step[0],
+        stop_before_step=flags.debug_stop_before_step,
     )
     if errors:
         return 1
