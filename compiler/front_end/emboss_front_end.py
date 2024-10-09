@@ -56,6 +56,12 @@ def _parse_command_line(argv):
         "before symbol resolution.",
     )
     parser.add_argument(
+        "--debug-stop-before-step",
+        type=str,
+        nargs=1,
+        help="Stop processing before the specified step.",
+    )
+    parser.add_argument(
         "--debug-show-full-ir",
         action="store_true",
         help="Show the final IR of the main input file.",
@@ -146,7 +152,7 @@ def _find_in_dirs_and_read(import_dirs):
     return _find_and_read
 
 
-def parse_and_log_errors(input_file, import_dirs, color_output):
+def parse_and_log_errors(input_file, import_dirs, color_output, stop_before_step=None):
     """Fully parses an .emb and logs any errors.
 
     Arguments:
@@ -158,7 +164,7 @@ def parse_and_log_errors(input_file, import_dirs, color_output):
       (ir, debug_info, errors)
     """
     ir, debug_info, errors = glue.parse_emboss_file(
-        input_file, _find_in_dirs_and_read(import_dirs)
+        input_file, _find_in_dirs_and_read(import_dirs), stop_before_step=stop_before_step
     )
     if errors:
         _show_errors(errors, ir, color_output)
@@ -168,7 +174,7 @@ def parse_and_log_errors(input_file, import_dirs, color_output):
 
 def main(flags):
     ir, debug_info, errors = parse_and_log_errors(
-        flags.input_file[0], flags.import_dirs, flags.color_output
+        flags.input_file[0], flags.import_dirs, flags.color_output, stop_before_step=flags.debug_stop_before_step[0],
     )
     if errors:
         return 1
