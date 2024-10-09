@@ -1,4 +1,4 @@
 [tool.black]
 extend-exclude = '''
-^/compiler/front_end/cached_parser\.py$
+^/compiler/front_end/generated/cached_parser\.py$
 '''

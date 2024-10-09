@@ -25,11 +25,9 @@ from compiler.util import simple_memoizer
 @simple_memoizer.memoize
 def _load_module_parser():
     module_parser = cached_parser.module_parser()
-    if (
-        module_parser.productions
-        == set(module_ir.PRODUCTIONS)
-        | {parser_types.Production(lr1.START_PRIME, (module_ir.START_SYMBOL,))}
-    ):
+    if module_parser.productions == set(module_ir.PRODUCTIONS) | {
+        parser_types.Production(lr1.START_PRIME, (module_ir.START_SYMBOL,))
+    }:
         return module_parser
     return make_parser.build_module_parser()
 
@@ -37,15 +35,9 @@ def _load_module_parser():
 @simple_memoizer.memoize
 def _load_expression_parser():
     expression_parser = cached_parser.expression_parser()
-    if (
-        expression_parser.productions
-        == set(module_ir.PRODUCTIONS)
-        | {
-            parser_types.Production(
-                lr1.START_PRIME, (module_ir.EXPRESSION_START_SYMBOL,)
-            )
-        }
-    ):
+    if expression_parser.productions == set(module_ir.PRODUCTIONS) | {
+        parser_types.Production(lr1.START_PRIME, (module_ir.EXPRESSION_START_SYMBOL,))
+    }:
         return expression_parser
     return make_parser.build_expression_parser()
 
