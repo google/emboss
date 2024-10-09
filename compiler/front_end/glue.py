@@ -374,9 +374,7 @@ def process_ir(ir, stop_before_step):
     deferred_errors = []
     for function in passes:
         if stop_before_step == function.__name__:
-            print("Stopping before", stop_before_step, file=sys.stderr)
             return (ir, [])
-        print("Running", function.__name__, file=sys.stderr)
         errors, hidden_errors = error.split_errors(function(ir))
         if errors:
             return (None, errors)
