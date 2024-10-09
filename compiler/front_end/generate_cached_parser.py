@@ -227,6 +227,10 @@ _HEADER = """
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# GENERATED CODE.  DO NOT MANUALLY EDIT.  TO UPDATE, RUN:
+#
+#     bazel run //compiler/front_end:generate_cached_parser > compiler/front_end/generated/cached_parser.py
+
 from compiler.front_end import lr1
 from compiler.util import parser_types
 """.strip()

@@ -110,7 +110,7 @@ py_library(
 
 py_library(
     name = "cached_parser",
-    srcs = ["cached_parser.py"],
+    srcs = ["generated/cached_parser.py"],
     deps = [
         ":lr1",
         "//compiler/util:parser_types",
@@ -492,7 +492,7 @@ py_test(
     name = "cached_parser_is_up_to_date_test",
     srcs = ["cached_parser_is_up_to_date_test.py"],
     data = [
-        "cached_parser.py",
+        "generated/cached_parser.py",
     ],
     python_version = "PY3",
     deps = [

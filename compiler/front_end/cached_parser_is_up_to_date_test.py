@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests that doc/grammar.md is up to date."""
+"""Tests that compiler/front_end/generated/cached_parser.py is up to date."""
 
 import pkgutil
 import unittest
@@ -25,13 +25,13 @@ class CachedParserIsUpToDateTest(unittest.TestCase):
 
     def test_grammar_md(self):
         cached_parser_text = pkgutil.get_data(
-            "compiler.front_end", "cached_parser.py"
+            "compiler.front_end.generated", "cached_parser.py"
         ).decode(encoding="UTF-8")
         correct_parser_text = generate_cached_parser.generate_parser_file_text()
         self.assertEqual(
             cached_parser_text,
             correct_parser_text,
-            msg="Run\n\nbazel run //compiler/front_end:generate_cached_parser > compiler/front_end/cached_parser.py",
+            msg="Run\n\nbazel run //compiler/front_end:generate_cached_parser > compiler/front_end/generated/cached_parser.py",
         )
 
 
