@@ -36,7 +36,7 @@ def compute_constraints_of_expression(expression, ir):
     """Adds appropriate bounding constraints to the given expression."""
     if ir_util.is_constant_type(expression.type):
         return
-    expression_variety = expression.WhichOneof("expression")
+    expression_variety = expression.which_expression
     if expression_variety == "constant":
         _compute_constant_value_of_constant(expression)
     elif expression_variety == "constant_reference":
@@ -51,7 +51,7 @@ def compute_constraints_of_expression(expression, ir):
         _compute_constant_value_of_boolean_constant(expression)
     else:
         assert False, "Unknown expression variety {!r}".format(expression_variety)
-    if expression.type.WhichOneof("type") == "integer":
+    if expression.type.which_type == "integer":
         _assert_integer_constraints(expression)
 
 
@@ -138,7 +138,7 @@ def _compute_constraints_of_field_reference(expression, ir):
         ir_data_utils.builder(expression).type.CopyFrom(field.read_transform.type)
         return
     # Non-virtual non-integer fields do not (yet) have constraints.
-    if expression.type.WhichOneof("type") == "integer":
+    if expression.type.which_type == "integer":
         # TODO(bolms): These lines will need to change when support is added for
         # fixed-point types.
         expression.type.integer.modulus = "1"
@@ -205,7 +205,7 @@ def _set_integer_constraints_from_physical_type(expression, physical_type, type_
 
 
 def _compute_constraints_of_parameter(parameter):
-    if parameter.type.WhichOneof("type") == "integer":
+    if parameter.type.which_type == "integer":
         type_size = ir_util.constant_value(parameter.physical_type_alias.size_in_bits)
         _set_integer_constraints_from_physical_type(
             parameter, parameter.physical_type_alias, type_size
@@ -238,14 +238,14 @@ def _compute_constraints_of_builtin_value(expression):
         # [requires] attribute, are elevated to write-through fields, so that the
         # [requires] clause can be checked in Write, CouldWriteValue, TryToWrite,
         # Read, and Ok.
-        if expression.type.WhichOneof("type") == "integer":
+        if expression.type.which_type == "integer":
             assert expression.type.integer.modulus
             assert expression.type.integer.modular_value
             assert expression.type.integer.minimum_value
             assert expression.type.integer.maximum_value
-        elif expression.type.WhichOneof("type") == "enumeration":
+        elif expression.type.which_type == "enumeration":
             assert expression.type.enumeration.name
-        elif expression.type.WhichOneof("type") == "boolean":
+        elif expression.type.which_type == "boolean":
             pass
         else:
             assert False, "Unexpected type for $logical_value"
@@ -559,9 +559,9 @@ def _compute_constraints_of_bound_function(expression):
 
 def _compute_constraints_of_maximum_function(expression):
     """Computes the constraints of the $max function."""
-    assert expression.type.WhichOneof("type") == "integer"
+    assert expression.type.which_type == "integer"
     args = expression.function.args
-    assert args[0].type.WhichOneof("type") == "integer"
+    assert args[0].type.which_type == "integer"
     # The minimum value of the result occurs when every argument takes its minimum
     # value, which means that the minimum result is the maximum-of-minimums.
     expression.type.integer.minimum_value = str(
@@ -683,7 +683,7 @@ def _compute_constraints_of_choice_operator(expression):
     # constraints.check_constraints() will complain if minimum and maximum are not
     # set correctly.  I'm (bolms@) not sure if the modulus/modular_value pulls its
     # weight, but for completeness I've left it in.
-    if if_true.type.WhichOneof("type") == "integer":
+    if if_true.type.which_type == "integer":
         # The minimum value of the choice is the minimum value of either side, and
         # the maximum is the maximum value of either side.
         expression.type.integer.minimum_value = str(
@@ -709,10 +709,10 @@ def _compute_constraints_of_choice_operator(expression):
         expression.type.integer.modulus = str(new_modulus)
         expression.type.integer.modular_value = str(new_modular_value)
     else:
-        assert if_true.type.WhichOneof("type") in (
+        assert if_true.type.which_type in (
             "boolean",
             "enumeration",
-        ), "Unknown type {} for expression".format(if_true.type.WhichOneof("type"))
+        ), "Unknown type {} for expression".format(if_true.type.which_type)
 
 
 def _greatest_common_divisor(a, b):

@@ -57,7 +57,7 @@ def _is_constant_boolean(attr, module_source_file):
 
 def _is_boolean(attr, module_source_file):
     """Checks if the given attr is a boolean."""
-    if attr.value.expression.type.WhichOneof("type") != "boolean":
+    if attr.value.expression.type.which_type != "boolean":
         return [
             [
                 error.error(
@@ -76,7 +76,7 @@ def _is_constant_integer(attr, module_source_file):
     """Checks if the given attr is an integer constant expression."""
     if (
         not attr.value.HasField("expression")
-        or attr.value.expression.type.WhichOneof("type") != "integer"
+        or attr.value.expression.type.which_type != "integer"
     ):
         return [
             [

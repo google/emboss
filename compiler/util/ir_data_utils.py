@@ -277,7 +277,7 @@ class _IrDataBuilder(Generic[MessageT]):
         if ir is None:
             return object.__getattribute__(self, name)
 
-        if name in ("HasField", "WhichOneof"):
+        if name in ("HasField",):
             return getattr(ir, name)
 
         field_spec = field_specs(ir).get(name)
@@ -362,8 +362,13 @@ class _ReadOnlyFieldChecker:
             if isinstance(ir_or_spec, ir_data_fields.FieldSpec):
                 if name == "HasField":
                     return lambda x: False
-                if name == "WhichOneof":
-                    return lambda x: None
+                # This *should* be limited to only the `which_` attributes that
+                # correspond to real oneofs, but that would add complexity and
+                # runtime, and the odds are low that laxness here causes a bug
+                # -- the same code needs to run against real IR objects that
+                # will raise if a nonexistent `which_` field is accessed.
+                if name.startswith("which_"):
+                    return None
             return object.__getattribute__(ir_or_spec, name)
 
         if isinstance(ir_or_spec, ir_data_fields.FieldSpec):

@@ -1007,7 +1007,7 @@ class ComputeConstantsTest(unittest.TestCase):
         )
         self.assertEqual([], expression_bounds.compute_constants(ir))
         expr = ir.module[0].type[0].structure.field[1].existence_condition
-        self.assertEqual("boolean", expr.type.WhichOneof("type"))
+        self.assertEqual("boolean", expr.type.which_type)
         self.assertFalse(expr.type.boolean.HasField("value"))
 
     def test_uint_value_range_for_explicit_size(self):

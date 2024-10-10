@@ -441,7 +441,7 @@ def _verify_requires_attribute_on_field(field, source_file_name, ir, errors):
         field_expression_type = type_check.unbounded_expression_type_for_physical_type(
             field_type
         )
-    if field_expression_type.WhichOneof("type") not in (
+    if field_expression_type.which_type not in (
         "integer",
         "enumeration",
         "boolean",

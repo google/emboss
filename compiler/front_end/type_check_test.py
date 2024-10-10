@@ -39,7 +39,7 @@ class TypeAnnotationTest(unittest.TestCase):
         )
         self.assertEqual([], type_check.annotate_types(ir))
         expression = ir.module[0].type[0].structure.field[1].location.size
-        self.assertEqual(expression.type.WhichOneof("type"), "integer")
+        self.assertEqual(expression.type.which_type, "integer")
 
     def test_adds_boolean_constant_type(self):
         ir = self._make_ir(
@@ -51,7 +51,7 @@ class TypeAnnotationTest(unittest.TestCase):
             ir_data_utils.IrDataSerializer(ir).to_json(indent=2),
         )
         expression = ir.module[0].type[0].structure.field[1].location.size
-        self.assertEqual(expression.type.WhichOneof("type"), "boolean")
+        self.assertEqual(expression.type.which_type, "boolean")
 
     def test_adds_enum_constant_type(self):
         ir = self._make_ir(
@@ -62,7 +62,7 @@ class TypeAnnotationTest(unittest.TestCase):
         )
         self.assertEqual([], error.filter_errors(type_check.annotate_types(ir)))
         expression = ir.module[0].type[0].structure.field[0].location.size
-        self.assertEqual(expression.type.WhichOneof("type"), "enumeration")
+        self.assertEqual(expression.type.which_type, "enumeration")
         enum_type_name = expression.type.enumeration.name.canonical_name
         self.assertEqual(enum_type_name.module_file, "m.emb")
         self.assertEqual(enum_type_name.object_path[0], "Enum")
@@ -77,7 +77,7 @@ class TypeAnnotationTest(unittest.TestCase):
         )
         self.assertEqual([], error.filter_errors(type_check.annotate_types(ir)))
         expression = ir.module[0].type[0].structure.field[1].location.size
-        self.assertEqual(expression.type.WhichOneof("type"), "enumeration")
+        self.assertEqual(expression.type.which_type, "enumeration")
         enum_type_name = expression.type.enumeration.name.canonical_name
         self.assertEqual(enum_type_name.module_file, "m.emb")
         self.assertEqual(enum_type_name.object_path[0], "Enum")
@@ -88,9 +88,9 @@ class TypeAnnotationTest(unittest.TestCase):
         )
         self.assertEqual([], type_check.annotate_types(ir))
         expression = ir.module[0].type[0].structure.field[1].location.size
-        self.assertEqual(expression.type.WhichOneof("type"), "integer")
-        self.assertEqual(expression.function.args[0].type.WhichOneof("type"), "integer")
-        self.assertEqual(expression.function.args[1].type.WhichOneof("type"), "integer")
+        self.assertEqual(expression.type.which_type, "integer")
+        self.assertEqual(expression.function.args[0].type.which_type, "integer")
+        self.assertEqual(expression.function.args[1].type.which_type, "integer")
 
     def test_adds_enum_operation_type(self):
         ir = self._make_ir(
@@ -102,13 +102,9 @@ class TypeAnnotationTest(unittest.TestCase):
         )
         self.assertEqual([], error.filter_errors(type_check.annotate_types(ir)))
         expression = ir.module[0].type[0].structure.field[1].location.size
-        self.assertEqual(expression.type.WhichOneof("type"), "boolean")
-        self.assertEqual(
-            expression.function.args[0].type.WhichOneof("type"), "enumeration"
-        )
-        self.assertEqual(
-            expression.function.args[1].type.WhichOneof("type"), "enumeration"
-        )
+        self.assertEqual(expression.type.which_type, "boolean")
+        self.assertEqual(expression.function.args[0].type.which_type, "enumeration")
+        self.assertEqual(expression.function.args[1].type.which_type, "enumeration")
 
     def test_adds_enum_comparison_operation_type(self):
         ir = self._make_ir(
@@ -120,13 +116,9 @@ class TypeAnnotationTest(unittest.TestCase):
         )
         self.assertEqual([], error.filter_errors(type_check.annotate_types(ir)))
         expression = ir.module[0].type[0].structure.field[1].location.size
-        self.assertEqual(expression.type.WhichOneof("type"), "boolean")
-        self.assertEqual(
-            expression.function.args[0].type.WhichOneof("type"), "enumeration"
-        )
-        self.assertEqual(
-            expression.function.args[1].type.WhichOneof("type"), "enumeration"
-        )
+        self.assertEqual(expression.type.which_type, "boolean")
+        self.assertEqual(expression.function.args[0].type.which_type, "enumeration")
+        self.assertEqual(expression.function.args[1].type.which_type, "enumeration")
 
     def test_adds_integer_field_type(self):
         ir = self._make_ir(
@@ -134,7 +126,7 @@ class TypeAnnotationTest(unittest.TestCase):
         )
         self.assertEqual([], type_check.annotate_types(ir))
         expression = ir.module[0].type[0].structure.field[1].location.size
-        self.assertEqual(expression.type.WhichOneof("type"), "integer")
+        self.assertEqual(expression.type.which_type, "integer")
 
     def test_adds_opaque_field_type(self):
         ir = self._make_ir(
@@ -146,7 +138,7 @@ class TypeAnnotationTest(unittest.TestCase):
         )
         self.assertEqual([], error.filter_errors(type_check.annotate_types(ir)))
         expression = ir.module[0].type[0].structure.field[1].location.size
-        self.assertEqual(expression.type.WhichOneof("type"), "opaque")
+        self.assertEqual(expression.type.which_type, "opaque")
 
     def test_adds_opaque_field_type_for_array(self):
         ir = self._make_ir(
@@ -154,7 +146,7 @@ class TypeAnnotationTest(unittest.TestCase):
         )
         self.assertEqual([], error.filter_errors(type_check.annotate_types(ir)))
         expression = ir.module[0].type[0].structure.field[1].location.size
-        self.assertEqual(expression.type.WhichOneof("type"), "opaque")
+        self.assertEqual(expression.type.which_type, "opaque")
 
     def test_error_on_bad_plus_operand_types(self):
         ir = self._make_ir(
@@ -395,7 +387,7 @@ class TypeAnnotationTest(unittest.TestCase):
         )
         expression = ir.module[0].type[0].structure.field[1].location.size
         self.assertEqual([], error.filter_errors(type_check.annotate_types(ir)))
-        self.assertEqual("boolean", expression.type.WhichOneof("type"))
+        self.assertEqual("boolean", expression.type.which_type)
 
     def test_choice_of_integers(self):
         ir = self._make_ir(
@@ -405,7 +397,7 @@ class TypeAnnotationTest(unittest.TestCase):
         )
         expression = ir.module[0].type[0].structure.field[1].location.size
         self.assertEqual([], type_check.annotate_types(ir))
-        self.assertEqual("integer", expression.type.WhichOneof("type"))
+        self.assertEqual("integer", expression.type.which_type)
 
     def test_choice_of_enums(self):
         ir = self._make_ir(
@@ -417,7 +409,7 @@ class TypeAnnotationTest(unittest.TestCase):
         )
         expression = ir.module[0].type[0].structure.field[1].location.size
         self.assertEqual([], error.filter_errors(type_check.annotate_types(ir)))
-        self.assertEqual("enumeration", expression.type.WhichOneof("type"))
+        self.assertEqual("enumeration", expression.type.which_type)
         self.assertFalse(expression.type.enumeration.HasField("value"))
         self.assertEqual(
             "m.emb", expression.type.enumeration.name.canonical_name.module_file
@@ -579,7 +571,7 @@ class TypeAnnotationTest(unittest.TestCase):
         ir = self._make_ir("struct Foo:\n" "  $max(1, 2, 3) [+1]  UInt:8[]  x\n")
         expression = ir.module[0].type[0].structure.field[0].location.start
         self.assertEqual([], type_check.annotate_types(ir))
-        self.assertEqual("integer", expression.type.WhichOneof("type"))
+        self.assertEqual("integer", expression.type.which_type)
 
     def test_error_on_bad_max_argument(self):
         ir = self._make_ir(
@@ -622,7 +614,7 @@ class TypeAnnotationTest(unittest.TestCase):
         ir = self._make_ir("struct Foo:\n" "  $upper_bound(3) [+1]  UInt:8[]  x\n")
         expression = ir.module[0].type[0].structure.field[0].location.start
         self.assertEqual([], type_check.annotate_types(ir))
-        self.assertEqual("integer", expression.type.WhichOneof("type"))
+        self.assertEqual("integer", expression.type.which_type)
 
     def test_upper_bound_too_few_arguments(self):
         ir = self._make_ir("struct Foo:\n" "  $upper_bound() [+1]  UInt:8[]  x\n")
@@ -681,7 +673,7 @@ class TypeAnnotationTest(unittest.TestCase):
         ir = self._make_ir("struct Foo:\n" "  $lower_bound(3) [+1]  UInt:8[]  x\n")
         expression = ir.module[0].type[0].structure.field[0].location.start
         self.assertEqual([], type_check.annotate_types(ir))
-        self.assertEqual("integer", expression.type.WhichOneof("type"))
+        self.assertEqual("integer", expression.type.which_type)
 
     def test_lower_bound_too_few_arguments(self):
         ir = self._make_ir("struct Foo:\n" "  $lower_bound() [+1]  UInt:8[]  x\n")

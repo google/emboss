@@ -179,7 +179,7 @@ class ResolveSymbolsTest(unittest.TestCase):
         struct_ir = ir.module[0].type[4].structure
         array_type = struct_ir.field[0].type.array_type
         # The symbol resolver should ignore void fields.
-        self.assertEqual("automatic", array_type.WhichOneof("size"))
+        self.assertEqual("automatic", array_type.which_size)
 
     def test_name_definitions_have_correct_canonical_names(self):
         ir = self._construct_ir(_HAPPY_EMB)

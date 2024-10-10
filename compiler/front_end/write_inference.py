@@ -51,9 +51,9 @@ def _find_field_reference_path(expression):
 
 def _recursively_find_field_reference_path(expression):
     """Recursive implementation of _find_field_reference_path."""
-    if expression.WhichOneof("expression") == "field_reference":
+    if expression.which_expression == "field_reference":
         return 1, []
-    elif expression.WhichOneof("expression") == "function":
+    elif expression.which_expression == "function":
         field_count = 0
         path = []
         for index in range(len(expression.function.args)):
@@ -228,7 +228,7 @@ def _add_write_method(field, ir):
     # requirement.
     requires_attr = ir_util.get_attribute(field.attribute, attributes.REQUIRES)
     if (
-        field_checker.read_transform.WhichOneof("expression") != "field_reference"
+        field_checker.read_transform.which_expression != "field_reference"
         or requires_attr is not None
     ):
         inverse = _invert_expression(field.read_transform, ir)

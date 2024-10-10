@@ -592,19 +592,19 @@ def _builtin_function_name(function):
 
 def _cpp_basic_type_for_expression_type(expression_type, ir):
     """Returns the C++ basic type (int32_t, bool, etc.) for an ExpressionType."""
-    if expression_type.WhichOneof("type") == "integer":
+    if expression_type.which_type == "integer":
         return _cpp_integer_type_for_range(
             int(expression_type.integer.minimum_value),
             int(expression_type.integer.maximum_value),
         )
-    elif expression_type.WhichOneof("type") == "boolean":
+    elif expression_type.which_type == "boolean":
         return "bool"
-    elif expression_type.WhichOneof("type") == "enumeration":
+    elif expression_type.which_type == "enumeration":
         return _get_fully_qualified_name(
             expression_type.enumeration.name.canonical_name, ir
         )
     else:
-        assert False, "Unknown expression type " + expression_type.WhichOneof("type")
+        assert False, "Unknown expression type " + expression_type.which_type
 
 
 def _cpp_basic_type_for_expression(expression, ir):
@@ -667,12 +667,12 @@ def _render_builtin_operation(expression, ir, field_reader, subexpressions):
     enum_types = set()
     have_boolean_types = False
     for subexpression in [expression] + list(args):
-        if subexpression.type.WhichOneof("type") == "integer":
+        if subexpression.type.which_type == "integer":
             minimum_integers.append(int(subexpression.type.integer.minimum_value))
             maximum_integers.append(int(subexpression.type.integer.maximum_value))
-        elif subexpression.type.WhichOneof("type") == "enumeration":
+        elif subexpression.type.which_type == "enumeration":
             enum_types.add(_cpp_basic_type_for_expression(subexpression, ir))
-        elif subexpression.type.WhichOneof("type") == "boolean":
+        elif subexpression.type.which_type == "boolean":
             have_boolean_types = True
     # At present, all Emboss functions other than `$has` take and return one of
     # the following:
@@ -820,7 +820,7 @@ def _render_expression(expression, ir, field_reader=None, subexpressions=None):
     # will fit into C++ types, or that operator arguments and return types can fit
     # in the same type: expressions like `-0x8000_0000_0000_0000` and
     # `0x1_0000_0000_0000_0000 - 1` can appear.
-    if expression.type.WhichOneof("type") == "integer":
+    if expression.type.which_type == "integer":
         if expression.type.integer.modulus == "infinity":
             return _ExpressionResult(
                 _render_integer_for_expression(
@@ -828,31 +828,29 @@ def _render_expression(expression, ir, field_reader=None, subexpressions=None):
                 ),
                 True,
             )
-    elif expression.type.WhichOneof("type") == "boolean":
+    elif expression.type.which_type == "boolean":
         if expression.type.boolean.HasField("value"):
             if expression.type.boolean.value:
                 return _ExpressionResult(_maybe_type("bool") + "(true)", True)
             else:
                 return _ExpressionResult(_maybe_type("bool") + "(false)", True)
-    elif expression.type.WhichOneof("type") == "enumeration":
+    elif expression.type.which_type == "enumeration":
         if expression.type.enumeration.HasField("value"):
             return _ExpressionResult(
                 _render_enum_value(expression.type.enumeration, ir), True
             )
     else:
         # There shouldn't be any "opaque" type expressions here.
-        assert False, "Unhandled expression type {}".format(
-            expression.type.WhichOneof("type")
-        )
+        assert False, "Unhandled expression type {}".format(expression.type.which_type)
 
     result = None
     # Otherwise, render the operation.
-    if expression.WhichOneof("expression") == "function":
+    if expression.which_expression == "function":
         result = _render_builtin_operation(expression, ir, field_reader, subexpressions)
-    elif expression.WhichOneof("expression") == "field_reference":
+    elif expression.which_expression == "field_reference":
         result = field_reader.render_field(expression, ir, subexpressions)
     elif (
-        expression.WhichOneof("expression") == "builtin_reference"
+        expression.which_expression == "builtin_reference"
         and expression.builtin_reference.canonical_name.object_path[-1]
         == "$logical_value"
     ):
@@ -982,7 +980,7 @@ def _generate_structure_virtual_field_methods(enclosing_type_name, field_ir, ir)
       definitions should be placed after the class definition.  These are
       separated to satisfy C++'s declaration-before-use requirements.
     """
-    if field_ir.write_method.WhichOneof("method") == "alias":
+    if field_ir.write_method.which_method == "alias":
         return _generate_field_indirection(field_ir, enclosing_type_name, ir)
 
     read_subexpressions = _SubexpressionStore("emboss_reserved_local_subexpr_")
@@ -1011,7 +1009,7 @@ def _generate_structure_virtual_field_methods(enclosing_type_name, field_ir, ir)
             _TEMPLATES.structure_single_virtual_field_method_definitions
         )
 
-    if field_ir.write_method.WhichOneof("method") == "transform":
+    if field_ir.write_method.which_method == "transform":
         destination = _render_variable(
             ir_util.hashable_form_of_field_reference(
                 field_ir.write_method.transform.destination
@@ -1042,15 +1040,15 @@ def _generate_structure_virtual_field_methods(enclosing_type_name, field_ir, ir)
     assert logical_type, "Could not find appropriate C++ type for {}".format(
         field_ir.read_transform
     )
-    if field_ir.read_transform.type.WhichOneof("type") == "integer":
+    if field_ir.read_transform.type.which_type == "integer":
         write_to_text_stream_function = "WriteIntegerViewToTextStream"
-    elif field_ir.read_transform.type.WhichOneof("type") == "boolean":
+    elif field_ir.read_transform.type.which_type == "boolean":
         write_to_text_stream_function = "WriteBooleanViewToTextStream"
-    elif field_ir.read_transform.type.WhichOneof("type") == "enumeration":
+    elif field_ir.read_transform.type.which_type == "enumeration":
         write_to_text_stream_function = "WriteEnumViewToTextStream"
     else:
         assert False, "Unexpected read-only virtual field type {}".format(
-            field_ir.read_transform.type.WhichOneof("type")
+            field_ir.read_transform.type.which_type
         )
 
     value_is_ok = _generate_validator_expression_for(field_ir, ir)
