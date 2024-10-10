@@ -107,7 +107,7 @@ def generate_parser(start_symbol, productions, error_examples):
 
 
 @simple_memoizer.memoize
-def _load_module_parser():
+def module_parser():
     error_examples = parse_error_examples(
         resources.load("compiler.front_end", "error_examples")
     )
@@ -123,7 +123,7 @@ def _load_expression_parser():
 
 def parse_module(tokens):
     """Parses the provided Emboss token list into an Emboss module parse tree."""
-    return _load_module_parser().parse(tokens)
+    return module_parser().parse(tokens)
 
 
 def parse_expression(tokens):
