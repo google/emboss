@@ -177,14 +177,6 @@ class OneOfTest(unittest.TestCase):
         ).oneof_field_specs
         self.assertDictEqual(actual, expected)
 
-    def test_oneof_mappings(self):
-        """Tests the `oneof_mappings` function."""
-        expected = (("int_field_1", "type_1"), ("int_field_2", "type_1"))
-        actual = ir_data_fields.IrDataclassSpecs.get_specs(
-            OneofFieldTest
-        ).oneof_mappings
-        self.assertTupleEqual(actual, expected)
-
 
 class IrDataFieldsTest(unittest.TestCase):
     """Tests misc methods in ir_data_fields."""

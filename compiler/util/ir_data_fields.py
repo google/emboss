@@ -177,9 +177,6 @@ class FilteredIrFieldSpecs:
         self.dataclass_field_specs = {k: v for k, v in specs.items() if v.is_dataclass}
         self.oneof_field_specs = {k: v for k, v in specs.items() if v.is_oneof}
         self.sequence_field_specs = tuple(v for v in specs.values() if v.is_sequence)
-        self.oneof_mappings = tuple(
-            (k, v.oneof) for k, v in self.oneof_field_specs.items() if v.oneof
-        )
 
 
 def all_ir_classes(mod):
