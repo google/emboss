@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cstddef>
+
 #include "runtime/cpp/emboss_cpp_types.h"
 
 #include "gtest/gtest.h"
