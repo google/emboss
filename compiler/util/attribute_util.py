@@ -323,22 +323,24 @@ def _check_attributes(
 ):
     """Performs basic checks on the given list of attributes.
 
-    Checks the given attribute_list for duplicates, unknown attributes, attributes
-    with incorrect type, and attributes whose values are not constant.
+    Checks the given attribute_list for duplicates, unknown attributes,
+    attributes with incorrect type, and attributes whose values are not
+    constant.
 
     Arguments:
-      attribute_list: An iterable of ir_data.Attribute.
-      back_end: The qualifier for attributes to check, or None.
-      attribute_specs: A dict of attribute names to _Attribute structures
-        specifying the allowed attributes.
-      context_name: A name for the context of these attributes, such as "struct
-        'Foo'" or "module 'm.emb'".  Used in error messages.
-      module_source_file: The value of module.source_file_name from the module
-        containing 'attribute_list'.  Used in error messages.
+        attribute_list: An iterable of ir_data.Attribute.
+        types: A map of attribute types to validators.
+        back_end: The qualifier for attributes to check, or None.
+        attribute_specs: A dict of attribute names to _Attribute structures
+            specifying the allowed attributes.
+        context_name: A name for the context of these attributes, such as
+            "struct 'Foo'" or "module 'm.emb'".  Used in error messages.
+        module_source_file: The value of module.source_file_name from the module
+            containing 'attribute_list'.  Used in error messages.
 
     Returns:
-      A list of lists of error.Errors.  An empty list indicates no errors were
-      found.
+        A list of lists of error.Errors.  An empty list indicates no errors were
+        found.
     """
     if attribute_specs is None:
         attribute_specs = []
@@ -395,17 +397,17 @@ def _check_attributes(
 
 
 def gather_default_attributes(obj, defaults):
-    """Gathers default attributes for an IR object
+    """Gathers default attributes for an IR object.
 
-    This is designed to be able to be used as-is as an incidental action in an IR
-    traversal to accumulate defaults for child nodes.
+    This is designed to be able to be used as-is as an incidental action in an
+    IR traversal to accumulate defaults for child nodes.
 
     Arguments:
-      defaults: A dict of `{ "defaults": { attr.name.text: attr } }`
+        defaults: A dict of `{ "defaults": { attr.name.text: attr } }`
 
     Returns:
-      A dict of `{ "defaults": { attr.name.text: attr } }` with any defaults
-      provided by `obj` added/overridden.
+        A dict of `{ "defaults": { attr.name.text: attr } }` with any defaults
+        provided by `obj` added/overridden.
     """
     defaults = defaults.copy()
     for attr in obj.attribute:

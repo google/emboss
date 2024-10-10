@@ -98,31 +98,42 @@ _alsu_items = [
 
 # ACTION table corresponding to the above grammar, ASLU p266.
 _alsu_action = {
-    (0, "c"): lr1.Shift(3, _alsu_items[3]),
-    (0, "d"): lr1.Shift(4, _alsu_items[4]),
-    (1, lr1.END_OF_INPUT): lr1.Accept(),
-    (2, "c"): lr1.Shift(6, _alsu_items[6]),
-    (2, "d"): lr1.Shift(7, _alsu_items[7]),
-    (3, "c"): lr1.Shift(3, _alsu_items[3]),
-    (3, "d"): lr1.Shift(4, _alsu_items[4]),
-    (4, "c"): lr1.Reduce(parser_types.Production("C", ("d",))),
-    (4, "d"): lr1.Reduce(parser_types.Production("C", ("d",))),
-    (5, lr1.END_OF_INPUT): lr1.Reduce(parser_types.Production("S", ("C", "C"))),
-    (6, "c"): lr1.Shift(6, _alsu_items[6]),
-    (6, "d"): lr1.Shift(7, _alsu_items[7]),
-    (7, lr1.END_OF_INPUT): lr1.Reduce(parser_types.Production("C", ("d",))),
-    (8, "c"): lr1.Reduce(parser_types.Production("C", ("c", "C"))),
-    (8, "d"): lr1.Reduce(parser_types.Production("C", ("c", "C"))),
-    (9, lr1.END_OF_INPUT): lr1.Reduce(parser_types.Production("C", ("c", "C"))),
+    0: {
+        "c": lr1.Shift(3, _alsu_items[3]),
+        "d": lr1.Shift(4, _alsu_items[4]),
+    },
+    1: {lr1.END_OF_INPUT: lr1.Accept()},
+    2: {
+        "c": lr1.Shift(6, _alsu_items[6]),
+        "d": lr1.Shift(7, _alsu_items[7]),
+    },
+    3: {
+        "c": lr1.Shift(3, _alsu_items[3]),
+        "d": lr1.Shift(4, _alsu_items[4]),
+    },
+    4: {
+        "c": lr1.Reduce(parser_types.Production("C", ("d",))),
+        "d": lr1.Reduce(parser_types.Production("C", ("d",))),
+    },
+    5: {lr1.END_OF_INPUT: lr1.Reduce(parser_types.Production("S", ("C", "C")))},
+    6: {
+        "c": lr1.Shift(6, _alsu_items[6]),
+        "d": lr1.Shift(7, _alsu_items[7]),
+    },
+    7: {lr1.END_OF_INPUT: lr1.Reduce(parser_types.Production("C", ("d",)))},
+    8: {
+        "c": lr1.Reduce(parser_types.Production("C", ("c", "C"))),
+        "d": lr1.Reduce(parser_types.Production("C", ("c", "C"))),
+    },
+    9: {lr1.END_OF_INPUT: lr1.Reduce(parser_types.Production("C", ("c", "C")))},
 }
 
 # GOTO table corresponding to the above grammar, ASLU p266.
 _alsu_goto = {
-    (0, "S"): 1,
-    (0, "C"): 2,
-    (2, "C"): 5,
-    (3, "C"): 8,
-    (6, "C"): 9,
+    0: {"S": 1, "C": 2},
+    2: {"C": 5},
+    3: {"C": 8},
+    6: {"C": 9},
 }
 
 
@@ -137,15 +148,17 @@ def _normalize_table(items, table):
         original_index_to_index[item_to_original_index[sorted_items[i]]] = i
     updated_table = {}
     for k in table:
-        new_k = original_index_to_index[k[0]], k[1]
-        new_value = table[k]
-        if isinstance(new_value, int):
-            new_value = original_index_to_index[new_value]
-        elif isinstance(new_value, lr1.Shift):
-            new_value = lr1.Shift(
-                original_index_to_index[new_value.state], new_value.items
-            )
-        updated_table[new_k] = new_value
+        for l in table[k]:
+            new_k = original_index_to_index[k]
+            new_value = table[k][l]
+            if isinstance(new_value, int):
+                new_value = original_index_to_index[new_value]
+            elif isinstance(new_value, lr1.Shift):
+                new_value = lr1.Shift(
+                    original_index_to_index[new_value.state], new_value.items
+                )
+            updated_table.setdefault(new_k, {})
+            updated_table[new_k][l] = new_value
     return sorted_items, updated_table
 
 
@@ -302,7 +315,7 @@ class Lr1Test(unittest.TestCase):
         # Marking an already-marked error with the same error code should succeed.
         self.assertIsNone(parser.mark_error(_tokenize("d"), None, "missing last C"))
         # Marking an already-marked error with a different error code should fail.
-        self.assertRegexpMatches(
+        self.assertRegex(
             parser.mark_error(_tokenize("d"), None, "different message"),
             r"^Attempted to overwrite existing error code 'missing last C' with "
             r"new error code 'different message' for state \d+, terminal \$$",

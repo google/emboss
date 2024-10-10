@@ -1,0 +1,45 @@
+strict digraph {
+  bgcolor = "white"
+  ordering = "out"
+  edge [color = "black"]
+  node [
+    color = "black"
+    fontcolor = "black"
+    shape = box
+    ordering = "out"
+  ]
+  subgraph {
+//    rank = same
+    rankdir = LR
+
+    paren [ordering = "out"; label="() $max() $present()"]
+    unary_plus [ordering = "out"; label="unary + -"]
+    mult [ordering = "out"; label="*"]
+    add [ordering = "out"; label="+ -"]
+    shift [ordering = "out"; label=">> <<"]
+    ne [ordering = "out"; label="!="]
+    le [ordering = "out"; label="< <= =="]
+    ge [ordering = "out"; label="> >= =="]
+    land [ordering = "out"; label="&&"]
+    lor [ordering = "out"; label="||"]
+    choice [ordering = "out"; label="?:"]
+    paren -> unary_plus
+    unary_plus -> mult
+    mult -> add
+    mult -> shift
+    add -> ne
+    add -> le
+    add -> ge
+    shift -> ne
+    shift -> le
+    shift -> ge
+    ne -> land
+    ne -> lor
+    le -> land
+    le -> lor
+    ge -> land
+    ge -> lor
+    land -> choice
+    lor -> choice
+  }
+}

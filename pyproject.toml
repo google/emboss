@@ -1,0 +1,4 @@
+[tool.black]
+extend-exclude = '''
+^/compiler/front_end/generated/cached_parser\.py$
+'''

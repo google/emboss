@@ -36,16 +36,17 @@ class Item(
 ):
     """An Item is an LR(1) Item: a production, a cursor location, and a terminal.
 
-    An Item represents a partially-parsed production, and a lookahead symbol.  The
-    position of the dot indicates what portion of the production has been parsed.
-    Generally, Items are an internal implementation detail, but they can be useful
-    elsewhere, particularly for debugging.
+    An Item represents a partially-parsed production, and a lookahead symbol.
+    The position of the dot indicates what portion of the production has been
+    parsed.  Generally, Items are an internal implementation detail, but they
+    can be useful elsewhere, particularly for debugging.
 
     Attributes:
-      production: The Production this Item covers.
-      dot: The index of the "dot" in production's rhs.
-      terminal: The terminal lookahead symbol that follows the production in the
-          input stream.
+        production: The Production this Item covers.
+        dot: The index of the "dot" in production's rhs.
+        terminal: The terminal lookahead symbol that follows the production in
+            the input stream.
+        next_symbol: The lookahead symbol.
     """
 
     def __str__(self):
@@ -197,11 +198,9 @@ class Grammar(object):
     def _set_productions_by_lhs(self):
         # Prepopulating _productions_by_lhs speeds up _closure_of_item by about 30%,
         # which is significant on medium-to-large grammars.
-        self._productions_by_lhs = {}
+        self._productions_by_lhs = collections.defaultdict(list)
         for production in self.productions:
-            self._productions_by_lhs.setdefault(production.lhs, list()).append(
-                production
-            )
+            self._productions_by_lhs[production.lhs].append(production)
 
     def _populate_item_cache(self):
         # There are a relatively small number of possible Items for a grammar, and
@@ -411,7 +410,12 @@ class Grammar(object):
           A dict from symbols to sets of items representing the new DFA states.
         """
         results = collections.defaultdict(set)
-        for item in items:
+        # Sorting `items` is necessary in order for the state numbers in the
+        # generated parser to be deterministic, which is necessary in order to
+        # check that a cached parser is up to date.  Otherwise, it would be
+        # necessary to do a graph isomorphism check, which is very complex and
+        # may not be computationally feasible.
+        for item in sorted(items):
             next_symbol = item.next_symbol
             if next_symbol is None:
                 continue
@@ -455,20 +459,22 @@ class Grammar(object):
             )
         ]
         items = {item_list[0]: 0}
-        goto_table = {}
+        goto_table = collections.defaultdict(dict)
         i = 0
         # For each state, figure out what the new state when each symbol is added to
-        # the top of the parsing stack (see the comments in parser._parse).  See
+        # the top of the parsing stack (see the comments in parser.parse).  See
         # _Goto for an explanation of how that is actually computed.
         while i < len(item_list):
             item_set = item_list[i]
             gotos = self._parallel_goto(item_set)
-            for symbol, goto in gotos.items():
+            # Sort the gotos so that the state numbering in the generated
+            # parser is deterministic.
+            for symbol, goto in sorted(gotos.items()):
                 goto = frozenset(goto)
                 if goto not in items:
                     items[goto] = len(item_list)
                     item_list.append(goto)
-                goto_table[i, symbol] = items[goto]
+                goto_table[i][symbol] = items[goto]
             i += 1
         return item_list, goto_table
 
@@ -493,7 +499,7 @@ class Grammar(object):
           A Parser.
         """
         item_sets, goto = self._items()
-        action = {}
+        action = collections.defaultdict(dict)
         conflicts = set()
         end_item = self._item_cache[self._seed_production, 1, END_OF_INPUT]
         for i in range(len(item_sets)):
@@ -507,38 +513,31 @@ class Grammar(object):
                     new_action = Reduce(item.production)
                 elif item.next_symbol in self.terminals:
                     terminal = item.next_symbol
-                    assert goto[i, terminal] is not None
-                    new_action = Shift(goto[i, terminal], item_sets[goto[i, terminal]])
+                    assert goto[i][terminal] is not None
+                    new_action = Shift(goto[i][terminal], item_sets[goto[i][terminal]])
                 if new_action:
-                    if (i, terminal) in action and action[i, terminal] != new_action:
+                    if action[i].get(terminal, new_action) != new_action:
                         conflicts.add(
                             Conflict(
                                 i,
                                 terminal,
-                                frozenset([action[i, terminal], new_action]),
+                                frozenset([action[i][terminal], new_action]),
                             )
                         )
-                    action[i, terminal] = new_action
+                    action[i][terminal] = new_action
                 if item == end_item:
                     new_action = Accept()
-                    assert (i, END_OF_INPUT) not in action or action[
-                        i, END_OF_INPUT
-                    ] == new_action
-                    action[i, END_OF_INPUT] = new_action
-        trimmed_goto = {}
+                    assert action[i].get(END_OF_INPUT, new_action) == new_action
+                    action[i][END_OF_INPUT] = new_action
+        trimmed_goto = collections.defaultdict(dict)
         for k in goto:
-            if k[1] in self.nonterminals:
-                trimmed_goto[k] = goto[k]
-        expected = {}
-        for state, terminal in action:
-            if state not in expected:
-                expected[state] = set()
-            expected[state].add(terminal)
+            for l in goto[k]:
+                if l in self.nonterminals:
+                    trimmed_goto[k][l] = goto[k][l]
         return Parser(
             item_sets,
             trimmed_goto,
             action,
-            expected,
             conflicts,
             self.terminals,
             self.nonterminals,
@@ -584,27 +583,26 @@ class Parser(object):
         item_sets,
         goto,
         action,
-        expected,
         conflicts,
         terminals,
         nonterminals,
         productions,
+        default_errors=None,
     ):
         super(Parser, self).__init__()
         self.item_sets = item_sets
         self.goto = goto
         self.action = action
-        self.expected = expected
         self.conflicts = conflicts
         self.terminals = terminals
         self.nonterminals = nonterminals
         self.productions = productions
-        self.default_errors = {}
+        self.default_errors = default_errors or {}
 
-    def _parse(self, tokens):
-        """_parse implements Shift-Reduce parsing algorithm.
+    def parse(self, tokens):
+        """parse implements the Shift-Reduce parsing algorithm.
 
-        _parse implements the standard shift-reduce algorithm outlined on ASLU
+        parse implements the standard shift-reduce algorithm outlined on ASLU
         pp236-237.
 
         Arguments:
@@ -633,7 +631,7 @@ class Parser(object):
         # On each iteration, look at the next symbol and the current state, and
         # perform the corresponding action.
         while True:
-            if (state(), tokens[cursor].symbol) not in self.action:
+            if tokens[cursor].symbol not in self.action.get(state(), {}):
                 # Most state/symbol entries would be Errors, so rather than exhaustively
                 # adding error entries, we just check here.
                 if state() in self.default_errors:
@@ -641,7 +639,7 @@ class Parser(object):
                 else:
                     next_action = Error(None)
             else:
-                next_action = self.action[state(), tokens[cursor].symbol]
+                next_action = self.action[state()][tokens[cursor].symbol]
 
             if isinstance(next_action, Shift):
                 # Shift means that there are no "complete" productions on the stack,
@@ -716,7 +714,7 @@ class Parser(object):
                     next_action.rule.lhs, children, next_action.rule, source_location
                 )
                 del stack[len(stack) - len(next_action.rule.rhs) :]
-                stack.append((self.goto[state(), next_action.rule.lhs], reduction))
+                stack.append((self.goto[state()][next_action.rule.lhs], reduction))
             elif isinstance(next_action, Error):
                 # Error means that the parse is impossible.  For typical grammars and
                 # texts, this usually happens within a few tokens after the mistake in
@@ -729,7 +727,11 @@ class Parser(object):
                         cursor,
                         tokens[cursor],
                         state(),
-                        self.expected[state()],
+                        set(
+                            k
+                            for k in self.action[state()].keys()
+                            if not isinstance(self.action[state()][k], Error)
+                        ),
                     ),
                 )
             else:
@@ -758,7 +760,7 @@ class Parser(object):
           None if error_code was successfully recorded, or an error message if there
           was a problem.
         """
-        result = self._parse(tokens)
+        result = self.parse(tokens)
 
         # There is no error state to mark on a successful parse.
         if not result.error:
@@ -800,8 +802,8 @@ class Parser(object):
                 self.default_errors[result.error.state] = error_code
                 return None
         else:
-            if (result.error.state, error_symbol) in self.action:
-                existing_error = self.action[result.error.state, error_symbol]
+            if error_symbol in self.action.get(result.error.state, {}):
+                existing_error = self.action[result.error.state][error_symbol]
                 assert isinstance(existing_error, Error), "Bug"
                 if existing_error.code == error_code:
                     return None
@@ -816,18 +818,6 @@ class Parser(object):
                         )
                     )
             else:
-                self.action[result.error.state, error_symbol] = Error(error_code)
+                self.action[result.error.state][error_symbol] = Error(error_code)
                 return None
         assert False, "All other paths should lead to return."
-
-    def parse(self, tokens):
-        """Parses a list of tokens.
-
-        Arguments:
-          tokens: a list of tokens to parse.
-
-        Returns:
-          A ParseResult.
-        """
-        result = self._parse(tokens)
-        return result
