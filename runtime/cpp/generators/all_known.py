@@ -53,7 +53,7 @@ inline constexpr bool AllKnown({}) {{
                 + (["typename... RestT"] if i == OVERLOADS else [])
             ),
             ", ".join(
-                ["T{} v{}".format(n, n) for n in range(i)]
+                ["T{n} v{n}".format(n=n) for n in range(i)]
                 + (["RestT... rest"] if i == OVERLOADS else [])
             ),
             " && ".join(

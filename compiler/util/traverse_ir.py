@@ -103,7 +103,7 @@ class _FunctionCaller:
 def _memoized_caller(function):
     default_lambda_name = (lambda: None).__name__
     assert (
-        callable(function) and not function.__name__ == default_lambda_name
+        callable(function) and function.__name__ != default_lambda_name
     ), "For performance reasons actions must be defined as static functions"
     return _FunctionCaller(function)
 

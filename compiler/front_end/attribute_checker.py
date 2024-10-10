@@ -493,6 +493,7 @@ def _verify_addressable_unit_attribute_on_external(
 
 def _verify_width_attribute_on_enum(enum, type_definition, source_file_name, errors):
     """Verifies the maximum_bits attribute for an enum TypeDefinition."""
+    del enum  # Unused.
     max_bits_value = ir_util.get_integer_attribute(
         type_definition.attribute, attributes.ENUM_MAXIMUM_BITS
     )
@@ -557,7 +558,7 @@ def _verify_field_attributes(field, type_definition, source_file_name, ir, error
 
 
 def _verify_back_end_attributes(
-    attribute, expected_back_ends, source_file_name, ir, errors
+    attribute, expected_back_ends, source_file_name, errors
 ):
     back_end_text = ir_data_utils.reader(attribute).back_end.text
     if back_end_text not in expected_back_ends:

@@ -245,14 +245,14 @@ class _IrDataBuilder(Generic[MessageT]):
         assert ir is not None
         self.ir: MessageT = ir
 
-    def __setattr__(self, __name: str, __value: Any) -> None:
-        if __name == "ir":
+    def __setattr__(self, name: str, value: Any) -> None:
+        if name == "ir":
             # This our proxy object
-            object.__setattr__(self, __name, __value)
+            object.__setattr__(self, name, value)
         else:
             # Passthrough to the proxy object
             ir: MessageT = object.__getattribute__(self, "ir")
-            setattr(ir, __name, __value)
+            setattr(ir, name, value)
 
     def __getattribute__(self, name: str) -> Any:
         """Hook for `getattr` that handles adding missing fields.

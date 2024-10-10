@@ -244,6 +244,12 @@ class IrDataBuilderTest(unittest.TestCase):
     def assertLen(self, obj, length):
         self.assertEqual(len(obj), length, msg=f"{obj} has length {len(obj)}.")
 
+    def assertEmpty(self, obj):
+        self.assertEqual(len(obj), 0, msg=f"{obj} is not empty.")
+
+    def assertLen(self, obj, length):
+        self.assertEqual(len(obj), length, msg=f"{obj} has length {len(obj)}.")
+
     def test_ir_data_builder(self):
         """Tests that basic builder chains work."""
         # We start with an empty type

@@ -19,7 +19,6 @@ classes for the ir.
 """
 
 import collections
-import pkgutil
 import re
 from typing import NamedTuple
 
@@ -1808,12 +1807,14 @@ def _verify_namespace_attribute(attr, source_file_name, errors):
             )
 
 
+_VALID_CASES = ", ".join(case for case in _SUPPORTED_ENUM_CASES)
+
+
 def _verify_enum_case_attribute(attr, source_file_name, errors):
     """Verify that `enum_case` values are supported."""
     if attr.name.text != attributes.Attribute.ENUM_CASE:
         return
 
-    VALID_CASES = ", ".join(case for case in _SUPPORTED_ENUM_CASES)
     enum_case_value = attr.value.string_constant
     case_spans = _split_enum_case_values_into_spans(enum_case_value.text)
     seen_cases = set()
@@ -1856,7 +1857,7 @@ def _verify_enum_case_attribute(attr, source_file_name, errors):
                         source_file_name,
                         case_source_location,
                         f'Unsupported enum case "{case}", '
-                        f"supported cases are: {VALID_CASES}.",
+                        f"supported cases are: {_VALID_CASES}.",
                     )
                 ]
             )
