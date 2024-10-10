@@ -458,7 +458,9 @@ def _errors_by_production_search(parser, next_terminals, flags):
 
 def main(flags):
     next_terminals = _next_terminals(parser.module_parser())
-    examples = _errors_by_production_search(parser.module_parser(), next_terminals, flags)
+    examples = _errors_by_production_search(
+        parser.module_parser(), next_terminals, flags
+    )
     successful_examples = 0
     for example in sorted(examples):
         try:
