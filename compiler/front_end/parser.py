@@ -33,7 +33,7 @@ ParserAndIsCached = collections.namedtuple(
 
 
 @simple_memoizer.memoize
-def _load_module_parser():
+def module_parser():
     module_parser = cached_parser.module_parser()
     module_ir_productions = set(module_ir.PRODUCTIONS) | {
         parser_types.Production(lr1.START_PRIME, (module_ir.START_SYMBOL,))
@@ -75,7 +75,7 @@ def module_parser_cache_mismatch():
 
 def module_parser():
     return _load_module_parser().parser
-      
+
 
 def parse_module(tokens):
     """Parses the provided Emboss token list into an Emboss module parse tree."""
