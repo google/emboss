@@ -99,6 +99,41 @@ py_library(
         "error_examples",
     ],
     deps = [
+        ":cached_parser",
+        ":lr1",
+        ":make_parser",
+        ":module_ir",
+        "//compiler/util:parser_types",
+        "//compiler/util:simple_memoizer",
+    ],
+)
+
+py_library(
+    name = "cached_parser",
+    srcs = ["generated/cached_parser.py"],
+    deps = [
+        ":lr1",
+        "//compiler/util:parser_types",
+    ],
+)
+
+py_test(
+    name = "parser_test",
+    srcs = ["parser_test.py"],
+    python_version = "PY3",
+    deps = [
+        ":parser",
+        ":tokenizer",
+    ],
+)
+
+py_library(
+    name = "make_parser",
+    srcs = ["make_parser.py"],
+    data = [
+        "error_examples",
+    ],
+    deps = [
         ":lr1",
         ":module_ir",
         ":tokenizer",
@@ -108,12 +143,12 @@ py_library(
 )
 
 py_test(
-    name = "parser_test",
-    srcs = ["parser_test.py"],
+    name = "make_parser_test",
+    srcs = ["make_parser_test.py"],
     python_version = "PY3",
     deps = [
         ":lr1",
-        ":parser",
+        ":make_parser",
         ":tokenizer",
         "//compiler/util:parser_types",
     ],
@@ -430,6 +465,17 @@ py_binary(
     ],
 )
 
+py_binary(
+    name = "generate_cached_parser",
+    srcs = ["generate_cached_parser.py"],
+    python_version = "PY3",
+    deps = [
+        ":lr1",
+        ":make_parser",
+        "//compiler/util:parser_types",
+    ],
+)
+
 py_test(
     name = "docs_are_up_to_date_test",
     srcs = ["docs_are_up_to_date_test.py"],
@@ -439,5 +485,17 @@ py_test(
     python_version = "PY3",
     deps = [
         ":generate_grammar_md",
+    ],
+)
+
+py_test(
+    name = "cached_parser_is_up_to_date_test",
+    srcs = ["cached_parser_is_up_to_date_test.py"],
+    data = [
+        "generated/cached_parser.py",
+    ],
+    python_version = "PY3",
+    deps = [
+        ":generate_cached_parser",
     ],
 )
