@@ -23,7 +23,7 @@ from compiler.front_end import generate_cached_parser
 class CachedParserIsUpToDateTest(unittest.TestCase):
     """Tests that the generated, checked-in parser is up to date."""
 
-    def test_grammar_md(self):
+    def test_cached_parser(self):
         cached_parser_text = pkgutil.get_data(
             "compiler.front_end.generated", "cached_parser.py"
         ).decode(encoding="UTF-8")
