@@ -163,43 +163,43 @@ LITERAL_TOKEN_PATTERNS = (
     "$max_size_in_bits $max_size_in_bytes $min_size_in_bits $min_size_in_bytes "
     "$default struct bits enum external import as if let"
 ).split()
-_T = collections.namedtuple("T", ["regex", "symbol"])
+_T = collections.namedtuple("T", ["regex", "symbol", "example"])
 REGEX_TOKEN_PATTERNS = [
     # Words starting with variations of "emboss reserved" are reserved for
     # internal use by the Emboss compiler.
-    _T(re.compile(r"EmbossReserved[A-Za-z0-9]*"), "BadWord"),
-    _T(re.compile(r"emboss_reserved[_a-z0-9]*"), "BadWord"),
-    _T(re.compile(r"EMBOSS_RESERVED[_A-Z0-9]*"), "BadWord"),
-    _T(re.compile(r'"(?:[^"\n\\]|\\[n\\"])*"'), "String"),
-    _T(re.compile("[0-9]+"), "Number"),
-    _T(re.compile("[0-9]{1,3}(?:_[0-9]{3})*"), "Number"),
-    _T(re.compile("0x[0-9a-fA-F]+"), "Number"),
-    _T(re.compile("0x_?[0-9a-fA-F]{1,4}(?:_[0-9a-fA-F]{4})*"), "Number"),
-    _T(re.compile("0x_?[0-9a-fA-F]{1,8}(?:_[0-9a-fA-F]{8})*"), "Number"),
-    _T(re.compile("0b[01]+"), "Number"),
-    _T(re.compile("0b_?[01]{1,4}(?:_[01]{4})*"), "Number"),
-    _T(re.compile("0b_?[01]{1,8}(?:_[01]{8})*"), "Number"),
-    _T(re.compile("true|false"), "BooleanConstant"),
-    _T(re.compile("[a-z][a-z_0-9]*"), "SnakeWord"),
+    _T(re.compile(r"EmbossReserved[A-Za-z0-9]*"), "BadWord", "EmbossReserved"),
+    _T(re.compile(r"emboss_reserved[_a-z0-9]*"), "BadWord", "emboss_reserved"),
+    _T(re.compile(r"EMBOSS_RESERVED[_A-Z0-9]*"), "BadWord", "EMBOSS_RESERVED"),
+    _T(re.compile(r'"(?:[^"\n\\]|\\[n\\"])*"'), "String", '"string"'),
+    _T(re.compile("[0-9]+"), "Number", "0"),
+    _T(re.compile("[0-9]{1,3}(?:_[0-9]{3})*"), "Number", "0"),
+    _T(re.compile("0x[0-9a-fA-F]+"), "Number", "0x0"),
+    _T(re.compile("0x_?[0-9a-fA-F]{1,4}(?:_[0-9a-fA-F]{4})*"), "Number", "0x0"),
+    _T(re.compile("0x_?[0-9a-fA-F]{1,8}(?:_[0-9a-fA-F]{8})*"), "Number", "0x0"),
+    _T(re.compile("0b[01]+"), "Number", "0b0"),
+    _T(re.compile("0b_?[01]{1,4}(?:_[01]{4})*"), "Number", "0b0"),
+    _T(re.compile("0b_?[01]{1,8}(?:_[01]{8})*"), "Number", "0b0"),
+    _T(re.compile("true|false"), "BooleanConstant", "true"),
+    _T(re.compile("[a-z][a-z_0-9]*"), "SnakeWord", "name"),
     # Single-letter ShoutyWords (like "A") and single-letter-followed-by-number
     # ShoutyWords ("A100") are disallowed due to ambiguity with CamelWords.  A
     # ShoutyWord must start with an upper case letter and contain at least one
     # more upper case letter or '_'.
-    _T(re.compile("[A-Z][A-Z_0-9]*[A-Z_][A-Z_0-9]*"), "ShoutyWord"),
+    _T(re.compile("[A-Z][A-Z_0-9]*[A-Z_][A-Z_0-9]*"), "ShoutyWord", "VALUE"),
     # A CamelWord starts with A-Z and contains at least one a-z, and no _.
-    _T(re.compile("[A-Z][a-zA-Z0-9]*[a-z][a-zA-Z0-9]*"), "CamelWord"),
-    _T(re.compile("-- .*"), "Documentation"),
-    _T(re.compile("--$"), "Documentation"),
-    _T(re.compile("--.*"), "BadDocumentation"),
-    _T(re.compile(r"\s+"), None),
-    _T(re.compile("#.*"), "Comment"),
+    _T(re.compile("[A-Z][a-zA-Z0-9]*[a-z][a-zA-Z0-9]*"), "CamelWord", "Type"),
+    _T(re.compile("-- .*"), "Documentation", "-- doc"),
+    _T(re.compile("--$"), "Documentation", "--"),
+    _T(re.compile("--.*"), "BadDocumentation", "--bad doc"),
+    _T(re.compile(r"\s+"), None, " "),
+    _T(re.compile("#.*"), "Comment", "#"),
     # BadWord and BadNumber are a catch-alls for words and numbers so that
     # something like "abcDef" doesn't tokenize to [SnakeWord, CamelWord].
     #
     # This is preferable to returning an error because the BadWord and BadNumber
     # token types can be used in example-based errors.
-    _T(re.compile("[0-9][bxBX]?[0-9a-fA-F_]*"), "BadNumber"),
-    _T(re.compile("[a-zA-Z_$0-9]+"), "BadWord"),
+    _T(re.compile("[0-9][bxBX]?[0-9a-fA-F_]*"), "BadNumber", "0NaN"),
+    _T(re.compile("[a-zA-Z_$0-9]+"), "BadWord", "bad_$_name"),
 ]
 del _T
 
