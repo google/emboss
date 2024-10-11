@@ -106,20 +106,6 @@ class Message:
         """Indicates if this class has the given field defined and it is set."""
         return getattr(self, name, None) is not None
 
-    # Non-PEP8 name to mimic the Google Protobuf interface.
-    def WhichOneof(self, oneof_name):  # pylint:disable=invalid-name
-        """Indicates which field has been set for the oneof value.
-
-        Args:
-            oneof_name: the name of the oneof construct to test.
-
-        Returns: the field name, or None if no field has been set.
-        """
-        for field_name, oneof in self.field_specs.oneof_mappings:
-            if oneof == oneof_name and self.HasField(field_name):
-                return field_name
-        return None
-
 
 ################################################################################
 # From here to the end of the file are actual structure definitions.

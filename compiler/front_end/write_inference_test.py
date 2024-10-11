@@ -185,7 +185,7 @@ class WriteInferenceTest(unittest.TestCase):
         ir = self._make_ir("struct Foo(x: UInt:8):\n" "  let y = 50 + x\n")
         self.assertEqual([], write_inference.set_write_methods(ir))
         field = ir.module[0].type[0].structure.field[0]
-        self.assertEqual("read_only", field.write_method.WhichOneof("method"))
+        self.assertEqual("read_only", field.write_method.which_method)
 
     def test_adds_transform_write_method_with_complex_auxiliary_subexpression(self):
         ir = self._make_ir(

@@ -459,10 +459,7 @@ def _resolve_field_reference(field_reference, source_file_name, errors, ir):
     previous_reference = field_reference.path[0]
     for ref in field_reference.path[1:]:
         while ir_util.field_is_virtual(previous_field):
-            if (
-                previous_field.read_transform.WhichOneof("expression")
-                == "field_reference"
-            ):
+            if previous_field.read_transform.which_expression == "field_reference":
                 # Pass a separate error list into the recursive _resolve_field_reference
                 # call so that only one copy of the error for a particular reference
                 # will actually surface: in particular, the one that results from a
@@ -494,7 +491,7 @@ def _resolve_field_reference(field_reference, source_file_name, errors, ir):
                     )
                 )
                 return
-        if previous_field.type.WhichOneof("type") == "array_type":
+        if previous_field.type.which_type == "array_type":
             errors.append(
                 array_subfield_error(
                     source_file_name,
@@ -503,7 +500,7 @@ def _resolve_field_reference(field_reference, source_file_name, errors, ir):
                 )
             )
             return
-        assert previous_field.type.WhichOneof("type") == "atomic_type"
+        assert previous_field.type.which_type == "atomic_type"
         member_name = ir_data_utils.copy(
             previous_field.type.atomic_type.reference.canonical_name
         )

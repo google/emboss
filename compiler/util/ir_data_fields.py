@@ -175,11 +175,7 @@ class FilteredIrFieldSpecs:
         self.all_field_specs = specs
         self.field_specs = tuple(specs.values())
         self.dataclass_field_specs = {k: v for k, v in specs.items() if v.is_dataclass}
-        self.oneof_field_specs = {k: v for k, v in specs.items() if v.is_oneof}
         self.sequence_field_specs = tuple(v for v in specs.values() if v.is_sequence)
-        self.oneof_mappings = tuple(
-            (k, v.oneof) for k, v in self.oneof_field_specs.items() if v.oneof
-        )
 
 
 def all_ir_classes(mod):
@@ -399,18 +395,23 @@ class OneOfField:
         super().__init__()
         self.oneof = oneof
         self.owner_type = None
-        self.proxy_name: str = ""
+        self.proxy_name: str = f"_value_{oneof}"
+        self.proxy_choice_name: str = f"which_{oneof}"
         self.name: str = ""
 
     def __set_name__(self, owner, name):
         self.name = name
-        self.proxy_name = f"_{name}"
         self.owner_type = owner
-        # Add our empty proxy field to the class.
+        # Add the empty proxy fields to the class.  This may re-initialize
+        # these if another field in this oneof got there first.
         setattr(owner, self.proxy_name, None)
+        setattr(owner, self.proxy_choice_name, None)
 
     def __get__(self, obj, objtype=None):
-        return getattr(obj, self.proxy_name)
+        if getattr(obj, self.proxy_choice_name, None) == self.name:
+            return getattr(obj, self.proxy_name)
+        else:
+            return None
 
     def __set__(self, obj, value):
         if value is self:
@@ -418,15 +419,13 @@ class OneOfField:
             # default to None.
             value = None
 
-        if value is not None:
-            # Clear the others
-            for name, oneof in IrDataclassSpecs.get_specs(
-                self.owner_type
-            ).oneof_mappings:
-                if oneof == self.oneof and name != self.name:
-                    setattr(obj, name, None)
-
-        setattr(obj, self.proxy_name, value)
+        if value is None:
+            if getattr(obj, self.proxy_choice_name) == self.name:
+                setattr(obj, self.proxy_name, None)
+                setattr(obj, self.proxy_choice_name, None)
+        else:
+            setattr(obj, self.proxy_name, value)
+            setattr(obj, self.proxy_choice_name, self.name)
 
 
 def oneof_field(name: str):
