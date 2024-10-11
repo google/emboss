@@ -131,8 +131,8 @@ class _Message(object):
         #     messages.
         severity_colors = {
             ERROR: (BRIGHT_RED, BOLD),
-            WARNING: (BRIGHT_MAGENTA, BOLD),
-            NOTE: (BRIGHT_BLACK, WHITE),
+            WARNING: (BRIGHT_YELLOW, BOLD),
+            NOTE: (WHITE, WHITE),
         }
 
         result = []

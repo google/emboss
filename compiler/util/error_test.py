@@ -201,10 +201,10 @@ class MessageTest(unittest.TestCase):
                 (error.BRIGHT_RED, "error: "),  # Severity
                 (error.BOLD, "Bad thing\n"),  # Message
                 (error.BOLD, "foo.emb:3:4: "),  # Location, line 2
-                (error.BRIGHT_BLACK, "note: "),  # "Note" severity, line 2
+                (error.WHITE, "note: "),  # "Note" severity, line 2
                 (error.WHITE, "Some explanation\n"),  # Message, line 2
                 (error.BOLD, "foo.emb:3:4: "),  # Location, line 3
-                (error.BRIGHT_BLACK, "note: "),  # "Note" severity, line 3
+                (error.WHITE, "note: "),  # "Note" severity, line 3
                 (error.WHITE, "More explanation"),  # Message, line 3
             ],
             sourceless_format,
@@ -223,10 +223,10 @@ class MessageTest(unittest.TestCase):
                 (error.BRIGHT_RED, "error: "),  # Severity
                 (error.BOLD, "Bad thing\n"),  # Message
                 (error.BOLD, "foo.emb:3:4: "),  # Location, line 2
-                (error.BRIGHT_BLACK, "note: "),  # "Note" severity, line 2
+                (error.WHITE, "note: "),  # "Note" severity, line 2
                 (error.WHITE, "Some explanation\n"),  # Message, line 2
                 (error.BOLD, "foo.emb:3:4: "),  # Location, line 3
-                (error.BRIGHT_BLACK, "note: "),  # "Note" severity, line 3
+                (error.WHITE, "note: "),  # "Note" severity, line 3
                 (error.WHITE, "More explanation\n"),  # Message, line 3
                 (error.WHITE, "abcdefghijklm\n"),  # Source snippet
                 (error.BRIGHT_GREEN, "   ^^"),  # Column indicator
@@ -252,7 +252,7 @@ class MessageTest(unittest.TestCase):
         self.assertEqual(
             [
                 (error.BOLD, "foo.emb:3:4: "),  # Location
-                (error.BRIGHT_MAGENTA, "warning: "),  # Severity
+                (error.BRIGHT_YELLOW, "warning: "),  # Severity
                 (error.BOLD, "Not good thing\n"),  # Message
                 (error.WHITE, "abcdefghijklm\n"),  # Source snippet
                 (error.BRIGHT_GREEN, "   ^^"),  # Column indicator
@@ -278,7 +278,7 @@ class MessageTest(unittest.TestCase):
         self.assertEqual(
             [
                 (error.BOLD, "foo.emb:3:4: "),  # Location
-                (error.BRIGHT_BLACK, "note: "),  # Severity
+                (error.WHITE, "note: "),  # Severity
                 (error.WHITE, "OK thing\n"),  # Message
                 (error.WHITE, "abcdefghijklm\n"),  # Source snippet
                 (error.BRIGHT_GREEN, "   ^^"),  # Column indicator
@@ -457,13 +457,12 @@ class FormatErrorsTest(unittest.TestCase):
         bold = error.BOLD
         reset = error.RESET
         white = error.WHITE
-        bright_black = error.BRIGHT_BLACK
         bright_green = error.BRIGHT_GREEN
         self.assertEqual(
             bold
             + "foo.emb:3:4: "
             + reset
-            + bright_black
+            + white
             + "note: "
             + reset
             + white
