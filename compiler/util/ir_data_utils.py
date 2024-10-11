@@ -245,14 +245,14 @@ class _IrDataBuilder(Generic[MessageT]):
         assert ir is not None
         self.ir: MessageT = ir
 
-    def __setattr__(self, __name: str, __value: Any) -> None:
-        if __name == "ir":
+    def __setattr__(self, name: str, value: Any) -> None:
+        if name == "ir":
             # This our proxy object
-            object.__setattr__(self, __name, __value)
+            object.__setattr__(self, name, value)
         else:
             # Passthrough to the proxy object
             ir: MessageT = object.__getattribute__(self, "ir")
-            setattr(ir, __name, __value)
+            setattr(ir, name, value)
 
     def __getattribute__(self, name: str) -> Any:
         """Hook for `getattr` that handles adding missing fields.
@@ -277,7 +277,7 @@ class _IrDataBuilder(Generic[MessageT]):
         if ir is None:
             return object.__getattribute__(self, name)
 
-        if name in ("HasField", "WhichOneof"):
+        if name in ("HasField",):
             return getattr(ir, name)
 
         field_spec = field_specs(ir).get(name)
@@ -362,8 +362,13 @@ class _ReadOnlyFieldChecker:
             if isinstance(ir_or_spec, ir_data_fields.FieldSpec):
                 if name == "HasField":
                     return lambda x: False
-                if name == "WhichOneof":
-                    return lambda x: None
+                # This *should* be limited to only the `which_` attributes that
+                # correspond to real oneofs, but that would add complexity and
+                # runtime, and the odds are low that laxness here causes a bug
+                # -- the same code needs to run against real IR objects that
+                # will raise if a nonexistent `which_` field is accessed.
+                if name.startswith("which_"):
+                    return None
             return object.__getattribute__(ir_or_spec, name)
 
         if isinstance(ir_or_spec, ir_data_fields.FieldSpec):

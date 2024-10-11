@@ -29,6 +29,7 @@ import sys
 
 from compiler.front_end import glue
 from compiler.front_end import module_ir
+from compiler.front_end import parser
 from compiler.util import error
 from compiler.util import ir_data_utils
 
@@ -54,6 +55,11 @@ def _parse_command_line(argv):
         action="store_true",
         help="Show the module-level IR of the main input file "
         "before symbol resolution.",
+    )
+    parser.add_argument(
+        "--debug-stop-before-step",
+        type=str,
+        help="Stop processing before the specified step.",
     )
     parser.add_argument(
         "--debug-show-full-ir",
@@ -146,7 +152,35 @@ def _find_in_dirs_and_read(import_dirs):
     return _find_and_read
 
 
-def parse_and_log_errors(input_file, import_dirs, color_output):
+def _warn_if_cached_parser_is_mismatched(color_output):
+    cached_parser_mismatch = parser.module_parser_cache_mismatch()
+    extra_production_notes = [
+        error.note("<internal>", None, f"New production {prod}")
+        for prod in cached_parser_mismatch[1]
+    ]
+    missing_production_notes = [
+        error.note("<internal>", None, f"Missing production {prod}")
+        for prod in cached_parser_mismatch[0]
+    ]
+    if extra_production_notes or missing_production_notes:
+        _show_errors(
+            [
+                [
+                    error.warn(
+                        "<internal>",
+                        None,
+                        "Cached parser does not match actual grammar; using newly-generated parser.",
+                    )
+                ]
+                + extra_production_notes
+                + missing_production_notes
+            ],
+            None,
+            color_output,
+        )
+
+
+def parse_and_log_errors(input_file, import_dirs, color_output, stop_before_step=None):
     """Fully parses an .emb and logs any errors.
 
     Arguments:
@@ -157,8 +191,11 @@ def parse_and_log_errors(input_file, import_dirs, color_output):
     Returns:
       (ir, debug_info, errors)
     """
+    _warn_if_cached_parser_is_mismatched(color_output)
     ir, debug_info, errors = glue.parse_emboss_file(
-        input_file, _find_in_dirs_and_read(import_dirs)
+        input_file,
+        _find_in_dirs_and_read(import_dirs),
+        stop_before_step=stop_before_step,
     )
     if errors:
         _show_errors(errors, ir, color_output)
@@ -168,7 +205,10 @@ def parse_and_log_errors(input_file, import_dirs, color_output):
 
 def main(flags):
     ir, debug_info, errors = parse_and_log_errors(
-        flags.input_file[0], flags.import_dirs, flags.color_output
+        flags.input_file[0],
+        flags.import_dirs,
+        flags.color_output,
+        stop_before_step=flags.debug_stop_before_step,
     )
     if errors:
         return 1

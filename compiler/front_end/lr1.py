@@ -410,7 +410,12 @@ class Grammar(object):
           A dict from symbols to sets of items representing the new DFA states.
         """
         results = collections.defaultdict(set)
-        for item in items:
+        # Sorting `items` is necessary in order for the state numbers in the
+        # generated parser to be deterministic, which is necessary in order to
+        # check that a cached parser is up to date.  Otherwise, it would be
+        # necessary to do a graph isomorphism check, which is very complex and
+        # may not be computationally feasible.
+        for item in sorted(items):
             next_symbol = item.next_symbol
             if next_symbol is None:
                 continue
@@ -457,12 +462,14 @@ class Grammar(object):
         goto_table = collections.defaultdict(dict)
         i = 0
         # For each state, figure out what the new state when each symbol is added to
-        # the top of the parsing stack (see the comments in parser._parse).  See
+        # the top of the parsing stack (see the comments in parser.parse).  See
         # _Goto for an explanation of how that is actually computed.
         while i < len(item_list):
             item_set = item_list[i]
             gotos = self._parallel_goto(item_set)
-            for symbol, goto in gotos.items():
+            # Sort the gotos so that the state numbering in the generated
+            # parser is deterministic.
+            for symbol, goto in sorted(gotos.items()):
                 goto = frozenset(goto)
                 if goto not in items:
                     items[goto] = len(item_list)
@@ -580,6 +587,7 @@ class Parser(object):
         terminals,
         nonterminals,
         productions,
+        default_errors=None,
     ):
         super(Parser, self).__init__()
         self.item_sets = item_sets
@@ -589,12 +597,12 @@ class Parser(object):
         self.terminals = terminals
         self.nonterminals = nonterminals
         self.productions = productions
-        self.default_errors = {}
+        self.default_errors = default_errors or {}
 
-    def _parse(self, tokens):
-        """_parse implements Shift-Reduce parsing algorithm.
+    def parse(self, tokens):
+        """parse implements the Shift-Reduce parsing algorithm.
 
-        _parse implements the standard shift-reduce algorithm outlined on ASLU
+        parse implements the standard shift-reduce algorithm outlined on ASLU
         pp236-237.
 
         Arguments:
@@ -752,7 +760,7 @@ class Parser(object):
           None if error_code was successfully recorded, or an error message if there
           was a problem.
         """
-        result = self._parse(tokens)
+        result = self.parse(tokens)
 
         # There is no error state to mark on a successful parse.
         if not result.error:
@@ -813,14 +821,3 @@ class Parser(object):
                 self.action[result.error.state][error_symbol] = Error(error_code)
                 return None
         assert False, "All other paths should lead to return."
-
-    def parse(self, tokens):
-        """Parses a list of tokens.
-
-        Arguments:
-          tokens: a list of tokens to parse.
-
-        Returns:
-          A ParseResult.
-        """
-        return self._parse(tokens)

@@ -14,10 +14,10 @@
 
 """Conversions between snake-, camel-, and shouty-case names."""
 
-from enum import Enum
+import enum
 
 
-class Case(str, Enum):
+class Case(str, enum.Enum):
     SNAKE = "snake_case"
     SHOUTY = "SHOUTY_CASE"
     CAMEL = "CamelCase"

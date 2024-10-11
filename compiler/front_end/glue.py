@@ -19,6 +19,7 @@ and returns an IR or formatted error message.
 """
 
 import collections
+import sys
 
 from compiler.front_end import attribute_checker
 from compiler.front_end import constraints
@@ -323,9 +324,11 @@ def process_ir(ir, stop_before_step):
         constraints.check_constraints,
         write_inference.set_write_methods,
     )
-    assert stop_before_step in [None] + [
-        f.__name__ for f in passes
-    ], "Bad value for stop_before_step."
+    valid_step_names = [f.__name__ for f in passes]
+    assert stop_before_step in [None] + valid_step_names, (
+        f"Bad value '{stop_before_step}' for stop_before_step.  Valid values: "
+        + " ".join(valid_step_names)
+    )
     # Some parts of the IR are synthesized from "natural" parts of the IR, before
     # the natural parts have been fully error checked.  Because of this, the
     # synthesized parts can have errors; in a couple of cases, they can have

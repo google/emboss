@@ -72,7 +72,7 @@ def get_integer_attribute(attribute_list, name, default_value=None):
     attribute_value = get_attribute(attribute_list, name)
     if (
         not attribute_value
-        or attribute_value.expression.type.WhichOneof("type") != "integer"
+        or attribute_value.expression.type.which_type != "integer"
         or not is_constant(attribute_value.expression)
     ):
         return default_value
@@ -98,42 +98,42 @@ def constant_value(expression, bindings=None):
     if expression is None:
         return None
     expression = ir_data_utils.reader(expression)
-    if expression.WhichOneof("expression") == "constant":
+    if expression.which_expression == "constant":
         return int(expression.constant.value or 0)
-    elif expression.WhichOneof("expression") == "constant_reference":
+    elif expression.which_expression == "constant_reference":
         # We can't look up the constant reference without the IR, but by the time
         # constant_value is called, the actual values should have been propagated to
         # the type information.
-        if expression.type.WhichOneof("type") == "integer":
+        if expression.type.which_type == "integer":
             assert expression.type.integer.modulus == "infinity"
             return int(expression.type.integer.modular_value)
-        elif expression.type.WhichOneof("type") == "boolean":
+        elif expression.type.which_type == "boolean":
             assert expression.type.boolean.HasField("value")
             return expression.type.boolean.value
-        elif expression.type.WhichOneof("type") == "enumeration":
+        elif expression.type.which_type == "enumeration":
             assert expression.type.enumeration.HasField("value")
             return int(expression.type.enumeration.value)
         else:
             assert False, "Unexpected expression type {}".format(
-                expression.type.WhichOneof("type")
+                expression.type.which_type
             )
-    elif expression.WhichOneof("expression") == "function":
+    elif expression.which_expression == "function":
         return _constant_value_of_function(expression.function, bindings)
-    elif expression.WhichOneof("expression") == "field_reference":
+    elif expression.which_expression == "field_reference":
         return None
-    elif expression.WhichOneof("expression") == "boolean_constant":
+    elif expression.which_expression == "boolean_constant":
         return expression.boolean_constant.value
-    elif expression.WhichOneof("expression") == "builtin_reference":
+    elif expression.which_expression == "builtin_reference":
         name = expression.builtin_reference.canonical_name.object_path[0]
         if bindings and name in bindings:
             return bindings[name]
         else:
             return None
-    elif expression.WhichOneof("expression") is None:
+    elif expression.which_expression is None:
         return None
     else:
         assert False, "Unexpected expression kind {}".format(
-            expression.WhichOneof("expression")
+            expression.which_expression
         )
 
 
@@ -366,11 +366,11 @@ def fixed_size_of_type_in_bits(type_ir, ir):
     """
     array_multiplier = 1
     while type_ir.HasField("array_type"):
-        if type_ir.array_type.WhichOneof("size") == "automatic":
+        if type_ir.array_type.which_size == "automatic":
             return None
         else:
             assert (
-                type_ir.array_type.WhichOneof("size") == "element_count"
+                type_ir.array_type.which_size == "element_count"
             ), 'Expected array size to be "automatic" or "element_count".'
         element_count = type_ir.array_type.element_count
         if not is_constant(element_count):

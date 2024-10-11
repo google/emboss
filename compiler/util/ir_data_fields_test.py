@@ -162,32 +162,15 @@ class OneOfTest(unittest.TestCase):
         self.assertEqual(one_of_field_test.int_field_2, 200)
         self.assertFalse(one_of_field_test.normal_field)
 
-    def test_oneof_specs(self):
-        """Tests the `oneof_field_specs` filter."""
-        expected = {
-            "int_field_1": ir_data_fields.make_field_spec(
-                "int_field_1", int, ir_data_fields.FieldContainer.OPTIONAL, "type_1"
-            ),
-            "int_field_2": ir_data_fields.make_field_spec(
-                "int_field_2", int, ir_data_fields.FieldContainer.OPTIONAL, "type_1"
-            ),
-        }
-        actual = ir_data_fields.IrDataclassSpecs.get_specs(
-            OneofFieldTest
-        ).oneof_field_specs
-        self.assertDictEqual(actual, expected)
-
-    def test_oneof_mappings(self):
-        """Tests the `oneof_mappings` function."""
-        expected = (("int_field_1", "type_1"), ("int_field_2", "type_1"))
-        actual = ir_data_fields.IrDataclassSpecs.get_specs(
-            OneofFieldTest
-        ).oneof_mappings
-        self.assertTupleEqual(actual, expected)
-
 
 class IrDataFieldsTest(unittest.TestCase):
     """Tests misc methods in ir_data_fields."""
+
+    def assertEmpty(self, obj):
+        self.assertEqual(len(obj), 0, msg=f"{obj} is not empty.")
+
+    def assertLen(self, obj, length):
+        self.assertEqual(len(obj), length, msg=f"{obj} has length {len(obj)}.")
 
     def assertEmpty(self, obj):
         self.assertEqual(len(obj), 0, msg=f"{obj} is not empty.")
