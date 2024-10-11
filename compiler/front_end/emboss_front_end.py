@@ -29,6 +29,7 @@ import sys
 
 from compiler.front_end import glue
 from compiler.front_end import module_ir
+from compiler.front_end import parser
 from compiler.util import error
 from compiler.util import ir_data_utils
 
@@ -151,6 +152,34 @@ def _find_in_dirs_and_read(import_dirs):
     return _find_and_read
 
 
+def _warn_if_cached_parser_is_mismatched(color_output):
+    cached_parser_mismatch = parser.module_parser_cache_mismatch()
+    extra_production_notes = [
+        error.note("<internal>", None, f"New production {prod}")
+        for prod in cached_parser_mismatch[1]
+    ]
+    missing_production_notes = [
+        error.note("<internal>", None, f"Missing production {prod}")
+        for prod in cached_parser_mismatch[0]
+    ]
+    if extra_production_notes or missing_production_notes:
+        _show_errors(
+            [
+                [
+                    error.warn(
+                        "<internal>",
+                        None,
+                        "Cached parser does not match actual grammar; using newly-generated parser.",
+                    )
+                ]
+                + extra_production_notes
+                + missing_production_notes
+            ],
+            None,
+            color_output,
+        )
+
+
 def parse_and_log_errors(input_file, import_dirs, color_output, stop_before_step=None):
     """Fully parses an .emb and logs any errors.
 
@@ -162,6 +191,7 @@ def parse_and_log_errors(input_file, import_dirs, color_output, stop_before_step
     Returns:
       (ir, debug_info, errors)
     """
+    _warn_if_cached_parser_is_mismatched(color_output)
     ir, debug_info, errors = glue.parse_emboss_file(
         input_file,
         _find_in_dirs_and_read(import_dirs),

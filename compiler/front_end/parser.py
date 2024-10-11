@@ -14,6 +14,8 @@
 
 """Routines to load a shift-reduce parser for the module_ir module."""
 
+import collections
+
 from compiler.front_end.generated import cached_parser
 from compiler.front_end import lr1
 from compiler.front_end import make_parser
@@ -21,32 +23,61 @@ from compiler.front_end import module_ir
 from compiler.util import parser_types
 from compiler.util import simple_memoizer
 
+ParserAndIsCached = collections.namedtuple(
+    "ParserAndIsCached",
+    [
+        "parser",
+        "cache_mismatch",
+    ],
+)
+
 
 @simple_memoizer.memoize
 def _load_module_parser():
     module_parser = cached_parser.module_parser()
-    if module_parser.productions == set(module_ir.PRODUCTIONS) | {
+    module_ir_productions = set(module_ir.PRODUCTIONS) | {
         parser_types.Production(lr1.START_PRIME, (module_ir.START_SYMBOL,))
-    }:
-        return module_parser
-    return make_parser.build_module_parser()
+    }
+    if module_parser.productions == module_ir_productions:
+        return ParserAndIsCached(module_parser, (set(), set()))
+    return ParserAndIsCached(
+        make_parser.build_module_parser(),
+        (
+            module_parser.productions - module_ir_productions,
+            module_ir_productions - module_parser.productions,
+        ),
+    )
 
 
 @simple_memoizer.memoize
 def _load_expression_parser():
     expression_parser = cached_parser.expression_parser()
-    if expression_parser.productions == set(module_ir.PRODUCTIONS) | {
+    module_ir_productions = set(module_ir.PRODUCTIONS) | {
         parser_types.Production(lr1.START_PRIME, (module_ir.EXPRESSION_START_SYMBOL,))
-    }:
-        return expression_parser
-    return make_parser.build_expression_parser()
+    }
+    if expression_parser.productions == module_ir_productions:
+        return ParserAndIsCached(
+            expression_parser,
+            (set(), set()),
+        )
+    return ParserAndIsCached(
+        make_parser.build_expression_parser(),
+        (
+            expression_parser.productions - module_ir_productions,
+            module_ir_productions - expression_parser.productions,
+        ),
+    )
+
+
+def module_parser_cache_mismatch():
+    return _load_module_parser().cache_mismatch
 
 
 def parse_module(tokens):
     """Parses the provided Emboss token list into an Emboss module parse tree."""
-    return _load_module_parser().parse(tokens)
+    return _load_module_parser().parser.parse(tokens)
 
 
 def parse_expression(tokens):
     """Parses the provided Emboss token list into an expression parse tree."""
-    return _load_expression_parser().parse(tokens)
+    return _load_expression_parser().parser.parse(tokens)
