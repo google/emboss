@@ -22,6 +22,9 @@ from compiler.util import parser_types
 class PositionTest(unittest.TestCase):
     """Tests for SourcePosition-related functions in parser_types."""
 
+    def test_format_position(self):
+        self.assertEqual("1:2", str(parser_types.SourcePosition(line=1, column=2)))
+
 
 class LocationTest(unittest.TestCase):
     """Tests for SourceLocation-related functions in parser_types."""
