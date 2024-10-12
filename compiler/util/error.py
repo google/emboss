@@ -36,7 +36,6 @@ warning that a field is a reserved word, one might return:
     ]
 """
 
-from compiler.util import ir_data_utils
 from compiler.util import parser_types
 
 # Error levels; represented by the strings that will be included in messages.
@@ -67,26 +66,25 @@ BOLD = "\033[0;1m"
 RESET = "\033[0m"
 
 
-def _copy(location):
-    location = ir_data_utils.copy(location)
+def location_or_default(location):
     if not location:
-        location = parser_types.make_location((0, 0), (0, 0))
+        return parser_types.SourceLocation((0, 0), (0, 0))
     return location
 
 
 def error(source_file, location, message):
     """Returns an object representing an error message."""
-    return _Message(source_file, _copy(location), ERROR, message)
+    return _Message(source_file, location_or_default(location), ERROR, message)
 
 
 def warn(source_file, location, message):
     """Returns an object representing a warning."""
-    return _Message(source_file, _copy(location), WARNING, message)
+    return _Message(source_file, location_or_default(location), WARNING, message)
 
 
 def note(source_file, location, message):
     """Returns and object representing an informational note."""
-    return _Message(source_file, _copy(location), NOTE, message)
+    return _Message(source_file, location_or_default(location), NOTE, message)
 
 
 class _Message(object):
@@ -139,7 +137,7 @@ class _Message(object):
         if self.location.is_synthetic:
             pos = "[compiler bug]"
         else:
-            pos = parser_types.format_position(self.location.start)
+            pos = str(self.location.start)
         source_name = self.source_file or "[prelude]"
         if not self.location.is_synthetic and self.source_file in source_code:
             source_lines = source_code[self.source_file].splitlines()
@@ -174,20 +172,7 @@ class _Message(object):
         return result
 
     def __repr__(self):
-        return (
-            "Message({source_file!r}, make_location(({start_line!r}, "
-            "{start_column!r}), ({end_line!r}, {end_column!r}), "
-            "{is_synthetic!r}), {severity!r}, {message!r})"
-        ).format(
-            source_file=self.source_file,
-            start_line=self.location.start.line,
-            start_column=self.location.start.column,
-            end_line=self.location.end.line,
-            end_column=self.location.end.column,
-            is_synthetic=self.location.is_synthetic,
-            severity=self.severity,
-            message=self.message,
-        )
+        return f"Message({repr(self.source_file)}, {repr(self.location)}, {repr(self.severity)}, {repr(self.message)})"
 
     def __eq__(self, other):
         return (

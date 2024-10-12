@@ -203,7 +203,7 @@ def parse_module(file_name, file_reader):
     """
     source_code, errors = file_reader(file_name)
     if errors:
-        location = parser_types.make_location((1, 1), (1, 1))
+        location = parser_types.SourceLocation((1, 1), (1, 1))
         return (
             None,
             None,

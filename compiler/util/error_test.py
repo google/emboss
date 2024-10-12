@@ -25,12 +25,12 @@ class MessageTest(unittest.TestCase):
 
     def test_error(self):
         error_message = error.error(
-            "foo.emb", parser_types.make_location((3, 4), (3, 6)), "Bad thing"
+            "foo.emb", parser_types.SourceLocation((3, 4), (3, 6)), "Bad thing"
         )
         self.assertEqual("foo.emb", error_message.source_file)
         self.assertEqual(error.ERROR, error_message.severity)
         self.assertEqual(
-            parser_types.make_location((3, 4), (3, 6)), error_message.location
+            parser_types.SourceLocation((3, 4), (3, 6)), error_message.location
         )
         self.assertEqual("Bad thing", error_message.message)
         sourceless_format = error_message.format({})
@@ -40,7 +40,7 @@ class MessageTest(unittest.TestCase):
         )
         self.assertEqual(
             [
-                (error.BOLD, "foo.emb:3:4: "),  # Location
+                (error.BOLD, "foo.emb:3:4: "),  # SourceLocation
                 (error.BRIGHT_RED, "error: "),  # Severity
                 (error.BOLD, "Bad thing"),  # Message
             ],
@@ -52,7 +52,7 @@ class MessageTest(unittest.TestCase):
         )
         self.assertEqual(
             [
-                (error.BOLD, "foo.emb:3:4: "),  # Location
+                (error.BOLD, "foo.emb:3:4: "),  # SourceLocation
                 (error.BRIGHT_RED, "error: "),  # Severity
                 (error.BOLD, "Bad thing\n"),  # Message
                 (error.WHITE, "abcdefghijklm\n"),  # Source snippet
@@ -63,7 +63,9 @@ class MessageTest(unittest.TestCase):
 
     def test_synthetic_error(self):
         error_message = error.error(
-            "foo.emb", parser_types.make_location((3, 4), (3, 6), True), "Bad thing"
+            "foo.emb",
+            parser_types.SourceLocation((3, 4), (3, 6), is_synthetic=True),
+            "Bad thing",
         )
         sourceless_format = error_message.format({})
         sourced_format = error_message.format({"foo.emb": "\n\nabcdefghijklm"})
@@ -73,7 +75,7 @@ class MessageTest(unittest.TestCase):
         )
         self.assertEqual(
             [
-                (error.BOLD, "foo.emb:[compiler bug]: "),  # Location
+                (error.BOLD, "foo.emb:[compiler bug]: "),  # SourceLocation
                 (error.BRIGHT_RED, "error: "),  # Severity
                 (error.BOLD, "Bad thing"),  # Message
             ],
@@ -85,7 +87,7 @@ class MessageTest(unittest.TestCase):
         )
         self.assertEqual(
             [
-                (error.BOLD, "foo.emb:[compiler bug]: "),  # Location
+                (error.BOLD, "foo.emb:[compiler bug]: "),  # SourceLocation
                 (error.BRIGHT_RED, "error: "),  # Severity
                 (error.BOLD, "Bad thing"),  # Message
             ],
@@ -94,12 +96,12 @@ class MessageTest(unittest.TestCase):
 
     def test_prelude_as_file_name(self):
         error_message = error.error(
-            "", parser_types.make_location((3, 4), (3, 6)), "Bad thing"
+            "", parser_types.SourceLocation((3, 4), (3, 6)), "Bad thing"
         )
         self.assertEqual("", error_message.source_file)
         self.assertEqual(error.ERROR, error_message.severity)
         self.assertEqual(
-            parser_types.make_location((3, 4), (3, 6)), error_message.location
+            parser_types.SourceLocation((3, 4), (3, 6)), error_message.location
         )
         self.assertEqual("Bad thing", error_message.message)
         sourceless_format = error_message.format({})
@@ -110,7 +112,7 @@ class MessageTest(unittest.TestCase):
         )
         self.assertEqual(
             [
-                (error.BOLD, "[prelude]:3:4: "),  # Location
+                (error.BOLD, "[prelude]:3:4: "),  # SourceLocation
                 (error.BRIGHT_RED, "error: "),  # Severity
                 (error.BOLD, "Bad thing"),  # Message
             ],
@@ -122,7 +124,7 @@ class MessageTest(unittest.TestCase):
         )
         self.assertEqual(
             [
-                (error.BOLD, "[prelude]:3:4: "),  # Location
+                (error.BOLD, "[prelude]:3:4: "),  # SourceLocation
                 (error.BRIGHT_RED, "error: "),  # Severity
                 (error.BOLD, "Bad thing\n"),  # Message
                 (error.WHITE, "abcdefghijklm\n"),  # Source snippet
@@ -133,12 +135,12 @@ class MessageTest(unittest.TestCase):
 
     def test_multiline_error_source(self):
         error_message = error.error(
-            "foo.emb", parser_types.make_location((3, 4), (4, 6)), "Bad thing"
+            "foo.emb", parser_types.SourceLocation((3, 4), (4, 6)), "Bad thing"
         )
         self.assertEqual("foo.emb", error_message.source_file)
         self.assertEqual(error.ERROR, error_message.severity)
         self.assertEqual(
-            parser_types.make_location((3, 4), (4, 6)), error_message.location
+            parser_types.SourceLocation((3, 4), (4, 6)), error_message.location
         )
         self.assertEqual("Bad thing", error_message.message)
         sourceless_format = error_message.format({})
@@ -150,7 +152,7 @@ class MessageTest(unittest.TestCase):
         )
         self.assertEqual(
             [
-                (error.BOLD, "foo.emb:3:4: "),  # Location
+                (error.BOLD, "foo.emb:3:4: "),  # SourceLocation
                 (error.BRIGHT_RED, "error: "),  # Severity
                 (error.BOLD, "Bad thing"),  # Message
             ],
@@ -162,7 +164,7 @@ class MessageTest(unittest.TestCase):
         )
         self.assertEqual(
             [
-                (error.BOLD, "foo.emb:3:4: "),  # Location
+                (error.BOLD, "foo.emb:3:4: "),  # SourceLocation
                 (error.BRIGHT_RED, "error: "),  # Severity
                 (error.BOLD, "Bad thing\n"),  # Message
                 (error.WHITE, "abcdefghijklm\n"),  # Source snippet
@@ -174,13 +176,13 @@ class MessageTest(unittest.TestCase):
     def test_multiline_error(self):
         error_message = error.error(
             "foo.emb",
-            parser_types.make_location((3, 4), (3, 6)),
+            parser_types.SourceLocation((3, 4), (3, 6)),
             "Bad thing\nSome explanation\nMore explanation",
         )
         self.assertEqual("foo.emb", error_message.source_file)
         self.assertEqual(error.ERROR, error_message.severity)
         self.assertEqual(
-            parser_types.make_location((3, 4), (3, 6)), error_message.location
+            parser_types.SourceLocation((3, 4), (3, 6)), error_message.location
         )
         self.assertEqual(
             "Bad thing\nSome explanation\nMore explanation", error_message.message
@@ -197,13 +199,13 @@ class MessageTest(unittest.TestCase):
         )
         self.assertEqual(
             [
-                (error.BOLD, "foo.emb:3:4: "),  # Location
+                (error.BOLD, "foo.emb:3:4: "),  # SourceLocation
                 (error.BRIGHT_RED, "error: "),  # Severity
                 (error.BOLD, "Bad thing\n"),  # Message
-                (error.BOLD, "foo.emb:3:4: "),  # Location, line 2
+                (error.BOLD, "foo.emb:3:4: "),  # SourceLocation, line 2
                 (error.WHITE, "note: "),  # "Note" severity, line 2
                 (error.WHITE, "Some explanation\n"),  # Message, line 2
-                (error.BOLD, "foo.emb:3:4: "),  # Location, line 3
+                (error.BOLD, "foo.emb:3:4: "),  # SourceLocation, line 3
                 (error.WHITE, "note: "),  # "Note" severity, line 3
                 (error.WHITE, "More explanation"),  # Message, line 3
             ],
@@ -219,13 +221,13 @@ class MessageTest(unittest.TestCase):
         )
         self.assertEqual(
             [
-                (error.BOLD, "foo.emb:3:4: "),  # Location
+                (error.BOLD, "foo.emb:3:4: "),  # SourceLocation
                 (error.BRIGHT_RED, "error: "),  # Severity
                 (error.BOLD, "Bad thing\n"),  # Message
-                (error.BOLD, "foo.emb:3:4: "),  # Location, line 2
+                (error.BOLD, "foo.emb:3:4: "),  # SourceLocation, line 2
                 (error.WHITE, "note: "),  # "Note" severity, line 2
                 (error.WHITE, "Some explanation\n"),  # Message, line 2
-                (error.BOLD, "foo.emb:3:4: "),  # Location, line 3
+                (error.BOLD, "foo.emb:3:4: "),  # SourceLocation, line 3
                 (error.WHITE, "note: "),  # "Note" severity, line 3
                 (error.WHITE, "More explanation\n"),  # Message, line 3
                 (error.WHITE, "abcdefghijklm\n"),  # Source snippet
@@ -236,12 +238,12 @@ class MessageTest(unittest.TestCase):
 
     def test_warn(self):
         warning_message = error.warn(
-            "foo.emb", parser_types.make_location((3, 4), (3, 6)), "Not good thing"
+            "foo.emb", parser_types.SourceLocation((3, 4), (3, 6)), "Not good thing"
         )
         self.assertEqual("foo.emb", warning_message.source_file)
         self.assertEqual(error.WARNING, warning_message.severity)
         self.assertEqual(
-            parser_types.make_location((3, 4), (3, 6)), warning_message.location
+            parser_types.SourceLocation((3, 4), (3, 6)), warning_message.location
         )
         self.assertEqual("Not good thing", warning_message.message)
         sourced_format = warning_message.format({"foo.emb": "\n\nabcdefghijklm"})
@@ -251,7 +253,7 @@ class MessageTest(unittest.TestCase):
         )
         self.assertEqual(
             [
-                (error.BOLD, "foo.emb:3:4: "),  # Location
+                (error.BOLD, "foo.emb:3:4: "),  # SourceLocation
                 (error.BRIGHT_YELLOW, "warning: "),  # Severity
                 (error.BOLD, "Not good thing\n"),  # Message
                 (error.WHITE, "abcdefghijklm\n"),  # Source snippet
@@ -262,12 +264,12 @@ class MessageTest(unittest.TestCase):
 
     def test_note(self):
         note_message = error.note(
-            "foo.emb", parser_types.make_location((3, 4), (3, 6)), "OK thing"
+            "foo.emb", parser_types.SourceLocation((3, 4), (3, 6)), "OK thing"
         )
         self.assertEqual("foo.emb", note_message.source_file)
         self.assertEqual(error.NOTE, note_message.severity)
         self.assertEqual(
-            parser_types.make_location((3, 4), (3, 6)), note_message.location
+            parser_types.SourceLocation((3, 4), (3, 6)), note_message.location
         )
         self.assertEqual("OK thing", note_message.message)
         sourced_format = note_message.format({"foo.emb": "\n\nabcdefghijklm"})
@@ -277,7 +279,7 @@ class MessageTest(unittest.TestCase):
         )
         self.assertEqual(
             [
-                (error.BOLD, "foo.emb:3:4: "),  # Location
+                (error.BOLD, "foo.emb:3:4: "),  # SourceLocation
                 (error.WHITE, "note: "),  # Severity
                 (error.WHITE, "OK thing\n"),  # Message
                 (error.WHITE, "abcdefghijklm\n"),  # Source snippet
@@ -288,27 +290,31 @@ class MessageTest(unittest.TestCase):
 
     def test_equality(self):
         note_message = error.note(
-            "foo.emb", parser_types.make_location((3, 4), (3, 6)), "thing"
+            "foo.emb", parser_types.SourceLocation((3, 4), (3, 6)), "thing"
         )
         self.assertEqual(
             note_message,
-            error.note("foo.emb", parser_types.make_location((3, 4), (3, 6)), "thing"),
+            error.note("foo.emb", parser_types.SourceLocation((3, 4), (3, 6)), "thing"),
         )
         self.assertNotEqual(
             note_message,
-            error.warn("foo.emb", parser_types.make_location((3, 4), (3, 6)), "thing"),
+            error.warn("foo.emb", parser_types.SourceLocation((3, 4), (3, 6)), "thing"),
         )
         self.assertNotEqual(
             note_message,
-            error.note("foo2.emb", parser_types.make_location((3, 4), (3, 6)), "thing"),
+            error.note(
+                "foo2.emb", parser_types.SourceLocation((3, 4), (3, 6)), "thing"
+            ),
         )
         self.assertNotEqual(
             note_message,
-            error.note("foo.emb", parser_types.make_location((2, 4), (3, 6)), "thing"),
+            error.note("foo.emb", parser_types.SourceLocation((2, 4), (3, 6)), "thing"),
         )
         self.assertNotEqual(
             note_message,
-            error.note("foo.emb", parser_types.make_location((3, 4), (3, 6)), "thing2"),
+            error.note(
+                "foo.emb", parser_types.SourceLocation((3, 4), (3, 6)), "thing2"
+            ),
         )
 
 
@@ -348,43 +354,43 @@ class SplitErrorsTest(unittest.TestCase):
     def test_split_errors(self):
         user_error = [
             error.error(
-                "foo.emb", parser_types.make_location((1, 2), (3, 4)), "Bad thing"
+                "foo.emb", parser_types.SourceLocation((1, 2), (3, 4)), "Bad thing"
             ),
             error.note(
                 "foo.emb",
-                parser_types.make_location((3, 4), (5, 6)),
+                parser_types.SourceLocation((3, 4), (5, 6)),
                 "Note: bad thing referrent",
             ),
         ]
         user_error_2 = [
             error.error(
-                "foo.emb", parser_types.make_location((8, 9), (10, 11)), "Bad thing"
+                "foo.emb", parser_types.SourceLocation((8, 9), (10, 11)), "Bad thing"
             ),
             error.note(
                 "foo.emb",
-                parser_types.make_location((10, 11), (12, 13)),
+                parser_types.SourceLocation((10, 11), (12, 13)),
                 "Note: bad thing referrent",
             ),
         ]
         synthetic_error = [
             error.error(
-                "foo.emb", parser_types.make_location((1, 2), (3, 4)), "Bad thing"
+                "foo.emb", parser_types.SourceLocation((1, 2), (3, 4)), "Bad thing"
             ),
             error.note(
                 "foo.emb",
-                parser_types.make_location((3, 4), (5, 6), True),
+                parser_types.SourceLocation((3, 4), (5, 6), is_synthetic=True),
                 "Note: bad thing referrent",
             ),
         ]
         synthetic_error_2 = [
             error.error(
                 "foo.emb",
-                parser_types.make_location((8, 9), (10, 11), True),
+                parser_types.SourceLocation((8, 9), (10, 11), is_synthetic=True),
                 "Bad thing",
             ),
             error.note(
                 "foo.emb",
-                parser_types.make_location((10, 11), (12, 13)),
+                parser_types.SourceLocation((10, 11), (12, 13)),
                 "Note: bad thing referrent",
             ),
         ]
@@ -407,33 +413,33 @@ class SplitErrorsTest(unittest.TestCase):
     def test_filter_errors(self):
         user_error = [
             error.error(
-                "foo.emb", parser_types.make_location((1, 2), (3, 4)), "Bad thing"
+                "foo.emb", parser_types.SourceLocation((1, 2), (3, 4)), "Bad thing"
             ),
             error.note(
                 "foo.emb",
-                parser_types.make_location((3, 4), (5, 6)),
+                parser_types.SourceLocation((3, 4), (5, 6)),
                 "Note: bad thing referrent",
             ),
         ]
         synthetic_error = [
             error.error(
-                "foo.emb", parser_types.make_location((1, 2), (3, 4)), "Bad thing"
+                "foo.emb", parser_types.SourceLocation((1, 2), (3, 4)), "Bad thing"
             ),
             error.note(
                 "foo.emb",
-                parser_types.make_location((3, 4), (5, 6), True),
+                parser_types.SourceLocation((3, 4), (5, 6), is_synthetic=True),
                 "Note: bad thing referrent",
             ),
         ]
         synthetic_error_2 = [
             error.error(
                 "foo.emb",
-                parser_types.make_location((8, 9), (10, 11), True),
+                parser_types.SourceLocation((8, 9), (10, 11), is_synthetic=True),
                 "Bad thing",
             ),
             error.note(
                 "foo.emb",
-                parser_types.make_location((10, 11), (12, 13)),
+                parser_types.SourceLocation((10, 11), (12, 13)),
                 "Note: bad thing referrent",
             ),
         ]
@@ -447,7 +453,7 @@ class FormatErrorsTest(unittest.TestCase):
 
     def test_format_errors(self):
         errors = [
-            [error.note("foo.emb", parser_types.make_location((3, 4), (3, 6)), "note")]
+            [error.note("foo.emb", parser_types.SourceLocation((3, 4), (3, 6)), "note")]
         ]
         sources = {"foo.emb": "x\ny\nz  bcd\nq\n"}
         self.assertEqual(

@@ -19,6 +19,7 @@ import inspect
 from compiler.util import ir_data
 from compiler.util import ir_data_fields
 from compiler.util import ir_data_utils
+from compiler.util import parser_types
 from compiler.util import simple_memoizer
 
 
@@ -219,7 +220,7 @@ def _fields_to_scan_by_current_and_target():
     # type_to_descendant_types is a map of all types that can be reached from a
     # particular type.  After the setup, type_to_descendant_types[ir_data.EmbossIr]
     # == set(<all types>) and type_to_descendant_types[ir_data.Reference] ==
-    # {ir_data.CanonicalName, ir_data.Word, ir_data.Location} and
+    # {ir_data.CanonicalName, ir_data.Word} and
     # type_to_descendant_types[ir_data.Word] == set().
     #
     # The while loop basically ors in the known descendants of each known

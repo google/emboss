@@ -19,6 +19,7 @@ from compiler.front_end import expression_bounds
 from compiler.util import ir_data
 from compiler.util import ir_data_utils
 from compiler.util import ir_util
+from compiler.util import parser_types
 from compiler.util import traverse_ir
 
 
@@ -118,13 +119,13 @@ def _invert_expression(expression, ir):
             source_name=[
                 ir_data.Word(
                     text="$logical_value",
-                    source_location=ir_data.Location(is_synthetic=True),
+                    source_location=parser_types.SourceLocation(is_synthetic=True),
                 )
             ],
-            source_location=ir_data.Location(is_synthetic=True),
+            source_location=parser_types.SourceLocation(is_synthetic=True),
         ),
         type=expression.type,
-        source_location=ir_data.Location(is_synthetic=True),
+        source_location=parser_types.SourceLocation(is_synthetic=True),
     )
 
     # This loop essentially starts with:

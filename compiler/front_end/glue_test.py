@@ -24,7 +24,7 @@ from compiler.util import ir_data_utils
 from compiler.util import parser_types
 from compiler.util import test_util
 
-_location = parser_types.make_location
+_location = parser_types.SourceLocation
 
 _ROOT_PACKAGE = "testdata.golden"
 _GOLDEN_PATH = ""
@@ -232,7 +232,9 @@ class FrontEndGlueTest(unittest.TestCase):
         self.assertFalse(errors)
         # Artificially mark the first field as is_synthetic.
         first_field = ir.module[0].type[0].structure.field[0]
-        first_field.source_location.is_synthetic = True
+        first_field.source_location = first_field.source_location._replace(
+            is_synthetic=True
+        )
         ir, errors = glue.process_ir(ir, None)
         self.assertTrue(errors)
         self.assertEqual(
@@ -259,8 +261,12 @@ class FrontEndGlueTest(unittest.TestCase):
         self.assertFalse(errors)
         # Artificially mark the name of the second field as is_synthetic.
         second_field = ir.module[0].type[0].structure.field[1]
-        second_field.name.source_location.is_synthetic = True
-        second_field.name.name.source_location.is_synthetic = True
+        second_field.name.source_location = second_field.name.source_location._replace(
+            is_synthetic=True
+        )
+        second_field.name.name.source_location = (
+            second_field.name.name.source_location._replace(is_synthetic=True)
+        )
         ir, errors = glue.process_ir(ir, None)
         self.assertEqual(1, len(errors))
         self.assertEqual("Duplicate name 'field'", errors[0][0].message)

@@ -40,7 +40,7 @@ class _List(object):
     def __init__(self, l):
         assert isinstance(l, list), "_List object must wrap list, not '%r'" % l
         self.list = l
-        self.source_location = ir_data.Location()
+        self.source_location = parser_types.SourceLocation()
 
 
 class _ExpressionTail(object):
@@ -65,7 +65,7 @@ class _ExpressionTail(object):
     def __init__(self, operator, expression):
         self.operator = operator
         self.expression = expression
-        self.source_location = ir_data.Location()
+        self.source_location = parser_types.SourceLocation()
 
 
 class _FieldWithType(object):
@@ -76,7 +76,7 @@ class _FieldWithType(object):
     def __init__(self, field, subtypes=None):
         self.field = field
         self.subtypes = subtypes or []
-        self.source_location = ir_data.Location()
+        self.source_location = parser_types.SourceLocation()
 
 
 def build_ir(parse_tree, used_productions=None):
@@ -153,11 +153,11 @@ def _really_build_ir(parse_tree, used_productions):
         ]
         used_productions.add(parse_tree.production)
         result = _handlers[parse_tree.production](*parsed_children)
-        if parse_tree.source_location is not None:
-            if result.source_location:
-                ir_data_utils.update(result.source_location, parse_tree.source_location)
+        if parse_tree.source_location:
+            if isinstance(result, tuple):
+                result = result._replace(source_location=parse_tree.source_location)
             else:
-                result.source_location = ir_data_utils.copy(parse_tree.source_location)
+                result.source_location = parse_tree.source_location
         return result
     else:
         # For leaf nodes, the temporary "IR" is just the token.  Higher-level rules
@@ -191,7 +191,7 @@ def _handles(production_text):
 
 def _make_prelude_import(position):
     """Helper function to construct a synthetic ir_data.Import for the prelude."""
-    location = parser_types.make_location(position, position)
+    location = parser_types.SourceLocation(position, position)
     return ir_data.Import(
         file_name=ir_data.String(text="", source_location=location),
         local_name=ir_data.Word(text="", source_location=location),
@@ -279,7 +279,7 @@ def _file(leading_newlines, docs, imports, attributes, type_definitions):
         and not attributes.list
         and not type_definitions.list
     ):
-        module_source_location = parser_types.make_location((1, 1), (1, 1))
+        module_source_location = parser_types.SourceLocation((1, 1), (1, 1))
     else:
         module_source_location = None
 
@@ -462,10 +462,10 @@ def _expression(expression):
 )
 def _choice_expression(condition, question, if_true, colon, if_false):
     """Constructs an IR node for a choice operator (`?:`) expression."""
-    location = parser_types.make_location(
+    location = parser_types.SourceLocation(
         condition.source_location.start, if_false.source_location.end
     )
-    operator_location = parser_types.make_location(
+    operator_location = parser_types.SourceLocation(
         question.source_location.start, colon.source_location.end
     )
     # The function_name is a bit weird, but should suffice for any error
@@ -490,7 +490,7 @@ def _no_op_comparative_expression(expression):
     "    additive-expression inequality-operator additive-expression"
 )
 def _comparative_expression(left, operator, right):
-    location = parser_types.make_location(
+    location = parser_types.SourceLocation(
         left.source_location.start, right.source_location.end
     )
     return ir_data.Expression(
@@ -538,7 +538,7 @@ def _binary_operator_expression(expression, expression_right):
     """
     e = expression
     for right in expression_right.list:
-        location = parser_types.make_location(
+        location = parser_types.SourceLocation(
             e.source_location.start, right.source_location.end
         )
         e = ir_data.Expression(
@@ -611,7 +611,7 @@ def _chained_comparison_expression(expression, expression_right):
     comparisons = []
     for i in range(0, len(sequence) - 1, 2):
         left, operator, right = sequence[i : i + 3]
-        location = parser_types.make_location(
+        location = parser_types.SourceLocation(
             left.source_location.start, right.source_location.end
         )
         comparisons.append(
@@ -627,7 +627,7 @@ def _chained_comparison_expression(expression, expression_right):
         )
     e = comparisons[0]
     for comparison in comparisons[1:]:
-        location = parser_types.make_location(
+        location = parser_types.SourceLocation(
             e.source_location.start, comparison.source_location.end
         )
         e = ir_data.Expression(
@@ -717,7 +717,7 @@ def _expression_right_production(operator, expression):
 # allowed, but "+-5" or "-+-something" are not.
 @_handles("negation-expression -> additive-operator bottom-expression")
 def _negation_expression_with_operator(operator, expression):
-    phantom_zero_location = ir_data.Location(
+    phantom_zero_location = parser_types.SourceLocation(
         start=operator.source_location.start, end=operator.source_location.start
     )
     return ir_data.Expression(
@@ -733,7 +733,7 @@ def _negation_expression_with_operator(operator, expression):
                 expression,
             ],
             function_name=operator,
-            source_location=ir_data.Location(
+            source_location=parser_types.SourceLocation(
                 start=operator.source_location.start, end=expression.source_location.end
             ),
         )
@@ -759,7 +759,7 @@ def _bottom_expression_function(function, open_paren, arguments, close_paren):
             function=_text_to_function(function.text),
             args=arguments.list,
             function_name=function,
-            source_location=ir_data.Location(
+            source_location=parser_types.SourceLocation(
                 start=function.source_location.start,
                 end=close_paren.source_location.end,
             ),
@@ -811,15 +811,11 @@ def _bottom_expression_from_reference(reference):
 
 @_handles("field-reference -> snake-reference field-reference-tail*")
 def _indirect_field_reference(field_reference, field_references):
-    if field_references.source_location.HasField("end"):
-        end_location = field_references.source_location.end
-    else:
-        end_location = field_reference.source_location.end
     return ir_data.Expression(
         field_reference=ir_data.FieldReference(
             path=[field_reference] + field_references.list,
-            source_location=parser_types.make_location(
-                field_reference.source_location.start, end_location
+            source_location=parser_types.merge_source_locations(
+                field_reference, field_references
             ),
         )
     )
@@ -869,11 +865,8 @@ def _type_definition(type_definition):
 def _structure(struct, name, parameters, colon, comment, newline, struct_body):
     """Composes the top-level IR for an Emboss structure."""
     del colon, comment, newline  # Unused.
-    ir_data_utils.builder(struct_body.structure).source_location.start.CopyFrom(
-        struct.source_location.start
-    )
-    ir_data_utils.builder(struct_body.structure).source_location.end.CopyFrom(
-        struct_body.source_location.end
+    ir_data_utils.builder(struct_body.structure).source_location = (
+        parser_types.merge_source_locations(struct, struct_body)
     )
     if struct_body.name:
         ir_data_utils.update(struct_body.name, name)
@@ -969,14 +962,12 @@ def _conditional_block_plus_field_block(conditional_block, block):
 )
 def _unconditional_block_plus_field_block(field, block):
     """Prepends an unconditional field to block."""
-    ir_data_utils.builder(field.field).existence_condition.source_location.CopyFrom(
+    ir_data_utils.builder(field.field).existence_condition.source_location = (
         field.source_location
     )
     ir_data_utils.builder(
         field.field
-    ).existence_condition.boolean_constant.source_location.CopyFrom(
-        field.source_location
-    )
+    ).existence_condition.boolean_constant.source_location = field.source_location
     ir_data_utils.builder(field.field).existence_condition.boolean_constant.value = True
     return _List([field] + block.list)
 
@@ -1032,7 +1023,9 @@ def _conditional_field_block(
     for field in fields.list:
         condition = ir_data_utils.builder(field.field).existence_condition
         condition.CopyFrom(expression)
-        condition.source_location.is_disjoint_from_parent = True
+        condition.source_location = condition.source_location._replace(
+            is_disjoint_from_parent=True
+        )
     return fields
 
 
@@ -1096,11 +1089,9 @@ def _field(
         field.documentation.extend(field_body.list[0].documentation)
     if abbreviation.list:
         field.abbreviation.CopyFrom(abbreviation.list[0])
-    field.source_location.start.CopyFrom(location.source_location.start)
-    if field_body.source_location.HasField("end"):
-        field.source_location.end.CopyFrom(field_body.source_location.end)
-    else:
-        field.source_location.end.CopyFrom(newline.source_location.end)
+    field.source_location = parser_types.merge_source_locations(
+        location, newline, field_body
+    )
     return _FieldWithType(field=field_ir)
 
 
@@ -1121,11 +1112,9 @@ def _virtual_field(let, name, equals, value, comment, newline, field_body):
     if field_body.list:
         field.attribute.extend(field_body.list[0].attribute)
         field.documentation.extend(field_body.list[0].documentation)
-    field.source_location.start.CopyFrom(let.source_location.start)
-    if field_body.source_location.HasField("end"):
-        field.source_location.end.CopyFrom(field_body.source_location.end)
-    else:
-        field.source_location.end.CopyFrom(newline.source_location.end)
+    field.source_location = parser_types.merge_source_locations(
+        let, newline, field_body
+    )
     return _FieldWithType(field=field_ir)
 
 
@@ -1192,27 +1181,20 @@ def _inline_type_field(location, name, abbreviation, body):
         type_name.name.text
     )
     field.type.atomic_type.reference.source_name.extend([type_name.name])
-    field.type.atomic_type.reference.source_location.CopyFrom(type_name.source_location)
+    field.type.atomic_type.reference.source_location = type_name.source_location
     field.type.atomic_type.reference.is_local_name = True
-    field.type.atomic_type.source_location.CopyFrom(type_name.source_location)
-    field.type.source_location.CopyFrom(type_name.source_location)
+    field.type.atomic_type.source_location = type_name.source_location
+    field.type.source_location = type_name.source_location
     if abbreviation.list:
         field.abbreviation.CopyFrom(abbreviation.list[0])
-    field.source_location.start.CopyFrom(location.source_location.start)
-    ir_data_utils.builder(body.source_location).start.CopyFrom(
-        location.source_location.start
-    )
+    body.source_location = parser_types.merge_source_locations(location, body)
     if body.HasField("enumeration"):
-        ir_data_utils.builder(body.enumeration).source_location.CopyFrom(
-            body.source_location
-        )
+        ir_data_utils.builder(body.enumeration).source_location = body.source_location
     else:
         assert body.HasField("structure")
-        ir_data_utils.builder(body.structure).source_location.CopyFrom(
-            body.source_location
-        )
+        ir_data_utils.builder(body.structure).source_location = body.source_location
     ir_data_utils.builder(body).name.CopyFrom(type_name)
-    field.source_location.end.CopyFrom(body.source_location.end)
+    field.source_location = parser_types.merge_source_locations(location, body)
     subtypes = [body] + list(body.subtype)
     del body.subtype[:]
     return _FieldWithType(field=field_ir, subtypes=subtypes)
@@ -1254,11 +1236,8 @@ def _abbreviation(open_paren, word, close_paren):
 @_handles('enum -> "enum" type-name ":" Comment? eol enum-body')
 def _enum(enum, name, colon, comment, newline, enum_body):
     del colon, comment, newline  # Unused.
-    ir_data_utils.builder(enum_body.enumeration).source_location.start.CopyFrom(
-        enum.source_location.start
-    )
-    ir_data_utils.builder(enum_body.enumeration).source_location.end.CopyFrom(
-        enum_body.source_location.end
+    ir_data_utils.builder(enum_body.enumeration).source_location = (
+        parser_types.merge_source_locations(enum, enum_body)
     )
     ir_data_utils.builder(enum_body).name.CopyFrom(name)
     return enum_body
@@ -1311,8 +1290,8 @@ def _enum_value_body(indent, docs, attributes, dedent):
 @_handles('external -> "external" type-name ":" Comment? eol external-body')
 def _external(external, name, colon, comment, newline, external_body):
     del colon, comment, newline  # Unused.
-    ir_data_utils.builder(external_body.source_location).start.CopyFrom(
-        external.source_location.start
+    external_body.source_location = parser_types.merge_source_locations(
+        external, external_body
     )
     if external_body.name:
         ir_data_utils.update(external_body.name, name)
@@ -1328,7 +1307,7 @@ def _external_body(indent, docs, attributes, dedent):
     return ir_data.TypeDefinition(
         external=ir_data.External(
             # Set source_location here, since it won't be set automatically.
-            source_location=ir_data.Location(
+            source_location=parser_types.SourceLocation(
                 start=indent.source_location.start, end=dedent.source_location.end
             )
         ),
@@ -1366,10 +1345,10 @@ def _type(reference, parameters, size, array_spec):
         atomic_type_source_location_end = parameters.source_location.end
     if size.list:
         base_type_source_location_end = size.source_location.end
-    base_type_location = parser_types.make_location(
+    base_type_location = parser_types.SourceLocation(
         reference.source_location.start, base_type_source_location_end
     )
-    atomic_type_location = parser_types.make_location(
+    atomic_type_location = parser_types.SourceLocation(
         reference.source_location.start, atomic_type_source_location_end
     )
     t = ir_data.Type(
@@ -1382,7 +1361,7 @@ def _type(reference, parameters, size, array_spec):
         source_location=base_type_location,
     )
     for length in array_spec.list:
-        location = parser_types.make_location(
+        location = parser_types.SourceLocation(
             t.source_location.start, length.source_location.end
         )
         if isinstance(length, ir_data.Expression):
@@ -1524,7 +1503,7 @@ def _auto_array_length_specifier(open_bracket, close_bracket):
     # Note that the Void's source_location is the space between the brackets (if
     # any).
     return ir_data.Empty(
-        source_location=ir_data.Location(
+        source_location=parser_types.SourceLocation(
             start=open_bracket.source_location.end,
             end=close_bracket.source_location.start,
         )

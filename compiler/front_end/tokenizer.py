@@ -71,7 +71,7 @@ def tokenize(text, file_name):
                 parser_types.Token(
                     '"\\n"',
                     "\n",
-                    parser_types.make_location(
+                    parser_types.SourceLocation(
                         (line_number, len(line) + 1), (line_number, len(line) + 1)
                     ),
                 )
@@ -92,7 +92,7 @@ def tokenize(text, file_name):
                 parser_types.Token(
                     "Indent",
                     leading_whitespace[len(indent_stack[-1]) :],
-                    parser_types.make_location(
+                    parser_types.SourceLocation(
                         (line_number, len(indent_stack[-1]) + 1),
                         (line_number, len(leading_whitespace) + 1),
                     ),
@@ -110,7 +110,7 @@ def tokenize(text, file_name):
                     parser_types.Token(
                         "Dedent",
                         "",
-                        parser_types.make_location(
+                        parser_types.SourceLocation(
                             (line_number, len(leading_whitespace) + 1),
                             (line_number, len(leading_whitespace) + 1),
                         ),
@@ -122,7 +122,7 @@ def tokenize(text, file_name):
                     [
                         error.error(
                             file_name,
-                            parser_types.make_location(
+                            parser_types.SourceLocation(
                                 (line_number, 1),
                                 (line_number, len(leading_whitespace) + 1),
                             ),
@@ -138,7 +138,7 @@ def tokenize(text, file_name):
             parser_types.Token(
                 '"\\n"',
                 "\n",
-                parser_types.make_location(
+                parser_types.SourceLocation(
                     (line_number, len(line) + 1), (line_number, len(line) + 1)
                 ),
             )
@@ -148,7 +148,7 @@ def tokenize(text, file_name):
             parser_types.Token(
                 "Dedent",
                 "",
-                parser_types.make_location((line_number + 1, 1), (line_number + 1, 1)),
+                parser_types.SourceLocation((line_number + 1, 1), (line_number + 1, 1)),
             )
         )
     return tokens, []
@@ -250,7 +250,7 @@ def _tokenize_line(line, line_number, file_name):
                 [
                     error.error(
                         file_name,
-                        parser_types.make_location(
+                        parser_types.SourceLocation(
                             (line_number, offset + 1), (line_number, offset + 2)
                         ),
                         "Unrecognized token",
@@ -262,7 +262,7 @@ def _tokenize_line(line, line_number, file_name):
                 parser_types.Token(
                     best_candidate_symbol,
                     best_candidate,
-                    parser_types.make_location(
+                    parser_types.SourceLocation(
                         (line_number, offset + 1),
                         (line_number, offset + len(best_candidate) + 1),
                     ),

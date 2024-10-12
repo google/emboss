@@ -17,12 +17,14 @@
 This is limited to purely data and type annotations.
 """
 
+import collections
 import dataclasses
 import enum
 import sys
 from typing import ClassVar, Optional
 
 from compiler.util import ir_data_fields
+from compiler.util import parser_types
 
 
 @dataclasses.dataclass
@@ -112,37 +114,6 @@ class Message:
 
 
 @dataclasses.dataclass
-class Position(Message):
-    """A zero-width position within a source file."""
-
-    line: int = 0
-    """Line (starts from 1)."""
-    column: int = 0
-    """Column (starts from 1)."""
-
-
-@dataclasses.dataclass
-class Location(Message):
-    """A half-open start:end range within a source file."""
-
-    start: Optional[Position] = None
-    """Beginning of the range"""
-    end: Optional[Position] = None
-    """One column past the end of the range."""
-
-    is_disjoint_from_parent: Optional[bool] = None
-    """True if this Location is outside of the parent object's Location."""
-
-    is_synthetic: Optional[bool] = None
-    """True if this Location's parent was synthesized, and does not directly
-  appear in the source file.
-
-  The Emboss front end uses this field to cull
-  irrelevant error messages.
-  """
-
-
-@dataclasses.dataclass
 class Word(Message):
     """IR for a bare word in the source file.
 
@@ -150,7 +121,7 @@ class Word(Message):
     """
 
     text: Optional[str] = None
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
@@ -158,13 +129,13 @@ class String(Message):
     """IR for a string in the source file."""
 
     text: Optional[str] = None
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
 class Documentation(Message):
     text: Optional[str] = None
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
@@ -172,14 +143,14 @@ class BooleanConstant(Message):
     """IR for a boolean constant."""
 
     value: Optional[bool] = None
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
 class Empty(Message):
     """Placeholder message for automatic element counts for arrays."""
 
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
@@ -192,7 +163,7 @@ class NumericConstant(Message):
     # TODO(bolms): switch back to int, and just use strings during
     # serialization, now that we're free of proto.
     value: Optional[str] = None
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 class FunctionMapping(int, enum.Enum):
@@ -240,7 +211,7 @@ class Function(Message):
     function: Optional[FunctionMapping] = None
     args: list["Expression"] = ir_data_fields.list_field(lambda: Expression)
     function_name: Optional[Word] = None
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
@@ -310,7 +281,7 @@ class NameDefinition(Message):
   should not be visible outside of its immediate namespace.
   """
 
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
     """The location of this NameDefinition in source code."""
 
 
@@ -356,7 +327,7 @@ class Reference(Message):
 
     # TODO(bolms): Allow absolute paths starting with ".".
 
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
     """Note that this is the source_location of the *Reference*, not of the
   object to which it refers.
   """
@@ -406,7 +377,7 @@ class FieldReference(Message):
     # TODO(bolms): Make the above change before declaring the IR to be "stable".
 
     path: list[Reference] = ir_data_fields.list_field(Reference)
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
@@ -509,7 +480,7 @@ class Expression(Message):
     builtin_reference: Optional[Reference] = ir_data_fields.oneof_field("expression")
 
     type: Optional[ExpressionType] = None
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
@@ -521,7 +492,7 @@ class ArrayType(Message):
     element_count: Optional[Expression] = ir_data_fields.oneof_field("size")
     automatic: Optional[Empty] = ir_data_fields.oneof_field("size")
 
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
@@ -530,7 +501,7 @@ class AtomicType(Message):
 
     reference: Optional[Reference] = None
     runtime_parameter: list[Expression] = ir_data_fields.list_field(Expression)
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
@@ -541,7 +512,7 @@ class Type(Message):
     array_type: Optional[ArrayType] = ir_data_fields.oneof_field("type")
 
     size_in_bits: Optional[Expression] = None
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
@@ -553,7 +524,7 @@ class AttributeValue(Message):
     expression: Optional[Expression] = ir_data_fields.oneof_field("value")
     string_constant: Optional[String] = ir_data_fields.oneof_field("value")
 
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
@@ -564,7 +535,7 @@ class Attribute(Message):
     value: Optional[AttributeValue] = None
     back_end: Optional[Word] = None
     is_default: Optional[bool] = None
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
@@ -618,7 +589,7 @@ class FieldLocation(Message):
 
     start: Optional[Expression] = None
     size: Optional[Expression] = None
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
@@ -689,7 +660,7 @@ class Field(Message):  # pylint:disable=too-many-instance-attributes
   `bar`: those fields only conditionally exist in the structure.
   """
 
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
@@ -733,7 +704,7 @@ class Structure(Message):
   be `{ 0, 1, 2, 3, ... }`.
   """
 
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
@@ -743,7 +714,7 @@ class External(Message):
     # Externals have no values other than name and attribute list, which are
     # common to all type definitions.
 
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
@@ -759,7 +730,7 @@ class EnumValue(Message):
     attribute: list[Attribute] = ir_data_fields.list_field(Attribute)
     """Value-specific attributes."""
 
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
@@ -767,7 +738,7 @@ class Enum(Message):
     """IR for an enumerated type definition."""
 
     value: list[EnumValue] = ir_data_fields.list_field(EnumValue)
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
@@ -778,7 +749,7 @@ class Import(Message):
     """The file to import."""
     local_name: Optional[Word] = None
     """The name to use within this module."""
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
@@ -808,7 +779,7 @@ class RuntimeParameter(Message):
   is filled in after initial parsing is finished.
   """
 
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 class AddressableUnit(int, enum.Enum):
@@ -852,7 +823,7 @@ class TypeDefinition(Message):
   These are currently only allowed on structures, but in the future they
   should be allowed on externals.
   """
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
 
 
 @dataclasses.dataclass
@@ -869,7 +840,7 @@ class Module(Message):
     """Other modules imported."""
     source_text: Optional[str] = None
     """The original source code."""
-    source_location: Optional[Location] = None
+    source_location: Optional[parser_types.SourceLocation] = None
     """Source code covered by this IR."""
     source_file_name: Optional[str] = None
     """Name of the source file."""

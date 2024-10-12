@@ -3,126 +3,36 @@
     {
       "name": {
         "text": "byte_order",
-        "source_location": {
-          "start": {
-            "line": 17,
-            "column": 11
-          },
-          "end": {
-            "line": 17,
-            "column": 21
-          },
-          "is_synthetic": false
-        }
+        "source_location": "17:11-17:21"
       },
       "value": {
         "string_constant": {
           "text": "LittleEndian",
-          "source_location": {
-            "start": {
-              "line": 17,
-              "column": 23
-            },
-            "end": {
-              "line": 17,
-              "column": 37
-            },
-            "is_synthetic": false
-          }
+          "source_location": "17:23-17:37"
         },
-        "source_location": {
-          "start": {
-            "line": 17,
-            "column": 23
-          },
-          "end": {
-            "line": 17,
-            "column": 37
-          },
-          "is_synthetic": false
-        }
+        "source_location": "17:23-17:37"
       },
       "is_default": true,
-      "source_location": {
-        "start": {
-          "line": 17,
-          "column": 1
-        },
-        "end": {
-          "line": 17,
-          "column": 38
-        },
-        "is_synthetic": false
-      }
+      "source_location": "17:1-17:38"
     },
     {
       "name": {
         "text": "namespace",
-        "source_location": {
-          "start": {
-            "line": 18,
-            "column": 8
-          },
-          "end": {
-            "line": 18,
-            "column": 17
-          },
-          "is_synthetic": false
-        }
+        "source_location": "18:8-18:17"
       },
       "value": {
         "string_constant": {
           "text": "emboss::test",
-          "source_location": {
-            "start": {
-              "line": 18,
-              "column": 19
-            },
-            "end": {
-              "line": 18,
-              "column": 33
-            },
-            "is_synthetic": false
-          }
+          "source_location": "18:19-18:33"
         },
-        "source_location": {
-          "start": {
-            "line": 18,
-            "column": 19
-          },
-          "end": {
-            "line": 18,
-            "column": 33
-          },
-          "is_synthetic": false
-        }
+        "source_location": "18:19-18:33"
       },
-      "is_default": false,
       "back_end": {
         "text": "cpp",
-        "source_location": {
-          "start": {
-            "line": 18,
-            "column": 2
-          },
-          "end": {
-            "line": 18,
-            "column": 7
-          },
-          "is_synthetic": false
-        }
+        "source_location": "18:2-18:7"
       },
-      "source_location": {
-        "start": {
-          "line": 18,
-          "column": 1
-        },
-        "end": {
-          "line": 20,
-          "column": 1
-        },
-        "is_synthetic": false
-      }
+      "is_default": false,
+      "source_location": "18:1-20:1"
     }
   ],
   "type": [
@@ -134,68 +44,18 @@
               "start": {
                 "constant": {
                   "value": "0",
-                  "source_location": {
-                    "start": {
-                      "line": 22,
-                      "column": 3
-                    },
-                    "end": {
-                      "line": 22,
-                      "column": 4
-                    },
-                    "is_synthetic": false
-                  }
+                  "source_location": "22:3-22:4"
                 },
-                "source_location": {
-                  "start": {
-                    "line": 22,
-                    "column": 3
-                  },
-                  "end": {
-                    "line": 22,
-                    "column": 4
-                  },
-                  "is_synthetic": false
-                }
+                "source_location": "22:3-22:4"
               },
               "size": {
                 "constant": {
                   "value": "4",
-                  "source_location": {
-                    "start": {
-                      "line": 22,
-                      "column": 8
-                    },
-                    "end": {
-                      "line": 22,
-                      "column": 9
-                    },
-                    "is_synthetic": false
-                  }
+                  "source_location": "22:8-22:9"
                 },
-                "source_location": {
-                  "start": {
-                    "line": 22,
-                    "column": 8
-                  },
-                  "end": {
-                    "line": 22,
-                    "column": 9
-                  },
-                  "is_synthetic": false
-                }
+                "source_location": "22:8-22:9"
               },
-              "source_location": {
-                "start": {
-                  "line": 22,
-                  "column": 3
-                },
-                "end": {
-                  "line": 22,
-                  "column": 10
-                },
-                "is_synthetic": false
-              }
+              "source_location": "22:3-22:10"
             },
             "type": {
               "atomic_type": {
@@ -203,187 +63,48 @@
                   "source_name": [
                     {
                       "text": "UInt",
-                      "source_location": {
-                        "start": {
-                          "line": 22,
-                          "column": 13
-                        },
-                        "end": {
-                          "line": 22,
-                          "column": 17
-                        },
-                        "is_synthetic": false
-                      }
+                      "source_location": "22:13-22:17"
                     }
                   ],
-                  "source_location": {
-                    "start": {
-                      "line": 22,
-                      "column": 13
-                    },
-                    "end": {
-                      "line": 22,
-                      "column": 17
-                    },
-                    "is_synthetic": false
-                  }
+                  "source_location": "22:13-22:17"
                 },
-                "source_location": {
-                  "start": {
-                    "line": 22,
-                    "column": 13
-                  },
-                  "end": {
-                    "line": 22,
-                    "column": 17
-                  },
-                  "is_synthetic": false
-                }
+                "source_location": "22:13-22:17"
               },
-              "source_location": {
-                "start": {
-                  "line": 22,
-                  "column": 13
-                },
-                "end": {
-                  "line": 22,
-                  "column": 17
-                },
-                "is_synthetic": false
-              }
+              "source_location": "22:13-22:17"
             },
             "name": {
               "name": {
                 "text": "file_state",
-                "source_location": {
-                  "start": {
-                    "line": 22,
-                    "column": 25
-                  },
-                  "end": {
-                    "line": 22,
-                    "column": 35
-                  },
-                  "is_synthetic": false
-                }
+                "source_location": "22:25-22:35"
               },
-              "source_location": {
-                "start": {
-                  "line": 22,
-                  "column": 25
-                },
-                "end": {
-                  "line": 22,
-                  "column": 35
-                },
-                "is_synthetic": false
-              }
-            },
-            "source_location": {
-              "start": {
-                "line": 22,
-                "column": 3
-              },
-              "end": {
-                "line": 22,
-                "column": 35
-              }
+              "source_location": "22:25-22:35"
             },
             "existence_condition": {
-              "source_location": {
-                "start": {
-                  "line": 22,
-                  "column": 3
-                },
-                "end": {
-                  "line": 22,
-                  "column": 35
-                },
-                "is_synthetic": false
-              },
               "boolean_constant": {
-                "source_location": {
-                  "start": {
-                    "line": 22,
-                    "column": 3
-                  },
-                  "end": {
-                    "line": 22,
-                    "column": 35
-                  },
-                  "is_synthetic": false
-                },
-                "value": true
-              }
-            }
+                "value": true,
+                "source_location": "22:3-22:35"
+              },
+              "source_location": "22:3-22:35"
+            },
+            "source_location": "22:3-22:35"
           },
           {
             "location": {
               "start": {
                 "constant": {
                   "value": "4",
-                  "source_location": {
-                    "start": {
-                      "line": 23,
-                      "column": 3
-                    },
-                    "end": {
-                      "line": 23,
-                      "column": 4
-                    },
-                    "is_synthetic": false
-                  }
+                  "source_location": "23:3-23:4"
                 },
-                "source_location": {
-                  "start": {
-                    "line": 23,
-                    "column": 3
-                  },
-                  "end": {
-                    "line": 23,
-                    "column": 4
-                  },
-                  "is_synthetic": false
-                }
+                "source_location": "23:3-23:4"
               },
               "size": {
                 "constant": {
                   "value": "12",
-                  "source_location": {
-                    "start": {
-                      "line": 23,
-                      "column": 8
-                    },
-                    "end": {
-                      "line": 23,
-                      "column": 10
-                    },
-                    "is_synthetic": false
-                  }
+                  "source_location": "23:8-23:10"
                 },
-                "source_location": {
-                  "start": {
-                    "line": 23,
-                    "column": 8
-                  },
-                  "end": {
-                    "line": 23,
-                    "column": 10
-                  },
-                  "is_synthetic": false
-                }
+                "source_location": "23:8-23:10"
               },
-              "source_location": {
-                "start": {
-                  "line": 23,
-                  "column": 3
-                },
-                "end": {
-                  "line": 23,
-                  "column": 11
-                },
-                "is_synthetic": false
-              }
+              "source_location": "23:3-23:11"
             },
             "type": {
               "array_type": {
@@ -393,265 +114,66 @@
                       "source_name": [
                         {
                           "text": "UInt",
-                          "source_location": {
-                            "start": {
-                              "line": 23,
-                              "column": 13
-                            },
-                            "end": {
-                              "line": 23,
-                              "column": 17
-                            },
-                            "is_synthetic": false
-                          }
+                          "source_location": "23:13-23:17"
                         }
                       ],
-                      "source_location": {
-                        "start": {
-                          "line": 23,
-                          "column": 13
-                        },
-                        "end": {
-                          "line": 23,
-                          "column": 17
-                        },
-                        "is_synthetic": false
-                      }
+                      "source_location": "23:13-23:17"
                     },
-                    "source_location": {
-                      "start": {
-                        "line": 23,
-                        "column": 13
-                      },
-                      "end": {
-                        "line": 23,
-                        "column": 17
-                      },
-                      "is_synthetic": false
-                    }
+                    "source_location": "23:13-23:17"
                   },
                   "size_in_bits": {
                     "constant": {
                       "value": "8",
-                      "source_location": {
-                        "start": {
-                          "line": 23,
-                          "column": 18
-                        },
-                        "end": {
-                          "line": 23,
-                          "column": 19
-                        },
-                        "is_synthetic": false
-                      }
+                      "source_location": "23:18-23:19"
                     },
-                    "source_location": {
-                      "start": {
-                        "line": 23,
-                        "column": 17
-                      },
-                      "end": {
-                        "line": 23,
-                        "column": 19
-                      },
-                      "is_synthetic": false
-                    }
+                    "source_location": "23:17-23:19"
                   },
-                  "source_location": {
-                    "start": {
-                      "line": 23,
-                      "column": 13
-                    },
-                    "end": {
-                      "line": 23,
-                      "column": 19
-                    },
-                    "is_synthetic": false
-                  }
+                  "source_location": "23:13-23:19"
                 },
                 "element_count": {
                   "constant": {
                     "value": "12",
-                    "source_location": {
-                      "start": {
-                        "line": 23,
-                        "column": 20
-                      },
-                      "end": {
-                        "line": 23,
-                        "column": 22
-                      },
-                      "is_synthetic": false
-                    }
+                    "source_location": "23:20-23:22"
                   },
-                  "source_location": {
-                    "start": {
-                      "line": 23,
-                      "column": 19
-                    },
-                    "end": {
-                      "line": 23,
-                      "column": 23
-                    },
-                    "is_synthetic": false
-                  }
+                  "source_location": "23:19-23:23"
                 },
-                "source_location": {
-                  "start": {
-                    "line": 23,
-                    "column": 13
-                  },
-                  "end": {
-                    "line": 23,
-                    "column": 23
-                  },
-                  "is_synthetic": false
-                }
+                "source_location": "23:13-23:23"
               },
-              "source_location": {
-                "start": {
-                  "line": 23,
-                  "column": 13
-                },
-                "end": {
-                  "line": 23,
-                  "column": 23
-                },
-                "is_synthetic": false
-              }
+              "source_location": "23:13-23:23"
             },
             "name": {
               "name": {
                 "text": "file_name",
-                "source_location": {
-                  "start": {
-                    "line": 23,
-                    "column": 25
-                  },
-                  "end": {
-                    "line": 23,
-                    "column": 34
-                  },
-                  "is_synthetic": false
-                }
+                "source_location": "23:25-23:34"
               },
-              "source_location": {
-                "start": {
-                  "line": 23,
-                  "column": 25
-                },
-                "end": {
-                  "line": 23,
-                  "column": 34
-                },
-                "is_synthetic": false
-              }
-            },
-            "source_location": {
-              "start": {
-                "line": 23,
-                "column": 3
-              },
-              "end": {
-                "line": 23,
-                "column": 34
-              }
+              "source_location": "23:25-23:34"
             },
             "existence_condition": {
-              "source_location": {
-                "start": {
-                  "line": 23,
-                  "column": 3
-                },
-                "end": {
-                  "line": 23,
-                  "column": 34
-                },
-                "is_synthetic": false
-              },
               "boolean_constant": {
-                "source_location": {
-                  "start": {
-                    "line": 23,
-                    "column": 3
-                  },
-                  "end": {
-                    "line": 23,
-                    "column": 34
-                  },
-                  "is_synthetic": false
-                },
-                "value": true
-              }
-            }
+                "value": true,
+                "source_location": "23:3-23:34"
+              },
+              "source_location": "23:3-23:34"
+            },
+            "source_location": "23:3-23:34"
           },
           {
             "location": {
               "start": {
                 "constant": {
                   "value": "16",
-                  "source_location": {
-                    "start": {
-                      "line": 24,
-                      "column": 3
-                    },
-                    "end": {
-                      "line": 24,
-                      "column": 5
-                    },
-                    "is_synthetic": false
-                  }
+                  "source_location": "24:3-24:5"
                 },
-                "source_location": {
-                  "start": {
-                    "line": 24,
-                    "column": 3
-                  },
-                  "end": {
-                    "line": 24,
-                    "column": 5
-                  },
-                  "is_synthetic": false
-                }
+                "source_location": "24:3-24:5"
               },
               "size": {
                 "constant": {
                   "value": "4",
-                  "source_location": {
-                    "start": {
-                      "line": 24,
-                      "column": 8
-                    },
-                    "end": {
-                      "line": 24,
-                      "column": 9
-                    },
-                    "is_synthetic": false
-                  }
+                  "source_location": "24:8-24:9"
                 },
-                "source_location": {
-                  "start": {
-                    "line": 24,
-                    "column": 8
-                  },
-                  "end": {
-                    "line": 24,
-                    "column": 9
-                  },
-                  "is_synthetic": false
-                }
+                "source_location": "24:8-24:9"
               },
-              "source_location": {
-                "start": {
-                  "line": 24,
-                  "column": 3
-                },
-                "end": {
-                  "line": 24,
-                  "column": 10
-                },
-                "is_synthetic": false
-              }
+              "source_location": "24:3-24:10"
             },
             "type": {
               "atomic_type": {
@@ -659,187 +181,48 @@
                   "source_name": [
                     {
                       "text": "UInt",
-                      "source_location": {
-                        "start": {
-                          "line": 24,
-                          "column": 13
-                        },
-                        "end": {
-                          "line": 24,
-                          "column": 17
-                        },
-                        "is_synthetic": false
-                      }
+                      "source_location": "24:13-24:17"
                     }
                   ],
-                  "source_location": {
-                    "start": {
-                      "line": 24,
-                      "column": 13
-                    },
-                    "end": {
-                      "line": 24,
-                      "column": 17
-                    },
-                    "is_synthetic": false
-                  }
+                  "source_location": "24:13-24:17"
                 },
-                "source_location": {
-                  "start": {
-                    "line": 24,
-                    "column": 13
-                  },
-                  "end": {
-                    "line": 24,
-                    "column": 17
-                  },
-                  "is_synthetic": false
-                }
+                "source_location": "24:13-24:17"
               },
-              "source_location": {
-                "start": {
-                  "line": 24,
-                  "column": 13
-                },
-                "end": {
-                  "line": 24,
-                  "column": 17
-                },
-                "is_synthetic": false
-              }
+              "source_location": "24:13-24:17"
             },
             "name": {
               "name": {
                 "text": "file_size_kb",
-                "source_location": {
-                  "start": {
-                    "line": 24,
-                    "column": 25
-                  },
-                  "end": {
-                    "line": 24,
-                    "column": 37
-                  },
-                  "is_synthetic": false
-                }
+                "source_location": "24:25-24:37"
               },
-              "source_location": {
-                "start": {
-                  "line": 24,
-                  "column": 25
-                },
-                "end": {
-                  "line": 24,
-                  "column": 37
-                },
-                "is_synthetic": false
-              }
-            },
-            "source_location": {
-              "start": {
-                "line": 24,
-                "column": 3
-              },
-              "end": {
-                "line": 24,
-                "column": 37
-              }
+              "source_location": "24:25-24:37"
             },
             "existence_condition": {
-              "source_location": {
-                "start": {
-                  "line": 24,
-                  "column": 3
-                },
-                "end": {
-                  "line": 24,
-                  "column": 37
-                },
-                "is_synthetic": false
-              },
               "boolean_constant": {
-                "source_location": {
-                  "start": {
-                    "line": 24,
-                    "column": 3
-                  },
-                  "end": {
-                    "line": 24,
-                    "column": 37
-                  },
-                  "is_synthetic": false
-                },
-                "value": true
-              }
-            }
+                "value": true,
+                "source_location": "24:3-24:37"
+              },
+              "source_location": "24:3-24:37"
+            },
+            "source_location": "24:3-24:37"
           },
           {
             "location": {
               "start": {
                 "constant": {
                   "value": "20",
-                  "source_location": {
-                    "start": {
-                      "line": 25,
-                      "column": 3
-                    },
-                    "end": {
-                      "line": 25,
-                      "column": 5
-                    },
-                    "is_synthetic": false
-                  }
+                  "source_location": "25:3-25:5"
                 },
-                "source_location": {
-                  "start": {
-                    "line": 25,
-                    "column": 3
-                  },
-                  "end": {
-                    "line": 25,
-                    "column": 5
-                  },
-                  "is_synthetic": false
-                }
+                "source_location": "25:3-25:5"
               },
               "size": {
                 "constant": {
                   "value": "4",
-                  "source_location": {
-                    "start": {
-                      "line": 25,
-                      "column": 8
-                    },
-                    "end": {
-                      "line": 25,
-                      "column": 9
-                    },
-                    "is_synthetic": false
-                  }
+                  "source_location": "25:8-25:9"
                 },
-                "source_location": {
-                  "start": {
-                    "line": 25,
-                    "column": 8
-                  },
-                  "end": {
-                    "line": 25,
-                    "column": 9
-                  },
-                  "is_synthetic": false
-                }
+                "source_location": "25:8-25:9"
               },
-              "source_location": {
-                "start": {
-                  "line": 25,
-                  "column": 3
-                },
-                "end": {
-                  "line": 25,
-                  "column": 10
-                },
-                "is_synthetic": false
-              }
+              "source_location": "25:3-25:10"
             },
             "type": {
               "atomic_type": {
@@ -847,242 +230,64 @@
                   "source_name": [
                     {
                       "text": "UInt",
-                      "source_location": {
-                        "start": {
-                          "line": 25,
-                          "column": 13
-                        },
-                        "end": {
-                          "line": 25,
-                          "column": 17
-                        },
-                        "is_synthetic": false
-                      }
+                      "source_location": "25:13-25:17"
                     }
                   ],
-                  "source_location": {
-                    "start": {
-                      "line": 25,
-                      "column": 13
-                    },
-                    "end": {
-                      "line": 25,
-                      "column": 17
-                    },
-                    "is_synthetic": false
-                  }
+                  "source_location": "25:13-25:17"
                 },
-                "source_location": {
-                  "start": {
-                    "line": 25,
-                    "column": 13
-                  },
-                  "end": {
-                    "line": 25,
-                    "column": 17
-                  },
-                  "is_synthetic": false
-                }
+                "source_location": "25:13-25:17"
               },
-              "source_location": {
-                "start": {
-                  "line": 25,
-                  "column": 13
-                },
-                "end": {
-                  "line": 25,
-                  "column": 17
-                },
-                "is_synthetic": false
-              }
+              "source_location": "25:13-25:17"
             },
             "name": {
               "name": {
                 "text": "media",
-                "source_location": {
-                  "start": {
-                    "line": 25,
-                    "column": 25
-                  },
-                  "end": {
-                    "line": 25,
-                    "column": 30
-                  },
-                  "is_synthetic": false
-                }
+                "source_location": "25:25-25:30"
               },
-              "source_location": {
-                "start": {
-                  "line": 25,
-                  "column": 25
-                },
-                "end": {
-                  "line": 25,
-                  "column": 30
-                },
-                "is_synthetic": false
-              }
-            },
-            "source_location": {
-              "start": {
-                "line": 25,
-                "column": 3
-              },
-              "end": {
-                "line": 25,
-                "column": 30
-              }
+              "source_location": "25:25-25:30"
             },
             "existence_condition": {
-              "source_location": {
-                "start": {
-                  "line": 25,
-                  "column": 3
-                },
-                "end": {
-                  "line": 25,
-                  "column": 30
-                },
-                "is_synthetic": false
-              },
               "boolean_constant": {
-                "source_location": {
-                  "start": {
-                    "line": 25,
-                    "column": 3
-                  },
-                  "end": {
-                    "line": 25,
-                    "column": 30
-                  },
-                  "is_synthetic": false
-                },
-                "value": true
-              }
-            }
+                "value": true,
+                "source_location": "25:3-25:30"
+              },
+              "source_location": "25:3-25:30"
+            },
+            "source_location": "25:3-25:30"
           }
         ],
-        "source_location": {
-          "start": {
-            "line": 21,
-            "column": 1
-          },
-          "end": {
-            "line": 26,
-            "column": 1
-          }
-        }
-      },
-      "addressable_unit": 8,
-      "source_location": {
-        "start": {
-          "line": 21,
-          "column": 1
-        },
-        "end": {
-          "line": 26,
-          "column": 1
-        },
-        "is_synthetic": false
+        "source_location": "21:1-26:1"
       },
       "name": {
         "name": {
           "text": "LogFileStatus",
-          "source_location": {
-            "start": {
-              "line": 21,
-              "column": 8
-            },
-            "end": {
-              "line": 21,
-              "column": 21
-            },
-            "is_synthetic": false
-          }
+          "source_location": "21:8-21:21"
         },
-        "source_location": {
-          "start": {
-            "line": 21,
-            "column": 8
-          },
-          "end": {
-            "line": 21,
-            "column": 21
-          },
-          "is_synthetic": false
-        }
-      }
+        "source_location": "21:8-21:21"
+      },
+      "addressable_unit": 8,
+      "source_location": "21:1-26:1"
     }
   ],
   "documentation": [
     {
       "text": "This is a simple, real-world example structure.",
-      "source_location": {
-        "start": {
-          "line": 15,
-          "column": 1
-        },
-        "end": {
-          "line": 16,
-          "column": 1
-        },
-        "is_synthetic": false
-      }
+      "source_location": "15:1-16:1"
     }
   ],
   "foreign_import": [
     {
       "file_name": {
         "text": "",
-        "source_location": {
-          "start": {
-            "line": 16,
-            "column": 1
-          },
-          "end": {
-            "line": 16,
-            "column": 1
-          },
-          "is_synthetic": false
-        }
+        "source_location": "16:1-16:1"
       },
       "local_name": {
         "text": "",
-        "source_location": {
-          "start": {
-            "line": 16,
-            "column": 1
-          },
-          "end": {
-            "line": 16,
-            "column": 1
-          },
-          "is_synthetic": false
-        }
+        "source_location": "16:1-16:1"
       },
-      "source_location": {
-        "start": {
-          "line": 16,
-          "column": 1
-        },
-        "end": {
-          "line": 16,
-          "column": 1
-        },
-        "is_synthetic": false
-      }
+      "source_location": "16:1-16:1"
     }
   ],
-  "source_location": {
-    "start": {
-      "line": 1,
-      "column": 1
-    },
-    "end": {
-      "line": 26,
-      "column": 1
-    },
-    "is_synthetic": false
-  },
-  "source_text": "# Copyright 2019 Google LLC\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#     https://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n\n-- This is a simple, real-world example structure.\n\n[$default byte_order: \"LittleEndian\"]\n[(cpp) namespace: \"emboss::test\"]\n\n\nstruct LogFileStatus:\n  0  [+4]   UInt        file_state\n  4  [+12]  UInt:8[12]  file_name\n  16 [+4]   UInt        file_size_kb\n  20 [+4]   UInt        media\n"
+  "source_text": "# Copyright 2019 Google LLC\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#     https://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n\n-- This is a simple, real-world example structure.\n\n[$default byte_order: \"LittleEndian\"]\n[(cpp) namespace: \"emboss::test\"]\n\n\nstruct LogFileStatus:\n  0  [+4]   UInt        file_state\n  4  [+12]  UInt:8[12]  file_name\n  16 [+4]   UInt        file_size_kb\n  20 [+4]   UInt        media\n",
+  "source_location": "1:1-26:1"
 }

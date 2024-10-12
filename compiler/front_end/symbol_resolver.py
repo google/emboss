@@ -24,6 +24,7 @@ from compiler.util import error
 from compiler.util import ir_data
 from compiler.util import ir_data_utils
 from compiler.util import ir_util
+from compiler.util import parser_types
 from compiler.util import traverse_ir
 
 # TODO(bolms): Symbol resolution raises an exception at the first error, but
@@ -167,7 +168,7 @@ def _add_struct_field_to_scope(field, scope, errors):
 
     value_builtin_name = ir_data.Word(
         text="this",
-        source_location=ir_data.Location(is_synthetic=True),
+        source_location=parser_types.SourceLocation(is_synthetic=True),
     )
     # In "inside field" scope, the name `this` maps back to the field itself.
     # This is important for attributes like `[requires]`.

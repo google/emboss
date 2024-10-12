@@ -126,12 +126,11 @@ class NormalizeIrTest(unittest.TestCase):
         )
         attr = ir.module[0].type[0].attribute[0]
 
-        bad_case_source_location = ir_data.Location()
-        bad_case_source_location = ir_data_utils.builder(bad_case_source_location)
-        bad_case_source_location.CopyFrom(attr.value.source_location)
-        # Location of SHORTY_CASE in the attribute line.
-        bad_case_source_location.start.column = 30
-        bad_case_source_location.end.column = 41
+        # SourceLocation of SHORTY_CASE in the attribute line.
+        bad_case_source_location = attr.value.source_location._replace(
+            start=attr.value.source_location.start._replace(column=30),
+            end=attr.value.source_location.end._replace(column=41),
+        )
 
         self.assertEqual(
             [
@@ -156,12 +155,11 @@ class NormalizeIrTest(unittest.TestCase):
         )
         attr = ir.module[0].type[0].attribute[0]
 
-        bad_case_source_location = ir_data.Location()
-        bad_case_source_location = ir_data_utils.builder(bad_case_source_location)
-        bad_case_source_location.CopyFrom(attr.value.source_location)
-        # Location of bad_CASE in the attribute line.
-        bad_case_source_location.start.column = 43
-        bad_case_source_location.end.column = 51
+        # SourceLocation of bad_CASE in the attribute line.
+        bad_case_source_location = attr.value.source_location._replace(
+            start=attr.value.source_location.start._replace(column=43),
+            end=attr.value.source_location.end._replace(column=51),
+        )
 
         self.assertEqual(
             [
@@ -186,12 +184,11 @@ class NormalizeIrTest(unittest.TestCase):
         )
         attr = ir.module[0].type[0].attribute[0]
 
-        bad_case_source_location = ir_data.Location()
-        bad_case_source_location = ir_data_utils.builder(bad_case_source_location)
-        bad_case_source_location.CopyFrom(attr.value.source_location)
-        # Location of BAD_case in the attribute line.
-        bad_case_source_location.start.column = 55
-        bad_case_source_location.end.column = 63
+        # SourceLocation of BAD_case in the attribute line.
+        bad_case_source_location = attr.value.source_location._replace(
+            start=attr.value.source_location.start._replace(column=55),
+            end=attr.value.source_location.end._replace(column=63),
+        )
 
         self.assertEqual(
             [
@@ -216,12 +213,11 @@ class NormalizeIrTest(unittest.TestCase):
         )
         attr = ir.module[0].type[0].attribute[0]
 
-        bad_case_source_location = ir_data.Location()
-        bad_case_source_location = ir_data_utils.builder(bad_case_source_location)
-        bad_case_source_location.CopyFrom(attr.value.source_location)
-        # Location of the second SHOUTY_CASE in the attribute line.
-        bad_case_source_location.start.column = 43
-        bad_case_source_location.end.column = 54
+        # SourceLocation of the second SHOUTY_CASE in the attribute line.
+        bad_case_source_location = attr.value.source_location._replace(
+            start=attr.value.source_location.start._replace(column=43),
+            end=attr.value.source_location.end._replace(column=54),
+        )
 
         self.assertEqual(
             [
@@ -246,12 +242,11 @@ class NormalizeIrTest(unittest.TestCase):
         )
         attr = ir.module[0].type[0].attribute[0]
 
-        bad_case_source_location = ir_data.Location()
-        bad_case_source_location = ir_data_utils.builder(bad_case_source_location)
-        bad_case_source_location.CopyFrom(attr.value.source_location)
-        # Location of excess comma.
-        bad_case_source_location.start.column = 42
-        bad_case_source_location.end.column = 42
+        # SourceLocation of excess comma.
+        bad_case_source_location = attr.value.source_location._replace(
+            start=attr.value.source_location.start._replace(column=42),
+            end=attr.value.source_location.end._replace(column=42),
+        )
 
         self.assertEqual(
             [
@@ -274,8 +269,10 @@ class NormalizeIrTest(unittest.TestCase):
             "  BAZ = 2\n"
         )
 
-        bad_case_source_location.start.column = 30
-        bad_case_source_location.end.column = 30
+        bad_case_source_location = attr.value.source_location._replace(
+            start=attr.value.source_location.start._replace(column=30),
+            end=attr.value.source_location.end._replace(column=30),
+        )
 
         self.assertEqual(
             [
@@ -298,8 +295,10 @@ class NormalizeIrTest(unittest.TestCase):
             "  BAZ = 2\n"
         )
 
-        bad_case_source_location.start.column = 54
-        bad_case_source_location.end.column = 54
+        bad_case_source_location = attr.value.source_location._replace(
+            start=attr.value.source_location.start._replace(column=54),
+            end=attr.value.source_location.end._replace(column=54),
+        )
 
         self.assertEqual(
             [
@@ -322,8 +321,10 @@ class NormalizeIrTest(unittest.TestCase):
             "  BAZ = 2\n"
         )
 
-        bad_case_source_location.start.column = 45
-        bad_case_source_location.end.column = 45
+        bad_case_source_location = attr.value.source_location._replace(
+            start=attr.value.source_location.start._replace(column=45),
+            end=attr.value.source_location.end._replace(column=45),
+        )
 
         self.assertEqual(
             [
@@ -346,8 +347,10 @@ class NormalizeIrTest(unittest.TestCase):
             "  BAZ = 2\n"
         )
 
-        bad_case_source_location.start.column = 30
-        bad_case_source_location.end.column = 30
+        bad_case_source_location = attr.value.source_location._replace(
+            start=attr.value.source_location.start._replace(column=30),
+            end=attr.value.source_location.end._replace(column=30),
+        )
 
         self.assertEqual(
             [
@@ -370,8 +373,10 @@ class NormalizeIrTest(unittest.TestCase):
             "  BAZ = 2\n"
         )
 
-        bad_case_source_location.start.column = 35
-        bad_case_source_location.end.column = 35
+        bad_case_source_location = attr.value.source_location._replace(
+            start=attr.value.source_location.start._replace(column=35),
+            end=attr.value.source_location.end._replace(column=35),
+        )
 
         self.assertEqual(
             [
@@ -394,8 +399,10 @@ class NormalizeIrTest(unittest.TestCase):
             "  BAZ = 2\n"
         )
 
-        bad_case_source_location.start.column = 31
-        bad_case_source_location.end.column = 31
+        bad_case_source_location = attr.value.source_location._replace(
+            start=attr.value.source_location.start._replace(column=31),
+            end=attr.value.source_location.end._replace(column=31),
+        )
 
         self.assertEqual(
             [

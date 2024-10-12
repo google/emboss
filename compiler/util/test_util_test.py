@@ -30,7 +30,7 @@ class ProtoIsSupersetTest(unittest.TestCase):
             test_util.proto_is_superset(
                 ir_data.Structure(
                     field=[ir_data.Field()],
-                    source_location=parser_types.parse_location("1:2-3:4"),
+                    source_location=parser_types.SourceLocation.from_str("1:2-3:4"),
                 ),
                 ir_data.Structure(field=[ir_data.Field()]),
             ),
@@ -42,7 +42,7 @@ class ProtoIsSupersetTest(unittest.TestCase):
             test_util.proto_is_superset(
                 ir_data.Structure(
                     field=[ir_data.Field(), ir_data.Field()],
-                    source_location=parser_types.parse_location("1:2-3:4"),
+                    source_location=parser_types.SourceLocation.from_str("1:2-3:4"),
                 ),
                 ir_data.Structure(field=[ir_data.Field()]),
             ),
@@ -53,7 +53,8 @@ class ProtoIsSupersetTest(unittest.TestCase):
             (False, "field[0] missing"),
             test_util.proto_is_superset(
                 ir_data.Structure(
-                    field=[], source_location=parser_types.parse_location("1:2-3:4")
+                    field=[],
+                    source_location=parser_types.SourceLocation.from_str("1:2-3:4"),
                 ),
                 ir_data.Structure(field=[ir_data.Field(), ir_data.Field()]),
             ),
@@ -64,25 +65,32 @@ class ProtoIsSupersetTest(unittest.TestCase):
             (False, "source_location missing"),
             test_util.proto_is_superset(
                 ir_data.Structure(field=[]),
-                ir_data.Structure(source_location=ir_data.Location()),
+                ir_data.Structure(source_location=parser_types.SourceLocation()),
             ),
         )
 
     def test_array_element_differs(self):
         self.assertEqual(
-            (False, "field[0].source_location.start.line differs: found 1, expected 2"),
+            (
+                False,
+                "field[0].source_location differs: found 1:2-3:4, expected 2:2-3:4",
+            ),
             test_util.proto_is_superset(
                 ir_data.Structure(
                     field=[
                         ir_data.Field(
-                            source_location=parser_types.parse_location("1:2-3:4")
+                            source_location=parser_types.SourceLocation.from_str(
+                                "1:2-3:4"
+                            )
                         )
                     ]
                 ),
                 ir_data.Structure(
                     field=[
                         ir_data.Field(
-                            source_location=parser_types.parse_location("2:2-3:4")
+                            source_location=parser_types.SourceLocation.from_str(
+                                "2:2-3:4"
+                            )
                         )
                     ]
                 ),
@@ -93,8 +101,12 @@ class ProtoIsSupersetTest(unittest.TestCase):
         self.assertEqual(
             (True, ""),
             test_util.proto_is_superset(
-                parser_types.parse_location("1:2-3:4"),
-                parser_types.parse_location("1:2-3:4"),
+                ir_data.Field(
+                    source_location=parser_types.SourceLocation.from_str("1:2-3:4")
+                ),
+                ir_data.Field(
+                    source_location=parser_types.SourceLocation.from_str("1:2-3:4")
+                ),
             ),
         )
 
@@ -105,17 +117,21 @@ class ProtoIsSupersetTest(unittest.TestCase):
                 ir_data.Structure(field=[ir_data.Field()]),
                 ir_data.Structure(
                     field=[ir_data.Field()],
-                    source_location=parser_types.parse_location("1:2-3:4"),
+                    source_location=parser_types.SourceLocation.from_str("1:2-3:4"),
                 ),
             ),
         )
 
     def test_optional_field_differs(self):
         self.assertEqual(
-            (False, "end.line differs: found 4, expected 3"),
+            (False, "source_location differs: found 1:2-4:4, expected 1:2-3:4"),
             test_util.proto_is_superset(
-                parser_types.parse_location("1:2-4:4"),
-                parser_types.parse_location("1:2-3:4"),
+                ir_data.Field(
+                    source_location=parser_types.SourceLocation.from_str("1:2-4:4")
+                ),
+                ir_data.Field(
+                    source_location=parser_types.SourceLocation.from_str("1:2-3:4")
+                ),
             ),
         )
 

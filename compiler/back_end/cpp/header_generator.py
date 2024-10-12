@@ -1747,9 +1747,14 @@ def _offset_source_location_column(source_location, offset):
         original start column.
     """
 
-    new_location = ir_data_utils.copy(source_location)
-    new_location.start.column = source_location.start.column + offset[0]
-    new_location.end.column = source_location.start.column + offset[1]
+    new_location = source_location._replace(
+        start=source_location.start._replace(
+            column=source_location.start.column + offset[0]
+        ),
+        end=source_location.start._replace(
+            column=source_location.start.column + offset[1]
+        ),
+    )
 
     return new_location
 

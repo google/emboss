@@ -34,7 +34,7 @@ def _tokenize(text):
     result = []
     for i in range(len(text)):
         result.append(
-            Token(text[i], parser_types.make_location((1, i + 1), (1, i + 2)))
+            Token(text[i], parser_types.SourceLocation((1, i + 1), (1, i + 2)))
         )
     return result
 
@@ -209,7 +209,7 @@ class Lr1Test(unittest.TestCase):
 
     def test_successful_parse(self):
         parser = _alsu_grammar.parser()
-        loc = parser_types.parse_location
+        loc = parser_types.SourceLocation.from_str
         s_to_c_c = parser_types.Production.parse("S -> C C")
         c_to_c_c = parser_types.Production.parse("C -> c C")
         c_to_d = parser_types.Production.parse("C -> d")

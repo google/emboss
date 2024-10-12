@@ -20,82 +20,69 @@ from compiler.util import parser_types
 
 
 class PositionTest(unittest.TestCase):
-    """Tests for Position-related functions in parser_types."""
-
-    def test_format_position(self):
-        self.assertEqual(
-            "1:2", parser_types.format_position(ir_data.Position(line=1, column=2))
-        )
+    """Tests for SourcePosition-related functions in parser_types."""
 
 
 class LocationTest(unittest.TestCase):
-    """Tests for Location-related functions in parser_types."""
+    """Tests for SourceLocation-related functions in parser_types."""
 
-    def test_make_location(self):
+    def test_location_new(self):
         self.assertEqual(
-            ir_data.Location(
-                start=ir_data.Position(line=1, column=2),
-                end=ir_data.Position(line=3, column=4),
+            parser_types.SourceLocation(
+                start=parser_types.SourcePosition(line=1, column=2),
+                end=parser_types.SourcePosition(line=3, column=4),
                 is_synthetic=False,
             ),
-            parser_types.make_location((1, 2), (3, 4)),
+            parser_types.SourceLocation((1, 2), (3, 4)),
         )
         self.assertEqual(
-            ir_data.Location(
-                start=ir_data.Position(line=1, column=2),
-                end=ir_data.Position(line=3, column=4),
+            parser_types.SourceLocation(
+                start=parser_types.SourcePosition(line=1, column=2),
+                end=parser_types.SourcePosition(line=3, column=4),
                 is_synthetic=False,
             ),
-            parser_types.make_location(
-                ir_data.Position(line=1, column=2), ir_data.Position(line=3, column=4)
+            parser_types.SourceLocation(
+                parser_types.SourcePosition(line=1, column=2),
+                parser_types.SourcePosition(line=3, column=4),
             ),
         )
 
     def test_make_synthetic_location(self):
         self.assertEqual(
-            ir_data.Location(
-                start=ir_data.Position(line=1, column=2),
-                end=ir_data.Position(line=3, column=4),
+            parser_types.SourceLocation(
+                start=parser_types.SourcePosition(line=1, column=2),
+                end=parser_types.SourcePosition(line=3, column=4),
                 is_synthetic=True,
             ),
-            parser_types.make_location((1, 2), (3, 4), True),
+            parser_types.SourceLocation((1, 2), (3, 4), is_synthetic=True),
         )
         self.assertEqual(
-            ir_data.Location(
-                start=ir_data.Position(line=1, column=2),
-                end=ir_data.Position(line=3, column=4),
+            parser_types.SourceLocation(
+                start=parser_types.SourcePosition(line=1, column=2),
+                end=parser_types.SourcePosition(line=3, column=4),
                 is_synthetic=True,
             ),
-            parser_types.make_location(
-                ir_data.Position(line=1, column=2),
-                ir_data.Position(line=3, column=4),
-                True,
+            parser_types.SourceLocation(
+                parser_types.SourcePosition(line=1, column=2),
+                parser_types.SourcePosition(line=3, column=4),
+                is_synthetic=True,
             ),
         )
 
-    def test_make_location_type_checks(self):
-        self.assertRaises(ValueError, parser_types.make_location, [1, 2], (1, 2))
-        self.assertRaises(ValueError, parser_types.make_location, (1, 2), [1, 2])
-
-    def test_make_location_logic_checks(self):
-        self.assertRaises(ValueError, parser_types.make_location, (3, 4), (1, 2))
-        self.assertRaises(ValueError, parser_types.make_location, (1, 3), (1, 2))
-        self.assertTrue(parser_types.make_location((1, 2), (1, 2)))
-
-    def test_format_location(self):
+    def test_location_str(self):
         self.assertEqual(
             "1:2-3:4",
-            parser_types.format_location(parser_types.make_location((1, 2), (3, 4))),
+            str(parser_types.SourceLocation((1, 2), (3, 4))),
         )
 
-    def test_parse_location(self):
+    def test_location_from_str(self):
         self.assertEqual(
-            parser_types.make_location((1, 2), (3, 4)),
-            parser_types.parse_location("1:2-3:4"),
+            parser_types.SourceLocation((1, 2), (3, 4)),
+            parser_types.SourceLocation.from_str("1:2-3:4"),
         )
         self.assertEqual(
-            parser_types.make_location((1, 2), (3, 4)),
-            parser_types.parse_location("  1  :  2  -    3 :   4  "),
+            parser_types.SourceLocation((1, 2), (3, 4)),
+            parser_types.SourceLocation.from_str("  1  :  2  -    3 :   4  "),
         )
 
 
@@ -107,7 +94,7 @@ class TokenTest(unittest.TestCase):
             "FOO 'bar' 1:2-3:4",
             str(
                 parser_types.Token(
-                    "FOO", "bar", parser_types.make_location((1, 2), (3, 4))
+                    "FOO", "bar", parser_types.SourceLocation((1, 2), (3, 4))
                 )
             ),
         )
