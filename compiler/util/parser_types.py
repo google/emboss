@@ -95,9 +95,7 @@ class SourceLocation(LocationTuple):
             suffix += "^"
         if self.is_synthetic:
             suffix += "*"
-        return (
-            f"{self.start or SourcePosition()}-{self.end or SourcePosition()}{suffix}"
-        )
+        return f"{self.start}-{self.end}{suffix}"
 
     @staticmethod
     def from_str(value):

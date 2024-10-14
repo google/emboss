@@ -3948,11 +3948,6 @@ def _check_source_location(source_location, path, min_start, max_end):
     Returns:
       A list of error messages, or an empty list if no errors.
     """
-    if source_location.is_disjoint_from_parent:
-        # If source_location.is_disjoint_from_parent, then this source_location is
-        # allowed to be outside of the parent's source_location.
-        return []
-
     result = []
     start = None
     end = None
@@ -3965,47 +3960,24 @@ def _check_source_location(source_location, path, min_start, max_end):
     else:
         end = source_location.end
 
-    if start and end:
-        if start.line and end.line:
-            if start.line > end.line:
-                result.append(
-                    "{}.start.line > {}.end.line ({} vs {})".format(
-                        path, path, start.line, end.line
-                    )
-                )
-            elif start.line == end.line:
-                if start.column and end.column and start.column > end.column:
-                    result.append(
-                        "{}.start.column > {}.end.column ({} vs {})".format(
-                            path, path, start.column, end.column
-                        )
-                    )
-
     for name, field in (("start", start), ("end", end)):
         if not field:
             continue
-        if field.line:
-            if field.line <= 0:
-                result.append("{}.{}.line <= 0 ({})".format(path, name, field.line))
-        else:
+        if not field.line:
             result.append("{}.{}.line missing".format(path, name))
-        if field.column:
-            if field.column <= 0:
-                result.append("{}.{}.column <= 0 ({})".format(path, name, field.column))
-        else:
+        if not field.column:
             result.append("{}.{}.column missing".format(path, name))
 
-    if min_start and start:
-        if min_start.line > start.line or (
-            min_start.line == start.line and min_start.column > start.column
-        ):
-            result.append("{}.start before parent start".format(path))
+    if not source_location.is_disjoint_from_parent:
+        # If source_location.is_disjoint_from_parent, then this source_location
+        # is allowed to be outside of the parent's source_location.
+        if min_start and start:
+            if min_start > start:
+                result.append("{}.start before parent start".format(path))
 
-    if max_end and end:
-        if max_end.line < end.line or (
-            max_end.line == end.line and max_end.column < end.column
-        ):
-            result.append("{}.end after parent end".format(path))
+        if max_end and end:
+            if max_end < end:
+                result.append("{}.end after parent end".format(path))
 
     return result
 
