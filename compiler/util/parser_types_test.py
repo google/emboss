@@ -28,8 +28,7 @@ class PositionTest(unittest.TestCase):
     def test_position_bool(self):
         self.assertFalse(parser_types.SourcePosition())
         self.assertFalse(parser_types.SourcePosition(0, 0))
-        self.assertTrue(parser_types.SourcePosition(1, 0))
-        self.assertTrue(parser_types.SourcePosition(0, 1))
+        self.assertTrue(parser_types.SourcePosition(1, 1))
 
     def test_position_from_str(self):
         self.assertEqual(
@@ -58,6 +57,8 @@ class PositionTest(unittest.TestCase):
             self.assertRaises(AssertionError, parser_types.SourcePosition, 1, None)
             self.assertRaises(AssertionError, parser_types.SourcePosition, 1.1, 1)
             self.assertRaises(AssertionError, parser_types.SourcePosition, 1, 1.1)
+            self.assertRaises(AssertionError, parser_types.SourcePosition, 0, 1)
+            self.assertRaises(AssertionError, parser_types.SourcePosition, 1, 0)
 
     def test_position_attributes(self):
         self.assertEqual(1, parser_types.SourcePosition(1, 2).line)
@@ -111,6 +112,18 @@ class LocationTest(unittest.TestCase):
             )
             self.assertRaises(
                 AssertionError, parser_types.SourceLocation, (3, 4), (3, 2)
+            )
+            self.assertRaises(
+                AssertionError,
+                parser_types.SourceLocation,
+                parser_types.SourcePosition(),
+                (1, 2),
+            )
+            self.assertRaises(
+                AssertionError,
+                parser_types.SourceLocation,
+                (1, 2),
+                parser_types.SourcePosition(),
             )
 
     def test_location_str(self):

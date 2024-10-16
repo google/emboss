@@ -31,13 +31,26 @@ PositionTuple = collections.namedtuple(
 
 
 class SourcePosition(PositionTuple):
-    """A zero-width position within a source file."""
+    """A zero-width position within a source file.
+
+    Positions are 1-based (the first character of a source file is (1, 1)).
+
+    The special value (0, 0) indicates a missing or unknown position, and is
+    considered falsy.  All other values of SourcePosition are truthy.
+
+    Attributes:
+        line: the line within the source file; the first line is 1
+        column: the column within the source line; the first character is 1
+    """
 
     def __new__(cls, /, line=0, column=0):
         assert isinstance(line, int), f"line {line} is not int"
         assert isinstance(column, int), f"column {column} is not int"
         assert line >= 0, f"line {line} is negative"
         assert column >= 0, f"column {column} is negative"
+        assert (line == 0 and column == 0) or (
+            line != 0 and column != 0
+        ), f"Cannot have line {line} with column {column}"
         return PositionTuple.__new__(cls, line, column)
 
     def __str__(self):
@@ -52,7 +65,7 @@ class SourcePosition(PositionTuple):
             raise ValueError(f"{repr(value)} is not a valid SourcePosition.")
 
     def __bool__(self):
-        return bool(self.line or self.column)
+        return bool(self.line)
 
 
 LocationTuple = collections.namedtuple(
@@ -63,7 +76,21 @@ LocationTuple = collections.namedtuple(
 
 
 class SourceLocation(LocationTuple):
-    """A half-open start:end range within a source file."""
+    """The source location of a node in the IR, as a half-open start:end range
+
+    Attributes:
+        start: the start of the range
+        end: one character past the end of the range
+        is_disjoint_from_parent: True if this SourceLocation may fall outside
+            of the SourceLocation of the parent node
+        is_synthetic: True if the associated node was generated from
+            user-supplied source code, but is part of a construct that does not
+            directly correspond to something that the user wrote (e.g., a
+            generated virtual field that is assembled from fragments from
+            elsewhere in the IR).
+
+    SourceLocation is falsy if the start and end are falsy.
+    """
 
     def __new__(
         cls,
@@ -79,6 +106,9 @@ class SourceLocation(LocationTuple):
         if not isinstance(end, SourcePosition):
             end = SourcePosition(*end)
         assert start <= end, f"start {start} is after end {end}"
+        assert (not start and not end) or (
+            start and end
+        ), "Cannot have have start {start} with end {end}"
         assert isinstance(
             is_disjoint_from_parent, bool
         ), f"is_disjoint_from_parent {is_disjoint_from_parent} is not bool"
@@ -120,7 +150,8 @@ class SourceLocation(LocationTuple):
             raise ValueError(f"{repr(original_value)} is not a valid SourceLocation.")
 
     def __bool__(self):
-        return bool(self.start or self.end)
+        # Should this check is_synthetic and is_disjoint_from_parent as well?
+        return bool(self.start)
 
 
 def merge_source_locations(*nodes):

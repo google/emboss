@@ -3960,14 +3960,6 @@ def _check_source_location(source_location, path, min_start, max_end):
     else:
         end = source_location.end
 
-    for name, field in (("start", start), ("end", end)):
-        if not field:
-            continue
-        if not field.line:
-            result.append("{}.{}.line missing".format(path, name))
-        if not field.column:
-            result.append("{}.{}.column missing".format(path, name))
-
     if not source_location.is_disjoint_from_parent:
         # If source_location.is_disjoint_from_parent, then this source_location
         # is allowed to be outside of the parent's source_location.
