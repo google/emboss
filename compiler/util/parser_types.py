@@ -43,15 +43,18 @@ class SourcePosition(PositionTuple):
         column: the column within the source line; the first character is 1
     """
 
-    def __new__(cls, /, line=0, column=0):
-        assert isinstance(line, int), f"line {line} is not int"
-        assert isinstance(column, int), f"column {column} is not int"
-        assert line >= 0, f"line {line} is negative"
-        assert column >= 0, f"column {column} is negative"
-        assert (line == 0 and column == 0) or (
-            line != 0 and column != 0
-        ), f"Cannot have line {line} with column {column}"
-        return PositionTuple.__new__(cls, line, column)
+    # This __new__ just adds asserts around PositionTuple.__new__, so it is
+    # unnecessary when running under -O.
+    if __debug__:
+        def __new__(cls, /, line=0, column=0):
+            assert isinstance(line, int), f"line {line} is not int"
+            assert isinstance(column, int), f"column {column} is not int"
+            assert line >= 0, f"line {line} is negative"
+            assert column >= 0, f"column {column} is negative"
+            assert (line == 0 and column == 0) or (
+                line != 0 and column != 0
+            ), f"Cannot have line {line} with column {column}"
+            return PositionTuple.__new__(cls, line, column)
 
     def __str__(self):
         return f"{self.line}:{self.column}"
