@@ -46,6 +46,7 @@ class SourcePosition(PositionTuple):
     # This __new__ just adds asserts around PositionTuple.__new__, so it is
     # unnecessary when running under -O.
     if __debug__:
+
         def __new__(cls, /, line=0, column=0):
             assert isinstance(line, int), f"line {line} is not int"
             assert isinstance(column, int), f"column {column} is not int"
