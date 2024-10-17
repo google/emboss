@@ -29,14 +29,14 @@ def set_function_name_end(function: Function):
   if not function.function_name:
     function.function_name = Word()
   if not function.function_name.source_location:
-    function.function_name.source_location = Location()
-  word.source_location.end = Position(line=1,column=2)
+    function.function_name.source_location = SourceLocation()
+  word.source_location.end = SourcePosition(line=1,column=2)
 ```
 
 We can do:
 ```
 def set_function_name_end(function: Function):
-  builder(function).function_name.source_location.end = Position(line=1,
+  builder(function).function_name.source_location.end = SourcePosition(line=1,
   column=2)
 ```
 
@@ -79,6 +79,7 @@ from typing import (
 
 from compiler.util import ir_data
 from compiler.util import ir_data_fields
+from compiler.util import parser_types
 
 
 MessageT = TypeVar("MessageT", bound=ir_data.Message)
@@ -106,11 +107,14 @@ class IrDataSerializer:
         assert ir is not None
         values: MutableMapping[str, Any] = {}
         for spec, value in field_func(ir):
-            if value is not None and spec.is_dataclass:
-                if spec.is_sequence:
-                    value = [self._to_dict(v, field_func) for v in value]
-                else:
-                    value = self._to_dict(value, field_func)
+            if value is not None:
+                if spec.is_dataclass:
+                    if spec.is_sequence:
+                        value = [self._to_dict(v, field_func) for v in value]
+                    else:
+                        value = self._to_dict(value, field_func)
+                elif spec.data_type == parser_types.SourceLocation:
+                    value = str(value)
             values[spec.name] = value
         return values
 
@@ -182,6 +186,8 @@ class IrDataSerializer:
                         class_fields[name] = IrDataSerializer._enum_type_converter(
                             spec.data_type, value
                         )
+                    elif spec.data_type == parser_types.SourceLocation:
+                        class_fields[name] = parser_types.SourceLocation.from_str(value)
                     else:
                         if spec.is_sequence:
                             class_fields[name] = value

@@ -28,7 +28,9 @@ def _mark_as_synthetic(proto):
     if not isinstance(proto, ir_data.Message):
         return
     if hasattr(proto, "source_location"):
-        ir_data_utils.builder(proto).source_location.is_synthetic = True
+        proto.source_location = ir_data_utils.reader(proto).source_location._replace(
+            is_synthetic=True
+        )
     for spec, value in ir_data_utils.get_set_fields(proto):
         if spec.name != "source_location" and spec.is_dataclass:
             if spec.is_sequence:
@@ -263,7 +265,7 @@ def _maybe_replace_next_keyword_in_expression(
     expression.CopyFrom(_NEXT_KEYWORD_REPLACEMENT_EXPRESSION)
     expression.function.args[0].CopyFrom(last_location.start)
     expression.function.args[1].CopyFrom(last_location.size)
-    expression.source_location.CopyFrom(original_location)
+    expression.source_location = original_location
     _mark_as_synthetic(expression.function)
 
 

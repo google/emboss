@@ -37,7 +37,7 @@ class TokenizerTest(unittest.TestCase):
                 [
                     error.error(
                         "file",
-                        parser_types.make_location((2, 1), (2, 2)),
+                        parser_types.SourceLocation((2, 1), (2, 2)),
                         "Bad indentation",
                     )
                 ]
@@ -53,7 +53,7 @@ class TokenizerTest(unittest.TestCase):
                 [
                     error.error(
                         "file",
-                        parser_types.make_location((2, 1), (2, 2)),
+                        parser_types.SourceLocation((2, 1), (2, 2)),
                         "Bad indentation",
                     )
                 ]
@@ -69,7 +69,7 @@ class TokenizerTest(unittest.TestCase):
                 [
                     error.error(
                         "file",
-                        parser_types.make_location((2, 1), (2, 2)),
+                        parser_types.SourceLocation((2, 1), (2, 2)),
                         "Bad indentation",
                     )
                 ]
@@ -85,7 +85,7 @@ class TokenizerTest(unittest.TestCase):
                 [
                     error.error(
                         "file",
-                        parser_types.make_location((2, 1), (2, 2)),
+                        parser_types.SourceLocation((2, 1), (2, 2)),
                         "Bad indentation",
                     )
                 ]
@@ -101,7 +101,7 @@ class TokenizerTest(unittest.TestCase):
                 [
                     error.error(
                         "file",
-                        parser_types.make_location((4, 1), (4, 2)),
+                        parser_types.SourceLocation((4, 1), (4, 2)),
                         "Bad indentation",
                     )
                 ]
@@ -117,7 +117,7 @@ class TokenizerTest(unittest.TestCase):
                 [
                     error.error(
                         "name",
-                        parser_types.make_location((1, 5), (1, 6)),
+                        parser_types.SourceLocation((1, 5), (1, 6)),
                         "Unrecognized token",
                     )
                 ]
@@ -354,7 +354,7 @@ def _make_bad_char_tests():
                     [
                         error.error(
                             "name",
-                            parser_types.make_location((1, 1), (1, 2)),
+                            parser_types.SourceLocation((1, 1), (1, 2)),
                             "Unrecognized token",
                         )
                     ]
@@ -382,7 +382,7 @@ def _make_bad_string_tests():
                     [
                         error.error(
                             "name",
-                            parser_types.make_location((1, 1), (1, 2)),
+                            parser_types.SourceLocation((1, 1), (1, 2)),
                             "Unrecognized token",
                         )
                     ]
@@ -482,10 +482,7 @@ def _make_offset_tests():
 
         def test_case(self):
             self.assertEqual(
-                [
-                    parser_types.format_location(l.source_location)
-                    for l in tokenizer.tokenize(case, "file")[0]
-                ],
+                [str(l.source_location) for l in tokenizer.tokenize(case, "file")[0]],
                 cases[case],
             )
 

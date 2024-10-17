@@ -454,56 +454,35 @@ struct Foo:
                   "function": "SUBTRACTION",
                   "function_name": {
                     "text": "-",
-                    "source_location": {
-                      "start": { "line": 8, "column": 3 },
-                      "end": { "line": 8, "column": 4 }
-                    }
+                    "source_location": "8:3-8:4"
                   },
                   "args": [
                     {
                       "constant": {
                         "value": "0",
-                        "source_location": {
-                          "start": { "line": 8, "column": 3 },
-                          "end": { "line": 8, "column": 3 }
-                        }
+                        "source_location": "8:3-8:3"
                       },
-                      "source_location": {
-                        "start": { "line": 8, "column": 3 },
-                        "end": { "line": 8, "column": 3 }
-                      }
+                      "source_location": "8:3-8:3"
                     },
                     {
                       "function": {
                         "function": "ADDITION",
                         "function_name": {
                           "text": "+",
-                          "source_location": {
-                            "start": { "line": 8, "column": 5 },
-                            "end": { "line": 8, "column": 6 }
-                          }
+                          "source_location": "8:5-8:6"
                         },
                         "args": [
                           {
                             "constant": { "value": "0" },
-                            "source_location": {
-                              "start": { "line": 8, "column": 5 },
-                              "end": { "line": 8, "column": 5 }
-                            }
+                            "source_location": "8:5-8:5"
                           },
                           {
                             "constant": { "value": "1" },
-                            "source_location": {
-                              "start": { "line": 8, "column": 6 },
-                              "end": { "line": 8, "column": 7 }
-                            }
+                            "source_location": "8:6-8:7"
                           }
                         ]
                       },
-                      "source_location": {
-                        "start": { "line": 8, "column": 4 },
-                        "end": { "line": 8, "column": 8 }
-                      }
+                      "source_location": "8:4-8:8"
                     }
                   ]
                 }
@@ -513,56 +492,35 @@ struct Foo:
                   "function": "SUBTRACTION",
                   "function_name": {
                     "text": "-",
-                    "source_location": {
-                      "start": { "line": 8, "column": 12 },
-                      "end": { "line": 8, "column": 13 }
-                    }
+                    "source_location": "8:12-8:13"
                   },
                   "args": [
                     {
                       "constant": {
                         "value": "0",
-                        "source_location": {
-                          "start": { "line": 8, "column": 11 },
-                          "end": { "line": 8, "column": 12 }
-                        }
+                        "source_location": "8:11-8:12"
                       },
-                      "source_location": {
-                        "start": { "line": 8, "column": 11 },
-                        "end": { "line": 8, "column": 12 }
-                      }
+                      "source_location": "8:11-8:12"
                     },
                     {
                       "function": {
                         "function": "SUBTRACTION",
                         "function_name": {
                           "text": "-",
-                          "source_location": {
-                            "start": { "line": 8, "column": 14 },
-                            "end": { "line": 8, "column": 15 }
-                          }
+                          "source_location": "8:14-8:15"
                         },
                         "args": [
                           {
                             "constant": { "value": "0" },
-                            "source_location": {
-                              "start": { "line": 8, "column": 14 },
-                              "end": { "line": 8, "column": 14 }
-                            }
+                            "source_location": "8:14-8:14"
                           },
                           {
                             "constant": { "value": "10" },
-                            "source_location": {
-                              "start": { "line": 8, "column": 15 },
-                              "end": { "line": 8, "column": 17 }
-                            }
+                            "source_location": "8:15-8:17"
                           }
                         ]
                       },
-                      "source_location": {
-                        "start": { "line": 8, "column": 13 },
-                        "end": { "line": 8, "column": 18 }
-                      }
+                      "source_location": "8:13-8:18"
                     }
                   ]
                 }
@@ -642,10 +600,7 @@ struct TenElementArray:
                   }
                 },
                 "automatic": {
-                  "source_location": {
-                    "start": { "line": 3, "column": 16 },
-                    "end": { "line": 3, "column": 18 }
-                  }
+                  "source_location": "3:16-3:18"
                 }
               }
             },
@@ -675,17 +630,11 @@ struct Foo:
             "location": {
               "start": {
                 "constant": { "value": "0" },
-                "source_location": {
-                  "start": { "line": 3, "column": 3 },
-                  "end": { "line": 3, "column": 4 }
-                }
+                "source_location": "3:3-3:4"
               },
               "size": {
                 "constant": { "value": "1" },
-                "source_location": {
-                  "start": { "line": 3, "column": 9 },
-                  "end": { "line": 3, "column": 10 }
-                }
+                "source_location": "3:9-3:10"
               }
             }
           },
@@ -1825,28 +1774,16 @@ empty file
     {
       "file_name": {
         "text": "",
-        "source_location": {
-          "start": { "line": 1, "column": 1 },
-          "end": { "line": 1, "column": 1 }
-        }
+        "source_location": "1:1-1:1"
       },
       "local_name": {
         "text": "",
-        "source_location": {
-          "start": { "line": 1, "column": 1 },
-          "end": { "line": 1, "column": 1 }
-        }
+        "source_location": "1:1-1:1"
       },
-      "source_location": {
-        "start": { "line": 1, "column": 1 },
-        "end": { "line": 1, "column": 1 }
-      }
+      "source_location": "1:1-1:1"
     }
   ],
-  "source_location": {
-    "start": { "line": 1, "column": 1 },
-    "end": { "line": 1, "column": 1 }
-  }
+  "source_location": "1:1-1:1"
 }
 
 ===
@@ -3547,15 +3484,9 @@ struct Foo:
                 "reference": { "source_name": [ { "text": "UInt" } ] }
               },
               "size_in_bits": {
-                "source_location": {
-                  "start": { "line": 3, "column": 15 },
-                  "end": { "line": 3, "column": 18 }
-                }
+                "source_location": "3:15-3:18"
               },
-              "source_location": {
-                "start": { "line": 3, "column": 11 },
-                "end": { "line": 3, "column": 18 }
-              }
+              "source_location": "3:11-3:18"
             },
             "name": { "name": { "text": "field" } }
           }
@@ -4017,68 +3948,28 @@ def _check_source_location(source_location, path, min_start, max_end):
     Returns:
       A list of error messages, or an empty list if no errors.
     """
-    if source_location.is_disjoint_from_parent:
-        # If source_location.is_disjoint_from_parent, then this source_location is
-        # allowed to be outside of the parent's source_location.
-        return []
-
     result = []
     start = None
     end = None
-    if not source_location.HasField("start"):
+    if not source_location.start:
         result.append("{}.start missing".format(path))
     else:
         start = source_location.start
-    if not source_location.HasField("end"):
+    if not source_location.end:
         result.append("{}.end missing".format(path))
     else:
         end = source_location.end
 
-    if start and end:
-        if start.HasField("line") and end.HasField("line"):
-            if start.line > end.line:
-                result.append(
-                    "{}.start.line > {}.end.line ({} vs {})".format(
-                        path, path, start.line, end.line
-                    )
-                )
-            elif start.line == end.line:
-                if (
-                    start.HasField("column")
-                    and end.HasField("column")
-                    and start.column > end.column
-                ):
-                    result.append(
-                        "{}.start.column > {}.end.column ({} vs {})".format(
-                            path, path, start.column, end.column
-                        )
-                    )
+    if not source_location.is_disjoint_from_parent:
+        # If source_location.is_disjoint_from_parent, then this source_location
+        # is allowed to be outside of the parent's source_location.
+        if min_start and start:
+            if min_start > start:
+                result.append("{}.start before parent start".format(path))
 
-    for name, field in (("start", start), ("end", end)):
-        if not field:
-            continue
-        if field.HasField("line"):
-            if field.line <= 0:
-                result.append("{}.{}.line <= 0 ({})".format(path, name, field.line))
-        else:
-            result.append("{}.{}.line missing".format(path, name))
-        if field.HasField("column"):
-            if field.column <= 0:
-                result.append("{}.{}.column <= 0 ({})".format(path, name, field.column))
-        else:
-            result.append("{}.{}.column missing".format(path, name))
-
-    if min_start and start:
-        if min_start.line > start.line or (
-            min_start.line == start.line and min_start.column > start.column
-        ):
-            result.append("{}.start before parent start".format(path))
-
-    if max_end and end:
-        if max_end.line < end.line or (
-            max_end.line == end.line and max_end.column < end.column
-        ):
-            result.append("{}.end after parent end".format(path))
+        if max_end and end:
+            if max_end < end:
+                result.append("{}.end after parent end".format(path))
 
     return result
 

@@ -782,13 +782,13 @@ class IrUtilTest(unittest.TestCase):
                 "base_type": {
                   "atomic_type": {
                     "reference": { },
-                    "source_location": { "start": { "line": 5 } }
+                    "source_location": "5:1-6:1"
                   }
                 },
-                "source_location": { "start": { "line": 4 } }
+                "source_location": "4:1-6:1"
               }
             },
-            "source_location": { "start": { "line": 3 } }
+            "source_location": "3:1-6:1"
           }
         }""",
         )

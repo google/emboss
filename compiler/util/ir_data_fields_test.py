@@ -22,6 +22,7 @@ import unittest
 
 from compiler.util import ir_data
 from compiler.util import ir_data_fields
+from compiler.util import parser_types
 
 
 class TestEnum(enum.Enum):

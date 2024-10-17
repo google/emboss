@@ -23,6 +23,7 @@ from compiler.util import expression_parser
 from compiler.util import ir_data
 from compiler.util import ir_data_fields
 from compiler.util import ir_data_utils
+from compiler.util import parser_types
 
 
 class TestEnum(enum.Enum):
@@ -103,7 +104,7 @@ class IrDataUtilsTest(unittest.TestCase):
         # Try a IR data class
         expected_field = ir_data_fields.make_field_spec(
             "source_location",
-            ir_data.Location,
+            parser_types.SourceLocation,
             ir_data_fields.FieldContainer.OPTIONAL,
             None,
         )
@@ -119,11 +120,11 @@ class IrDataUtilsTest(unittest.TestCase):
         self.assertEqual(fields["external"], expected_field)
 
         # Try non-optional scalar
-        fields = ir_data_utils.field_specs(ir_data.Position)
+        fields = ir_data_utils.field_specs(ir_data.CanonicalName)
         expected_field = ir_data_fields.make_field_spec(
-            "line", int, ir_data_fields.FieldContainer.NONE, None
+            "module_file", str, ir_data_fields.FieldContainer.NONE, None
         )
-        self.assertEqual(fields["line"], expected_field)
+        self.assertEqual(fields["module_file"], expected_field)
 
         fields = ir_data_utils.field_specs(ir_data.ArrayType)
         expected_field = ir_data_fields.make_field_spec(
@@ -330,9 +331,9 @@ class IrDataBuilderTest(unittest.TestCase):
 
     def test_copy_from(self) -> None:
         """Tests that `CopyFrom` works."""
-        location = ir_data.Location(
-            start=ir_data.Position(line=1, column=1),
-            end=ir_data.Position(line=1, column=2),
+        location = parser_types.SourceLocation(
+            start=parser_types.SourcePosition(line=1, column=1),
+            end=parser_types.SourcePosition(line=1, column=2),
         )
         expression_ir = ir_data.Expression(source_location=location)
         template: ir_data.Expression = expression_parser.parse("x + y")
@@ -355,9 +356,9 @@ class IrDataBuilderTest(unittest.TestCase):
         self.assertIsInstance(template.function, ir_data.Function)
         self.assertIsInstance(template.function.args, ir_data_fields.CopyValuesList)
 
-        location = ir_data.Location(
-            start=ir_data.Position(line=1, column=1),
-            end=ir_data.Position(line=1, column=2),
+        location = parser_types.SourceLocation(
+            start=parser_types.SourcePosition(line=1, column=1),
+            end=parser_types.SourcePosition(line=1, column=2),
         )
         expression_ir = ir_data.Expression(source_location=location)
         self.assertIsInstance(expression_ir, ir_data.Expression)
@@ -515,11 +516,7 @@ class IrDataSerializerTest(unittest.TestCase):
             {
                 "constant": {
                     "value": "0",
-                    "source_location": {
-                        "start": {"line": 421, "column": 3},
-                        "end": {"line": 421, "column": 4},
-                        "is_synthetic": False,
-                    },
+                    "source_location": "421:3-421:4",
                 },
                 "type": {
                     "integer": {
@@ -529,20 +526,12 @@ class IrDataSerializerTest(unittest.TestCase):
                         "maximum_value": "0",
                     }
                 },
-                "source_location": {
-                    "start": {"line": 421, "column": 3},
-                    "end": {"line": 421, "column": 4},
-                    "is_synthetic": False,
-                },
+                "source_location": "421:3-421:4",
             },
             {
                 "constant": {
                     "value": "1",
-                    "source_location": {
-                        "start": {"line": 421, "column": 11},
-                        "end": {"line": 421, "column": 12},
-                        "is_synthetic": False,
-                    },
+                    "source_location": "421:11-421:12",
                 },
                 "type": {
                     "integer": {
@@ -552,11 +541,7 @@ class IrDataSerializerTest(unittest.TestCase):
                         "maximum_value": "1",
                     }
                 },
-                "source_location": {
-                    "start": {"line": 421, "column": 11},
-                    "end": {"line": 421, "column": 12},
-                    "is_synthetic": False,
-                },
+                "source_location": "421:11-421:12",
             },
         ]
         function_data = {"args": function_args}

@@ -140,7 +140,9 @@ END_OF_INPUT = "$"
 
 # ANY_TOKEN is used by mark_error as a "wildcard" token that should be replaced
 # by every other token.
-ANY_TOKEN = parser_types.Token(object(), "*", parser_types.parse_location("0:0-0:0"))
+ANY_TOKEN = parser_types.Token(
+    object(), "*", parser_types.SourceLocation.from_str("0:0-0:0")
+)
 
 
 class Reduction(
@@ -690,26 +692,7 @@ class Parser(object):
                 # children, setting the source_location to None in that case.
                 start_position = None
                 end_position = None
-                for child in children:
-                    if (
-                        hasattr(child, "source_location")
-                        and child.source_location is not None
-                    ):
-                        start_position = child.source_location.start
-                        break
-                for child in reversed(children):
-                    if (
-                        hasattr(child, "source_location")
-                        and child.source_location is not None
-                    ):
-                        end_position = child.source_location.end
-                        break
-                if start_position is None:
-                    source_location = None
-                else:
-                    source_location = parser_types.make_location(
-                        start_position, end_position
-                    )
+                source_location = parser_types.merge_source_locations(*children)
                 reduction = Reduction(
                     next_action.rule.lhs, children, next_action.rule, source_location
                 )
