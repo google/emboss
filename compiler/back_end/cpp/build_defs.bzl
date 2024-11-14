@@ -20,14 +20,26 @@ def emboss_cc_test(name, copts = None, no_w_sign_compare = False, **kwargs):
     """Generates cc_test rules with and without -DEMBOSS_NO_OPTIMIZATIONS."""
     native.cc_test(
         name = name,
-        copts = ["-DEMBOSS_FORCE_ALL_CHECKS"] + (copts or []),
+        copts = copts or [],
         **kwargs
     )
     native.cc_test(
         name = name + "_no_opts",
         copts = [
             "-DEMBOSS_NO_OPTIMIZATIONS",
-            "-DEMBOSS_FORCE_ALL_CHECKS",
+        ] + ([] if no_w_sign_compare else ["-Wsign-compare"]) + (copts or []),
+        **kwargs
+    )
+    native.cc_test(
+        name = name + "_no_checks",
+        copts = ["-DEMBOSS_SKIP_CHECKS"] + (copts or []),
+        **kwargs
+    )
+    native.cc_test(
+        name = name + "_no_checks_no_opts",
+        copts = [
+            "-DEMBOSS_NO_OPTIMIZATIONS",
+            "-DEMBOSS_SKIP_CHECKS",
         ] + ([] if no_w_sign_compare else ["-Wsign-compare"]) + (copts or []),
         **kwargs
     )
