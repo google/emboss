@@ -70,13 +70,13 @@
 // The EMBOSS_SKIP_CHECKS parameter allows all CHECKs to be compiled out
 // without -DNDEBUG; this is useful for testing.
 #if !defined(EMBOSS_CHECK)
-#if EMBOSS_SKIP_CHECKS
+#if defined(EMBOSS_SKIP_CHECKS)
 #define EMBOSS_CHECK(x) ((void)0)
 #define EMBOSS_CHECK_ABORTS false
-#else
+#else  // !defined(EMBOSS_SKIP_CHECKS)
 #define EMBOSS_CHECK(x) assert((x))
 #define EMBOSS_CHECK_ABORTS (!(NDEBUG))
-#endif
+#endif  // defined(EMBOSS_SKIP_CHECKS)
 #endif  // !defined(EMBOSS_CHECK)
 
 #if !defined(EMBOSS_CHECK_ABORTS)
