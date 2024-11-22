@@ -18,7 +18,6 @@
 
 #include <vector>
 
-#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "testdata/no_enum_traits.emb.h"
 
