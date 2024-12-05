@@ -161,6 +161,27 @@
                   static_cast</**/ ::std::uintptr_t>((offset)))
 #endif  // !defined(EMBOSS_CHECK_POINTER_ALIGNMENT)
 
+// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=115033
+//
+// This affects Emboss: without the fix in the appropriate bug, we get a
+// miscompilation for some Emboss code, including some unit tests.
+//
+// It is not known whether the workaround on the Emboss side is complete, so
+// the recommendation is to move to a version of GCC that is not affected.
+// However, changing toolchains can be difficult, so we do provide a
+// workaround.
+#if !defined(EMBOSS_GCC_BUG_115033)
+#if defined(__clang__)
+#define EMBOSS_GCC_BUG_115033 0
+#elif __GNUC__ >= 12 && __GNUC__ <= 13
+#define EMBOSS_GCC_BUG_115033 1
+#elif __GNUC__ == 14 && __GNUC_MINOR__ < 2
+#define EMBOSS_GCC_BUG_115033 1
+#else
+#define EMBOSS_GCC_BUG_115033 0
+#endif
+#endif
+
 // EMBOSS_NO_OPTIMIZATIONS is used to turn off all system-specific
 // optimizations.  This is mostly intended for testing, but could be used if
 // optimizations are causing problems.
