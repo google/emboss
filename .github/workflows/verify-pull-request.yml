@@ -8,6 +8,7 @@ jobs:
     strategy:
       matrix:
         cpp-compiler: ["clang", "gcc"]
+        options: ["-c opt", ""]
     steps:
       - uses: actions/checkout@v4
       - uses: bazel-contrib/setup-bazel@0.8.5
@@ -16,7 +17,7 @@ jobs:
           disk-cache: "verify-pr:run-bazel-tests:${{ matrix.cpp-compiler }}"
           repository-cache: true
       - run: echo "CC=${{ matrix.cpp-compiler }}" >> $GITHUB_ENV
-      - run: bazel test ...
+      - run: bazel test ${{ matrix.options }} ...
   check-formatting:
     name: "Check Python formatting"
     runs-on: ubuntu-latest

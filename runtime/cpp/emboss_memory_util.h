@@ -412,8 +412,28 @@ class ContiguousBuffer final {
   explicit ContiguousBuffer(::std::nullptr_t) : bytes_{nullptr}, size_{0} {}
 
   // Implicitly construct or assign a ContiguousBuffer from a ContiguousBuffer.
+#if !EMBOSS_GCC_BUG_115033
   ContiguousBuffer(const ContiguousBuffer &other) = default;
-  ContiguousBuffer& operator=(const ContiguousBuffer& other) = default;
+  ContiguousBuffer &operator=(const ContiguousBuffer &other) = default;
+#else
+  // See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=115033 for details on the
+  // bug (determined by bisecting GCC).
+  // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=114207 may also be relevant.
+  //
+  // A minimized example is available at https://godbolt.org/z/489z7z135
+  //
+  // It is not entirely clear how these definitions work around the GCC bug,
+  // but they appear to.  One notable difference (and also the main reason that
+  // we only use these definitions for affected versions of GCC) is that they
+  // change the ABI of ContiguousBuffer, at least in the minimized case.
+  ContiguousBuffer(const ContiguousBuffer &other)
+      : bytes_{other.bytes_}, size_{other.size_} {}
+  ContiguousBuffer &operator=(const ContiguousBuffer &other) {
+    bytes_ = other.bytes_;
+    size_ = other.size_;
+    return *this;
+  }
+#endif
 
   // Explicitly construct a ContiguousBuffers from another, compatible
   // ContiguousBuffer.  A compatible ContiguousBuffer has an
