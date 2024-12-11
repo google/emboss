@@ -60,7 +60,8 @@ changes](#small-changes).
 
 1.  [Code up your proposed change](how-to-implement.md) and open a [pull
     request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
-    to [the main Emboss repository](https://github.com/google/emboss/).  This
+    to [the main Emboss repository](https://github.com/google/emboss/).  If you
+    have not completed [the steps for small changes](#small-changes), this
     gives the Emboss maintainers something more concrete to look at, but you
     may end up doing more work if your initial proposal is rejected.
 
