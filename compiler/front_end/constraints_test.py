@@ -24,11 +24,11 @@ from compiler.util import ir_util
 from compiler.util import test_util
 
 
-def _make_ir_from_emb(emb_text, name="m.emb"):
+def _make_ir_from_emb(emb_text, name="m.emb", stop_before_step="check_constraints"):
     ir, unused_debug_info, errors = glue.parse_emboss_file(
         name,
         test_util.dict_file_reader({name: emb_text}),
-        stop_before_step="check_constraints",
+        stop_before_step=stop_before_step,
     )
     assert not errors, repr(errors)
     return ir
@@ -1252,8 +1252,12 @@ class ConstraintsTest(unittest.TestCase):
             error.filter_errors(constraints.check_constraints(ir)),
         )
 
-    def test_checks_for_explicit_size_on_parameters(self):
-        ir = _make_ir_from_emb("struct Foo(y: UInt):\n" "  0 [+1]  UInt  x\n")
+    def test_checks_for_explicit_integer_size_on_parameters(self):
+        ir = _make_ir_from_emb(
+            "struct Foo(y: UInt):\n"  #
+            "  0 [+1]  UInt  x\n",
+            stop_before_step="check_early_constraints",
+        )
         error_parameter = ir.module[0].type[0].runtime_parameter[0]
         error_location = error_parameter.physical_type_alias.source_location
         self.assertEqual(
@@ -1262,12 +1266,32 @@ class ConstraintsTest(unittest.TestCase):
                     error.error(
                         "m.emb",
                         error_location,
-                        "Integer range of parameter must not be unbounded; it "
-                        "must fit in a 64-bit signed or unsigned integer.",
+                        "Parameters with integer type must have explicit size (e.g., `UInt:32`).",
                     )
                 ]
             ],
-            error.filter_errors(constraints.check_constraints(ir)),
+            error.filter_errors(constraints.check_early_constraints(ir)),
+        )
+
+    def test_checks_for_explicit_integer_size_on_parameters_and_uses_type_in_error(self):
+        ir = _make_ir_from_emb(
+            "struct Foo(y: Int):\n"  #
+            "  0 [+1]  UInt  x\n",
+            stop_before_step="check_early_constraints",
+        )
+        error_parameter = ir.module[0].type[0].runtime_parameter[0]
+        error_location = error_parameter.physical_type_alias.source_location
+        self.assertEqual(
+            [
+                [
+                    error.error(
+                        "m.emb",
+                        error_location,
+                        "Parameters with integer type must have explicit size (e.g., `Int:32`).",
+                    )
+                ]
+            ],
+            error.filter_errors(constraints.check_early_constraints(ir)),
         )
 
     def test_checks_for_correct_explicit_size_on_parameters(self):
@@ -1292,7 +1316,11 @@ class ConstraintsTest(unittest.TestCase):
 
     def test_checks_for_explicit_enum_size_on_parameters(self):
         ir = _make_ir_from_emb(
-            "struct Foo(y: Bar:8):\n" "  0 [+1]  UInt  x\n" "enum Bar:\n" "  QUX = 1\n"
+            "struct Foo(y: Bar:8):\n"  #
+            "  0 [+1]  UInt  x\n"
+            "enum Bar:\n"
+            "  QUX = 1\n",
+            stop_before_step="check_early_constraints",
         )
         error_parameter = ir.module[0].type[0].runtime_parameter[0]
         error_size = error_parameter.physical_type_alias.size_in_bits
@@ -1307,7 +1335,7 @@ class ConstraintsTest(unittest.TestCase):
                     )
                 ]
             ],
-            error.filter_errors(constraints.check_constraints(ir)),
+            error.filter_errors(constraints.check_early_constraints(ir)),
         )
 
 

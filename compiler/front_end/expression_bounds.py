@@ -144,18 +144,21 @@ def _compute_constraints_of_field_reference(expression, ir):
         expression.type.integer.modulus = "1"
         expression.type.integer.modular_value = "0"
         type_definition = ir_util.find_parent_object(field_path, ir)
+        type_size = None
         if isinstance(field, ir_data.Field):
             referrent_type = field.type
         else:
             referrent_type = field.physical_type_alias
         if referrent_type.HasField("size_in_bits"):
             type_size = ir_util.constant_value(referrent_type.size_in_bits)
-        else:
+        elif isinstance(field, ir_data.Field):
             field_size = ir_util.constant_value(field.location.size)
             if field_size is None:
                 type_size = None
             else:
                 type_size = field_size * type_definition.addressable_unit
+        else:
+            type_size = None
         assert referrent_type.HasField("atomic_type"), field
         assert not referrent_type.atomic_type.reference.canonical_name.module_file
         _set_integer_constraints_from_physical_type(
