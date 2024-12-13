@@ -79,10 +79,10 @@ their code to the latest conventions, which imposes a cost on users of those
 projects.  Emboss is intended for smaller developers and embedded systems,
 which often do not have the resources for such migrations.
 
-[^mono]: As an aside, in the several years that Emboss spent inside Google's
-    monorepo it underwent many large, backwards-incompatible changes that made
-    the current language significantly better.  Early incubation in a
-    controlled environment can be valuable for a new language!
+[^mono]: In the several years that Emboss spent inside Google's monorepo it
+    underwent many large, backwards-incompatible changes that made the current
+    language significantly better.  Early incubation in a controlled
+    environment can be valuable for a new language!
 
 
 ## Design for Later Expansion
@@ -563,7 +563,7 @@ syntactic construct in LR(1)[^zimm], it may be difficult for most programmers to
 actually do so.  As a practical matter, I recommend trying to actually add your
 syntax to `module_ir.py`.
 
-[^zimm]: As an aside, I think it would be awesome to implement [[Zimmerman,
+[^zimm]: I (Ben Olmstead) think it would be awesome to implement [[Zimmerman,
     2022](https://arxiv.org/abs/2209.08383)] plus a few extensions of my own
     devising in Emboss's shift-reduce engine, which would make the grammar
     design space significantly larger.  I would also separate the parser

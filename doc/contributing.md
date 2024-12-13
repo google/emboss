@@ -59,14 +59,16 @@ controversial, or if you have already completed [the steps for small
 changes](#small-changes).
 
 1.  [Code up your proposed change](how-to-implement.md) and open a [pull
-    request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
+    request
+    (PR)](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
     to [the main Emboss repository](https://github.com/google/emboss/).  If you
     have not completed [the steps for small changes](#small-changes), this
     gives the Emboss maintainers something more concrete to look at, but you
-    may end up doing more work if your initial proposal is rejected.
+    may end up doing more work if your initial proposal turns out to be the
+    wrong approach.
 
 2.  The Emboss maintainers will review your PR, and may request changes.  Don't
-    be discouraged if your PR is not immediately accepted — even requests that
+    be discouraged if your PR is not immediately accepted — even PRs that
     maintainers send to each other often have requests for changes!  We want
     the Emboss code to be high-quality, which means helping you make your code
     better.
