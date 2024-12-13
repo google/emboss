@@ -1273,7 +1273,9 @@ class ConstraintsTest(unittest.TestCase):
             error.filter_errors(constraints.check_early_constraints(ir)),
         )
 
-    def test_checks_for_explicit_integer_size_on_parameters_and_uses_type_in_error(self):
+    def test_checks_for_explicit_integer_size_on_parameters_and_uses_type_in_error(
+        self,
+    ):
         ir = _make_ir_from_emb(
             "struct Foo(y: Int):\n"  #
             "  0 [+1]  UInt  x\n",

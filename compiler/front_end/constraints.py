@@ -713,6 +713,7 @@ def _check_bounds_on_runtime_integer_expressions(
 def _attribute_in_attribute_action(a):
     return {"in_attribute": a}
 
+
 def check_early_constraints(ir):
     errors = []
     traverse_ir.fast_traverse_ir_top_down(
@@ -722,6 +723,7 @@ def check_early_constraints(ir):
         parameters={"errors": errors},
     )
     return errors
+
 
 def check_constraints(ir):
     """Checks miscellaneous validity constraints in ir.
