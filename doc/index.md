@@ -16,3 +16,8 @@ Details of the textual representation Emboss uses for structures can be found in
 the [Emboss Text Format Reference](text-format.md).
 
 There is a tentative [roadmap of future development](roadmap.md).
+
+If you are interested in contributing to Emboss, please read [Contributing to
+Emboss](contributing.md), and you may wish to read [How to Design Features for
+Emboss](how-to-design.md) and [How to Implement Changes to
+Emboss](how-to-implement.md).
