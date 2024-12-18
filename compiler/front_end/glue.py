@@ -319,6 +319,7 @@ def process_ir(ir, stop_before_step):
         symbol_resolver.resolve_field_references,
         type_check.annotate_types,
         type_check.check_types,
+        constraints.check_early_constraints,
         expression_bounds.compute_constants,
         attribute_checker.normalize_and_verify,
         constraints.check_constraints,

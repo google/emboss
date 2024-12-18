@@ -319,6 +319,49 @@ def _check_type_requirements_for_field(
     )
 
 
+def _check_early_type_requirements_for_parameter_type(
+    runtime_parameter, ir, source_file_name, errors
+):
+    """Checks that the type of a parameter is valid."""
+    physical_type = runtime_parameter.physical_type_alias
+    logical_type = runtime_parameter.type
+    size = ir_util.constant_value(physical_type.size_in_bits)
+    if logical_type.which_type == "integer":
+        # This seems a little weird: for `UInt`, `Int`, etc., the explicit size
+        # is required, but for enums it is banned.  This is because enums have
+        # a "natural" size (the size specified in the `enum` definition, or 64
+        # bits by default) in expressions, so the physical size would just be
+        # ignored.  Integer types do not have "natural" sizes, so the width is
+        # required.
+        if not physical_type.HasField("size_in_bits"):
+            errors.extend(
+                [
+                    [
+                        error.error(
+                            source_file_name,
+                            physical_type.source_location,
+                            f"Parameters with integer type must have explicit size (e.g., `{physical_type.atomic_type.reference.source_name[-1].text}:32`).",
+                        )
+                    ]
+                ]
+            )
+    elif logical_type.which_type == "enumeration":
+        if physical_type.HasField("size_in_bits"):
+            errors.extend(
+                [
+                    [
+                        error.error(
+                            source_file_name,
+                            physical_type.size_in_bits.source_location,
+                            "Parameters with enum type may not have explicit size.",
+                        )
+                    ]
+                ]
+            )
+    else:
+        assert False, "Non-integer/enum parameters should have been caught earlier."
+
+
 def _check_type_requirements_for_parameter_type(
     runtime_parameter, ir, source_file_name, errors
 ):
@@ -346,22 +389,7 @@ def _check_type_requirements_for_parameter_type(
             )
         )
     elif logical_type.which_type == "enumeration":
-        if physical_type.HasField("size_in_bits"):
-            # This seems a little weird: for `UInt`, `Int`, etc., the explicit size is
-            # required, but for enums it is banned.  This is because enums have a
-            # "native" 64-bit size in expressions, so the physical size is just
-            # ignored.
-            errors.extend(
-                [
-                    [
-                        error.error(
-                            source_file_name,
-                            physical_type.size_in_bits.source_location,
-                            "Parameters with enum type may not have explicit size.",
-                        )
-                    ]
-                ]
-            )
+        pass
     else:
         assert False, "Non-integer/enum parameters should have been caught earlier."
 
@@ -684,6 +712,17 @@ def _check_bounds_on_runtime_integer_expressions(
 
 def _attribute_in_attribute_action(a):
     return {"in_attribute": a}
+
+
+def check_early_constraints(ir):
+    errors = []
+    traverse_ir.fast_traverse_ir_top_down(
+        ir,
+        [ir_data.RuntimeParameter],
+        _check_early_type_requirements_for_parameter_type,
+        parameters={"errors": errors},
+    )
+    return errors
 
 
 def check_constraints(ir):
