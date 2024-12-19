@@ -306,7 +306,7 @@ TEST(AutoSizeView, CanCopyFrom) {
   auto source = MakeAlignedAutoSizeView<const ::std::uint8_t, 8>(
       kAutoSize, sizeof kAutoSize);
 
-  ::std::array</**/ ::std::uint8_t, sizeof kAutoSize> buf = {0};
+  alignas(8) ::std::array</**/ ::std::uint8_t, sizeof kAutoSize> buf = {0};
   auto dest =
       MakeAlignedAutoSizeView</**/ ::std::uint8_t, 8>(buf.data(), buf.size());
 
