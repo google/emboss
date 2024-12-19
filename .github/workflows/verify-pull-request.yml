@@ -17,7 +17,7 @@ jobs:
           disk-cache: "verify-pr:run-bazel-tests:${{ matrix.cpp-compiler }}"
           repository-cache: true
       - run: echo "CC=${{ matrix.cpp-compiler }}" >> $GITHUB_ENV
-      - run: bazel test ${{ matrix.options }} ...
+      - run: bazel test --test_output=errors ${{ matrix.options }} ...
   check-formatting:
     name: "Check Python formatting"
     runs-on: ubuntu-latest
