@@ -73,6 +73,7 @@ py_library(
         "//compiler/util:ir_data",
         "//compiler/util:name_conversion",
         "//compiler/util:parser_types",
+        "//compiler/util:parser_util",
     ],
 )
 
@@ -436,6 +437,7 @@ py_library(
         ":module_ir",
         ":tokenizer",
         "//compiler/util:parser_types",
+        "//compiler/util:parser_util",
     ],
 )
 
