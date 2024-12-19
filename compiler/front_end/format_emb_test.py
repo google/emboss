@@ -92,7 +92,21 @@ class SanityCheckerTest(unittest.TestCase):
 
 
 class FormatEmbTest(unittest.TestCase):
-    pass
+
+    def test_very_long_emb(self):
+        """Checks that very long inputs do not hit the Python recursion limit."""
+        emb = ["enum Test:\n"]
+        # Enough entities to blow through the default recursion limit and the
+        # bumped limit that was previously in place.
+        for i in range(max(sys.getrecursionlimit(), 16 * 1024) * 2):
+            emb.append(f"  VALUE_{i} = {i}\n")
+        parsed_unformatted = parser.parse_module(
+            tokenizer.tokenize("".join(emb), "long.emb")[0]
+        )
+        formatted_text = format_emb.format_emboss_parse_tree(
+            parsed_unformatted.parse_tree,
+            format_emb.Config(indent_width=2),
+        )
 
 
 def _make_golden_file_tests():

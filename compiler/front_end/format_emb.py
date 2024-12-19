@@ -26,6 +26,7 @@ import itertools
 from compiler.front_end import module_ir
 from compiler.front_end import tokenizer
 from compiler.util import parser_types
+from compiler.util import parser_util
 
 
 class Config(collections.namedtuple("Config", ["indent_width", "show_line_types"])):
@@ -67,18 +68,17 @@ def format_emboss_parse_tree(parse_tree, config, used_productions=None):
     Returns:
         A string of the reformatted source text.
     """
-    if hasattr(parse_tree, "children"):
-        parsed_children = [
-            format_emboss_parse_tree(child, config, used_productions)
-            for child in parse_tree.children
-        ]
-        args = parsed_children + [config]
-        if used_productions is not None:
-            used_productions.add(parse_tree.production)
-        return _formatters[parse_tree.production](*args)
-    else:
-        assert isinstance(parse_tree, parser_types.Token), str(parse_tree)
-        return parse_tree.text
+    formatters = {}
+    for production, handler in _formatters.items():
+        # An extra layer of indirection is required here so that the resulting
+        # lambda does not capture the local variable `handler`.
+        def wrapped_handler(handler):
+            return lambda _, *args: handler(*(args + (config,)))
+
+        formatters[production] = wrapped_handler(handler)
+    return parser_util.transform_parse_tree(
+        parse_tree, lambda n: n.text, formatters, used_productions
+    )
 
 
 def sanity_check_format_result(formatted_text, original_text):
