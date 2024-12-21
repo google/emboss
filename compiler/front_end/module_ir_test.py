@@ -18,6 +18,7 @@ from __future__ import print_function
 
 import collections
 import pkgutil
+import sys
 import unittest
 
 from compiler.front_end import module_ir
@@ -4056,6 +4057,18 @@ class ModuleIrTest(unittest.TestCase):
         for example in ("[x:-(-3)]", "[x:+(-3)]", "[x:-(+3)]", "[x:+(+3)]"):
             parse_result = parser.parse_module(tokenizer.tokenize(example, "")[0])
             self.assertFalse(parse_result.error)
+
+    def test_long_input(self):
+        """Checks that very long inputs do not hit the Python recursion limit."""
+        emb = ["enum Test:\n"]
+        # Enough entities to blow through the default recursion limit and the
+        # bumped limit that was previously in place.
+        for i in range(max(sys.getrecursionlimit(), 16 * 1024) * 2):
+            emb.append(f"  VALUE_{i} = {i}\n")
+        parse_result = parser.parse_module(
+            tokenizer.tokenize("".join(emb), "long.emb")[0]
+        )
+        module_ir.build_ir(parse_result.parse_tree)
 
 
 def _make_superset_tests():

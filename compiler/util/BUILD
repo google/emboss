@@ -155,6 +155,14 @@ py_test(
 )
 
 py_library(
+    name = "parser_util",
+    srcs = ["parser_util.py"],
+    deps = [
+        ":parser_types",
+    ],
+)
+
+py_library(
     name = "error",
     srcs = [
         "error.py",

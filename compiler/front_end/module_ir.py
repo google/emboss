@@ -29,6 +29,7 @@ from compiler.util import ir_data
 from compiler.util import ir_data_utils
 from compiler.util import name_conversion
 from compiler.util import parser_types
+from compiler.util import parser_util
 
 
 # Intermediate types; should not be found in the final IR.
@@ -82,88 +83,78 @@ class _FieldWithType(object):
 def build_ir(parse_tree, used_productions=None):
     r"""Builds a module-level intermediate representation from a valid parse tree.
 
-  The parse tree is precisely dictated by the exact productions in the grammar
-  used by the parser, with no semantic information.  _really_build_ir transforms
-  this "raw" form into a stable, cooked representation, thereby isolating
-  subsequent steps from the exact details of the grammar.
-
-  (Probably incomplete) list of transformations:
-
-  *   ParseResult and Token nodes are replaced with Module, Attribute, Struct,
-      Type, etc. objects.
-
-  *   Purely syntactic tokens ('"["', '"struct"', etc.) are discarded.
-
-  *   Repeated elements are transformed from tree form to list form:
-
-          a*
-         / \
-        b   a*
+    The parse tree is precisely dictated by the exact productions in the grammar
+    used by the parser, with no semantic information.  _really_build_ir
+    transforms this "raw" form into a stable, cooked representation, thereby
+    isolating subsequent steps from the exact details of the grammar.
+    
+    (Probably incomplete) list of transformations:
+    
+    *   ParseResult and Token nodes are replaced with Module, Attribute, Struct,
+        Type, etc. objects.
+    
+    *   Purely syntactic tokens ('"["', '"struct"', etc.) are discarded.
+    
+    *   Repeated elements are transformed from tree form to list form:
+    
+            a*
            / \
-          c   a*
+          b   a*
              / \
-            d   a*
+            c   a*
+               / \
+              d   a*
+    
+        (where b, c, and d are nodes of type "a") becomes [b, c, d].
+    
+    *   The values of numeric constants (Number, etc. tokens) are parsed.
+    
+    *   Different classes of names (snake_names, CamelNames, ShoutyNames) are
+        folded into a single "Name" type, since they are guaranteed to appear in
+        the correct places in the parse tree.
+    
+    
+    Arguments:
+        parse_tree: A parse tree.  Each leaf node should be a parser_types.Token
+            object, and each non-leaf node should have a 'symbol' attribute
+            specifying which grammar symbol it represents, and a 'children'
+            attribute containing a list of child nodes.  This is the format
+            returned by the parsers produced by the lr1 module, when run
+            against tokens from the tokenizer module.
+        used_productions: If specified, used_productions.add() will be called
+            with each production actually used in parsing.  This can be useful
+            when developing the grammar and writing tests; in particular, it
+            can be used to figure out which productions are *not* used when
+            parsing a particular file.
+    
+    Returns:
+        A module-level intermediate representation (module IR) for an Emboss
+        module (source file).  This IR will not have symbols resolved,
+        constraints checked, fields synthesized, etc.; it will only be a
+        representation of the syntactic elements of the source.
+    """
+    handlers = {}
+    for production, handler in _handlers.items():
+        # An extra layer of indirection is required here so that the resulting
+        # lambda does not capture the local variable `handler`.
+        def wrapped_handler(handler):
+            def wrapped_handler(node, *args):
+                module_node = handler(*args)
+                if node.source_location:
+                    if isinstance(module_node, tuple):
+                        module_node = module_node._replace(
+                            source_location=node.source_location
+                        )
+                    else:
+                        module_node.source_location = node.source_location
+                return module_node
 
-      (where b, c, and d are nodes of type "a") becomes [b, c, d].
+            return wrapped_handler
 
-  *   The values of numeric constants (Number, etc. tokens) are parsed.
-
-  *   Different classes of names (snake_names, CamelNames, ShoutyNames) are
-      folded into a single "Name" type, since they are guaranteed to appear in
-      the correct places in the parse tree.
-
-
-  Arguments:
-    parse_tree: A parse tree.  Each leaf node should be a parser_types.Token
-      object, and each non-leaf node should have a 'symbol' attribute specifying
-      which grammar symbol it represents, and a 'children' attribute containing
-      a list of child nodes.  This is the format returned by the parsers
-      produced by the lr1 module, when run against tokens from the tokenizer
-      module.
-    used_productions: If specified, used_productions.add() will be called with
-      each production actually used in parsing.  This can be useful when
-      developing the grammar and writing tests; in particular, it can be used to
-      figure out which productions are *not* used when parsing a particular
-      file.
-
-  Returns:
-    A module-level intermediate representation (module IR) for an Emboss module
-    (source file).  This IR will not have symbols resolved; that must be done on
-    a forest of module IRs so that names from other modules can be resolved.
-  """
-
-    # TODO(b/140259131): Refactor _really_build_ir to be less recursive/use an
-    # explicit stack.
-    old_recursion_limit = sys.getrecursionlimit()
-    sys.setrecursionlimit(16 * 1024)  # ~8000 top-level entities in one module.
-    try:
-        result = _really_build_ir(parse_tree, used_productions)
-    finally:
-        sys.setrecursionlimit(old_recursion_limit)
-    return result
-
-
-def _really_build_ir(parse_tree, used_productions):
-    """Real implementation of build_ir()."""
-    if used_productions is None:
-        used_productions = set()
-    if hasattr(parse_tree, "children"):
-        parsed_children = [
-            _really_build_ir(child, used_productions) for child in parse_tree.children
-        ]
-        used_productions.add(parse_tree.production)
-        result = _handlers[parse_tree.production](*parsed_children)
-        if parse_tree.source_location:
-            if isinstance(result, tuple):
-                result = result._replace(source_location=parse_tree.source_location)
-            else:
-                result.source_location = parse_tree.source_location
-        return result
-    else:
-        # For leaf nodes, the temporary "IR" is just the token.  Higher-level rules
-        # will translate it to a real IR.
-        assert isinstance(parse_tree, parser_types.Token), str(parse_tree)
-        return parse_tree
+        handlers[production] = wrapped_handler(handler)
+    return parser_util.transform_parse_tree(
+        parse_tree, lambda n: n, handlers, used_productions
+    )
 
 
 # Map of productions to their handlers.
