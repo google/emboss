@@ -55,11 +55,10 @@ graph LR
 ```
 
 
-### IR
+### IR (Intermediate Representation)
 
-Most of the Emboss compiler operates on a data structure known as an *IR*, or
-intermediate representation.  The Emboss IR is a tree, with node types defined
-in [compiler/util/ir_data.py][ir_data_py].
+"IR" is a general term: each compiler has its own IR.  The Emboss IR is a tree,
+with node types defined in [compiler/util/ir_data.py][ir_data_py].
 
 [ir_data_py]: ../compiler/util/ir_data.py
 
@@ -192,7 +191,9 @@ In many cases, elaborations and validations are mixed together — for example,
 in the symbol resolution stage, names in the IR (`field`) are *elaborated* with
 the absolute symbol to which they resolve (`module.Type.field`), and, at the
 same time, the symbol resolver *validates* that every name resolves to exactly
-one absolute symbol.  At the end of this process, the IR is much larger:
+one absolute symbol.
+
+At the end of this process, the IR is much larger:
 
 ```mermaid
 graph TD
@@ -299,11 +300,12 @@ and back ends, which do language-specific validations and translate the final
 IR to the final output format.  Currently, only a C++ back end exists.
 
 The compiler is structured so that the front end and back end can run as
-separate programs, and when building with Bazel they do run separately.  For
-efficiency, the [`embossc`][embossc_source] driver just imports the front end
-and C++ back end directly, so that it can skip the JSON serialization and
-deserialization steps.
+separate programs, and when building with [Bazel][bazel] they do run
+separately.  For efficiency, the [`embossc`][embossc_source] driver just
+imports the front end and C++ back end directly, so that it can skip the JSON
+serialization and deserialization steps.
 
+[bazel]: https://bazel.build/
 [embossc_source]: ../embossc
 
 The front end consists of (as of the time of writing) 14 stages:
@@ -330,6 +332,9 @@ The C++ back end is much simpler, with only 2 stages:
 1. Back-End Attribute Normalization + Verification
 2. C++ Header Generation
 
+This lopsidedness is intentional: work done in the front end can be shared by
+all back ends, but work in a back end only benefits that specific back end.
+
 
 ### IR Traversal
 
@@ -342,7 +347,7 @@ will skip branches if no node in the branch could possibly match the pattern.
 
 [traverse_ir]: ../compiler/util/traverse_ir.py#:~:def%20fast_traverse_ir_top_down
 
-For example, this will call `print()` every `Word` in the IR:
+For example, this will call `print()` on every `Word` in the IR:
 
 ```
 fast_traverse_ir_top_down(ir, [ir_data.Word], print)
@@ -382,6 +387,15 @@ information.
 [error_py]: ../compiler/util/error.py
 
 
+#### Errors on Synthetic Nodes
+
+One important caveat here is that errors on *synthetic* IR nodes — nodes that
+did not come directly from the input `.emb` — are deferred: the compiler will
+continue processing to try to find an error in a "natural" node to display to
+the user.  This is covered in more detail in [Built-In Field
+Synthesis](#desugaring).
+
+
 ## Front End
 
 [*`compiler/front_end/...`*](../compiler/front_end/)
@@ -390,14 +404,14 @@ The front end is responsible for reading in Emboss definitions and producing a
 normalized intermediate representation (IR).  It is divided into several steps:
 roughly, parsing, import resolution, symbol resolution, and validation.
 
-The front end is orchestrated by [glue.py][glue_py], which runs each front end
-component in the proper order to construct an IR suitable for consumption by the
-back end.
+The front end is orchestrated by [`glue.py`][glue_py], which runs each front
+end component in the proper order to construct an IR suitable for consumption
+by the back end.
 
 [glue_py]: ../front_end/glue.py
 
-The front end driver program is [emboss_front_end.py][emboss_front_end_py],
-which just calls `glue.ParseEmbossFile` and prints the results.
+The front end driver program is [`emboss_front_end.py`][emboss_front_end_py],
+which calls `glue.ParseEmbossFile` and prints the results.
 
 [emboss_front_end_py]: ../front_end/emboss_front_end.py
 
@@ -626,6 +640,8 @@ comparisons: `a == b == c` will be translated to the IR equivalent of `a == b
 
 
 ### IR Processing
+
+<a name="desugaring"></a>
 
 #### Desugaring + Built-In Field Synthesis
 
@@ -861,7 +877,7 @@ uses of these functions, but they are used in the definitions of fields like
 `$min_size_in_bytes` and `$max_size_in_bits`.
 
 The refinements that Emboss finds are not always perfectly optimal, for various
-reasons: for example, even if `x < 0`, `x * x` cannot be negative, but Emboss
+reasons: for example, even if $x < 0$, `x * x` cannot be negative, but Emboss
 does not try to detect any *cross-argument constraints*, so it will not figure
 this out.
 
@@ -874,11 +890,12 @@ them.
 Second, and probably more importantly, any new refinements become part of the
 Emboss contract with end users, forever: `$upper_bound()` must never return a
 larger value than it did in previous versions, and `$lower_bound()` must never
-return a smaller value.  This has direct implications for maintainence of the
-current Emboss compiler, but it also makes it even harder for any third-party
-compiler to fully implement Emboss — which, in turn, means that Emboss is even
-more likely to be a single-vendor language, like Python or Ruby, instead of a
-multi-vendor language like C++ or JavaScript.
+return a smaller value.  Reduced alignment bounds can cause performance
+regressions in the highest-performance code.  This has direct implications for
+maintainence of the current Emboss compiler, but it also makes it even harder
+for any third-party compiler to fully implement Emboss — which, in turn, means
+that Emboss is even more likely to be a single-vendor language, like Python or
+Ruby, instead of a multi-vendor language like C++ or JavaScript.
 
 
 #### Front End Attribute Normalization + Verification
@@ -987,7 +1004,8 @@ The C++ back end transforms the fully elaborated IR into a header file.
 [*`header_generator.py`*](../compiler/back_end/cpp/header_generator.py)
 
 The first stage of the C++ back end is a short one: it verifies that the
-`[(cpp) namespace]` attribute, if present, is a valid C++ namespace.
+`[(cpp) namespace]` attribute, if present, is a valid C++ namespace, and that
+any `[(cpp) enum_case]` attributes are valid.
 
 
 #### C++ Header Generation
@@ -999,6 +1017,13 @@ The very last stage walks the IR and produces the text of a C++ `.h` file.
 Unlike most stages, C++ header generation does *not* use
 `fast_traverse_ir_top_down()`: the code to walk the tree is manual, generally
 assembling fragments of C++ code from the bottom up.
+During most steps of this traversal, the C++ back end builds up three separate
+sections: a forward declaration section, a class definition section, and then a
+method definition section, which are eventually emitted in that specific order.
+This structure lets any circular references (e.g., Emboss structure types that
+mutually contain each other) work without the back end having to track anything
+special: by the time a type is referenced, it will always have been declared,
+and by the time a type is actually *used* it will always have been defined.
 
 This stage has the most code of any single stage of the Emboss compiler, so it
 can be difficult to follow.  (It is also some of the oldest code in the
