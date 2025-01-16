@@ -990,14 +990,14 @@ let f = x < 1000 ? x * 1000000 : x
 ```
 
 
-### C++ Back End
+## C++ Back End
 
 [*`compiler/back_end/cpp`*](../compiler/back_end/cpp)
 
 The C++ back end transforms the fully elaborated IR into a header file.
 
 
-#### C++ Back-End Attribute Verification
+### C++ Back-End Attribute Verification
 
 [*`attributes.py`*](../compiler/back_end/cpp/attributes.py)
 
@@ -1008,7 +1008,7 @@ The first stage of the C++ back end is a short one: it verifies that the
 any `[(cpp) enum_case]` attributes are valid.
 
 
-#### C++ Header Generation
+### C++ Header Generation
 
 [*`header_generator.py`*](../compiler/back_end/cpp/header_generator.py)
 
