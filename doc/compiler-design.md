@@ -586,7 +586,7 @@ straightforward translation, but there are a few places where the parse tree is
 noticeably different from the IR.  For example, in the parse tree, lists are
 explicit *cons* lists, like:
 
-```mermaid:
+```mermaid
 graph TD
     r1@{label: "struct-field-block"}
     r2@{label: "struct-field*"}
@@ -607,7 +607,7 @@ graph TD
 
 while in the IR these lists are flattened:
 
-```mermaid:
+```mermaid
 graph TD
     n0@{label: "structure"}
     n1@{label: "fields"}
@@ -846,12 +846,12 @@ the "offset" within the alignment.
 This integer type refinement starts with known types.  A value read from an
 `Int` or `UInt` field will have known bounds (based on the bit width of the
 field), $m = 1$ and $n = 0$.  Constants simply have $a = b = n =
-\scriptstyle{VALUE}$ and $m = \infinity$.
+\scriptstyle{VALUE}$ and $m = \infty$.
 
 From this basis, the refinements for any operations can be determined.  For
-example, for `x + y`, the resulting lower and upper bounds $a = a\sub{x} +
-a\sub{y}$ and $b = b\sub{x} + b\sub{y}$.  The resulting alignment is a little
-more complex, involving the greatest common divisor function.
+example, for `x + y`, the resulting lower and upper bounds $a = a_x + a_y$ and
+$b = b_x + b_y$.  The resulting alignment is a little more complex, involving
+the greatest common divisor function.
 
 The Emboss functions `$lower_bound(x)` and `$upper_bound(x)` are a little
 strange: their result is a constant that is the lower or upper bound
