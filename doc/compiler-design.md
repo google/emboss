@@ -845,8 +845,8 @@ the "offset" within the alignment.
 
 This integer type refinement starts with known types.  A value read from an
 `Int` or `UInt` field will have known bounds (based on the bit width of the
-field), $m = 1$ and $n = 0$.  Constants simply have $a = b = n =
-\scriptstyle{VALUE}$ and $m = \infty$.
+field), $m = 1$ and $n = 0$.  A constant $c$ has $a = b = n = c$ and $m =
+\infty$.
 
 From this basis, the refinements for any operations can be determined.  For
 example, for `x + y`, the resulting lower and upper bounds $a = a_x + a_y$ and
@@ -857,8 +857,8 @@ The Emboss functions `$lower_bound(x)` and `$upper_bound(x)` are a little
 strange: their result is a constant that is the lower or upper bound
 (respectively) of their argument!  That is, they extract a value from the type
 system and return it as an expression.  There aren't a lot of human-authored
-uses of these functions, but they are used in the (synthetic) definitions of
-fields like `$min_size_in_bytes` and `$max_size_in_bits`.
+uses of these functions, but they are used in the definitions of fields like
+`$min_size_in_bytes` and `$max_size_in_bits`.
 
 The refinements that Emboss finds are not always perfectly optimal, for various
 reasons: for example, even if `x < 0`, `x * x` cannot be negative, but Emboss
