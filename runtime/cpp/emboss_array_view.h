@@ -56,7 +56,7 @@ class ElementViewIterator {
 
   explicit ElementViewIterator(const GenericArrayView array_view,
                                ::std::ptrdiff_t index)
-      : array_view_(array_view), view_(array_view[index]), index_(index) {}
+      : array_view_(array_view), view_(array_view.at(index)), index_(index) {}
 
   ElementViewIterator() = default;
 
@@ -66,7 +66,7 @@ class ElementViewIterator {
 
   ElementViewIterator &operator+=(difference_type d) {
     index_ += (kDirection == ElementViewIteratorDirection::kForward ? d : -d);
-    view_ = array_view_[index_];
+    view_ = array_view_.at(index_);
     return *this;
   }
 
@@ -178,9 +178,15 @@ class GenericArrayView final {
       : parameters_{parameters...}, buffer_{buffer} {}
 
   ElementView operator[](::std::size_t index) const {
-    return IndexOperatorHelper<sizeof...(ElementViewParameterTypes) ==
-                               0>::ConstructElement(parameters_, buffer_,
-                                                    index);
+    return IndexOperatorHelper<(sizeof...(ElementViewParameterTypes) ==
+                                0)>::UncheckedConstructElement(parameters_,
+                                                               buffer_, index);
+  }
+
+  ElementView at(::std::size_t index) const {
+    return IndexOperatorHelper<(sizeof...(ElementViewParameterTypes) ==
+                                0)>::ConstructElement(parameters_, buffer_,
+                                                      index, ElementCount());
   }
 
   ForwardIterator begin() const { return ForwardIterator(*this, 0); }
@@ -316,16 +322,36 @@ class GenericArrayView final {
   struct IndexOperatorHelper {
     static ElementView ConstructElement(
         const ::std::tuple<ElementViewParameterTypes...> &parameters,
+        BufferType buffer, ::std::size_t index, ::std::size_t size) {
+      return IndexOperatorHelper<
+          (sizeof...(ElementViewParameterTypes) == 1 + sizeof...(N)), N...,
+          sizeof...(N)>::ConstructElement(parameters, buffer, index, size);
+    }
+
+    static ElementView UncheckedConstructElement(
+        const ::std::tuple<ElementViewParameterTypes...> &parameters,
         BufferType buffer, ::std::size_t index) {
       return IndexOperatorHelper<
-          sizeof...(ElementViewParameterTypes) == 1 + sizeof...(N), N...,
-          sizeof...(N)>::ConstructElement(parameters, buffer, index);
+          (sizeof...(ElementViewParameterTypes) == 1 + sizeof...(N)), N...,
+          sizeof...(N)>::UncheckedConstructElement(parameters, buffer, index);
     }
   };
 
   template </**/ ::std::size_t... N>
   struct IndexOperatorHelper<true, N...> {
     static ElementView ConstructElement(
+        const ::std::tuple<ElementViewParameterTypes...> &parameters,
+        BufferType buffer, ::std::size_t index, ::std::size_t size) {
+      return ElementView(
+          ::std::get<N>(parameters)...,
+          index < 0 || index >= size
+              ? typename BufferType::template OffsetStorageType<kElementSize,
+                                                                0>(nullptr)
+              : buffer.template GetOffsetStorage<kElementSize, 0>(
+                    kElementSize * index, kElementSize));
+    }
+
+    static ElementView UncheckedConstructElement(
         const ::std::tuple<ElementViewParameterTypes...> &parameters,
         BufferType buffer, ::std::size_t index) {
       return ElementView(::std::get<N>(parameters)...,
