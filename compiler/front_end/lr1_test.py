@@ -340,7 +340,7 @@ class Lr1Test(unittest.TestCase):
             parser.mark_error([lr1.ANY_TOKEN], lr1.ANY_TOKEN, "default error")
         )
         # Marking an already-marked error with a different error code should fail.
-        self.assertRegexpMatches(
+        self.assertRegex(
             parser.mark_error([lr1.ANY_TOKEN], lr1.ANY_TOKEN, "default error 2"),
             r"^Attempted to overwrite existing default error code 'default error' "
             r"with new error code 'default error 2' for state \d+$",
