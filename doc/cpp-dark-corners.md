@@ -125,6 +125,8 @@ C++ also has various behaviors that are fully-defined, but surprising to most
 developers.  For example, the ["digraph" alternative operator
 representations][cppreference_alternative_operator_representations]:
 
+[cppreference_alternative_operator_representations]: https://en.cppreference.com/w/cpp/language/operator_alternative
+
 | Primary | Alternative |
 | ------- | ----------- |
 | `{`     | `<%`        |
@@ -133,19 +135,35 @@ representations][cppreference_alternative_operator_representations]:
 | `]`     | `:>`        |
 | `#`     | `%:`        |
 
-These two code snippets are exactly equivalent in standard C++:
+The "alternative" representations can be freely used in place of the "primary"
+representations.  These two code snippets are exactly equivalent in standard
+C++:
 
 ```c++
+#include <string>
 #include <vector>
-int f(const vector<int> &v) {
+int f(const std::vector<int> &v) {
   return v[0];
 }
 ```
 
 ```c++
+%:include <string>
 %:include <vector>
-int f(const vector<int> &v) <%
+int f(const std::vector<int> &v) <%
   return v<:0:>;
+%>
+```
+
+Alternative representations do not have to be used consistently.  This is also
+equivalent in C++ (but many editors and IDEs will complain about the "unclosed"
+brace and "unopened" bracket!):
+
+```c++
+%:include <string>
+#include <vector>
+int f(const std::vector<int> &v) {
+  return v<:0];
 %>
 ```
 
@@ -155,7 +173,8 @@ int f(const vector<int> &v) <%
 The final category of C++ dark corners is where the lofty theory of the C++
 standard meets the messiness and imperfection of the real world: there is no
 C++ compiler that perfectly and *only* implements any version of the C++
-standard.
+standard.  The differences between standard and practice fall into two
+categories:
 
 
 #### Compiler Bugs
@@ -167,8 +186,8 @@ using Emboss would return incorrect results, with no diagnostic message from
 the compiler (luckily, this was discovered by Emboss's test suite).
 
 In theory, Emboss is only required to work on *correct* C++ compilers, but in
-practice we want it to work on (at least) all the common C++ compilers, even if
-those compilers have bugs.
+practice we want it to work on (at least) all the common C++ compilers, even
+though those compilers have bugs.
 
 
 #### Vendor Extensions
@@ -184,7 +203,7 @@ support them.
 A trivial example of a vendor extension is that `$` is allowed in identifiers
 on every major compiler (and almost every tool that processes C++ source code),
 albeit with a warning on most of them: `void ca$h();` is a valid C++ source
-file according to compilers.
+file according to real-world compilers.
 
 
 ## Emboss Compatibility
@@ -656,3 +675,27 @@ that case, the wrong `MyFunction()` will be silently called!
 This is most important in generated code — which ends up in user-controlled
 namespaces — but as a blanket rule all Emboss code should use the `::` prefix
 for *all* top-level namespaces, even namespaces like `std`.
+
+
+### Reserved Names
+
+C++ reserves certain name patterns for language implementations, and other name
+patterns for future versions of the C++ standard.  In particular, names that
+start with `_` (in most contexts) or which contain `__` anywhere are reserved.
+
+C reserves many name patterns if you `#include` specific headers: "Each header
+declares or defines all identifiers listed in its associated subclause, and
+optionally declares or defines identifiers listed in its associated future
+library directions subclause and identifiers which are always reserved either
+for any use or for use as file scope identifiers."  (C23 §7.1.3)  For example,
+if you `#include <errno.h>` or `#include <cerrno>`: "Additional macro
+definitions, beginning with E and a digit or E and an uppercase letter, may
+also be specified by the implementation." (C23 §7.5)
+
+Although it is not part of the C or C++ standards, [POSIX reserves many names
+for its use][posix_reserved_names], including some names that are also reserved
+by C.  One particular pattern that is routinely violated in application code is
+the use of any name with the `_t` suffix: POSIX reserves all such names for
+POSIX implementors and for future revisions of POSIX.
+
+[posix_reserved_names]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/V2_chap02.html
