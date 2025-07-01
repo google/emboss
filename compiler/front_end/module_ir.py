@@ -1179,10 +1179,10 @@ def _inline_type_field(location, name, abbreviation, body):
     if abbreviation.list:
         field.abbreviation.CopyFrom(abbreviation.list[0])
     body.source_location = parser_types.merge_source_locations(location, body)
-    if body.HasField("enumeration"):
+    if body.has_field("enumeration"):
         ir_data_utils.builder(body.enumeration).source_location = body.source_location
     else:
-        assert body.HasField("structure")
+        assert body.has_field("structure")
         ir_data_utils.builder(body.structure).source_location = body.source_location
     ir_data_utils.builder(body).name.CopyFrom(type_name)
     field.source_location = parser_types.merge_source_locations(location, body)

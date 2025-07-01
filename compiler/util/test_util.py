@@ -51,7 +51,7 @@ def proto_is_superset(proto, expected_values, path=""):
         name = spec.name
         field_path = "{}{}".format(path, name)
         value = getattr(proto, name)
-        if expected_values.HasField(name) and not proto.HasField(name):
+        if expected_values.has_field(name) and not proto.has_field(name):
             return False, "{} missing".format(field_path)
         if spec.is_dataclass:
             if spec.is_sequence:

@@ -514,12 +514,12 @@ class NormalizeIrTest(unittest.TestCase):
         byte_order_attr = ir_util.get_attribute(
             ir.module[0].type[0].structure.field[0].attribute, _BYTE_ORDER
         )
-        self.assertTrue(byte_order_attr.HasField("string_constant"))
+        self.assertTrue(byte_order_attr.has_field("string_constant"))
         self.assertEqual("BigEndian", byte_order_attr.string_constant.text)
         byte_order_attr = ir_util.get_attribute(
             ir.module[0].type[0].structure.field[1].attribute, _BYTE_ORDER
         )
-        self.assertTrue(byte_order_attr.HasField("string_constant"))
+        self.assertTrue(byte_order_attr.has_field("string_constant"))
         self.assertEqual("LittleEndian", byte_order_attr.string_constant.text)
 
     def test_adds_null_byte_order_attributes(self):
@@ -537,7 +537,7 @@ class NormalizeIrTest(unittest.TestCase):
         byte_order_attr = ir_util.get_attribute(
             structure.field[0].attribute, _BYTE_ORDER
         )
-        self.assertTrue(byte_order_attr.HasField("string_constant"))
+        self.assertTrue(byte_order_attr.has_field("string_constant"))
         self.assertEqual("Null", byte_order_attr.string_constant.text)
         self.assertEqual(
             structure.field[0].source_location, byte_order_attr.source_location
@@ -545,12 +545,12 @@ class NormalizeIrTest(unittest.TestCase):
         byte_order_attr = ir_util.get_attribute(
             structure.field[1].attribute, _BYTE_ORDER
         )
-        self.assertTrue(byte_order_attr.HasField("string_constant"))
+        self.assertTrue(byte_order_attr.has_field("string_constant"))
         self.assertEqual("LittleEndian", byte_order_attr.string_constant.text)
         byte_order_attr = ir_util.get_attribute(
             structure.field[2].attribute, _BYTE_ORDER
         )
-        self.assertTrue(byte_order_attr.HasField("string_constant"))
+        self.assertTrue(byte_order_attr.has_field("string_constant"))
         self.assertEqual("Null", byte_order_attr.string_constant.text)
         self.assertEqual(
             structure.field[2].source_location, byte_order_attr.source_location
@@ -558,7 +558,7 @@ class NormalizeIrTest(unittest.TestCase):
         byte_order_attr = ir_util.get_attribute(
             structure.field[3].attribute, _BYTE_ORDER
         )
-        self.assertTrue(byte_order_attr.HasField("string_constant"))
+        self.assertTrue(byte_order_attr.has_field("string_constant"))
         self.assertEqual("LittleEndian", byte_order_attr.string_constant.text)
 
     def test_disallows_default_byte_order_on_field(self):
@@ -631,7 +631,7 @@ class NormalizeIrTest(unittest.TestCase):
         byte_order_attr = ir_util.get_attribute(
             ir.module[0].type[0].structure.field[0].attribute, _BYTE_ORDER
         )
-        self.assertTrue(byte_order_attr.HasField("string_constant"))
+        self.assertTrue(byte_order_attr.has_field("string_constant"))
         self.assertEqual("BigEndian", byte_order_attr.string_constant.text)
 
     def test_disallows_unknown_byte_order(self):
@@ -926,7 +926,7 @@ class NormalizeIrTest(unittest.TestCase):
         self.assertEqual([], attribute_checker.normalize_and_verify(ir))
         enum = ir.module[0].type[0]
         is_signed_attr = ir_util.get_attribute(enum.attribute, _IS_SIGNED)
-        self.assertTrue(is_signed_attr.expression.HasField("boolean_constant"))
+        self.assertTrue(is_signed_attr.expression.has_field("boolean_constant"))
         self.assertFalse(is_signed_attr.expression.boolean_constant.value)
 
     def test_leaves_is_signed_attribute(self):
@@ -934,7 +934,7 @@ class NormalizeIrTest(unittest.TestCase):
         self.assertEqual([], attribute_checker.normalize_and_verify(ir))
         enum = ir.module[0].type[0]
         is_signed_attr = ir_util.get_attribute(enum.attribute, _IS_SIGNED)
-        self.assertTrue(is_signed_attr.expression.HasField("boolean_constant"))
+        self.assertTrue(is_signed_attr.expression.has_field("boolean_constant"))
         self.assertTrue(is_signed_attr.expression.boolean_constant.value)
 
     def test_adds_true_is_signed_attribute(self):
@@ -942,7 +942,7 @@ class NormalizeIrTest(unittest.TestCase):
         self.assertEqual([], attribute_checker.normalize_and_verify(ir))
         enum = ir.module[0].type[0]
         is_signed_attr = ir_util.get_attribute(enum.attribute, _IS_SIGNED)
-        self.assertTrue(is_signed_attr.expression.HasField("boolean_constant"))
+        self.assertTrue(is_signed_attr.expression.has_field("boolean_constant"))
         self.assertTrue(is_signed_attr.expression.boolean_constant.value)
 
     def test_adds_max_bits_attribute(self):
@@ -950,7 +950,7 @@ class NormalizeIrTest(unittest.TestCase):
         self.assertEqual([], attribute_checker.normalize_and_verify(ir))
         enum = ir.module[0].type[0]
         max_bits_attr = ir_util.get_attribute(enum.attribute, _MAX_BITS)
-        self.assertTrue(max_bits_attr.expression.HasField("constant"))
+        self.assertTrue(max_bits_attr.expression.has_field("constant"))
         self.assertEqual("64", max_bits_attr.expression.constant.value)
 
     def test_leaves_max_bits_attribute(self):
@@ -958,7 +958,7 @@ class NormalizeIrTest(unittest.TestCase):
         self.assertEqual([], attribute_checker.normalize_and_verify(ir))
         enum = ir.module[0].type[0]
         max_bits_attr = ir_util.get_attribute(enum.attribute, _MAX_BITS)
-        self.assertTrue(max_bits_attr.expression.HasField("constant"))
+        self.assertTrue(max_bits_attr.expression.has_field("constant"))
         self.assertEqual("32", max_bits_attr.expression.constant.value)
 
     def test_rejects_too_small_max_bits(self):

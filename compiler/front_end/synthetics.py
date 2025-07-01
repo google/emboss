@@ -142,7 +142,7 @@ def _add_anonymous_aliases(structure, type_definition):
                 existence_condition=new_existence_condition,
                 name=ir_data_utils.copy(subfield.name),
             )
-            if subfield.HasField("abbreviation"):
+            if subfield.has_field("abbreviation"):
                 ir_data_utils.builder(new_alias).abbreviation.CopyFrom(
                     subfield.abbreviation
                 )
@@ -153,7 +153,7 @@ def _add_anonymous_aliases(structure, type_definition):
             # original field's name(s) as synthetic, to avoid duplicate error
             # messages.
             _mark_as_synthetic(subfield.name)
-            if subfield.HasField("abbreviation"):
+            if subfield.has_field("abbreviation"):
                 _mark_as_synthetic(subfield.abbreviation)
     del structure.field[:]
     structure.field.extend(new_fields)
@@ -239,7 +239,7 @@ def _maybe_replace_next_keyword_in_expression(
     expression_ir, last_location, source_file_name, errors
 ):
     """Replaces the `$next` keyword in an expression."""
-    if not expression_ir.HasField("builtin_reference"):
+    if not expression_ir.has_field("builtin_reference"):
         return
     if (
         ir_data_utils.reader(
@@ -270,7 +270,7 @@ def _maybe_replace_next_keyword_in_expression(
 
 
 def _check_for_bad_next_keyword_in_size(expression, source_file_name, errors):
-    if not expression.HasField("builtin_reference"):
+    if not expression.has_field("builtin_reference"):
         return
     if expression.builtin_reference.canonical_name.object_path[0] != "$next":
         return

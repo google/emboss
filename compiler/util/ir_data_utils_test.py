@@ -255,7 +255,7 @@ class IrDataBuilderTest(unittest.TestCase):
         """Tests that basic builder chains work."""
         # We start with an empty type
         type_def = ir_data.TypeDefinition()
-        self.assertFalse(type_def.HasField("name"))
+        self.assertFalse(type_def.has_field("name"))
         self.assertIsNone(type_def.name)
 
         # Now setup a builder
@@ -282,7 +282,7 @@ class IrDataBuilderTest(unittest.TestCase):
         """Tests that sequences are properly wrapped."""
         # We start with an empty type
         type_def = ir_data.TypeDefinition()
-        self.assertTrue(type_def.HasField("attribute"))
+        self.assertTrue(type_def.has_field("attribute"))
         self.assertEmpty(type_def.attribute)
 
         # Now setup a builder
@@ -296,7 +296,7 @@ class IrDataBuilderTest(unittest.TestCase):
 
         builder.attribute.append(attribute)
         self.assertEqual(builder.attribute, [attribute])
-        self.assertTrue(type_def.HasField("attribute"))
+        self.assertTrue(type_def.has_field("attribute"))
         self.assertLen(type_def.attribute, 1)
         self.assertEqual(type_def.attribute[0], attribute)
 
@@ -392,7 +392,7 @@ class IrDataBuilderTest(unittest.TestCase):
         builder.fields_in_dependency_order.append(12)
         builder.fields_in_dependency_order.append(11)
 
-        self.assertTrue(structure.HasField("fields_in_dependency_order"))
+        self.assertTrue(structure.has_field("fields_in_dependency_order"))
         self.assertLen(structure.fields_in_dependency_order, 2)
         self.assertEqual(structure.fields_in_dependency_order[0], 12)
         self.assertEqual(structure.fields_in_dependency_order[1], 11)
@@ -406,7 +406,7 @@ class IrDataBuilderTest(unittest.TestCase):
             expression=ir_data.Expression(boolean_constant=ir_data.BooleanConstant())
         )
         builder = ir_data_utils.builder(value)
-        self.assertTrue(builder.HasField("expression"))
+        self.assertTrue(builder.has_field("expression"))
         self.assertFalse(builder.expression.boolean_constant.value)
         builder.expression.boolean_constant.value = True
         self.assertTrue(builder.expression.boolean_constant.value)
@@ -580,12 +580,12 @@ class ReadOnlyFieldCheckerTest(unittest.TestCase):
         # Scalar field should pass through
         self.assertEqual(field_checker.non_union_field, 10)
 
-        # Make sure HasField works
-        self.assertTrue(field_checker.HasField("opaque"))
-        self.assertFalse(field_checker.HasField("integer"))
-        self.assertTrue(field_checker.HasField("boolean"))
-        self.assertFalse(field_checker.HasField("enumeration"))
-        self.assertTrue(field_checker.HasField("non_union_field"))
+        # Make sure has_field works
+        self.assertTrue(field_checker.has_field("opaque"))
+        self.assertFalse(field_checker.has_field("integer"))
+        self.assertTrue(field_checker.has_field("boolean"))
+        self.assertFalse(field_checker.has_field("enumeration"))
+        self.assertTrue(field_checker.has_field("non_union_field"))
 
     def test_construct_from_field_checker(self):
         """Tests that constructing from another field checker works."""
@@ -604,12 +604,12 @@ class ReadOnlyFieldCheckerTest(unittest.TestCase):
         # Scalar field should pass through
         self.assertEqual(field_checker.non_union_field, 10)
 
-        # Make sure HasField works
-        self.assertTrue(field_checker.HasField("opaque"))
-        self.assertFalse(field_checker.HasField("integer"))
-        self.assertTrue(field_checker.HasField("boolean"))
-        self.assertFalse(field_checker.HasField("enumeration"))
-        self.assertTrue(field_checker.HasField("non_union_field"))
+        # Make sure has_field works
+        self.assertTrue(field_checker.has_field("opaque"))
+        self.assertFalse(field_checker.has_field("integer"))
+        self.assertTrue(field_checker.has_field("boolean"))
+        self.assertFalse(field_checker.has_field("enumeration"))
+        self.assertTrue(field_checker.has_field("non_union_field"))
 
     def test_read_only(self) -> None:
         """Tests that the read only wrapper really is read only."""

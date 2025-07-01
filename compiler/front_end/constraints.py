@@ -25,10 +25,10 @@ from compiler.util import traverse_ir
 
 def _render_type(type_ir, ir):
     """Returns the human-readable notation of the given type."""
-    assert type_ir.HasField(
+    assert type_ir.has_field(
         "atomic_type"
     ), "TODO(bolms): Implement _render_type for array types."
-    if type_ir.HasField("size_in_bits"):
+    if type_ir.has_field("size_in_bits"):
         return _render_atomic_type_name(
             type_ir, ir, suffix=":" + str(ir_util.constant_value(type_ir.size_in_bits))
         )
@@ -37,7 +37,7 @@ def _render_type(type_ir, ir):
 
 
 def _render_atomic_type_name(type_ir, ir, suffix=None):
-    assert type_ir.HasField(
+    assert type_ir.has_field(
         "atomic_type"
     ), "_render_atomic_type_name() requires an atomic type"
     if not suffix:
@@ -78,7 +78,7 @@ def _check_that_inner_array_dimensions_are_constant(type_ir, source_file_name, e
 
 def _check_that_array_base_types_are_fixed_size(type_ir, source_file_name, errors, ir):
     """Checks that the sizes of array elements are known at compile time."""
-    if type_ir.base_type.HasField("array_type"):
+    if type_ir.base_type.has_field("array_type"):
         # An array is fixed size if its base_type is fixed size and its array
         # dimension is constant.  This function will be called again on the inner
         # array, and we do not want to cascade errors if the inner array's base_type
@@ -86,8 +86,8 @@ def _check_that_array_base_types_are_fixed_size(type_ir, source_file_name, error
         # _check_that_inner_array_dimensions_are_constant, which will provide an
         # appropriate error message for that case.
         return
-    assert type_ir.base_type.HasField("atomic_type")
-    if type_ir.base_type.HasField("size_in_bits"):
+    assert type_ir.base_type.has_field("atomic_type")
+    if type_ir.base_type.has_field("size_in_bits"):
         # If the base_type has a size_in_bits, then it is fixed size.
         return
     base_type = ir_util.find_object(type_ir.base_type.atomic_type.reference, ir)
@@ -111,11 +111,11 @@ def _check_that_array_base_types_in_structs_are_multiples_of_bytes(
 ):
     # TODO(bolms): Remove this limitation.
     """Checks that the sizes of array elements are multiples of 8 bits."""
-    if type_ir.base_type.HasField("array_type"):
+    if type_ir.base_type.has_field("array_type"):
         # Only check the innermost array for multidimensional arrays.
         return
-    assert type_ir.base_type.HasField("atomic_type")
-    if type_ir.base_type.HasField("size_in_bits"):
+    assert type_ir.base_type.has_field("atomic_type")
+    if type_ir.base_type.has_field("size_in_bits"):
         assert ir_util.is_constant(type_ir.base_type.size_in_bits)
         base_type_size = ir_util.constant_value(type_ir.base_type.size_in_bits)
     else:
@@ -209,10 +209,10 @@ def _check_type_requirements_for_field(
     type_ir, type_definition, field, ir, source_file_name, errors
 ):
     """Checks that the `requires` attribute of each field's type is fulfilled."""
-    if not type_ir.HasField("atomic_type"):
+    if not type_ir.has_field("atomic_type"):
         return
 
-    if field.type.HasField("atomic_type"):
+    if field.type.has_field("atomic_type"):
         field_min_size = (
             int(field.location.size.type.integer.minimum_value)
             * type_definition.addressable_unit
@@ -225,7 +225,7 @@ def _check_type_requirements_for_field(
     else:
         field_is_atomic = False
 
-    if type_ir.HasField("size_in_bits"):
+    if type_ir.has_field("size_in_bits"):
         element_size = ir_util.constant_value(type_ir.size_in_bits)
     else:
         element_size = None
@@ -333,7 +333,7 @@ def _check_early_type_requirements_for_parameter_type(
         # bits by default) in expressions, so the physical size would just be
         # ignored.  Integer types do not have "natural" sizes, so the width is
         # required.
-        if not physical_type.HasField("size_in_bits"):
+        if not physical_type.has_field("size_in_bits"):
             errors.extend(
                 [
                     [
@@ -346,7 +346,7 @@ def _check_early_type_requirements_for_parameter_type(
                 ]
             )
     elif logical_type.which_type == "enumeration":
-        if physical_type.HasField("size_in_bits"):
+        if physical_type.has_field("size_in_bits"):
             errors.extend(
                 [
                     [
@@ -399,7 +399,7 @@ def _check_physical_type_requirements(
 ):
     """Checks that the given atomic `type_ir` is allowed to be `size` bits."""
     referenced_type_definition = ir_util.find_object(type_ir.atomic_type.reference, ir)
-    if referenced_type_definition.HasField("enumeration"):
+    if referenced_type_definition.has_field("enumeration"):
         if size is None:
             return [
                 [
@@ -465,7 +465,7 @@ def _check_physical_type_requirements(
 
 def _check_allowed_in_bits(type_ir, type_definition, source_file_name, ir, errors):
     """Verifies that atomic fields have types that are allowed in `bits`."""
-    if not type_ir.HasField("atomic_type"):
+    if not type_ir.has_field("atomic_type"):
         return
     referenced_type_definition = ir_util.find_object(type_ir.atomic_type.reference, ir)
     if (

@@ -40,7 +40,7 @@ def _attribute_name_for_errors(attr):
 # Attribute type checkers
 def _is_constant_boolean(attr, module_source_file):
     """Checks if the given attr is a constant boolean."""
-    if not attr.value.expression.type.boolean.HasField("value"):
+    if not attr.value.expression.type.boolean.has_field("value"):
         return [
             [
                 error.error(
@@ -75,7 +75,7 @@ def _is_boolean(attr, module_source_file):
 def _is_constant_integer(attr, module_source_file):
     """Checks if the given attr is an integer constant expression."""
     if (
-        not attr.value.HasField("expression")
+        not attr.value.has_field("expression")
         or attr.value.expression.type.which_type != "integer"
     ):
         return [
@@ -106,7 +106,7 @@ def _is_constant_integer(attr, module_source_file):
 
 def _is_string(attr, module_source_file):
     """Checks if the given attr is a string."""
-    if not attr.value.HasField("string_constant"):
+    if not attr.value.has_field("string_constant"):
         return [
             [
                 error.error(
@@ -217,7 +217,7 @@ def check_attributes_in_ir(
         )
 
     def check_type_definition(type_definition, source_file_name, errors):
-        if type_definition.HasField("structure"):
+        if type_definition.has_field("structure"):
             if type_definition.addressable_unit == ir_data.AddressableUnit.BYTE:
                 errors.extend(
                     _check_attributes(
@@ -244,7 +244,7 @@ def check_attributes_in_ir(
                 assert False, "Unexpected addressable_unit '{}'".format(
                     type_definition.addressable_unit
                 )
-        elif type_definition.HasField("enumeration"):
+        elif type_definition.has_field("enumeration"):
             errors.extend(
                 _check_attributes(
                     type_definition.attribute,
@@ -255,7 +255,7 @@ def check_attributes_in_ir(
                     source_file_name,
                 )
             )
-        elif type_definition.HasField("external"):
+        elif type_definition.has_field("external"):
             errors.extend(
                 _check_attributes(
                     type_definition.attribute,

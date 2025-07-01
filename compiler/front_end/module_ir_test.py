@@ -3996,7 +3996,7 @@ def _check_all_source_locations(proto, path="", min_start=None, max_end=None):
     child_end = None
     # Only check the source_location value if this proto message actually has a
     # source_location field.
-    if proto.HasField("source_location"):
+    if proto.has_field("source_location"):
         errors.extend(
             _check_source_location(
                 proto.source_location, path + "source_location", min_start, max_end
@@ -4008,7 +4008,7 @@ def _check_all_source_locations(proto, path="", min_start=None, max_end=None):
     for name, spec in ir_data_fields.field_specs(proto).items():
         if name == "source_location":
             continue
-        if not proto.HasField(name):
+        if not proto.has_field(name):
             continue
         field_path = "{}{}".format(path, name)
         if spec.is_dataclass:

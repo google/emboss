@@ -410,7 +410,7 @@ class TypeAnnotationTest(unittest.TestCase):
         expression = ir.module[0].type[0].structure.field[1].location.size
         self.assertEqual([], error.filter_errors(type_check.annotate_types(ir)))
         self.assertEqual("enumeration", expression.type.which_type)
-        self.assertFalse(expression.type.enumeration.HasField("value"))
+        self.assertFalse(expression.type.enumeration.has_field("value"))
         self.assertEqual(
             "m.emb", expression.type.enumeration.name.canonical_name.module_file
         )

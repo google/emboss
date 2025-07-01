@@ -103,8 +103,7 @@ class Message:
                     )
             object.__setattr__(self, name, value)
 
-    # Non-PEP8 name to mimic the Google Protobuf interface.
-    def HasField(self, name):  # pylint:disable=invalid-name
+    def has_field(self, name):
         """Indicates if this class has the given field defined and it is set."""
         return getattr(self, name, None) is not None
 

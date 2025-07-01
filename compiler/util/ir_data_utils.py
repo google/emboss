@@ -283,7 +283,7 @@ class _IrDataBuilder(Generic[MessageT]):
         if ir is None:
             return object.__getattribute__(self, name)
 
-        if name in ("HasField",):
+        if name in ("has_field",):
             return getattr(ir, name)
 
         field_spec = field_specs(ir).get(name)
@@ -366,7 +366,7 @@ class _ReadOnlyFieldChecker:
         spec = field_specs(field_type).get(name)
         if not spec:
             if isinstance(ir_or_spec, ir_data_fields.FieldSpec):
-                if name == "HasField":
+                if name == "has_field":
                     return lambda x: False
                 # This *should* be limited to only the `which_` attributes that
                 # correspond to real oneofs, but that would add complexity and
