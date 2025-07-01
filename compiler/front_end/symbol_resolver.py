@@ -161,7 +161,7 @@ def _add_struct_field_to_scope(field, scope, errors):
     new_scope = _add_name_to_scope_and_normalize(
         field.name, scope, _Scope.LOCAL, errors
     )
-    if field.HasField("abbreviation"):
+    if field.has_field("abbreviation"):
         _add_name_to_scope(
             field.abbreviation, scope, new_scope.canonical_name, _Scope.PRIVATE, errors
         )
@@ -331,7 +331,7 @@ def _resolve_reference(
     reference, table, current_scope, visible_scopes, source_file_name, errors
 ):
     """Sets the canonical name of the given reference."""
-    if reference.HasField("canonical_name"):
+    if reference.has_field("canonical_name"):
         # This reference has already been resolved by the _resolve_field_reference
         # pass.
         return
@@ -453,7 +453,7 @@ def _find_target_of_reference(
 
 def _resolve_field_reference(field_reference, source_file_name, errors, ir):
     """Resolves the References inside of a FieldReference."""
-    if field_reference.path[-1].HasField("canonical_name"):
+    if field_reference.path[-1].has_field("canonical_name"):
         # Already done.
         return
     previous_field = ir_util.find_object_or_none(field_reference.path[0], ir)
@@ -476,7 +476,7 @@ def _resolve_field_reference(field_reference, source_file_name, errors, ir):
                 # field, then bail.  Otherwise we get a cascade of errors, where an
                 # error in `x` leads to errors in anything trying to reach a member of
                 # `x`.
-                if not previous_field.read_transform.field_reference.path[-1].HasField(
+                if not previous_field.read_transform.field_reference.path[-1].has_field(
                     "canonical_name"
                 ):
                     return

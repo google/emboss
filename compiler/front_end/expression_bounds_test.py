@@ -44,7 +44,7 @@ class ComputeConstantsTest(unittest.TestCase):
         ir = self._make_ir("struct Foo:\n" "  if true:\n" "    0 [+1]  UInt  x\n")
         self.assertEqual([], expression_bounds.compute_constants(ir))
         expression = ir.module[0].type[0].structure.field[0].existence_condition
-        self.assertTrue(expression.type.boolean.HasField("value"))
+        self.assertTrue(expression.type.boolean.has_field("value"))
         self.assertTrue(expression.type.boolean.value)
 
     def test_constant_equality(self):
@@ -59,9 +59,9 @@ class ComputeConstantsTest(unittest.TestCase):
         structure = ir.module[0].type[0].structure
         true_condition = structure.field[0].existence_condition
         false_condition = structure.field[1].existence_condition
-        self.assertTrue(true_condition.type.boolean.HasField("value"))
+        self.assertTrue(true_condition.type.boolean.has_field("value"))
         self.assertTrue(true_condition.type.boolean.value)
-        self.assertTrue(false_condition.type.boolean.HasField("value"))
+        self.assertTrue(false_condition.type.boolean.has_field("value"))
         self.assertFalse(false_condition.type.boolean.value)
 
     def test_constant_inequality(self):
@@ -76,9 +76,9 @@ class ComputeConstantsTest(unittest.TestCase):
         structure = ir.module[0].type[0].structure
         false_condition = structure.field[0].existence_condition
         true_condition = structure.field[1].existence_condition
-        self.assertTrue(false_condition.type.boolean.HasField("value"))
+        self.assertTrue(false_condition.type.boolean.has_field("value"))
         self.assertFalse(false_condition.type.boolean.value)
-        self.assertTrue(true_condition.type.boolean.HasField("value"))
+        self.assertTrue(true_condition.type.boolean.has_field("value"))
         self.assertTrue(true_condition.type.boolean.value)
 
     def test_constant_less_than(self):
@@ -96,11 +96,11 @@ class ComputeConstantsTest(unittest.TestCase):
         greater_than_condition = structure.field[0].existence_condition
         equal_condition = structure.field[1].existence_condition
         less_than_condition = structure.field[2].existence_condition
-        self.assertTrue(greater_than_condition.type.boolean.HasField("value"))
+        self.assertTrue(greater_than_condition.type.boolean.has_field("value"))
         self.assertFalse(greater_than_condition.type.boolean.value)
-        self.assertTrue(equal_condition.type.boolean.HasField("value"))
+        self.assertTrue(equal_condition.type.boolean.has_field("value"))
         self.assertFalse(equal_condition.type.boolean.value)
-        self.assertTrue(less_than_condition.type.boolean.HasField("value"))
+        self.assertTrue(less_than_condition.type.boolean.has_field("value"))
         self.assertTrue(less_than_condition.type.boolean.value)
 
     def test_constant_less_than_or_equal(self):
@@ -118,11 +118,11 @@ class ComputeConstantsTest(unittest.TestCase):
         greater_than_condition = structure.field[0].existence_condition
         equal_condition = structure.field[1].existence_condition
         less_than_condition = structure.field[2].existence_condition
-        self.assertTrue(greater_than_condition.type.boolean.HasField("value"))
+        self.assertTrue(greater_than_condition.type.boolean.has_field("value"))
         self.assertFalse(greater_than_condition.type.boolean.value)
-        self.assertTrue(equal_condition.type.boolean.HasField("value"))
+        self.assertTrue(equal_condition.type.boolean.has_field("value"))
         self.assertTrue(equal_condition.type.boolean.value)
-        self.assertTrue(less_than_condition.type.boolean.HasField("value"))
+        self.assertTrue(less_than_condition.type.boolean.has_field("value"))
         self.assertTrue(less_than_condition.type.boolean.value)
 
     def test_constant_greater_than(self):
@@ -140,11 +140,11 @@ class ComputeConstantsTest(unittest.TestCase):
         greater_than_condition = structure.field[0].existence_condition
         equal_condition = structure.field[1].existence_condition
         less_than_condition = structure.field[2].existence_condition
-        self.assertTrue(greater_than_condition.type.boolean.HasField("value"))
+        self.assertTrue(greater_than_condition.type.boolean.has_field("value"))
         self.assertTrue(greater_than_condition.type.boolean.value)
-        self.assertTrue(equal_condition.type.boolean.HasField("value"))
+        self.assertTrue(equal_condition.type.boolean.has_field("value"))
         self.assertFalse(equal_condition.type.boolean.value)
-        self.assertTrue(less_than_condition.type.boolean.HasField("value"))
+        self.assertTrue(less_than_condition.type.boolean.has_field("value"))
         self.assertFalse(less_than_condition.type.boolean.value)
 
     def test_constant_greater_than_or_equal(self):
@@ -162,11 +162,11 @@ class ComputeConstantsTest(unittest.TestCase):
         greater_than_condition = structure.field[0].existence_condition
         equal_condition = structure.field[1].existence_condition
         less_than_condition = structure.field[2].existence_condition
-        self.assertTrue(greater_than_condition.type.boolean.HasField("value"))
+        self.assertTrue(greater_than_condition.type.boolean.has_field("value"))
         self.assertTrue(greater_than_condition.type.boolean.value)
-        self.assertTrue(equal_condition.type.boolean.HasField("value"))
+        self.assertTrue(equal_condition.type.boolean.has_field("value"))
         self.assertTrue(equal_condition.type.boolean.value)
-        self.assertTrue(less_than_condition.type.boolean.HasField("value"))
+        self.assertTrue(less_than_condition.type.boolean.has_field("value"))
         self.assertFalse(less_than_condition.type.boolean.value)
 
     def test_constant_and(self):
@@ -187,13 +187,13 @@ class ComputeConstantsTest(unittest.TestCase):
         true_false_condition = structure.field[1].existence_condition
         false_true_condition = structure.field[2].existence_condition
         true_true_condition = structure.field[3].existence_condition
-        self.assertTrue(false_false_condition.type.boolean.HasField("value"))
+        self.assertTrue(false_false_condition.type.boolean.has_field("value"))
         self.assertFalse(false_false_condition.type.boolean.value)
-        self.assertTrue(true_false_condition.type.boolean.HasField("value"))
+        self.assertTrue(true_false_condition.type.boolean.has_field("value"))
         self.assertFalse(true_false_condition.type.boolean.value)
-        self.assertTrue(false_true_condition.type.boolean.HasField("value"))
+        self.assertTrue(false_true_condition.type.boolean.has_field("value"))
         self.assertFalse(false_true_condition.type.boolean.value)
-        self.assertTrue(true_true_condition.type.boolean.HasField("value"))
+        self.assertTrue(true_true_condition.type.boolean.has_field("value"))
         self.assertTrue(true_true_condition.type.boolean.value)
 
     def test_constant_or(self):
@@ -214,13 +214,13 @@ class ComputeConstantsTest(unittest.TestCase):
         true_false_condition = structure.field[1].existence_condition
         false_true_condition = structure.field[2].existence_condition
         true_true_condition = structure.field[3].existence_condition
-        self.assertTrue(false_false_condition.type.boolean.HasField("value"))
+        self.assertTrue(false_false_condition.type.boolean.has_field("value"))
         self.assertFalse(false_false_condition.type.boolean.value)
-        self.assertTrue(true_false_condition.type.boolean.HasField("value"))
+        self.assertTrue(true_false_condition.type.boolean.has_field("value"))
         self.assertTrue(true_false_condition.type.boolean.value)
-        self.assertTrue(false_true_condition.type.boolean.HasField("value"))
+        self.assertTrue(false_true_condition.type.boolean.has_field("value"))
         self.assertTrue(false_true_condition.type.boolean.value)
-        self.assertTrue(true_true_condition.type.boolean.HasField("value"))
+        self.assertTrue(true_true_condition.type.boolean.has_field("value"))
         self.assertTrue(true_true_condition.type.boolean.value)
 
     def test_enum_constant(self):
@@ -276,7 +276,7 @@ class ComputeConstantsTest(unittest.TestCase):
         self.assertEqual([], expression_bounds.compute_constants(ir))
         structure = ir.module[0].type[0].structure
         condition = structure.field[0].existence_condition
-        self.assertFalse(condition.type.boolean.HasField("value"))
+        self.assertFalse(condition.type.boolean.has_field("value"))
 
     def test_constant_addition(self):
         ir = self._make_ir("struct Foo:\n" "  7+5 [+1]  UInt  x\n")
@@ -864,7 +864,7 @@ class ComputeConstantsTest(unittest.TestCase):
         self.assertEqual([], expression_bounds.compute_constants(ir))
         field = ir.module[0].type[0].structure.field[0]
         has_func = field.existence_condition
-        self.assertTrue(has_func.type.boolean.HasField("value"))
+        self.assertTrue(has_func.type.boolean.has_field("value"))
         self.assertFalse(has_func.type.boolean.value)
 
     def test_variable_has(self):
@@ -881,7 +881,7 @@ class ComputeConstantsTest(unittest.TestCase):
         self.assertEqual([], expression_bounds.compute_constants(ir))
         field = ir.module[0].type[0].structure.field[0]
         has_func = field.existence_condition
-        self.assertFalse(has_func.type.boolean.HasField("value"))
+        self.assertFalse(has_func.type.boolean.has_field("value"))
 
     def test_max_of_constants(self):
         ir = self._make_ir(
@@ -1008,7 +1008,7 @@ class ComputeConstantsTest(unittest.TestCase):
         self.assertEqual([], expression_bounds.compute_constants(ir))
         expr = ir.module[0].type[0].structure.field[1].existence_condition
         self.assertEqual("boolean", expr.type.which_type)
-        self.assertFalse(expr.type.boolean.HasField("value"))
+        self.assertFalse(expr.type.boolean.has_field("value"))
 
     def test_uint_value_range_for_explicit_size(self):
         ir = self._make_ir(

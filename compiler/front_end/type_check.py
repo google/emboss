@@ -286,7 +286,7 @@ def _type_check_local_reference(expression, ir, errors):
         )
         ir_data_utils.builder(expression).type.CopyFrom(field.read_transform.type)
         return
-    if not field.type.HasField("atomic_type"):
+    if not field.type.has_field("atomic_type"):
         ir_data_utils.builder(expression).type.opaque.CopyFrom(ir_data.OpaqueType())
     else:
         _set_expression_type_from_physical_type_reference(
@@ -313,7 +313,7 @@ def unbounded_expression_type_for_physical_type(type_definition):
     elif tuple(type_definition.name.canonical_name.object_path) == ("Flag",):
         # This is a hack: the Flag type should say that it is a boolean.
         return ir_data.ExpressionType(boolean=ir_data.BooleanType())
-    elif type_definition.HasField("enumeration"):
+    elif type_definition.has_field("enumeration"):
         return ir_data.ExpressionType(
             enumeration=ir_data.EnumType(
                 name=ir_data.Reference(

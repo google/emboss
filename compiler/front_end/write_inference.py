@@ -213,7 +213,7 @@ def _add_write_method(field, ir):
     Returns:
       None
     """
-    if field.HasField("write_method"):
+    if field.has_field("write_method"):
         # Do not recompute anything.
         return
 

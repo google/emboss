@@ -158,7 +158,7 @@ def _fast_traverse_proto_top_down(
         type(proto), new_pattern[0]
     ]
     for member_name in singular_fields:
-        if proto.HasField(member_name):
+        if proto.has_field(member_name):
             _fast_traverse_proto_top_down(
                 getattr(proto, member_name),
                 incidental_actions,

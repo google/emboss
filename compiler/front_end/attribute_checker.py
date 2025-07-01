@@ -174,7 +174,7 @@ def _fixed_size_of_struct_or_bits(struct, unit_size):
     """Returns size of struct in bits or None, if struct is not fixed size."""
     size = 0
     for field in struct.field:
-        if not field.HasField("location"):
+        if not field.has_field("location"):
             # Virtual fields do not contribute to the physical size of the struct.
             continue
         field_start = ir_util.constant_value(field.location.start)
@@ -421,7 +421,7 @@ def _verify_requires_attribute_on_field(field, source_file_name, ir, errors):
     if ir_util.field_is_virtual(field):
         field_expression_type = field.read_transform.type
     else:
-        if not field.type.HasField("atomic_type"):
+        if not field.type.has_field("atomic_type"):
             errors.append(
                 [
                     error.error(

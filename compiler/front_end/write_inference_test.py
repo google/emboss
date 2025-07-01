@@ -46,7 +46,7 @@ class WriteInferenceTest(unittest.TestCase):
         ir = self._make_ir("struct Foo:\n" "  let x = y\n" "  0 [+1]  UInt  y\n")
         self.assertEqual([], write_inference.set_write_methods(ir))
         field = ir.module[0].type[0].structure.field[0]
-        self.assertTrue(field.write_method.HasField("alias"))
+        self.assertTrue(field.write_method.has_field("alias"))
         self.assertEqual(
             "y", field.write_method.alias.path[0].canonical_name.object_path[-1]
         )
@@ -57,7 +57,7 @@ class WriteInferenceTest(unittest.TestCase):
         )
         self.assertEqual([], write_inference.set_write_methods(ir))
         field = ir.module[0].type[0].structure.field[0]
-        self.assertTrue(field.write_method.HasField("alias"))
+        self.assertTrue(field.write_method.has_field("alias"))
         self.assertEqual(
             "z", field.write_method.alias.path[0].canonical_name.object_path[-1]
         )

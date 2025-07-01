@@ -418,7 +418,7 @@ def _get_cpp_view_type_for_type_definition(
     adapted_buffer_type = _get_adapted_cpp_buffer_type_for_field(
         type_definition, size, buffer_type, byte_order, parent_addressable_unit
     )
-    if type_definition.HasField("external"):
+    if type_definition.has_field("external"):
         # Externals do not (yet) support runtime parameters.
         return (
             code_template.format_template(
@@ -433,7 +433,7 @@ def _get_cpp_view_type_for_type_definition(
             ),
             [],
         )
-    elif type_definition.HasField("structure"):
+    elif type_definition.has_field("structure"):
         parameter_types = []
         for parameter in type_definition.runtime_parameter:
             parameter_types.append(
@@ -450,7 +450,7 @@ def _get_cpp_view_type_for_type_definition(
             ),
             parameter_types,
         )
-    elif type_definition.HasField("enumeration"):
+    elif type_definition.has_field("enumeration"):
         return (
             code_template.format_template(
                 _TEMPLATES.enum_view_type,
@@ -534,7 +534,7 @@ def _get_cpp_view_type_for_physical_type(
             element_view_parameters,
         )
     else:
-        assert type_ir.HasField("atomic_type")
+        assert type_ir.has_field("atomic_type")
         reference = type_ir.atomic_type.reference
         referenced_type = ir_util.find_object(reference, ir)
         if parent_addressable_unit > referenced_type.addressable_unit:
@@ -829,13 +829,13 @@ def _render_expression(expression, ir, field_reader=None, subexpressions=None):
                 True,
             )
     elif expression.type.which_type == "boolean":
-        if expression.type.boolean.HasField("value"):
+        if expression.type.boolean.has_field("value"):
             if expression.type.boolean.value:
                 return _ExpressionResult(_maybe_type("bool") + "(true)", True)
             else:
                 return _ExpressionResult(_maybe_type("bool") + "(false)", True)
     elif expression.type.which_type == "enumeration":
-        if expression.type.enumeration.HasField("value"):
+        if expression.type.enumeration.has_field("value"):
             return _ExpressionResult(
                 _render_enum_value(expression.type.enumeration, ir), True
             )
@@ -889,7 +889,7 @@ def _get_cpp_type_reader_of_field(
 ):
     """Returns the C++ view type for a field."""
     field_size = None
-    if field_ir.type.HasField("size_in_bits"):
+    if field_ir.type.has_field("size_in_bits"):
         field_size = ir_util.constant_value(field_ir.type.size_in_bits)
         assert field_size is not None
     elif ir_util.is_constant(field_ir.location.size):
@@ -1365,7 +1365,7 @@ def _generate_structure_definition(type_ir, ir, config: Config):
     units = {1: "Bits", 8: "Bytes"}[type_ir.addressable_unit]
 
     for subtype in type_ir.subtype:
-        if subtype.HasField("enumeration"):
+        if subtype.has_field("enumeration"):
             enum_using_statements.append(
                 code_template.format_template(
                     _TEMPLATES.enum_using_statement,
@@ -1672,11 +1672,11 @@ def _generate_enum_definition(type_ir, include_traits=True):
 
 def _generate_type_definition(type_ir, ir, config: Config):
     """Generates C++ for an Emboss type."""
-    if type_ir.HasField("structure"):
+    if type_ir.has_field("structure"):
         return _generate_structure_definition(type_ir, ir, config)
-    elif type_ir.HasField("enumeration"):
+    elif type_ir.has_field("enumeration"):
         return _generate_enum_definition(type_ir, config.include_enum_traits)
-    elif type_ir.HasField("external"):
+    elif type_ir.has_field("external"):
         # TODO(bolms): This should probably generate an #include.
         return "", "", ""
     else:

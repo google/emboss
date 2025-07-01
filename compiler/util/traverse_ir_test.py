@@ -205,11 +205,11 @@ def _record_location_parameter_and_constant(constant, constant_list, location=No
 
 
 def _record_kind_and_constant(constant, constant_list, type_definition):
-    if type_definition.HasField("enumeration"):
+    if type_definition.has_field("enumeration"):
         constant_list.append(("enumeration", int(constant.value)))
-    elif type_definition.HasField("structure"):
+    elif type_definition.has_field("structure"):
         constant_list.append(("structure", int(constant.value)))
-    elif type_definition.HasField("external"):
+    elif type_definition.has_field("external"):
         constant_list.append(("external", int(constant.value)))
     else:
         assert False, "Shouldn't be here."

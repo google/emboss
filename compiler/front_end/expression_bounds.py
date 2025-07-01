@@ -149,7 +149,7 @@ def _compute_constraints_of_field_reference(expression, ir):
             referrent_type = field.type
         else:
             referrent_type = field.physical_type_alias
-        if referrent_type.HasField("size_in_bits"):
+        if referrent_type.has_field("size_in_bits"):
             type_size = ir_util.constant_value(referrent_type.size_in_bits)
         elif isinstance(field, ir_data.Field):
             field_size = ir_util.constant_value(field.location.size)
@@ -159,7 +159,7 @@ def _compute_constraints_of_field_reference(expression, ir):
                 type_size = field_size * type_definition.addressable_unit
         else:
             type_size = None
-        assert referrent_type.HasField("atomic_type"), field
+        assert referrent_type.has_field("atomic_type"), field
         assert not referrent_type.atomic_type.reference.canonical_name.module_file
         _set_integer_constraints_from_physical_type(
             expression, referrent_type, type_size
@@ -668,7 +668,7 @@ def _compute_constraints_of_choice_operator(expression):
     """Computes the constraints of a choice operation '?:'."""
     condition, if_true, if_false = ir_data_utils.reader(expression).function.args
     expression = ir_data_utils.builder(expression)
-    if condition.type.boolean.HasField("value"):
+    if condition.type.boolean.has_field("value"):
         # The generated expressions for $size_in_bits and $size_in_bytes look like
         #
         #     $max((field1_existence_condition ? field1_start + field1_size : 0),

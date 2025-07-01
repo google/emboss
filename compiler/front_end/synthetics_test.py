@@ -64,12 +64,12 @@ class SyntheticsTest(unittest.TestCase):
         self.assertEqual([], synthetics.desugar(ir))
         structure = ir.module[0].type[0].structure
         # The first field should be the anonymous bits structure.
-        self.assertTrue(structure.field[0].HasField("location"))
+        self.assertTrue(structure.field[0].has_field("location"))
         # Then the aliases generated for those structures.
         self.assertEqual("bar", structure.field[1].name.name.text)
         self.assertEqual("uint", structure.field[2].name.name.text)
         # Then the second anonymous bits.
-        self.assertTrue(structure.field[3].HasField("location"))
+        self.assertTrue(structure.field[3].has_field("location"))
         # Then the alias from the second anonymous bits.
         self.assertEqual("nested_bits", structure.field[4].name.name.text)
 
@@ -145,7 +145,7 @@ class SyntheticsTest(unittest.TestCase):
         self.assertEqual([], synthetics.desugar(ir))
         bar_alias = ir.module[0].type[0].structure.field[1]
         baz_alias = ir.module[0].type[0].structure.field[2]
-        self.assertFalse(bar_alias.HasField("abbreviation"))
+        self.assertFalse(bar_alias.has_field("abbreviation"))
         self.assertEqual("qux", baz_alias.abbreviation.text)
 
     def test_anonymous_bits_sets_correct_is_synthetic(self):
@@ -156,9 +156,9 @@ class SyntheticsTest(unittest.TestCase):
         bits_field = ir.module[0].type[0].subtype[0].structure.field[0]
         alias_field = ir.module[0].type[0].structure.field[1]
         self.assertFalse(alias_field.name.source_location.is_synthetic)
-        self.assertTrue(alias_field.HasField("abbreviation"))
+        self.assertTrue(alias_field.has_field("abbreviation"))
         self.assertFalse(alias_field.abbreviation.source_location.is_synthetic)
-        self.assertTrue(alias_field.HasField("read_transform"))
+        self.assertTrue(alias_field.has_field("read_transform"))
         read_alias = alias_field.read_transform
         self.assertTrue(read_alias.source_location.is_synthetic)
         self.assertTrue(read_alias.field_reference.path[0].source_location.is_synthetic)
@@ -265,7 +265,7 @@ class SyntheticsTest(unittest.TestCase):
         )
         self.assertEqual([], synthetics.desugar(ir))
         offset_of_b = ir.module[0].type[0].structure.field[1].location.start
-        self.assertTrue(offset_of_b.HasField("function"))
+        self.assertTrue(offset_of_b.has_field("function"))
         self.assertEqual(
             offset_of_b.function.function, ir_data.FunctionMapping.ADDITION
         )

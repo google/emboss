@@ -49,7 +49,7 @@ def get_boolean_attribute(attribute_list, name, default_value=None):
         requested attribute is not found or has a non-boolean value.
     """
     attribute_value = get_attribute(attribute_list, name)
-    if not attribute_value or not attribute_value.expression.HasField(
+    if not attribute_value or not attribute_value.expression.has_field(
         "boolean_constant"
     ):
         return default_value
@@ -88,8 +88,8 @@ def is_constant_type(expression_type):
     expression_type = ir_data_utils.reader(expression_type)
     return (
         expression_type.integer.modulus == "infinity"
-        or expression_type.boolean.HasField("value")
-        or expression_type.enumeration.HasField("value")
+        or expression_type.boolean.has_field("value")
+        or expression_type.enumeration.has_field("value")
     )
 
 
@@ -108,10 +108,10 @@ def constant_value(expression, bindings=None):
             assert expression.type.integer.modulus == "infinity"
             return int(expression.type.integer.modular_value)
         elif expression.type.which_type == "boolean":
-            assert expression.type.boolean.HasField("value")
+            assert expression.type.boolean.has_field("value")
             return expression.type.boolean.value
         elif expression.type.which_type == "enumeration":
-            assert expression.type.enumeration.HasField("value")
+            assert expression.type.enumeration.has_field("value")
             return int(expression.type.enumeration.value)
         else:
             assert False, "Unexpected expression type {}".format(
@@ -239,7 +239,7 @@ def hashable_form_of_field_reference(field_reference):
 
 def is_array(type_ir):
     """Returns true if type_ir is an array type."""
-    return type_ir.HasField("array_type")
+    return type_ir.has_field("array_type")
 
 
 def _find_path_in_structure_field(path, field):
@@ -265,7 +265,7 @@ def _find_path_in_enumeration(path, type_definition):
 
 
 def _find_path_in_parameters(path, type_definition):
-    if len(path) > 1 or not type_definition.HasField("runtime_parameter"):
+    if len(path) > 1 or not type_definition.has_field("runtime_parameter"):
         return None
     for parameter in type_definition.runtime_parameter:
         if ir_data_utils.reader(parameter).name.name.text == path[0]:
@@ -280,9 +280,9 @@ def _find_path_in_type_definition(path, type_definition):
     obj = _find_path_in_parameters(path, type_definition)
     if obj:
         return obj
-    if type_definition.HasField("structure"):
+    if type_definition.has_field("structure"):
         obj = _find_path_in_structure(path, type_definition)
-    elif type_definition.HasField("enumeration"):
+    elif type_definition.has_field("enumeration"):
         obj = _find_path_in_enumeration(path, type_definition)
     if obj:
         return obj
@@ -348,9 +348,9 @@ def get_base_type(type_ir):
       type_ir corresponds to an array type (like "UInt:8[12]" or "Square[8][8]"),
       returns the type after stripping off the array types ("UInt" or "Square").
     """
-    while type_ir.HasField("array_type"):
+    while type_ir.has_field("array_type"):
         type_ir = type_ir.array_type.base_type
-    assert type_ir.HasField("atomic_type"), "Unknown kind of type {}".format(type_ir)
+    assert type_ir.has_field("atomic_type"), "Unknown kind of type {}".format(type_ir)
     return type_ir
 
 
@@ -365,7 +365,7 @@ def fixed_size_of_type_in_bits(type_ir, ir):
       size if the size of the type can be determined, otherwise None.
     """
     array_multiplier = 1
-    while type_ir.HasField("array_type"):
+    while type_ir.has_field("array_type"):
         if type_ir.array_type.which_size == "automatic":
             return None
         else:
@@ -377,12 +377,12 @@ def fixed_size_of_type_in_bits(type_ir, ir):
             return None
         else:
             array_multiplier *= constant_value(element_count)
-        assert not type_ir.HasField(
+        assert not type_ir.has_field(
             "size_in_bits"
         ), "TODO(bolms): implement explicitly-sized arrays"
         type_ir = type_ir.array_type.base_type
-    assert type_ir.HasField("atomic_type"), "Unexpected type!"
-    if type_ir.HasField("size_in_bits"):
+    assert type_ir.has_field("atomic_type"), "Unexpected type!"
+    if type_ir.has_field("size_in_bits"):
         size = constant_value(type_ir.size_in_bits)
     else:
         type_definition = find_object(type_ir.atomic_type.reference, ir)
@@ -397,7 +397,7 @@ def field_is_virtual(field_ir):
     """Returns true if the field is virtual."""
     # TODO(bolms): Should there be a more explicit indicator that a field is
     # virtual?
-    return not field_ir.HasField("location")
+    return not field_ir.has_field("location")
 
 
 def field_is_read_only(field_ir):

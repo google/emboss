@@ -159,7 +159,7 @@ class ResolveSymbolsTest(unittest.TestCase):
         self.assertEqual([], symbol_resolver.resolve_symbols(ir))
         struct_ir = ir.module[0].type[6].structure
         size_ir = struct_ir.field[0].location.size
-        self.assertTrue(size_ir.HasField("field_reference"))
+        self.assertTrue(size_ir.has_field("field_reference"))
         self.assertEqual(
             size_ir.field_reference.path[0].canonical_name.object_path,
             ["UsesParameter", "x"],
@@ -552,8 +552,8 @@ class ResolveSymbolsTest(unittest.TestCase):
         struct1_byte_field = struct1.structure.field[4]
         inner_bits = struct1.subtype[0]
         inner_enum = struct1.subtype[1]
-        self.assertTrue(inner_bits.HasField("structure"))
-        self.assertTrue(inner_enum.HasField("enumeration"))
+        self.assertTrue(inner_bits.has_field("structure"))
+        self.assertTrue(inner_enum.has_field("enumeration"))
         self.assertTrue(inner_bits.name.is_anonymous)
         self.assertFalse(inner_enum.name.is_anonymous)
         self.assertEqual(
