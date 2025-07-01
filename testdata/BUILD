@@ -36,6 +36,11 @@ filegroup(
     ],
 )
 
+
+
+exports_files(glob(["**/*.emb"]))
+
+
 filegroup(
     name = "test_embs",
     srcs = [
@@ -57,6 +62,7 @@ filegroup(
         "imported.emb",
         "imported_genfiles.emb",
         "importer.emb",
+        "importer2.emb",
         "int_sizes.emb",
         "nested_structure.emb",
         "next_keyword.emb",
