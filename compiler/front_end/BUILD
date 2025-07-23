@@ -457,6 +457,16 @@ py_test(
 )
 
 py_binary(
+    name = "enumerate_parse_errors",
+    srcs = ["enumerate_parse_errors.py"],
+    deps = [
+        ":lr1",
+        ":parser",
+        ":tokenizer",
+    ],
+)
+
+py_binary(
     name = "generate_grammar_md",
     srcs = ["generate_grammar_md.py"],
     python_version = "PY3",
