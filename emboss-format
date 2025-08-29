@@ -20,15 +20,8 @@ import argparse
 import os
 import sys
 
-
-def main(argv):
-    base_path = os.path.dirname(__file__) or "."
-    sys.path.append(base_path)
-
-    from compiler.front_end import format  # pylint:disable=import-outside-toplevel
-
-    return format.main(argv)
+from compiler.front_end import format
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv))
+    sys.exit(format.main(sys.argv))
