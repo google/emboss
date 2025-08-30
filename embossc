@@ -38,9 +38,8 @@ def _parse_args(argv):
         dest="import_dirs",
         action="append",
         default=["."],
-        help="A directory to use when searching for imported "
-        "embs.  If no import-dirs are specified, the "
-        "current directory will be used.",
+        help="""A directory to use when searching for imported embs.  If no
+                import-dirs are specified, the current directory will be used.""",
     )
     parser.add_argument(
         "--generate",
@@ -53,20 +52,19 @@ def _parse_args(argv):
         "--output-path",
         nargs=1,
         default=".",
-        help="""Prefix path to use for the generated output file.
-                Defaults to '.'""",
+        help="Prefix path to use for the generated output file.  Defaults to '.'",
     )
     parser.add_argument(
         "--output-file",
         nargs=1,
-        help="""File name to be used for the generated output file.
-                Defaults to input_file suffixed by '.h'""",
+        help="""File name to be used for the generated output file.  Defaults to
+                input_file suffixed by '.h'""",
     )
     parser.add_argument(
         "--cc-enum-traits",
         action=argparse.BooleanOptionalAction,
         default=True,
-        help="""Controls generation of EnumTraits by the C++ backend""",
+        help="Controls generation of EnumTraits by the C++ backend",
     )
     parser.add_argument("input_file", type=str, nargs=1, help=".emb file to compile.")
     return parser.parse_args(argv[1:])
