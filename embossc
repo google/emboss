@@ -20,85 +20,86 @@ import argparse
 import os
 import sys
 
+from compiler.back_end.cpp import emboss_codegen_cpp, header_generator
+from compiler.front_end import emboss_front_end
+
 
 def _parse_args(argv):
-  parser = argparse.ArgumentParser(description="Emboss compiler")
-  parser.add_argument("--color-output",
-                      default="if_tty",
-                      choices=["always", "never", "if_tty", "auto"],
-                      help="Print error messages using color.  'auto' is a "
-                           "synonym for 'if_tty'.")
-  parser.add_argument("--import-dir", "-I",
-                      dest="import_dirs",
-                      action="append",
-                      default=["."],
-                      help="A directory to use when searching for imported "
-                           "embs.  If no import-dirs are specified, the "
-                           "current directory will be used.")
-  parser.add_argument("--generate",
-                      nargs=1,
-                      choices=["cc"],
-                      default="cc",
-                      help="Which back end to use.  Currently only C++ is "
-                           "supported.")
-  parser.add_argument("--output-path",
-                      nargs=1,
-                      default=".",
-                      help="""Prefix path to use for the generated output file.
-                              Defaults to '.'""")
-  parser.add_argument("--output-file",
-                      nargs=1,
-                      help="""File name to be used for the generated output
-                              file. Defaults to input_file suffixed by '.h'""")
-  parser.add_argument("--cc-enum-traits",
-                      action=argparse.BooleanOptionalAction,
-                      default=True,
-                      help="""Controls generation of EnumTraits by the C++
-                              backend""")
-  parser.add_argument("input_file",
-                      type=str,
-                      nargs=1,
-                      help=".emb file to compile.")
-  return parser.parse_args(argv[1:])
+    parser = argparse.ArgumentParser(description="Emboss compiler")
+    parser.add_argument(
+        "--color-output",
+        default="if_tty",
+        choices=["always", "never", "if_tty", "auto"],
+        help="Print error messages using color.  'auto' is a synonym for 'if_tty'.",
+    )
+    parser.add_argument(
+        "--import-dir",
+        "-I",
+        dest="import_dirs",
+        action="append",
+        default=["."],
+        help="""A directory to use when searching for imported embs.  If no
+                import-dirs are specified, the current directory will be used.""",
+    )
+    parser.add_argument(
+        "--generate",
+        nargs=1,
+        choices=["cc"],
+        default="cc",
+        help="Which back end to use.  Currently only C++ is supported.",
+    )
+    parser.add_argument(
+        "--output-path",
+        nargs=1,
+        default=".",
+        help="Prefix path to use for the generated output file.  Defaults to '.'",
+    )
+    parser.add_argument(
+        "--output-file",
+        nargs=1,
+        help="""File name to be used for the generated output file.  Defaults to
+                input_file suffixed by '.h'""",
+    )
+    parser.add_argument(
+        "--cc-enum-traits",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Controls generation of EnumTraits by the C++ backend",
+    )
+    parser.add_argument("input_file", type=str, nargs=1, help=".emb file to compile.")
+    return parser.parse_args(argv[1:])
 
 
 def main(argv):
-  flags = _parse_args(argv)
-  base_path = os.path.dirname(__file__) or "."
-  sys.path.append(base_path)
+    flags = _parse_args(argv)
 
-  from compiler.back_end.cpp import ( # pylint:disable=import-outside-toplevel
-    emboss_codegen_cpp, header_generator
-  )
-  from compiler.front_end import ( # pylint:disable=import-outside-toplevel
-    emboss_front_end
-  )
+    ir, _, errors = emboss_front_end.parse_and_log_errors(
+        flags.input_file[0], flags.import_dirs, flags.color_output
+    )
 
-  ir, _, errors =  emboss_front_end.parse_and_log_errors(
-      flags.input_file[0], flags.import_dirs, flags.color_output)
+    if errors:
+        return 1
 
-  if errors:
-    return 1
+    config = header_generator.Config(include_enum_traits=flags.cc_enum_traits)
+    header, errors = emboss_codegen_cpp.generate_headers_and_log_errors(
+        ir, flags.color_output, config
+    )
 
-  config = header_generator.Config(include_enum_traits=flags.cc_enum_traits)
-  header, errors = emboss_codegen_cpp.generate_headers_and_log_errors(
-      ir, flags.color_output, config)
+    if errors:
+        return 1
 
-  if errors:
-    return 1
+    if flags.output_file:
+        output_file = flags.output_file[0]
+    else:
+        output_file = flags.input_file[0] + ".h"
 
-  if flags.output_file:
-    output_file = flags.output_file[0]
-  else:
-    output_file = flags.input_file[0] + ".h"
+    output_filepath = os.path.join(flags.output_path[0], output_file)
+    os.makedirs(os.path.dirname(output_filepath), exist_ok=True)
 
-  output_filepath = os.path.join(flags.output_path[0], output_file)
-  os.makedirs(os.path.dirname(output_filepath), exist_ok=True)
-
-  with open(output_filepath, "w") as output:
-    output.write(header)
-  return 0
+    with open(output_filepath, "w") as output:
+        output.write(header)
+    return 0
 
 
 if __name__ == "__main__":
-  sys.exit(main(sys.argv))
+    sys.exit(main(sys.argv))
