@@ -20,9 +20,6 @@ import argparse
 import os
 import sys
 
-from compiler.back_end.cpp import emboss_codegen_cpp, header_generator
-from compiler.front_end import emboss_front_end
-
 
 def _parse_args(argv):
     parser = argparse.ArgumentParser(description="Emboss compiler")
@@ -72,6 +69,15 @@ def _parse_args(argv):
 
 def main(argv):
     flags = _parse_args(argv)
+    base_path = os.path.dirname(__file__) or "."
+    sys.path.append(base_path)
+
+    from compiler.back_end.cpp import ( # pylint:disable=import-outside-toplevel
+    emboss_codegen_cpp, header_generator
+    )
+    from compiler.front_end import ( # pylint:disable=import-outside-toplevel
+    emboss_front_end
+    )
 
     ir, _, errors = emboss_front_end.parse_and_log_errors(
         flags.input_file[0], flags.import_dirs, flags.color_output
