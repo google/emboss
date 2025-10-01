@@ -29,6 +29,41 @@ comes from a non-Google open source project needs to have an acceptable license
 and be committed to the Emboss repository in a specific location.
 
 
+### Updating Build Helper Files
+
+The Emboss project provides a set of generated files in the `gen/` directory
+that can be used by other build systems (like CMake, GN, etc.) to easily
+include the Emboss compiler and C++ runtime sources.
+
+These files are generated from a single source of truth: `build.json`.
+
+-   **`build.json`**: This file, located in the project root, contains the
+    canonical lists of source files required for the compiler and the C++
+    runtime. It is the only file in this system that should be manually
+    edited, though it is typically updated via a script.
+
+-   **`gen/`**: This directory contains the generated helper files. **Do not
+    edit these files directly**, as they will be overwritten.
+
+If you change the dependencies of the Emboss compiler or runtime in the Bazel
+build system, you will need to update `build.json` and regenerate the helper
+files.
+
+-   To update `build.json` with the latest sources from Bazel, run:
+    ```bash
+    ./scripts/build_helpers/manage_build_json.py
+    ```
+
+-   To regenerate the files in `gen/` after modifying `build.json`, run:
+    ```bash
+    ./scripts/build_helpers/generate_build_files.py
+    ```
+
+A CI check is in place to ensure that `build.json` is always in sync with the
+Bazel build. If this check fails, you will need to run the `manage_build_json.py`
+script and commit the changes.
+
+
 ### How-To Guides
 
 This document covers the process of getting a change into the main Emboss
