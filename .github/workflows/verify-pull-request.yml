@@ -27,3 +27,14 @@ jobs:
         with:
           options: "--check --verbose"
           version: "24.8.0"
+  check-build-json:
+    name: "Check build.json"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: bazel-contrib/setup-bazel@0.8.5
+        with:
+          bazelisk-cache: true
+          disk-cache: "verify-pr:check-build-json"
+          repository-cache: true
+      - run: python3 scripts/build_helpers/manage_build_json.py --validate
