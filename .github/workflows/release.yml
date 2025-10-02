@@ -25,7 +25,7 @@ jobs:
         id: automatic_release
         uses: 'marvinpinto/action-automatic-releases@latest'
         with:
-          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          repo_token: '${{ secrets.RELEASE_PAT }}'
           automatic_release_tag: ${{ steps.set_release_version.outputs.version }}
           prerelease: false
           title: ${{ steps.set_release_version.outputs.version }}
