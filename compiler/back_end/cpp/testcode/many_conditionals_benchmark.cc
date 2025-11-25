@@ -10,6 +10,10 @@
 // Since this file is in compiler/back_end/cpp/testcode/, it will be built as a
 // cc_test. We can use GoogleTest macros.
 
+namespace emboss {
+namespace test {
+namespace {
+
 TEST(ComplexConditionals, PerformanceBenchmark) {
   std::vector<char> buffer(100, 0);
   auto view = emboss::test::MakeLargeConditionalsView(&buffer);
@@ -35,3 +39,7 @@ TEST(ComplexConditionals, PerformanceBenchmark) {
   EXPECT_TRUE(result);
   EXPECT_TRUE(view.Ok());
 }
+
+}  // namespace
+}  // namespace test
+}  // namespace emboss
