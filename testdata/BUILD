@@ -36,10 +36,7 @@ filegroup(
     ],
 )
 
-
-
 exports_files(glob(["**/*.emb"]))
-
 
 filegroup(
     name = "test_embs",

@@ -14,50 +14,51 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
-import sys
 import os
-
-sys.path.insert(0, os.path.dirname(__file__))
+import sys
+import unittest
 
 from one_golden_test import OneGoldenTest
 
+sys.path.insert(0, os.path.dirname(__file__))
+
 
 def main(argv):
-    if len(argv) < 5:
-        print(
-            f"Usage: {argv[0]} emboss_front_end emboss_compiler emb_file golden_file [include_dir...]"
-        )
-        return 1
-
-    emboss_front_end = argv[1]
-    emboss_compiler = argv[2]
-    emb_file = argv[3]
-    golden_file = argv[4]
-    
-    include_dirs = []
-    compiler_flags = []
-    for arg in argv[5:]:
-        if arg.startswith("--import-dir="):
-            include_dirs.append(arg[len("--import-dir="):])
-        else:
-            compiler_flags.append(arg)
-
-    suite = unittest.TestSuite()
-    suite.addTest(
-        OneGoldenTest(
-            emboss_front_end,
-            emboss_compiler,
-            emb_file,
-            golden_file,
-            include_dirs,
-            compiler_flags,
-        )
+  if len(argv) < 5:
+    print(
+        f"Usage: {argv[0]} emboss_front_end emboss_compiler emb_file"
+        " golden_file [include_dir...]"
     )
-    runner = unittest.TextTestRunner()
-    result = runner.run(suite)
-    return 0 if result.wasSuccessful() else 1
+    return 1
+
+  emboss_front_end = argv[1]
+  emboss_compiler = argv[2]
+  emb_file = argv[3]
+  golden_file = argv[4]
+
+  include_dirs = []
+  compiler_flags = []
+  for arg in argv[5:]:
+    if arg.startswith("--import-dir="):
+      include_dirs.append(arg[len("--import-dir=") :])
+    else:
+      compiler_flags.append(arg)
+
+  suite = unittest.TestSuite()
+  suite.addTest(
+      OneGoldenTest(
+          emboss_front_end,
+          emboss_compiler,
+          emb_file,
+          golden_file,
+          include_dirs,
+          compiler_flags,
+      )
+  )
+  runner = unittest.TextTestRunner()
+  result = runner.run(suite)
+  return 0 if result.wasSuccessful() else 1
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv))
+  sys.exit(main(sys.argv))
