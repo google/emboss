@@ -802,9 +802,6 @@ class _UsageCountingStore(object):
         return subexpr
 
 
-
-
-
 class _SmartSubexpressionStore(object):
     """A SubexpressionStore that only caches subexpressions used multiple times."""
 

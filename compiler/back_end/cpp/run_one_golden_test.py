@@ -34,12 +34,12 @@ def main(argv):
     emboss_compiler = argv[2]
     emb_file = argv[3]
     golden_file = argv[4]
-    
+
     include_dirs = []
     compiler_flags = []
     for arg in argv[5:]:
         if arg.startswith("--import-dir="):
-            include_dirs.append(arg[len("--import-dir="):])
+            include_dirs.append(arg[len("--import-dir=") :])
         else:
             compiler_flags.append(arg)
 
