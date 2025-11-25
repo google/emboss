@@ -34,12 +34,24 @@ def main(argv):
     emboss_compiler = argv[2]
     emb_file = argv[3]
     golden_file = argv[4]
-    include_dirs = argv[5:]
+    
+    include_dirs = []
+    compiler_flags = []
+    for arg in argv[5:]:
+        if arg.startswith("--import-dir="):
+            include_dirs.append(arg[len("--import-dir="):])
+        else:
+            compiler_flags.append(arg)
 
     suite = unittest.TestSuite()
     suite.addTest(
         OneGoldenTest(
-            emboss_front_end, emboss_compiler, emb_file, golden_file, include_dirs
+            emboss_front_end,
+            emboss_compiler,
+            emb_file,
+            golden_file,
+            include_dirs,
+            compiler_flags,
         )
     )
     runner = unittest.TextTestRunner()

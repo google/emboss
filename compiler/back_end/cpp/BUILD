@@ -388,6 +388,17 @@ emboss_cc_test(
     ],
 )
 
+emboss_cc_test(
+    name = "many_conditionals_benchmark",
+    srcs = [
+        "testcode/many_conditionals_benchmark.cc",
+    ],
+    deps = [
+        "//testdata:many_conditionals_emboss",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
 # New golden test infrastructure
 py_library(
     name = "one_golden_test_lib",
@@ -535,6 +546,7 @@ cpp_golden_test(
 cpp_golden_test(
     name = "no_enum_traits_golden_test",
     emb_file = "//testdata:no_enum_traits.emb",
+    extra_args = ["--no-cc-enum-traits"],
     golden_file = "//testdata/golden_cpp:no_enum_traits.emb.h",
 )
 
