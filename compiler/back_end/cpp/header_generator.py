@@ -791,6 +791,47 @@ class _SubexpressionStore(object):
         ]
 
 
+class _UsageCountingStore(object):
+    """A mock SubexpressionStore that counts subexpression usage."""
+
+    def __init__(self):
+        self.counts = collections.defaultdict(int)
+
+    def add(self, subexpr):
+        self.counts[subexpr] += 1
+        return subexpr
+
+
+
+
+
+class _SmartSubexpressionStore(object):
+    """A SubexpressionStore that only caches subexpressions used multiple times."""
+
+    def __init__(self, prefix, counts):
+        self._prefix = prefix
+        self._counts = counts
+        self._subexpr_to_name = {}
+        self._index_to_subexpr = []
+
+    def add(self, subexpr):
+        if self._counts[subexpr] <= 1:
+            return subexpr
+
+        if subexpr not in self._subexpr_to_name:
+            self._index_to_subexpr.append(subexpr)
+            self._subexpr_to_name[subexpr] = self._prefix + str(
+                len(self._index_to_subexpr)
+            )
+        return self._subexpr_to_name[subexpr]
+
+    def subexprs(self):
+        return [
+            (self._subexpr_to_name[subexpr], subexpr)
+            for subexpr in self._index_to_subexpr
+        ]
+
+
 _ExpressionResult = collections.namedtuple(
     "ExpressionResult", ["rendered", "is_constant"]
 )
@@ -871,7 +912,9 @@ def _render_expression(expression, ir, field_reader=None, subexpressions=None):
 
 
 def _render_existence_test(field, ir, subexpressions=None):
-    return _render_expression(field.existence_condition, ir, subexpressions)
+    return _render_expression(
+        field.existence_condition, ir, subexpressions=subexpressions
+    )
 
 
 def _alignment_of_location(location):
@@ -1421,6 +1464,16 @@ def _generate_structure_definition(type_ir, ir, config: Config):
         initialize_parameters_initialized_true = ""
         parameter_checks = [""]
 
+    # Pass 1: Count subexpression usage.
+    ok_usage_counter = _UsageCountingStore()
+    for field_index in type_ir.structure.fields_in_dependency_order:
+        field = type_ir.structure.field[field_index]
+        _render_existence_test(field, ir, ok_usage_counter)
+
+    # Pass 2: Generate code using smart store.
+    ok_subexpressions = _SmartSubexpressionStore(
+        "emboss_reserved_local_ok_subexpr_", ok_usage_counter.counts
+    )
     for field_index in type_ir.structure.fields_in_dependency_order:
         field = type_ir.structure.field[field_index]
         helper_types, declaration, definition = _generate_structure_field_methods(
@@ -1432,6 +1485,9 @@ def _generate_structure_definition(type_ir, ir, config: Config):
             code_template.format_template(
                 _TEMPLATES.ok_method_test,
                 field=_cpp_field_name(field.name.name.text) + "()",
+                existence_condition=_render_existence_test(
+                    field, ir, subexpressions=ok_subexpressions
+                ).rendered,
             )
         )
         if not ir_util.field_is_virtual(field):
@@ -1499,6 +1555,12 @@ def _generate_structure_definition(type_ir, ir, config: Config):
         size_method=_render_size_method(type_ir.structure.field, ir),
         field_method_declarations="".join(field_method_declarations),
         field_ok_checks="\n".join(ok_method_clauses),
+        ok_subexpressions="".join(
+            [
+                "    const auto {} = {};\n".format(name, subexpr)
+                for name, subexpr in ok_subexpressions.subexprs()
+            ]
+        ),
         parameter_ok_checks="\n".join(parameter_checks),
         requires_check=requires_check,
         equals_method_body="\n".join(equals_method_clauses),
