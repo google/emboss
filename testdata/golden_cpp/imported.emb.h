@@ -90,20 +90,33 @@ class GenericInnerView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_value().Known()) return false;
-    if (has_value().ValueOrDefault() && !value().Ok()) return false;
+
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !value().Ok()) return false;
+    }
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    }
 
 
 
