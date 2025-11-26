@@ -174,36 +174,61 @@ class GenericMessageView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_header_length().Known()) return false;
-    if (has_header_length().ValueOrDefault() && !header_length().Ok()) return false;
+
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !header_length().Ok()) return false;
+    }
 
 
-    if (!has_message_length().Known()) return false;
-    if (has_message_length().ValueOrDefault() && !message_length().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !message_length().Ok()) return false;
+    }
 
 
-    if (!has_padding().Known()) return false;
-    if (has_padding().ValueOrDefault() && !padding().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !padding().Ok()) return false;
+    }
 
 
-    if (!has_message().Known()) return false;
-    if (has_message().ValueOrDefault() && !message().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !message().Ok()) return false;
+    }
 
 
-    if (!has_crc32().Known()) return false;
-    if (has_crc32().ValueOrDefault() && !crc32().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !crc32().Ok()) return false;
+    }
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    }
 
 
 
@@ -962,24 +987,40 @@ class GenericImageView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_size().Known()) return false;
-    if (has_size().ValueOrDefault() && !size().Ok()) return false;
+
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !size().Ok()) return false;
+    }
 
 
-    if (!has_pixels().Known()) return false;
-    if (has_pixels().ValueOrDefault() && !pixels().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !pixels().Ok()) return false;
+    }
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    }
 
 
 
@@ -1509,40 +1550,68 @@ class GenericTwoRegionsView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_b_end().Known()) return false;
-    if (has_b_end().ValueOrDefault() && !b_end().Ok()) return false;
+
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !b_end().Ok()) return false;
+    }
 
 
-    if (!has_b_start().Known()) return false;
-    if (has_b_start().ValueOrDefault() && !b_start().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !b_start().Ok()) return false;
+    }
 
 
-    if (!has_a_size().Known()) return false;
-    if (has_a_size().ValueOrDefault() && !a_size().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !a_size().Ok()) return false;
+    }
 
 
-    if (!has_a_start().Known()) return false;
-    if (has_a_start().ValueOrDefault() && !a_start().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !a_start().Ok()) return false;
+    }
 
 
-    if (!has_region_a().Known()) return false;
-    if (has_region_a().ValueOrDefault() && !region_a().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !region_a().Ok()) return false;
+    }
 
 
-    if (!has_region_b().Known()) return false;
-    if (has_region_b().ValueOrDefault() && !region_b().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !region_b().Ok()) return false;
+    }
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    }
 
 
 
@@ -2381,28 +2450,47 @@ class GenericMultipliedSizeView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_width().Known()) return false;
-    if (has_width().ValueOrDefault() && !width().Ok()) return false;
+
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !width().Ok()) return false;
+    }
 
 
-    if (!has_height().Known()) return false;
-    if (has_height().ValueOrDefault() && !height().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !height().Ok()) return false;
+    }
 
 
-    if (!has_data().Known()) return false;
-    if (has_data().ValueOrDefault() && !data().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !data().Ok()) return false;
+    }
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    }
 
 
 
@@ -3006,52 +3094,89 @@ class GenericNegativeTermsInSizesView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_a().Known()) return false;
-    if (has_a().ValueOrDefault() && !a().Ok()) return false;
+
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !a().Ok()) return false;
+    }
 
 
-    if (!has_b().Known()) return false;
-    if (has_b().ValueOrDefault() && !b().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !b().Ok()) return false;
+    }
 
 
-    if (!has_c().Known()) return false;
-    if (has_c().ValueOrDefault() && !c().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !c().Ok()) return false;
+    }
 
 
-    if (!has_a_minus_b().Known()) return false;
-    if (has_a_minus_b().ValueOrDefault() && !a_minus_b().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !a_minus_b().Ok()) return false;
+    }
 
 
-    if (!has_a_minus_2b().Known()) return false;
-    if (has_a_minus_2b().ValueOrDefault() && !a_minus_2b().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !a_minus_2b().Ok()) return false;
+    }
 
 
-    if (!has_a_minus_b_minus_c().Known()) return false;
-    if (has_a_minus_b_minus_c().ValueOrDefault() && !a_minus_b_minus_c().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !a_minus_b_minus_c().Ok()) return false;
+    }
 
 
-    if (!has_ten_minus_a().Known()) return false;
-    if (has_ten_minus_a().ValueOrDefault() && !ten_minus_a().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !ten_minus_a().Ok()) return false;
+    }
 
 
-    if (!has_a_minus_2c().Known()) return false;
-    if (has_a_minus_2c().ValueOrDefault() && !a_minus_2c().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !a_minus_2c().Ok()) return false;
+    }
 
 
-    if (!has_a_minus_c().Known()) return false;
-    if (has_a_minus_c().ValueOrDefault() && !a_minus_c().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !a_minus_c().Ok()) return false;
+    }
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    }
 
 
 
@@ -4154,24 +4279,40 @@ class GenericNegativeTermInLocationView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_a().Known()) return false;
-    if (has_a().ValueOrDefault() && !a().Ok()) return false;
+
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !a().Ok()) return false;
+    }
 
 
-    if (!has_b().Known()) return false;
-    if (has_b().ValueOrDefault() && !b().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !b().Ok()) return false;
+    }
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    }
 
 
 
@@ -4687,32 +4828,54 @@ class GenericChainedSizeView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_a().Known()) return false;
-    if (has_a().ValueOrDefault() && !a().Ok()) return false;
+
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !a().Ok()) return false;
+    }
 
 
-    if (!has_b().Known()) return false;
-    if (has_b().ValueOrDefault() && !b().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !b().Ok()) return false;
+    }
 
 
-    if (!has_c().Known()) return false;
-    if (has_c().ValueOrDefault() && !c().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !c().Ok()) return false;
+    }
 
 
-    if (!has_d().Known()) return false;
-    if (has_d().ValueOrDefault() && !d().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !d().Ok()) return false;
+    }
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    }
 
 
 
@@ -5388,28 +5551,47 @@ class GenericFinalFieldOverlapsView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_a().Known()) return false;
-    if (has_a().ValueOrDefault() && !a().Ok()) return false;
+
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !a().Ok()) return false;
+    }
 
 
-    if (!has_b().Known()) return false;
-    if (has_b().ValueOrDefault() && !b().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !b().Ok()) return false;
+    }
 
 
-    if (!has_c().Known()) return false;
-    if (has_c().ValueOrDefault() && !c().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !c().Ok()) return false;
+    }
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    }
 
 
 
@@ -5971,32 +6153,54 @@ class GenericDynamicFinalFieldOverlapsView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_a().Known()) return false;
-    if (has_a().ValueOrDefault() && !a().Ok()) return false;
+
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !a().Ok()) return false;
+    }
 
 
-    if (!has_b().Known()) return false;
-    if (has_b().ValueOrDefault() && !b().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !b().Ok()) return false;
+    }
 
 
-    if (!has_c().Known()) return false;
-    if (has_c().ValueOrDefault() && !c().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !c().Ok()) return false;
+    }
 
 
-    if (!has_d().Known()) return false;
-    if (has_d().ValueOrDefault() && !d().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !d().Ok()) return false;
+    }
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    }
 
 
 
@@ -6666,24 +6870,40 @@ class GenericDynamicFieldDependsOnLaterFieldView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_a().Known()) return false;
-    if (has_a().ValueOrDefault() && !a().Ok()) return false;
+
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !a().Ok()) return false;
+    }
 
 
-    if (!has_b().Known()) return false;
-    if (has_b().ValueOrDefault() && !b().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !b().Ok()) return false;
+    }
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    }
 
 
 
@@ -7198,28 +7418,47 @@ class GenericDynamicFieldDoesNotAffectSizeView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_a().Known()) return false;
-    if (has_a().ValueOrDefault() && !a().Ok()) return false;
+
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !a().Ok()) return false;
+    }
 
 
-    if (!has_b().Known()) return false;
-    if (has_b().ValueOrDefault() && !b().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !b().Ok()) return false;
+    }
 
 
-    if (!has_c().Known()) return false;
-    if (has_c().ValueOrDefault() && !c().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !c().Ok()) return false;
+    }
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    }
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    {
+      const auto emboss_reserved_local_field_present = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_local_field_present.Known()) return false;
+      if (emboss_reserved_local_field_present.ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    }
 
 
 
