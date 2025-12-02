@@ -16,7 +16,11 @@
 // these tests are regarding the name of enum members, it is likely that if this
 // test would fail, it may fail to compile.
 
+#include <cstdint>
+#include <array>
+
 #include "gtest/gtest.h"
+#include "runtime/cpp/emboss_text_util.h"
 #include "testdata/enum_case.emb.h"
 
 namespace emboss {

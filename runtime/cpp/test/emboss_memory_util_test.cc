@@ -14,11 +14,13 @@
 
 #include <array>
 #include <string>
+#include <type_traits>
+#include <vector>
+
 #if __cplusplus >= 201703L
 #include <cstddef>  // std::byte
 #include <string_view>
 #endif  // __cplusplus >= 201703L
-#include <vector>
 
 #include "gtest/gtest.h"
 #include "runtime/cpp/emboss_memory_util.h"
