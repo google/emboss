@@ -14,9 +14,7 @@
 
 // Tests for using types that are imported from imports.
 
-#include <stdint.h>
-
-#include <vector>
+#include <cstdint>
 
 #include "gtest/gtest.h"
 #include "testdata/importer2.emb.h"

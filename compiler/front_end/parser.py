@@ -73,6 +73,10 @@ def module_parser_cache_mismatch():
     return _load_module_parser().cache_mismatch
 
 
+def module_parser():
+    return _load_module_parser().parser
+
+
 def parse_module(tokens):
     """Parses the provided Emboss token list into an Emboss module parse tree."""
     return _load_module_parser().parser.parse(tokens)
