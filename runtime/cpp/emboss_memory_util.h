@@ -991,8 +991,13 @@ template <class BufferType, ::std::size_t kBufferSizeInBits>
 class BitBlock final {
   static_assert(kBufferSizeInBits % 8 == 0,
                 "BitBlock can only operate on byte buffers.");
+#if EMBOSS_HAS_INT128
+  static_assert(kBufferSizeInBits <= 128,
+                "BitBlock can only operate on buffers up to 128 bits.");
+#else
   static_assert(kBufferSizeInBits <= 64,
                 "BitBlock can only operate on small buffers.");
+#endif  // EMBOSS_HAS_INT128
 
  public:
   using ValueType = typename LeastWidthInteger<kBufferSizeInBits>::Unsigned;
