@@ -21,6 +21,8 @@
 #include <cstdint>
 #include <type_traits>
 
+#include "runtime/cpp/emboss_defines.h"
+
 namespace emboss {
 namespace support {
 
@@ -51,12 +53,26 @@ struct FloatType<32> final {
 // LeastWidthInteger<n_bits>::Unsigned is the smallest uintNN_t type that can
 // hold n_bits or more.  LeastWidthInteger<n_bits>::Signed is the corresponding
 // signed type.
+#if EMBOSS_HAS_INT128
+template <int kBits>
+struct LeastWidthInteger final {
+  static_assert(kBits <= 128, "Only bit sizes up to 128 are supported.");
+  using Unsigned = typename LeastWidthInteger<kBits + 1>::Unsigned;
+  using Signed = typename LeastWidthInteger<kBits + 1>::Signed;
+};
+template <>
+struct LeastWidthInteger<128> final {
+  using Unsigned = __uint128_t;
+  using Signed = __int128_t;
+};
+#else
 template <int kBits>
 struct LeastWidthInteger final {
   static_assert(kBits <= 64, "Only bit sizes up to 64 are supported.");
   using Unsigned = typename LeastWidthInteger<kBits + 1>::Unsigned;
   using Signed = typename LeastWidthInteger<kBits + 1>::Signed;
 };
+#endif  // EMBOSS_HAS_INT128
 template <>
 struct LeastWidthInteger<64> final {
   using Unsigned = ::std::uint64_t;
