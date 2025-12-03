@@ -26,6 +26,17 @@ TEST(ByteSwap, ByteSwap) {
   EXPECT_EQ(0x01020304U, ByteSwap(::std::uint32_t{0x04030201}));
   EXPECT_EQ(0x0102030405060708UL,
             ByteSwap(::std::uint64_t{0x0807060504030201UL}));
+#if EMBOSS_HAS_INT128
+  // Create 128-bit value 0x0f0e0d0c0b0a09080706050403020100
+  __uint128_t val128 =
+      (static_cast<__uint128_t>(0x0807060504030201UL) << 64) |
+      static_cast<__uint128_t>(0x100f0e0d0c0b0a09UL);
+  // Expected result after swap: 0x090a0b0c0d0e0f10_0102030405060708
+  __uint128_t expected128 =
+      (static_cast<__uint128_t>(0x090a0b0c0d0e0f10UL) << 64) |
+      static_cast<__uint128_t>(0x0102030405060708UL);
+  EXPECT_EQ(expected128, ByteSwap(val128));
+#endif  // EMBOSS_HAS_INT128
 }
 
 TEST(MaskToNBits, MaskToNBits) {
@@ -36,6 +47,22 @@ TEST(MaskToNBits, MaskToNBits) {
   EXPECT_EQ(0xffffffffU, MaskToNBits(0xffffffffU, 32));
   EXPECT_EQ(0xffffffffffffffffU, MaskToNBits(0xffffffffffffffffU, 64));
   EXPECT_EQ(0xfU, MaskToNBits(::std::uint8_t{0xff}, 4));
+#if EMBOSS_HAS_INT128
+  // Create a 128-bit value with all bits set
+  __uint128_t all_ones_128 =
+      (static_cast<__uint128_t>(0xffffffffffffffffUL) << 64) |
+      static_cast<__uint128_t>(0xffffffffffffffffUL);
+  // Mask to 72 bits
+  __uint128_t expected_72 =
+      (static_cast<__uint128_t>(0xffUL) << 64) |
+      static_cast<__uint128_t>(0xffffffffffffffffUL);
+  EXPECT_EQ(expected_72, MaskToNBits(all_ones_128, 72));
+  // Mask to 128 bits should return the original value
+  EXPECT_EQ(all_ones_128, MaskToNBits(all_ones_128, 128));
+  // Mask to 64 bits should return just the lower 64 bits
+  __uint128_t expected_64 = static_cast<__uint128_t>(0xffffffffffffffffUL);
+  EXPECT_EQ(expected_64, MaskToNBits(all_ones_128, 64));
+#endif  // EMBOSS_HAS_INT128
 }
 
 TEST(IsPowerOfTwo, IsPowerOfTwo) {
@@ -71,6 +98,18 @@ TEST(IsPowerOfTwo, IsPowerOfTwo) {
   EXPECT_FALSE(IsPowerOfTwo(::std::int8_t{-128}));
   EXPECT_FALSE(IsPowerOfTwo(::std::int8_t{65}));
   EXPECT_FALSE(IsPowerOfTwo(::std::int8_t{127}));
+#if EMBOSS_HAS_INT128
+  // Test powers of two for 128-bit values
+  __uint128_t one_128 = 1;
+  EXPECT_TRUE(IsPowerOfTwo(one_128));
+  EXPECT_TRUE(IsPowerOfTwo(one_128 << 64));
+  EXPECT_TRUE(IsPowerOfTwo(one_128 << 100));
+  EXPECT_TRUE(IsPowerOfTwo(one_128 << 127));
+  EXPECT_FALSE(IsPowerOfTwo(static_cast<__uint128_t>(0)));
+  EXPECT_FALSE(IsPowerOfTwo(static_cast<__uint128_t>(3)));
+  EXPECT_FALSE(IsPowerOfTwo((one_128 << 127) - 1));
+  EXPECT_FALSE(IsPowerOfTwo((one_128 << 64) + 1));
+#endif  // EMBOSS_HAS_INT128
 }
 
 #if defined(EMBOSS_LITTLE_ENDIAN_TO_NATIVE)

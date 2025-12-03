@@ -245,7 +245,7 @@
 // GCC's attribute syntax disallows parentheses in that particular position.
 #if !defined(EMBOSS_ALIAS_SAFE_POINTER_CAST)
 #define EMBOSS_ALIAS_SAFE_POINTER_CAST(t, x) \
-  reinterpret_cast<t __attribute__((__may_alias__)) *>((x))
+  reinterpret_cast<t __attribute__((__may_alias__))*>((x))
 #endif  // !defined(EMBOSS_LITTLE_ENDIAN_TO_NATIVE)
 #endif  // !defined(__INTEL_COMPILER)
 
@@ -310,5 +310,15 @@
 #if !defined(EMBOSS_SYSTEM_IS_TWOS_COMPLEMENT)
 #define EMBOSS_SYSTEM_IS_TWOS_COMPLEMENT 0
 #endif  // !defined(EMBOSS_SYSTEM_IS_TWOS_COMPLEMENT)
+
+// Detect 128-bit integer support.
+// __uint128_t and __int128_t are available on GCC and Clang on 64-bit targets.
+#if !defined(EMBOSS_HAS_INT128)
+#if defined(__SIZEOF_INT128__)
+#define EMBOSS_HAS_INT128 1
+#else
+#define EMBOSS_HAS_INT128 0
+#endif  // defined(__SIZEOF_INT128__)
+#endif  // !defined(EMBOSS_HAS_INT128)
 
 #endif  // EMBOSS_RUNTIME_CPP_EMBOSS_DEFINES_H_
