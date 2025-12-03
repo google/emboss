@@ -768,15 +768,24 @@ class _VirtualViewFieldRenderer(_FieldRenderer):
         )
 
 
-class _SubexpressionStore(object):
-    """Holder for subexpressions to be assigned to local variables."""
+class ExpressionScope(object):
+    """Holder for subexpressions to be assigned to local variables, with scoping."""
 
-    def __init__(self, prefix):
+    def __init__(self, prefix, parent=None):
         self._prefix = prefix
+        self._parent = parent
         self._subexpr_to_name = {}
         self._index_to_subexpr = []
 
     def add(self, subexpr):
+        # Check if expression exists in current or parent scopes
+        scope = self
+        while scope:
+            if subexpr in scope._subexpr_to_name:
+                return scope._subexpr_to_name[subexpr]
+            scope = scope._parent
+
+        # Not found, add to current scope
         if subexpr not in self._subexpr_to_name:
             self._index_to_subexpr.append(subexpr)
             self._subexpr_to_name[subexpr] = self._prefix + str(
@@ -790,43 +799,13 @@ class _SubexpressionStore(object):
             for subexpr in self._index_to_subexpr
         ]
 
-
-class _UsageCountingStore(object):
-    """A mock SubexpressionStore that counts subexpression usage."""
-
-    def __init__(self):
-        self.counts = collections.defaultdict(int)
-
-    def add(self, subexpr):
-        self.counts[subexpr] += 1
-        return subexpr
-
-
-class _SmartSubexpressionStore(object):
-    """A SubexpressionStore that only caches subexpressions used multiple times."""
-
-    def __init__(self, prefix, counts):
-        self._prefix = prefix
-        self._counts = counts
-        self._subexpr_to_name = {}
-        self._index_to_subexpr = []
-
-    def add(self, subexpr):
-        if self._counts[subexpr] <= 1:
-            return subexpr
-
-        if subexpr not in self._subexpr_to_name:
-            self._index_to_subexpr.append(subexpr)
-            self._subexpr_to_name[subexpr] = self._prefix + str(
-                len(self._index_to_subexpr)
-            )
-        return self._subexpr_to_name[subexpr]
-
-    def subexprs(self):
-        return [
-            (self._subexpr_to_name[subexpr], subexpr)
-            for subexpr in self._index_to_subexpr
-        ]
+    def definition_code(self):
+        return "".join(
+            [
+                "      const auto {} = {};\n".format(name, subexpr)
+                for name, subexpr in self.subexprs()
+            ]
+        )
 
 
 _ExpressionResult = collections.namedtuple(
@@ -842,7 +821,7 @@ def _render_expression(expression, ir, field_reader=None, subexpressions=None):
         ir: The IR in which to look up references.
         field_reader: An object with render_existence and render_field methods
             appropriate for the C++ context of the expression.
-        subexpressions: A _SubexpressionStore in which to put subexpressions, or
+        subexpressions: A ExpressionScope in which to put subexpressions, or
             None if subexpressions should be inline.
 
     Returns:
@@ -1023,7 +1002,7 @@ def _generate_structure_virtual_field_methods(enclosing_type_name, field_ir, ir)
     if field_ir.write_method.which_method == "alias":
         return _generate_field_indirection(field_ir, enclosing_type_name, ir)
 
-    read_subexpressions = _SubexpressionStore("emboss_reserved_local_subexpr_")
+    read_subexpressions = ExpressionScope("emboss_reserved_local_subexpr_")
     read_value = _render_expression(
         field_ir.read_transform,
         ir,
@@ -1177,7 +1156,7 @@ def _generate_structure_physical_field_methods(
 
     field_name = field_ir.name.canonical_name.object_path[-1]
 
-    subexpressions = _SubexpressionStore("emboss_reserved_local_subexpr_")
+    subexpressions = ExpressionScope("emboss_reserved_local_subexpr_")
     parameter_values = []
     parameters_known = []
     for parameter in parameter_expressions:
@@ -1370,6 +1349,143 @@ def _cpp_field_name(name):
         return name
 
 
+def _is_equality_check(expression):
+    return (
+        expression.which_expression == "function"
+        and expression.function.function == ir_data.FunctionMapping.EQUALITY
+        and len(expression.function.args) == 2
+    )
+
+
+def _render_case_label(expression, ir):
+    if expression.type.which_type == "integer":
+        return _render_integer(int(expression.type.integer.modular_value))
+    elif expression.type.which_type == "enumeration":
+        # Need fully qualified enum type name
+        enum_type = expression.type.enumeration
+        cpp_enum_type = _get_fully_qualified_name(enum_type.name.canonical_name, ir)
+        return "static_cast</**/{}>({})".format(cpp_enum_type, enum_type.value)
+    else:
+        assert False, "Unsupported switch case type"
+
+
+def _get_switch_candidate(expression, ir):
+    """Returns (discriminant_expr, case_value_expr) or (None, None)."""
+    if not _is_equality_check(expression):
+        return None, None
+
+    arg0 = expression.function.args[0]
+    arg1 = expression.function.args[1]
+
+    # Check if args are integer or enumeration (ignore boolean for switch)
+    if arg0.type.which_type not in ("integer", "enumeration"):
+        return None, None
+
+    res0 = _render_expression(arg0, ir, subexpressions=None)
+    res1 = _render_expression(arg1, ir, subexpressions=None)
+
+    if res0.is_constant and not res1.is_constant:
+        return arg1, arg0
+    if res1.is_constant and not res0.is_constant:
+        return arg0, arg1
+
+    return None, None
+
+
+def _generate_optimized_ok_method_body(fields, ir, subexpressions):
+    groups = {}
+    ordered_keys = []
+
+    for field in fields:
+        discrim_expr, case_expr = _get_switch_candidate(field.existence_condition, ir)
+        if discrim_expr:
+            discrim_str = _render_expression(
+                discrim_expr, ir, subexpressions=None
+            ).rendered
+            key = "SWITCH:" + discrim_str
+            if key not in groups:
+                groups[key] = {"type": "switch", "expr": discrim_expr, "cases": []}
+                ordered_keys.append(key)
+
+            case_str = _render_case_label(case_expr, ir)
+            groups[key]["cases"].append((case_str, field))
+        else:
+            cond_res = _render_expression(
+                field.existence_condition, ir, subexpressions=None
+            )
+            key = "IF:" + cond_res.rendered
+            if key not in groups:
+                groups[key] = {
+                    "type": "if",
+                    "expr": field.existence_condition,
+                    "fields": [],
+                }
+                ordered_keys.append(key)
+            groups[key]["fields"].append(field)
+
+    lines = []
+    for key in ordered_keys:
+        group = groups[key]
+        if group["type"] == "switch":
+            discrim_rendered = _render_expression(
+                group["expr"], ir, subexpressions=subexpressions
+            ).rendered
+            lines.append("    {")
+            # Create a new scope for the switch block
+            inner_scope = ExpressionScope(
+                "emboss_reserved_switch_scope_", parent=subexpressions
+            )
+            lines.append(inner_scope.definition_code().rstrip())
+
+            lines.append(
+                "      const auto emboss_reserved_switch_discrim = {};".format(
+                    discrim_rendered
+                )
+            )
+            lines.append(
+                "      if (!emboss_reserved_switch_discrim.Known()) return false;"
+            )
+            lines.append(
+                "      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {"
+            )
+            for case_val, field in group["cases"]:
+                lines.append("        case {}:".format(case_val))
+                lines.append(
+                    "          if (!{}().Ok()) return false;".format(
+                        _cpp_field_name(field.name.name.text)
+                    )
+                )
+                lines.append("          break;")
+            lines.append("      }")
+            lines.append("    }")
+        else:
+            cond_rendered = _render_expression(
+                group["expr"], ir, subexpressions=subexpressions
+            ).rendered
+            lines.append("    {")
+            # Create a new scope for the if block
+            inner_scope = ExpressionScope(
+                "emboss_reserved_if_scope_", parent=subexpressions
+            )
+            lines.append(inner_scope.definition_code().rstrip())
+
+            lines.append(
+                "      const auto emboss_reserved_cond = {};".format(cond_rendered)
+            )
+            lines.append("      if (!emboss_reserved_cond.Known()) return false;")
+            lines.append("      if (emboss_reserved_cond.ValueOrDefault()) {")
+            for field in group["fields"]:
+                lines.append(
+                    "        if (!{}().Ok()) return false;".format(
+                        _cpp_field_name(field.name.name.text)
+                    )
+                )
+            lines.append("      }")
+            lines.append("    }")
+
+    return "\n".join([line for line in lines if line.strip()])
+
+
 def _generate_structure_definition(type_ir, ir, config: Config):
     """Generates C++ for an Emboss structure (struct or bits).
 
@@ -1393,7 +1509,7 @@ def _generate_structure_definition(type_ir, ir, config: Config):
     virtual_field_type_definitions = []
     decode_field_clauses = []
     write_field_clauses = []
-    ok_method_clauses = []
+
     equals_method_clauses = []
     unchecked_equals_method_clauses = []
     enum_using_statements = []
@@ -1461,16 +1577,8 @@ def _generate_structure_definition(type_ir, ir, config: Config):
         initialize_parameters_initialized_true = ""
         parameter_checks = [""]
 
-    # Pass 1: Count subexpression usage.
-    ok_usage_counter = _UsageCountingStore()
-    for field_index in type_ir.structure.fields_in_dependency_order:
-        field = type_ir.structure.field[field_index]
-        _render_existence_test(field, ir, ok_usage_counter)
-
-    # Pass 2: Generate code using smart store.
-    ok_subexpressions = _SmartSubexpressionStore(
-        "emboss_reserved_local_ok_subexpr_", ok_usage_counter.counts
-    )
+    # Generate code using subexpression store.
+    ok_subexpressions = ExpressionScope("emboss_reserved_local_ok_subexpr_")
     for field_index in type_ir.structure.fields_in_dependency_order:
         field = type_ir.structure.field[field_index]
         helper_types, declaration, definition = _generate_structure_field_methods(
@@ -1478,15 +1586,6 @@ def _generate_structure_definition(type_ir, ir, config: Config):
         )
         field_helper_type_definitions.append(helper_types)
         field_method_definitions.append(definition)
-        ok_method_clauses.append(
-            code_template.format_template(
-                _TEMPLATES.ok_method_test,
-                field=_cpp_field_name(field.name.name.text) + "()",
-                existence_condition=_render_existence_test(
-                    field, ir, subexpressions=ok_subexpressions
-                ).rendered,
-            )
-        )
         if not ir_util.field_is_virtual(field):
             # Virtual fields do not participate in equality tests -- they are equal by
             # definition.
@@ -1543,6 +1642,15 @@ def _generate_structure_definition(type_ir, ir, config: Config):
     else:
         text_stream_methods = ""
 
+    field_ok_checks_body = _generate_optimized_ok_method_body(
+        [
+            type_ir.structure.field[i]
+            for i in type_ir.structure.fields_in_dependency_order
+        ],
+        ir,
+        ok_subexpressions,
+    )
+
     class_forward_declarations = code_template.format_template(
         _TEMPLATES.structure_view_declaration, name=type_name
     )
@@ -1551,13 +1659,8 @@ def _generate_structure_definition(type_ir, ir, config: Config):
         name=type_ir.name.canonical_name.object_path[-1],
         size_method=_render_size_method(type_ir.structure.field, ir),
         field_method_declarations="".join(field_method_declarations),
-        field_ok_checks="\n".join(ok_method_clauses),
-        ok_subexpressions="".join(
-            [
-                "    const auto {} = {};\n".format(name, subexpr)
-                for name, subexpr in ok_subexpressions.subexprs()
-            ]
-        ),
+        field_ok_checks=field_ok_checks_body,
+        ok_subexpressions=ok_subexpressions.definition_code(),
         parameter_ok_checks="\n".join(parameter_checks),
         requires_check=requires_check,
         equals_method_body="\n".join(equals_method_clauses),
