@@ -38,9 +38,9 @@ using ViewParameters = ::emboss::support::FixedSizeViewParameters<
 
 TEST(FlagView, Methods) {
   ::std::uint8_t byte = 0;
-  auto flag_view =
-      FlagView<ViewParameters<1>, OffsetBitBlock<BitBlockN<8>>>{BitBlockN<8>{
-          ReadWriteContiguousBuffer{&byte, 1}}.GetOffsetStorage<1, 0>(0, 1)};
+  auto flag_view = FlagView<ViewParameters<1>, OffsetBitBlock<BitBlockN<8>>>{
+      BitBlockN<8>{ReadWriteContiguousBuffer{&byte, 1}}.GetOffsetStorage<1, 0>(
+          0, 1)};
   EXPECT_FALSE(flag_view.Read());
   byte = 0xfe;
   EXPECT_FALSE(flag_view.Read());
@@ -60,8 +60,9 @@ TEST(FlagView, Methods) {
 TEST(FlagView, TextDecode) {
   ::std::uint8_t byte = 0;
   const auto flag_view =
-      FlagView<ViewParameters<1>, OffsetBitBlock<BitBlockN<8>>>{BitBlockN<8>{
-          ReadWriteContiguousBuffer{&byte, 1}}.GetOffsetStorage<1, 0>(0, 1)};
+      FlagView<ViewParameters<1>, OffsetBitBlock<BitBlockN<8>>>{
+          BitBlockN<8>{ReadWriteContiguousBuffer{&byte, 1}}
+              .GetOffsetStorage<1, 0>(0, 1)};
   EXPECT_FALSE(UpdateFromText(flag_view, ""));
   EXPECT_FALSE(UpdateFromText(flag_view, "FALSE"));
   EXPECT_FALSE(UpdateFromText(flag_view, "TRUE"));
@@ -85,8 +86,9 @@ TEST(FlagView, TextDecode) {
 TEST(FlagView, TextEncode) {
   ::std::uint8_t byte = 0;
   const auto flag_view =
-      FlagView<ViewParameters<1>, OffsetBitBlock<BitBlockN<8>>>{BitBlockN<8>{
-          ReadWriteContiguousBuffer{&byte, 1}}.GetOffsetStorage<1, 0>(0, 1)};
+      FlagView<ViewParameters<1>, OffsetBitBlock<BitBlockN<8>>>{
+          BitBlockN<8>{ReadWriteContiguousBuffer{&byte, 1}}
+              .GetOffsetStorage<1, 0>(0, 1)};
   EXPECT_EQ("false", WriteToString(flag_view));
   byte = 1;
   EXPECT_EQ("true", WriteToString(flag_view));
@@ -158,15 +160,18 @@ TEST(UIntView, ValueType) {
                UIntView<ViewParameters<64>, BitBlockType>::ValueType>::value));
 #if EMBOSS_HAS_INT128
   using BitBlockType128 = BitBlockN<128>;
-  EXPECT_TRUE((::std::is_same<
-               __uint128_t,
-               UIntView<ViewParameters<65>, BitBlockType128>::ValueType>::value));
-  EXPECT_TRUE((::std::is_same<
-               __uint128_t,
-               UIntView<ViewParameters<96>, BitBlockType128>::ValueType>::value));
-  EXPECT_TRUE((::std::is_same<
-               __uint128_t,
-               UIntView<ViewParameters<128>, BitBlockType128>::ValueType>::value));
+  EXPECT_TRUE(
+      (::std::is_same<
+          __uint128_t,
+          UIntView<ViewParameters<65>, BitBlockType128>::ValueType>::value));
+  EXPECT_TRUE(
+      (::std::is_same<
+          __uint128_t,
+          UIntView<ViewParameters<96>, BitBlockType128>::ValueType>::value));
+  EXPECT_TRUE(
+      (::std::is_same<
+          __uint128_t,
+          UIntView<ViewParameters<128>, BitBlockType128>::ValueType>::value));
 #endif  // EMBOSS_HAS_INT128
 }
 
@@ -296,9 +301,9 @@ TEST(UIntView, NonPowerOfTwoSizeInsufficientBuffer) {
 TEST(UIntView, NonByteSize) {
   ::std::vector</**/ ::std::uint8_t> bytes = {{0x00, 0x00, 0x80, 0x80}};
   auto uint23_view =
-      UIntView<ViewParameters<23>, OffsetBitBlock<BitBlockN<24>>>{BitBlockN<24>{
-          ReadWriteContiguousBuffer{bytes.data(),
-                                    3}}.GetOffsetStorage<1, 0>(0, 23)};
+      UIntView<ViewParameters<23>, OffsetBitBlock<BitBlockN<24>>>{
+          BitBlockN<24>{ReadWriteContiguousBuffer{bytes.data(), 3}}
+              .GetOffsetStorage<1, 0>(0, 23)};
   EXPECT_EQ(0x0U, uint23_view.Read());
   EXPECT_FALSE(uint23_view.CouldWriteValue(0x800f0e));
   EXPECT_FALSE(uint23_view.CouldWriteValue(0x800000));
@@ -366,15 +371,15 @@ TEST(IntView, ValueType) {
                IntView<ViewParameters<64>, BitBlockType>::ValueType>::value));
 #if EMBOSS_HAS_INT128
   using BitBlockType128 = BitBlockN<128>;
-  EXPECT_TRUE((::std::is_same<
-               __int128_t,
-               IntView<ViewParameters<65>, BitBlockType128>::ValueType>::value));
-  EXPECT_TRUE((::std::is_same<
-               __int128_t,
-               IntView<ViewParameters<96>, BitBlockType128>::ValueType>::value));
-  EXPECT_TRUE((::std::is_same<
-               __int128_t,
-               IntView<ViewParameters<128>, BitBlockType128>::ValueType>::value));
+  EXPECT_TRUE(
+      (::std::is_same<__int128_t, IntView<ViewParameters<65>,
+                                          BitBlockType128>::ValueType>::value));
+  EXPECT_TRUE(
+      (::std::is_same<__int128_t, IntView<ViewParameters<96>,
+                                          BitBlockType128>::ValueType>::value));
+  EXPECT_TRUE(
+      (::std::is_same<__int128_t, IntView<ViewParameters<128>,
+                                          BitBlockType128>::ValueType>::value));
 #endif  // EMBOSS_HAS_INT128
 }
 
@@ -509,10 +514,9 @@ TEST(IntView, NonPowerOfTwoSizeInsufficientBuffer) {
 
 TEST(IntView, NonByteSize) {
   ::std::vector</**/ ::std::uint8_t> bytes = {{0x00, 0x00, 0x80, 0x80}};
-  auto int23_view =
-      IntView<ViewParameters<23>, OffsetBitBlock<BitBlockN<24>>>{BitBlockN<24>{
-          ReadWriteContiguousBuffer{bytes.data(),
-                                    3}}.GetOffsetStorage<1, 0>(0, 23)};
+  auto int23_view = IntView<ViewParameters<23>, OffsetBitBlock<BitBlockN<24>>>{
+      BitBlockN<24>{ReadWriteContiguousBuffer{bytes.data(), 3}}
+          .GetOffsetStorage<1, 0>(0, 23)};
   EXPECT_EQ(0x0, int23_view.Read());
   EXPECT_FALSE(int23_view.CouldWriteValue(0x400f0e));
 #if EMBOSS_CHECK_ABORTS
@@ -533,9 +537,9 @@ TEST(IntView, NonByteSize) {
 
 TEST(IntView, OneBit) {
   ::std::uint8_t bytes[] = {0xfe};
-  auto int1_view =
-      IntView<ViewParameters<1>, OffsetBitBlock<BitBlockN<8>>>{BitBlockN<8>{
-          ReadWriteContiguousBuffer{bytes, 1}}.GetOffsetStorage<1, 0>(0, 1)};
+  auto int1_view = IntView<ViewParameters<1>, OffsetBitBlock<BitBlockN<8>>>{
+      BitBlockN<8>{ReadWriteContiguousBuffer{bytes, 1}}.GetOffsetStorage<1, 0>(
+          0, 1)};
   EXPECT_TRUE(int1_view.Ok());
   EXPECT_TRUE(int1_view.IsComplete());
   EXPECT_EQ(0, int1_view.Read());
@@ -780,10 +784,9 @@ TEST(BcdView, NonPowerOfTwoSizeInsufficientBuffer) {
 
 TEST(BcdView, NonByteSize) {
   ::std::vector</**/ ::std::uint8_t> bytes = {{0x00, 0x00, 0x80, 0x80}};
-  auto bcd23_view =
-      BcdView<ViewParameters<23>, OffsetBitBlock<BitBlockN<24>>>{BitBlockN<24>{
-          ReadWriteContiguousBuffer{bytes.data(),
-                                    3}}.GetOffsetStorage<1, 0>(0, 23)};
+  auto bcd23_view = BcdView<ViewParameters<23>, OffsetBitBlock<BitBlockN<24>>>{
+      BitBlockN<24>{ReadWriteContiguousBuffer{bytes.data(), 3}}
+          .GetOffsetStorage<1, 0>(0, 23)};
   EXPECT_EQ(0x0U, bcd23_view.Read());
   EXPECT_FALSE(bcd23_view.CouldWriteValue(800000));
   EXPECT_TRUE(bcd23_view.CouldWriteValue(799999));
