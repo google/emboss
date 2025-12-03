@@ -15,7 +15,7 @@
 """Types related to the LR(1) parser.
 
 This module contains types used by the LR(1) parser, which are also used in
-other parts of the compiler: 
+other parts of the compiler:
 
     SourcePosition: a position (zero-width) within a source file.
     SourceLocation: a span within a source file.
