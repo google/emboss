@@ -1,17 +1,3 @@
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 // -*- mode: C++ -*-
 // vim: set filetype=cpp:
 
@@ -29,14 +15,14 @@
  */
 #ifndef ${header_guard}
 #define ${header_guard}
-#include <stdint.h>
-#include <string.h>
+// #include <stdint.h>
+// #include <string.h>
 
-#include <algorithm>
-#include <type_traits>
-#include <utility>
+// #include <algorithm>
+// #include <type_traits>
+// #include <utility>
 
-#include "runtime/cpp/emboss_cpp_util.h"
+#include "third_party/emboss/runtime/cpp/emboss_cpp_util.h"
 
 ${includes}
 
@@ -283,8 +269,14 @@ ${decode_fields}
   void WriteToTextStream(
       Stream *emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
-    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
+    auto emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
+    if (emboss_reserved_local_options.json()) {
+      emboss_reserved_local_field_options =
+          emboss_reserved_local_field_options.WithComments(false)
+                                             .WithDigitGrouping(false)
+                                             .WithNumericBase(10);
+    }
     if (emboss_reserved_local_options.multiline()) {
       emboss_reserved_local_stream->Write("{\n");
     } else {
@@ -295,11 +287,18 @@ ${write_fields}
     // Avoid unused variable warnings for empty structures:
     (void)emboss_reserved_local_wrote_field;
     if (emboss_reserved_local_options.multiline()) {
+      if (emboss_reserved_local_wrote_field &&
+          emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write("\n");
+      }
       emboss_reserved_local_stream->Write(
           emboss_reserved_local_options.current_indent());
       emboss_reserved_local_stream->Write("}");
     } else {
-      emboss_reserved_local_stream->Write(" }");
+      if (!emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write(" ");
+      }
+      emboss_reserved_local_stream->Write("}");
     }
   }
 
@@ -323,20 +322,31 @@ ${write_fields}
       // they are not `Ok()` overall, since submembers may still be `Ok()`.
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           ${field_name}().IsAggregate() || ${field_name}().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
         } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
+          if (!emboss_reserved_local_field_options.json() ||
+              emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(" ");
           }
-          emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("${field_name}: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"${field_name}\": ");
+        } else {
+          emboss_reserved_local_stream->Write("${field_name}: ");
+        }
         ${field_name}().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
