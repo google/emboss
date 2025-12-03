@@ -115,9 +115,15 @@ void CheckViewSizeInBits<BcdView, 0>() {
   return;
 }
 
+#if EMBOSS_HAS_INT128
+TEST(UIntView, SizeInBits) { CheckViewSizeInBits<UIntView, 128>(); }
+
+TEST(IntView, SizeInBits) { CheckViewSizeInBits<IntView, 128>(); }
+#else
 TEST(UIntView, SizeInBits) { CheckViewSizeInBits<UIntView, 64>(); }
 
 TEST(IntView, SizeInBits) { CheckViewSizeInBits<IntView, 64>(); }
+#endif  // EMBOSS_HAS_INT128
 
 TEST(BcdView, SizeInBits) { CheckViewSizeInBits<BcdView, 64>(); }
 
@@ -150,6 +156,18 @@ TEST(UIntView, ValueType) {
   EXPECT_TRUE((::std::is_same<
                /**/ ::std::uint64_t,
                UIntView<ViewParameters<64>, BitBlockType>::ValueType>::value));
+#if EMBOSS_HAS_INT128
+  using BitBlockType128 = BitBlockN<128>;
+  EXPECT_TRUE((::std::is_same<
+               __uint128_t,
+               UIntView<ViewParameters<65>, BitBlockType128>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               __uint128_t,
+               UIntView<ViewParameters<96>, BitBlockType128>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               __uint128_t,
+               UIntView<ViewParameters<128>, BitBlockType128>::ValueType>::value));
+#endif  // EMBOSS_HAS_INT128
 }
 
 TEST(UIntView, CouldWriteValue) {
@@ -346,6 +364,18 @@ TEST(IntView, ValueType) {
   EXPECT_TRUE((::std::is_same<
                /**/ ::std::int64_t,
                IntView<ViewParameters<64>, BitBlockType>::ValueType>::value));
+#if EMBOSS_HAS_INT128
+  using BitBlockType128 = BitBlockN<128>;
+  EXPECT_TRUE((::std::is_same<
+               __int128_t,
+               IntView<ViewParameters<65>, BitBlockType128>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               __int128_t,
+               IntView<ViewParameters<96>, BitBlockType128>::ValueType>::value));
+  EXPECT_TRUE((::std::is_same<
+               __int128_t,
+               IntView<ViewParameters<128>, BitBlockType128>::ValueType>::value));
+#endif  // EMBOSS_HAS_INT128
 }
 
 TEST(IntView, CouldWriteValue) {

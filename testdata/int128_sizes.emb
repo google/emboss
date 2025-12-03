@@ -1,0 +1,86 @@
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+-- Test struct for 65-128 bit Ints and UInts.
+-- This file is only usable on systems with 128-bit integer support.
+
+[$default byte_order: "LittleEndian"]
+[(cpp) namespace: "emboss::test"]
+
+
+struct UInt128Sizes:
+  0   [+9]   UInt  nine_byte
+  9   [+10]  UInt  ten_byte
+  19  [+11]  UInt  eleven_byte
+  30  [+12]  UInt  twelve_byte
+  42  [+13]  UInt  thirteen_byte
+  55  [+14]  UInt  fourteen_byte
+  69  [+15]  UInt  fifteen_byte
+  84  [+16]  UInt  sixteen_byte
+
+
+struct Int128Sizes:
+  0   [+9]   Int  nine_byte
+  9   [+10]  Int  ten_byte
+  19  [+11]  Int  eleven_byte
+  30  [+12]  Int  twelve_byte
+  42  [+13]  Int  thirteen_byte
+  55  [+14]  Int  fourteen_byte
+  69  [+15]  Int  fifteen_byte
+  84  [+16]  Int  sixteen_byte
+
+
+struct BigEndianUInt128Sizes:
+  [$default byte_order: "BigEndian"]
+  0   [+9]   UInt  nine_byte
+  9   [+10]  UInt  ten_byte
+  19  [+11]  UInt  eleven_byte
+  30  [+12]  UInt  twelve_byte
+  42  [+13]  UInt  thirteen_byte
+  55  [+14]  UInt  fourteen_byte
+  69  [+15]  UInt  fifteen_byte
+  84  [+16]  UInt  sixteen_byte
+
+
+struct BigEndianInt128Sizes:
+  [$default byte_order: "BigEndian"]
+  0   [+9]   Int  nine_byte
+  9   [+10]  Int  ten_byte
+  19  [+11]  Int  eleven_byte
+  30  [+12]  Int  twelve_byte
+  42  [+13]  Int  thirteen_byte
+  55  [+14]  Int  fourteen_byte
+  69  [+15]  Int  fifteen_byte
+  84  [+16]  Int  sixteen_byte
+
+
+struct UInt128ArraySizes:
+  0   [+18]  UInt:72[2]   nine_byte
+  18  [+20]  UInt:80[2]   ten_byte
+  38  [+22]  UInt:88[2]   eleven_byte
+  60  [+24]  UInt:96[2]   twelve_byte
+  84  [+26]  UInt:104[2]  thirteen_byte
+  110 [+28]  UInt:112[2]  fourteen_byte
+  138 [+30]  UInt:120[2]  fifteen_byte
+  168 [+32]  UInt:128[2]  sixteen_byte
+
+
+struct AnonymousBits128:
+  0 [+16]  bits:
+    0   [+65]  UInt  lower_65_bits
+    65  [+63]  UInt  upper_63_bits
+
+  16 [+16]  bits:
+    0   [+64]  UInt  lower_64_bits
+    64  [+64]  UInt  upper_64_bits
