@@ -100,6 +100,24 @@ TEST(LeastWidthInteger, Types) {
       ::std::is_same<LeastWidthInteger<64>::Unsigned, ::std::uint64_t>::value));
   EXPECT_TRUE(
       (::std::is_same<LeastWidthInteger<64>::Signed, ::std::int64_t>::value));
+#if EMBOSS_HAS_INT128
+  EXPECT_TRUE((
+      ::std::is_same<LeastWidthInteger<65>::Unsigned, __uint128_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<65>::Signed, __int128_t>::value));
+  EXPECT_TRUE((
+      ::std::is_same<LeastWidthInteger<96>::Unsigned, __uint128_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<96>::Signed, __int128_t>::value));
+  EXPECT_TRUE((
+      ::std::is_same<LeastWidthInteger<127>::Unsigned, __uint128_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<127>::Signed, __int128_t>::value));
+  EXPECT_TRUE((
+      ::std::is_same<LeastWidthInteger<128>::Unsigned, __uint128_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<128>::Signed, __int128_t>::value));
+#endif  // EMBOSS_HAS_INT128
 }
 
 TEST(IsAliasSafe, CharTypes) {
