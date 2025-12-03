@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <cstddef>
-
 #include "runtime/cpp/emboss_cpp_types.h"
+
+#include <cstddef>
 
 #include "gtest/gtest.h"
 
@@ -101,20 +101,20 @@ TEST(LeastWidthInteger, Types) {
   EXPECT_TRUE(
       (::std::is_same<LeastWidthInteger<64>::Signed, ::std::int64_t>::value));
 #if EMBOSS_HAS_INT128
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<65>::Unsigned, __uint128_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<65>::Unsigned, __uint128_t>::value));
   EXPECT_TRUE(
       (::std::is_same<LeastWidthInteger<65>::Signed, __int128_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<96>::Unsigned, __uint128_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<96>::Unsigned, __uint128_t>::value));
   EXPECT_TRUE(
       (::std::is_same<LeastWidthInteger<96>::Signed, __int128_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<127>::Unsigned, __uint128_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<127>::Unsigned, __uint128_t>::value));
   EXPECT_TRUE(
       (::std::is_same<LeastWidthInteger<127>::Signed, __int128_t>::value));
-  EXPECT_TRUE((
-      ::std::is_same<LeastWidthInteger<128>::Unsigned, __uint128_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<LeastWidthInteger<128>::Unsigned, __uint128_t>::value));
   EXPECT_TRUE(
       (::std::is_same<LeastWidthInteger<128>::Signed, __int128_t>::value));
 #endif  // EMBOSS_HAS_INT128

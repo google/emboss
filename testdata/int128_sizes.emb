@@ -20,49 +20,49 @@
 
 
 struct UInt128Sizes:
-  0   [+9]   UInt  nine_byte
-  9   [+10]  UInt  ten_byte
-  19  [+11]  UInt  eleven_byte
-  30  [+12]  UInt  twelve_byte
-  42  [+13]  UInt  thirteen_byte
-  55  [+14]  UInt  fourteen_byte
-  69  [+15]  UInt  fifteen_byte
-  84  [+16]  UInt  sixteen_byte
+  0  [+9]   UInt  nine_byte
+  9  [+10]  UInt  ten_byte
+  19 [+11]  UInt  eleven_byte
+  30 [+12]  UInt  twelve_byte
+  42 [+13]  UInt  thirteen_byte
+  55 [+14]  UInt  fourteen_byte
+  69 [+15]  UInt  fifteen_byte
+  84 [+16]  UInt  sixteen_byte
 
 
 struct Int128Sizes:
-  0   [+9]   Int  nine_byte
-  9   [+10]  Int  ten_byte
-  19  [+11]  Int  eleven_byte
-  30  [+12]  Int  twelve_byte
-  42  [+13]  Int  thirteen_byte
-  55  [+14]  Int  fourteen_byte
-  69  [+15]  Int  fifteen_byte
-  84  [+16]  Int  sixteen_byte
+  0  [+9]   Int  nine_byte
+  9  [+10]  Int  ten_byte
+  19 [+11]  Int  eleven_byte
+  30 [+12]  Int  twelve_byte
+  42 [+13]  Int  thirteen_byte
+  55 [+14]  Int  fourteen_byte
+  69 [+15]  Int  fifteen_byte
+  84 [+16]  Int  sixteen_byte
 
 
 struct BigEndianUInt128Sizes:
   [$default byte_order: "BigEndian"]
-  0   [+9]   UInt  nine_byte
-  9   [+10]  UInt  ten_byte
-  19  [+11]  UInt  eleven_byte
-  30  [+12]  UInt  twelve_byte
-  42  [+13]  UInt  thirteen_byte
-  55  [+14]  UInt  fourteen_byte
-  69  [+15]  UInt  fifteen_byte
-  84  [+16]  UInt  sixteen_byte
+  0  [+9]   UInt  nine_byte
+  9  [+10]  UInt  ten_byte
+  19 [+11]  UInt  eleven_byte
+  30 [+12]  UInt  twelve_byte
+  42 [+13]  UInt  thirteen_byte
+  55 [+14]  UInt  fourteen_byte
+  69 [+15]  UInt  fifteen_byte
+  84 [+16]  UInt  sixteen_byte
 
 
 struct BigEndianInt128Sizes:
   [$default byte_order: "BigEndian"]
-  0   [+9]   Int  nine_byte
-  9   [+10]  Int  ten_byte
-  19  [+11]  Int  eleven_byte
-  30  [+12]  Int  twelve_byte
-  42  [+13]  Int  thirteen_byte
-  55  [+14]  Int  fourteen_byte
-  69  [+15]  Int  fifteen_byte
-  84  [+16]  Int  sixteen_byte
+  0  [+9]   Int  nine_byte
+  9  [+10]  Int  ten_byte
+  19 [+11]  Int  eleven_byte
+  30 [+12]  Int  twelve_byte
+  42 [+13]  Int  thirteen_byte
+  55 [+14]  Int  fourteen_byte
+  69 [+15]  Int  fifteen_byte
+  84 [+16]  Int  sixteen_byte
 
 
 struct UInt128ArraySizes:
@@ -77,10 +77,10 @@ struct UInt128ArraySizes:
 
 
 struct AnonymousBits128:
-  0 [+16]  bits:
-    0   [+65]  UInt  lower_65_bits
-    65  [+63]  UInt  upper_63_bits
+  0  [+16]  bits:
+    0  [+65]       UInt  lower_65_bits
+    65 [+63]       UInt  upper_63_bits
 
   16 [+16]  bits:
-    0   [+64]  UInt  lower_64_bits
-    64  [+64]  UInt  upper_64_bits
+    0  [+64]       UInt  lower_64_bits
+    64 [+64]       UInt  upper_64_bits

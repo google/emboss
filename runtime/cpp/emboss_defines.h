@@ -245,7 +245,7 @@
 // GCC's attribute syntax disallows parentheses in that particular position.
 #if !defined(EMBOSS_ALIAS_SAFE_POINTER_CAST)
 #define EMBOSS_ALIAS_SAFE_POINTER_CAST(t, x) \
-  reinterpret_cast<t __attribute__((__may_alias__)) *>((x))
+  reinterpret_cast<t __attribute__((__may_alias__))*>((x))
 #endif  // !defined(EMBOSS_LITTLE_ENDIAN_TO_NATIVE)
 #endif  // !defined(__INTEL_COMPILER)
 
