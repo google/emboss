@@ -113,85 +113,50 @@ class GenericAlignmentsView final {
 
   
 
-  bool Ok() const {
+  [[nodiscard]] bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_zero_offset().Known()) return false;
-    if (has_zero_offset().ValueOrDefault() && !zero_offset().Ok()) return false;
 
-
-    if (!has_zero_offset_substructure().Known()) return false;
-    if (has_zero_offset_substructure().ValueOrDefault() && !zero_offset_substructure().Ok()) return false;
-
-
-    if (!has_two_offset_substructure().Known()) return false;
-    if (has_two_offset_substructure().ValueOrDefault() && !two_offset_substructure().Ok()) return false;
-
-
-    if (!has_three_offset().Known()) return false;
-    if (has_three_offset().ValueOrDefault() && !three_offset().Ok()) return false;
-
-
-    if (!has_four_offset().Known()) return false;
-    if (has_four_offset().ValueOrDefault() && !four_offset().Ok()) return false;
-
-
-    if (!has_eleven_offset().Known()) return false;
-    if (has_eleven_offset().ValueOrDefault() && !eleven_offset().Ok()) return false;
-
-
-    if (!has_twelve_offset().Known()) return false;
-    if (has_twelve_offset().ValueOrDefault() && !twelve_offset().Ok()) return false;
-
-
-    if (!has_zero_offset_four_stride_array().Known()) return false;
-    if (has_zero_offset_four_stride_array().ValueOrDefault() && !zero_offset_four_stride_array().Ok()) return false;
-
-
-    if (!has_zero_offset_six_stride_array().Known()) return false;
-    if (has_zero_offset_six_stride_array().ValueOrDefault() && !zero_offset_six_stride_array().Ok()) return false;
-
-
-    if (!has_three_offset_four_stride_array().Known()) return false;
-    if (has_three_offset_four_stride_array().ValueOrDefault() && !three_offset_four_stride_array().Ok()) return false;
-
-
-    if (!has_four_offset_six_stride_array().Known()) return false;
-    if (has_four_offset_six_stride_array().ValueOrDefault() && !four_offset_six_stride_array().Ok()) return false;
-
-
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
-
-
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
-
-
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
-
-
+    {
+      const auto emboss_reserved_cond = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_cond.Known()) return false;
+      if (emboss_reserved_cond.ValueOrDefault()) {
+        if (!zero_offset().Ok()) return false;
+        if (!zero_offset_substructure().Ok()) return false;
+        if (!two_offset_substructure().Ok()) return false;
+        if (!three_offset().Ok()) return false;
+        if (!four_offset().Ok()) return false;
+        if (!eleven_offset().Ok()) return false;
+        if (!twelve_offset().Ok()) return false;
+        if (!zero_offset_four_stride_array().Ok()) return false;
+        if (!zero_offset_six_stride_array().Ok()) return false;
+        if (!three_offset_four_stride_array().Ok()) return false;
+        if (!four_offset_six_stride_array().Ok()) return false;
+        if (!IntrinsicSizeInBytes().Ok()) return false;
+        if (!MaxSizeInBytes().Ok()) return false;
+        if (!MinSizeInBytes().Ok()) return false;
+      }
+    }
 
     return true;
   }
-  Storage BackingStorage() const { return backing_; }
-  bool IsComplete() const {
+  [[nodiscard]] Storage BackingStorage() const { return backing_; }
+  [[nodiscard]] bool IsComplete() const {
     return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
            backing_.SizeInBytes() >=
                static_cast</**/ ::std::size_t>(
                    IntrinsicSizeInBytes().UncheckedRead());
   }
-  static constexpr ::std::size_t SizeInBytes() {
+  [[nodiscard]] static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
   }
-  static constexpr bool SizeIsKnown() {
+  [[nodiscard]] static constexpr bool SizeIsKnown() {
     return IntrinsicSizeInBytes().Ok();
   }
 
 
   template <typename OtherStorage>
-  bool Equals(
+  [[nodiscard]] bool Equals(
       GenericAlignmentsView<OtherStorage> emboss_reserved_local_other) const {
     
     if (!has_zero_offset().Known()) return false;
@@ -382,7 +347,7 @@ class GenericAlignmentsView final {
  return true;
   }
   template <typename OtherStorage>
-  bool UncheckedEquals(
+  [[nodiscard]] bool UncheckedEquals(
       GenericAlignmentsView<OtherStorage> emboss_reserved_local_other) const {
     
     if (emboss_reserved_local_other.has_zero_offset().ValueOr(false) &&
@@ -555,7 +520,7 @@ class GenericAlignmentsView final {
         emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
   template <typename OtherStorage>
-  bool TryToCopyFrom(
+  [[nodiscard]] bool TryToCopyFrom(
       GenericAlignmentsView<OtherStorage> emboss_reserved_local_other) const {
       return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
@@ -1030,89 +995,89 @@ class GenericAlignmentsView final {
 
 
 
-  static constexpr bool IsAggregate() { return true; }
+  [[nodiscard]] static constexpr bool IsAggregate() { return true; }
 
  public:
-  typename ::emboss::test::GenericPlaceholder4View<typename Storage::template OffsetStorageType</**/0, 0>>
+  [[nodiscard]] typename ::emboss::test::GenericPlaceholder4View<typename Storage::template OffsetStorageType</**/0, 0>>
 
  zero_offset() const;
-  ::emboss::support::Maybe<bool> has_zero_offset() const;
+  [[nodiscard]] ::emboss::support::Maybe<bool> has_zero_offset() const;
 
  public:
-  typename ::emboss::test::GenericPlaceholder6View<typename Storage::template OffsetStorageType</**/0, 0>>
+  [[nodiscard]] typename ::emboss::test::GenericPlaceholder6View<typename Storage::template OffsetStorageType</**/0, 0>>
 
  zero_offset_substructure() const;
-  ::emboss::support::Maybe<bool> has_zero_offset_substructure() const;
+  [[nodiscard]] ::emboss::support::Maybe<bool> has_zero_offset_substructure() const;
 
  public:
-  typename ::emboss::test::GenericPlaceholder6View<typename Storage::template OffsetStorageType</**/0, 2>>
+  [[nodiscard]] typename ::emboss::test::GenericPlaceholder6View<typename Storage::template OffsetStorageType</**/0, 2>>
 
  two_offset_substructure() const;
-  ::emboss::support::Maybe<bool> has_two_offset_substructure() const;
+  [[nodiscard]] ::emboss::support::Maybe<bool> has_two_offset_substructure() const;
 
  public:
-  typename ::emboss::test::GenericPlaceholder4View<typename Storage::template OffsetStorageType</**/0, 3>>
+  [[nodiscard]] typename ::emboss::test::GenericPlaceholder4View<typename Storage::template OffsetStorageType</**/0, 3>>
 
  three_offset() const;
-  ::emboss::support::Maybe<bool> has_three_offset() const;
+  [[nodiscard]] ::emboss::support::Maybe<bool> has_three_offset() const;
 
  public:
-  typename ::emboss::test::GenericPlaceholder4View<typename Storage::template OffsetStorageType</**/0, 4>>
+  [[nodiscard]] typename ::emboss::test::GenericPlaceholder4View<typename Storage::template OffsetStorageType</**/0, 4>>
 
  four_offset() const;
-  ::emboss::support::Maybe<bool> has_four_offset() const;
+  [[nodiscard]] ::emboss::support::Maybe<bool> has_four_offset() const;
 
  public:
-  typename ::emboss::test::GenericPlaceholder4View<typename Storage::template OffsetStorageType</**/0, 11>>
+  [[nodiscard]] typename ::emboss::test::GenericPlaceholder4View<typename Storage::template OffsetStorageType</**/0, 11>>
 
  eleven_offset() const;
-  ::emboss::support::Maybe<bool> has_eleven_offset() const;
+  [[nodiscard]] ::emboss::support::Maybe<bool> has_eleven_offset() const;
 
  public:
-  typename ::emboss::test::GenericPlaceholder4View<typename Storage::template OffsetStorageType</**/0, 12>>
+  [[nodiscard]] typename ::emboss::test::GenericPlaceholder4View<typename Storage::template OffsetStorageType</**/0, 12>>
 
  twelve_offset() const;
-  ::emboss::support::Maybe<bool> has_twelve_offset() const;
+  [[nodiscard]] ::emboss::support::Maybe<bool> has_twelve_offset() const;
 
  public:
-  typename ::emboss::support::GenericArrayView<
+  [[nodiscard]] typename ::emboss::support::GenericArrayView<
     typename ::emboss::test::GenericPlaceholder4View<typename Storage::template OffsetStorageType</**/0, 0>::template OffsetStorageType</**/4, 0>>
 
 , typename Storage::template OffsetStorageType</**/0, 0>, 4,
     8 >
 
  zero_offset_four_stride_array() const;
-  ::emboss::support::Maybe<bool> has_zero_offset_four_stride_array() const;
+  [[nodiscard]] ::emboss::support::Maybe<bool> has_zero_offset_four_stride_array() const;
 
  public:
-  typename ::emboss::support::GenericArrayView<
+  [[nodiscard]] typename ::emboss::support::GenericArrayView<
     typename ::emboss::test::GenericPlaceholder6View<typename Storage::template OffsetStorageType</**/0, 0>::template OffsetStorageType</**/6, 0>>
 
 , typename Storage::template OffsetStorageType</**/0, 0>, 6,
     8 >
 
  zero_offset_six_stride_array() const;
-  ::emboss::support::Maybe<bool> has_zero_offset_six_stride_array() const;
+  [[nodiscard]] ::emboss::support::Maybe<bool> has_zero_offset_six_stride_array() const;
 
  public:
-  typename ::emboss::support::GenericArrayView<
+  [[nodiscard]] typename ::emboss::support::GenericArrayView<
     typename ::emboss::test::GenericPlaceholder4View<typename Storage::template OffsetStorageType</**/0, 3>::template OffsetStorageType</**/4, 0>>
 
 , typename Storage::template OffsetStorageType</**/0, 3>, 4,
     8 >
 
  three_offset_four_stride_array() const;
-  ::emboss::support::Maybe<bool> has_three_offset_four_stride_array() const;
+  [[nodiscard]] ::emboss::support::Maybe<bool> has_three_offset_four_stride_array() const;
 
  public:
-  typename ::emboss::support::GenericArrayView<
+  [[nodiscard]] typename ::emboss::support::GenericArrayView<
     typename ::emboss::test::GenericPlaceholder6View<typename Storage::template OffsetStorageType</**/0, 4>::template OffsetStorageType</**/6, 0>>
 
 , typename Storage::template OffsetStorageType</**/0, 4>, 6,
     8 >
 
  four_offset_six_stride_array() const;
-  ::emboss::support::Maybe<bool> has_four_offset_six_stride_array() const;
+  [[nodiscard]] ::emboss::support::Maybe<bool> has_four_offset_six_stride_array() const;
 
  public:
   class EmbossReservedDollarVirtualIntrinsicSizeInBytesView final {
@@ -1128,9 +1093,9 @@ class GenericAlignmentsView final {
         default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
-    static constexpr ::std::int32_t Read();
-    static constexpr ::std::int32_t UncheckedRead();
-    static constexpr bool Ok() { return true; }
+    [[nodiscard]] static constexpr ::std::int32_t Read();
+    [[nodiscard]] static constexpr ::std::int32_t UncheckedRead();
+    [[nodiscard]] static constexpr bool Ok() { return true; }
     template <class Stream>
     void WriteToTextStream(Stream *emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions
@@ -1139,13 +1104,13 @@ class GenericAlignmentsView final {
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
-    static constexpr bool IsAggregate() { return false; }
+    [[nodiscard]] static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
+  [[nodiscard]] static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
     return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
   }
-  static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
+  [[nodiscard]] static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
@@ -1163,9 +1128,9 @@ class GenericAlignmentsView final {
         default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
-    static constexpr ::std::int32_t Read();
-    static constexpr ::std::int32_t UncheckedRead();
-    static constexpr bool Ok() { return true; }
+    [[nodiscard]] static constexpr ::std::int32_t Read();
+    [[nodiscard]] static constexpr ::std::int32_t UncheckedRead();
+    [[nodiscard]] static constexpr bool Ok() { return true; }
     template <class Stream>
     void WriteToTextStream(Stream *emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions
@@ -1174,13 +1139,13 @@ class GenericAlignmentsView final {
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
-    static constexpr bool IsAggregate() { return false; }
+    [[nodiscard]] static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  [[nodiscard]] static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
-  static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
+  [[nodiscard]] static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
@@ -1198,9 +1163,9 @@ class GenericAlignmentsView final {
         default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
-    static constexpr ::std::int32_t Read();
-    static constexpr ::std::int32_t UncheckedRead();
-    static constexpr bool Ok() { return true; }
+    [[nodiscard]] static constexpr ::std::int32_t Read();
+    [[nodiscard]] static constexpr ::std::int32_t UncheckedRead();
+    [[nodiscard]] static constexpr bool Ok() { return true; }
     template <class Stream>
     void WriteToTextStream(Stream *emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions
@@ -1209,13 +1174,13 @@ class GenericAlignmentsView final {
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
-    static constexpr bool IsAggregate() { return false; }
+    [[nodiscard]] static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  [[nodiscard]] static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
-  static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
+  [[nodiscard]] static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
@@ -1246,7 +1211,7 @@ struct EmbossReservedInternalIsGenericAlignmentsView<
 };
 
 template <typename T>
-inline GenericAlignmentsView<
+[[nodiscard]] inline GenericAlignmentsView<
     /**/ ::emboss::support::ContiguousBuffer<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
@@ -1261,7 +1226,7 @@ MakeAlignmentsView( T &&emboss_reserved_local_arg) {
 }
 
 template <typename T>
-inline GenericAlignmentsView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+[[nodiscard]] inline GenericAlignmentsView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
 MakeAlignmentsView( T *emboss_reserved_local_data,
                  ::std::size_t emboss_reserved_local_size) {
   return GenericAlignmentsView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
@@ -1270,7 +1235,7 @@ MakeAlignmentsView( T *emboss_reserved_local_data,
 }
 
 template <typename T, ::std::size_t kAlignment>
-inline GenericAlignmentsView<
+[[nodiscard]] inline GenericAlignmentsView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
 MakeAlignedAlignmentsView(
      T *emboss_reserved_local_data,
@@ -1335,45 +1300,40 @@ class GenericPlaceholder4View final {
 
   
 
-  bool Ok() const {
+  [[nodiscard]] bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_dummy().Known()) return false;
-    if (has_dummy().ValueOrDefault() && !dummy().Ok()) return false;
 
-
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
-
-
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
-
-
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
-
-
+    {
+      const auto emboss_reserved_cond = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_cond.Known()) return false;
+      if (emboss_reserved_cond.ValueOrDefault()) {
+        if (!dummy().Ok()) return false;
+        if (!IntrinsicSizeInBytes().Ok()) return false;
+        if (!MaxSizeInBytes().Ok()) return false;
+        if (!MinSizeInBytes().Ok()) return false;
+      }
+    }
 
     return true;
   }
-  Storage BackingStorage() const { return backing_; }
-  bool IsComplete() const {
+  [[nodiscard]] Storage BackingStorage() const { return backing_; }
+  [[nodiscard]] bool IsComplete() const {
     return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
            backing_.SizeInBytes() >=
                static_cast</**/ ::std::size_t>(
                    IntrinsicSizeInBytes().UncheckedRead());
   }
-  static constexpr ::std::size_t SizeInBytes() {
+  [[nodiscard]] static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
   }
-  static constexpr bool SizeIsKnown() {
+  [[nodiscard]] static constexpr bool SizeIsKnown() {
     return IntrinsicSizeInBytes().Ok();
   }
 
 
   template <typename OtherStorage>
-  bool Equals(
+  [[nodiscard]] bool Equals(
       GenericPlaceholder4View<OtherStorage> emboss_reserved_local_other) const {
     
     if (!has_dummy().Known()) return false;
@@ -1394,7 +1354,7 @@ class GenericPlaceholder4View final {
  return true;
   }
   template <typename OtherStorage>
-  bool UncheckedEquals(
+  [[nodiscard]] bool UncheckedEquals(
       GenericPlaceholder4View<OtherStorage> emboss_reserved_local_other) const {
     
     if (emboss_reserved_local_other.has_dummy().ValueOr(false) &&
@@ -1427,7 +1387,7 @@ class GenericPlaceholder4View final {
         emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
   template <typename OtherStorage>
-  bool TryToCopyFrom(
+  [[nodiscard]] bool TryToCopyFrom(
       GenericPlaceholder4View<OtherStorage> emboss_reserved_local_other) const {
       return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
@@ -1522,15 +1482,15 @@ class GenericPlaceholder4View final {
 
 
 
-  static constexpr bool IsAggregate() { return true; }
+  [[nodiscard]] static constexpr bool IsAggregate() { return true; }
 
  public:
-  typename ::emboss::prelude::UIntView<
+  [[nodiscard]] typename ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
     typename ::emboss::support::BitBlock</**/::emboss::support::BigEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
 
  dummy() const;
-  ::emboss::support::Maybe<bool> has_dummy() const;
+  [[nodiscard]] ::emboss::support::Maybe<bool> has_dummy() const;
 
  public:
   class EmbossReservedDollarVirtualIntrinsicSizeInBytesView final {
@@ -1546,9 +1506,9 @@ class GenericPlaceholder4View final {
         default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
-    static constexpr ::std::int32_t Read();
-    static constexpr ::std::int32_t UncheckedRead();
-    static constexpr bool Ok() { return true; }
+    [[nodiscard]] static constexpr ::std::int32_t Read();
+    [[nodiscard]] static constexpr ::std::int32_t UncheckedRead();
+    [[nodiscard]] static constexpr bool Ok() { return true; }
     template <class Stream>
     void WriteToTextStream(Stream *emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions
@@ -1557,13 +1517,13 @@ class GenericPlaceholder4View final {
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
-    static constexpr bool IsAggregate() { return false; }
+    [[nodiscard]] static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
+  [[nodiscard]] static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
     return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
   }
-  static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
+  [[nodiscard]] static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
@@ -1581,9 +1541,9 @@ class GenericPlaceholder4View final {
         default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
-    static constexpr ::std::int32_t Read();
-    static constexpr ::std::int32_t UncheckedRead();
-    static constexpr bool Ok() { return true; }
+    [[nodiscard]] static constexpr ::std::int32_t Read();
+    [[nodiscard]] static constexpr ::std::int32_t UncheckedRead();
+    [[nodiscard]] static constexpr bool Ok() { return true; }
     template <class Stream>
     void WriteToTextStream(Stream *emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions
@@ -1592,13 +1552,13 @@ class GenericPlaceholder4View final {
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
-    static constexpr bool IsAggregate() { return false; }
+    [[nodiscard]] static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  [[nodiscard]] static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
-  static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
+  [[nodiscard]] static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
@@ -1616,9 +1576,9 @@ class GenericPlaceholder4View final {
         default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
-    static constexpr ::std::int32_t Read();
-    static constexpr ::std::int32_t UncheckedRead();
-    static constexpr bool Ok() { return true; }
+    [[nodiscard]] static constexpr ::std::int32_t Read();
+    [[nodiscard]] static constexpr ::std::int32_t UncheckedRead();
+    [[nodiscard]] static constexpr bool Ok() { return true; }
     template <class Stream>
     void WriteToTextStream(Stream *emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions
@@ -1627,13 +1587,13 @@ class GenericPlaceholder4View final {
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
-    static constexpr bool IsAggregate() { return false; }
+    [[nodiscard]] static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  [[nodiscard]] static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
-  static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
+  [[nodiscard]] static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
@@ -1664,7 +1624,7 @@ struct EmbossReservedInternalIsGenericPlaceholder4View<
 };
 
 template <typename T>
-inline GenericPlaceholder4View<
+[[nodiscard]] inline GenericPlaceholder4View<
     /**/ ::emboss::support::ContiguousBuffer<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
@@ -1679,7 +1639,7 @@ MakePlaceholder4View( T &&emboss_reserved_local_arg) {
 }
 
 template <typename T>
-inline GenericPlaceholder4View</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+[[nodiscard]] inline GenericPlaceholder4View</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
 MakePlaceholder4View( T *emboss_reserved_local_data,
                  ::std::size_t emboss_reserved_local_size) {
   return GenericPlaceholder4View</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
@@ -1688,7 +1648,7 @@ MakePlaceholder4View( T *emboss_reserved_local_data,
 }
 
 template <typename T, ::std::size_t kAlignment>
-inline GenericPlaceholder4View<
+[[nodiscard]] inline GenericPlaceholder4View<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
 MakeAlignedPlaceholder4View(
      T *emboss_reserved_local_data,
@@ -1754,49 +1714,41 @@ class GenericPlaceholder6View final {
 
   
 
-  bool Ok() const {
+  [[nodiscard]] bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_zero_offset().Known()) return false;
-    if (has_zero_offset().ValueOrDefault() && !zero_offset().Ok()) return false;
 
-
-    if (!has_two_offset().Known()) return false;
-    if (has_two_offset().ValueOrDefault() && !two_offset().Ok()) return false;
-
-
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
-
-
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
-
-
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
-
-
+    {
+      const auto emboss_reserved_cond = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_cond.Known()) return false;
+      if (emboss_reserved_cond.ValueOrDefault()) {
+        if (!zero_offset().Ok()) return false;
+        if (!two_offset().Ok()) return false;
+        if (!IntrinsicSizeInBytes().Ok()) return false;
+        if (!MaxSizeInBytes().Ok()) return false;
+        if (!MinSizeInBytes().Ok()) return false;
+      }
+    }
 
     return true;
   }
-  Storage BackingStorage() const { return backing_; }
-  bool IsComplete() const {
+  [[nodiscard]] Storage BackingStorage() const { return backing_; }
+  [[nodiscard]] bool IsComplete() const {
     return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
            backing_.SizeInBytes() >=
                static_cast</**/ ::std::size_t>(
                    IntrinsicSizeInBytes().UncheckedRead());
   }
-  static constexpr ::std::size_t SizeInBytes() {
+  [[nodiscard]] static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
   }
-  static constexpr bool SizeIsKnown() {
+  [[nodiscard]] static constexpr bool SizeIsKnown() {
     return IntrinsicSizeInBytes().Ok();
   }
 
 
   template <typename OtherStorage>
-  bool Equals(
+  [[nodiscard]] bool Equals(
       GenericPlaceholder6View<OtherStorage> emboss_reserved_local_other) const {
     
     if (!has_zero_offset().Known()) return false;
@@ -1834,7 +1786,7 @@ class GenericPlaceholder6View final {
  return true;
   }
   template <typename OtherStorage>
-  bool UncheckedEquals(
+  [[nodiscard]] bool UncheckedEquals(
       GenericPlaceholder6View<OtherStorage> emboss_reserved_local_other) const {
     
     if (emboss_reserved_local_other.has_zero_offset().ValueOr(false) &&
@@ -1881,7 +1833,7 @@ class GenericPlaceholder6View final {
         emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
   template <typename OtherStorage>
-  bool TryToCopyFrom(
+  [[nodiscard]] bool TryToCopyFrom(
       GenericPlaceholder6View<OtherStorage> emboss_reserved_local_other) const {
       return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
@@ -2014,19 +1966,19 @@ class GenericPlaceholder6View final {
 
 
 
-  static constexpr bool IsAggregate() { return true; }
+  [[nodiscard]] static constexpr bool IsAggregate() { return true; }
 
  public:
-  typename ::emboss::test::GenericPlaceholder4View<typename Storage::template OffsetStorageType</**/0, 0>>
+  [[nodiscard]] typename ::emboss::test::GenericPlaceholder4View<typename Storage::template OffsetStorageType</**/0, 0>>
 
  zero_offset() const;
-  ::emboss::support::Maybe<bool> has_zero_offset() const;
+  [[nodiscard]] ::emboss::support::Maybe<bool> has_zero_offset() const;
 
  public:
-  typename ::emboss::test::GenericPlaceholder4View<typename Storage::template OffsetStorageType</**/0, 2>>
+  [[nodiscard]] typename ::emboss::test::GenericPlaceholder4View<typename Storage::template OffsetStorageType</**/0, 2>>
 
  two_offset() const;
-  ::emboss::support::Maybe<bool> has_two_offset() const;
+  [[nodiscard]] ::emboss::support::Maybe<bool> has_two_offset() const;
 
  public:
   class EmbossReservedDollarVirtualIntrinsicSizeInBytesView final {
@@ -2042,9 +1994,9 @@ class GenericPlaceholder6View final {
         default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
-    static constexpr ::std::int32_t Read();
-    static constexpr ::std::int32_t UncheckedRead();
-    static constexpr bool Ok() { return true; }
+    [[nodiscard]] static constexpr ::std::int32_t Read();
+    [[nodiscard]] static constexpr ::std::int32_t UncheckedRead();
+    [[nodiscard]] static constexpr bool Ok() { return true; }
     template <class Stream>
     void WriteToTextStream(Stream *emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions
@@ -2053,13 +2005,13 @@ class GenericPlaceholder6View final {
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
-    static constexpr bool IsAggregate() { return false; }
+    [[nodiscard]] static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
+  [[nodiscard]] static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
     return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
   }
-  static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
+  [[nodiscard]] static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
@@ -2077,9 +2029,9 @@ class GenericPlaceholder6View final {
         default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
-    static constexpr ::std::int32_t Read();
-    static constexpr ::std::int32_t UncheckedRead();
-    static constexpr bool Ok() { return true; }
+    [[nodiscard]] static constexpr ::std::int32_t Read();
+    [[nodiscard]] static constexpr ::std::int32_t UncheckedRead();
+    [[nodiscard]] static constexpr bool Ok() { return true; }
     template <class Stream>
     void WriteToTextStream(Stream *emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions
@@ -2088,13 +2040,13 @@ class GenericPlaceholder6View final {
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
-    static constexpr bool IsAggregate() { return false; }
+    [[nodiscard]] static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  [[nodiscard]] static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
-  static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
+  [[nodiscard]] static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
@@ -2112,9 +2064,9 @@ class GenericPlaceholder6View final {
         default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
-    static constexpr ::std::int32_t Read();
-    static constexpr ::std::int32_t UncheckedRead();
-    static constexpr bool Ok() { return true; }
+    [[nodiscard]] static constexpr ::std::int32_t Read();
+    [[nodiscard]] static constexpr ::std::int32_t UncheckedRead();
+    [[nodiscard]] static constexpr bool Ok() { return true; }
     template <class Stream>
     void WriteToTextStream(Stream *emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions
@@ -2123,13 +2075,13 @@ class GenericPlaceholder6View final {
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
-    static constexpr bool IsAggregate() { return false; }
+    [[nodiscard]] static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  [[nodiscard]] static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
-  static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
+  [[nodiscard]] static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
@@ -2160,7 +2112,7 @@ struct EmbossReservedInternalIsGenericPlaceholder6View<
 };
 
 template <typename T>
-inline GenericPlaceholder6View<
+[[nodiscard]] inline GenericPlaceholder6View<
     /**/ ::emboss::support::ContiguousBuffer<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
@@ -2175,7 +2127,7 @@ MakePlaceholder6View( T &&emboss_reserved_local_arg) {
 }
 
 template <typename T>
-inline GenericPlaceholder6View</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+[[nodiscard]] inline GenericPlaceholder6View</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
 MakePlaceholder6View( T *emboss_reserved_local_data,
                  ::std::size_t emboss_reserved_local_size) {
   return GenericPlaceholder6View</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
@@ -2184,7 +2136,7 @@ MakePlaceholder6View( T *emboss_reserved_local_data,
 }
 
 template <typename T, ::std::size_t kAlignment>
-inline GenericPlaceholder6View<
+[[nodiscard]] inline GenericPlaceholder6View<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
 MakeAlignedPlaceholder6View(
      T *emboss_reserved_local_data,

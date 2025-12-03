@@ -46,7 +46,7 @@ def emboss_cc_test(name, copts = None, no_w_sign_compare = False, **kwargs):
         **kwargs
     )
 
-def cpp_golden_test(name, emb_file, golden_file, import_dirs = []):
+def cpp_golden_test(name, emb_file, golden_file, import_dirs = [], extra_args = []):
     """Defines a C++ golden file test.
 
     Args:
@@ -54,6 +54,7 @@ def cpp_golden_test(name, emb_file, golden_file, import_dirs = []):
         emb_file: The .emb file to test.
         golden_file: The golden .h file.
         import_dirs: A list of import directories.
+        extra_args: A list of extra arguments to pass to the compiler.
     """
     py_test(
         name = name,
@@ -65,7 +66,7 @@ def cpp_golden_test(name, emb_file, golden_file, import_dirs = []):
             "$(location :emboss_codegen_cpp)",
             "$(location %s)" % emb_file,
             "$(location %s)" % golden_file,
-        ] + ["--import-dir=" + d for d in import_dirs],
+        ] + ["--import-dir=" + d for d in import_dirs] + extra_args,
         data = [
             "//compiler/front_end:emboss_front_end",
             ":emboss_codegen_cpp",

@@ -36,10 +36,7 @@ filegroup(
     ],
 )
 
-
-
 exports_files(glob(["**/*.emb"]))
-
 
 filegroup(
     name = "test_embs",
@@ -367,5 +364,12 @@ emboss_cc_library(
     name = "complex_offset_emboss",
     srcs = [
         "complex_offset.emb",
+    ],
+)
+
+emboss_cc_library(
+    name = "many_conditionals_emboss",
+    srcs = [
+        "many_conditionals.emb",
     ],
 )

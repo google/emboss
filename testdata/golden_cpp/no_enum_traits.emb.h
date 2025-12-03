@@ -14,10 +14,6 @@
 
 #include "runtime/cpp/emboss_prelude.h"
 
-#include "runtime/cpp/emboss_enum_view.h"
-
-#include "runtime/cpp/emboss_text_util.h"
-
 
 
 /* NOLINTBEGIN */
@@ -38,79 +34,6 @@ enum class Foo : ::std::uint64_t {
   VALUE = static_cast</**/::std::int32_t>(10LL),
 
 };
-template <class Enum>
-class EnumTraits;
-
-template <>
-class EnumTraits<Foo> final {
- public:
-  static bool TryToGetEnumFromName(const char *emboss_reserved_local_name,
-                                   Foo *emboss_reserved_local_result) {
-    if (emboss_reserved_local_name == nullptr) return false;
-    if (!strcmp("VALUE", emboss_reserved_local_name)) {
-      *emboss_reserved_local_result = Foo::VALUE;
-      return true;
-    }
-
-    return false;
-  }
-
-  static const char *TryToGetNameFromEnum(
-      Foo emboss_reserved_local_value) {
-    switch (emboss_reserved_local_value) {
-      case Foo::VALUE: return "VALUE";
-
-      default: return nullptr;
-    }
-  }
-
-  static bool EnumIsKnown(Foo emboss_reserved_local_value) {
-    switch (emboss_reserved_local_value) {
-      case Foo::VALUE: return true;
-
-      default:
-        return false;
-    }
-  }
-
-  static ::std::ostream &SendToOstream(::std::ostream &emboss_reserved_local_os,
-                                       Foo emboss_reserved_local_value) {
-    const char *emboss_reserved_local_name =
-        TryToGetNameFromEnum(emboss_reserved_local_value);
-    if (emboss_reserved_local_name == nullptr) {
-      emboss_reserved_local_os
-          << static_cast</**/ ::std::underlying_type<Foo>::type>(
-                 emboss_reserved_local_value);
-    } else {
-      emboss_reserved_local_os << emboss_reserved_local_name;
-    }
-    return emboss_reserved_local_os;
-  }
-};
-
-static inline bool TryToGetEnumFromName(
-    const char *emboss_reserved_local_name,
-    Foo *emboss_reserved_local_result) {
-  return EnumTraits<Foo>::TryToGetEnumFromName(
-      emboss_reserved_local_name, emboss_reserved_local_result);
-}
-
-static inline const char *TryToGetNameFromEnum(
-    Foo emboss_reserved_local_value) {
-  return EnumTraits<Foo>::TryToGetNameFromEnum(
-      emboss_reserved_local_value);
-}
-
-static inline bool EnumIsKnown(Foo emboss_reserved_local_value) {
-  return EnumTraits<Foo>::EnumIsKnown(emboss_reserved_local_value);
-}
-
-static inline ::std::ostream &operator<<(
-    ::std::ostream &emboss_reserved_local_os,
-    Foo emboss_reserved_local_value) {
-  return EnumTraits<Foo>::SendToOstream(emboss_reserved_local_os,
-                                             emboss_reserved_local_value);
-}
 
 
 
@@ -166,45 +89,40 @@ class GenericBarView final {
 
   
 
-  bool Ok() const {
+  [[nodiscard]] bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_foo().Known()) return false;
-    if (has_foo().ValueOrDefault() && !foo().Ok()) return false;
 
-
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
-
-
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
-
-
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
-
-
+    {
+      const auto emboss_reserved_cond = ::emboss::support::Maybe</**/bool>(true);
+      if (!emboss_reserved_cond.Known()) return false;
+      if (emboss_reserved_cond.ValueOrDefault()) {
+        if (!foo().Ok()) return false;
+        if (!IntrinsicSizeInBytes().Ok()) return false;
+        if (!MaxSizeInBytes().Ok()) return false;
+        if (!MinSizeInBytes().Ok()) return false;
+      }
+    }
 
     return true;
   }
-  Storage BackingStorage() const { return backing_; }
-  bool IsComplete() const {
+  [[nodiscard]] Storage BackingStorage() const { return backing_; }
+  [[nodiscard]] bool IsComplete() const {
     return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
            backing_.SizeInBytes() >=
                static_cast</**/ ::std::size_t>(
                    IntrinsicSizeInBytes().UncheckedRead());
   }
-  static constexpr ::std::size_t SizeInBytes() {
+  [[nodiscard]] static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
   }
-  static constexpr bool SizeIsKnown() {
+  [[nodiscard]] static constexpr bool SizeIsKnown() {
     return IntrinsicSizeInBytes().Ok();
   }
 
 
   template <typename OtherStorage>
-  bool Equals(
+  [[nodiscard]] bool Equals(
       GenericBarView<OtherStorage> emboss_reserved_local_other) const {
     
     if (!has_foo().Known()) return false;
@@ -225,7 +143,7 @@ class GenericBarView final {
  return true;
   }
   template <typename OtherStorage>
-  bool UncheckedEquals(
+  [[nodiscard]] bool UncheckedEquals(
       GenericBarView<OtherStorage> emboss_reserved_local_other) const {
     
     if (emboss_reserved_local_other.has_foo().ValueOr(false) &&
@@ -258,111 +176,25 @@ class GenericBarView final {
         emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
   template <typename OtherStorage>
-  bool TryToCopyFrom(
+  [[nodiscard]] bool TryToCopyFrom(
       GenericBarView<OtherStorage> emboss_reserved_local_other) const {
       return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
         emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
 
-  template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
-    ::std::string emboss_reserved_local_brace;
-    if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
-                                      &emboss_reserved_local_brace))
-      return false;
-    if (emboss_reserved_local_brace != "{") return false;
-    for (;;) {
-      ::std::string emboss_reserved_local_name;
-      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
-                                        &emboss_reserved_local_name))
-        return false;
-      if (emboss_reserved_local_name == ",")
-        if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
-                                          &emboss_reserved_local_name))
-          return false;
-      if (emboss_reserved_local_name == "}") return true;
-      ::std::string emboss_reserved_local_colon;
-      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
-                                        &emboss_reserved_local_colon))
-        return false;
-      if (emboss_reserved_local_colon != ":") return false;
-      if (emboss_reserved_local_name == "foo") {
-        if (!foo().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
-          return false;
-        }
-        continue;
-      }
-
-      return false;
-    }
-  }
-
-  template <class Stream>
-  void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
-      ::emboss::TextOutputOptions emboss_reserved_local_options) const {
-    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
-        emboss_reserved_local_options.PlusOneIndent();
-    if (emboss_reserved_local_options.multiline()) {
-      emboss_reserved_local_stream->Write("{\n");
-    } else {
-      emboss_reserved_local_stream->Write("{");
-    }
-    bool emboss_reserved_local_wrote_field = false;
-    if (has_foo().ValueOr(false)) {
-      if (!emboss_reserved_local_field_options.allow_partial_output() ||
-          foo().IsAggregate() || foo().Ok()) {
-        if (emboss_reserved_local_field_options.multiline()) {
-          emboss_reserved_local_stream->Write(
-              emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
-          emboss_reserved_local_stream->Write(" ");
-        }
-        emboss_reserved_local_stream->Write("foo: ");
-        foo().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
-        emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
-          emboss_reserved_local_stream->Write("\n");
-        }
-      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
-                 emboss_reserved_local_field_options.comments() &&
-                 !foo().IsAggregate() && !foo().Ok()) {
-        if (emboss_reserved_local_field_options.multiline()) {
-          emboss_reserved_local_stream->Write(
-              emboss_reserved_local_field_options.current_indent());
-        }
-        emboss_reserved_local_stream->Write("# foo: UNREADABLE\n");
-      }
-    }
-
-    (void)emboss_reserved_local_wrote_field;
-    if (emboss_reserved_local_options.multiline()) {
-      emboss_reserved_local_stream->Write(
-          emboss_reserved_local_options.current_indent());
-      emboss_reserved_local_stream->Write("}");
-    } else {
-      emboss_reserved_local_stream->Write(" }");
-    }
-  }
 
 
-
-  static constexpr bool IsAggregate() { return true; }
+  [[nodiscard]] static constexpr bool IsAggregate() { return true; }
 
  public:
-  typename ::emboss::support::EnumView<
+  [[nodiscard]] typename ::emboss::support::EnumView<
     /**/ ::emboss::test::Foo,
     ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
     typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
 
  foo() const;
-  ::emboss::support::Maybe<bool> has_foo() const;
+  [[nodiscard]] ::emboss::support::Maybe<bool> has_foo() const;
 
  public:
   class EmbossReservedDollarVirtualIntrinsicSizeInBytesView final {
@@ -378,9 +210,9 @@ class GenericBarView final {
         default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
-    static constexpr ::std::int32_t Read();
-    static constexpr ::std::int32_t UncheckedRead();
-    static constexpr bool Ok() { return true; }
+    [[nodiscard]] static constexpr ::std::int32_t Read();
+    [[nodiscard]] static constexpr ::std::int32_t UncheckedRead();
+    [[nodiscard]] static constexpr bool Ok() { return true; }
     template <class Stream>
     void WriteToTextStream(Stream *emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions
@@ -389,13 +221,13 @@ class GenericBarView final {
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
-    static constexpr bool IsAggregate() { return false; }
+    [[nodiscard]] static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
+  [[nodiscard]] static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
     return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
   }
-  static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
+  [[nodiscard]] static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
@@ -413,9 +245,9 @@ class GenericBarView final {
         default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
-    static constexpr ::std::int32_t Read();
-    static constexpr ::std::int32_t UncheckedRead();
-    static constexpr bool Ok() { return true; }
+    [[nodiscard]] static constexpr ::std::int32_t Read();
+    [[nodiscard]] static constexpr ::std::int32_t UncheckedRead();
+    [[nodiscard]] static constexpr bool Ok() { return true; }
     template <class Stream>
     void WriteToTextStream(Stream *emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions
@@ -424,13 +256,13 @@ class GenericBarView final {
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
-    static constexpr bool IsAggregate() { return false; }
+    [[nodiscard]] static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  [[nodiscard]] static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
-  static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
+  [[nodiscard]] static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
@@ -448,9 +280,9 @@ class GenericBarView final {
         default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
-    static constexpr ::std::int32_t Read();
-    static constexpr ::std::int32_t UncheckedRead();
-    static constexpr bool Ok() { return true; }
+    [[nodiscard]] static constexpr ::std::int32_t Read();
+    [[nodiscard]] static constexpr ::std::int32_t UncheckedRead();
+    [[nodiscard]] static constexpr bool Ok() { return true; }
     template <class Stream>
     void WriteToTextStream(Stream *emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions
@@ -459,13 +291,13 @@ class GenericBarView final {
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
-    static constexpr bool IsAggregate() { return false; }
+    [[nodiscard]] static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  [[nodiscard]] static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
-  static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
+  [[nodiscard]] static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
@@ -496,7 +328,7 @@ struct EmbossReservedInternalIsGenericBarView<
 };
 
 template <typename T>
-inline GenericBarView<
+[[nodiscard]] inline GenericBarView<
     /**/ ::emboss::support::ContiguousBuffer<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
@@ -511,7 +343,7 @@ MakeBarView( T &&emboss_reserved_local_arg) {
 }
 
 template <typename T>
-inline GenericBarView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+[[nodiscard]] inline GenericBarView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
 MakeBarView( T *emboss_reserved_local_data,
                  ::std::size_t emboss_reserved_local_size) {
   return GenericBarView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
@@ -520,7 +352,7 @@ MakeBarView( T *emboss_reserved_local_data,
 }
 
 template <typename T, ::std::size_t kAlignment>
-inline GenericBarView<
+[[nodiscard]] inline GenericBarView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
 MakeAlignedBarView(
      T *emboss_reserved_local_data,
