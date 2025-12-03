@@ -13,10 +13,11 @@
 // limitations under the License.
 
 // This header contains functionality related to Emboss text output.
-#ifndef EMBOSS_RUNTIME_CPP_EMBOSS_TEXT_UTIL_H_
-#define EMBOSS_RUNTIME_CPP_EMBOSS_TEXT_UTIL_H_
+#ifndef THIRD_PARTY_EMBOSS_RUNTIME_CPP_EMBOSS_TEXT_UTIL_H_
+#define THIRD_PARTY_EMBOSS_RUNTIME_CPP_EMBOSS_TEXT_UTIL_H_
 
 #include <array>
+#include <cctype>
 #include <climits>
 #include <cmath>
 #include <cstdint>
@@ -25,9 +26,11 @@
 #include <limits>
 #include <sstream>
 #include <string>
+#include <type_traits>
+#include <utility>
 #include <vector>
 
-#include "runtime/cpp/emboss_defines.h"
+#include "third_party/emboss/runtime/cpp/emboss_defines.h"
 
 namespace emboss {
 
@@ -80,12 +83,19 @@ class TextOutputOptions final {
     return result;
   }
 
+  TextOutputOptions Json(bool new_value) const {
+    TextOutputOptions result = *this;
+    result.json_ = new_value;
+    return result;
+  }
+
   ::std::string current_indent() const { return current_indent_; }
   ::std::string indent() const { return indent_; }
   bool multiline() const { return multiline_; }
   bool digit_grouping() const { return digit_grouping_; }
   bool comments() const { return comments_; }
   ::std::uint8_t numeric_base() const { return numeric_base_; }
+  bool json() const { return json_; }
   bool allow_partial_output() const { return allow_partial_output_; }
 
  private:
@@ -95,6 +105,7 @@ class TextOutputOptions final {
   bool multiline_ = false;
   bool digit_grouping_ = false;
   bool allow_partial_output_ = false;
+  bool json_ = false;
   ::std::uint8_t numeric_base_ = 10;
 };
 
@@ -337,13 +348,17 @@ void WriteIntegerToTextStream(IntegralType value, Stream *stream,
 template <class Stream, class View>
 void WriteIntegerViewToTextStream(View *view, Stream *stream,
                                   const TextOutputOptions &options) {
-  WriteIntegerToTextStream(view->Read(), stream, options.numeric_base(),
-                           options.digit_grouping());
-  if (options.comments()) {
-    stream->Write("  # ");
-    WriteIntegerToTextStream(view->Read(), stream,
-                             options.numeric_base() == 10 ? 16 : 10,
+  if (options.json()) {
+    WriteIntegerToTextStream(view->Read(), stream, 10, false);
+  } else {
+    WriteIntegerToTextStream(view->Read(), stream, options.numeric_base(),
                              options.digit_grouping());
+    if (options.comments()) {
+      stream->Write("  # ");
+      WriteIntegerToTextStream(view->Read(), stream,
+                               options.numeric_base() == 10 ? 16 : 10,
+                               options.digit_grouping());
+    }
   }
 }
 
@@ -562,6 +577,10 @@ void WriteFloatToTextStream(Float n, Stream *stream,
   // currently available.
 
   if (::std::isnan(n)) {
+    if (options.json()) {
+      stream->Write("\"NaN\"");
+      return;
+    }
     // The printf format for NaN is just "NaN".  In the interests of keeping
     // things bit-exact, Emboss prints the exact NaN.
     typename FloatConstants<Float>::MatchingIntegerType bits;
@@ -585,6 +604,14 @@ void WriteFloatToTextStream(Float n, Stream *stream,
   }
 
   if (::std::isinf(n)) {
+    if (options.json()) {
+      if (n < 0.0) {
+        stream->Write("\"-Infinity\"");
+      } else {
+        stream->Write("\"Infinity\"");
+      }
+      return;
+    }
     if (n < 0.0) {
       stream->Write("-Inf");
     } else {
@@ -636,18 +663,23 @@ void WriteEnumViewToTextStream(View *view, Stream *stream,
                                const TextOutputOptions &options) {
   const char *name = TryToGetNameFromEnum(view->Read());
   if (name != nullptr) {
+    if (options.json()) stream->Write("\"");
     stream->Write(name);
+    if (options.json()) stream->Write("\"");
   }
   // If the enum value has no known name, then write its numeric value
   // instead.  If it does have a known name, and comments are enabled on the
   // output, then write the numeric value as a comment.
-  if (name == nullptr || options.comments()) {
-    if (name != nullptr) stream->Write("  # ");
+  if (name == nullptr || (options.comments() && !options.json())) {
+    if (name != nullptr) {
+      stream->Write("  # ");
+    }
     WriteIntegerToTextStream(
         static_cast<
             typename ::std::underlying_type<typename View::ValueType>::type>(
             view->Read()),
-        stream, options.numeric_base(), options.digit_grouping());
+        stream, options.json() ? 10 : options.numeric_base(),
+        options.json() ? false : options.digit_grouping());
   }
 }
 
@@ -756,7 +788,34 @@ template <class Array, class Stream>
 void WriteArrayToTextStream(Array *array, Stream *stream,
                             const TextOutputOptions &options) {
   TextOutputOptions element_options = options.PlusOneIndent();
-  if (options.multiline()) {
+  if (options.json()) {
+    element_options = element_options.WithComments(false)
+                          .WithDigitGrouping(false)
+                          .WithNumericBase(10);
+    stream->Write("[");
+    bool first = true;
+    for (::std::size_t i = 0; i < array->ElementCount(); ++i) {
+      if (!options.allow_partial_output() || (*array)[i].IsAggregate() ||
+          (*array)[i].Ok()) {
+        if (!first) {
+          stream->Write(",");
+        }
+        if (options.multiline()) {
+          stream->Write("\n");
+          stream->Write(element_options.current_indent());
+        } else if (!first) {
+          stream->Write(" ");
+        }
+        (*array)[i].WriteToTextStream(stream, element_options);
+        first = false;
+      }
+    }
+    if (options.multiline()) {
+      stream->Write("\n");
+      stream->Write(options.current_indent());
+    }
+    stream->Write("]");
+  } else if (options.multiline()) {
     stream->Write("{");
     WriteShorthandArrayCommentToTextStream(array, stream, element_options);
     for (::std::size_t i = 0; i < array->ElementCount(); ++i) {
@@ -896,4 +955,4 @@ inline ::std::string WriteToString(const EmbossViewType &view) {
 
 }  // namespace emboss
 
-#endif  // EMBOSS_RUNTIME_CPP_EMBOSS_TEXT_UTIL_H_
+#endif  // THIRD_PARTY_EMBOSS_RUNTIME_CPP_EMBOSS_TEXT_UTIL_H_
