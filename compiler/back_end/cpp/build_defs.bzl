@@ -56,6 +56,11 @@ def cpp_golden_test(name, emb_file, golden_file, import_dirs = [], extra_args = 
         import_dirs: A list of import directories.
         extra_args: A list of extra arguments to pass to the compiler.
     """
+    unique_import_dirs = []
+    for d in import_dirs:
+        if d not in unique_import_dirs:
+            unique_import_dirs.append(d)
+
     py_test(
         name = name,
         main = ":run_one_golden_test.py",
@@ -66,13 +71,13 @@ def cpp_golden_test(name, emb_file, golden_file, import_dirs = [], extra_args = 
             "$(location :emboss_codegen_cpp)",
             "$(location %s)" % emb_file,
             "$(location %s)" % golden_file,
-        ] + ["--import-dir=" + d for d in import_dirs] + extra_args,
+        ] + ["--import-dir=" + d for d in unique_import_dirs] + extra_args,
         data = [
             "//compiler/front_end:emboss_front_end",
             ":emboss_codegen_cpp",
             emb_file,
             golden_file,
             "//testdata:test_embs",
-        ] + import_dirs,
+        ] + unique_import_dirs,
         deps = [":one_golden_test_lib"],
     )
