@@ -25,14 +25,24 @@
 
 external UInt:
   -- UInt is an automatically-sized unsigned integer.
-  [static_requirements: $is_statically_sized && 1 <= $static_size_in_bits <= 64]
+  --
+  -- Note: Sizes above 64 bits (up to 128 bits) require platform support for
+  -- 128-bit integers (__uint128_t). The C++ backend will use EMBOSS_HAS_INT128
+  -- to detect availability. On platforms without 128-bit integer support,
+  -- fields larger than 64 bits will fail to compile.
+  [static_requirements: $is_statically_sized && 1 <= $static_size_in_bits <= 128]
   [is_integer: true]
   [addressable_unit_size: 1]
 
 
 external Int:
   -- Int is an automatically-sized signed 2's-complement integer.
-  [static_requirements: $is_statically_sized && 1 <= $static_size_in_bits <= 64]
+  --
+  -- Note: Sizes above 64 bits (up to 128 bits) require platform support for
+  -- 128-bit integers (__int128_t). The C++ backend will use EMBOSS_HAS_INT128
+  -- to detect availability. On platforms without 128-bit integer support,
+  -- fields larger than 64 bits will fail to compile.
+  [static_requirements: $is_statically_sized && 1 <= $static_size_in_bits <= 128]
   [is_integer: true]
   [addressable_unit_size: 1]
 
