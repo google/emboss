@@ -94,10 +94,23 @@ TEST(FlagView, TextEncode) {
   EXPECT_EQ("true", WriteToString(flag_view));
 }
 
+// Helper to select appropriate BitBlock size for a given view size
+template <int kBits>
+struct BitBlockSelector {
+#if EMBOSS_HAS_INT128
+  // Use 128-bit BitBlock for sizes > 64
+  using Type = typename ::std::conditional<(kBits > 64), BitBlockN<128>,
+                                           BitBlockN<64>>::type;
+#else
+  using Type = BitBlockN<64>;
+#endif
+};
+
 template <template <typename, typename> class ViewType, int kMaxBits>
 void CheckViewSizeInBits() {
+  using BlockType = typename BitBlockSelector<kMaxBits>::Type;
   const int size_in_bits =
-      ViewType<ViewParameters<kMaxBits>, BitBlockN<64>>::SizeInBits();
+      ViewType<ViewParameters<kMaxBits>, BlockType>::SizeInBits();
   EXPECT_EQ(size_in_bits, kMaxBits);
   return CheckViewSizeInBits<ViewType, kMaxBits - 1>();
 }
@@ -199,6 +212,81 @@ TEST(UIntView, CouldWriteValue) {
   EXPECT_TRUE(UIntViewN<64>::CouldWriteValue(0));
   EXPECT_FALSE(UIntViewN<64>::CouldWriteValue(-1));
 }
+
+#if EMBOSS_HAS_INT128
+TEST(UIntView, Int128ReadAndWriteWithSufficientBuffer) {
+  ::std::vector</**/ ::std::uint8_t> bytes = {
+      {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+       0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0xff}};
+  auto uint128_view = UIntView<ViewParameters<128>, BitBlockN<128>>{
+      BitBlockN<128>{ReadWriteContiguousBuffer{bytes.data(), 16}}};
+  __uint128_t expected =
+      (static_cast<__uint128_t>(0x100f0e0d0c0b0a09UL) << 64) |
+      static_cast<__uint128_t>(0x0807060504030201UL);
+  EXPECT_EQ(expected, uint128_view.Read());
+  EXPECT_EQ(expected, uint128_view.UncheckedRead());
+
+  __uint128_t write_value =
+      (static_cast<__uint128_t>(0xfedcba9876543210UL) << 64) |
+      static_cast<__uint128_t>(0x0123456789abcdefUL);
+  uint128_view.Write(write_value);
+  EXPECT_EQ(write_value, uint128_view.Read());
+
+  // Verify the buffer was written in little-endian order
+  EXPECT_EQ(0xef, bytes[0]);
+  EXPECT_EQ(0xcd, bytes[1]);
+  EXPECT_EQ(0x10, bytes[8]);
+  EXPECT_EQ(0xfe, bytes[15]);
+  // Last byte should be untouched
+  EXPECT_EQ(0xff, bytes[16]);
+
+  EXPECT_TRUE(uint128_view.Ok());
+  EXPECT_TRUE(uint128_view.IsComplete());
+}
+
+TEST(UIntView, Int128NonFullWidth) {
+  // Test 72-bit (9 byte) unsigned integer - BitBlock size must match view size
+  ::std::vector</**/ ::std::uint8_t> bytes = {
+      {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0xff}};
+  auto uint72_view = UIntView<ViewParameters<72>, BitBlockN<72>>{
+      BitBlockN<72>{ReadWriteContiguousBuffer{bytes.data(), 9}}};
+
+  __uint128_t expected_72 =
+      (static_cast<__uint128_t>(0x09UL) << 64) |
+      static_cast<__uint128_t>(0x0807060504030201UL);
+  EXPECT_EQ(expected_72, uint72_view.Read());
+  EXPECT_TRUE(uint72_view.Ok());
+
+  // Write a value that fits in 72 bits
+  __uint128_t write_72 =
+      (static_cast<__uint128_t>(0xffUL) << 64) |
+      static_cast<__uint128_t>(0xffffffffffffffffUL);
+  uint72_view.Write(write_72);
+  EXPECT_EQ(write_72, uint72_view.Read());
+  // Last byte should be untouched
+  EXPECT_EQ(0xff, bytes[9]);
+}
+
+TEST(UIntView, Int128CouldWriteValue) {
+  using UIntView128 = UIntView<ViewParameters<128>, BitBlockN<128>>;
+
+  // 128-bit view should accept full 128-bit values
+  __uint128_t max_128 =
+      (static_cast<__uint128_t>(0xffffffffffffffffUL) << 64) |
+      static_cast<__uint128_t>(0xffffffffffffffffUL);
+  EXPECT_TRUE(UIntView128::CouldWriteValue(max_128));
+  EXPECT_TRUE(UIntView128::CouldWriteValue(static_cast<__uint128_t>(0)));
+
+  // Test that values in the valid range work
+  __uint128_t mid_value =
+      (static_cast<__uint128_t>(0x8000000000000000UL) << 64) |
+      static_cast<__uint128_t>(0x0000000000000000UL);
+  EXPECT_TRUE(UIntView128::CouldWriteValue(mid_value));
+
+  // Test that negative values (which convert to large unsigned) fail
+  EXPECT_FALSE(UIntView128::CouldWriteValue(static_cast<__int128_t>(-1)));
+}
+#endif  // EMBOSS_HAS_INT128
 
 TEST(UIntView, CouldWriteValueNarrowing) {
   auto narrowing_could_write = [](int value) {
@@ -407,6 +495,105 @@ TEST(IntView, CouldWriteValue) {
   EXPECT_TRUE(IntViewN<64>::CouldWriteValue(-9223372036854775807L - 1));
   EXPECT_FALSE(IntViewN<64>::CouldWriteValue(0x8000000000000000UL));
 }
+
+#if EMBOSS_HAS_INT128
+TEST(IntView, Int128ReadAndWriteWithSufficientBuffer) {
+  ::std::vector</**/ ::std::uint8_t> bytes = {
+      {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+       0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0xff}};
+  auto int128_view = IntView<ViewParameters<128>, BitBlockN<128>>{
+      BitBlockN<128>{ReadWriteContiguousBuffer{bytes.data(), 16}}};
+  __int128_t expected =
+      static_cast<__int128_t>(
+          (static_cast<__uint128_t>(0x100f0e0d0c0b0a09UL) << 64) |
+          static_cast<__uint128_t>(0x0807060504030201UL));
+  EXPECT_EQ(expected, int128_view.Read());
+  EXPECT_EQ(expected, int128_view.UncheckedRead());
+
+  // Write a negative value
+  __int128_t write_value = -1;
+  int128_view.Write(write_value);
+  EXPECT_EQ(write_value, int128_view.Read());
+  // All bytes should be 0xff
+  for (int i = 0; i < 16; ++i) {
+    EXPECT_EQ(0xff, bytes[i]);
+  }
+  // Last byte should be untouched
+  EXPECT_EQ(0xff, bytes[16]);
+
+  EXPECT_TRUE(int128_view.Ok());
+  EXPECT_TRUE(int128_view.IsComplete());
+}
+
+TEST(IntView, Int128SignExtension) {
+  // Test that signed 128-bit values with high bit set are properly sign-extended
+  // Min int128 in little-endian: 0x00...00 with MSB set = 0x80 in the last byte
+  ::std::vector</**/ ::std::uint8_t> bytes = {
+      {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80}};  // -2^127 in LE
+  auto int128_view = IntView<ViewParameters<128>, BitBlockN<128>>{
+      BitBlockN<128>{ReadWriteContiguousBuffer{bytes.data(), 16}}};
+
+  // The MSB is set, so this should be the minimum 128-bit signed integer
+  __int128_t min_int128 = static_cast<__int128_t>(1) << 127;
+  // This is negative due to two's complement
+  EXPECT_TRUE(int128_view.Read() < 0);
+  EXPECT_EQ(min_int128, int128_view.Read());
+
+  // Write max positive value
+  __int128_t max_positive = ~min_int128;  // 2^127 - 1
+  int128_view.Write(max_positive);
+  EXPECT_EQ(max_positive, int128_view.Read());
+  EXPECT_TRUE(int128_view.Read() > 0);
+
+  // Verify the bytes are correct for max positive
+  // Max positive = 0x7fffffffffffffff_ffffffffffffffff in LE
+  EXPECT_EQ(0xff, bytes[0]);
+  EXPECT_EQ(0xff, bytes[7]);
+  EXPECT_EQ(0xff, bytes[14]);
+  EXPECT_EQ(0x7f, bytes[15]);  // The MSB should be 0
+}
+
+TEST(IntView, Int128NonFullWidth) {
+  // Test 72-bit (9 byte) signed integer with negative value
+  ::std::vector</**/ ::std::uint8_t> bytes = {
+      {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00}};
+  auto int72_view = IntView<ViewParameters<72>, BitBlockN<72>>{
+      BitBlockN<72>{ReadWriteContiguousBuffer{bytes.data(), 9}}};
+
+  // 72 bits all set to 1 should be -1 in two's complement
+  EXPECT_EQ(static_cast<__int128_t>(-1), int72_view.Read());
+  EXPECT_TRUE(int72_view.Ok());
+
+  // Write a small negative value
+  int72_view.Write(static_cast<__int128_t>(-100));
+  EXPECT_EQ(static_cast<__int128_t>(-100), int72_view.Read());
+  // Last byte should be untouched (but may have been modified by writes above)
+}
+
+TEST(IntView, Int128CouldWriteValue) {
+  using IntView128 = IntView<ViewParameters<128>, BitBlockN<128>>;
+
+  // Max and min 128-bit signed values
+  __int128_t max_128 =
+      static_cast<__int128_t>(
+          (static_cast<__uint128_t>(0x7fffffffffffffffUL) << 64) |
+          static_cast<__uint128_t>(0xffffffffffffffffUL));
+  __int128_t min_128 = static_cast<__int128_t>(1) << 127;
+
+  EXPECT_TRUE(IntView128::CouldWriteValue(max_128));
+  EXPECT_TRUE(IntView128::CouldWriteValue(min_128));
+  EXPECT_TRUE(IntView128::CouldWriteValue(static_cast<__int128_t>(0)));
+  EXPECT_TRUE(IntView128::CouldWriteValue(static_cast<__int128_t>(-1)));
+  EXPECT_TRUE(IntView128::CouldWriteValue(static_cast<__int128_t>(1)));
+
+  // Test various values in the middle of the range
+  EXPECT_TRUE(IntView128::CouldWriteValue(
+      static_cast<__int128_t>(0x7fffffffffffffffLL)));
+  EXPECT_TRUE(IntView128::CouldWriteValue(
+      static_cast<__int128_t>(-0x7fffffffffffffffLL)));
+}
+#endif  // EMBOSS_HAS_INT128
 
 TEST(IntView, CouldWriteValueNarrowing) {
   auto narrowing_could_write = [](int value) {

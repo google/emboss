@@ -192,6 +192,18 @@ emboss_cc_test(
 )
 
 emboss_cc_test(
+    name = "int128_sizes_test",
+    srcs = [
+        "testcode/int128_sizes_test.cc",
+    ],
+    deps = [
+        "//runtime/cpp:cpp_utils",
+        "//testdata:int128_sizes_emboss",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+emboss_cc_test(
     name = "float_test",
     srcs = [
         "testcode/float_test.cc",
