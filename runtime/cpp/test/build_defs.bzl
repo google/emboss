@@ -17,14 +17,16 @@
 
 """Macro to run tests both with and without optimizations."""
 
+load("@rules_cc//cc:cc_test.bzl", "cc_test")
+
 def emboss_cc_util_test(name, copts = [], **kwargs):
     """Constructs two cc_test targets, with and without optimizations."""
-    native.cc_test(
+    cc_test(
         name = name,
         copts = copts + ["-Wsign-compare"],
         **kwargs
     )
-    native.cc_test(
+    cc_test(
         name = name + "_no_opts",
         copts = copts + [
             # This is generally a dangerous flag for an individual target, but
