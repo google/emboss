@@ -14,6 +14,7 @@
 
 # Emboss public definitions.
 
+load("@rules_cc//cc:cc_test.bzl", "cc_test")
 load(
     ":build_defs.bzl",
     "emboss_cc_util_test",

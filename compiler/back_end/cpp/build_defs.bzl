@@ -16,28 +16,29 @@
 # vim:set ft=blazebuild:
 """Rule to generate cc_tests with and without system-specific optimizations."""
 
+load("@rules_cc//cc:cc_test.bzl", "cc_test")
 load("@rules_python//python:py_test.bzl", "py_test")
 
 def emboss_cc_test(name, copts = None, no_w_sign_compare = False, **kwargs):
     """Generates cc_test rules with and without -DEMBOSS_NO_OPTIMIZATIONS."""
-    native.cc_test(
+    cc_test(
         name = name,
         copts = copts or [],
         **kwargs
     )
-    native.cc_test(
+    cc_test(
         name = name + "_no_opts",
         copts = [
             "-DEMBOSS_NO_OPTIMIZATIONS",
         ] + ([] if no_w_sign_compare else ["-Wsign-compare"]) + (copts or []),
         **kwargs
     )
-    native.cc_test(
+    cc_test(
         name = name + "_no_checks",
         copts = ["-DEMBOSS_SKIP_CHECKS"] + (copts or []),
         **kwargs
     )
-    native.cc_test(
+    cc_test(
         name = name + "_no_checks_no_opts",
         copts = [
             "-DEMBOSS_NO_OPTIMIZATIONS",
