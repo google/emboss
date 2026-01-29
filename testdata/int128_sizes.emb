@@ -13,7 +13,11 @@
 # limitations under the License.
 
 -- Test struct for 65-128 bit Ints and UInts.
--- This file is only usable on systems with 128-bit integer support.
+--
+-- This file requires platform support for 128-bit integers (__uint128_t and
+-- __int128_t). The C++ backend uses EMBOSS_HAS_INT128 to detect availability.
+-- On platforms without 128-bit integer support (e.g., 32-bit systems, MSVC),
+-- code using these types will fail to compile.
 
 [$default byte_order: "LittleEndian"]
 [(cpp) namespace: "emboss::test"]
@@ -76,11 +80,6 @@ struct UInt128ArraySizes:
   168 [+32]  UInt:128[2]  sixteen_byte
 
 
-struct AnonymousBits128:
-  0  [+16]  bits:
-    0  [+65]       UInt  lower_65_bits
-    65 [+63]       UInt  upper_63_bits
-
-  16 [+16]  bits:
-    0  [+64]       UInt  lower_64_bits
-    64 [+64]       UInt  upper_64_bits
+# Note: Anonymous `bits` types are still constrained to 64 bits maximum.
+# Supporting 128-bit `bits` types would require additional implementation
+# work in the OffsetBitBlock class and the constraints checker.
