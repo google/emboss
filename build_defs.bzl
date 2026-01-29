@@ -24,7 +24,10 @@ There is also a convenience macro, `emboss_cc_library()`, which creates an
 `emboss_library` and a `cc_emboss_library` based on it.
 """
 
-load("@bazel_tools//tools/cpp:toolchain_utils.bzl", "find_cpp_toolchain")
+load("@rules_cc//cc:find_cc_toolchain.bzl", "find_cc_toolchain", "use_cc_toolchain")
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("@rules_cc//cc/common:cc_common.bzl", "cc_common")
+load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
 
 def emboss_cc_library(name, srcs, deps = [], import_dirs = [], enable_enum_traits = True, **kwargs):
     """Constructs a C++ library from an .emb file."""
@@ -160,7 +163,7 @@ EmbossCcHeaderInfo = provider(
 )
 
 def _cc_emboss_aspect_impl(target, ctx):
-    cc_toolchain = find_cpp_toolchain(ctx, mandatory = True)
+    cc_toolchain = find_cc_toolchain(ctx, mandatory = True)
     emboss_cc_compiler = ctx.executable._emboss_cc_compiler
     emboss_info = target[EmbossInfo]
     feature_configuration = cc_common.configure_features(
@@ -216,7 +219,7 @@ _cc_emboss_aspect = aspect(
     required_providers = [EmbossInfo],
     attrs = {
         "_cc_toolchain": attr.label(
-            default = "@bazel_tools//tools/cpp:current_cc_toolchain",
+            default = "@rules_cc//cc:current_cc_toolchain",
         ),
         "_emboss_cc_compiler": attr.label(
             executable = True,
@@ -230,7 +233,7 @@ _cc_emboss_aspect = aspect(
             default = True,
         ),
     },
-    toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
+    toolchains = use_cc_toolchain(),
 )
 
 def _cc_emboss_library_impl(ctx):

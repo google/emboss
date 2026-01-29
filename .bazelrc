@@ -1,6 +1,6 @@
 # Emboss (at least notionally) supports C++11 until (at least) 2027.  However,
-# Googletest requires C++14, which means that all of the Emboss unit tests
-# require C++14 to run.
+# Googletest 1.17+ requires C++17, which means that all of the Emboss unit tests
+# require C++17 to run.
 #
 # TODO(bolms): Find and port to a C++11-compatible unit test framework.
-build --copt=-std=c++14
+build --copt=-std=c++17

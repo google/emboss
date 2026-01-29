@@ -14,6 +14,8 @@
 
 # Emboss C++ Runtime.
 
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
 filegroup(
     name = "raw_headers",
     srcs = [
