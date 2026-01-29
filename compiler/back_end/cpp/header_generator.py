@@ -787,9 +787,7 @@ class ExpressionScope(object):
 
         # Not found, add to current scope
         self._index_to_subexpr.append(subexpr)
-        self._subexpr_to_name[subexpr] = self._prefix + str(
-            len(self._index_to_subexpr)
-        )
+        self._subexpr_to_name[subexpr] = self._prefix + str(len(self._index_to_subexpr))
         return self._subexpr_to_name[subexpr]
 
     def subexprs(self):
