@@ -786,11 +786,10 @@ class ExpressionScope(object):
             scope = scope._parent
 
         # Not found, add to current scope
-        if subexpr not in self._subexpr_to_name:
-            self._index_to_subexpr.append(subexpr)
-            self._subexpr_to_name[subexpr] = self._prefix + str(
-                len(self._index_to_subexpr)
-            )
+        self._index_to_subexpr.append(subexpr)
+        self._subexpr_to_name[subexpr] = self._prefix + str(
+            len(self._index_to_subexpr)
+        )
         return self._subexpr_to_name[subexpr]
 
     def subexprs(self):
@@ -888,9 +887,7 @@ def _render_expression(expression, ir, field_reader=None, subexpressions=None):
 
 
 def _render_existence_test(field, ir, subexpressions=None):
-    return _render_expression(
-        field.existence_condition, ir, subexpressions=subexpressions
-    )
+    return _render_expression(field.existence_condition, ir, subexpressions)
 
 
 def _alignment_of_location(location):
@@ -1393,6 +1390,69 @@ def _get_switch_candidate(expression, ir):
 
 
 def _generate_optimized_ok_method_body(fields, ir, subexpressions):
+    """Generates optimized C++ code for the Ok() method body.
+
+    This function optimizes validation logic for structures with conditional
+    fields by grouping fields that share the same discriminant into switch
+    statements, rather than generating separate if-statements for each field.
+
+    For example, given this Emboss definition:
+
+        struct Foo:
+          0 [+4]  UInt  tag
+          if tag == 0:
+            4 [+4]  UInt  var_0
+          if tag == 1:
+            4 [+4]  UInt  var_1
+          if tag == 0:
+            8 [+4]  UInt  var_x
+
+    Instead of generating separate if-statements:
+
+        if (tag() == 0 && !var_0().Ok()) return false;
+        if (tag() == 1 && !var_1().Ok()) return false;
+        if (tag() == 0 && !var_x().Ok()) return false;
+
+    This generates an optimized switch statement:
+
+        const auto emboss_reserved_switch_discrim = tag();
+        if (!emboss_reserved_switch_discrim.Known()) return false;
+        switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
+          case 0:
+            if (!var_0().Ok()) return false;
+            break;
+          case 1:
+            if (!var_1().Ok()) return false;
+            break;
+        }
+
+    Note: When multiple fields share the same case value (like var_0 and var_x
+    both guarded by tag == 0), only the first field for that case value is
+    checked in the switch. This is because once we've checked var_0 for case 0,
+    we break out of the switch. Fields with duplicate case values will fall
+    through to the if-statement path.
+
+    Fields with non-equality conditions (or conditions that can't be converted
+    to switch cases) are grouped by their rendered condition and emitted as
+    if-statements.
+
+    Additionally, when a condition is statically known to be true (e.g., fields
+    that are always present), the if-block wrapper is omitted entirely and the
+    field checks are emitted directly. This avoids generating unnecessary
+    runtime checks like:
+
+        const auto emboss_reserved_cond = Maybe<bool>(true);
+        if (!emboss_reserved_cond.Known()) return false;  // Always true
+        if (emboss_reserved_cond.ValueOrDefault()) { ... } // Always true
+
+    Arguments:
+        fields: List of field IR nodes to generate Ok() checks for.
+        ir: The full IR for looking up references.
+        subexpressions: An ExpressionScope for sharing common subexpressions.
+
+    Returns:
+        A string containing the C++ code for the optimized Ok() method body.
+    """
     groups = {}
     ordered_keys = []
 
@@ -1423,67 +1483,86 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
                 ordered_keys.append(key)
             groups[key]["fields"].append(field)
 
-    lines = []
+    blocks = []
     for key in ordered_keys:
         group = groups[key]
         if group["type"] == "switch":
             discrim_rendered = _render_expression(
                 group["expr"], ir, subexpressions=subexpressions
             ).rendered
-            lines.append("    {")
             # Create a new scope for the switch block
             inner_scope = ExpressionScope(
                 "emboss_reserved_switch_scope_", parent=subexpressions
             )
-            lines.append(inner_scope.definition_code().rstrip())
 
-            lines.append(
-                "      const auto emboss_reserved_switch_discrim = {};".format(
-                    discrim_rendered
-                )
-            )
-            lines.append(
-                "      if (!emboss_reserved_switch_discrim.Known()) return false;"
-            )
-            lines.append(
-                "      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {"
-            )
+            # Generate switch cases using template
+            switch_cases = []
             for case_val, field in group["cases"]:
-                lines.append("        case {}:".format(case_val))
-                lines.append(
-                    "          if (!{}().Ok()) return false;".format(
-                        _cpp_field_name(field.name.name.text)
+                switch_cases.append(
+                    code_template.format_template(
+                        _TEMPLATES.ok_method_switch_case,
+                        case_value=case_val,
+                        field=_cpp_field_name(field.name.name.text),
                     )
                 )
-                lines.append("          break;")
-            lines.append("      }")
-            lines.append("    }")
+
+            blocks.append(
+                code_template.format_template(
+                    _TEMPLATES.ok_method_switch_block,
+                    inner_scope_definitions=inner_scope.definition_code().rstrip(),
+                    discriminant=discrim_rendered,
+                    switch_cases="".join(switch_cases),
+                )
+            )
         else:
-            cond_rendered = _render_expression(
+            cond_result = _render_expression(
                 group["expr"], ir, subexpressions=subexpressions
-            ).rendered
-            lines.append("    {")
-            # Create a new scope for the if block
-            inner_scope = ExpressionScope(
-                "emboss_reserved_if_scope_", parent=subexpressions
             )
-            lines.append(inner_scope.definition_code().rstrip())
 
-            lines.append(
-                "      const auto emboss_reserved_cond = {};".format(cond_rendered)
+            # Check if condition is statically true (constant boolean true)
+            # In this case, we can skip the if-block wrapper entirely.
+            is_always_true = (
+                cond_result.is_constant
+                and group["expr"].type.which_type == "boolean"
+                and group["expr"].type.boolean.has_field("value")
+                and group["expr"].type.boolean.value
             )
-            lines.append("      if (!emboss_reserved_cond.Known()) return false;")
-            lines.append("      if (emboss_reserved_cond.ValueOrDefault()) {")
-            for field in group["fields"]:
-                lines.append(
-                    "        if (!{}().Ok()) return false;".format(
-                        _cpp_field_name(field.name.name.text)
+
+            if is_always_true:
+                # Emit unconditional field checks (no if-block wrapper needed)
+                for field in group["fields"]:
+                    blocks.append(
+                        code_template.format_template(
+                            _TEMPLATES.ok_method_unconditional_check,
+                            field=_cpp_field_name(field.name.name.text),
+                        )
+                    )
+            else:
+                # Create a new scope for the if block
+                inner_scope = ExpressionScope(
+                    "emboss_reserved_if_scope_", parent=subexpressions
+                )
+
+                # Generate field checks using template
+                field_checks = []
+                for field in group["fields"]:
+                    field_checks.append(
+                        code_template.format_template(
+                            _TEMPLATES.ok_method_field_check,
+                            field=_cpp_field_name(field.name.name.text),
+                        )
+                    )
+
+                blocks.append(
+                    code_template.format_template(
+                        _TEMPLATES.ok_method_if_block,
+                        inner_scope_definitions=inner_scope.definition_code().rstrip(),
+                        condition=cond_result.rendered,
+                        field_checks="".join(field_checks),
                     )
                 )
-            lines.append("      }")
-            lines.append("    }")
 
-    return "\n".join([line for line in lines if line.strip()])
+    return "".join(blocks)
 
 
 def _generate_structure_definition(type_ir, ir, config: Config):

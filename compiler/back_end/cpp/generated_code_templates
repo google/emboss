@@ -124,7 +124,7 @@ class Generic${name}View final {
 
   ${enum_usings}
 
-  [[nodiscard]] bool Ok() const {
+  bool Ok() const {
     if (!IsComplete()) return false;
 ${parameter_ok_checks}
 ${ok_subexpressions}
@@ -132,8 +132,8 @@ ${field_ok_checks}
 ${requires_check}
     return true;
   }
-  [[nodiscard]] Storage BackingStorage() const { return backing_; }
-  [[nodiscard]] bool IsComplete() const {
+  Storage BackingStorage() const { return backing_; }
+  bool IsComplete() const {
     return backing_.Ok() && IntrinsicSizeIn${units}().Ok() &&
            backing_.SizeIn${units}() >=
                static_cast</**/ ::std::size_t>(
@@ -142,12 +142,12 @@ ${requires_check}
 ${size_method}
 
   template <typename OtherStorage>
-  [[nodiscard]] bool Equals(
+  bool Equals(
       Generic${name}View<OtherStorage> emboss_reserved_local_other) const {
     ${equals_method_body} return true;
   }
   template <typename OtherStorage>
-  [[nodiscard]] bool UncheckedEquals(
+  bool UncheckedEquals(
       Generic${name}View<OtherStorage> emboss_reserved_local_other) const {
     ${unchecked_equals_method_body} return true;
   }
@@ -172,7 +172,7 @@ ${size_method}
         emboss_reserved_local_other.IntrinsicSizeIn${units}().Read());
   }
   template <typename OtherStorage>
-  [[nodiscard]] bool TryToCopyFrom(
+  bool TryToCopyFrom(
       Generic${name}View<OtherStorage> emboss_reserved_local_other) const {
       return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
@@ -181,7 +181,7 @@ ${size_method}
 
 ${text_stream_methods}
 
-  [[nodiscard]] static constexpr bool IsAggregate() { return true; }
+  static constexpr bool IsAggregate() { return true; }
 
 ${field_method_declarations}
 
@@ -216,7 +216,7 @@ struct EmbossReservedInternalIsGeneric${name}View<
 };
 
 template <typename T>
-[[nodiscard]] inline Generic${name}View<
+inline Generic${name}View<
     /**/ ::emboss::support::ContiguousBuffer<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
@@ -231,7 +231,7 @@ Make${name}View(${constructor_parameters} T &&emboss_reserved_local_arg) {
 }
 
 template <typename T>
-[[nodiscard]] inline Generic${name}View</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+inline Generic${name}View</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
 Make${name}View(${constructor_parameters} T *emboss_reserved_local_data,
                  ::std::size_t emboss_reserved_local_size) {
   return Generic${name}View</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
@@ -240,7 +240,7 @@ Make${name}View(${constructor_parameters} T *emboss_reserved_local_data,
 }
 
 template <typename T, ::std::size_t kAlignment>
-[[nodiscard]] inline Generic${name}View<
+inline Generic${name}View<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
 MakeAligned${name}View(
     ${constructor_parameters} T *emboss_reserved_local_data,
@@ -375,18 +375,18 @@ ${write_fields}
     }
 
 // ** constant_structure_size_method ** ////////////////////////////////////////
-  [[nodiscard]] static constexpr ::std::size_t SizeIn${units}() {
+  static constexpr ::std::size_t SizeIn${units}() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeIn${units}().Read());
   }
-  [[nodiscard]] static constexpr bool SizeIsKnown() {
+  static constexpr bool SizeIsKnown() {
     return IntrinsicSizeIn${units}().Ok();
   }
 
 // ** runtime_structure_size_method ** /////////////////////////////////////////
-  [[nodiscard]] ::std::size_t SizeIn${units}() const {
+  ::std::size_t SizeIn${units}() const {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeIn${units}().Read());
   }
-  [[nodiscard]] bool SizeIsKnown() const { return IntrinsicSizeIn${units}().Ok(); }
+  bool SizeIsKnown() const { return IntrinsicSizeIn${units}().Ok(); }
 
 
 // ** ok_method_test ** ////////////////////////////////////////////////////////
@@ -400,6 +400,45 @@ ${write_fields}
       // Ok().
       if (emboss_reserved_local_field_present.ValueOrDefault() && !${field}.Ok()) return false;
     }
+
+
+// ** ok_method_switch_block ** ////////////////////////////////////////////////
+    // Check fields that depend on a common discriminant using a switch.
+    {
+${inner_scope_definitions}
+      const auto emboss_reserved_switch_discrim = ${discriminant};
+      if (!emboss_reserved_switch_discrim.Known()) return false;
+      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
+${switch_cases}
+      }
+    }
+
+
+// ** ok_method_switch_case ** /////////////////////////////////////////////////
+        case ${case_value}:
+          if (!${field}().Ok()) return false;
+          break;
+
+
+// ** ok_method_if_block ** ////////////////////////////////////////////////////
+    // Check fields that share a common condition.
+    {
+${inner_scope_definitions}
+      const auto emboss_reserved_cond = ${condition};
+      if (!emboss_reserved_cond.Known()) return false;
+      if (emboss_reserved_cond.ValueOrDefault()) {
+${field_checks}
+      }
+    }
+
+
+// ** ok_method_field_check ** /////////////////////////////////////////////////
+        if (!${field}().Ok()) return false;
+
+
+// ** ok_method_unconditional_check ** /////////////////////////////////////////
+    // Field is always present (condition is statically true).
+    if (!${field}().Ok()) return false;
 
 
 // ** equals_method_test ** ////////////////////////////////////////////////////
@@ -491,8 +530,8 @@ struct ${name} {
 
 // ** structure_single_field_method_declarations ** ////////////////////////////
  ${visibility}:
-  [[nodiscard]] typename ${type_reader} ${name}() const;
-  [[nodiscard]] ::emboss::support::Maybe<bool> has_${name}() const;
+  typename ${type_reader} ${name}() const;
+  ::emboss::support::Maybe<bool> has_${name}() const;
 
 
 // ** structure_single_field_method_definitions ** /////////////////////////////
@@ -547,9 +586,9 @@ Generic${parent_type}View<Storage>::has_${name}() const {
         default;
     ~${virtual_view_type_name}() = default;
 
-    [[nodiscard]] static constexpr ${logical_type} Read();
-    [[nodiscard]] static constexpr ${logical_type} UncheckedRead();
-    [[nodiscard]] static constexpr bool Ok() { return true; }
+    static constexpr ${logical_type} Read();
+    static constexpr ${logical_type} UncheckedRead();
+    static constexpr bool Ok() { return true; }
     template <class Stream>
     void WriteToTextStream(Stream *emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions
@@ -558,13 +597,13 @@ Generic${parent_type}View<Storage>::has_${name}() const {
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
-    [[nodiscard]] static constexpr bool IsAggregate() { return false; }
+    static constexpr bool IsAggregate() { return false; }
   };
 
-  [[nodiscard]] static constexpr ${virtual_view_type_name} ${name}() {
+  static constexpr ${virtual_view_type_name} ${name}() {
     return ${virtual_view_type_name}();
   }
-  [[nodiscard]] static constexpr ::emboss::support::Maybe<bool> has_${name}() {
+  static constexpr ::emboss::support::Maybe<bool> has_${name}() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
@@ -607,14 +646,14 @@ Generic${parent_type}View<
         default;
     ~${virtual_view_type_name}() = default;
 
-    [[nodiscard]] ${logical_type} Read() const {
+    ${logical_type} Read() const {
       EMBOSS_CHECK(view_.has_${name}().ValueOr(false));
       auto emboss_reserved_local_value = MaybeRead();
       EMBOSS_CHECK(emboss_reserved_local_value.Known());
       EMBOSS_CHECK(ValueIsOk(emboss_reserved_local_value.ValueOrDefault()));
       return emboss_reserved_local_value.ValueOrDefault();
     }
-    [[nodiscard]] ${logical_type} UncheckedRead() const {
+    ${logical_type} UncheckedRead() const {
       // UncheckedRead() on a virtual still calls Ok() on its dependencies;
       // i.e., it still does some bounds checking.  This is because of a subtle
       // case, illustrated by the example below:
@@ -648,7 +687,7 @@ Generic${parent_type}View<
     }
     // Ok() can be false if some dependency is unreadable, *or* if there is an
     // error somewhere in the arithmetic -- say, division by zero.
-    [[nodiscard]] bool Ok() const {
+    bool Ok() const {
       auto emboss_reserved_local_value = MaybeRead();
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
@@ -661,17 +700,17 @@ Generic${parent_type}View<
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
-    [[nodiscard]] static constexpr bool IsAggregate() { return false; }
+    static constexpr bool IsAggregate() { return false; }
 
 ${write_methods}
 
    private:
-    [[nodiscard]] ::emboss::support::Maybe</**/ ${logical_type}> MaybeRead() const {
+    ::emboss::support::Maybe</**/ ${logical_type}> MaybeRead() const {
 ${read_subexpressions}
       return ${read_value};
     }
 
-    [[nodiscard]] static constexpr bool ValueIsOk(
+    static constexpr bool ValueIsOk(
         ${logical_type} emboss_reserved_local_value) {
       return (void)emboss_reserved_local_value,  // Silence -Wunused-parameter
              ${value_is_ok}.ValueOr(false);
@@ -679,12 +718,12 @@ ${read_subexpressions}
 
     const Generic${parent_type}View view_;
   };
-  [[nodiscard]] ${virtual_view_type_name} ${name}() const;
-  [[nodiscard]] ::emboss::support::Maybe<bool> has_${name}() const;
+  ${virtual_view_type_name} ${name}() const;
+  ::emboss::support::Maybe<bool> has_${name}() const;
 
 
 // ** structure_single_virtual_field_write_methods ** //////////////////////////
-    [[nodiscard]] bool TryToWrite(${logical_type} emboss_reserved_local_value) {
+    bool TryToWrite(${logical_type} emboss_reserved_local_value) {
       const auto emboss_reserved_local_maybe_new_value = ${transform};
       if (!CouldWriteValue(emboss_reserved_local_value)) return false;
       return view_.${destination}.TryToWrite(
@@ -698,7 +737,7 @@ ${read_subexpressions}
     void UncheckedWrite(${logical_type} emboss_reserved_local_value) {
       view_.${destination}.UncheckedWrite((${transform}).ValueOrDefault());
     }
-    [[nodiscard]] bool CouldWriteValue(${logical_type} emboss_reserved_local_value) {
+    bool CouldWriteValue(${logical_type} emboss_reserved_local_value) {
       if (!ValueIsOk(emboss_reserved_local_value)) return false;
       const auto emboss_reserved_local_maybe_new_value = ${transform};
       if (!emboss_reserved_local_maybe_new_value.Known()) return false;
@@ -731,11 +770,11 @@ Generic${parent_type}View<Storage>::has_${name}() const {
 // ** structure_single_field_indirect_method_declarations ** ///////////////////
  ${visibility}:
   // The "this->" is required for (some versions of?) GCC.
-  [[nodiscard]] auto ${name}() const -> decltype(this->${aliased_field}) {
+  auto ${name}() const -> decltype(this->${aliased_field}) {
    return has_${name}().ValueOrDefault() ? ${aliased_field}
                                           : decltype(this->${aliased_field})();
   }
-  [[nodiscard]] ::emboss::support::Maybe<bool> has_${name}() const;
+  ::emboss::support::Maybe<bool> has_${name}() const;
 
 
 // ** struct_single_field_indirect_method_definitions ** ///////////////////////
@@ -749,14 +788,14 @@ Generic${parent_type}View<Storage>::has_${name}() const {
 // ** structure_single_parameter_field_method_declarations ** //////////////////
  private:
   // TODO(bolms): Is there any harm if these are public methods?
-  [[nodiscard]] constexpr ::emboss::support::MaybeConstantView</**/ ${logical_type}>
+  constexpr ::emboss::support::MaybeConstantView</**/ ${logical_type}>
   ${name}() const {
     return parameters_initialized_
                ? ::emboss::support::MaybeConstantView</**/ ${logical_type}>(
                      ${name}_)
                : ::emboss::support::MaybeConstantView</**/ ${logical_type}>();
   }
-  [[nodiscard]] constexpr ::emboss::support::Maybe<bool> has_${name}() const {
+  constexpr ::emboss::support::Maybe<bool> has_${name}() const {
     return ::emboss::support::Maybe<bool>(parameters_initialized_);
   }
 
