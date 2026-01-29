@@ -610,3 +610,9 @@ cpp_golden_test(
     emb_file = "//testdata:imported_genfiles.emb",
     golden_file = "//testdata/golden_cpp:imported_genfiles.emb.h",
 )
+
+cpp_golden_test(
+    name = "many_conditionals_golden_test",
+    emb_file = "//testdata:many_conditionals.emb",
+    golden_file = "//testdata/golden_cpp:many_conditionals.emb.h",
+)
