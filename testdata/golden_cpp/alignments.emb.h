@@ -680,7 +680,7 @@ class GenericAlignmentsView final {
   void WriteToTextStream(
       Stream *emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
-    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
+    auto emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
     if (emboss_reserved_local_options.multiline()) {
       emboss_reserved_local_stream->Write("{\n");
@@ -691,20 +691,28 @@ class GenericAlignmentsView final {
     if (has_zero_offset().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           zero_offset().IsAggregate() || zero_offset().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("zero_offset: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"zero_offset\":");
+        } else {
+          emboss_reserved_local_stream->Write("zero_offset: ");
+        }
         zero_offset().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -721,20 +729,28 @@ class GenericAlignmentsView final {
     if (has_zero_offset_substructure().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           zero_offset_substructure().IsAggregate() || zero_offset_substructure().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("zero_offset_substructure: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"zero_offset_substructure\":");
+        } else {
+          emboss_reserved_local_stream->Write("zero_offset_substructure: ");
+        }
         zero_offset_substructure().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -751,20 +767,28 @@ class GenericAlignmentsView final {
     if (has_two_offset_substructure().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           two_offset_substructure().IsAggregate() || two_offset_substructure().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("two_offset_substructure: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"two_offset_substructure\":");
+        } else {
+          emboss_reserved_local_stream->Write("two_offset_substructure: ");
+        }
         two_offset_substructure().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -781,20 +805,28 @@ class GenericAlignmentsView final {
     if (has_three_offset().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           three_offset().IsAggregate() || three_offset().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("three_offset: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"three_offset\":");
+        } else {
+          emboss_reserved_local_stream->Write("three_offset: ");
+        }
         three_offset().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -811,20 +843,28 @@ class GenericAlignmentsView final {
     if (has_four_offset().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           four_offset().IsAggregate() || four_offset().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("four_offset: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"four_offset\":");
+        } else {
+          emboss_reserved_local_stream->Write("four_offset: ");
+        }
         four_offset().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -841,20 +881,28 @@ class GenericAlignmentsView final {
     if (has_eleven_offset().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           eleven_offset().IsAggregate() || eleven_offset().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("eleven_offset: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"eleven_offset\":");
+        } else {
+          emboss_reserved_local_stream->Write("eleven_offset: ");
+        }
         eleven_offset().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -871,20 +919,28 @@ class GenericAlignmentsView final {
     if (has_twelve_offset().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           twelve_offset().IsAggregate() || twelve_offset().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("twelve_offset: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"twelve_offset\":");
+        } else {
+          emboss_reserved_local_stream->Write("twelve_offset: ");
+        }
         twelve_offset().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -901,20 +957,28 @@ class GenericAlignmentsView final {
     if (has_zero_offset_four_stride_array().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           zero_offset_four_stride_array().IsAggregate() || zero_offset_four_stride_array().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("zero_offset_four_stride_array: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"zero_offset_four_stride_array\":");
+        } else {
+          emboss_reserved_local_stream->Write("zero_offset_four_stride_array: ");
+        }
         zero_offset_four_stride_array().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -931,20 +995,28 @@ class GenericAlignmentsView final {
     if (has_zero_offset_six_stride_array().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           zero_offset_six_stride_array().IsAggregate() || zero_offset_six_stride_array().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("zero_offset_six_stride_array: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"zero_offset_six_stride_array\":");
+        } else {
+          emboss_reserved_local_stream->Write("zero_offset_six_stride_array: ");
+        }
         zero_offset_six_stride_array().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -961,20 +1033,28 @@ class GenericAlignmentsView final {
     if (has_three_offset_four_stride_array().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           three_offset_four_stride_array().IsAggregate() || three_offset_four_stride_array().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("three_offset_four_stride_array: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"three_offset_four_stride_array\":");
+        } else {
+          emboss_reserved_local_stream->Write("three_offset_four_stride_array: ");
+        }
         three_offset_four_stride_array().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -991,20 +1071,28 @@ class GenericAlignmentsView final {
     if (has_four_offset_six_stride_array().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           four_offset_six_stride_array().IsAggregate() || four_offset_six_stride_array().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("four_offset_six_stride_array: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"four_offset_six_stride_array\":");
+        } else {
+          emboss_reserved_local_stream->Write("four_offset_six_stride_array: ");
+        }
         four_offset_six_stride_array().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -1020,11 +1108,18 @@ class GenericAlignmentsView final {
 
     (void)emboss_reserved_local_wrote_field;
     if (emboss_reserved_local_options.multiline()) {
+      if (emboss_reserved_local_wrote_field &&
+          emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write("\n");
+      }
       emboss_reserved_local_stream->Write(
           emboss_reserved_local_options.current_indent());
       emboss_reserved_local_stream->Write("}");
     } else {
-      emboss_reserved_local_stream->Write(" }");
+      if (!emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write(" ");
+      }
+      emboss_reserved_local_stream->Write("}");
     }
   }
 
@@ -1472,7 +1567,7 @@ class GenericPlaceholder4View final {
   void WriteToTextStream(
       Stream *emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
-    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
+    auto emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
     if (emboss_reserved_local_options.multiline()) {
       emboss_reserved_local_stream->Write("{\n");
@@ -1483,20 +1578,28 @@ class GenericPlaceholder4View final {
     if (has_dummy().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           dummy().IsAggregate() || dummy().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("dummy: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"dummy\":");
+        } else {
+          emboss_reserved_local_stream->Write("dummy: ");
+        }
         dummy().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -1512,11 +1615,18 @@ class GenericPlaceholder4View final {
 
     (void)emboss_reserved_local_wrote_field;
     if (emboss_reserved_local_options.multiline()) {
+      if (emboss_reserved_local_wrote_field &&
+          emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write("\n");
+      }
       emboss_reserved_local_stream->Write(
           emboss_reserved_local_options.current_indent());
       emboss_reserved_local_stream->Write("}");
     } else {
-      emboss_reserved_local_stream->Write(" }");
+      if (!emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write(" ");
+      }
+      emboss_reserved_local_stream->Write("}");
     }
   }
 
@@ -1934,7 +2044,7 @@ class GenericPlaceholder6View final {
   void WriteToTextStream(
       Stream *emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
-    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
+    auto emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
     if (emboss_reserved_local_options.multiline()) {
       emboss_reserved_local_stream->Write("{\n");
@@ -1945,20 +2055,28 @@ class GenericPlaceholder6View final {
     if (has_zero_offset().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           zero_offset().IsAggregate() || zero_offset().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("zero_offset: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"zero_offset\":");
+        } else {
+          emboss_reserved_local_stream->Write("zero_offset: ");
+        }
         zero_offset().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -1975,20 +2093,28 @@ class GenericPlaceholder6View final {
     if (has_two_offset().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           two_offset().IsAggregate() || two_offset().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("two_offset: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"two_offset\":");
+        } else {
+          emboss_reserved_local_stream->Write("two_offset: ");
+        }
         two_offset().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -2004,11 +2130,18 @@ class GenericPlaceholder6View final {
 
     (void)emboss_reserved_local_wrote_field;
     if (emboss_reserved_local_options.multiline()) {
+      if (emboss_reserved_local_wrote_field &&
+          emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write("\n");
+      }
       emboss_reserved_local_stream->Write(
           emboss_reserved_local_options.current_indent());
       emboss_reserved_local_stream->Write("}");
     } else {
-      emboss_reserved_local_stream->Write(" }");
+      if (!emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write(" ");
+      }
+      emboss_reserved_local_stream->Write("}");
     }
   }
 

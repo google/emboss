@@ -18,9 +18,9 @@
 #include <array>
 #include <numeric>
 
-#include "testing/base/public/gunit.h"
-#include "third_party/emboss/runtime/cpp/emboss_text_util.h"
-#include "third_party/emboss/testdata/text_format.emb.h"
+#include "gtest/gtest.h"
+#include "runtime/cpp/emboss_text_util.h"
+#include "testdata/text_format.emb.h"
 
 namespace emboss {
 namespace test {
@@ -99,15 +99,15 @@ TEST(TextFormat, JsonOutput) {
 
   const auto view = MakeJsonTestStructView(&values);
   EXPECT_EQ(
-      "{\"one_byte_enum\": \"ZERO\", \"seven_bit_uint\": 1, \"one_bit_flag\": "
-      "false, \"one_byte_uint\": 2, \"two_byte_uint\": 1027, "
-      "\"four_byte_uint\": 134678021, \"eight_byte_uint\": "
-      "1157159078456920585, \"uint8_array\": [17, 18, 19, 20, 21, 22, 23, 24, "
-      "25, 26], \"uint16_array\": [7195, 7709, 8223, 8737, 9251, 9765, 10279, "
-      "10793, 11307, 11821], \"struct_array\": [{\"element_one\": 47, "
-      "\"element_two\": 48, \"element_three\": 49, \"element_four\": 50}, "
-      "{\"element_one\": 51, \"element_two\": 52, \"element_three\": 53, "
-      "\"element_four\": 54}]}",
+      "{\"one_byte_enum\":\"ZERO\",\"seven_bit_uint\":1,\"one_bit_flag\":"
+      "false,\"one_byte_uint\":2,\"two_byte_uint\":1027,"
+      "\"four_byte_uint\":134678021,\"eight_byte_uint\":"
+      "1157159078456920585,\"uint8_array\":[17,18,19,20,21,22,23,24,"
+      "25,26],\"uint16_array\":[7195,7709,8223,8737,9251,9765,10279,"
+      "10793,11307,11821],\"struct_array\":[{\"element_one\":47,"
+      "\"element_two\":48,\"element_three\":49,\"element_four\":50},"
+      "{\"element_one\":51,\"element_two\":52,\"element_three\":53,"
+      "\"element_four\":54}]}",
       ::emboss::WriteToString(view, TextOutputOptions().Json(true)));
 }
 
@@ -122,15 +122,15 @@ TEST(TextFormat, JsonOutputRobustness) {
                      .WithDigitGrouping(true)
                      .WithNumericBase(16);
   EXPECT_EQ(
-      "{\"one_byte_enum\": \"ZERO\", \"seven_bit_uint\": 1, \"one_bit_flag\": "
-      "false, \"one_byte_uint\": 2, \"two_byte_uint\": 1027, "
-      "\"four_byte_uint\": 134678021, \"eight_byte_uint\": "
-      "1157159078456920585, \"uint8_array\": [17, 18, 19, 20, 21, 22, 23, 24, "
-      "25, 26], \"uint16_array\": [7195, 7709, 8223, 8737, 9251, 9765, 10279, "
-      "10793, 11307, 11821], \"struct_array\": [{\"element_one\": 47, "
-      "\"element_two\": 48, \"element_three\": 49, \"element_four\": 50}, "
-      "{\"element_one\": 51, \"element_two\": 52, \"element_three\": 53, "
-      "\"element_four\": 54}]}",
+      "{\"one_byte_enum\":\"ZERO\",\"seven_bit_uint\":1,\"one_bit_flag\":"
+      "false,\"one_byte_uint\":2,\"two_byte_uint\":1027,"
+      "\"four_byte_uint\":134678021,\"eight_byte_uint\":"
+      "1157159078456920585,\"uint8_array\":[17,18,19,20,21,22,23,24,"
+      "25,26],\"uint16_array\":[7195,7709,8223,8737,9251,9765,10279,"
+      "10793,11307,11821],\"struct_array\":[{\"element_one\":47,"
+      "\"element_two\":48,\"element_three\":49,\"element_four\":50},"
+      "{\"element_one\":51,\"element_two\":52,\"element_three\":53,"
+      "\"element_four\":54}]}",
       ::emboss::WriteToString(view, options));
 }
 
@@ -172,8 +172,32 @@ TEST(TextFormat, MultilineAndPartial) {
 TEST(TextFormat, JsonSkippedFieldOutput) {
   ::std::array<char, 3> values = {1, 2, 3};
   const auto view = MakeStructWithSkippedFieldsView(&values);
-  EXPECT_EQ("{\"a\": 1, \"c\": 3}",
+  EXPECT_EQ("{\"a\":1,\"c\":3}",
             ::emboss::WriteToString(view, TextOutputOptions().Json(true)));
+}
+
+TEST(TextFormat, JsonLargeIntegerAsString) {
+  ::std::array<char, 57> values = {};
+  ::std::iota(values.begin(), values.end(), 0);
+
+  const auto view = MakeJsonTestStructView(&values);
+  auto options = ::emboss::TextOutputOptions()
+                     .Json(true)
+                     .WithJsonLargeIntegerHandling(
+                         JsonLargeIntegerHandling::kLargeAsString);
+  // With kLargeAsString, the eight_byte_uint should be quoted, but smaller
+  // integers should remain as numbers.
+  EXPECT_EQ(
+      "{\"one_byte_enum\":\"ZERO\",\"seven_bit_uint\":1,\"one_bit_flag\":"
+      "false,\"one_byte_uint\":2,\"two_byte_uint\":1027,"
+      "\"four_byte_uint\":134678021,\"eight_byte_uint\":"
+      "\"1157159078456920585\",\"uint8_array\":[17,18,19,20,21,22,23,24,"
+      "25,26],\"uint16_array\":[7195,7709,8223,8737,9251,9765,10279,"
+      "10793,11307,11821],\"struct_array\":[{\"element_one\":47,"
+      "\"element_two\":48,\"element_three\":49,\"element_four\":50},"
+      "{\"element_one\":51,\"element_two\":52,\"element_three\":53,"
+      "\"element_four\":54}]}",
+      ::emboss::WriteToString(view, options));
 }
 
 }  // namespace

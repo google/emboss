@@ -30,9 +30,20 @@
 #include <utility>
 #include <vector>
 
-#include "third_party/emboss/runtime/cpp/emboss_defines.h"
+#include "runtime/cpp/emboss_defines.h"
 
 namespace emboss {
+
+// Controls how large integers are serialized in JSON output.  JSON numbers are
+// 64-bit floating-point, so integers outside the range [-2^53, 2^53] may lose
+// precision when parsed by standard JSON parsers.
+enum class JsonLargeIntegerHandling {
+  // Serialize all integers as numbers (default, but may lose precision for
+  // large values).
+  kAsNumber,
+  // Serialize integers larger than 32 bits as quoted strings.
+  kLargeAsString,
+};
 
 // TextOutputOptions are used to configure text output.  Typically, one can just
 // use a default TextOutputOptions() (for compact output) or MultilineText()
@@ -89,14 +100,24 @@ class TextOutputOptions final {
     return result;
   }
 
+  TextOutputOptions WithJsonLargeIntegerHandling(
+      JsonLargeIntegerHandling new_value) const {
+    TextOutputOptions result = *this;
+    result.json_large_integer_handling_ = new_value;
+    return result;
+  }
+
   ::std::string current_indent() const { return current_indent_; }
   ::std::string indent() const { return indent_; }
   bool multiline() const { return multiline_; }
-  bool digit_grouping() const { return digit_grouping_; }
-  bool comments() const { return comments_; }
-  ::std::uint8_t numeric_base() const { return numeric_base_; }
+  bool digit_grouping() const { return digit_grouping_ && !json_; }
+  bool comments() const { return comments_ && !json_; }
+  ::std::uint8_t numeric_base() const { return json_ ? 10 : numeric_base_; }
   bool json() const { return json_; }
   bool allow_partial_output() const { return allow_partial_output_; }
+  JsonLargeIntegerHandling json_large_integer_handling() const {
+    return json_large_integer_handling_;
+  }
 
  private:
   ::std::string indent_;
@@ -107,6 +128,8 @@ class TextOutputOptions final {
   bool allow_partial_output_ = false;
   bool json_ = false;
   ::std::uint8_t numeric_base_ = 10;
+  JsonLargeIntegerHandling json_large_integer_handling_ =
+      JsonLargeIntegerHandling::kAsNumber;
 };
 
 namespace support {
@@ -348,17 +371,26 @@ void WriteIntegerToTextStream(IntegralType value, Stream *stream,
 template <class Stream, class View>
 void WriteIntegerViewToTextStream(View *view, Stream *stream,
                                   const TextOutputOptions &options) {
-  if (options.json()) {
-    WriteIntegerToTextStream(view->Read(), stream, 10, false);
-  } else {
-    WriteIntegerToTextStream(view->Read(), stream, options.numeric_base(),
+  // In JSON mode with kLargeAsString, serialize integers larger than 32 bits
+  // as quoted strings to avoid precision loss in JSON parsers.
+  bool quote_value =
+      options.json() &&
+      options.json_large_integer_handling() ==
+          JsonLargeIntegerHandling::kLargeAsString &&
+      sizeof(typename View::ValueType) > 4;
+  if (quote_value) {
+    stream->Write("\"");
+  }
+  WriteIntegerToTextStream(view->Read(), stream, options.numeric_base(),
+                           options.digit_grouping());
+  if (quote_value) {
+    stream->Write("\"");
+  }
+  if (options.comments()) {
+    stream->Write("  # ");
+    WriteIntegerToTextStream(view->Read(), stream,
+                             options.numeric_base() == 10 ? 16 : 10,
                              options.digit_grouping());
-    if (options.comments()) {
-      stream->Write("  # ");
-      WriteIntegerToTextStream(view->Read(), stream,
-                               options.numeric_base() == 10 ? 16 : 10,
-                               options.digit_grouping());
-    }
   }
 }
 
@@ -670,7 +702,7 @@ void WriteEnumViewToTextStream(View *view, Stream *stream,
   // If the enum value has no known name, then write its numeric value
   // instead.  If it does have a known name, and comments are enabled on the
   // output, then write the numeric value as a comment.
-  if (name == nullptr || (options.comments() && !options.json())) {
+  if (name == nullptr || options.comments()) {
     if (name != nullptr) {
       stream->Write("  # ");
     }
@@ -678,8 +710,7 @@ void WriteEnumViewToTextStream(View *view, Stream *stream,
         static_cast<
             typename ::std::underlying_type<typename View::ValueType>::type>(
             view->Read()),
-        stream, options.json() ? 10 : options.numeric_base(),
-        options.json() ? false : options.digit_grouping());
+        stream, options.numeric_base(), options.digit_grouping());
   }
 }
 
@@ -789,9 +820,6 @@ void WriteArrayToTextStream(Array *array, Stream *stream,
                             const TextOutputOptions &options) {
   TextOutputOptions element_options = options.PlusOneIndent();
   if (options.json()) {
-    element_options = element_options.WithComments(false)
-                          .WithDigitGrouping(false)
-                          .WithNumericBase(10);
     stream->Write("[");
     bool first = true;
     for (::std::size_t i = 0; i < array->ElementCount(); ++i) {
@@ -803,8 +831,6 @@ void WriteArrayToTextStream(Array *array, Stream *stream,
         if (options.multiline()) {
           stream->Write("\n");
           stream->Write(element_options.current_indent());
-        } else if (!first) {
-          stream->Write(" ");
         }
         (*array)[i].WriteToTextStream(stream, element_options);
         first = false;

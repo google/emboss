@@ -14,10 +14,6 @@
 
 #include "runtime/cpp/emboss_prelude.h"
 
-#include "runtime/cpp/emboss_enum_view.h"
-
-#include "runtime/cpp/emboss_text_util.h"
-
 
 
 /* NOLINTBEGIN */
@@ -38,79 +34,6 @@ enum class Foo : ::std::uint64_t {
   VALUE = static_cast</**/::std::int32_t>(10LL),
 
 };
-template <class Enum>
-class EnumTraits;
-
-template <>
-class EnumTraits<Foo> final {
- public:
-  static bool TryToGetEnumFromName(const char *emboss_reserved_local_name,
-                                   Foo *emboss_reserved_local_result) {
-    if (emboss_reserved_local_name == nullptr) return false;
-    if (!strcmp("VALUE", emboss_reserved_local_name)) {
-      *emboss_reserved_local_result = Foo::VALUE;
-      return true;
-    }
-
-    return false;
-  }
-
-  static const char *TryToGetNameFromEnum(
-      Foo emboss_reserved_local_value) {
-    switch (emboss_reserved_local_value) {
-      case Foo::VALUE: return "VALUE";
-
-      default: return nullptr;
-    }
-  }
-
-  static bool EnumIsKnown(Foo emboss_reserved_local_value) {
-    switch (emboss_reserved_local_value) {
-      case Foo::VALUE: return true;
-
-      default:
-        return false;
-    }
-  }
-
-  static ::std::ostream &SendToOstream(::std::ostream &emboss_reserved_local_os,
-                                       Foo emboss_reserved_local_value) {
-    const char *emboss_reserved_local_name =
-        TryToGetNameFromEnum(emboss_reserved_local_value);
-    if (emboss_reserved_local_name == nullptr) {
-      emboss_reserved_local_os
-          << static_cast</**/ ::std::underlying_type<Foo>::type>(
-                 emboss_reserved_local_value);
-    } else {
-      emboss_reserved_local_os << emboss_reserved_local_name;
-    }
-    return emboss_reserved_local_os;
-  }
-};
-
-static inline bool TryToGetEnumFromName(
-    const char *emboss_reserved_local_name,
-    Foo *emboss_reserved_local_result) {
-  return EnumTraits<Foo>::TryToGetEnumFromName(
-      emboss_reserved_local_name, emboss_reserved_local_result);
-}
-
-static inline const char *TryToGetNameFromEnum(
-    Foo emboss_reserved_local_value) {
-  return EnumTraits<Foo>::TryToGetNameFromEnum(
-      emboss_reserved_local_value);
-}
-
-static inline bool EnumIsKnown(Foo emboss_reserved_local_value) {
-  return EnumTraits<Foo>::EnumIsKnown(emboss_reserved_local_value);
-}
-
-static inline ::std::ostream &operator<<(
-    ::std::ostream &emboss_reserved_local_os,
-    Foo emboss_reserved_local_value) {
-  return EnumTraits<Foo>::SendToOstream(emboss_reserved_local_os,
-                                             emboss_reserved_local_value);
-}
 
 
 
@@ -263,92 +186,6 @@ class GenericBarView final {
       return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
         emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
-  }
-
-  template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
-    ::std::string emboss_reserved_local_brace;
-    if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
-                                      &emboss_reserved_local_brace))
-      return false;
-    if (emboss_reserved_local_brace != "{") return false;
-    for (;;) {
-      ::std::string emboss_reserved_local_name;
-      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
-                                        &emboss_reserved_local_name))
-        return false;
-      if (emboss_reserved_local_name == ",")
-        if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
-                                          &emboss_reserved_local_name))
-          return false;
-      if (emboss_reserved_local_name == "}") return true;
-      ::std::string emboss_reserved_local_colon;
-      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
-                                        &emboss_reserved_local_colon))
-        return false;
-      if (emboss_reserved_local_colon != ":") return false;
-      if (emboss_reserved_local_name == "foo") {
-        if (!foo().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
-          return false;
-        }
-        continue;
-      }
-
-      return false;
-    }
-  }
-
-  template <class Stream>
-  void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
-      ::emboss::TextOutputOptions emboss_reserved_local_options) const {
-    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
-        emboss_reserved_local_options.PlusOneIndent();
-    if (emboss_reserved_local_options.multiline()) {
-      emboss_reserved_local_stream->Write("{\n");
-    } else {
-      emboss_reserved_local_stream->Write("{");
-    }
-    bool emboss_reserved_local_wrote_field = false;
-    if (has_foo().ValueOr(false)) {
-      if (!emboss_reserved_local_field_options.allow_partial_output() ||
-          foo().IsAggregate() || foo().Ok()) {
-        if (emboss_reserved_local_field_options.multiline()) {
-          emboss_reserved_local_stream->Write(
-              emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
-          emboss_reserved_local_stream->Write(" ");
-        }
-        emboss_reserved_local_stream->Write("foo: ");
-        foo().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
-        emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
-          emboss_reserved_local_stream->Write("\n");
-        }
-      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
-                 emboss_reserved_local_field_options.comments() &&
-                 !foo().IsAggregate() && !foo().Ok()) {
-        if (emboss_reserved_local_field_options.multiline()) {
-          emboss_reserved_local_stream->Write(
-              emboss_reserved_local_field_options.current_indent());
-        }
-        emboss_reserved_local_stream->Write("# foo: UNREADABLE\n");
-      }
-    }
-
-    (void)emboss_reserved_local_wrote_field;
-    if (emboss_reserved_local_options.multiline()) {
-      emboss_reserved_local_stream->Write(
-          emboss_reserved_local_options.current_indent());
-      emboss_reserved_local_stream->Write("}");
-    } else {
-      emboss_reserved_local_stream->Write(" }");
-    }
   }
 
 
