@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2024 Google LLC
+# Copyright 2026 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Runs black to fix Python formatting in-place.
-# Usage: bazel run //:black_fix -- .
+# Checks Python formatting without modifying files.
+# Usage: bazel run //:black_check
 
 # Change to workspace directory
 cd "${BUILD_WORKSPACE_DIRECTORY}" || exit 1
@@ -24,4 +24,4 @@ cd "${BUILD_WORKSPACE_DIRECTORY}" || exit 1
 RUNFILES_DIR="${BASH_SOURCE[0]}.runfiles"
 BLACK_RUNNER="${RUNFILES_DIR}/_main/black_runner"
 
-exec "${BLACK_RUNNER}" "$@"
+exec "${BLACK_RUNNER}" --check --diff .
