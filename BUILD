@@ -25,20 +25,20 @@ exports_files([
 # Black formatter binary
 py_binary(
     name = "black_runner",
-    srcs = ["black_runner.py"],
+    srcs = ["scripts/black_runner.py"],
     deps = [requirement("black")],
 )
 
 # Fix formatting: bazel run //:black_fix -- .
 sh_binary(
     name = "black_fix",
-    srcs = ["black_fix.sh"],
+    srcs = ["scripts/black_fix.sh"],
     data = [":black_runner"],
 )
 
 # Check formatting: bazel run //:black_check
 sh_binary(
     name = "black_check",
-    srcs = ["black_check.sh"],
+    srcs = ["scripts/black_check.sh"],
     data = [":black_runner"],
 )
