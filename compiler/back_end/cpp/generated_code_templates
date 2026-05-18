@@ -398,6 +398,10 @@ ${write_fields}
     if (has_${field}.ValueOrDefault() && !${field}.Ok()) return false;
 
 
+// ** ok_method_unconditional_check ** /////////////////////////////////////////
+    if (!${field}.Ok()) return false;
+
+
 // ** equals_method_test ** ////////////////////////////////////////////////////
     // If this->${field} is not equal to emboss_reserved_local_other.${field},
     // then the structures are not equal.

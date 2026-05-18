@@ -115,28 +115,22 @@ class GenericRegisterLayoutView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_x().Known()) return false;
-    if (has_x().ValueOrDefault() && !x().Ok()) return false;
+    if (!x().Ok()) return false;
 
 
-    if (!has_l().Known()) return false;
-    if (has_l().ValueOrDefault() && !l().Ok()) return false;
+    if (!l().Ok()) return false;
 
 
-    if (!has_h().Known()) return false;
-    if (has_h().ValueOrDefault() && !h().Ok()) return false;
+    if (!h().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBits().Known()) return false;
-    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
+    if (!IntrinsicSizeInBits().Ok()) return false;
 
 
-    if (!has_MaxSizeInBits().Known()) return false;
-    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
+    if (!MaxSizeInBits().Ok()) return false;
 
 
-    if (!has_MinSizeInBits().Known()) return false;
-    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
+    if (!MinSizeInBits().Ok()) return false;
 
 
 
@@ -695,20 +689,16 @@ class GenericArrayElementView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_a().Known()) return false;
-    if (has_a().ValueOrDefault() && !a().Ok()) return false;
+    if (!a().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -1134,32 +1124,25 @@ class GenericEmbossReservedAnonymousField1View final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_a0().Known()) return false;
-    if (has_a0().ValueOrDefault() && !a0().Ok()) return false;
+    if (!a0().Ok()) return false;
 
 
-    if (!has_s0().Known()) return false;
-    if (has_s0().ValueOrDefault() && !s0().Ok()) return false;
+    if (!s0().Ok()) return false;
 
 
-    if (!has_l0().Known()) return false;
-    if (has_l0().ValueOrDefault() && !l0().Ok()) return false;
+    if (!l0().Ok()) return false;
 
 
-    if (!has_h0().Known()) return false;
-    if (has_h0().ValueOrDefault() && !h0().Ok()) return false;
+    if (!h0().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBits().Known()) return false;
-    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
+    if (!IntrinsicSizeInBits().Ok()) return false;
 
 
-    if (!has_MaxSizeInBits().Known()) return false;
-    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
+    if (!MaxSizeInBits().Ok()) return false;
 
 
-    if (!has_MinSizeInBits().Known()) return false;
-    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
+    if (!MinSizeInBits().Ok()) return false;
 
 
 
@@ -1791,28 +1774,22 @@ class GenericComplexView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_s().Known()) return false;
-    if (has_s().ValueOrDefault() && !s().Ok()) return false;
+    if (!s().Ok()) return false;
 
 
-    if (!has_u().Known()) return false;
-    if (has_u().ValueOrDefault() && !u().Ok()) return false;
+    if (!u().Ok()) return false;
 
 
-    if (!has_i().Known()) return false;
-    if (has_i().ValueOrDefault() && !i().Ok()) return false;
+    if (!i().Ok()) return false;
 
 
-    if (!has_b().Known()) return false;
-    if (has_b().ValueOrDefault() && !b().Ok()) return false;
+    if (!b().Ok()) return false;
 
 
-    if (!has_a().Known()) return false;
-    if (has_a().ValueOrDefault() && !a().Ok()) return false;
+    if (!a().Ok()) return false;
 
 
-    if (!has_emboss_reserved_anonymous_field_1().Known()) return false;
-    if (has_emboss_reserved_anonymous_field_1().ValueOrDefault() && !emboss_reserved_anonymous_field_1().Ok()) return false;
+    if (!emboss_reserved_anonymous_field_1().Ok()) return false;
 
 
     if (!has_a0().Known()) return false;
@@ -1831,8 +1808,7 @@ class GenericComplexView final {
     if (has_h0().ValueOrDefault() && !h0().Ok()) return false;
 
 
-    if (!has_e1().Known()) return false;
-    if (has_e1().ValueOrDefault() && !e1().Ok()) return false;
+    if (!e1().Ok()) return false;
 
 
     if (!has_e2().Known()) return false;
@@ -1859,16 +1835,13 @@ class GenericComplexView final {
     if (has_e0().ValueOrDefault() && !e0().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 

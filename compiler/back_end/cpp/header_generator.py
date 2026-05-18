@@ -1428,12 +1428,27 @@ def _generate_structure_definition(type_ir, ir, config: Config):
         )
         field_helper_type_definitions.append(helper_types)
         field_method_definitions.append(definition)
-        ok_method_clauses.append(
-            code_template.format_template(
-                _TEMPLATES.ok_method_test,
-                field=_cpp_field_name(field.name.name.text) + "()",
-            )
+
+        is_always_true = (
+            field.existence_condition.type.which_type == "boolean"
+            and field.existence_condition.type.boolean.has_field("value")
+            and field.existence_condition.type.boolean.value
         )
+        if is_always_true:
+            ok_method_clauses.append(
+                code_template.format_template(
+                    _TEMPLATES.ok_method_unconditional_check,
+                    field=_cpp_field_name(field.name.name.text) + "()",
+                )
+            )
+        else:
+            ok_method_clauses.append(
+                code_template.format_template(
+                    _TEMPLATES.ok_method_test,
+                    field=_cpp_field_name(field.name.name.text) + "()",
+                )
+            )
+
         if not ir_util.field_is_virtual(field):
             # Virtual fields do not participate in equality tests -- they are equal by
             # definition.

@@ -95,24 +95,19 @@ class GenericOuterView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_inner().Known()) return false;
-    if (has_inner().ValueOrDefault() && !inner().Ok()) return false;
+    if (!inner().Ok()) return false;
 
 
-    if (!has_inner_gen().Known()) return false;
-    if (has_inner_gen().ValueOrDefault() && !inner_gen().Ok()) return false;
+    if (!inner_gen().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 

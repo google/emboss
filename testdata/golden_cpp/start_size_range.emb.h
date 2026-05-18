@@ -93,32 +93,25 @@ class GenericStartSizeView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_size().Known()) return false;
-    if (has_size().ValueOrDefault() && !size().Ok()) return false;
+    if (!size().Ok()) return false;
 
 
-    if (!has_start_size_constants().Known()) return false;
-    if (has_start_size_constants().ValueOrDefault() && !start_size_constants().Ok()) return false;
+    if (!start_size_constants().Ok()) return false;
 
 
-    if (!has_payload().Known()) return false;
-    if (has_payload().ValueOrDefault() && !payload().Ok()) return false;
+    if (!payload().Ok()) return false;
 
 
-    if (!has_counter().Known()) return false;
-    if (has_counter().ValueOrDefault() && !counter().Ok()) return false;
+    if (!counter().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 

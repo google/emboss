@@ -334,28 +334,22 @@ class GenericUseKCamelEnumCaseView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_v().Known()) return false;
-    if (has_v().ValueOrDefault() && !v().Ok()) return false;
+    if (!v().Ok()) return false;
 
 
-    if (!has_first().Known()) return false;
-    if (has_first().ValueOrDefault() && !first().Ok()) return false;
+    if (!first().Ok()) return false;
 
 
-    if (!has_v_is_first().Known()) return false;
-    if (has_v_is_first().ValueOrDefault() && !v_is_first().Ok()) return false;
+    if (!v_is_first().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 

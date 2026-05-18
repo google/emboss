@@ -118,28 +118,22 @@ class GenericSizedUIntArraysView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_one_nibble().Known()) return false;
-    if (has_one_nibble().ValueOrDefault() && !one_nibble().Ok()) return false;
+    if (!one_nibble().Ok()) return false;
 
 
-    if (!has_two_nibble().Known()) return false;
-    if (has_two_nibble().ValueOrDefault() && !two_nibble().Ok()) return false;
+    if (!two_nibble().Ok()) return false;
 
 
-    if (!has_four_nibble().Known()) return false;
-    if (has_four_nibble().ValueOrDefault() && !four_nibble().Ok()) return false;
+    if (!four_nibble().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBits().Known()) return false;
-    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
+    if (!IntrinsicSizeInBits().Ok()) return false;
 
 
-    if (!has_MaxSizeInBits().Known()) return false;
-    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
+    if (!MaxSizeInBits().Ok()) return false;
 
 
-    if (!has_MinSizeInBits().Known()) return false;
-    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
+    if (!MinSizeInBits().Ok()) return false;
 
 
 
@@ -712,28 +706,22 @@ class GenericSizedIntArraysView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_one_nibble().Known()) return false;
-    if (has_one_nibble().ValueOrDefault() && !one_nibble().Ok()) return false;
+    if (!one_nibble().Ok()) return false;
 
 
-    if (!has_two_nibble().Known()) return false;
-    if (has_two_nibble().ValueOrDefault() && !two_nibble().Ok()) return false;
+    if (!two_nibble().Ok()) return false;
 
 
-    if (!has_four_nibble().Known()) return false;
-    if (has_four_nibble().ValueOrDefault() && !four_nibble().Ok()) return false;
+    if (!four_nibble().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBits().Known()) return false;
-    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
+    if (!IntrinsicSizeInBits().Ok()) return false;
 
 
-    if (!has_MaxSizeInBits().Known()) return false;
-    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
+    if (!MaxSizeInBits().Ok()) return false;
 
 
-    if (!has_MinSizeInBits().Known()) return false;
-    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
+    if (!MinSizeInBits().Ok()) return false;
 
 
 
@@ -1306,28 +1294,22 @@ class GenericSizedEnumArraysView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_one_nibble().Known()) return false;
-    if (has_one_nibble().ValueOrDefault() && !one_nibble().Ok()) return false;
+    if (!one_nibble().Ok()) return false;
 
 
-    if (!has_two_nibble().Known()) return false;
-    if (has_two_nibble().ValueOrDefault() && !two_nibble().Ok()) return false;
+    if (!two_nibble().Ok()) return false;
 
 
-    if (!has_four_nibble().Known()) return false;
-    if (has_four_nibble().ValueOrDefault() && !four_nibble().Ok()) return false;
+    if (!four_nibble().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBits().Known()) return false;
-    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
+    if (!IntrinsicSizeInBits().Ok()) return false;
 
 
-    if (!has_MaxSizeInBits().Known()) return false;
-    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
+    if (!MaxSizeInBits().Ok()) return false;
 
 
-    if (!has_MinSizeInBits().Known()) return false;
-    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
+    if (!MinSizeInBits().Ok()) return false;
 
 
 
@@ -1901,20 +1883,16 @@ class GenericBitArrayContainerView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_uint_arrays().Known()) return false;
-    if (has_uint_arrays().ValueOrDefault() && !uint_arrays().Ok()) return false;
+    if (!uint_arrays().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 

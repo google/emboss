@@ -142,36 +142,28 @@ class GenericOneByteView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_high_bit().Known()) return false;
-    if (has_high_bit().ValueOrDefault() && !high_bit().Ok()) return false;
+    if (!high_bit().Ok()) return false;
 
 
-    if (!has_less_high_bit().Known()) return false;
-    if (has_less_high_bit().ValueOrDefault() && !less_high_bit().Ok()) return false;
+    if (!less_high_bit().Ok()) return false;
 
 
-    if (!has_mid_nibble().Known()) return false;
-    if (has_mid_nibble().ValueOrDefault() && !mid_nibble().Ok()) return false;
+    if (!mid_nibble().Ok()) return false;
 
 
-    if (!has_less_low_bit().Known()) return false;
-    if (has_less_low_bit().ValueOrDefault() && !less_low_bit().Ok()) return false;
+    if (!less_low_bit().Ok()) return false;
 
 
-    if (!has_low_bit().Known()) return false;
-    if (has_low_bit().ValueOrDefault() && !low_bit().Ok()) return false;
+    if (!low_bit().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBits().Known()) return false;
-    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
+    if (!IntrinsicSizeInBits().Ok()) return false;
 
 
-    if (!has_MaxSizeInBits().Known()) return false;
-    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
+    if (!MaxSizeInBits().Ok()) return false;
 
 
-    if (!has_MinSizeInBits().Known()) return false;
-    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
+    if (!MinSizeInBits().Ok()) return false;
 
 
 
@@ -907,28 +899,22 @@ class GenericTwoByteWithGapsView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_high_bit().Known()) return false;
-    if (has_high_bit().ValueOrDefault() && !high_bit().Ok()) return false;
+    if (!high_bit().Ok()) return false;
 
 
-    if (!has_mid_nibble().Known()) return false;
-    if (has_mid_nibble().ValueOrDefault() && !mid_nibble().Ok()) return false;
+    if (!mid_nibble().Ok()) return false;
 
 
-    if (!has_low_bit().Known()) return false;
-    if (has_low_bit().ValueOrDefault() && !low_bit().Ok()) return false;
+    if (!low_bit().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBits().Known()) return false;
-    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
+    if (!IntrinsicSizeInBits().Ok()) return false;
 
 
-    if (!has_MaxSizeInBits().Known()) return false;
-    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
+    if (!MaxSizeInBits().Ok()) return false;
 
 
-    if (!has_MinSizeInBits().Known()) return false;
-    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
+    if (!MinSizeInBits().Ok()) return false;
 
 
 
@@ -1483,36 +1469,28 @@ class GenericFourByteView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_high_nibble().Known()) return false;
-    if (has_high_nibble().ValueOrDefault() && !high_nibble().Ok()) return false;
+    if (!high_nibble().Ok()) return false;
 
 
-    if (!has_one_byte().Known()) return false;
-    if (has_one_byte().ValueOrDefault() && !one_byte().Ok()) return false;
+    if (!one_byte().Ok()) return false;
 
 
-    if (!has_two_byte().Known()) return false;
-    if (has_two_byte().ValueOrDefault() && !two_byte().Ok()) return false;
+    if (!two_byte().Ok()) return false;
 
 
-    if (!has_raw_low_nibble().Known()) return false;
-    if (has_raw_low_nibble().ValueOrDefault() && !raw_low_nibble().Ok()) return false;
+    if (!raw_low_nibble().Ok()) return false;
 
 
-    if (!has_low_nibble().Known()) return false;
-    if (has_low_nibble().ValueOrDefault() && !low_nibble().Ok()) return false;
+    if (!low_nibble().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBits().Known()) return false;
-    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
+    if (!IntrinsicSizeInBits().Ok()) return false;
 
 
-    if (!has_MaxSizeInBits().Known()) return false;
-    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
+    if (!MaxSizeInBits().Ok()) return false;
 
 
-    if (!has_MinSizeInBits().Known()) return false;
-    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
+    if (!MinSizeInBits().Ok()) return false;
 
 
 
@@ -2274,24 +2252,19 @@ class GenericArrayInBitsView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_lone_flag().Known()) return false;
-    if (has_lone_flag().ValueOrDefault() && !lone_flag().Ok()) return false;
+    if (!lone_flag().Ok()) return false;
 
 
-    if (!has_flags().Known()) return false;
-    if (has_flags().ValueOrDefault() && !flags().Ok()) return false;
+    if (!flags().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBits().Known()) return false;
-    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
+    if (!IntrinsicSizeInBits().Ok()) return false;
 
 
-    if (!has_MaxSizeInBits().Known()) return false;
-    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
+    if (!MaxSizeInBits().Ok()) return false;
 
 
-    if (!has_MinSizeInBits().Known()) return false;
-    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
+    if (!MinSizeInBits().Ok()) return false;
 
 
 
@@ -2777,20 +2750,16 @@ class GenericArrayInBitsInStructView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_array_in_bits().Known()) return false;
-    if (has_array_in_bits().ValueOrDefault() && !array_in_bits().Ok()) return false;
+    if (!array_in_bits().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -3196,32 +3165,25 @@ class GenericStructOfBitsView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_one_byte().Known()) return false;
-    if (has_one_byte().ValueOrDefault() && !one_byte().Ok()) return false;
+    if (!one_byte().Ok()) return false;
 
 
-    if (!has_two_byte().Known()) return false;
-    if (has_two_byte().ValueOrDefault() && !two_byte().Ok()) return false;
+    if (!two_byte().Ok()) return false;
 
 
-    if (!has_four_byte().Known()) return false;
-    if (has_four_byte().ValueOrDefault() && !four_byte().Ok()) return false;
+    if (!four_byte().Ok()) return false;
 
 
-    if (!has_located_byte().Known()) return false;
-    if (has_located_byte().ValueOrDefault() && !located_byte().Ok()) return false;
+    if (!located_byte().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -3881,20 +3843,16 @@ class GenericBitArrayView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_one_byte().Known()) return false;
-    if (has_one_byte().ValueOrDefault() && !one_byte().Ok()) return false;
+    if (!one_byte().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 

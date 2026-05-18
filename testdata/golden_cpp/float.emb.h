@@ -99,24 +99,19 @@ class GenericFloatsView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_float_little_endian().Known()) return false;
-    if (has_float_little_endian().ValueOrDefault() && !float_little_endian().Ok()) return false;
+    if (!float_little_endian().Ok()) return false;
 
 
-    if (!has_float_big_endian().Known()) return false;
-    if (has_float_big_endian().ValueOrDefault() && !float_big_endian().Ok()) return false;
+    if (!float_big_endian().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -599,24 +594,19 @@ class GenericDoublesView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_double_little_endian().Known()) return false;
-    if (has_double_little_endian().ValueOrDefault() && !double_little_endian().Ok()) return false;
+    if (!double_little_endian().Ok()) return false;
 
 
-    if (!has_double_big_endian().Known()) return false;
-    if (has_double_big_endian().ValueOrDefault() && !double_big_endian().Ok()) return false;
+    if (!double_big_endian().Ok()) return false;
 
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
