@@ -811,15 +811,12 @@ class GenericLargeConditionalsView final {
 
 
 
-        case static_cast</**/::std::int32_t>(0LL):
-          if (!f0_copy().Ok()) return false;
-          break;
-
-
-
 
       }
     }
+
+    if (!has_f0_copy().Known()) return false;
+    if (has_f0_copy().ValueOrDefault() && !f0_copy().Ok()) return false;
 
 
 
