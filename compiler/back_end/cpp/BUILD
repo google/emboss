@@ -547,7 +547,6 @@ cpp_golden_test(
 cpp_golden_test(
     name = "no_enum_traits_golden_test",
     emb_file = "//testdata:no_enum_traits.emb",
-    extra_args = ["--no-cc-enum-traits"],
     golden_file = "//testdata/golden_cpp:no_enum_traits.emb.h",
 )
 

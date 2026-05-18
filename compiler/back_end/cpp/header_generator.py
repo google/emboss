@@ -1462,7 +1462,12 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
             ).rendered
             key = "SWITCH:" + discrim_str
             if key not in groups:
-                groups[key] = {"type": "switch", "expr": discrim_expr, "cases": [], "seen_cases": set()}
+                groups[key] = {
+                    "type": "switch",
+                    "expr": discrim_expr,
+                    "cases": [],
+                    "seen_cases": set(),
+                }
                 ordered_keys.append(key)
 
             case_str = _render_case_label(case_expr, ir)
