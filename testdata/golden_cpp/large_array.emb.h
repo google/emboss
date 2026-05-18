@@ -92,15 +92,20 @@ class GenericUIntArrayView final {
     if (!IsComplete()) return false;
 
 
-    if (!element_count().Ok()) return false;
+    if (!has_element_count().Known()) return false;
+    if (has_element_count().ValueOrDefault() && !element_count().Ok()) return false;
 
-    if (!elements().Ok()) return false;
+    if (!has_elements().Known()) return false;
+    if (has_elements().ValueOrDefault() && !elements().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
 
 

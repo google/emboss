@@ -40,6 +40,13 @@ TEST(ComplexConditionals, PerformanceBenchmark) {
   EXPECT_TRUE(view.Ok());
 }
 
+TEST(ComplexConditionals, DuplicateCaseValueFallthrough) {
+  std::vector<char> buffer(8, 0);
+  auto view = emboss::test::MakeLargeConditionalsView(&buffer);
+  view.tag().Write(0);
+  EXPECT_FALSE(view.Ok());
+}
+
 }  // namespace
 }  // namespace test
 }  // namespace emboss

@@ -392,14 +392,11 @@ ${write_fields}
 // ** ok_method_test ** ////////////////////////////////////////////////////////
     // If we don't have enough information to determine whether ${field} is
     // present in the structure, then structure.Ok() should be false.
-    {
-      const auto emboss_reserved_local_field_present = ${existence_condition};
-      if (!emboss_reserved_local_field_present.Known()) return false;
-      // If ${field} is present, but not Ok(), then structure.Ok() should be
-      // false.  If ${field} is not present, it does not matter whether it is
-      // Ok().
-      if (emboss_reserved_local_field_present.ValueOrDefault() && !${field}.Ok()) return false;
-    }
+    if (!has_${field}().Known()) return false;
+    // If ${field} is present, but not Ok(), then structure.Ok() should be
+    // false.  If ${field} is not present, it does not matter whether it is
+    // Ok().
+    if (has_${field}().ValueOrDefault() && !${field}().Ok()) return false;
 
 
 // ** ok_method_switch_block ** ////////////////////////////////////////////////
@@ -420,25 +417,6 @@ ${switch_cases}
           break;
 
 
-// ** ok_method_if_block ** ////////////////////////////////////////////////////
-    // Check fields that share a common condition.
-    {
-${inner_scope_definitions}
-      const auto emboss_reserved_cond = ${condition};
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-${field_checks}
-      }
-    }
-
-
-// ** ok_method_field_check ** /////////////////////////////////////////////////
-        if (!${field}().Ok()) return false;
-
-
-// ** ok_method_unconditional_check ** /////////////////////////////////////////
-    // Field is always present (condition is statically true).
-    if (!${field}().Ok()) return false;
 
 
 // ** equals_method_test ** ////////////////////////////////////////////////////

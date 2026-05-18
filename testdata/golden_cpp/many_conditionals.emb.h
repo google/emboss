@@ -135,6 +135,7 @@ class GenericLargeConditionalsView;
 
 
 
+
 namespace LargeConditionals {
 
 }  // namespace LargeConditionals
@@ -193,13 +194,17 @@ class GenericLargeConditionalsView final {
       const auto emboss_reserved_local_ok_subexpr_1 = tag();
       const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>());
 
-    if (!tag().Ok()) return false;
+    if (!has_tag().Known()) return false;
+    if (has_tag().ValueOrDefault() && !tag().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
 
@@ -210,401 +215,607 @@ class GenericLargeConditionalsView final {
           if (!f0().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(1LL):
           if (!f1().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(2LL):
           if (!f2().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(3LL):
           if (!f3().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(4LL):
           if (!f4().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(5LL):
           if (!f5().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(6LL):
           if (!f6().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(7LL):
           if (!f7().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(8LL):
           if (!f8().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(9LL):
           if (!f9().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(10LL):
           if (!f10().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(11LL):
           if (!f11().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(12LL):
           if (!f12().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(13LL):
           if (!f13().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(14LL):
           if (!f14().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(15LL):
           if (!f15().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(16LL):
           if (!f16().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(17LL):
           if (!f17().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(18LL):
           if (!f18().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(19LL):
           if (!f19().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(20LL):
           if (!f20().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(21LL):
           if (!f21().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(22LL):
           if (!f22().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(23LL):
           if (!f23().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(24LL):
           if (!f24().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(25LL):
           if (!f25().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(26LL):
           if (!f26().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(27LL):
           if (!f27().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(28LL):
           if (!f28().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(29LL):
           if (!f29().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(30LL):
           if (!f30().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(31LL):
           if (!f31().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(32LL):
           if (!f32().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(33LL):
           if (!f33().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(34LL):
           if (!f34().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(35LL):
           if (!f35().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(36LL):
           if (!f36().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(37LL):
           if (!f37().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(38LL):
           if (!f38().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(39LL):
           if (!f39().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(40LL):
           if (!f40().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(41LL):
           if (!f41().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(42LL):
           if (!f42().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(43LL):
           if (!f43().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(44LL):
           if (!f44().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(45LL):
           if (!f45().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(46LL):
           if (!f46().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(47LL):
           if (!f47().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(48LL):
           if (!f48().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(49LL):
           if (!f49().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(50LL):
           if (!f50().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(51LL):
           if (!f51().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(52LL):
           if (!f52().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(53LL):
           if (!f53().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(54LL):
           if (!f54().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(55LL):
           if (!f55().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(56LL):
           if (!f56().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(57LL):
           if (!f57().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(58LL):
           if (!f58().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(59LL):
           if (!f59().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(60LL):
           if (!f60().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(61LL):
           if (!f61().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(62LL):
           if (!f62().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(63LL):
           if (!f63().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(64LL):
           if (!f64().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(65LL):
           if (!f65().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(66LL):
           if (!f66().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(67LL):
           if (!f67().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(68LL):
           if (!f68().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(69LL):
           if (!f69().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(70LL):
           if (!f70().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(71LL):
           if (!f71().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(72LL):
           if (!f72().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(73LL):
           if (!f73().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(74LL):
           if (!f74().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(75LL):
           if (!f75().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(76LL):
           if (!f76().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(77LL):
           if (!f77().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(78LL):
           if (!f78().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(79LL):
           if (!f79().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(80LL):
           if (!f80().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(81LL):
           if (!f81().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(82LL):
           if (!f82().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(83LL):
           if (!f83().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(84LL):
           if (!f84().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(85LL):
           if (!f85().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(86LL):
           if (!f86().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(87LL):
           if (!f87().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(88LL):
           if (!f88().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(89LL):
           if (!f89().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(90LL):
           if (!f90().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(91LL):
           if (!f91().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(92LL):
           if (!f92().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(93LL):
           if (!f93().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(94LL):
           if (!f94().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(95LL):
           if (!f95().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(96LL):
           if (!f96().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(97LL):
           if (!f97().Ok()) return false;
           break;
+
+
 
         case static_cast</**/::std::int32_t>(98LL):
           if (!f98().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(99LL):
           if (!f99().Ok()) return false;
           break;
+
+
+
+        case static_cast</**/::std::int32_t>(0LL):
+          if (!f0_copy().Ok()) return false;
+          break;
+
+
 
 
       }
@@ -2347,6 +2558,23 @@ class GenericLargeConditionalsView final {
         !f99().Equals(emboss_reserved_local_other.f99()))
       return false;
 
+
+
+    if (!has_f0_copy().Known()) return false;
+    if (!emboss_reserved_local_other.has_f0_copy().Known()) return false;
+
+    if (emboss_reserved_local_other.has_f0_copy().ValueOrDefault() &&
+        !has_f0_copy().ValueOrDefault())
+      return false;
+    if (has_f0_copy().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_f0_copy().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_f0_copy().ValueOrDefault() &&
+        has_f0_copy().ValueOrDefault() &&
+        !f0_copy().Equals(emboss_reserved_local_other.f0_copy()))
+      return false;
+
  return true;
   }
   template <typename OtherStorage>
@@ -3765,6 +3993,20 @@ class GenericLargeConditionalsView final {
         !f99().UncheckedEquals(emboss_reserved_local_other.f99()))
       return false;
 
+
+
+    if (emboss_reserved_local_other.has_f0_copy().ValueOr(false) &&
+        !has_f0_copy().ValueOr(false))
+      return false;
+    if (has_f0_copy().ValueOr(false) &&
+        !emboss_reserved_local_other.has_f0_copy().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_f0_copy().ValueOr(false) &&
+        has_f0_copy().ValueOr(false) &&
+        !f0_copy().UncheckedEquals(emboss_reserved_local_other.f0_copy()))
+      return false;
+
  return true;
   }
   template <typename OtherStorage>
@@ -4614,6 +4856,14 @@ class GenericLargeConditionalsView final {
 
       if (emboss_reserved_local_name == "f99") {
         if (!f99().UpdateFromTextStream(
+                emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "f0_copy") {
+        if (!f0_copy().UpdateFromTextStream(
                 emboss_reserved_local_stream)) {
           return false;
         }
@@ -7666,6 +7916,36 @@ class GenericLargeConditionalsView final {
       }
     }
 
+    if (has_f0_copy().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          f0_copy().IsAggregate() || f0_copy().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("f0_copy: ");
+        f0_copy().WriteToTextStream(emboss_reserved_local_stream,
+                                           emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !f0_copy().IsAggregate() && !f0_copy().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# f0_copy: UNREADABLE\n");
+      }
+    }
+
     (void)emboss_reserved_local_wrote_field;
     if (emboss_reserved_local_options.multiline()) {
       emboss_reserved_local_stream->Write(
@@ -8489,6 +8769,14 @@ class GenericLargeConditionalsView final {
   ::emboss::support::Maybe<bool> has_f99() const;
 
  public:
+  typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 8>>, 32>>
+
+ f0_copy() const;
+  ::emboss::support::Maybe<bool> has_f0_copy() const;
+
+ public:
   class EmbossReservedDollarVirtualIntrinsicSizeInBytesView final {
    public:
     using ValueType = ::std::int32_t;
@@ -8736,9 +9024,10 @@ class GenericLargeConditionalsView final {
       const auto emboss_reserved_local_subexpr_200 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_199, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
       const auto emboss_reserved_local_subexpr_201 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(99LL)));
       const auto emboss_reserved_local_subexpr_202 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_201, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_203 = ::emboss::support::Maximum</**/::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)), emboss_reserved_local_subexpr_4, emboss_reserved_local_subexpr_6, emboss_reserved_local_subexpr_8, emboss_reserved_local_subexpr_10, emboss_reserved_local_subexpr_12, emboss_reserved_local_subexpr_14, emboss_reserved_local_subexpr_16, emboss_reserved_local_subexpr_18, emboss_reserved_local_subexpr_20, emboss_reserved_local_subexpr_22, emboss_reserved_local_subexpr_24, emboss_reserved_local_subexpr_26, emboss_reserved_local_subexpr_28, emboss_reserved_local_subexpr_30, emboss_reserved_local_subexpr_32, emboss_reserved_local_subexpr_34, emboss_reserved_local_subexpr_36, emboss_reserved_local_subexpr_38, emboss_reserved_local_subexpr_40, emboss_reserved_local_subexpr_42, emboss_reserved_local_subexpr_44, emboss_reserved_local_subexpr_46, emboss_reserved_local_subexpr_48, emboss_reserved_local_subexpr_50, emboss_reserved_local_subexpr_52, emboss_reserved_local_subexpr_54, emboss_reserved_local_subexpr_56, emboss_reserved_local_subexpr_58, emboss_reserved_local_subexpr_60, emboss_reserved_local_subexpr_62, emboss_reserved_local_subexpr_64, emboss_reserved_local_subexpr_66, emboss_reserved_local_subexpr_68, emboss_reserved_local_subexpr_70, emboss_reserved_local_subexpr_72, emboss_reserved_local_subexpr_74, emboss_reserved_local_subexpr_76, emboss_reserved_local_subexpr_78, emboss_reserved_local_subexpr_80, emboss_reserved_local_subexpr_82, emboss_reserved_local_subexpr_84, emboss_reserved_local_subexpr_86, emboss_reserved_local_subexpr_88, emboss_reserved_local_subexpr_90, emboss_reserved_local_subexpr_92, emboss_reserved_local_subexpr_94, emboss_reserved_local_subexpr_96, emboss_reserved_local_subexpr_98, emboss_reserved_local_subexpr_100, emboss_reserved_local_subexpr_102, emboss_reserved_local_subexpr_104, emboss_reserved_local_subexpr_106, emboss_reserved_local_subexpr_108, emboss_reserved_local_subexpr_110, emboss_reserved_local_subexpr_112, emboss_reserved_local_subexpr_114, emboss_reserved_local_subexpr_116, emboss_reserved_local_subexpr_118, emboss_reserved_local_subexpr_120, emboss_reserved_local_subexpr_122, emboss_reserved_local_subexpr_124, emboss_reserved_local_subexpr_126, emboss_reserved_local_subexpr_128, emboss_reserved_local_subexpr_130, emboss_reserved_local_subexpr_132, emboss_reserved_local_subexpr_134, emboss_reserved_local_subexpr_136, emboss_reserved_local_subexpr_138, emboss_reserved_local_subexpr_140, emboss_reserved_local_subexpr_142, emboss_reserved_local_subexpr_144, emboss_reserved_local_subexpr_146, emboss_reserved_local_subexpr_148, emboss_reserved_local_subexpr_150, emboss_reserved_local_subexpr_152, emboss_reserved_local_subexpr_154, emboss_reserved_local_subexpr_156, emboss_reserved_local_subexpr_158, emboss_reserved_local_subexpr_160, emboss_reserved_local_subexpr_162, emboss_reserved_local_subexpr_164, emboss_reserved_local_subexpr_166, emboss_reserved_local_subexpr_168, emboss_reserved_local_subexpr_170, emboss_reserved_local_subexpr_172, emboss_reserved_local_subexpr_174, emboss_reserved_local_subexpr_176, emboss_reserved_local_subexpr_178, emboss_reserved_local_subexpr_180, emboss_reserved_local_subexpr_182, emboss_reserved_local_subexpr_184, emboss_reserved_local_subexpr_186, emboss_reserved_local_subexpr_188, emboss_reserved_local_subexpr_190, emboss_reserved_local_subexpr_192, emboss_reserved_local_subexpr_194, emboss_reserved_local_subexpr_196, emboss_reserved_local_subexpr_198, emboss_reserved_local_subexpr_200, emboss_reserved_local_subexpr_202);
+      const auto emboss_reserved_local_subexpr_203 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_3, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(12LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_204 = ::emboss::support::Maximum</**/::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)), emboss_reserved_local_subexpr_4, emboss_reserved_local_subexpr_6, emboss_reserved_local_subexpr_8, emboss_reserved_local_subexpr_10, emboss_reserved_local_subexpr_12, emboss_reserved_local_subexpr_14, emboss_reserved_local_subexpr_16, emboss_reserved_local_subexpr_18, emboss_reserved_local_subexpr_20, emboss_reserved_local_subexpr_22, emboss_reserved_local_subexpr_24, emboss_reserved_local_subexpr_26, emboss_reserved_local_subexpr_28, emboss_reserved_local_subexpr_30, emboss_reserved_local_subexpr_32, emboss_reserved_local_subexpr_34, emboss_reserved_local_subexpr_36, emboss_reserved_local_subexpr_38, emboss_reserved_local_subexpr_40, emboss_reserved_local_subexpr_42, emboss_reserved_local_subexpr_44, emboss_reserved_local_subexpr_46, emboss_reserved_local_subexpr_48, emboss_reserved_local_subexpr_50, emboss_reserved_local_subexpr_52, emboss_reserved_local_subexpr_54, emboss_reserved_local_subexpr_56, emboss_reserved_local_subexpr_58, emboss_reserved_local_subexpr_60, emboss_reserved_local_subexpr_62, emboss_reserved_local_subexpr_64, emboss_reserved_local_subexpr_66, emboss_reserved_local_subexpr_68, emboss_reserved_local_subexpr_70, emboss_reserved_local_subexpr_72, emboss_reserved_local_subexpr_74, emboss_reserved_local_subexpr_76, emboss_reserved_local_subexpr_78, emboss_reserved_local_subexpr_80, emboss_reserved_local_subexpr_82, emboss_reserved_local_subexpr_84, emboss_reserved_local_subexpr_86, emboss_reserved_local_subexpr_88, emboss_reserved_local_subexpr_90, emboss_reserved_local_subexpr_92, emboss_reserved_local_subexpr_94, emboss_reserved_local_subexpr_96, emboss_reserved_local_subexpr_98, emboss_reserved_local_subexpr_100, emboss_reserved_local_subexpr_102, emboss_reserved_local_subexpr_104, emboss_reserved_local_subexpr_106, emboss_reserved_local_subexpr_108, emboss_reserved_local_subexpr_110, emboss_reserved_local_subexpr_112, emboss_reserved_local_subexpr_114, emboss_reserved_local_subexpr_116, emboss_reserved_local_subexpr_118, emboss_reserved_local_subexpr_120, emboss_reserved_local_subexpr_122, emboss_reserved_local_subexpr_124, emboss_reserved_local_subexpr_126, emboss_reserved_local_subexpr_128, emboss_reserved_local_subexpr_130, emboss_reserved_local_subexpr_132, emboss_reserved_local_subexpr_134, emboss_reserved_local_subexpr_136, emboss_reserved_local_subexpr_138, emboss_reserved_local_subexpr_140, emboss_reserved_local_subexpr_142, emboss_reserved_local_subexpr_144, emboss_reserved_local_subexpr_146, emboss_reserved_local_subexpr_148, emboss_reserved_local_subexpr_150, emboss_reserved_local_subexpr_152, emboss_reserved_local_subexpr_154, emboss_reserved_local_subexpr_156, emboss_reserved_local_subexpr_158, emboss_reserved_local_subexpr_160, emboss_reserved_local_subexpr_162, emboss_reserved_local_subexpr_164, emboss_reserved_local_subexpr_166, emboss_reserved_local_subexpr_168, emboss_reserved_local_subexpr_170, emboss_reserved_local_subexpr_172, emboss_reserved_local_subexpr_174, emboss_reserved_local_subexpr_176, emboss_reserved_local_subexpr_178, emboss_reserved_local_subexpr_180, emboss_reserved_local_subexpr_182, emboss_reserved_local_subexpr_184, emboss_reserved_local_subexpr_186, emboss_reserved_local_subexpr_188, emboss_reserved_local_subexpr_190, emboss_reserved_local_subexpr_192, emboss_reserved_local_subexpr_194, emboss_reserved_local_subexpr_196, emboss_reserved_local_subexpr_198, emboss_reserved_local_subexpr_200, emboss_reserved_local_subexpr_202, emboss_reserved_local_subexpr_203);
 
-      return emboss_reserved_local_subexpr_203;
+      return emboss_reserved_local_subexpr_204;
     }
 
     static constexpr bool ValueIsOk(
@@ -13132,6 +13421,48 @@ GenericLargeConditionalsView<Storage>::has_f99() const {
 
 
 template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 8>>, 32>>
+
+ GenericLargeConditionalsView<Storage>::f0_copy()
+    const {
+
+  if ( has_f0_copy().ValueOr(false)) {
+
+    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 8>>, 32>>
+
+(
+                 backing_
+                        .template GetOffsetStorage<0,
+                                                   8>(
+                                emboss_reserved_local_offset.ValueOrDefault(),
+                                emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 8>>, 32>>
+
+();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericLargeConditionalsView<Storage>::has_f0_copy() const {
+  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
+}
+
+
+template <class Storage>
 inline typename GenericLargeConditionalsView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
 GenericLargeConditionalsView<Storage>::IntrinsicSizeInBytes() const {
   return
@@ -13148,7 +13479,7 @@ GenericLargeConditionalsView<Storage>::has_IntrinsicSizeInBytes() const {
 
 namespace LargeConditionals {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(12LL)).ValueOrDefault();
 }
 }  // namespace LargeConditionals
 

@@ -363,13 +363,17 @@ class GenericBasicConditionalView final {
       const auto emboss_reserved_local_ok_subexpr_1 = x();
       const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
 
@@ -379,6 +383,8 @@ class GenericBasicConditionalView final {
         case static_cast</**/::std::int32_t>(0LL):
           if (!xc().Ok()) return false;
           break;
+
+
 
 
       }
@@ -895,28 +901,21 @@ class GenericNegativeConditionalView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = x();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_3 = ::emboss::support::NotEqual</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_3;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!xc().Ok()) return false;
-
-
-      }
-    }
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
 
 
@@ -1433,15 +1432,20 @@ class GenericConditionalAndUnconditionalOverlappingFinalFieldView final {
       const auto emboss_reserved_local_ok_subexpr_1 = x();
       const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!z().Ok()) return false;
+    if (!has_z().Known()) return false;
+    if (has_z().ValueOrDefault() && !z().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
 
@@ -1451,6 +1455,8 @@ class GenericConditionalAndUnconditionalOverlappingFinalFieldView final {
         case static_cast</**/::std::int32_t>(0LL):
           if (!xc().Ok()) return false;
           break;
+
+
 
 
       }
@@ -2017,13 +2023,17 @@ class GenericConditionalBasicConditionalFieldFirstView final {
       const auto emboss_reserved_local_ok_subexpr_1 = x();
       const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
 
@@ -2033,6 +2043,8 @@ class GenericConditionalBasicConditionalFieldFirstView final {
         case static_cast</**/::std::int32_t>(0LL):
           if (!xc().Ok()) return false;
           break;
+
+
 
 
       }
@@ -2523,15 +2535,20 @@ class GenericConditionalAndDynamicLocationView final {
       const auto emboss_reserved_local_ok_subexpr_1 = x();
       const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!y().Ok()) return false;
+    if (!has_y().Known()) return false;
+    if (has_y().ValueOrDefault() && !y().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
 
@@ -2541,6 +2558,8 @@ class GenericConditionalAndDynamicLocationView final {
         case static_cast</**/::std::int32_t>(0LL):
           if (!xc().Ok()) return false;
           break;
+
+
 
 
       }
@@ -3141,13 +3160,17 @@ class GenericConditionUsesMinIntView final {
       const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
       const auto emboss_reserved_local_ok_subexpr_3 = ::emboss::support::Difference</**/::std::int64_t, ::std::int64_t, ::std::int32_t, ::std::int64_t>(emboss_reserved_local_ok_subexpr_2, ::emboss::support::Maybe</**/::std::int64_t>(static_cast</**/::std::int64_t>(9223372036854775680LL)));
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
 
@@ -3157,6 +3180,8 @@ class GenericConditionUsesMinIntView final {
         case static_cast</**/::std::int64_t>(-9223372036854775807LL - 1):
           if (!xc().Ok()) return false;
           break;
+
+
 
 
       }
@@ -3680,13 +3705,17 @@ class GenericNestedConditionalView final {
       const auto emboss_reserved_local_ok_subexpr_3 = xc();
       const auto emboss_reserved_local_ok_subexpr_4 = (emboss_reserved_local_ok_subexpr_3.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_3.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
 
@@ -3696,6 +3725,8 @@ class GenericNestedConditionalView final {
         case static_cast</**/::std::int32_t>(0LL):
           if (!xc().Ok()) return false;
           break;
+
+
 
 
       }
@@ -3709,6 +3740,8 @@ class GenericNestedConditionalView final {
         case static_cast</**/::std::int32_t>(0LL):
           if (!xcc().Ok()) return false;
           break;
+
+
 
 
       }
@@ -4309,19 +4342,18 @@ class GenericCorrectNestedConditionalView final {
 
       const auto emboss_reserved_local_ok_subexpr_1 = x();
       const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_3 = ::emboss::support::Equal</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_ok_subexpr_4 = xc();
-      const auto emboss_reserved_local_ok_subexpr_5 = (emboss_reserved_local_ok_subexpr_4.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_4.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_6 = ::emboss::support::Equal</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_5, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_ok_subexpr_7 = ::emboss::support::And</**/bool, bool, bool, bool>(emboss_reserved_local_ok_subexpr_3, emboss_reserved_local_ok_subexpr_6);
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
 
@@ -4333,19 +4365,13 @@ class GenericCorrectNestedConditionalView final {
           break;
 
 
-      }
-    }
-
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_7;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!xcc().Ok()) return false;
 
 
       }
     }
+
+    if (!has_xcc().Known()) return false;
+    if (has_xcc().ValueOrDefault() && !xcc().Ok()) return false;
 
 
 
@@ -4941,24 +4967,20 @@ class GenericAlwaysFalseConditionView final {
     if (!IsComplete()) return false;
 
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-
-      const auto emboss_reserved_cond = ::emboss::support::Maybe</**/bool>(false);
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!xc().Ok()) return false;
-
-
-      }
-    }
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
 
 
@@ -5441,22 +5463,17 @@ class GenericOnlyAlwaysFalseConditionView final {
     if (!IsComplete()) return false;
 
 
-    {
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
-      const auto emboss_reserved_cond = ::emboss::support::Maybe</**/bool>(false);
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!xc().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-      }
-    }
-
-    if (!IntrinsicSizeInBytes().Ok()) return false;
-
-    if (!MaxSizeInBytes().Ok()) return false;
-
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
 
 
@@ -5861,11 +5878,14 @@ class GenericEmptyStructView final {
     if (!IsComplete()) return false;
 
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
 
 
@@ -6200,26 +6220,23 @@ class GenericAlwaysFalseConditionDynamicSizeView final {
     if (!IsComplete()) return false;
 
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!y().Ok()) return false;
+    if (!has_y().Known()) return false;
+    if (has_y().ValueOrDefault() && !y().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-
-      const auto emboss_reserved_cond = ::emboss::support::Maybe</**/bool>(false);
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!xc().Ok()) return false;
-
-
-      }
-    }
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
 
 
@@ -6813,15 +6830,20 @@ class GenericConditionDoesNotContributeToSizeView final {
       const auto emboss_reserved_local_ok_subexpr_1 = x();
       const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!y().Ok()) return false;
+    if (!has_y().Known()) return false;
+    if (has_y().ValueOrDefault() && !y().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
 
@@ -6831,6 +6853,8 @@ class GenericConditionDoesNotContributeToSizeView final {
         case static_cast</**/::std::int32_t>(0LL):
           if (!xc().Ok()) return false;
           break;
+
+
 
 
       }
@@ -7484,15 +7508,18 @@ class GenericEnumConditionView final {
 
       const auto emboss_reserved_local_ok_subexpr_1 = x();
       const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::emboss::test::OnOff>(static_cast</**/::emboss::test::OnOff>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::OnOff>());
-      const auto emboss_reserved_local_ok_subexpr_3 = ::emboss::support::GreaterThan</**/::emboss::test::OnOff, bool, ::emboss::test::OnOff, ::emboss::test::OnOff>(emboss_reserved_local_ok_subexpr_2, ::emboss::support::Maybe</**/::emboss::test::OnOff>(static_cast</**/::emboss::test::OnOff>(0)));
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
 
@@ -7504,19 +7531,13 @@ class GenericEnumConditionView final {
           break;
 
 
-      }
-    }
-
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_3;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!xc2().Ok()) return false;
 
 
       }
     }
+
+    if (!has_xc2().Known()) return false;
+    if (has_xc2().ValueOrDefault() && !xc2().Ok()) return false;
 
 
 
@@ -8109,28 +8130,21 @@ class GenericNegativeEnumConditionView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = x();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::emboss::test::OnOff>(static_cast</**/::emboss::test::OnOff>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::OnOff>());
-      const auto emboss_reserved_local_ok_subexpr_3 = ::emboss::support::NotEqual</**/::emboss::test::OnOff, bool, ::emboss::test::OnOff, ::emboss::test::OnOff>(emboss_reserved_local_ok_subexpr_2, ::emboss::support::Maybe</**/::emboss::test::OnOff>(static_cast</**/::emboss::test::OnOff>(1)));
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_3;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!xc().Ok()) return false;
-
-
-      }
-    }
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
 
 
@@ -8644,28 +8658,21 @@ class GenericLessThanConditionView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = x();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_3 = ::emboss::support::LessThan</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(5LL)));
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_3;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!xc().Ok()) return false;
-
-
-      }
-    }
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
 
 
@@ -9178,28 +9185,21 @@ class GenericLessThanOrEqualConditionView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = x();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_3 = ::emboss::support::LessThanOrEqual</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(5LL)));
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_3;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!xc().Ok()) return false;
-
-
-      }
-    }
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
 
 
@@ -9712,28 +9712,21 @@ class GenericGreaterThanOrEqualConditionView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = x();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_3 = ::emboss::support::GreaterThanOrEqual</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(5LL)));
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_3;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!xc().Ok()) return false;
-
-
-      }
-    }
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
 
 
@@ -10246,28 +10239,21 @@ class GenericGreaterThanConditionView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = x();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_3 = ::emboss::support::GreaterThan</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(5LL)));
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_3;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!xc().Ok()) return false;
-
-
-      }
-    }
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
 
 
@@ -10781,36 +10767,24 @@ class GenericRangeConditionView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = x();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_3 = ::emboss::support::LessThan</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(5LL)), emboss_reserved_local_ok_subexpr_2);
-      const auto emboss_reserved_local_ok_subexpr_4 = y();
-      const auto emboss_reserved_local_ok_subexpr_5 = (emboss_reserved_local_ok_subexpr_4.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_4.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_6 = ::emboss::support::LessThanOrEqual</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_2, emboss_reserved_local_ok_subexpr_5);
-      const auto emboss_reserved_local_ok_subexpr_7 = ::emboss::support::And</**/bool, bool, bool, bool>(emboss_reserved_local_ok_subexpr_3, emboss_reserved_local_ok_subexpr_6);
-      const auto emboss_reserved_local_ok_subexpr_8 = ::emboss::support::LessThan</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_5, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(10LL)));
-      const auto emboss_reserved_local_ok_subexpr_9 = ::emboss::support::And</**/bool, bool, bool, bool>(emboss_reserved_local_ok_subexpr_7, emboss_reserved_local_ok_subexpr_8);
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!y().Ok()) return false;
+    if (!has_y().Known()) return false;
+    if (has_y().ValueOrDefault() && !y().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_9;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!xc().Ok()) return false;
-
-
-      }
-    }
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
 
 
@@ -11407,36 +11381,24 @@ class GenericReverseRangeConditionView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = y();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_3 = ::emboss::support::GreaterThan</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(10LL)), emboss_reserved_local_ok_subexpr_2);
-      const auto emboss_reserved_local_ok_subexpr_4 = x();
-      const auto emboss_reserved_local_ok_subexpr_5 = (emboss_reserved_local_ok_subexpr_4.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_4.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_6 = ::emboss::support::GreaterThanOrEqual</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_2, emboss_reserved_local_ok_subexpr_5);
-      const auto emboss_reserved_local_ok_subexpr_7 = ::emboss::support::And</**/bool, bool, bool, bool>(emboss_reserved_local_ok_subexpr_3, emboss_reserved_local_ok_subexpr_6);
-      const auto emboss_reserved_local_ok_subexpr_8 = ::emboss::support::GreaterThan</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_5, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(5LL)));
-      const auto emboss_reserved_local_ok_subexpr_9 = ::emboss::support::And</**/bool, bool, bool, bool>(emboss_reserved_local_ok_subexpr_7, emboss_reserved_local_ok_subexpr_8);
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!y().Ok()) return false;
+    if (!has_y().Known()) return false;
+    if (has_y().ValueOrDefault() && !y().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_9;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!xc().Ok()) return false;
-
-
-      }
-    }
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
 
 
@@ -12033,34 +11995,24 @@ class GenericAndConditionView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = x();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_3 = ::emboss::support::Equal</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(5LL)));
-      const auto emboss_reserved_local_ok_subexpr_4 = y();
-      const auto emboss_reserved_local_ok_subexpr_5 = (emboss_reserved_local_ok_subexpr_4.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_4.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_6 = ::emboss::support::Equal</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_5, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(5LL)));
-      const auto emboss_reserved_local_ok_subexpr_7 = ::emboss::support::And</**/bool, bool, bool, bool>(emboss_reserved_local_ok_subexpr_3, emboss_reserved_local_ok_subexpr_6);
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!y().Ok()) return false;
+    if (!has_y().Known()) return false;
+    if (has_y().ValueOrDefault() && !y().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_7;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!xc().Ok()) return false;
-
-
-      }
-    }
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
 
 
@@ -12655,34 +12607,24 @@ class GenericOrConditionView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = x();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_3 = ::emboss::support::Equal</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(5LL)));
-      const auto emboss_reserved_local_ok_subexpr_4 = y();
-      const auto emboss_reserved_local_ok_subexpr_5 = (emboss_reserved_local_ok_subexpr_4.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_4.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_6 = ::emboss::support::Equal</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_5, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(5LL)));
-      const auto emboss_reserved_local_ok_subexpr_7 = ::emboss::support::Or</**/bool, bool, bool, bool>(emboss_reserved_local_ok_subexpr_3, emboss_reserved_local_ok_subexpr_6);
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!y().Ok()) return false;
+    if (!has_y().Known()) return false;
+    if (has_y().ValueOrDefault() && !y().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_7;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!xc().Ok()) return false;
-
-
-      }
-    }
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
 
 
@@ -13374,17 +13316,23 @@ class GenericChoiceConditionView final {
       const auto emboss_reserved_local_ok_subexpr_7 = (emboss_reserved_local_ok_subexpr_6.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_6.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
       const auto emboss_reserved_local_ok_subexpr_8 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_3, emboss_reserved_local_ok_subexpr_5, emboss_reserved_local_ok_subexpr_7);
 
-    if (!field().Ok()) return false;
+    if (!has_field().Known()) return false;
+    if (has_field().ValueOrDefault() && !field().Ok()) return false;
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!y().Ok()) return false;
+    if (!has_y().Known()) return false;
+    if (has_y().ValueOrDefault() && !y().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
 
@@ -13394,6 +13342,8 @@ class GenericChoiceConditionView final {
         case static_cast</**/::std::int32_t>(5LL):
           if (!xyc().Ok()) return false;
           break;
+
+
 
 
       }
@@ -14078,15 +14028,20 @@ class GenericEmbossReservedAnonymousField3View final {
     if (!IsComplete()) return false;
 
 
-    if (!has_top().Ok()) return false;
+    if (!has_has_top().Known()) return false;
+    if (has_has_top().ValueOrDefault() && !has_top().Ok()) return false;
 
-    if (!has_bottom().Ok()) return false;
+    if (!has_has_bottom().Known()) return false;
+    if (has_has_bottom().ValueOrDefault() && !has_bottom().Ok()) return false;
 
-    if (!IntrinsicSizeInBits().Ok()) return false;
+    if (!has_IntrinsicSizeInBits().Known()) return false;
+    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
 
-    if (!MaxSizeInBits().Ok()) return false;
+    if (!has_MaxSizeInBits().Known()) return false;
+    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
 
-    if (!MinSizeInBits().Ok()) return false;
+    if (!has_MinSizeInBits().Known()) return false;
+    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
 
 
 
@@ -14564,28 +14519,24 @@ class GenericContainsBitsView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = ::emboss::support::And</**/bool, bool, bool, bool>(::emboss::support::Maybe</**/bool>(true), ::emboss::support::Maybe</**/bool>(true));
 
-    if (!emboss_reserved_anonymous_field_3().Ok()) return false;
+    if (!has_emboss_reserved_anonymous_field_3().Known()) return false;
+    if (has_emboss_reserved_anonymous_field_3().ValueOrDefault() && !emboss_reserved_anonymous_field_3().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
+    if (!has_has_top().Known()) return false;
+    if (has_has_top().ValueOrDefault() && !has_top().Ok()) return false;
 
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_1;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!has_top().Ok()) return false;
-
-        if (!has_bottom().Ok()) return false;
-
-
-      }
-    }
+    if (!has_has_bottom().Known()) return false;
+    if (has_has_bottom().ValueOrDefault() && !has_bottom().Ok()) return false;
 
 
 
@@ -15044,13 +14995,17 @@ class GenericContainsContainsBitsView final {
       const auto emboss_reserved_local_ok_subexpr_1 = condition().has_top();
       const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
 
-    if (!condition().Ok()) return false;
+    if (!has_condition().Known()) return false;
+    if (has_condition().ValueOrDefault() && !condition().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
 
@@ -15060,6 +15015,8 @@ class GenericContainsContainsBitsView final {
         case static_cast</**/::std::int32_t>(1LL):
           if (!top().Ok()) return false;
           break;
+
+
 
 
       }
@@ -15582,17 +15539,23 @@ class GenericType0View final {
     if (!IsComplete()) return false;
 
 
-    if (!a().Ok()) return false;
+    if (!has_a().Known()) return false;
+    if (has_a().ValueOrDefault() && !a().Ok()) return false;
 
-    if (!b().Ok()) return false;
+    if (!has_b().Known()) return false;
+    if (has_b().ValueOrDefault() && !b().Ok()) return false;
 
-    if (!c().Ok()) return false;
+    if (!has_c().Known()) return false;
+    if (has_c().ValueOrDefault() && !c().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
 
 
@@ -16155,17 +16118,23 @@ class GenericType1View final {
     if (!IsComplete()) return false;
 
 
-    if (!a().Ok()) return false;
+    if (!has_a().Known()) return false;
+    if (has_a().ValueOrDefault() && !a().Ok()) return false;
 
-    if (!b().Ok()) return false;
+    if (!has_b().Known()) return false;
+    if (has_b().ValueOrDefault() && !b().Ok()) return false;
 
-    if (!c().Ok()) return false;
+    if (!has_c().Known()) return false;
+    if (has_c().ValueOrDefault() && !c().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
 
 
@@ -16723,13 +16692,17 @@ class GenericConditionalInlineView final {
       const auto emboss_reserved_local_ok_subexpr_1 = payload_id();
       const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
 
-    if (!payload_id().Ok()) return false;
+    if (!has_payload_id().Known()) return false;
+    if (has_payload_id().ValueOrDefault() && !payload_id().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
 
@@ -16740,9 +16713,13 @@ class GenericConditionalInlineView final {
           if (!type_0().Ok()) return false;
           break;
 
+
+
         case static_cast</**/::std::int32_t>(1LL):
           if (!type_1().Ok()) return false;
           break;
+
+
 
 
       }
@@ -17346,15 +17323,20 @@ class GenericEmbossReservedAnonymousField2View final {
       const auto emboss_reserved_local_ok_subexpr_1 = low();
       const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
 
-    if (!low().Ok()) return false;
+    if (!has_low().Known()) return false;
+    if (has_low().ValueOrDefault() && !low().Ok()) return false;
 
-    if (!high().Ok()) return false;
+    if (!has_high().Known()) return false;
+    if (has_high().ValueOrDefault() && !high().Ok()) return false;
 
-    if (!IntrinsicSizeInBits().Ok()) return false;
+    if (!has_IntrinsicSizeInBits().Known()) return false;
+    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
 
-    if (!MaxSizeInBits().Ok()) return false;
+    if (!has_MaxSizeInBits().Known()) return false;
+    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
 
-    if (!MinSizeInBits().Ok()) return false;
+    if (!has_MinSizeInBits().Known()) return false;
+    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
 
     {
 
@@ -17364,6 +17346,8 @@ class GenericEmbossReservedAnonymousField2View final {
         case static_cast</**/::std::int32_t>(1LL):
           if (!mid().Ok()) return false;
           break;
+
+
 
 
       }
@@ -17922,56 +17906,30 @@ class GenericConditionalAnonymousView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = x();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_3 = ::emboss::support::GreaterThan</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(10LL)));
-      const auto emboss_reserved_local_ok_subexpr_4 = has_emboss_reserved_anonymous_field_2();
-      const auto emboss_reserved_local_ok_subexpr_5 = ::emboss::support::And</**/bool, bool, bool, bool>(emboss_reserved_local_ok_subexpr_4, ::emboss::support::Maybe</**/bool>(true));
-      const auto emboss_reserved_local_ok_subexpr_6 = emboss_reserved_anonymous_field_2().has_mid();
-      const auto emboss_reserved_local_ok_subexpr_7 = ::emboss::support::And</**/bool, bool, bool, bool>(emboss_reserved_local_ok_subexpr_4, emboss_reserved_local_ok_subexpr_6);
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
+    if (!has_emboss_reserved_anonymous_field_2().Known()) return false;
+    if (has_emboss_reserved_anonymous_field_2().ValueOrDefault() && !emboss_reserved_anonymous_field_2().Ok()) return false;
 
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_3;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!emboss_reserved_anonymous_field_2().Ok()) return false;
+    if (!has_low().Known()) return false;
+    if (has_low().ValueOrDefault() && !low().Ok()) return false;
 
+    if (!has_high().Known()) return false;
+    if (has_high().ValueOrDefault() && !high().Ok()) return false;
 
-      }
-    }
-
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_5;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!low().Ok()) return false;
-
-        if (!high().Ok()) return false;
-
-
-      }
-    }
-
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_7;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!mid().Ok()) return false;
-
-
-      }
-    }
+    if (!has_mid().Known()) return false;
+    if (has_mid().ValueOrDefault() && !mid().Ok()) return false;
 
 
 
@@ -18585,13 +18543,17 @@ class GenericEmbossReservedAnonymousField1View final {
     if (!IsComplete()) return false;
 
 
-    if (!enabled().Ok()) return false;
+    if (!has_enabled().Known()) return false;
+    if (has_enabled().ValueOrDefault() && !enabled().Ok()) return false;
 
-    if (!IntrinsicSizeInBits().Ok()) return false;
+    if (!has_IntrinsicSizeInBits().Known()) return false;
+    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
 
-    if (!MaxSizeInBits().Ok()) return false;
+    if (!has_MaxSizeInBits().Known()) return false;
+    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
 
-    if (!MinSizeInBits().Ok()) return false;
+    if (!has_MinSizeInBits().Known()) return false;
+    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
 
 
 
@@ -18992,39 +18954,24 @@ class GenericConditionalOnFlagView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = ::emboss::support::And</**/bool, bool, bool, bool>(::emboss::support::Maybe</**/bool>(true), ::emboss::support::Maybe</**/bool>(true));
-      const auto emboss_reserved_local_ok_subexpr_2 = enabled();
-      const auto emboss_reserved_local_ok_subexpr_3 = (emboss_reserved_local_ok_subexpr_2.Ok()    ? ::emboss::support::Maybe</**/bool>(static_cast</**/bool>(emboss_reserved_local_ok_subexpr_2.UncheckedRead()))    : ::emboss::support::Maybe</**/bool>());
 
-    if (!emboss_reserved_anonymous_field_1().Ok()) return false;
+    if (!has_emboss_reserved_anonymous_field_1().Known()) return false;
+    if (has_emboss_reserved_anonymous_field_1().ValueOrDefault() && !emboss_reserved_anonymous_field_1().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
+    if (!has_enabled().Known()) return false;
+    if (has_enabled().ValueOrDefault() && !enabled().Ok()) return false;
 
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_1;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!enabled().Ok()) return false;
-
-
-      }
-    }
-
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_3;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!value().Ok()) return false;
-
-
-      }
-    }
+    if (!has_value().Known()) return false;
+    if (has_value().ValueOrDefault() && !value().Ok()) return false;
 
 
 

@@ -93,13 +93,17 @@ class GenericOuter2View final {
     if (!IsComplete()) return false;
 
 
-    if (!outer().Ok()) return false;
+    if (!has_outer().Known()) return false;
+    if (has_outer().ValueOrDefault() && !outer().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
 
 

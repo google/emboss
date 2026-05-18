@@ -303,3 +303,6 @@ struct LargeConditionals:
 
   if tag == 99:
     4 [+4]  UInt  f99
+
+  if tag == 0:
+    8 [+4]  UInt  f0_copy

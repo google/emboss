@@ -123,17 +123,23 @@ class GenericEmbossReservedAnonymousField2View final {
     if (!IsComplete()) return false;
 
 
-    if (!high_bit().Ok()) return false;
+    if (!has_high_bit().Known()) return false;
+    if (has_high_bit().ValueOrDefault() && !high_bit().Ok()) return false;
 
-    if (!bar().Ok()) return false;
+    if (!has_bar().Known()) return false;
+    if (has_bar().ValueOrDefault() && !bar().Ok()) return false;
 
-    if (!first_bit().Ok()) return false;
+    if (!has_first_bit().Known()) return false;
+    if (has_first_bit().ValueOrDefault() && !first_bit().Ok()) return false;
 
-    if (!IntrinsicSizeInBits().Ok()) return false;
+    if (!has_IntrinsicSizeInBits().Known()) return false;
+    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
 
-    if (!MaxSizeInBits().Ok()) return false;
+    if (!has_MaxSizeInBits().Known()) return false;
+    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
 
-    if (!MinSizeInBits().Ok()) return false;
+    if (!has_MinSizeInBits().Known()) return false;
+    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
 
 
 
@@ -784,15 +790,20 @@ class GenericEmbossReservedAnonymousField1View final {
     if (!IsComplete()) return false;
 
 
-    if (!bit_23().Ok()) return false;
+    if (!has_bit_23().Known()) return false;
+    if (has_bit_23().ValueOrDefault() && !bit_23().Ok()) return false;
 
-    if (!low_bit().Ok()) return false;
+    if (!has_low_bit().Known()) return false;
+    if (has_low_bit().ValueOrDefault() && !low_bit().Ok()) return false;
 
-    if (!IntrinsicSizeInBits().Ok()) return false;
+    if (!has_IntrinsicSizeInBits().Known()) return false;
+    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
 
-    if (!MaxSizeInBits().Ok()) return false;
+    if (!has_MaxSizeInBits().Known()) return false;
+    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
 
-    if (!MinSizeInBits().Ok()) return false;
+    if (!has_MinSizeInBits().Known()) return false;
+    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
 
 
 
@@ -1270,36 +1281,36 @@ class GenericFooView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = ::emboss::support::And</**/bool, bool, bool, bool>(::emboss::support::Maybe</**/bool>(true), ::emboss::support::Maybe</**/bool>(true));
 
-    if (!emboss_reserved_anonymous_field_2().Ok()) return false;
+    if (!has_emboss_reserved_anonymous_field_2().Known()) return false;
+    if (has_emboss_reserved_anonymous_field_2().ValueOrDefault() && !emboss_reserved_anonymous_field_2().Ok()) return false;
 
-    if (!emboss_reserved_anonymous_field_1().Ok()) return false;
+    if (!has_emboss_reserved_anonymous_field_1().Known()) return false;
+    if (has_emboss_reserved_anonymous_field_1().ValueOrDefault() && !emboss_reserved_anonymous_field_1().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
+    if (!has_high_bit().Known()) return false;
+    if (has_high_bit().ValueOrDefault() && !high_bit().Ok()) return false;
 
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_1;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!high_bit().Ok()) return false;
+    if (!has_bar().Known()) return false;
+    if (has_bar().ValueOrDefault() && !bar().Ok()) return false;
 
-        if (!bar().Ok()) return false;
+    if (!has_first_bit().Known()) return false;
+    if (has_first_bit().ValueOrDefault() && !first_bit().Ok()) return false;
 
-        if (!first_bit().Ok()) return false;
+    if (!has_bit_23().Known()) return false;
+    if (has_bit_23().ValueOrDefault() && !bit_23().Ok()) return false;
 
-        if (!bit_23().Ok()) return false;
-
-        if (!low_bit().Ok()) return false;
-
-
-      }
-    }
+    if (!has_low_bit().Known()) return false;
+    if (has_low_bit().ValueOrDefault() && !low_bit().Ok()) return false;
 
 
 

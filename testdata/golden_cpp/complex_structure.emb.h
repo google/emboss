@@ -116,17 +116,23 @@ class GenericRegisterLayoutView final {
     if (!IsComplete()) return false;
 
 
-    if (!x().Ok()) return false;
+    if (!has_x().Known()) return false;
+    if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
-    if (!l().Ok()) return false;
+    if (!has_l().Known()) return false;
+    if (has_l().ValueOrDefault() && !l().Ok()) return false;
 
-    if (!h().Ok()) return false;
+    if (!has_h().Known()) return false;
+    if (has_h().ValueOrDefault() && !h().Ok()) return false;
 
-    if (!IntrinsicSizeInBits().Ok()) return false;
+    if (!has_IntrinsicSizeInBits().Known()) return false;
+    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
 
-    if (!MaxSizeInBits().Ok()) return false;
+    if (!has_MaxSizeInBits().Known()) return false;
+    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
 
-    if (!MinSizeInBits().Ok()) return false;
+    if (!has_MinSizeInBits().Known()) return false;
+    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
 
 
 
@@ -686,13 +692,17 @@ class GenericArrayElementView final {
     if (!IsComplete()) return false;
 
 
-    if (!a().Ok()) return false;
+    if (!has_a().Known()) return false;
+    if (has_a().ValueOrDefault() && !a().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
 
 
@@ -1119,19 +1129,26 @@ class GenericEmbossReservedAnonymousField1View final {
     if (!IsComplete()) return false;
 
 
-    if (!a0().Ok()) return false;
+    if (!has_a0().Known()) return false;
+    if (has_a0().ValueOrDefault() && !a0().Ok()) return false;
 
-    if (!s0().Ok()) return false;
+    if (!has_s0().Known()) return false;
+    if (has_s0().ValueOrDefault() && !s0().Ok()) return false;
 
-    if (!l0().Ok()) return false;
+    if (!has_l0().Known()) return false;
+    if (has_l0().ValueOrDefault() && !l0().Ok()) return false;
 
-    if (!h0().Ok()) return false;
+    if (!has_h0().Known()) return false;
+    if (has_h0().ValueOrDefault() && !h0().Ok()) return false;
 
-    if (!IntrinsicSizeInBits().Ok()) return false;
+    if (!has_IntrinsicSizeInBits().Known()) return false;
+    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
 
-    if (!MaxSizeInBits().Ok()) return false;
+    if (!has_MaxSizeInBits().Known()) return false;
+    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
 
-    if (!MinSizeInBits().Ok()) return false;
+    if (!has_MinSizeInBits().Known()) return false;
+    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
 
 
 
@@ -1763,135 +1780,66 @@ class GenericComplexView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = ::emboss::support::And</**/bool, bool, bool, bool>(::emboss::support::Maybe</**/bool>(true), ::emboss::support::Maybe</**/bool>(true));
-      const auto emboss_reserved_local_ok_subexpr_2 = a0();
-      const auto emboss_reserved_local_ok_subexpr_3 = (emboss_reserved_local_ok_subexpr_2.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_2.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_4 = ::emboss::support::GreaterThanOrEqual</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_3, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(128LL)));
-      const auto emboss_reserved_local_ok_subexpr_5 = ::emboss::support::LessThan</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_3, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(128LL)));
-      const auto emboss_reserved_local_ok_subexpr_6 = b2();
-      const auto emboss_reserved_local_ok_subexpr_7 = (emboss_reserved_local_ok_subexpr_6.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_6.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_8 = ::emboss::support::GreaterThan</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_7, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(25LL)));
-      const auto emboss_reserved_local_ok_subexpr_9 = s();
-      const auto emboss_reserved_local_ok_subexpr_10 = (emboss_reserved_local_ok_subexpr_9.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_9.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_11 = ::emboss::support::GreaterThanOrEqual</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_10, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)));
-      const auto emboss_reserved_local_ok_subexpr_12 = ::emboss::support::GreaterThanOrEqual</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_3, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(80LL)));
-      const auto emboss_reserved_local_ok_subexpr_13 = e3();
-      const auto emboss_reserved_local_ok_subexpr_14 = (emboss_reserved_local_ok_subexpr_13.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_13.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_15 = ::emboss::support::GreaterThanOrEqual</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_14, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(128LL)));
-      const auto emboss_reserved_local_ok_subexpr_16 = ::emboss::support::LessThan</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_7, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(50LL)));
-      const auto emboss_reserved_local_ok_subexpr_17 = ::emboss::support::Choice</**/bool, bool, bool, bool, bool>(emboss_reserved_local_ok_subexpr_12, emboss_reserved_local_ok_subexpr_15, emboss_reserved_local_ok_subexpr_16);
-      const auto emboss_reserved_local_ok_subexpr_18 = ::emboss::support::And</**/bool, bool, bool, bool>(emboss_reserved_local_ok_subexpr_11, emboss_reserved_local_ok_subexpr_17);
-      const auto emboss_reserved_local_ok_subexpr_19 = ::emboss::support::GreaterThanOrEqual</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_10, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(5LL)));
-      const auto emboss_reserved_local_ok_subexpr_20 = e4();
-      const auto emboss_reserved_local_ok_subexpr_21 = (emboss_reserved_local_ok_subexpr_20.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_20.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_22 = ::emboss::support::GreaterThan</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_21, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_ok_subexpr_23 = ::emboss::support::And</**/bool, bool, bool, bool>(emboss_reserved_local_ok_subexpr_19, emboss_reserved_local_ok_subexpr_22);
-      const auto emboss_reserved_local_ok_subexpr_24 = ::emboss::support::LessThan</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_10, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL)));
-      const auto emboss_reserved_local_ok_subexpr_25 = ::emboss::support::LessThan</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_3, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)));
-      const auto emboss_reserved_local_ok_subexpr_26 = ::emboss::support::Or</**/bool, bool, bool, bool>(emboss_reserved_local_ok_subexpr_24, emboss_reserved_local_ok_subexpr_25);
 
-    if (!s().Ok()) return false;
+    if (!has_s().Known()) return false;
+    if (has_s().ValueOrDefault() && !s().Ok()) return false;
 
-    if (!u().Ok()) return false;
+    if (!has_u().Known()) return false;
+    if (has_u().ValueOrDefault() && !u().Ok()) return false;
 
-    if (!i().Ok()) return false;
+    if (!has_i().Known()) return false;
+    if (has_i().ValueOrDefault() && !i().Ok()) return false;
 
-    if (!b().Ok()) return false;
+    if (!has_b().Known()) return false;
+    if (has_b().ValueOrDefault() && !b().Ok()) return false;
 
-    if (!a().Ok()) return false;
+    if (!has_a().Known()) return false;
+    if (has_a().ValueOrDefault() && !a().Ok()) return false;
 
-    if (!emboss_reserved_anonymous_field_1().Ok()) return false;
+    if (!has_emboss_reserved_anonymous_field_1().Known()) return false;
+    if (has_emboss_reserved_anonymous_field_1().ValueOrDefault() && !emboss_reserved_anonymous_field_1().Ok()) return false;
 
-    if (!e1().Ok()) return false;
+    if (!has_e1().Known()) return false;
+    if (has_e1().ValueOrDefault() && !e1().Ok()) return false;
 
-    if (!IntrinsicSizeInBytes().Ok()) return false;
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!MaxSizeInBytes().Ok()) return false;
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-    if (!MinSizeInBytes().Ok()) return false;
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
+    if (!has_a0().Known()) return false;
+    if (has_a0().ValueOrDefault() && !a0().Ok()) return false;
 
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_1;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!a0().Ok()) return false;
+    if (!has_s0().Known()) return false;
+    if (has_s0().ValueOrDefault() && !s0().Ok()) return false;
 
-        if (!s0().Ok()) return false;
+    if (!has_l0().Known()) return false;
+    if (has_l0().ValueOrDefault() && !l0().Ok()) return false;
 
-        if (!l0().Ok()) return false;
+    if (!has_h0().Known()) return false;
+    if (has_h0().ValueOrDefault() && !h0().Ok()) return false;
 
-        if (!h0().Ok()) return false;
+    if (!has_e2().Known()) return false;
+    if (has_e2().ValueOrDefault() && !e2().Ok()) return false;
 
+    if (!has_b2().Known()) return false;
+    if (has_b2().ValueOrDefault() && !b2().Ok()) return false;
 
-      }
-    }
+    if (!has_e3().Known()) return false;
+    if (has_e3().ValueOrDefault() && !e3().Ok()) return false;
 
-    {
+    if (!has_e4().Known()) return false;
+    if (has_e4().ValueOrDefault() && !e4().Ok()) return false;
 
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_4;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!e2().Ok()) return false;
+    if (!has_e5().Known()) return false;
+    if (has_e5().ValueOrDefault() && !e5().Ok()) return false;
 
-
-      }
-    }
-
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_5;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!b2().Ok()) return false;
-
-
-      }
-    }
-
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_8;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!e3().Ok()) return false;
-
-
-      }
-    }
-
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_18;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!e4().Ok()) return false;
-
-
-      }
-    }
-
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_23;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!e5().Ok()) return false;
-
-
-      }
-    }
-
-    {
-
-      const auto emboss_reserved_cond = emboss_reserved_local_ok_subexpr_26;
-      if (!emboss_reserved_cond.Known()) return false;
-      if (emboss_reserved_cond.ValueOrDefault()) {
-        if (!e0().Ok()) return false;
-
-
-      }
-    }
+    if (!has_e0().Known()) return false;
+    if (has_e0().ValueOrDefault() && !e0().Ok()) return false;
 
 
 

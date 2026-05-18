@@ -1513,50 +1513,11 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
                 )
             )
         else:
-            cond_result = _render_expression(
-                group["expr"], ir, subexpressions=subexpressions
-            )
-
-            # Check if condition is statically true (constant boolean true)
-            # In this case, we can skip the if-block wrapper entirely.
-            is_always_true = (
-                cond_result.is_constant
-                and group["expr"].type.which_type == "boolean"
-                and group["expr"].type.boolean.has_field("value")
-                and group["expr"].type.boolean.value
-            )
-
-            if is_always_true:
-                # Emit unconditional field checks (no if-block wrapper needed)
-                for field in group["fields"]:
-                    blocks.append(
-                        code_template.format_template(
-                            _TEMPLATES.ok_method_unconditional_check,
-                            field=_cpp_field_name(field.name.name.text),
-                        )
-                    )
-            else:
-                # Create a new scope for the if block
-                inner_scope = ExpressionScope(
-                    "emboss_reserved_if_scope_", parent=subexpressions
-                )
-
-                # Generate field checks using template
-                field_checks = []
-                for field in group["fields"]:
-                    field_checks.append(
-                        code_template.format_template(
-                            _TEMPLATES.ok_method_field_check,
-                            field=_cpp_field_name(field.name.name.text),
-                        )
-                    )
-
+            for field in group["fields"]:
                 blocks.append(
                     code_template.format_template(
-                        _TEMPLATES.ok_method_if_block,
-                        inner_scope_definitions=inner_scope.definition_code().rstrip(),
-                        condition=cond_result.rendered,
-                        field_checks="".join(field_checks),
+                        _TEMPLATES.ok_method_test,
+                        field=_cpp_field_name(field.name.name.text),
                     )
                 )
 
