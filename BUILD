@@ -12,7 +12,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+load("@pip//:requirements.bzl", "requirement")
+load("@rules_python//python:py_binary.bzl", "py_binary")
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
+
 exports_files([
     "build_defs.bzl",
     "LICENSE",
 ])
+
+# Black formatter binary
+py_binary(
+    name = "black_runner",
+    srcs = ["scripts/black_runner.py"],
+    deps = [requirement("black")],
+)
+
+# Fix formatting: bazel run //:black_fix -- .
+sh_binary(
+    name = "black_fix",
+    srcs = ["scripts/black_fix.sh"],
+    data = [":black_runner"],
+)
+
+# Check formatting: bazel run //:black_check
+sh_binary(
+    name = "black_check",
+    srcs = ["scripts/black_check.sh"],
+    data = [":black_runner"],
+)
