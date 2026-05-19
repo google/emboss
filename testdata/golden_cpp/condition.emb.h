@@ -360,8 +360,6 @@ class GenericBasicConditionalView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = x();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
 
     if (!has_x().Known()) return false;
     if (has_x().ValueOrDefault() && !x().Ok()) return false;
@@ -375,19 +373,8 @@ class GenericBasicConditionalView final {
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-      const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
-      if (!emboss_reserved_switch_discrim.Known()) return false;
-      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
-        case static_cast</**/::std::int32_t>(0LL):
-          if (!xc().Ok()) return false;
-          break;
-
-
-
-
-      }
-    }
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
 
 
@@ -1428,8 +1415,6 @@ class GenericConditionalAndUnconditionalOverlappingFinalFieldView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = x();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
 
     if (!has_x().Known()) return false;
     if (has_x().ValueOrDefault() && !x().Ok()) return false;
@@ -1446,19 +1431,8 @@ class GenericConditionalAndUnconditionalOverlappingFinalFieldView final {
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-      const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
-      if (!emboss_reserved_switch_discrim.Known()) return false;
-      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
-        case static_cast</**/::std::int32_t>(0LL):
-          if (!xc().Ok()) return false;
-          break;
-
-
-
-
-      }
-    }
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
 
 
@@ -2018,8 +1992,6 @@ class GenericConditionalBasicConditionalFieldFirstView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = x();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
 
     if (!has_x().Known()) return false;
     if (has_x().ValueOrDefault() && !x().Ok()) return false;
@@ -2033,19 +2005,8 @@ class GenericConditionalBasicConditionalFieldFirstView final {
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-      const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
-      if (!emboss_reserved_switch_discrim.Known()) return false;
-      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
-        case static_cast</**/::std::int32_t>(0LL):
-          if (!xc().Ok()) return false;
-          break;
-
-
-
-
-      }
-    }
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
 
 
@@ -2529,8 +2490,6 @@ class GenericConditionalAndDynamicLocationView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = x();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
 
     if (!has_x().Known()) return false;
     if (has_x().ValueOrDefault() && !x().Ok()) return false;
@@ -2547,19 +2506,8 @@ class GenericConditionalAndDynamicLocationView final {
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-      const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
-      if (!emboss_reserved_switch_discrim.Known()) return false;
-      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
-        case static_cast</**/::std::int32_t>(0LL):
-          if (!xc().Ok()) return false;
-          break;
-
-
-
-
-      }
-    }
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
 
 
@@ -3152,9 +3100,6 @@ class GenericConditionUsesMinIntView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = x();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_3 = ::emboss::support::Difference</**/::std::int64_t, ::std::int64_t, ::std::int32_t, ::std::int64_t>(emboss_reserved_local_ok_subexpr_2, ::emboss::support::Maybe</**/::std::int64_t>(static_cast</**/::std::int64_t>(9223372036854775680LL)));
 
     if (!has_x().Known()) return false;
     if (has_x().ValueOrDefault() && !x().Ok()) return false;
@@ -3168,19 +3113,8 @@ class GenericConditionUsesMinIntView final {
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-      const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_3;
-      if (!emboss_reserved_switch_discrim.Known()) return false;
-      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
-        case static_cast</**/::std::int64_t>(-9223372036854775807LL - 1):
-          if (!xc().Ok()) return false;
-          break;
-
-
-
-
-      }
-    }
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
 
 
@@ -3695,10 +3629,6 @@ class GenericNestedConditionalView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = x();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_3 = xc();
-      const auto emboss_reserved_local_ok_subexpr_4 = (emboss_reserved_local_ok_subexpr_3.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_3.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
 
     if (!has_x().Known()) return false;
     if (has_x().ValueOrDefault() && !x().Ok()) return false;
@@ -3712,33 +3642,11 @@ class GenericNestedConditionalView final {
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-      const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
-      if (!emboss_reserved_switch_discrim.Known()) return false;
-      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
-        case static_cast</**/::std::int32_t>(0LL):
-          if (!xc().Ok()) return false;
-          break;
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
-
-
-
-      }
-    }
-
-    {
-      const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_4;
-      if (!emboss_reserved_switch_discrim.Known()) return false;
-      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
-        case static_cast</**/::std::int32_t>(0LL):
-          if (!xcc().Ok()) return false;
-          break;
-
-
-
-
-      }
-    }
+    if (!has_xcc().Known()) return false;
+    if (has_xcc().ValueOrDefault() && !xcc().Ok()) return false;
 
 
 
@@ -4354,6 +4262,8 @@ class GenericCorrectNestedConditionalView final {
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
         case static_cast</**/::std::int32_t>(0LL):
           if (!xc().Ok()) return false;
+          if (!has_xcc().Known()) return false;
+          if (has_xcc().ValueOrDefault() && !xcc().Ok()) return false;
           break;
 
 
@@ -4361,9 +4271,6 @@ class GenericCorrectNestedConditionalView final {
 
       }
     }
-
-    if (!has_xcc().Known()) return false;
-    if (has_xcc().ValueOrDefault() && !xcc().Ok()) return false;
 
 
 
@@ -6819,8 +6726,6 @@ class GenericConditionDoesNotContributeToSizeView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = x();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
 
     if (!has_x().Known()) return false;
     if (has_x().ValueOrDefault() && !x().Ok()) return false;
@@ -6837,19 +6742,8 @@ class GenericConditionDoesNotContributeToSizeView final {
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-      const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
-      if (!emboss_reserved_switch_discrim.Known()) return false;
-      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
-        case static_cast</**/::std::int32_t>(0LL):
-          if (!xc().Ok()) return false;
-          break;
-
-
-
-
-      }
-    }
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
 
 
@@ -7497,8 +7391,6 @@ class GenericEnumConditionView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = x();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::emboss::test::OnOff>(static_cast</**/::emboss::test::OnOff>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::OnOff>());
 
     if (!has_x().Known()) return false;
     if (has_x().ValueOrDefault() && !x().Ok()) return false;
@@ -7512,19 +7404,8 @@ class GenericEnumConditionView final {
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-      const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
-      if (!emboss_reserved_switch_discrim.Known()) return false;
-      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
-        case static_cast</**/::emboss::test::OnOff>(1):
-          if (!xc().Ok()) return false;
-          break;
-
-
-
-
-      }
-    }
+    if (!has_xc().Known()) return false;
+    if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
 
     if (!has_xc2().Known()) return false;
     if (has_xc2().ValueOrDefault() && !xc2().Ok()) return false;
@@ -13297,14 +13178,6 @@ class GenericChoiceConditionView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = field();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::emboss::test::ChoiceCondition::Field>(static_cast</**/::emboss::test::ChoiceCondition::Field>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::ChoiceCondition::Field>());
-      const auto emboss_reserved_local_ok_subexpr_3 = ::emboss::support::Equal</**/::emboss::test::ChoiceCondition::Field, bool, ::emboss::test::ChoiceCondition::Field, ::emboss::test::ChoiceCondition::Field>(emboss_reserved_local_ok_subexpr_2, ::emboss::support::Maybe</**/::emboss::test::ChoiceCondition::Field>(static_cast</**/::emboss::test::ChoiceCondition::Field>(1)));
-      const auto emboss_reserved_local_ok_subexpr_4 = x();
-      const auto emboss_reserved_local_ok_subexpr_5 = (emboss_reserved_local_ok_subexpr_4.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_4.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_6 = y();
-      const auto emboss_reserved_local_ok_subexpr_7 = (emboss_reserved_local_ok_subexpr_6.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_6.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_ok_subexpr_8 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_ok_subexpr_3, emboss_reserved_local_ok_subexpr_5, emboss_reserved_local_ok_subexpr_7);
 
     if (!has_field().Known()) return false;
     if (has_field().ValueOrDefault() && !field().Ok()) return false;
@@ -13324,19 +13197,8 @@ class GenericChoiceConditionView final {
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-      const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_8;
-      if (!emboss_reserved_switch_discrim.Known()) return false;
-      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
-        case static_cast</**/::std::int32_t>(5LL):
-          if (!xyc().Ok()) return false;
-          break;
-
-
-
-
-      }
-    }
+    if (!has_xyc().Known()) return false;
+    if (has_xyc().ValueOrDefault() && !xyc().Ok()) return false;
 
 
 
@@ -14981,8 +14843,6 @@ class GenericContainsContainsBitsView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = condition().has_top();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
 
     if (!has_condition().Known()) return false;
     if (has_condition().ValueOrDefault() && !condition().Ok()) return false;
@@ -14996,19 +14856,8 @@ class GenericContainsContainsBitsView final {
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
-    {
-      const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
-      if (!emboss_reserved_switch_discrim.Known()) return false;
-      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
-        case static_cast</**/::std::int32_t>(1LL):
-          if (!top().Ok()) return false;
-          break;
-
-
-
-
-      }
-    }
+    if (!has_top().Known()) return false;
+    if (has_top().ValueOrDefault() && !top().Ok()) return false;
 
 
 
@@ -17307,8 +17156,6 @@ class GenericEmbossReservedAnonymousField2View final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = low();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
 
     if (!has_low().Known()) return false;
     if (has_low().ValueOrDefault() && !low().Ok()) return false;
@@ -17325,19 +17172,8 @@ class GenericEmbossReservedAnonymousField2View final {
     if (!has_MinSizeInBits().Known()) return false;
     if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
 
-    {
-      const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
-      if (!emboss_reserved_switch_discrim.Known()) return false;
-      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
-        case static_cast</**/::std::int32_t>(1LL):
-          if (!mid().Ok()) return false;
-          break;
-
-
-
-
-      }
-    }
+    if (!has_mid().Known()) return false;
+    if (has_mid().ValueOrDefault() && !mid().Ok()) return false;
 
 
 
