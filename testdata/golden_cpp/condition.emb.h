@@ -16740,12 +16740,9 @@ class GenericConditionalInlineView final {
           emboss_reserved_local_ok_subexpr_2;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
         case static_cast</**/ ::std::int32_t>(0LL):
-          if (!type_0().Ok()) return false;
-          break;
-
+          return type_0().Ok();
         case static_cast</**/ ::std::int32_t>(1LL):
-          if (!type_1().Ok()) return false;
-          break;
+          return type_1().Ok();
 
         default:
           break;
@@ -20338,12 +20335,9 @@ class GenericBareConditionalDiscriminantView final {
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
         case static_cast</**/ ::std::int32_t>(0LL):
-          if (!a().Ok()) return false;
-          break;
-
+          return a().Ok();
         case static_cast</**/ ::std::int32_t>(1LL):
-          if (!b().Ok()) return false;
-          break;
+          return b().Ok();
 
         default:
           break;
@@ -21094,12 +21088,9 @@ class GenericDominatedBareDiscriminantView final {
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
         case static_cast</**/ ::std::int32_t>(0LL):
-          if (!a().Ok()) return false;
-          break;
-
+          return a().Ok();
         case static_cast</**/ ::std::int32_t>(1LL):
-          if (!b().Ok()) return false;
-          break;
+          return b().Ok();
 
         default:
           break;
