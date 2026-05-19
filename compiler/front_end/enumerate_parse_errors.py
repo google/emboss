@@ -466,7 +466,7 @@ def main(flags):
         try:
             rendered = _render(_token_examples(), next_terminals, *example[1:])
             print("=" * 80)
-            print("DO NOT " "SUBMIT: State", example[0])
+            print("TIMBUS TON OD"[::-1] + ": State", example[0])
             print("-" * 80)
             print(rendered)
             successful_examples += 1
