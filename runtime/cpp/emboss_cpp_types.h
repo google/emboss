@@ -62,8 +62,8 @@ struct LeastWidthInteger final {
 };
 template <>
 struct LeastWidthInteger<128> final {
-  using Unsigned = __uint128_t;
-  using Signed = __int128_t;
+  using Unsigned = EMBOSS_UINT128_T;
+  using Signed = EMBOSS_INT128_T;
 };
 #else
 template <int kBits>
