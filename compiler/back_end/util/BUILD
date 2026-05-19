@@ -31,7 +31,6 @@ py_library(
 py_test(
     name = "code_template_test",
     srcs = ["code_template_test.py"],
-    python_version = "PY3",
     deps = [
         ":code_template",
     ],

@@ -25,7 +25,6 @@ There is also a convenience macro, `emboss_cc_library()`, which creates an
 """
 
 load("@rules_cc//cc:find_cc_toolchain.bzl", "find_cc_toolchain", "use_cc_toolchain")
-load("@rules_cc//cc:cc_library.bzl", "cc_library")
 load("@rules_cc//cc/common:cc_common.bzl", "cc_common")
 load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
 
@@ -173,14 +172,14 @@ def _cc_emboss_aspect_impl(target, ctx):
         unsupported_features = list(ctx.disabled_features),
     )
     src = target[EmbossInfo].direct_source
-    headers = [ ctx.actions.declare_file( src.basename + ".h", sibling = src) ]
+    headers = [ctx.actions.declare_file(src.basename + ".h", sibling = src)]
     args = ctx.actions.args()
     args.add("--input-file")
     args.add_all(emboss_info.direct_ir)
     args.add("--output-file")
     args.add_all(headers)
     if not ctx.attr.enable_enum_traits:
-      args.add("--no-cc-enum-traits")
+        args.add("--no-cc-enum-traits")
     ctx.actions.run(
         executable = emboss_cc_compiler,
         arguments = [args],
@@ -191,11 +190,11 @@ def _cc_emboss_aspect_impl(target, ctx):
     transitive_headers = depset(
         direct = headers,
         transitive = [
-                         dep[EmbossCcHeaderInfo].transitive_headers
-                         for dep in ctx.rule.attr.deps
-                     ],
+            dep[EmbossCcHeaderInfo].transitive_headers
+            for dep in ctx.rule.attr.deps
+        ],
     )
-    (cc_compilation_context, cc_compilation_outputs) = cc_common.compile(
+    (cc_compilation_context, _cc_compilation_outputs) = cc_common.compile(
         name = ctx.label.name,
         actions = ctx.actions,
         feature_configuration = feature_configuration,

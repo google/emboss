@@ -144,7 +144,7 @@ emboss_cc_library(
     ],
 )
 
-# This rule is here to test that the Emboss Skylark macro sets eveything up
+# This rule is here to test that the Emboss Starlark macro sets eveything up
 # correctly for the Emboss front end to read generated .embs.
 #
 # TODO(bolms): Should genrules with output_to_bindir = 1 be supported as inputs
