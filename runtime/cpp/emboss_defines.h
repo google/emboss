@@ -321,4 +321,14 @@
 #endif  // defined(__SIZEOF_INT128__)
 #endif  // !defined(EMBOSS_HAS_INT128)
 
+#if EMBOSS_HAS_INT128
+#if !defined(EMBOSS_INT128_T)
+#define EMBOSS_INT128_T __int128_t
+#endif  // !defined(EMBOSS_INT128_T)
+
+#if !defined(EMBOSS_UINT128_T)
+#define EMBOSS_UINT128_T __uint128_t
+#endif  // !defined(EMBOSS_UINT128_T)
+#endif  // EMBOSS_HAS_INT128
+
 #endif  // EMBOSS_RUNTIME_CPP_EMBOSS_DEFINES_H_
