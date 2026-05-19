@@ -29,7 +29,6 @@ package(
 py_binary(
     name = "emboss_codegen_cpp",
     srcs = ["emboss_codegen_cpp.py"],
-    python_version = "PY3",
     visibility = ["//visibility:public"],
     deps = [
         ":header_generator",

@@ -24,6 +24,7 @@ def emboss_cc_util_test(name, copts = [], **kwargs):
     cc_test(
         name = name,
         copts = copts + ["-Wsign-compare"],
+        features = ["-layering_check"],
         **kwargs
     )
     cc_test(
@@ -34,5 +35,6 @@ def emboss_cc_util_test(name, copts = [], **kwargs):
             # #include any Emboss headers.
             "-DEMBOSS_NO_OPTIMIZATIONS",
         ],
+        features = ["-layering_check"],
         **kwargs
     )

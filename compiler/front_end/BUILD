@@ -40,7 +40,6 @@ py_library(
 py_test(
     name = "tokenizer_test",
     srcs = ["tokenizer_test.py"],
-    python_version = "PY3",
     deps = [
         ":tokenizer",
         "//compiler/util:error",
@@ -59,7 +58,6 @@ py_library(
 py_test(
     name = "lr1_test",
     srcs = ["lr1_test.py"],
-    python_version = "PY3",
     deps = [
         ":lr1",
         "//compiler/util:parser_types",
@@ -83,7 +81,6 @@ py_test(
     data = [
         "//testdata:golden_files",
     ],
-    python_version = "PY3",
     deps = [
         ":module_ir",
         ":parser",
@@ -121,7 +118,6 @@ py_library(
 py_test(
     name = "parser_test",
     srcs = ["parser_test.py"],
-    python_version = "PY3",
     deps = [
         ":parser",
         ":tokenizer",
@@ -146,7 +142,6 @@ py_library(
 py_test(
     name = "make_parser_test",
     srcs = ["make_parser_test.py"],
-    python_version = "PY3",
     deps = [
         ":lr1",
         ":make_parser",
@@ -188,7 +183,6 @@ py_test(
     data = [
         "//testdata:golden_files",
     ],
-    python_version = "PY3",
     deps = [
         ":glue",
         "//compiler/util:error",
@@ -212,7 +206,6 @@ py_library(
 py_test(
     name = "synthetics_test",
     srcs = ["synthetics_test.py"],
-    python_version = "PY3",
     deps = [
         ":glue",
         ":synthetics",
@@ -235,7 +228,6 @@ py_library(
 py_test(
     name = "symbol_resolver_test",
     srcs = ["symbol_resolver_test.py"],
-    python_version = "PY3",
     deps = [
         ":glue",
         ":symbol_resolver",
@@ -260,7 +252,6 @@ py_library(
 py_test(
     name = "write_inference_test",
     srcs = ["write_inference_test.py"],
-    python_version = "PY3",
     deps = [
         ":glue",
         ":write_inference",
@@ -293,7 +284,6 @@ py_test(
     name = "attribute_checker_test",
     timeout = "long",
     srcs = ["attribute_checker_test.py"],
-    python_version = "PY3",
     deps = [
         ":attribute_checker",
         ":glue",
@@ -319,7 +309,6 @@ py_library(
 py_test(
     name = "type_check_test",
     srcs = ["type_check_test.py"],
-    python_version = "PY3",
     deps = [
         ":glue",
         ":type_check",
@@ -345,7 +334,6 @@ py_library(
 py_test(
     name = "expression_bounds_test",
     srcs = ["expression_bounds_test.py"],
-    python_version = "PY3",
     deps = [
         ":expression_bounds",
         ":glue",
@@ -372,7 +360,6 @@ py_library(
 py_test(
     name = "constraints_test",
     srcs = ["constraints_test.py"],
-    python_version = "PY3",
     deps = [
         ":constraints",
         ":glue",
@@ -395,7 +382,6 @@ py_library(
 py_test(
     name = "dependency_checker_test",
     srcs = ["dependency_checker_test.py"],
-    python_version = "PY3",
     deps = [
         ":dependency_checker",
         ":glue",
@@ -407,7 +393,6 @@ py_test(
 py_binary(
     name = "emboss_front_end",
     srcs = ["emboss_front_end.py"],
-    python_version = "PY3",
     visibility = ["//visibility:public"],
     deps = [
         ":glue",
@@ -420,7 +405,6 @@ py_binary(
     name = "format",
     srcs = ["format.py"],
     main = "format.py",
-    python_version = "PY3",
     visibility = ["//visibility:public"],
     deps = [
         ":format_emb",
@@ -447,7 +431,6 @@ py_test(
     data = [
         "//testdata:format_embs",
     ],
-    python_version = "PY3",
     deps = [
         ":format_emb",
         ":module_ir",
@@ -469,7 +452,6 @@ py_binary(
 py_binary(
     name = "generate_grammar_md",
     srcs = ["generate_grammar_md.py"],
-    python_version = "PY3",
     deps = [
         ":constraints",
         ":module_ir",
@@ -480,7 +462,6 @@ py_binary(
 py_binary(
     name = "generate_cached_parser",
     srcs = ["generate_cached_parser.py"],
-    python_version = "PY3",
     deps = [
         ":lr1",
         ":make_parser",
@@ -494,7 +475,6 @@ py_test(
     data = [
         "//doc:grammar_md",
     ],
-    python_version = "PY3",
     deps = [
         ":generate_grammar_md",
     ],
@@ -506,7 +486,6 @@ py_test(
     data = [
         "generated/cached_parser.py",
     ],
-    python_version = "PY3",
     deps = [
         ":generate_cached_parser",
     ],

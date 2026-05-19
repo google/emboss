@@ -162,6 +162,7 @@ cc_test(
         "-DEMBOSS_FORCE_ALL_CHECKS",
         "-Wsign-compare",
     ],
+    features = ["-layering_check"],
     deps = [
         "//runtime/cpp:cpp_utils",
         "@com_google_absl//absl/strings",

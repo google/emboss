@@ -33,6 +33,7 @@ cc_test(
         "emboss_test_util_test.cc",
     ],
     copts = ["-Wsign-compare"],
+    features = ["-layering_check"],
     deps = [
         ":emboss_test_util",
         "//testdata:complex_structure_emboss",

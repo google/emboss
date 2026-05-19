@@ -45,7 +45,10 @@ py_test(
 py_test(
     name = "ir_data_utils_test",
     srcs = ["ir_data_utils_test.py"],
-    deps = [":expression_parser", ":ir_data"],
+    deps = [
+        ":expression_parser",
+        ":ir_data",
+    ],
 )
 
 py_library(
@@ -67,7 +70,6 @@ py_library(
 py_test(
     name = "ir_util_test",
     srcs = ["ir_util_test.py"],
-    python_version = "PY3",
     deps = [
         ":expression_parser",
         ":ir_data",
@@ -95,7 +97,6 @@ py_library(
 py_test(
     name = "simple_memoizer_test",
     srcs = ["simple_memoizer_test.py"],
-    python_version = "PY3",
     deps = [
         ":simple_memoizer",
     ],
@@ -111,7 +112,6 @@ py_library(
 py_test(
     name = "test_util_test",
     srcs = ["test_util_test.py"],
-    python_version = "PY3",
     deps = [
         ":test_util",
         "//compiler/util:ir_data",
@@ -123,18 +123,17 @@ py_library(
     name = "traverse_ir",
     srcs = ["traverse_ir.py"],
     deps = [
-        ":simple_memoizer",
         ":ir_data",
+        ":simple_memoizer",
     ],
 )
 
 py_test(
     name = "traverse_ir_test",
     srcs = ["traverse_ir_test.py"],
-    python_version = "PY3",
     deps = [
-        ":traverse_ir",
         ":ir_data",
+        ":traverse_ir",
     ],
 )
 
@@ -147,10 +146,9 @@ py_library(
 py_test(
     name = "parser_types_test",
     srcs = ["parser_types_test.py"],
-    python_version = "PY3",
     deps = [
-        ":parser_types",
         ":ir_data",
+        ":parser_types",
     ],
 )
 
@@ -175,7 +173,6 @@ py_library(
 py_test(
     name = "error_test",
     srcs = ["error_test.py"],
-    python_version = "PY3",
     deps = [
         ":error",
         ":parser_types",
@@ -191,7 +188,6 @@ py_library(
 py_test(
     name = "name_conversion_test",
     srcs = ["name_conversion_test.py"],
-    python_version = "PY3",
     deps = [
         ":name_conversion",
     ],
