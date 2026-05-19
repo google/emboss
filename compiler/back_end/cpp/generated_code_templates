@@ -402,7 +402,6 @@ ${write_fields}
 // ** ok_method_switch_block ** ////////////////////////////////////////////////
     // Check fields that depend on a common discriminant using a switch.
     {
-${inner_scope_definitions}
       const auto emboss_reserved_switch_discrim = ${discriminant};
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
