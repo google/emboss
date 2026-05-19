@@ -1364,6 +1364,22 @@ def _render_case_label(expression, ir):
         assert False, "Unsupported switch case type"
 
 
+def _case_sort_key(expression):
+    """Returns the underlying integer value of a switch case expression.
+
+    Used to sort case labels within a switch so the emitted C++ presents cases
+    in monotonic order. Compilers (particularly the older GCCs in many
+    embedded toolchains) are more likely to generate a dense jump table when
+    cases are sorted.
+    """
+    if expression.type.which_type == "integer":
+        return int(expression.type.integer.modular_value)
+    elif expression.type.which_type == "enumeration":
+        return int(expression.type.enumeration.value)
+    else:
+        assert False, "Unsupported switch case type"
+
+
 def _get_switch_candidate(expression, ir):
     """Returns (discriminant_expr, case_value_expr) or (None, None)."""
     if not _is_equality_check(expression):
@@ -1470,27 +1486,14 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
                 groups[key] = {
                     "type": "switch",
                     "discrim_rendered": discrim_rendered,
-                    "cases": [],
-                    "seen_cases": set(),
+                    "cases_by_label": {},
                 }
                 ordered_keys.append(key)
-
             case_str = _render_case_label(case_expr, ir)
-            if case_str not in groups[key]["seen_cases"]:
-                groups[key]["seen_cases"].add(case_str)
-                groups[key]["cases"].append((case_str, field))
-            else:
-                cond_res = _render_expression(
-                    field.existence_condition, ir, subexpressions=None
-                )
-                if_key = "IF:" + cond_res.rendered
-                if if_key not in groups:
-                    groups[if_key] = {
-                        "type": "if",
-                        "fields": [],
-                    }
-                    ordered_keys.append(if_key)
-                groups[if_key]["fields"].append(field)
+            case_entry = groups[key]["cases_by_label"].setdefault(
+                case_str, {"sort_key": _case_sort_key(case_expr), "fields": []}
+            )
+            case_entry["fields"].append(field)
         else:
             cond_res = _render_expression(
                 field.existence_condition, ir, subexpressions=None
@@ -1508,24 +1511,7 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
     for key in ordered_keys:
         group = groups[key]
         if group["type"] == "switch":
-            # Generate switch cases using template
-            switch_cases = []
-            for case_val, field in group["cases"]:
-                switch_cases.append(
-                    code_template.format_template(
-                        _TEMPLATES.ok_method_switch_case,
-                        case_value=case_val,
-                        field=_cpp_field_name(field.name.name.text),
-                    )
-                )
-
-            blocks.append(
-                code_template.format_template(
-                    _TEMPLATES.ok_method_switch_block,
-                    discriminant=group["discrim_rendered"],
-                    switch_cases="".join(switch_cases),
-                )
-            )
+            blocks.append(_emit_switch_block(group))
         else:
             for field in group["fields"]:
                 blocks.append(
@@ -1536,6 +1522,62 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
                 )
 
     return "".join(blocks)
+
+
+def _render_case_body(fields):
+    """Renders the body of a single switch arm — the field validation tests."""
+    return "".join(
+        "          if (!{}().Ok()) return false;\n".format(
+            _cpp_field_name(f.name.name.text)
+        )
+        for f in fields
+    )
+
+
+def _emit_switch_block(group):
+    """Emits a complete switch block from a collected switch group.
+
+    Performs case-label sorting and identical-body coalescing:
+
+      * Case labels within an arm are sorted by underlying numeric value, so
+        the C++ compiler is presented with monotonic case sequences and is
+        more likely to emit a dense jump table on embedded targets.
+      * Distinct case values whose bodies are textually identical (which
+        happens when several disjuncts of `||` guard the same field, or when
+        multiple fields share an existence condition) are merged into a
+        single multi-label arm, so the compiler emits one body for all of
+        them rather than duplicating per case.
+    """
+    body_to_labels = {}
+    body_first_seen = {}
+    for case_str, case_entry in group["cases_by_label"].items():
+        body = _render_case_body(case_entry["fields"])
+        body_to_labels.setdefault(body, []).append((case_entry["sort_key"], case_str))
+        if body not in body_first_seen:
+            body_first_seen[body] = case_entry["sort_key"]
+
+    arms = []
+    for body, labels in body_to_labels.items():
+        labels.sort()  # by (sort_key, case_str)
+        arms.append((body_first_seen[body], labels, body))
+    arms.sort(key=lambda arm: arm[0])
+
+    rendered_arms = []
+    for _, labels, body in arms:
+        case_labels = "".join("        case {}:\n".format(cs) for _, cs in labels)
+        rendered_arms.append(
+            code_template.format_template(
+                _TEMPLATES.ok_method_switch_arm,
+                case_labels=case_labels,
+                case_body=body,
+            )
+        )
+
+    return code_template.format_template(
+        _TEMPLATES.ok_method_switch_block,
+        discriminant=group["discrim_rendered"],
+        switch_cases="".join(rendered_arms),
+    )
 
 
 def _generate_structure_definition(type_ir, ir, config: Config):
