@@ -225,599 +225,203 @@ class GenericLargeConditionalsView final {
 
 
         case static_cast</**/::std::int32_t>(1LL):
-          if (!f1().Ok()) return false;
-          break;
-
-
-
+          return f1().Ok();
         case static_cast</**/::std::int32_t>(2LL):
-          if (!f2().Ok()) return false;
-          break;
-
-
-
+          return f2().Ok();
         case static_cast</**/::std::int32_t>(3LL):
-          if (!f3().Ok()) return false;
-          break;
-
-
-
+          return f3().Ok();
         case static_cast</**/::std::int32_t>(4LL):
-          if (!f4().Ok()) return false;
-          break;
-
-
-
+          return f4().Ok();
         case static_cast</**/::std::int32_t>(5LL):
-          if (!f5().Ok()) return false;
-          break;
-
-
-
+          return f5().Ok();
         case static_cast</**/::std::int32_t>(6LL):
-          if (!f6().Ok()) return false;
-          break;
-
-
-
+          return f6().Ok();
         case static_cast</**/::std::int32_t>(7LL):
-          if (!f7().Ok()) return false;
-          break;
-
-
-
+          return f7().Ok();
         case static_cast</**/::std::int32_t>(8LL):
-          if (!f8().Ok()) return false;
-          break;
-
-
-
+          return f8().Ok();
         case static_cast</**/::std::int32_t>(9LL):
-          if (!f9().Ok()) return false;
-          break;
-
-
-
+          return f9().Ok();
         case static_cast</**/::std::int32_t>(10LL):
-          if (!f10().Ok()) return false;
-          break;
-
-
-
+          return f10().Ok();
         case static_cast</**/::std::int32_t>(11LL):
-          if (!f11().Ok()) return false;
-          break;
-
-
-
+          return f11().Ok();
         case static_cast</**/::std::int32_t>(12LL):
-          if (!f12().Ok()) return false;
-          break;
-
-
-
+          return f12().Ok();
         case static_cast</**/::std::int32_t>(13LL):
-          if (!f13().Ok()) return false;
-          break;
-
-
-
+          return f13().Ok();
         case static_cast</**/::std::int32_t>(14LL):
-          if (!f14().Ok()) return false;
-          break;
-
-
-
+          return f14().Ok();
         case static_cast</**/::std::int32_t>(15LL):
-          if (!f15().Ok()) return false;
-          break;
-
-
-
+          return f15().Ok();
         case static_cast</**/::std::int32_t>(16LL):
-          if (!f16().Ok()) return false;
-          break;
-
-
-
+          return f16().Ok();
         case static_cast</**/::std::int32_t>(17LL):
-          if (!f17().Ok()) return false;
-          break;
-
-
-
+          return f17().Ok();
         case static_cast</**/::std::int32_t>(18LL):
-          if (!f18().Ok()) return false;
-          break;
-
-
-
+          return f18().Ok();
         case static_cast</**/::std::int32_t>(19LL):
-          if (!f19().Ok()) return false;
-          break;
-
-
-
+          return f19().Ok();
         case static_cast</**/::std::int32_t>(20LL):
-          if (!f20().Ok()) return false;
-          break;
-
-
-
+          return f20().Ok();
         case static_cast</**/::std::int32_t>(21LL):
-          if (!f21().Ok()) return false;
-          break;
-
-
-
+          return f21().Ok();
         case static_cast</**/::std::int32_t>(22LL):
-          if (!f22().Ok()) return false;
-          break;
-
-
-
+          return f22().Ok();
         case static_cast</**/::std::int32_t>(23LL):
-          if (!f23().Ok()) return false;
-          break;
-
-
-
+          return f23().Ok();
         case static_cast</**/::std::int32_t>(24LL):
-          if (!f24().Ok()) return false;
-          break;
-
-
-
+          return f24().Ok();
         case static_cast</**/::std::int32_t>(25LL):
-          if (!f25().Ok()) return false;
-          break;
-
-
-
+          return f25().Ok();
         case static_cast</**/::std::int32_t>(26LL):
-          if (!f26().Ok()) return false;
-          break;
-
-
-
+          return f26().Ok();
         case static_cast</**/::std::int32_t>(27LL):
-          if (!f27().Ok()) return false;
-          break;
-
-
-
+          return f27().Ok();
         case static_cast</**/::std::int32_t>(28LL):
-          if (!f28().Ok()) return false;
-          break;
-
-
-
+          return f28().Ok();
         case static_cast</**/::std::int32_t>(29LL):
-          if (!f29().Ok()) return false;
-          break;
-
-
-
+          return f29().Ok();
         case static_cast</**/::std::int32_t>(30LL):
-          if (!f30().Ok()) return false;
-          break;
-
-
-
+          return f30().Ok();
         case static_cast</**/::std::int32_t>(31LL):
-          if (!f31().Ok()) return false;
-          break;
-
-
-
+          return f31().Ok();
         case static_cast</**/::std::int32_t>(32LL):
-          if (!f32().Ok()) return false;
-          break;
-
-
-
+          return f32().Ok();
         case static_cast</**/::std::int32_t>(33LL):
-          if (!f33().Ok()) return false;
-          break;
-
-
-
+          return f33().Ok();
         case static_cast</**/::std::int32_t>(34LL):
-          if (!f34().Ok()) return false;
-          break;
-
-
-
+          return f34().Ok();
         case static_cast</**/::std::int32_t>(35LL):
-          if (!f35().Ok()) return false;
-          break;
-
-
-
+          return f35().Ok();
         case static_cast</**/::std::int32_t>(36LL):
-          if (!f36().Ok()) return false;
-          break;
-
-
-
+          return f36().Ok();
         case static_cast</**/::std::int32_t>(37LL):
-          if (!f37().Ok()) return false;
-          break;
-
-
-
+          return f37().Ok();
         case static_cast</**/::std::int32_t>(38LL):
-          if (!f38().Ok()) return false;
-          break;
-
-
-
+          return f38().Ok();
         case static_cast</**/::std::int32_t>(39LL):
-          if (!f39().Ok()) return false;
-          break;
-
-
-
+          return f39().Ok();
         case static_cast</**/::std::int32_t>(40LL):
-          if (!f40().Ok()) return false;
-          break;
-
-
-
+          return f40().Ok();
         case static_cast</**/::std::int32_t>(41LL):
-          if (!f41().Ok()) return false;
-          break;
-
-
-
+          return f41().Ok();
         case static_cast</**/::std::int32_t>(42LL):
-          if (!f42().Ok()) return false;
-          break;
-
-
-
+          return f42().Ok();
         case static_cast</**/::std::int32_t>(43LL):
-          if (!f43().Ok()) return false;
-          break;
-
-
-
+          return f43().Ok();
         case static_cast</**/::std::int32_t>(44LL):
-          if (!f44().Ok()) return false;
-          break;
-
-
-
+          return f44().Ok();
         case static_cast</**/::std::int32_t>(45LL):
-          if (!f45().Ok()) return false;
-          break;
-
-
-
+          return f45().Ok();
         case static_cast</**/::std::int32_t>(46LL):
-          if (!f46().Ok()) return false;
-          break;
-
-
-
+          return f46().Ok();
         case static_cast</**/::std::int32_t>(47LL):
-          if (!f47().Ok()) return false;
-          break;
-
-
-
+          return f47().Ok();
         case static_cast</**/::std::int32_t>(48LL):
-          if (!f48().Ok()) return false;
-          break;
-
-
-
+          return f48().Ok();
         case static_cast</**/::std::int32_t>(49LL):
-          if (!f49().Ok()) return false;
-          break;
-
-
-
+          return f49().Ok();
         case static_cast</**/::std::int32_t>(50LL):
-          if (!f50().Ok()) return false;
-          break;
-
-
-
+          return f50().Ok();
         case static_cast</**/::std::int32_t>(51LL):
-          if (!f51().Ok()) return false;
-          break;
-
-
-
+          return f51().Ok();
         case static_cast</**/::std::int32_t>(52LL):
-          if (!f52().Ok()) return false;
-          break;
-
-
-
+          return f52().Ok();
         case static_cast</**/::std::int32_t>(53LL):
-          if (!f53().Ok()) return false;
-          break;
-
-
-
+          return f53().Ok();
         case static_cast</**/::std::int32_t>(54LL):
-          if (!f54().Ok()) return false;
-          break;
-
-
-
+          return f54().Ok();
         case static_cast</**/::std::int32_t>(55LL):
-          if (!f55().Ok()) return false;
-          break;
-
-
-
+          return f55().Ok();
         case static_cast</**/::std::int32_t>(56LL):
-          if (!f56().Ok()) return false;
-          break;
-
-
-
+          return f56().Ok();
         case static_cast</**/::std::int32_t>(57LL):
-          if (!f57().Ok()) return false;
-          break;
-
-
-
+          return f57().Ok();
         case static_cast</**/::std::int32_t>(58LL):
-          if (!f58().Ok()) return false;
-          break;
-
-
-
+          return f58().Ok();
         case static_cast</**/::std::int32_t>(59LL):
-          if (!f59().Ok()) return false;
-          break;
-
-
-
+          return f59().Ok();
         case static_cast</**/::std::int32_t>(60LL):
-          if (!f60().Ok()) return false;
-          break;
-
-
-
+          return f60().Ok();
         case static_cast</**/::std::int32_t>(61LL):
-          if (!f61().Ok()) return false;
-          break;
-
-
-
+          return f61().Ok();
         case static_cast</**/::std::int32_t>(62LL):
-          if (!f62().Ok()) return false;
-          break;
-
-
-
+          return f62().Ok();
         case static_cast</**/::std::int32_t>(63LL):
-          if (!f63().Ok()) return false;
-          break;
-
-
-
+          return f63().Ok();
         case static_cast</**/::std::int32_t>(64LL):
-          if (!f64().Ok()) return false;
-          break;
-
-
-
+          return f64().Ok();
         case static_cast</**/::std::int32_t>(65LL):
-          if (!f65().Ok()) return false;
-          break;
-
-
-
+          return f65().Ok();
         case static_cast</**/::std::int32_t>(66LL):
-          if (!f66().Ok()) return false;
-          break;
-
-
-
+          return f66().Ok();
         case static_cast</**/::std::int32_t>(67LL):
-          if (!f67().Ok()) return false;
-          break;
-
-
-
+          return f67().Ok();
         case static_cast</**/::std::int32_t>(68LL):
-          if (!f68().Ok()) return false;
-          break;
-
-
-
+          return f68().Ok();
         case static_cast</**/::std::int32_t>(69LL):
-          if (!f69().Ok()) return false;
-          break;
-
-
-
+          return f69().Ok();
         case static_cast</**/::std::int32_t>(70LL):
-          if (!f70().Ok()) return false;
-          break;
-
-
-
+          return f70().Ok();
         case static_cast</**/::std::int32_t>(71LL):
-          if (!f71().Ok()) return false;
-          break;
-
-
-
+          return f71().Ok();
         case static_cast</**/::std::int32_t>(72LL):
-          if (!f72().Ok()) return false;
-          break;
-
-
-
+          return f72().Ok();
         case static_cast</**/::std::int32_t>(73LL):
-          if (!f73().Ok()) return false;
-          break;
-
-
-
+          return f73().Ok();
         case static_cast</**/::std::int32_t>(74LL):
-          if (!f74().Ok()) return false;
-          break;
-
-
-
+          return f74().Ok();
         case static_cast</**/::std::int32_t>(75LL):
-          if (!f75().Ok()) return false;
-          break;
-
-
-
+          return f75().Ok();
         case static_cast</**/::std::int32_t>(76LL):
-          if (!f76().Ok()) return false;
-          break;
-
-
-
+          return f76().Ok();
         case static_cast</**/::std::int32_t>(77LL):
-          if (!f77().Ok()) return false;
-          break;
-
-
-
+          return f77().Ok();
         case static_cast</**/::std::int32_t>(78LL):
-          if (!f78().Ok()) return false;
-          break;
-
-
-
+          return f78().Ok();
         case static_cast</**/::std::int32_t>(79LL):
-          if (!f79().Ok()) return false;
-          break;
-
-
-
+          return f79().Ok();
         case static_cast</**/::std::int32_t>(80LL):
-          if (!f80().Ok()) return false;
-          break;
-
-
-
+          return f80().Ok();
         case static_cast</**/::std::int32_t>(81LL):
-          if (!f81().Ok()) return false;
-          break;
-
-
-
+          return f81().Ok();
         case static_cast</**/::std::int32_t>(82LL):
-          if (!f82().Ok()) return false;
-          break;
-
-
-
+          return f82().Ok();
         case static_cast</**/::std::int32_t>(83LL):
-          if (!f83().Ok()) return false;
-          break;
-
-
-
+          return f83().Ok();
         case static_cast</**/::std::int32_t>(84LL):
-          if (!f84().Ok()) return false;
-          break;
-
-
-
+          return f84().Ok();
         case static_cast</**/::std::int32_t>(85LL):
-          if (!f85().Ok()) return false;
-          break;
-
-
-
+          return f85().Ok();
         case static_cast</**/::std::int32_t>(86LL):
-          if (!f86().Ok()) return false;
-          break;
-
-
-
+          return f86().Ok();
         case static_cast</**/::std::int32_t>(87LL):
-          if (!f87().Ok()) return false;
-          break;
-
-
-
+          return f87().Ok();
         case static_cast</**/::std::int32_t>(88LL):
-          if (!f88().Ok()) return false;
-          break;
-
-
-
+          return f88().Ok();
         case static_cast</**/::std::int32_t>(89LL):
-          if (!f89().Ok()) return false;
-          break;
-
-
-
+          return f89().Ok();
         case static_cast</**/::std::int32_t>(90LL):
-          if (!f90().Ok()) return false;
-          break;
-
-
-
+          return f90().Ok();
         case static_cast</**/::std::int32_t>(91LL):
-          if (!f91().Ok()) return false;
-          break;
-
-
-
+          return f91().Ok();
         case static_cast</**/::std::int32_t>(92LL):
-          if (!f92().Ok()) return false;
-          break;
-
-
-
+          return f92().Ok();
         case static_cast</**/::std::int32_t>(93LL):
-          if (!f93().Ok()) return false;
-          break;
-
-
-
+          return f93().Ok();
         case static_cast</**/::std::int32_t>(94LL):
-          if (!f94().Ok()) return false;
-          break;
-
-
-
+          return f94().Ok();
         case static_cast</**/::std::int32_t>(95LL):
-          if (!f95().Ok()) return false;
-          break;
-
-
-
+          return f95().Ok();
         case static_cast</**/::std::int32_t>(96LL):
-          if (!f96().Ok()) return false;
-          break;
-
-
-
+          return f96().Ok();
         case static_cast</**/::std::int32_t>(97LL):
-          if (!f97().Ok()) return false;
-          break;
-
-
-
+          return f97().Ok();
         case static_cast</**/::std::int32_t>(98LL):
-          if (!f98().Ok()) return false;
-          break;
-
-
-
+          return f98().Ok();
         case static_cast</**/::std::int32_t>(99LL):
-          if (!f99().Ok()) return false;
-          break;
-
-
-
+          return f99().Ok();
 
       }
     }
@@ -9255,26 +8859,14 @@ class GenericDisjunctionConditionalsView final {
         case static_cast</**/::std::int32_t>(0LL):
         case static_cast</**/::std::int32_t>(1LL):
         case static_cast</**/::std::int32_t>(2LL):
-          if (!shared_low().Ok()) return false;
-          break;
-
-
-
+          return shared_low().Ok();
         case static_cast</**/::std::int32_t>(10LL):
         case static_cast</**/::std::int32_t>(11LL):
-          if (!shared_high().Ok()) return false;
-          break;
-
-
-
+          return shared_high().Ok();
         case static_cast</**/::std::int32_t>(100LL):
         case static_cast</**/::std::int32_t>(200LL):
         case static_cast</**/::std::int32_t>(300LL):
-          if (!shared_far().Ok()) return false;
-          break;
-
-
-
+          return shared_far().Ok();
 
       }
     }
