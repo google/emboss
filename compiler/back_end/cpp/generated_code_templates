@@ -127,6 +127,7 @@ class Generic${name}View final {
   bool Ok() const {
     if (!IsComplete()) return false;
 ${parameter_ok_checks}
+${ok_subexpressions}
 ${field_ok_checks}
 ${requires_check}
     return true;
@@ -391,11 +392,31 @@ ${write_fields}
 // ** ok_method_test ** ////////////////////////////////////////////////////////
     // If we don't have enough information to determine whether ${field} is
     // present in the structure, then structure.Ok() should be false.
-    if (!has_${field}.Known()) return false;
+    if (!has_${field}().Known()) return false;
     // If ${field} is present, but not Ok(), then structure.Ok() should be
     // false.  If ${field} is not present, it does not matter whether it is
     // Ok().
-    if (has_${field}.ValueOrDefault() && !${field}.Ok()) return false;
+    if (has_${field}().ValueOrDefault() && !${field}().Ok()) return false;
+
+
+// ** ok_method_switch_block ** ////////////////////////////////////////////////
+    // Check fields that depend on a common discriminant using a switch.
+    {
+${inner_scope_definitions}
+      const auto emboss_reserved_switch_discrim = ${discriminant};
+      if (!emboss_reserved_switch_discrim.Known()) return false;
+      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
+${switch_cases}
+      }
+    }
+
+
+// ** ok_method_switch_case ** /////////////////////////////////////////////////
+        case ${case_value}:
+          if (!${field}().Ok()) return false;
+          break;
+
+
 
 
 // ** equals_method_test ** ////////////////////////////////////////////////////
