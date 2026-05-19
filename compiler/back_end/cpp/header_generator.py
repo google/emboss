@@ -1557,68 +1557,53 @@ def _extract_switch_arms(expression, ir):
 def _generate_optimized_ok_method_body(
     fields, ir, subexpressions, allow_tail_form=False
 ):
-    """Generates optimized C++ code for the Ok() method body.
+    """Generates the field-validation body of a structure's Ok() method.
 
-    This function optimizes validation logic for structures with conditional
-    fields by grouping fields that share the same discriminant into switch
-    statements, rather than generating separate if-statements for each field.
+    For each conditional field, routes it to one of four emit paths:
 
-    For example, given this Emboss definition:
+      1. **Skipped**. `if false:` fields can never be present, so Ok()
+         needs no check for them at all.
+      2. **Unconditional**. Non-conditional and `if true:` fields skip
+         the has_${field}() wrapper and emit a bare
+         `if (!field().Ok()) return false;` — has_X() is statically
+         Known and always true.
+      3. **Switch arm**. Fields whose existence condition decomposes
+         into a discriminant test (`discrim == K`, a disjunction of
+         such tests, or an AND with an equality conjunct) join a
+         switch on the shared discriminant. _extract_switch_arms does
+         the decomposition; the optimizer then sorts cases by value,
+         coalesces arms with identical bodies into multi-label arms,
+         and (for the switch that ends the function) rewrites
+         single-field bare arms as tail-form `return field().Ok();`.
+         A demotion pass falls back to (4) for switch groups whose
+         total entry count is below 2 (the switch wrapper is bigger
+         than the dedupe saves).
+      4. **ok_method_test**. The fallback: the existing
+         has_${field}()-based check. Used for conditions that don't
+         match any of the above and for switch groups demoted by (3).
 
-        struct Foo:
-          0 [+4]  UInt  tag
-          if tag == 0:
-            4 [+4]  UInt  var_0
-          if tag == 1:
-            4 [+4]  UInt  var_1
-          if tag == 0:
-            8 [+4]  UInt  var_x
-
-    Instead of generating separate if-statements:
-
-        if (tag() == 0 && !var_0().Ok()) return false;
-        if (tag() == 1 && !var_1().Ok()) return false;
-        if (tag() == 0 && !var_x().Ok()) return false;
-
-    This generates an optimized switch statement:
-
-        const auto emboss_reserved_switch_discrim = tag();
-        if (!emboss_reserved_switch_discrim.Known()) return false;
-        switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
-          case 0:
-            if (!var_0().Ok()) return false;
-            break;
-          case 1:
-            if (!var_1().Ok()) return false;
-            break;
-        }
-
-    Note: When multiple fields share the same case value (like var_0 and var_x
-    both guarded by tag == 0), only the first field for that case value is
-    checked in the switch. This is because once we've checked var_0 for case 0,
-    we break out of the switch. Fields with duplicate case values will fall
-    through to the if-statement path.
-
-    Fields with non-equality conditions (or conditions that can't be converted
-    to switch cases) are grouped by their rendered condition and emitted as
-    if-statements.
-
-    Additionally, when a condition is statically known to be true (e.g., fields
-    that are always present), the if-block wrapper is omitted entirely and the
-    field checks are emitted directly. This avoids generating unnecessary
-    runtime checks like:
-
-        const auto emboss_reserved_cond = Maybe<bool>(true);
-        if (!emboss_reserved_cond.Known()) return false;  // Always true
-        if (emboss_reserved_cond.ValueOrDefault()) { ... } // Always true
+    Each surviving switch group emits a single `switch` statement
+    sharing one read of the discriminant subexpression across all the
+    fields it guards — the original PR 241 win. The other emit paths
+    are post-PR 241 refinements that further shrink the generated
+    Ok() on tagged-union and mixed-conditional schemas.
 
     Arguments:
         fields: List of field IR nodes to generate Ok() checks for.
         ir: The full IR for looking up references.
-        subexpressions: An ExpressionScope for sharing common subexpressions.
+        subexpressions: An ExpressionScope for sharing common
+            subexpressions across the whole Ok() body.
+        allow_tail_form: When True, the very last surviving switch
+            group is eligible for tail-form arm rewriting (each
+            single-field bare arm becomes `return field().Ok();`
+            instead of `if (!X().Ok()) return false; break;`). The
+            caller passes True only when the switch is the function's
+            tail — i.e., there is no [requires] clause emitted after
+            the field-ok-checks.
 
     Returns:
-        A string containing the C++ code for the optimized Ok() method body.
+        A string containing the C++ code for the optimized Ok() method
+        body.
     """
     groups = {}
     ordered_keys = []
@@ -1630,6 +1615,28 @@ def _generate_optimized_ok_method_body(
     field_group_key = {}
 
     for field in fields:
+        # Fields whose existence condition is statically known take fast
+        # paths bypassing both the switch and ok_method_test machinery:
+        #   * `if false:` — the field is never present, so there's nothing
+        #     to validate. Drop it entirely.
+        #   * `if true:` (and non-conditional fields, which carry the
+        #     boolean-true literal) — has_${field}() is always Known and
+        #     true, so the has_X()-based guard is dead. Emit just the
+        #     direct `if (!${field}().Ok()) return false;` check.
+        # All unconditional fields share one group so they emit
+        # contiguously (at the position of the first such field), which
+        # keeps the C++ compiler's view of the Ok() body tight enough to
+        # consolidate redundant frame setup across the checks.
+        cond = field.existence_condition
+        if cond.type.which_type == "boolean" and cond.type.boolean.has_field("value"):
+            if cond.type.boolean.value:
+                key = "UNCOND"
+                if key not in groups:
+                    groups[key] = {"type": "unconditional", "fields": []}
+                    ordered_keys.append(key)
+                groups[key]["fields"].append(field)
+            # else: existence is statically false — emit nothing.
+            continue
         discrim_expr, arms = _extract_switch_arms(field.existence_condition, ir)
         if discrim_expr:
             # Render the discriminant unscoped to build the grouping key.
@@ -1734,6 +1741,13 @@ def _generate_optimized_ok_method_body(
                     code_template.format_template(
                         _TEMPLATES.ok_method_test,
                         field=_cpp_field_name(field.name.name.text),
+                    )
+                )
+        elif group["type"] == "unconditional":
+            for field in group["fields"]:
+                blocks.append(
+                    "    if (!{}().Ok()) return false;\n\n".format(
+                        _cpp_field_name(field.name.name.text)
                     )
                 )
         else:
