@@ -405,7 +405,6 @@ if (!parameters_initialized_) return false;
 
     {
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
-      if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
         case static_cast</**/::emboss::test::MessageId>(0):
           if (!axes().Ok()) return false;

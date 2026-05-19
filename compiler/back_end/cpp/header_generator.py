@@ -1380,6 +1380,47 @@ def _case_sort_key(expression):
         assert False, "Unsupported switch case type"
 
 
+def _is_discriminant_provably_known(discrim_expr, fields):
+    """Returns True when the switch's Known() guard is provably redundant.
+
+    The optimized switch block emits
+
+        if (!emboss_reserved_switch_discrim.Known()) return false;
+
+    as a safety net: if reading the discriminant failed for any reason,
+    Ok() must return false. But when the discriminant is a direct
+    reference to a non-conditional, non-virtual field of the current
+    structure, the earlier per-field validation loop (which runs in
+    dependency order, so the discriminant field is validated before any
+    field that references it) has already enforced its `.Ok()`. From
+    that point the Maybe<> wrapper around the field read is provably
+    Known, and the extra `Known()` check is dead code.
+
+    The detection is intentionally narrow: only a single-segment field
+    reference (`tag`, not `inner.tag` or `f(x)`) is recognized, since
+    proving the chain is sound for nested or computed paths needs
+    walking the IR and is rarely worth the complexity.
+    """
+    if discrim_expr.which_expression != "field_reference":
+        return False
+    path = discrim_expr.field_reference.path
+    if len(path) != 1:
+        return False
+    name = path[0].canonical_name.object_path[-1]
+    for f in fields:
+        if f.name.name.text != name:
+            continue
+        if ir_util.field_is_virtual(f):
+            return False
+        cond = f.existence_condition
+        return (
+            cond.type.which_type == "boolean"
+            and cond.type.boolean.has_field("value")
+            and bool(cond.type.boolean.value)
+        )
+    return False
+
+
 def _get_switch_candidate(expression, ir):
     """Returns (discriminant_expr, case_value_expr) or (None, None)."""
     if not _is_equality_check(expression):
@@ -1667,6 +1708,9 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
             group["discrim_rendered"] = _render_expression(
                 group["discrim_expr"], ir, subexpressions=subexpressions
             ).rendered
+            group["known_check_required"] = not _is_discriminant_provably_known(
+                group["discrim_expr"], fields
+            )
             blocks.append(_emit_switch_block(group))
         elif group["type"] == "demoted_to_if":
             for field in group["encounter_order"]:
@@ -1757,9 +1801,17 @@ def _emit_switch_block(group):
             )
         )
 
+    if group.get("known_check_required", True):
+        known_check = (
+            "      if (!emboss_reserved_switch_discrim.Known()) return false;\n"
+        )
+    else:
+        known_check = ""
+
     return code_template.format_template(
         _TEMPLATES.ok_method_switch_block,
         discriminant=group["discrim_rendered"],
+        known_check=known_check,
         switch_cases="".join(rendered_arms),
     )
 

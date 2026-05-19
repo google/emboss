@@ -216,7 +216,6 @@ class GenericLargeConditionalsView final {
 
     {
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
-      if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
         case static_cast</**/::std::int32_t>(0LL):
           if (!f0().Ok()) return false;
@@ -9252,7 +9251,6 @@ class GenericDisjunctionConditionalsView final {
 
     {
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
-      if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
         case static_cast</**/::std::int32_t>(0LL):
         case static_cast</**/::std::int32_t>(1LL):
