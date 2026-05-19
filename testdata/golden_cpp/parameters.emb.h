@@ -404,7 +404,6 @@ if (!parameters_initialized_) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
-
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
@@ -3373,7 +3372,6 @@ if (!parameters_initialized_) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
-
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
