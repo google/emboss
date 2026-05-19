@@ -192,37 +192,30 @@ class GenericRequiresIntegersView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
+
     if (!has_zero_through_nine().Known()) return false;
     if (has_zero_through_nine().ValueOrDefault() && !zero_through_nine().Ok()) return false;
-
 
     if (!has_ten_through_twenty().Known()) return false;
     if (has_ten_through_twenty().ValueOrDefault() && !ten_through_twenty().Ok()) return false;
 
-
     if (!has_disjoint().Known()) return false;
     if (has_disjoint().ValueOrDefault() && !disjoint().Ok()) return false;
-
 
     if (!has_ztn_plus_ttt().Known()) return false;
     if (has_ztn_plus_ttt().ValueOrDefault() && !ztn_plus_ttt().Ok()) return false;
 
-
     if (!has_alias_of_zero_through_nine().Known()) return false;
     if (has_alias_of_zero_through_nine().ValueOrDefault() && !alias_of_zero_through_nine().Ok()) return false;
-
 
     if (!has_zero_through_nine_plus_five().Known()) return false;
     if (has_zero_through_nine_plus_five().ValueOrDefault() && !zero_through_nine_plus_five().Ok()) return false;
 
-
     if (!has_IntrinsicSizeInBytes().Known()) return false;
     if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-
     if (!has_MaxSizeInBytes().Known()) return false;
     if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
-
 
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
@@ -1166,29 +1159,24 @@ class GenericEmbossReservedAnonymousField2View final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
+
     if (!has_a().Known()) return false;
     if (has_a().ValueOrDefault() && !a().Ok()) return false;
-
 
     if (!has_b().Known()) return false;
     if (has_b().ValueOrDefault() && !b().Ok()) return false;
 
-
     if (!has_must_be_true().Known()) return false;
     if (has_must_be_true().ValueOrDefault() && !must_be_true().Ok()) return false;
-
 
     if (!has_must_be_false().Known()) return false;
     if (has_must_be_false().ValueOrDefault() && !must_be_false().Ok()) return false;
 
-
     if (!has_IntrinsicSizeInBits().Known()) return false;
     if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
 
-
     if (!has_MaxSizeInBits().Known()) return false;
     if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
-
 
     if (!has_MinSizeInBits().Known()) return false;
     if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
@@ -1823,44 +1811,36 @@ class GenericRequiresBoolsView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
+
     if (!has_emboss_reserved_anonymous_field_2().Known()) return false;
     if (has_emboss_reserved_anonymous_field_2().ValueOrDefault() && !emboss_reserved_anonymous_field_2().Ok()) return false;
-
-
-    if (!has_a().Known()) return false;
-    if (has_a().ValueOrDefault() && !a().Ok()) return false;
-
-
-    if (!has_b().Known()) return false;
-    if (has_b().ValueOrDefault() && !b().Ok()) return false;
-
-
-    if (!has_must_be_true().Known()) return false;
-    if (has_must_be_true().ValueOrDefault() && !must_be_true().Ok()) return false;
-
-
-    if (!has_must_be_false().Known()) return false;
-    if (has_must_be_false().ValueOrDefault() && !must_be_false().Ok()) return false;
-
 
     if (!has_b_must_be_false().Known()) return false;
     if (has_b_must_be_false().ValueOrDefault() && !b_must_be_false().Ok()) return false;
 
-
     if (!has_alias_of_a_must_be_true().Known()) return false;
     if (has_alias_of_a_must_be_true().ValueOrDefault() && !alias_of_a_must_be_true().Ok()) return false;
-
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
     if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-
     if (!has_MaxSizeInBytes().Known()) return false;
     if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+
+    if (!has_a().Known()) return false;
+    if (has_a().ValueOrDefault() && !a().Ok()) return false;
+
+    if (!has_b().Known()) return false;
+    if (has_b().ValueOrDefault() && !b().Ok()) return false;
+
+    if (!has_must_be_true().Known()) return false;
+    if (has_must_be_true().ValueOrDefault() && !must_be_true().Ok()) return false;
+
+    if (!has_must_be_false().Known()) return false;
+    if (has_must_be_false().ValueOrDefault() && !must_be_false().Ok()) return false;
 
 
     if (!(::emboss::support::Or</**/bool, bool, bool, bool>((a().Ok()    ? ::emboss::support::Maybe</**/bool>(static_cast</**/bool>(a().UncheckedRead()))    : ::emboss::support::Maybe</**/bool>()), (b().Ok()    ? ::emboss::support::Maybe</**/bool>(static_cast</**/bool>(b().UncheckedRead()))    : ::emboss::support::Maybe</**/bool>()))).ValueOr(false))
@@ -2741,33 +2721,27 @@ class GenericRequiresEnumsView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
+
     if (!has_a().Known()) return false;
     if (has_a().ValueOrDefault() && !a().Ok()) return false;
-
 
     if (!has_b().Known()) return false;
     if (has_b().ValueOrDefault() && !b().Ok()) return false;
 
-
     if (!has_c().Known()) return false;
     if (has_c().ValueOrDefault() && !c().Ok()) return false;
-
 
     if (!has_filtered_a().Known()) return false;
     if (has_filtered_a().ValueOrDefault() && !filtered_a().Ok()) return false;
 
-
     if (!has_alias_of_a().Known()) return false;
     if (has_alias_of_a().ValueOrDefault() && !alias_of_a().Ok()) return false;
-
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
     if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-
     if (!has_MaxSizeInBytes().Known()) return false;
     if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
-
 
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
@@ -3569,32 +3543,27 @@ class GenericEmbossReservedAnonymousField1View final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
+
     if (!has_a().Known()) return false;
     if (has_a().ValueOrDefault() && !a().Ok()) return false;
-
 
     if (!has_b_exists().Known()) return false;
     if (has_b_exists().ValueOrDefault() && !b_exists().Ok()) return false;
 
-
-    if (!has_b().Known()) return false;
-    if (has_b().ValueOrDefault() && !b().Ok()) return false;
-
-
-    if (!has_b_true().Known()) return false;
-    if (has_b_true().ValueOrDefault() && !b_true().Ok()) return false;
-
-
     if (!has_IntrinsicSizeInBits().Known()) return false;
     if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
-
 
     if (!has_MaxSizeInBits().Known()) return false;
     if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
 
-
     if (!has_MinSizeInBits().Known()) return false;
     if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
+
+    if (!has_b().Known()) return false;
+    if (has_b().ValueOrDefault() && !b().Ok()) return false;
+
+    if (!has_b_true().Known()) return false;
+    if (has_b_true().ValueOrDefault() && !b_true().Ok()) return false;
 
 
 
@@ -4255,36 +4224,30 @@ class GenericRequiresWithOptionalFieldsView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
+
     if (!has_emboss_reserved_anonymous_field_1().Known()) return false;
     if (has_emboss_reserved_anonymous_field_1().ValueOrDefault() && !emboss_reserved_anonymous_field_1().Ok()) return false;
-
-
-    if (!has_a().Known()) return false;
-    if (has_a().ValueOrDefault() && !a().Ok()) return false;
-
-
-    if (!has_b_exists().Known()) return false;
-    if (has_b_exists().ValueOrDefault() && !b_exists().Ok()) return false;
-
-
-    if (!has_b().Known()) return false;
-    if (has_b().ValueOrDefault() && !b().Ok()) return false;
-
-
-    if (!has_b_true().Known()) return false;
-    if (has_b_true().ValueOrDefault() && !b_true().Ok()) return false;
-
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
     if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-
     if (!has_MaxSizeInBytes().Known()) return false;
     if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
 
-
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+
+    if (!has_a().Known()) return false;
+    if (has_a().ValueOrDefault() && !a().Ok()) return false;
+
+    if (!has_b_exists().Known()) return false;
+    if (has_b_exists().ValueOrDefault() && !b_exists().Ok()) return false;
+
+    if (!has_b().Known()) return false;
+    if (has_b().ValueOrDefault() && !b().Ok()) return false;
+
+    if (!has_b_true().Known()) return false;
+    if (has_b_true().ValueOrDefault() && !b_true().Ok()) return false;
 
 
     if (!(::emboss::support::Or</**/bool, bool, bool, bool>((a().Ok()    ? ::emboss::support::Maybe</**/bool>(static_cast</**/bool>(a().UncheckedRead()))    : ::emboss::support::Maybe</**/bool>()), (b().Ok()    ? ::emboss::support::Maybe</**/bool>(static_cast</**/bool>(b().UncheckedRead()))    : ::emboss::support::Maybe</**/bool>()))).ValueOr(false))
@@ -4847,17 +4810,15 @@ class GenericElementView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
+
     if (!has_x().Known()) return false;
     if (has_x().ValueOrDefault() && !x().Ok()) return false;
-
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
     if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-
     if (!has_MaxSizeInBytes().Known()) return false;
     if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
-
 
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
@@ -5261,17 +5222,15 @@ class GenericRequiresInArrayElementsView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
+
     if (!has_xs().Known()) return false;
     if (has_xs().ValueOrDefault() && !xs().Ok()) return false;
-
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
     if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-
     if (!has_MaxSizeInBytes().Known()) return false;
     if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
-
 
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;

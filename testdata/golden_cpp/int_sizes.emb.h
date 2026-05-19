@@ -97,45 +97,36 @@ class GenericSizesView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
+
     if (!has_one_byte().Known()) return false;
     if (has_one_byte().ValueOrDefault() && !one_byte().Ok()) return false;
-
 
     if (!has_two_byte().Known()) return false;
     if (has_two_byte().ValueOrDefault() && !two_byte().Ok()) return false;
 
-
     if (!has_three_byte().Known()) return false;
     if (has_three_byte().ValueOrDefault() && !three_byte().Ok()) return false;
-
 
     if (!has_four_byte().Known()) return false;
     if (has_four_byte().ValueOrDefault() && !four_byte().Ok()) return false;
 
-
     if (!has_five_byte().Known()) return false;
     if (has_five_byte().ValueOrDefault() && !five_byte().Ok()) return false;
-
 
     if (!has_six_byte().Known()) return false;
     if (has_six_byte().ValueOrDefault() && !six_byte().Ok()) return false;
 
-
     if (!has_seven_byte().Known()) return false;
     if (has_seven_byte().ValueOrDefault() && !seven_byte().Ok()) return false;
-
 
     if (!has_eight_byte().Known()) return false;
     if (has_eight_byte().ValueOrDefault() && !eight_byte().Ok()) return false;
 
-
     if (!has_IntrinsicSizeInBytes().Known()) return false;
     if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-
     if (!has_MaxSizeInBytes().Known()) return false;
     if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
-
 
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;

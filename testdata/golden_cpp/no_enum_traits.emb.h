@@ -169,17 +169,15 @@ class GenericBarView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
+
     if (!has_foo().Known()) return false;
     if (has_foo().ValueOrDefault() && !foo().Ok()) return false;
-
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
     if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-
     if (!has_MaxSizeInBytes().Known()) return false;
     if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
-
 
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
