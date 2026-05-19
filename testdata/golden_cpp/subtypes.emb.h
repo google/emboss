@@ -226,25 +226,21 @@ class GenericInInView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
+
     if (!has_outer_offset().Known()) return false;
     if (has_outer_offset().ValueOrDefault() && !outer_offset().Ok()) return false;
-
 
     if (!has_field_enum().Known()) return false;
     if (has_field_enum().ValueOrDefault() && !field_enum().Ok()) return false;
 
-
     if (!has_in_2().Known()) return false;
     if (has_in_2().ValueOrDefault() && !in_2().Ok()) return false;
-
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
     if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-
     if (!has_MaxSizeInBytes().Known()) return false;
     if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
-
 
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
@@ -778,37 +774,30 @@ class GenericInView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
+
     if (!has_in_in_1().Known()) return false;
     if (has_in_in_1().ValueOrDefault() && !in_in_1().Ok()) return false;
-
 
     if (!has_in_in_2().Known()) return false;
     if (has_in_in_2().ValueOrDefault() && !in_in_2().Ok()) return false;
 
-
     if (!has_in_in_in_1().Known()) return false;
     if (has_in_in_in_1().ValueOrDefault() && !in_in_in_1().Ok()) return false;
-
 
     if (!has_in_2().Known()) return false;
     if (has_in_2().ValueOrDefault() && !in_2().Ok()) return false;
 
-
     if (!has_name_collision().Known()) return false;
     if (has_name_collision().ValueOrDefault() && !name_collision().Ok()) return false;
-
 
     if (!has_name_collision_check().Known()) return false;
     if (has_name_collision_check().ValueOrDefault() && !name_collision_check().Ok()) return false;
 
-
     if (!has_IntrinsicSizeInBytes().Known()) return false;
     if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-
     if (!has_MaxSizeInBytes().Known()) return false;
     if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
-
 
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
@@ -1627,17 +1616,15 @@ class GenericIn2View final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
+
     if (!has_field_byte().Known()) return false;
     if (has_field_byte().ValueOrDefault() && !field_byte().Ok()) return false;
-
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
     if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-
     if (!has_MaxSizeInBytes().Known()) return false;
     if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
-
 
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
@@ -2041,45 +2028,36 @@ class GenericOutView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
+
     if (!has_in_1().Known()) return false;
     if (has_in_1().ValueOrDefault() && !in_1().Ok()) return false;
-
 
     if (!has_in_2().Known()) return false;
     if (has_in_2().ValueOrDefault() && !in_2().Ok()) return false;
 
-
     if (!has_in_in_1().Known()) return false;
     if (has_in_in_1().ValueOrDefault() && !in_in_1().Ok()) return false;
-
 
     if (!has_in_in_2().Known()) return false;
     if (has_in_in_2().ValueOrDefault() && !in_in_2().Ok()) return false;
 
-
     if (!has_in_in_in_1().Known()) return false;
     if (has_in_in_in_1().ValueOrDefault() && !in_in_in_1().Ok()) return false;
-
 
     if (!has_in_in_in_2().Known()) return false;
     if (has_in_in_in_2().ValueOrDefault() && !in_in_in_2().Ok()) return false;
 
-
     if (!has_name_collision().Known()) return false;
     if (has_name_collision().ValueOrDefault() && !name_collision().Ok()) return false;
-
 
     if (!has_nested_constant_check().Known()) return false;
     if (has_nested_constant_check().ValueOrDefault() && !nested_constant_check().Ok()) return false;
 
-
     if (!has_IntrinsicSizeInBytes().Known()) return false;
     if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-
     if (!has_MaxSizeInBytes().Known()) return false;
     if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
-
 
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;

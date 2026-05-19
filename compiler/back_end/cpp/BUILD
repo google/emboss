@@ -401,6 +401,17 @@ emboss_cc_test(
     ],
 )
 
+emboss_cc_test(
+    name = "many_conditionals_benchmark",
+    srcs = [
+        "testcode/many_conditionals_benchmark.cc",
+    ],
+    deps = [
+        "//testdata:many_conditionals_emboss",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
 # New golden test infrastructure
 py_library(
     name = "one_golden_test_lib",
@@ -609,4 +620,10 @@ cpp_golden_test(
     name = "imported_genfiles_golden_test",
     emb_file = "//testdata:imported_genfiles.emb",
     golden_file = "//testdata/golden_cpp:imported_genfiles.emb.h",
+)
+
+cpp_golden_test(
+    name = "many_conditionals_golden_test",
+    emb_file = "//testdata:many_conditionals.emb",
+    golden_file = "//testdata/golden_cpp:many_conditionals.emb.h",
 )

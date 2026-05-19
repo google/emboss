@@ -99,21 +99,18 @@ class GenericElementView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
+
     if (!has_a().Known()) return false;
     if (has_a().ValueOrDefault() && !a().Ok()) return false;
-
 
     if (!has_b().Known()) return false;
     if (has_b().ValueOrDefault() && !b().Ok()) return false;
 
-
     if (!has_IntrinsicSizeInBytes().Known()) return false;
     if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-
     if (!has_MaxSizeInBytes().Known()) return false;
     if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
-
 
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
@@ -602,33 +599,27 @@ class GenericAutoSizeView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
+
     if (!has_array_size().Known()) return false;
     if (has_array_size().ValueOrDefault() && !array_size().Ok()) return false;
-
 
     if (!has_four_byte_array().Known()) return false;
     if (has_four_byte_array().ValueOrDefault() && !four_byte_array().Ok()) return false;
 
-
     if (!has_four_struct_array().Known()) return false;
     if (has_four_struct_array().ValueOrDefault() && !four_struct_array().Ok()) return false;
-
 
     if (!has_dynamic_byte_array().Known()) return false;
     if (has_dynamic_byte_array().ValueOrDefault() && !dynamic_byte_array().Ok()) return false;
 
-
     if (!has_dynamic_struct_array().Known()) return false;
     if (has_dynamic_struct_array().ValueOrDefault() && !dynamic_struct_array().Ok()) return false;
-
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
     if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-
     if (!has_MaxSizeInBytes().Known()) return false;
     if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
-
 
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;

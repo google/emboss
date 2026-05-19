@@ -108,25 +108,21 @@ class GenericContainerView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
+
     if (!has_weight().Known()) return false;
     if (has_weight().ValueOrDefault() && !weight().Ok()) return false;
-
 
     if (!has_important_box().Known()) return false;
     if (has_important_box().ValueOrDefault() && !important_box().Ok()) return false;
 
-
     if (!has_other_box().Known()) return false;
     if (has_other_box().ValueOrDefault() && !other_box().Ok()) return false;
-
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
     if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-
     if (!has_MaxSizeInBytes().Known()) return false;
     if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
-
 
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
@@ -685,21 +681,18 @@ class GenericBoxView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
+
     if (!has_id().Known()) return false;
     if (has_id().ValueOrDefault() && !id().Ok()) return false;
-
 
     if (!has_count().Known()) return false;
     if (has_count().ValueOrDefault() && !count().Ok()) return false;
 
-
     if (!has_IntrinsicSizeInBytes().Known()) return false;
     if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-
     if (!has_MaxSizeInBytes().Known()) return false;
     if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
-
 
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
@@ -1185,21 +1178,18 @@ class GenericTruckView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
+
     if (!has_id().Known()) return false;
     if (has_id().ValueOrDefault() && !id().Ok()) return false;
-
 
     if (!has_cargo().Known()) return false;
     if (has_cargo().ValueOrDefault() && !cargo().Ok()) return false;
 
-
     if (!has_IntrinsicSizeInBytes().Known()) return false;
     if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
 
-
     if (!has_MaxSizeInBytes().Known()) return false;
     if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
-
 
     if (!has_MinSizeInBytes().Known()) return false;
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
