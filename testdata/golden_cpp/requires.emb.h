@@ -193,32 +193,23 @@ class GenericRequiresIntegersView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_zero_through_nine().Known()) return false;
-    if (has_zero_through_nine().ValueOrDefault() && !zero_through_nine().Ok()) return false;
+    if (!zero_through_nine().Ok()) return false;
 
-    if (!has_ten_through_twenty().Known()) return false;
-    if (has_ten_through_twenty().ValueOrDefault() && !ten_through_twenty().Ok()) return false;
+    if (!ten_through_twenty().Ok()) return false;
 
-    if (!has_disjoint().Known()) return false;
-    if (has_disjoint().ValueOrDefault() && !disjoint().Ok()) return false;
+    if (!disjoint().Ok()) return false;
 
-    if (!has_ztn_plus_ttt().Known()) return false;
-    if (has_ztn_plus_ttt().ValueOrDefault() && !ztn_plus_ttt().Ok()) return false;
+    if (!ztn_plus_ttt().Ok()) return false;
 
-    if (!has_alias_of_zero_through_nine().Known()) return false;
-    if (has_alias_of_zero_through_nine().ValueOrDefault() && !alias_of_zero_through_nine().Ok()) return false;
+    if (!alias_of_zero_through_nine().Ok()) return false;
 
-    if (!has_zero_through_nine_plus_five().Known()) return false;
-    if (has_zero_through_nine_plus_five().ValueOrDefault() && !zero_through_nine_plus_five().Ok()) return false;
+    if (!zero_through_nine_plus_five().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
     if (!(::emboss::support::LessThanOrEqual</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>((zero_through_nine().Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(zero_through_nine().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>()), ::emboss::support::Difference</**/::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>((ten_through_twenty().Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(ten_through_twenty().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(10LL))))).ValueOr(false))
@@ -1160,26 +1151,19 @@ class GenericEmbossReservedAnonymousField2View final {
     if (!IsComplete()) return false;
 
 
-    if (!has_a().Known()) return false;
-    if (has_a().ValueOrDefault() && !a().Ok()) return false;
+    if (!a().Ok()) return false;
 
-    if (!has_b().Known()) return false;
-    if (has_b().ValueOrDefault() && !b().Ok()) return false;
+    if (!b().Ok()) return false;
 
-    if (!has_must_be_true().Known()) return false;
-    if (has_must_be_true().ValueOrDefault() && !must_be_true().Ok()) return false;
+    if (!must_be_true().Ok()) return false;
 
-    if (!has_must_be_false().Known()) return false;
-    if (has_must_be_false().ValueOrDefault() && !must_be_false().Ok()) return false;
+    if (!must_be_false().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBits().Known()) return false;
-    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
+    if (!IntrinsicSizeInBits().Ok()) return false;
 
-    if (!has_MaxSizeInBits().Known()) return false;
-    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
+    if (!MaxSizeInBits().Ok()) return false;
 
-    if (!has_MinSizeInBits().Known()) return false;
-    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
+    if (!MinSizeInBits().Ok()) return false;
 
 
 
@@ -1812,23 +1796,17 @@ class GenericRequiresBoolsView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_emboss_reserved_anonymous_field_2().Known()) return false;
-    if (has_emboss_reserved_anonymous_field_2().ValueOrDefault() && !emboss_reserved_anonymous_field_2().Ok()) return false;
+    if (!emboss_reserved_anonymous_field_2().Ok()) return false;
 
-    if (!has_b_must_be_false().Known()) return false;
-    if (has_b_must_be_false().ValueOrDefault() && !b_must_be_false().Ok()) return false;
+    if (!b_must_be_false().Ok()) return false;
 
-    if (!has_alias_of_a_must_be_true().Known()) return false;
-    if (has_alias_of_a_must_be_true().ValueOrDefault() && !alias_of_a_must_be_true().Ok()) return false;
+    if (!alias_of_a_must_be_true().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
     if (!has_a().Known()) return false;
     if (has_a().ValueOrDefault() && !a().Ok()) return false;
@@ -2722,29 +2700,21 @@ class GenericRequiresEnumsView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_a().Known()) return false;
-    if (has_a().ValueOrDefault() && !a().Ok()) return false;
+    if (!a().Ok()) return false;
 
-    if (!has_b().Known()) return false;
-    if (has_b().ValueOrDefault() && !b().Ok()) return false;
+    if (!b().Ok()) return false;
 
-    if (!has_c().Known()) return false;
-    if (has_c().ValueOrDefault() && !c().Ok()) return false;
+    if (!c().Ok()) return false;
 
-    if (!has_filtered_a().Known()) return false;
-    if (has_filtered_a().ValueOrDefault() && !filtered_a().Ok()) return false;
+    if (!filtered_a().Ok()) return false;
 
-    if (!has_alias_of_a().Known()) return false;
-    if (has_alias_of_a().ValueOrDefault() && !alias_of_a().Ok()) return false;
+    if (!alias_of_a().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
     if (!(::emboss::support::Or</**/bool, bool, bool, bool>(::emboss::support::Equal</**/::emboss::test::RequiresEnums::Enum, bool, ::emboss::test::RequiresEnums::Enum, ::emboss::test::RequiresEnums::Enum>((a().Ok()    ? ::emboss::support::Maybe</**/::emboss::test::RequiresEnums::Enum>(static_cast</**/::emboss::test::RequiresEnums::Enum>(a().UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::RequiresEnums::Enum>()), ::emboss::support::Maybe</**/::emboss::test::RequiresEnums::Enum>(static_cast</**/::emboss::test::RequiresEnums::Enum>(0))), ::emboss::support::Equal</**/::emboss::test::RequiresEnums::Enum, bool, ::emboss::test::RequiresEnums::Enum, ::emboss::test::RequiresEnums::Enum>((b().Ok()    ? ::emboss::support::Maybe</**/::emboss::test::RequiresEnums::Enum>(static_cast</**/::emboss::test::RequiresEnums::Enum>(b().UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::RequiresEnums::Enum>()), ::emboss::support::Maybe</**/::emboss::test::RequiresEnums::Enum>(static_cast</**/::emboss::test::RequiresEnums::Enum>(0))))).ValueOr(false))
@@ -3544,20 +3514,15 @@ class GenericEmbossReservedAnonymousField1View final {
     if (!IsComplete()) return false;
 
 
-    if (!has_a().Known()) return false;
-    if (has_a().ValueOrDefault() && !a().Ok()) return false;
+    if (!a().Ok()) return false;
 
-    if (!has_b_exists().Known()) return false;
-    if (has_b_exists().ValueOrDefault() && !b_exists().Ok()) return false;
+    if (!b_exists().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBits().Known()) return false;
-    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
+    if (!IntrinsicSizeInBits().Ok()) return false;
 
-    if (!has_MaxSizeInBits().Known()) return false;
-    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
+    if (!MaxSizeInBits().Ok()) return false;
 
-    if (!has_MinSizeInBits().Known()) return false;
-    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
+    if (!MinSizeInBits().Ok()) return false;
 
     if (!has_b().Known()) return false;
     if (has_b().ValueOrDefault() && !b().Ok()) return false;
@@ -4225,17 +4190,13 @@ class GenericRequiresWithOptionalFieldsView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_emboss_reserved_anonymous_field_1().Known()) return false;
-    if (has_emboss_reserved_anonymous_field_1().ValueOrDefault() && !emboss_reserved_anonymous_field_1().Ok()) return false;
+    if (!emboss_reserved_anonymous_field_1().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
     if (!has_a().Known()) return false;
     if (has_a().ValueOrDefault() && !a().Ok()) return false;
@@ -4811,17 +4772,13 @@ class GenericElementView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_x().Known()) return false;
-    if (has_x().ValueOrDefault() && !x().Ok()) return false;
+    if (!x().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -5223,17 +5180,13 @@ class GenericRequiresInArrayElementsView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_xs().Known()) return false;
-    if (has_xs().ValueOrDefault() && !xs().Ok()) return false;
+    if (!xs().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 

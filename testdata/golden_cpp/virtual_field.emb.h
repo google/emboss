@@ -254,44 +254,31 @@ class GenericStructureWithConstantsView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_ten().Known()) return false;
-    if (has_ten().ValueOrDefault() && !ten().Ok()) return false;
+    if (!ten().Ok()) return false;
 
-    if (!has_twenty().Known()) return false;
-    if (has_twenty().ValueOrDefault() && !twenty().Ok()) return false;
+    if (!twenty().Ok()) return false;
 
-    if (!has_four_billion().Known()) return false;
-    if (has_four_billion().ValueOrDefault() && !four_billion().Ok()) return false;
+    if (!four_billion().Ok()) return false;
 
-    if (!has_ten_billion().Known()) return false;
-    if (has_ten_billion().ValueOrDefault() && !ten_billion().Ok()) return false;
+    if (!ten_billion().Ok()) return false;
 
-    if (!has_minus_ten_billion().Known()) return false;
-    if (has_minus_ten_billion().ValueOrDefault() && !minus_ten_billion().Ok()) return false;
+    if (!minus_ten_billion().Ok()) return false;
 
-    if (!has_value().Known()) return false;
-    if (has_value().ValueOrDefault() && !value().Ok()) return false;
+    if (!value().Ok()) return false;
 
-    if (!has_alias_of_value().Known()) return false;
-    if (has_alias_of_value().ValueOrDefault() && !alias_of_value().Ok()) return false;
+    if (!alias_of_value().Ok()) return false;
 
-    if (!has_alias_of_alias_of_value().Known()) return false;
-    if (has_alias_of_alias_of_value().ValueOrDefault() && !alias_of_alias_of_value().Ok()) return false;
+    if (!alias_of_alias_of_value().Ok()) return false;
 
-    if (!has_alias_of_ten().Known()) return false;
-    if (has_alias_of_ten().ValueOrDefault() && !alias_of_ten().Ok()) return false;
+    if (!alias_of_ten().Ok()) return false;
 
-    if (!has_alias_of_alias_of_ten().Known()) return false;
-    if (has_alias_of_alias_of_ten().ValueOrDefault() && !alias_of_alias_of_ten().Ok()) return false;
+    if (!alias_of_alias_of_ten().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -1171,35 +1158,25 @@ class GenericStructureWithComputedValuesView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_value().Known()) return false;
-    if (has_value().ValueOrDefault() && !value().Ok()) return false;
+    if (!value().Ok()) return false;
 
-    if (!has_doubled().Known()) return false;
-    if (has_doubled().ValueOrDefault() && !doubled().Ok()) return false;
+    if (!doubled().Ok()) return false;
 
-    if (!has_plus_ten().Known()) return false;
-    if (has_plus_ten().ValueOrDefault() && !plus_ten().Ok()) return false;
+    if (!plus_ten().Ok()) return false;
 
-    if (!has_value2().Known()) return false;
-    if (has_value2().ValueOrDefault() && !value2().Ok()) return false;
+    if (!value2().Ok()) return false;
 
-    if (!has_signed_doubled().Known()) return false;
-    if (has_signed_doubled().ValueOrDefault() && !signed_doubled().Ok()) return false;
+    if (!signed_doubled().Ok()) return false;
 
-    if (!has_signed_plus_ten().Known()) return false;
-    if (has_signed_plus_ten().ValueOrDefault() && !signed_plus_ten().Ok()) return false;
+    if (!signed_plus_ten().Ok()) return false;
 
-    if (!has_product().Known()) return false;
-    if (has_product().ValueOrDefault() && !product().Ok()) return false;
+    if (!product().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -2193,20 +2170,15 @@ class GenericStructureWithConditionalValueView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_x().Known()) return false;
-    if (has_x().ValueOrDefault() && !x().Ok()) return false;
+    if (!x().Ok()) return false;
 
-    if (!has_x_plus_one().Known()) return false;
-    if (has_x_plus_one().ValueOrDefault() && !x_plus_one().Ok()) return false;
+    if (!x_plus_one().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
     if (!has_two_x().Known()) return false;
     if (has_two_x().ValueOrDefault() && !two_x().Ok()) return false;
@@ -2829,20 +2801,15 @@ class GenericStructureWithValueInConditionView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_x().Known()) return false;
-    if (has_x().ValueOrDefault() && !x().Ok()) return false;
+    if (!x().Ok()) return false;
 
-    if (!has_two_x().Known()) return false;
-    if (has_two_x().ValueOrDefault() && !two_x().Ok()) return false;
+    if (!two_x().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
     if (!has_if_two_x_lt_100().Known()) return false;
     if (has_if_two_x_lt_100().ValueOrDefault() && !if_two_x_lt_100().Ok()) return false;
@@ -3444,26 +3411,19 @@ class GenericStructureWithValuesInLocationView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_x().Known()) return false;
-    if (has_x().ValueOrDefault() && !x().Ok()) return false;
+    if (!x().Ok()) return false;
 
-    if (!has_two_x().Known()) return false;
-    if (has_two_x().ValueOrDefault() && !two_x().Ok()) return false;
+    if (!two_x().Ok()) return false;
 
-    if (!has_offset_two_x().Known()) return false;
-    if (has_offset_two_x().ValueOrDefault() && !offset_two_x().Ok()) return false;
+    if (!offset_two_x().Ok()) return false;
 
-    if (!has_size_two_x().Known()) return false;
-    if (has_size_two_x().ValueOrDefault() && !size_two_x().Ok()) return false;
+    if (!size_two_x().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -4139,20 +4099,15 @@ class GenericStructureWithBoolValueView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_x().Known()) return false;
-    if (has_x().ValueOrDefault() && !x().Ok()) return false;
+    if (!x().Ok()) return false;
 
-    if (!has_x_is_ten().Known()) return false;
-    if (has_x_is_ten().ValueOrDefault() && !x_is_ten().Ok()) return false;
+    if (!x_is_ten().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -4729,20 +4684,15 @@ class GenericStructureWithEnumValueView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_x().Known()) return false;
-    if (has_x().ValueOrDefault() && !x().Ok()) return false;
+    if (!x().Ok()) return false;
 
-    if (!has_x_size().Known()) return false;
-    if (has_x_size().ValueOrDefault() && !x_size().Ok()) return false;
+    if (!x_size().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -5234,23 +5184,17 @@ class GenericStructureWithBitsWithValueView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_b().Known()) return false;
-    if (has_b().ValueOrDefault() && !b().Ok()) return false;
+    if (!b().Ok()) return false;
 
-    if (!has_alias_of_b_sum().Known()) return false;
-    if (has_alias_of_b_sum().ValueOrDefault() && !alias_of_b_sum().Ok()) return false;
+    if (!alias_of_b_sum().Ok()) return false;
 
-    if (!has_alias_of_b_a().Known()) return false;
-    if (has_alias_of_b_a().ValueOrDefault() && !alias_of_b_a().Ok()) return false;
+    if (!alias_of_b_a().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -5783,23 +5727,17 @@ class GenericBitsWithValueView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_a().Known()) return false;
-    if (has_a().ValueOrDefault() && !a().Ok()) return false;
+    if (!a().Ok()) return false;
 
-    if (!has_b().Known()) return false;
-    if (has_b().ValueOrDefault() && !b().Ok()) return false;
+    if (!b().Ok()) return false;
 
-    if (!has_sum().Known()) return false;
-    if (has_sum().ValueOrDefault() && !sum().Ok()) return false;
+    if (!sum().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBits().Known()) return false;
-    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
+    if (!IntrinsicSizeInBits().Ok()) return false;
 
-    if (!has_MaxSizeInBits().Known()) return false;
-    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
+    if (!MaxSizeInBits().Ok()) return false;
 
-    if (!has_MinSizeInBits().Known()) return false;
-    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
+    if (!MinSizeInBits().Ok()) return false;
 
 
 
@@ -6368,20 +6306,15 @@ class GenericStructureUsingForeignConstantsView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_x().Known()) return false;
-    if (has_x().ValueOrDefault() && !x().Ok()) return false;
+    if (!x().Ok()) return false;
 
-    if (!has_one_hundred().Known()) return false;
-    if (has_one_hundred().ValueOrDefault() && !one_hundred().Ok()) return false;
+    if (!one_hundred().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -6848,20 +6781,15 @@ class GenericHeaderView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_size().Known()) return false;
-    if (has_size().ValueOrDefault() && !size().Ok()) return false;
+    if (!size().Ok()) return false;
 
-    if (!has_message_id().Known()) return false;
-    if (has_message_id().ValueOrDefault() && !message_id().Ok()) return false;
+    if (!message_id().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -7340,23 +7268,17 @@ class GenericSubfieldOfAliasView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_header().Known()) return false;
-    if (has_header().ValueOrDefault() && !header().Ok()) return false;
+    if (!header().Ok()) return false;
 
-    if (!has_h().Known()) return false;
-    if (has_h().ValueOrDefault() && !h().Ok()) return false;
+    if (!h().Ok()) return false;
 
-    if (!has_size().Known()) return false;
-    if (has_size().ValueOrDefault() && !size().Ok()) return false;
+    if (!size().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -7852,20 +7774,15 @@ class GenericRestrictedAliasView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_a_b().Known()) return false;
-    if (has_a_b().ValueOrDefault() && !a_b().Ok()) return false;
+    if (!a_b().Ok()) return false;
 
-    if (!has_alias_switch().Known()) return false;
-    if (has_alias_switch().ValueOrDefault() && !alias_switch().Ok()) return false;
+    if (!alias_switch().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
     if (!has_a_b_alias().Known()) return false;
     if (has_a_b_alias().ValueOrDefault() && !a_b_alias().Ok()) return false;
@@ -8402,17 +8319,13 @@ class GenericXView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_v().Known()) return false;
-    if (has_v().ValueOrDefault() && !v().Ok()) return false;
+    if (!v().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
     if (!has_y().Known()) return false;
     if (has_y().ValueOrDefault() && !y().Ok()) return false;
@@ -8924,17 +8837,13 @@ class GenericHasFieldView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_z().Known()) return false;
-    if (has_z().ValueOrDefault() && !z().Ok()) return false;
+    if (!z().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
     if (!has_x().Known()) return false;
     if (has_x().ValueOrDefault() && !x().Ok()) return false;
@@ -9582,20 +9491,15 @@ class GenericVirtualUnconditionallyUsesConditionalView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_x().Known()) return false;
-    if (has_x().ValueOrDefault() && !x().Ok()) return false;
+    if (!x().Ok()) return false;
 
-    if (!has_x_nor_xc().Known()) return false;
-    if (has_x_nor_xc().ValueOrDefault() && !x_nor_xc().Ok()) return false;
+    if (!x_nor_xc().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
     if (!has_xc().Known()) return false;
     if (has_xc().ValueOrDefault() && !xc().Ok()) return false;
@@ -10204,20 +10108,15 @@ class GenericRView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_q().Known()) return false;
-    if (has_q().ValueOrDefault() && !q().Ok()) return false;
+    if (!q().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBits().Known()) return false;
-    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
+    if (!IntrinsicSizeInBits().Ok()) return false;
 
-    if (!has_q_plus_bit_size().Known()) return false;
-    if (has_q_plus_bit_size().ValueOrDefault() && !q_plus_bit_size().Ok()) return false;
+    if (!q_plus_bit_size().Ok()) return false;
 
-    if (!has_MaxSizeInBits().Known()) return false;
-    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
+    if (!MaxSizeInBits().Ok()) return false;
 
-    if (!has_MinSizeInBits().Known()) return false;
-    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
+    if (!MinSizeInBits().Ok()) return false;
 
 
 
@@ -10702,20 +10601,15 @@ class GenericUsesSizeView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_r().Known()) return false;
-    if (has_r().ValueOrDefault() && !r().Ok()) return false;
+    if (!r().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_r_q_plus_byte_size().Known()) return false;
-    if (has_r_q_plus_byte_size().ValueOrDefault() && !r_q_plus_byte_size().Ok()) return false;
+    if (!r_q_plus_byte_size().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -11203,20 +11097,15 @@ class GenericUsesExternalSizeView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_x().Known()) return false;
-    if (has_x().ValueOrDefault() && !x().Ok()) return false;
+    if (!x().Ok()) return false;
 
-    if (!has_y().Known()) return false;
-    if (has_y().ValueOrDefault() && !y().Ok()) return false;
+    if (!y().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -11700,32 +11589,23 @@ class GenericImplicitWriteBackView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_x().Known()) return false;
-    if (has_x().ValueOrDefault() && !x().Ok()) return false;
+    if (!x().Ok()) return false;
 
-    if (!has_x_plus_ten().Known()) return false;
-    if (has_x_plus_ten().ValueOrDefault() && !x_plus_ten().Ok()) return false;
+    if (!x_plus_ten().Ok()) return false;
 
-    if (!has_ten_plus_x().Known()) return false;
-    if (has_ten_plus_x().ValueOrDefault() && !ten_plus_x().Ok()) return false;
+    if (!ten_plus_x().Ok()) return false;
 
-    if (!has_x_minus_ten().Known()) return false;
-    if (has_x_minus_ten().ValueOrDefault() && !x_minus_ten().Ok()) return false;
+    if (!x_minus_ten().Ok()) return false;
 
-    if (!has_ten_minus_x().Known()) return false;
-    if (has_ten_minus_x().ValueOrDefault() && !ten_minus_x().Ok()) return false;
+    if (!ten_minus_x().Ok()) return false;
 
-    if (!has_ten_minus_x_plus_ten().Known()) return false;
-    if (has_ten_minus_x_plus_ten().ValueOrDefault() && !ten_minus_x_plus_ten().Ok()) return false;
+    if (!ten_minus_x_plus_ten().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 

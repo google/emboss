@@ -202,17 +202,13 @@ class GenericLargeConditionalsView final {
       const auto emboss_reserved_local_ok_subexpr_1 = tag();
       const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>());
 
-    if (!has_tag().Known()) return false;
-    if (has_tag().ValueOrDefault() && !tag().Ok()) return false;
+    if (!tag().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
     {
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
@@ -8841,17 +8837,13 @@ class GenericDisjunctionConditionalsView final {
       const auto emboss_reserved_local_ok_subexpr_1 = tag();
       const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>());
 
-    if (!has_tag().Known()) return false;
-    if (has_tag().ValueOrDefault() && !tag().Ok()) return false;
+    if (!tag().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
     {
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;

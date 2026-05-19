@@ -140,20 +140,15 @@ class GenericConstantsView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_sprocket().Known()) return false;
-    if (has_sprocket().ValueOrDefault() && !sprocket().Ok()) return false;
+    if (!sprocket().Ok()) return false;
 
-    if (!has_geegaw().Known()) return false;
-    if (has_geegaw().ValueOrDefault() && !geegaw().Ok()) return false;
+    if (!geegaw().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -1544,17 +1539,13 @@ class GenericEmbossReservedAnonymousField1View final {
     if (!IsComplete()) return false;
 
 
-    if (!has_wide_kind_in_bits().Known()) return false;
-    if (has_wide_kind_in_bits().ValueOrDefault() && !wide_kind_in_bits().Ok()) return false;
+    if (!wide_kind_in_bits().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBits().Known()) return false;
-    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
+    if (!IntrinsicSizeInBits().Ok()) return false;
 
-    if (!has_MaxSizeInBits().Known()) return false;
-    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
+    if (!MaxSizeInBits().Ok()) return false;
 
-    if (!has_MinSizeInBits().Known()) return false;
-    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
+    if (!MinSizeInBits().Ok()) return false;
 
 
 
@@ -1957,26 +1948,19 @@ class GenericManifestEntryView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_kind().Known()) return false;
-    if (has_kind().ValueOrDefault() && !kind().Ok()) return false;
+    if (!kind().Ok()) return false;
 
-    if (!has_count().Known()) return false;
-    if (has_count().ValueOrDefault() && !count().Ok()) return false;
+    if (!count().Ok()) return false;
 
-    if (!has_wide_kind().Known()) return false;
-    if (has_wide_kind().ValueOrDefault() && !wide_kind().Ok()) return false;
+    if (!wide_kind().Ok()) return false;
 
-    if (!has_emboss_reserved_anonymous_field_1().Known()) return false;
-    if (has_emboss_reserved_anonymous_field_1().ValueOrDefault() && !emboss_reserved_anonymous_field_1().Ok()) return false;
+    if (!emboss_reserved_anonymous_field_1().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
     if (!has_wide_kind_in_bits().Known()) return false;
     if (has_wide_kind_in_bits().ValueOrDefault() && !wide_kind_in_bits().Ok()) return false;
@@ -2710,17 +2694,13 @@ class GenericStructContainingEnumView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_bar().Known()) return false;
-    if (has_bar().ValueOrDefault() && !bar().Ok()) return false;
+    if (!bar().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 

@@ -391,17 +391,13 @@ if (!parameters_initialized_) return false;
       const auto emboss_reserved_local_ok_subexpr_1 = message_id();
       const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::emboss::test::MessageId>(static_cast</**/::emboss::test::MessageId>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::MessageId>());
 
-    if (!has_message_id().Known()) return false;
-    if (has_message_id().ValueOrDefault() && !message_id().Ok()) return false;
+    if (!message_id().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
     {
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
@@ -1140,20 +1136,15 @@ class GenericAxesView final {
     if (!IsComplete()) return false;
 if (!parameters_initialized_) return false;
 
-    if (!has_values().Known()) return false;
-    if (has_values().ValueOrDefault() && !values().Ok()) return false;
+    if (!values().Ok()) return false;
 
-    if (!has_axis_count_plus_one().Known()) return false;
-    if (has_axis_count_plus_one().ValueOrDefault() && !axis_count_plus_one().Ok()) return false;
+    if (!axis_count_plus_one().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
     if (!has_x().Known()) return false;
     if (has_x().ValueOrDefault() && !x().Ok()) return false;
@@ -1966,26 +1957,19 @@ class GenericAxisPairView final {
     if (!IsComplete()) return false;
 if (!parameters_initialized_) return false;
 
-    if (!has_axis_type_a().Known()) return false;
-    if (has_axis_type_a().ValueOrDefault() && !axis_type_a().Ok()) return false;
+    if (!axis_type_a().Ok()) return false;
 
-    if (!has_axis_a().Known()) return false;
-    if (has_axis_a().ValueOrDefault() && !axis_a().Ok()) return false;
+    if (!axis_a().Ok()) return false;
 
-    if (!has_axis_type_b().Known()) return false;
-    if (has_axis_type_b().ValueOrDefault() && !axis_type_b().Ok()) return false;
+    if (!axis_type_b().Ok()) return false;
 
-    if (!has_axis_b().Known()) return false;
-    if (has_axis_b().ValueOrDefault() && !axis_b().Ok()) return false;
+    if (!axis_b().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -2716,20 +2700,15 @@ class GenericAxesEnvelopeView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_axis_count().Known()) return false;
-    if (has_axis_count().ValueOrDefault() && !axis_count().Ok()) return false;
+    if (!axis_count().Ok()) return false;
 
-    if (!has_axes().Known()) return false;
-    if (has_axes().ValueOrDefault() && !axes().Ok()) return false;
+    if (!axes().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -3355,20 +3334,15 @@ if (!parameters_initialized_) return false;
       const auto emboss_reserved_local_ok_subexpr_1 = axis_type();
       const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::AxisType>());
 
-    if (!has_value().Known()) return false;
-    if (has_value().ValueOrDefault() && !value().Ok()) return false;
+    if (!value().Ok()) return false;
 
-    if (!has_axis_type().Known()) return false;
-    if (has_axis_type().ValueOrDefault() && !axis_type().Ok()) return false;
+    if (!axis_type().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
     {
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
@@ -4144,17 +4118,13 @@ class GenericConfigView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_power().Known()) return false;
-    if (has_power().ValueOrDefault() && !power().Ok()) return false;
+    if (!power().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBits().Known()) return false;
-    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
+    if (!IntrinsicSizeInBits().Ok()) return false;
 
-    if (!has_MaxSizeInBits().Known()) return false;
-    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
+    if (!MaxSizeInBits().Ok()) return false;
 
-    if (!has_MinSizeInBits().Known()) return false;
-    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
+    if (!MinSizeInBits().Ok()) return false;
 
 
 
@@ -4566,17 +4536,13 @@ class GenericEmbossReservedAnonymousField1View final {
     if (!IsComplete()) return false;
 
 
-    if (!has_power().Known()) return false;
-    if (has_power().ValueOrDefault() && !power().Ok()) return false;
+    if (!power().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBits().Known()) return false;
-    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
+    if (!IntrinsicSizeInBits().Ok()) return false;
 
-    if (!has_MaxSizeInBits().Known()) return false;
-    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
+    if (!MaxSizeInBits().Ok()) return false;
 
-    if (!has_MinSizeInBits().Known()) return false;
-    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
+    if (!MinSizeInBits().Ok()) return false;
 
 
 
@@ -4978,20 +4944,15 @@ class GenericConfigVXView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_emboss_reserved_anonymous_field_1().Known()) return false;
-    if (has_emboss_reserved_anonymous_field_1().ValueOrDefault() && !emboss_reserved_anonymous_field_1().Ok()) return false;
+    if (!emboss_reserved_anonymous_field_1().Ok()) return false;
 
-    if (!has_gain().Known()) return false;
-    if (has_gain().ValueOrDefault() && !gain().Ok()) return false;
+    if (!gain().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
     if (!has_power().Known()) return false;
     if (has_power().ValueOrDefault() && !power().Ok()) return false;
@@ -5483,17 +5444,13 @@ class GenericStructWithUnusedParameterView final {
     if (!IsComplete()) return false;
 if (!parameters_initialized_) return false;
 
-    if (!has_y().Known()) return false;
-    if (has_y().ValueOrDefault() && !y().Ok()) return false;
+    if (!y().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -5943,20 +5900,15 @@ class GenericStructContainingStructWithUnusedParameterView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_x().Known()) return false;
-    if (has_x().ValueOrDefault() && !x().Ok()) return false;
+    if (!x().Ok()) return false;
 
-    if (!has_swup().Known()) return false;
-    if (has_swup().ValueOrDefault() && !swup().Ok()) return false;
+    if (!swup().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -6439,20 +6391,15 @@ class GenericBiasedValueView final {
     if (!IsComplete()) return false;
 if (!parameters_initialized_) return false;
 
-    if (!has_raw_value().Known()) return false;
-    if (has_raw_value().ValueOrDefault() && !raw_value().Ok()) return false;
+    if (!raw_value().Ok()) return false;
 
-    if (!has_value().Known()) return false;
-    if (has_value().ValueOrDefault() && !value().Ok()) return false;
+    if (!value().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -6988,20 +6935,15 @@ class GenericVirtualFirstFieldWithParamView final {
     if (!IsComplete()) return false;
 if (!parameters_initialized_) return false;
 
-    if (!has_x().Known()) return false;
-    if (has_x().ValueOrDefault() && !x().Ok()) return false;
+    if (!x().Ok()) return false;
 
-    if (!has_value().Known()) return false;
-    if (has_value().ValueOrDefault() && !value().Ok()) return false;
+    if (!value().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -7497,20 +7439,15 @@ class GenericConstVirtualFirstFieldWithParamView final {
     if (!IsComplete()) return false;
 if (!parameters_initialized_) return false;
 
-    if (!has_value().Known()) return false;
-    if (has_value().ValueOrDefault() && !value().Ok()) return false;
+    if (!value().Ok()) return false;
 
-    if (!has_x().Known()) return false;
-    if (has_x().ValueOrDefault() && !x().Ok()) return false;
+    if (!x().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
@@ -8015,23 +7952,17 @@ class GenericSizedArrayOfBiasedValuesView final {
     if (!IsComplete()) return false;
 
 
-    if (!has_element_count().Known()) return false;
-    if (has_element_count().ValueOrDefault() && !element_count().Ok()) return false;
+    if (!element_count().Ok()) return false;
 
-    if (!has_bias().Known()) return false;
-    if (has_bias().ValueOrDefault() && !bias().Ok()) return false;
+    if (!bias().Ok()) return false;
 
-    if (!has_values().Known()) return false;
-    if (has_values().ValueOrDefault() && !values().Ok()) return false;
+    if (!values().Ok()) return false;
 
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (!IntrinsicSizeInBytes().Ok()) return false;
 
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (!MaxSizeInBytes().Ok()) return false;
 
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (!MinSizeInBytes().Ok()) return false;
 
 
 
