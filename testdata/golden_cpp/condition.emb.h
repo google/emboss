@@ -4258,7 +4258,6 @@ class GenericCorrectNestedConditionalView final {
 
     {
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
-      if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
         case static_cast</**/::std::int32_t>(0LL):
           if (!xc().Ok()) return false;
@@ -16543,7 +16542,6 @@ class GenericConditionalInlineView final {
 
     {
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
-      if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
         case static_cast</**/::std::int32_t>(0LL):
           if (!type_0().Ok()) return false;

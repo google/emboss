@@ -403,8 +403,7 @@ ${write_fields}
     // Check fields that depend on a common discriminant using a switch.
     {
       const auto emboss_reserved_switch_discrim = ${discriminant};
-      if (!emboss_reserved_switch_discrim.Known()) return false;
-      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
+${known_check}      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
 ${switch_cases}
       }
     }
