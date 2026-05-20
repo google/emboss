@@ -164,7 +164,6 @@ module:
                                 bottom-expression:
                                   numeric-constant:
                                     Number '0' 22:3-22:4
-                              times-expression-right*
                             additive-expression-right*
                   "[" '[' 22:6-22:7
                   "+" '+' 22:7-22:8
@@ -178,7 +177,6 @@ module:
                                 bottom-expression:
                                   numeric-constant:
                                     Number '4' 22:8-22:9
-                              times-expression-right*
                             additive-expression-right*
                   "]" ']' 22:9-22:10
                 type:
@@ -214,7 +212,6 @@ module:
                                   bottom-expression:
                                     numeric-constant:
                                       Number '4' 23:3-23:4
-                                times-expression-right*
                               additive-expression-right*
                     "[" '[' 23:6-23:7
                     "+" '+' 23:7-23:8
@@ -228,7 +225,6 @@ module:
                                   bottom-expression:
                                     numeric-constant:
                                       Number '12' 23:8-23:10
-                                times-expression-right*
                               additive-expression-right*
                     "]" ']' 23:10-23:11
                   type:
@@ -255,7 +251,6 @@ module:
                                       bottom-expression:
                                         numeric-constant:
                                           Number '12' 23:20-23:22
-                                    times-expression-right*
                                   additive-expression-right*
                         "]" ']' 23:22-23:23
                       array-length-specifier*
@@ -284,7 +279,6 @@ module:
                                     bottom-expression:
                                       numeric-constant:
                                         Number '16' 24:3-24:5
-                                  times-expression-right*
                                 additive-expression-right*
                       "[" '[' 24:6-24:7
                       "+" '+' 24:7-24:8
@@ -298,7 +292,6 @@ module:
                                     bottom-expression:
                                       numeric-constant:
                                         Number '4' 24:8-24:9
-                                  times-expression-right*
                                 additive-expression-right*
                       "]" ']' 24:9-24:10
                     type:
@@ -334,7 +327,6 @@ module:
                                       bottom-expression:
                                         numeric-constant:
                                           Number '20' 25:3-25:5
-                                    times-expression-right*
                                   additive-expression-right*
                         "[" '[' 25:6-25:7
                         "+" '+' 25:7-25:8
@@ -348,7 +340,6 @@ module:
                                       bottom-expression:
                                         numeric-constant:
                                           Number '4' 25:8-25:9
-                                    times-expression-right*
                                   additive-expression-right*
                         "]" ']' 25:9-25:10
                       type:

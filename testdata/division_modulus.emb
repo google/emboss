@@ -1,0 +1,43 @@
+# Copyright 2026 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Test data for the `//` (flooring integer division) and `%` (flooring modulus)
+# operators.
+
+[$default byte_order: "LittleEndian"]
+[(cpp) namespace: "emboss::test"]
+
+
+struct ArrayOfUint16BySizeInBytes:
+  0 [+1]              UInt        size_in_bytes (n)
+  1 [+(n // 2) * 2]   UInt:16[]   elements
+
+
+struct ChunkedPayload:
+  0 [+1]                UInt          chunk_count (n)
+  # Round n up to a multiple of 4 by adding 3 and flooring-dividing.
+  1 [+((n + 3) // 4) * 4]  UInt:8[]   padded
+
+
+# Virtual fields exercise constant folding through // and %.
+struct Constants:
+  let exact_quotient = 100 // 5
+  let truncating_quotient = 100 // 7
+  let negative_quotient = (0 - 7) // 2
+  let exact_modulus = 100 % 5
+  let truncating_modulus = 100 % 7
+  let negative_modulus = (0 - 7) % 2
+  let chained_div = 100 // 5 // 2
+  let chained_mod = 17 % 7 % 4
+  let mixed_divmod = 17 % 7 // 2

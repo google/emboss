@@ -329,6 +329,71 @@ class ComputeConstantsTest(unittest.TestCase):
         self.assertEqual("5", start.function.args[1].type.integer.modular_value)
         self.assertEqual("infinity", start.type.integer.modulus)
 
+    def test_constant_floor_division(self):
+        # Sign table from the division_and_modulus design doc.
+        # +8 // +3 == 2, +8 // -3 == -3, -8 // +3 == -3, -8 // -3 == 2.
+        ir = self._make_ir(
+            "struct Foo:\n"
+            "  let q_pp = 8 // 3\n"
+            "  let q_pn = 8 // (0-3)\n"
+            "  let q_np = (0-8) // 3\n"
+            "  let q_nn = (0-8) // (0-3)\n"
+        )
+        self.assertEqual([], expression_bounds.compute_constants(ir))
+        fields = ir.module[0].type[0].structure.field
+        expected = {"q_pp": "2", "q_pn": "-3", "q_np": "-3", "q_nn": "2"}
+        for f in fields:
+            name = f.name.name.text
+            if name in expected:
+                self.assertEqual(
+                    expected[name], f.read_transform.type.integer.modular_value
+                )
+                self.assertEqual("infinity", f.read_transform.type.integer.modulus)
+                self.assertEqual(
+                    expected[name], f.read_transform.type.integer.minimum_value
+                )
+                self.assertEqual(
+                    expected[name], f.read_transform.type.integer.maximum_value
+                )
+
+    def test_constant_modulus(self):
+        # +8 % +3 == 2, +8 % -3 == -1, -8 % +3 == 1, -8 % -3 == -2.
+        ir = self._make_ir(
+            "struct Foo:\n"
+            "  let m_pp = 8 % 3\n"
+            "  let m_pn = 8 % (0-3)\n"
+            "  let m_np = (0-8) % 3\n"
+            "  let m_nn = (0-8) % (0-3)\n"
+        )
+        self.assertEqual([], expression_bounds.compute_constants(ir))
+        fields = ir.module[0].type[0].structure.field
+        expected = {"m_pp": "2", "m_pn": "-1", "m_np": "1", "m_nn": "-2"}
+        for f in fields:
+            name = f.name.name.text
+            if name in expected:
+                self.assertEqual(
+                    expected[name], f.read_transform.type.integer.modular_value
+                )
+                self.assertEqual("infinity", f.read_transform.type.integer.modulus)
+
+    def test_non_constant_floor_division_by_constant(self):
+        ir = self._make_ir(
+            "struct Foo:\n" "  0 [+1]  UInt  x\n" "  let half = x // 2\n"
+        )
+        self.assertEqual([], expression_bounds.compute_constants(ir))
+        f = ir.module[0].type[0].structure.field[1]
+        # x ∈ [0, 255], so x // 2 ∈ [0, 127].
+        self.assertEqual("0", f.read_transform.type.integer.minimum_value)
+        self.assertEqual("127", f.read_transform.type.integer.maximum_value)
+
+    def test_non_constant_modulus_by_constant(self):
+        ir = self._make_ir("struct Foo:\n" "  0 [+1]  UInt  x\n" "  let r = x % 4\n")
+        self.assertEqual([], expression_bounds.compute_constants(ir))
+        f = ir.module[0].type[0].structure.field[1]
+        # x % 4 ∈ [0, 3] regardless of x's range, since divisor is positive.
+        self.assertEqual("0", f.read_transform.type.integer.minimum_value)
+        self.assertEqual("3", f.read_transform.type.integer.maximum_value)
+
     def test_nested_constant_expression(self):
         ir = self._make_ir(
             "struct Foo:\n" "  if 7*(3+1) == 28:\n" "    0 [+1]  UInt  x\n"
