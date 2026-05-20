@@ -1,6 +1,7 @@
 {
   // A list of all source files required to build the Emboss compiler.
   "embossc_sources": [
+    "/LICENSE",
     "compiler/__init__.py",
     "compiler/back_end/__init__.py",
     "compiler/back_end/cpp/__init__.py",
@@ -49,6 +50,7 @@
   ],
   // A list of all source files required for the Emboss C++ runtime.
   "emboss_runtime_cpp_sources": [
+    "/LICENSE",
     "runtime/cpp/emboss_arithmetic.h",
     "runtime/cpp/emboss_arithmetic_all_known_generated.h",
     "runtime/cpp/emboss_arithmetic_maximum_operation_generated.h",

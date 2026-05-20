@@ -20,6 +20,7 @@ load("@rules_python//python:py_test.bzl", "py_test")
 load(":build_defs.bzl", "cpp_golden_test", "emboss_cc_test")
 
 package(
+    default_applicable_licenses = ["//:license"],
     default_visibility = [
         "//visibility:private",
     ],
