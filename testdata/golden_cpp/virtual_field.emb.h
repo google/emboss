@@ -9611,6 +9611,8 @@ class GenericVirtualUnconditionallyUsesConditionalView final {
 
 
 
+        
+        default: break;
       }
     }
 

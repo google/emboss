@@ -812,6 +812,8 @@ class GenericLargeConditionalsView final {
 
 
 
+        
+        default: break;
       }
     }
 

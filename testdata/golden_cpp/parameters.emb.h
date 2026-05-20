@@ -421,6 +421,8 @@ if (!parameters_initialized_) return false;
 
 
 
+        
+        default: break;
       }
     }
 
@@ -3396,6 +3398,8 @@ if (!parameters_initialized_) return false;
 
 
 
+        
+        default: break;
       }
     }
 

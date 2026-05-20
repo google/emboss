@@ -407,6 +407,8 @@ ${inner_scope_definitions}
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
 ${switch_cases}
+        
+        default: break;
       }
     }
 
