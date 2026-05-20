@@ -410,10 +410,8 @@ ${switch_cases}
     }
 
 
-// ** ok_method_switch_case ** /////////////////////////////////////////////////
-        case ${case_value}:
-          if (!${field}().Ok()) return false;
-          break;
+// ** ok_method_switch_arm ** //////////////////////////////////////////////////
+${case_labels}${case_body}          break;
 
 
 
