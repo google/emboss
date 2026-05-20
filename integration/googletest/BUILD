@@ -15,6 +15,10 @@
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
 
+package(
+    default_applicable_licenses = ["//:license"],
+)
+
 cc_library(
     name = "emboss_test_util",
     testonly = 1,
@@ -25,9 +29,6 @@ cc_library(
         "@com_google_absl//absl/memory",
         "@com_google_googletest//:gtest",
     ],
-)
-package(
-    default_applicable_licenses = ["//:license"],
 )
 
 cc_test(

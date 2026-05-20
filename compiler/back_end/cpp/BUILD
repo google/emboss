@@ -24,7 +24,6 @@ package(
     default_visibility = [
         "//visibility:private",
     ],
-    features = ["-layering_check"],
 )
 
 py_binary(

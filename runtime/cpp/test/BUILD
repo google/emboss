@@ -19,6 +19,7 @@ load(
     ":build_defs.bzl",
     "emboss_cc_util_test",
 )
+
 package(
     default_applicable_licenses = ["//:license"],
 )

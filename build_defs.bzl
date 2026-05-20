@@ -114,6 +114,7 @@ def _emboss_library_impl(ctx):
         outputs = [out],
         arguments = [src.path, "--output-file=" + out.path] + imports + imports_arg,
         executable = ctx.executable._emboss_compiler,
+        mnemonic = "Emboss",
     )
     transitive_sources = depset(
         direct = [src],
@@ -193,6 +194,7 @@ def _cc_emboss_aspect_impl(target, ctx):
         arguments = [args],
         inputs = emboss_info.direct_ir,
         outputs = headers,
+        mnemonic = "EmbossCc",
     )
     runtime_cc_info = ctx.attr._emboss_cc_runtime[CcInfo]
     transitive_headers = depset(
