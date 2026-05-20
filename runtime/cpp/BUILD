@@ -16,6 +16,10 @@
 
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
 
+package(
+    default_applicable_licenses = ["//:license"],
+)
+
 filegroup(
     name = "raw_headers",
     srcs = [
@@ -36,9 +40,6 @@ filegroup(
         "emboss_view_parameters.h",
     ],
     visibility = ["//:__subpackages__"],
-)
-package(
-    default_applicable_licenses = ["//:license"],
 )
 
 cc_library(
