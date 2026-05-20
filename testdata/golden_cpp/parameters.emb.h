@@ -3375,23 +3375,11 @@ if (!parameters_initialized_) return false;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
         case static_cast</**/::emboss::test::AxisType>(1):
-          if (!x().Ok()) return false;
-          break;
-
-
-
+          return x().Ok();
         case static_cast</**/::emboss::test::AxisType>(2):
-          if (!y().Ok()) return false;
-          break;
-
-
-
+          return y().Ok();
         case static_cast</**/::emboss::test::AxisType>(3):
-          if (!z().Ok()) return false;
-          break;
-
-
-
+          return z().Ok();
 
       }
     }
