@@ -29,7 +29,16 @@ load("@rules_cc//cc/common:cc_common.bzl", "cc_common")
 load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
 
 def emboss_cc_library(name, srcs, deps = [], import_dirs = [], enable_enum_traits = True, **kwargs):
-    """Constructs a C++ library from an .emb file."""
+    """Constructs a C++ library from an .emb file.
+
+    Args:
+      name: The name of the target.
+      srcs: A list containing exactly one .emb source file.
+      deps: A list of emboss_library dependencies.
+      import_dirs: A list of directories to add to the import path.
+      enable_enum_traits: Whether to generate enum traits.
+      **kwargs: Additional arguments to pass to underlying rules.
+    """
     if len(srcs) != 1:
         fail(
             "Must specify exactly one Emboss source file for emboss_cc_library.",
@@ -139,7 +148,6 @@ emboss_library = rule(
         "import_dirs": attr.label_list(
             allow_files = True,
         ),
-        "licenses": attr.license() if hasattr(attr, "license") else attr.string_list(),
         "_emboss_compiler": attr.label(
             executable = True,
             cfg = "exec",
@@ -201,7 +209,11 @@ def _cc_emboss_aspect_impl(target, ctx):
         cc_toolchain = cc_toolchain,
         public_hdrs = headers,
         private_hdrs = transitive_headers.to_list(),
-        compilation_contexts = [runtime_cc_info.compilation_context],
+        compilation_contexts = [runtime_cc_info.compilation_context] + [
+            dep[CcInfo].compilation_context
+            for dep in ctx.rule.attr.deps
+            if CcInfo in dep
+        ],
     )
     return [
         CcInfo(compilation_context = cc_compilation_context),
