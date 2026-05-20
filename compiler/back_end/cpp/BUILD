@@ -399,7 +399,10 @@ emboss_cc_test(
     ],
 )
 
-# New golden test infrastructure
+# New golden test infrastructure.
+#
+# NOTE: When adding or removing cpp_golden_test(...) rules below, also update
+# the GOLDENS list in scripts/regenerate_goldens.py so the two stay in sync.
 py_library(
     name = "one_golden_test_lib",
     srcs = ["one_golden_test.py"],
