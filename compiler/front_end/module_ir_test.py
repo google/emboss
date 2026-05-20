@@ -582,6 +582,123 @@ struct Foo:
 }
 
 ===
+division and modulus
+---
+struct Foo:
+  0 [+24//2]    UInt  div
+  0 [+25%4]     UInt  mod
+  0 [+8//2//2]  UInt  div_chain
+  0 [+16%5%2]   UInt  mod_chain
+  0 [+8//2%3]   UInt  divmod_chain
+---
+{
+  "type": [
+    {
+      "structure": {
+        "field": [
+          {
+            "name": { "name": { "text": "div" } },
+            "location": {
+              "size": {
+                "function": {
+                  "function": "FLOOR_DIVISION",
+                  "function_name": { "text": "//" },
+                  "args": [
+                    { "constant": { "value": "24" } },
+                    { "constant": { "value": "2" } }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "name": { "name": { "text": "mod" } },
+            "location": {
+              "size": {
+                "function": {
+                  "function": "MODULUS",
+                  "function_name": { "text": "%" },
+                  "args": [
+                    { "constant": { "value": "25" } },
+                    { "constant": { "value": "4" } }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "name": { "name": { "text": "div_chain" } },
+            "location": {
+              "size": {
+                "function": {
+                  "function": "FLOOR_DIVISION",
+                  "args": [
+                    {
+                      "function": {
+                        "function": "FLOOR_DIVISION",
+                        "args": [
+                          { "constant": { "value": "8" } },
+                          { "constant": { "value": "2" } }
+                        ]
+                      }
+                    },
+                    { "constant": { "value": "2" } }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "name": { "name": { "text": "mod_chain" } },
+            "location": {
+              "size": {
+                "function": {
+                  "function": "MODULUS",
+                  "args": [
+                    {
+                      "function": {
+                        "function": "MODULUS",
+                        "args": [
+                          { "constant": { "value": "16" } },
+                          { "constant": { "value": "5" } }
+                        ]
+                      }
+                    },
+                    { "constant": { "value": "2" } }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "name": { "name": { "text": "divmod_chain" } },
+            "location": {
+              "size": {
+                "function": {
+                  "function": "MODULUS",
+                  "args": [
+                    {
+                      "function": {
+                        "function": "FLOOR_DIVISION",
+                        "args": [
+                          { "constant": { "value": "8" } },
+                          { "constant": { "value": "2" } }
+                        ]
+                      }
+                    },
+                    { "constant": { "value": "3" } }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
+
+===
 auto array size
 ---
 struct TenElementArray:
@@ -3906,6 +4023,34 @@ struct Foo:
     enum Bar:
       X = 1
     0 [+2]  Bar  bar
+===
+mixing star and floor division without parens
+---
+//
+---
+struct Foo:
+  0 [+a*b//c]  UInt  x
+===
+mixing floor division and star without parens
+---
+*
+---
+struct Foo:
+  0 [+a//b*c]  UInt  x
+===
+mixing star and modulus without parens
+---
+%
+---
+struct Foo:
+  0 [+a*b%c]  UInt  x
+===
+mixing modulus and star without parens
+---
+*
+---
+struct Foo:
+  0 [+a%b*c]  UInt  x
 """
 
 

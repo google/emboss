@@ -698,6 +698,52 @@ def _integer_bounds_errors(bounds, name, source_file_name, error_source_location
     return []
 
 
+def _check_division_and_modulus_have_nonzero_divisors(
+    expression, source_file_name, errors
+):
+    """Rejects `l // r` and `l % r` whose divisor range could contain zero.
+
+    Stage 1 of the integer division / modulus rollout does not track an
+    `undefined` value through the expression type system, so the only sound
+    option for expressions where the divisor's range straddles zero is to
+    reject them at compile time.  Once the `can_be_undefined` extension lands
+    (stage 2), this check will be replaced with `undefined` propagation.
+    """
+    if expression.which_expression != "function":
+        return
+    op = expression.function.function
+    if op not in (
+        ir_data.FunctionMapping.FLOOR_DIVISION,
+        ir_data.FunctionMapping.MODULUS,
+    ):
+        return
+    divisor = expression.function.args[1]
+    if divisor.type.which_type != "integer":
+        return
+    rmin = divisor.type.integer.minimum_value
+    rmax = divisor.type.integer.maximum_value
+    rmin_le_zero = rmin == "-infinity" or int(rmin) <= 0
+    rmax_ge_zero = rmax == "infinity" or int(rmax) >= 0
+    if rmin_le_zero and rmax_ge_zero:
+        op_text = expression.function.function_name.text
+        errors.append(
+            [
+                error.error(
+                    source_file_name,
+                    expression.source_location,
+                    "Right argument of '{}' cannot be zero.".format(op_text),
+                ),
+                error.note(
+                    source_file_name,
+                    divisor.source_location,
+                    "Divisor range is {} to {}, which includes zero.".format(
+                        rmin, rmax
+                    ),
+                ),
+            ]
+        )
+
+
 def _check_bounds_on_runtime_integer_expressions(
     expression, source_file_name, in_attribute, errors
 ):
@@ -808,6 +854,12 @@ def check_constraints(ir):
         ir,
         [ir_data.Enum],
         _check_that_enum_values_are_representable,
+        parameters={"errors": errors},
+    )
+    traverse_ir.fast_traverse_ir_top_down(
+        ir,
+        [ir_data.Expression],
+        _check_division_and_modulus_have_nonzero_divisors,
         parameters={"errors": errors},
     )
     traverse_ir.fast_traverse_ir_top_down(

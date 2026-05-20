@@ -50,6 +50,7 @@ filegroup(
         "complex_structure.emb",
         "condition.emb",
         "cpp_namespace.emb",
+        "division_modulus.emb",
         "dynamic_size.emb",
         "enum.emb",
         "enum_case.emb",
@@ -238,6 +239,13 @@ emboss_cc_library(
     name = "dynamic_size_emboss",
     srcs = [
         "dynamic_size.emb",
+    ],
+)
+
+emboss_cc_library(
+    name = "division_modulus_emboss",
+    srcs = [
+        "division_modulus.emb",
     ],
 )
 

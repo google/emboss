@@ -201,6 +201,10 @@ class FunctionMapping(int, enum.Enum):
     """`$upper_bound()`"""
     LOWER_BOUND = 16
     """`$lower_bound()`"""
+    FLOOR_DIVISION = 17
+    """`//`"""
+    MODULUS = 18
+    """`%`"""
 
 
 @dataclasses.dataclass

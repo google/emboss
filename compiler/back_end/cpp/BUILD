@@ -213,6 +213,17 @@ emboss_cc_test(
 )
 
 emboss_cc_test(
+    name = "division_modulus_test",
+    srcs = [
+        "testcode/division_modulus_test.cc",
+    ],
+    deps = [
+        "//testdata:division_modulus_emboss",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+emboss_cc_test(
     name = "auto_array_size_test",
     srcs = [
         "testcode/auto_array_size_test.cc",
@@ -472,6 +483,12 @@ cpp_golden_test(
     name = "cpp_namespace_golden_test",
     emb_file = "//testdata:cpp_namespace.emb",
     golden_file = "//testdata/golden_cpp:cpp_namespace.emb.h",
+)
+
+cpp_golden_test(
+    name = "division_modulus_golden_test",
+    emb_file = "//testdata:division_modulus.emb",
+    golden_file = "//testdata/golden_cpp:division_modulus.emb.h",
 )
 
 cpp_golden_test(

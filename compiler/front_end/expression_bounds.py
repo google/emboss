@@ -93,6 +93,10 @@ def _compute_constraints_of_function(expression, ir):
         _compute_constraints_of_additive_operator(expression)
     elif op == ir_data.FunctionMapping.MULTIPLICATION:
         _compute_constraints_of_multiplicative_operator(expression)
+    elif op == ir_data.FunctionMapping.FLOOR_DIVISION:
+        _compute_constraints_of_division_operator(expression)
+    elif op == ir_data.FunctionMapping.MODULUS:
+        _compute_constraints_of_modulus_operator(expression)
     elif op in (
         ir_data.FunctionMapping.EQUALITY,
         ir_data.FunctionMapping.INEQUALITY,
@@ -309,6 +313,40 @@ def _mul(a, b):
     return int(a) * int(b)
 
 
+def _floor_divide(a, b):
+    """Flooring division of a by b, where each is an int, "infinity", or "-infinity".
+
+    The caller is responsible for ensuring b is not zero (or "0").
+    """
+    if _is_infinite(a):
+        sign = _sign(a) * _sign(b)
+        if sign > 0:
+            return "infinity"
+        if sign < 0:
+            return "-infinity"
+        # _sign returns 0 only for a finite zero, so a is infinite here means
+        # the other factor must be zero -- but that's excluded by precondition.
+        return 0
+    if _is_infinite(b):
+        if int(a) == 0:
+            return 0
+        # Finite-nonzero divided by infinite: flooring gives 0 when signs agree,
+        # -1 when they differ.
+        if _sign(a) == _sign(b):
+            return 0
+        return -1
+    return int(a) // int(b)
+
+
+def _value_in_range(v, lo, hi):
+    """Returns True if `lo <= v <= hi`, where v is a finite int and lo/hi may be infinite."""
+    if lo != "-infinity" and (lo == "infinity" or int(lo) > v):
+        return False
+    if hi != "infinity" and (hi == "-infinity" or int(hi) < v):
+        return False
+    return True
+
+
 def _is_infinite(a):
     return a in ("infinity", "-infinity")
 
@@ -484,6 +522,102 @@ def _compute_constraints_of_multiplicative_operator(expression):
     expression.type.integer.modular_value = str(
         product_of_modular_values % final_modulus
     )
+
+
+def _compute_constraints_of_division_operator(expression):
+    """Computes the bounds of a `//` (flooring integer division) expression."""
+    left, right = (arg.type.integer for arg in expression.function.args)
+
+    # Both sides constant: compute the exact result.
+    if left.modulus == "infinity" and right.modulus == "infinity":
+        l_val = int(left.modular_value)
+        r_val = int(right.modular_value)
+        if r_val == 0:
+            # Constant divisor 0. Dummy bounds; the constraints pass will reject
+            # this expression.
+            expression.type.integer.minimum_value = "0"
+            expression.type.integer.maximum_value = "0"
+            expression.type.integer.modulus = "infinity"
+            expression.type.integer.modular_value = "0"
+            return
+        result = l_val // r_val
+        expression.type.integer.minimum_value = str(result)
+        expression.type.integer.maximum_value = str(result)
+        expression.type.integer.modulus = "infinity"
+        expression.type.integer.modular_value = str(result)
+        return
+
+    # Non-constant case: enumerate extrema over {l_min, -1, 1, l_max} //
+    # {r_min, -1, 1, r_max}, dropping zeros from the right and dropping -1/1
+    # from either side if they are outside the operand's range.
+    rmin, rmax = right.minimum_value, right.maximum_value
+    r_candidates = set()
+    if rmin != "0":
+        r_candidates.add(rmin)
+    if rmax != "0":
+        r_candidates.add(rmax)
+    if _value_in_range(-1, rmin, rmax):
+        r_candidates.add("-1")
+    if _value_in_range(1, rmin, rmax):
+        r_candidates.add("1")
+    if not r_candidates:
+        # Divisor is constant 0 (rmin == rmax == "0"). Dummy bounds; constraints
+        # pass will reject.
+        expression.type.integer.minimum_value = "0"
+        expression.type.integer.maximum_value = "0"
+        expression.type.integer.modulus = "infinity"
+        expression.type.integer.modular_value = "0"
+        return
+
+    lmin, lmax = left.minimum_value, left.maximum_value
+    l_candidates = {lmin, lmax}
+    if _value_in_range(-1, lmin, lmax):
+        l_candidates.add("-1")
+    if _value_in_range(1, lmin, lmax):
+        l_candidates.add("1")
+
+    extrema = [_floor_divide(l, r) for l in l_candidates for r in r_candidates]
+    expression.type.integer.minimum_value = str(_min(extrema))
+    expression.type.integer.maximum_value = str(_max(extrema))
+
+    # Stage 1 uses a conservative `(x ≡ 0 mod 1)` modular bound for any case
+    # where at least one operand is non-constant.  Tighter modular tracking is
+    # possible (see the design doc) but isn't needed to make division usable in
+    # field sizes / array dimensions, which is the motivating use case.
+    expression.type.integer.modulus = "1"
+    expression.type.integer.modular_value = "0"
+
+
+def _compute_constraints_of_modulus_operator(expression):
+    """Computes the bounds of a `%` (flooring modulus) expression."""
+    left, right = (arg.type.integer for arg in expression.function.args)
+
+    if left.modulus == "infinity" and right.modulus == "infinity":
+        l_val = int(left.modular_value)
+        r_val = int(right.modular_value)
+        if r_val == 0:
+            # Constant divisor 0. Dummy bounds; constraints pass will reject.
+            expression.type.integer.minimum_value = "0"
+            expression.type.integer.maximum_value = "0"
+            expression.type.integer.modulus = "infinity"
+            expression.type.integer.modular_value = "0"
+            return
+        result = l_val % r_val
+        expression.type.integer.minimum_value = str(result)
+        expression.type.integer.maximum_value = str(result)
+        expression.type.integer.modulus = "infinity"
+        expression.type.integer.modular_value = str(result)
+        return
+
+    # General case.  For flooring modulus, the result has the same sign as the
+    # divisor (or is zero); so its range is bounded by
+    # [min(0, r_min + 1), max(0, r_max - 1)].
+    rmin = right.minimum_value
+    rmax = right.maximum_value
+    expression.type.integer.maximum_value = str(_max([0, _sub(rmax, 1)]))
+    expression.type.integer.minimum_value = str(_min([0, _add(rmin, 1)]))
+    expression.type.integer.modulus = "1"
+    expression.type.integer.modular_value = "0"
 
 
 def _assert_integer_constraints(expression):

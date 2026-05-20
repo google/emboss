@@ -117,6 +117,50 @@ struct ProductOperation {
   }
 };
 
+// Emboss integer division (`//`) is flooring: the result is rounded toward
+// negative infinity.  C++'s `/` truncates toward zero, so we convert by
+// subtracting one from the truncated quotient when the operands have opposite
+// signs and the division is inexact.  For unsigned types, the two definitions
+// agree, so no conversion is needed (and the signed-comparison check would
+// trigger a warning, so we dispatch on signedness via enable_if).
+struct FlooringQuotientOperation {
+  template <typename T>
+  static inline constexpr typename ::std::enable_if<
+      ::std::is_signed<T>::value, T>::type
+  Do(T l, T r) {
+    return (l % r != T{0} && ((l < T{0}) != (r < T{0})))
+               ? static_cast<T>((l / r) - T{1})
+               : static_cast<T>(l / r);
+  }
+  template <typename T>
+  static inline constexpr typename ::std::enable_if<
+      ::std::is_unsigned<T>::value, T>::type
+  Do(T l, T r) {
+    return static_cast<T>(l / r);
+  }
+};
+
+// Emboss modulus (`%`) is flooring: the result has the same sign as the
+// divisor (or is zero).  C++'s `%` returns the truncating remainder, which
+// matches the dividend's sign; we convert by adding the divisor when the
+// truncating remainder is nonzero and has opposite sign from the divisor.
+struct FlooringRemainderOperation {
+  template <typename T>
+  static inline constexpr typename ::std::enable_if<
+      ::std::is_signed<T>::value, T>::type
+  Do(T l, T r) {
+    return (l % r != T{0} && ((l < T{0}) != (r < T{0})))
+               ? static_cast<T>((l % r) + r)
+               : static_cast<T>(l % r);
+  }
+  template <typename T>
+  static inline constexpr typename ::std::enable_if<
+      ::std::is_unsigned<T>::value, T>::type
+  Do(T l, T r) {
+    return static_cast<T>(l % r);
+  }
+};
+
 // Assertions for the template types of comparisons.
 template <typename ResultT, typename LeftT, typename RightT>
 inline constexpr bool AssertComparisonInPartsTypes() {
@@ -338,6 +382,22 @@ template <typename IntermediateT, typename ResultT, typename LeftT,
           typename RightT>
 inline constexpr Maybe<ResultT> Product(Maybe<LeftT> l, Maybe<RightT> r) {
   return MaybeDo<IntermediateT, ResultT, ProductOperation, LeftT, RightT>(l, r);
+}
+
+template <typename IntermediateT, typename ResultT, typename LeftT,
+          typename RightT>
+inline constexpr Maybe<ResultT> FlooringQuotient(Maybe<LeftT> l,
+                                                 Maybe<RightT> r) {
+  return MaybeDo<IntermediateT, ResultT, FlooringQuotientOperation, LeftT,
+                 RightT>(l, r);
+}
+
+template <typename IntermediateT, typename ResultT, typename LeftT,
+          typename RightT>
+inline constexpr Maybe<ResultT> FlooringRemainder(Maybe<LeftT> l,
+                                                  Maybe<RightT> r) {
+  return MaybeDo<IntermediateT, ResultT, FlooringRemainderOperation, LeftT,
+                 RightT>(l, r);
 }
 
 template <typename IntermediateT, typename ResultT, typename LeftT,
