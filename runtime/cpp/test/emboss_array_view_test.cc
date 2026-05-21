@@ -12,15 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "runtime/cpp/emboss_array_view.h"
+#include "third_party/emboss/runtime/cpp/emboss_array_view.h"
 
+#include <cstddef>
+#include <cstdint>
 #include <string>
-#include <type_traits>
 
-#include "absl/strings/str_format.h"
-#include "gtest/gtest.h"
-#include "runtime/cpp/emboss_prelude.h"
-#include "runtime/cpp/emboss_text_util.h"
+#include "testing/base/public/gunit.h"
+#include "third_party/absl/strings/str_format.h"
+#include "third_party/emboss/runtime/cpp/emboss_memory_util.h"
+#include "third_party/emboss/runtime/cpp/emboss_prelude.h"
+#include "third_party/emboss/runtime/cpp/emboss_text_util.h"
+#include "third_party/emboss/runtime/cpp/emboss_view_parameters.h"
 
 namespace emboss {
 namespace support {
@@ -213,6 +216,18 @@ TEST(ArrayView, TextFormatOutput_WithAndWithoutComments) {
       WriteToString(byte_array, TextOutputOptions().WithNumericBase(16)),
       "{ [0x0]: -0x3, 0x2, -0x1, 0x1, 0x0, 0x1, 0x1, 0x2, [0x8]: 0x3, 0x5, "
       "0x8, 0xd, 0x15, 0x22, 0x37, 0x59 }");
+}
+
+TEST(ArrayView, TextFormatOutput_AsJson) {
+  signed char bytes[16] = {-3, 2, -1, 1,  0,  1,  1,  2,
+                           3,  5, 8,  13, 21, 34, 55, 89};
+  auto buffer = ReadWriteContiguousBuffer{
+      reinterpret_cast</**/ ::std::uint8_t*>(bytes), sizeof bytes};
+  auto byte_array =
+      ArrayView<FixedIntView<8>, ReadWriteContiguousBuffer, 1>{buffer};
+
+  EXPECT_EQ("[-3, 2, -1, 1, 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]",
+            WriteToString(byte_array, TextOutputOptions().Json(true)));
 }
 
 TEST(ArrayView, TextFormatOutput_8BitIntElementTypes) {

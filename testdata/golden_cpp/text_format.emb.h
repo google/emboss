@@ -47,6 +47,32 @@ namespace StructWithSkippedStructureFields {
 template <class Storage>
 class GenericStructWithSkippedStructureFieldsView;
 
+enum class JsonTestEnum : ::std::uint64_t;
+
+namespace JsonTestArrayStruct {
+
+}  // namespace JsonTestArrayStruct
+
+
+template <class Storage>
+class GenericJsonTestArrayStructView;
+
+namespace JsonTestStruct {
+namespace EmbossReservedAnonymousField1 {
+
+}  // namespace EmbossReservedAnonymousField1
+
+
+template <class Storage>
+class GenericEmbossReservedAnonymousField1View;
+
+
+}  // namespace JsonTestStruct
+
+
+template <class Storage>
+class GenericJsonTestStructView;
+
 
 
 
@@ -281,7 +307,7 @@ class GenericVanillaView final {
   void WriteToTextStream(
       Stream *emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
-    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
+    auto emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
     if (emboss_reserved_local_options.multiline()) {
       emboss_reserved_local_stream->Write("{\n");
@@ -292,20 +318,28 @@ class GenericVanillaView final {
     if (has_a().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           a().IsAggregate() || a().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("a: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"a\":");
+        } else {
+          emboss_reserved_local_stream->Write("a: ");
+        }
         a().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -322,20 +356,28 @@ class GenericVanillaView final {
     if (has_b().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           b().IsAggregate() || b().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("b: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"b\":");
+        } else {
+          emboss_reserved_local_stream->Write("b: ");
+        }
         b().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -351,11 +393,18 @@ class GenericVanillaView final {
 
     (void)emboss_reserved_local_wrote_field;
     if (emboss_reserved_local_options.multiline()) {
+      if (emboss_reserved_local_wrote_field &&
+          emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write("\n");
+      }
       emboss_reserved_local_stream->Write(
           emboss_reserved_local_options.current_indent());
       emboss_reserved_local_stream->Write("}");
     } else {
-      emboss_reserved_local_stream->Write(" }");
+      if (!emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write(" ");
+      }
+      emboss_reserved_local_stream->Write("}");
     }
   }
 
@@ -366,7 +415,7 @@ class GenericVanillaView final {
  public:
   typename ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
 
  a() const;
   ::emboss::support::Maybe<bool> has_a() const;
@@ -374,7 +423,7 @@ class GenericVanillaView final {
  public:
   typename ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
 
  b() const;
   ::emboss::support::Maybe<bool> has_b() const;
@@ -821,7 +870,7 @@ class GenericStructWithSkippedFieldsView final {
   void WriteToTextStream(
       Stream *emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
-    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
+    auto emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
     if (emboss_reserved_local_options.multiline()) {
       emboss_reserved_local_stream->Write("{\n");
@@ -832,20 +881,28 @@ class GenericStructWithSkippedFieldsView final {
     if (has_a().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           a().IsAggregate() || a().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("a: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"a\":");
+        } else {
+          emboss_reserved_local_stream->Write("a: ");
+        }
         a().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -862,20 +919,28 @@ class GenericStructWithSkippedFieldsView final {
     if (has_c().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           c().IsAggregate() || c().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("c: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"c\":");
+        } else {
+          emboss_reserved_local_stream->Write("c: ");
+        }
         c().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -891,11 +956,18 @@ class GenericStructWithSkippedFieldsView final {
 
     (void)emboss_reserved_local_wrote_field;
     if (emboss_reserved_local_options.multiline()) {
+      if (emboss_reserved_local_wrote_field &&
+          emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write("\n");
+      }
       emboss_reserved_local_stream->Write(
           emboss_reserved_local_options.current_indent());
       emboss_reserved_local_stream->Write("}");
     } else {
-      emboss_reserved_local_stream->Write(" }");
+      if (!emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write(" ");
+      }
+      emboss_reserved_local_stream->Write("}");
     }
   }
 
@@ -906,7 +978,7 @@ class GenericStructWithSkippedFieldsView final {
  public:
   typename ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
 
  a() const;
   ::emboss::support::Maybe<bool> has_a() const;
@@ -914,7 +986,7 @@ class GenericStructWithSkippedFieldsView final {
  public:
   typename ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
 
  b() const;
   ::emboss::support::Maybe<bool> has_b() const;
@@ -922,7 +994,7 @@ class GenericStructWithSkippedFieldsView final {
  public:
   typename ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 2>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 2>>, 8>>
 
  c() const;
   ::emboss::support::Maybe<bool> has_c() const;
@@ -1369,7 +1441,7 @@ class GenericStructWithSkippedStructureFieldsView final {
   void WriteToTextStream(
       Stream *emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
-    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
+    auto emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
     if (emboss_reserved_local_options.multiline()) {
       emboss_reserved_local_stream->Write("{\n");
@@ -1380,20 +1452,28 @@ class GenericStructWithSkippedStructureFieldsView final {
     if (has_a().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           a().IsAggregate() || a().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("a: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"a\":");
+        } else {
+          emboss_reserved_local_stream->Write("a: ");
+        }
         a().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -1410,20 +1490,28 @@ class GenericStructWithSkippedStructureFieldsView final {
     if (has_c().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           c().IsAggregate() || c().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
-            emboss_reserved_local_stream->Write(",");
-          }
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("c: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"c\":");
+        } else {
+          emboss_reserved_local_stream->Write("c: ");
+        }
         c().WriteToTextStream(emboss_reserved_local_stream,
                                            emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
@@ -1439,11 +1527,18 @@ class GenericStructWithSkippedStructureFieldsView final {
 
     (void)emboss_reserved_local_wrote_field;
     if (emboss_reserved_local_options.multiline()) {
+      if (emboss_reserved_local_wrote_field &&
+          emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write("\n");
+      }
       emboss_reserved_local_stream->Write(
           emboss_reserved_local_options.current_indent());
       emboss_reserved_local_stream->Write("}");
     } else {
-      emboss_reserved_local_stream->Write(" }");
+      if (!emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write(" ");
+      }
+      emboss_reserved_local_stream->Write("}");
     }
   }
 
@@ -1635,6 +1730,2581 @@ MakeAlignedStructWithSkippedStructureFieldsView(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
 }
+enum class JsonTestEnum : ::std::uint64_t {
+  ZERO = static_cast</**/::std::int32_t>(0LL),
+  ONE = static_cast</**/::std::int32_t>(1LL),
+  TWO = static_cast</**/::std::int32_t>(2LL),
+  THREE = static_cast</**/::std::int32_t>(3LL),
+  FOUR = static_cast</**/::std::int32_t>(4LL),
+
+};
+template <class Enum>
+class EnumTraits;
+
+template <>
+class EnumTraits<JsonTestEnum> final {
+ public:
+  static bool TryToGetEnumFromName(const char *emboss_reserved_local_name,
+                                   JsonTestEnum *emboss_reserved_local_result) {
+    if (emboss_reserved_local_name == nullptr) return false;
+    if (!strcmp("ZERO", emboss_reserved_local_name)) {
+      *emboss_reserved_local_result = JsonTestEnum::ZERO;
+      return true;
+    }
+
+    if (!strcmp("ONE", emboss_reserved_local_name)) {
+      *emboss_reserved_local_result = JsonTestEnum::ONE;
+      return true;
+    }
+
+    if (!strcmp("TWO", emboss_reserved_local_name)) {
+      *emboss_reserved_local_result = JsonTestEnum::TWO;
+      return true;
+    }
+
+    if (!strcmp("THREE", emboss_reserved_local_name)) {
+      *emboss_reserved_local_result = JsonTestEnum::THREE;
+      return true;
+    }
+
+    if (!strcmp("FOUR", emboss_reserved_local_name)) {
+      *emboss_reserved_local_result = JsonTestEnum::FOUR;
+      return true;
+    }
+
+    return false;
+  }
+
+  static const char *TryToGetNameFromEnum(
+      JsonTestEnum emboss_reserved_local_value) {
+    switch (emboss_reserved_local_value) {
+      case JsonTestEnum::ZERO: return "ZERO";
+
+      case JsonTestEnum::ONE: return "ONE";
+
+      case JsonTestEnum::TWO: return "TWO";
+
+      case JsonTestEnum::THREE: return "THREE";
+
+      case JsonTestEnum::FOUR: return "FOUR";
+
+      default: return nullptr;
+    }
+  }
+
+  static bool EnumIsKnown(JsonTestEnum emboss_reserved_local_value) {
+    switch (emboss_reserved_local_value) {
+      case JsonTestEnum::ZERO: return true;
+
+      case JsonTestEnum::ONE: return true;
+
+      case JsonTestEnum::TWO: return true;
+
+      case JsonTestEnum::THREE: return true;
+
+      case JsonTestEnum::FOUR: return true;
+
+      default:
+        return false;
+    }
+  }
+
+  static ::std::ostream &SendToOstream(::std::ostream &emboss_reserved_local_os,
+                                       JsonTestEnum emboss_reserved_local_value) {
+    const char *emboss_reserved_local_name =
+        TryToGetNameFromEnum(emboss_reserved_local_value);
+    if (emboss_reserved_local_name == nullptr) {
+      emboss_reserved_local_os
+          << static_cast</**/ ::std::underlying_type<JsonTestEnum>::type>(
+                 emboss_reserved_local_value);
+    } else {
+      emboss_reserved_local_os << emboss_reserved_local_name;
+    }
+    return emboss_reserved_local_os;
+  }
+};
+
+static inline bool TryToGetEnumFromName(
+    const char *emboss_reserved_local_name,
+    JsonTestEnum *emboss_reserved_local_result) {
+  return EnumTraits<JsonTestEnum>::TryToGetEnumFromName(
+      emboss_reserved_local_name, emboss_reserved_local_result);
+}
+
+static inline const char *TryToGetNameFromEnum(
+    JsonTestEnum emboss_reserved_local_value) {
+  return EnumTraits<JsonTestEnum>::TryToGetNameFromEnum(
+      emboss_reserved_local_value);
+}
+
+static inline bool EnumIsKnown(JsonTestEnum emboss_reserved_local_value) {
+  return EnumTraits<JsonTestEnum>::EnumIsKnown(emboss_reserved_local_value);
+}
+
+static inline ::std::ostream &operator<<(
+    ::std::ostream &emboss_reserved_local_os,
+    JsonTestEnum emboss_reserved_local_value) {
+  return EnumTraits<JsonTestEnum>::SendToOstream(emboss_reserved_local_os,
+                                             emboss_reserved_local_value);
+}
+
+
+
+
+
+
+namespace JsonTestArrayStruct {
+
+}  // namespace JsonTestArrayStruct
+
+
+template <class View>
+struct EmbossReservedInternalIsGenericJsonTestArrayStructView;
+
+template <class Storage>
+class GenericJsonTestArrayStructView final {
+ public:
+  GenericJsonTestArrayStructView() : backing_() {}
+  explicit GenericJsonTestArrayStructView(
+       Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) 
+         {}
+
+  template <typename OtherStorage>
+  GenericJsonTestArrayStructView(
+      const GenericJsonTestArrayStructView<OtherStorage> &emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()}
+         {}
+
+  template <typename Arg,
+            typename = typename ::std::enable_if<
+                !EmbossReservedInternalIsGenericJsonTestArrayStructView<
+                    typename ::std::remove_cv<typename ::std::remove_reference<
+                        Arg>::type>::type>::value>::type>
+  explicit GenericJsonTestArrayStructView(
+       Arg &&emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(
+            emboss_reserved_local_arg)) 
+         {}
+  template <typename Arg0, typename Arg1, typename... Args>
+  explicit GenericJsonTestArrayStructView(
+       Arg0 &&emboss_reserved_local_arg0,
+      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+      : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
+                 ::std::forward<Arg1>(emboss_reserved_local_arg1),
+                 ::std::forward<Args>(
+                     emboss_reserved_local_args)...) 
+         {}
+
+  template <typename OtherStorage>
+  GenericJsonTestArrayStructView<Storage> &operator=(
+      const GenericJsonTestArrayStructView<OtherStorage> &emboss_reserved_local_other) {
+    backing_ = emboss_reserved_local_other.BackingStorage();
+    return *this;
+  }
+
+  
+
+  bool Ok() const {
+    if (!IsComplete()) return false;
+
+    if (!has_element_one().Known()) return false;
+    if (has_element_one().ValueOrDefault() && !element_one().Ok()) return false;
+
+
+    if (!has_element_two().Known()) return false;
+    if (has_element_two().ValueOrDefault() && !element_two().Ok()) return false;
+
+
+    if (!has_element_three().Known()) return false;
+    if (has_element_three().ValueOrDefault() && !element_three().Ok()) return false;
+
+
+    if (!has_element_four().Known()) return false;
+    if (has_element_four().ValueOrDefault() && !element_four().Ok()) return false;
+
+
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+
+
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+
+
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+
+
+
+    return true;
+  }
+  Storage BackingStorage() const { return backing_; }
+  bool IsComplete() const {
+    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+           backing_.SizeInBytes() >=
+               static_cast</**/ ::std::size_t>(
+                   IntrinsicSizeInBytes().UncheckedRead());
+  }
+  static constexpr ::std::size_t SizeInBytes() {
+    return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
+  }
+  static constexpr bool SizeIsKnown() {
+    return IntrinsicSizeInBytes().Ok();
+  }
+
+
+  template <typename OtherStorage>
+  bool Equals(
+      GenericJsonTestArrayStructView<OtherStorage> emboss_reserved_local_other) const {
+    
+    if (!has_element_one().Known()) return false;
+    if (!emboss_reserved_local_other.has_element_one().Known()) return false;
+
+    if (emboss_reserved_local_other.has_element_one().ValueOrDefault() &&
+        !has_element_one().ValueOrDefault())
+      return false;
+    if (has_element_one().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_element_one().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_element_one().ValueOrDefault() &&
+        has_element_one().ValueOrDefault() &&
+        !element_one().Equals(emboss_reserved_local_other.element_one()))
+      return false;
+
+
+
+    if (!has_element_two().Known()) return false;
+    if (!emboss_reserved_local_other.has_element_two().Known()) return false;
+
+    if (emboss_reserved_local_other.has_element_two().ValueOrDefault() &&
+        !has_element_two().ValueOrDefault())
+      return false;
+    if (has_element_two().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_element_two().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_element_two().ValueOrDefault() &&
+        has_element_two().ValueOrDefault() &&
+        !element_two().Equals(emboss_reserved_local_other.element_two()))
+      return false;
+
+
+
+    if (!has_element_three().Known()) return false;
+    if (!emboss_reserved_local_other.has_element_three().Known()) return false;
+
+    if (emboss_reserved_local_other.has_element_three().ValueOrDefault() &&
+        !has_element_three().ValueOrDefault())
+      return false;
+    if (has_element_three().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_element_three().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_element_three().ValueOrDefault() &&
+        has_element_three().ValueOrDefault() &&
+        !element_three().Equals(emboss_reserved_local_other.element_three()))
+      return false;
+
+
+
+    if (!has_element_four().Known()) return false;
+    if (!emboss_reserved_local_other.has_element_four().Known()) return false;
+
+    if (emboss_reserved_local_other.has_element_four().ValueOrDefault() &&
+        !has_element_four().ValueOrDefault())
+      return false;
+    if (has_element_four().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_element_four().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_element_four().ValueOrDefault() &&
+        has_element_four().ValueOrDefault() &&
+        !element_four().Equals(emboss_reserved_local_other.element_four()))
+      return false;
+
+ return true;
+  }
+  template <typename OtherStorage>
+  bool UncheckedEquals(
+      GenericJsonTestArrayStructView<OtherStorage> emboss_reserved_local_other) const {
+    
+    if (emboss_reserved_local_other.has_element_one().ValueOr(false) &&
+        !has_element_one().ValueOr(false))
+      return false;
+    if (has_element_one().ValueOr(false) &&
+        !emboss_reserved_local_other.has_element_one().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_element_one().ValueOr(false) &&
+        has_element_one().ValueOr(false) &&
+        !element_one().UncheckedEquals(emboss_reserved_local_other.element_one()))
+      return false;
+
+
+
+    if (emboss_reserved_local_other.has_element_two().ValueOr(false) &&
+        !has_element_two().ValueOr(false))
+      return false;
+    if (has_element_two().ValueOr(false) &&
+        !emboss_reserved_local_other.has_element_two().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_element_two().ValueOr(false) &&
+        has_element_two().ValueOr(false) &&
+        !element_two().UncheckedEquals(emboss_reserved_local_other.element_two()))
+      return false;
+
+
+
+    if (emboss_reserved_local_other.has_element_three().ValueOr(false) &&
+        !has_element_three().ValueOr(false))
+      return false;
+    if (has_element_three().ValueOr(false) &&
+        !emboss_reserved_local_other.has_element_three().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_element_three().ValueOr(false) &&
+        has_element_three().ValueOr(false) &&
+        !element_three().UncheckedEquals(emboss_reserved_local_other.element_three()))
+      return false;
+
+
+
+    if (emboss_reserved_local_other.has_element_four().ValueOr(false) &&
+        !has_element_four().ValueOr(false))
+      return false;
+    if (has_element_four().ValueOr(false) &&
+        !emboss_reserved_local_other.has_element_four().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_element_four().ValueOr(false) &&
+        has_element_four().ValueOr(false) &&
+        !element_four().UncheckedEquals(emboss_reserved_local_other.element_four()))
+      return false;
+
+ return true;
+  }
+  template <typename OtherStorage>
+  void UncheckedCopyFrom(
+      GenericJsonTestArrayStructView<OtherStorage> emboss_reserved_local_other) const {
+    backing_.UncheckedCopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+  }
+
+  template <typename OtherStorage>
+  void CopyFrom(
+      GenericJsonTestArrayStructView<OtherStorage> emboss_reserved_local_other) const {
+    backing_.CopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+  template <typename OtherStorage>
+  bool TryToCopyFrom(
+      GenericJsonTestArrayStructView<OtherStorage> emboss_reserved_local_other) const {
+      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+
+  template <class Stream>
+  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+    ::std::string emboss_reserved_local_brace;
+    if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                      &emboss_reserved_local_brace))
+      return false;
+    if (emboss_reserved_local_brace != "{") return false;
+    for (;;) {
+      ::std::string emboss_reserved_local_name;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_name))
+        return false;
+      if (emboss_reserved_local_name == ",")
+        if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                          &emboss_reserved_local_name))
+          return false;
+      if (emboss_reserved_local_name == "}") return true;
+      ::std::string emboss_reserved_local_colon;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_colon))
+        return false;
+      if (emboss_reserved_local_colon != ":") return false;
+      if (emboss_reserved_local_name == "element_one") {
+        if (!element_one().UpdateFromTextStream(
+                emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "element_two") {
+        if (!element_two().UpdateFromTextStream(
+                emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "element_three") {
+        if (!element_three().UpdateFromTextStream(
+                emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "element_four") {
+        if (!element_four().UpdateFromTextStream(
+                emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      return false;
+    }
+  }
+
+  template <class Stream>
+  void WriteToTextStream(
+      Stream *emboss_reserved_local_stream,
+      ::emboss::TextOutputOptions emboss_reserved_local_options) const {
+    auto emboss_reserved_local_field_options =
+        emboss_reserved_local_options.PlusOneIndent();
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write("{\n");
+    } else {
+      emboss_reserved_local_stream->Write("{");
+    }
+    bool emboss_reserved_local_wrote_field = false;
+    if (has_element_one().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          element_one().IsAggregate() || element_one().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write(" ");
+        }
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"element_one\":");
+        } else {
+          emboss_reserved_local_stream->Write("element_one: ");
+        }
+        element_one().WriteToTextStream(emboss_reserved_local_stream,
+                                           emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !element_one().IsAggregate() && !element_one().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# element_one: UNREADABLE\n");
+      }
+    }
+
+    if (has_element_two().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          element_two().IsAggregate() || element_two().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write(" ");
+        }
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"element_two\":");
+        } else {
+          emboss_reserved_local_stream->Write("element_two: ");
+        }
+        element_two().WriteToTextStream(emboss_reserved_local_stream,
+                                           emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !element_two().IsAggregate() && !element_two().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# element_two: UNREADABLE\n");
+      }
+    }
+
+    if (has_element_three().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          element_three().IsAggregate() || element_three().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write(" ");
+        }
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"element_three\":");
+        } else {
+          emboss_reserved_local_stream->Write("element_three: ");
+        }
+        element_three().WriteToTextStream(emboss_reserved_local_stream,
+                                           emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !element_three().IsAggregate() && !element_three().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# element_three: UNREADABLE\n");
+      }
+    }
+
+    if (has_element_four().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          element_four().IsAggregate() || element_four().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write(" ");
+        }
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"element_four\":");
+        } else {
+          emboss_reserved_local_stream->Write("element_four: ");
+        }
+        element_four().WriteToTextStream(emboss_reserved_local_stream,
+                                           emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !element_four().IsAggregate() && !element_four().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# element_four: UNREADABLE\n");
+      }
+    }
+
+    (void)emboss_reserved_local_wrote_field;
+    if (emboss_reserved_local_options.multiline()) {
+      if (emboss_reserved_local_wrote_field &&
+          emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write("\n");
+      }
+      emboss_reserved_local_stream->Write(
+          emboss_reserved_local_options.current_indent());
+      emboss_reserved_local_stream->Write("}");
+    } else {
+      if (!emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write(" ");
+      }
+      emboss_reserved_local_stream->Write("}");
+    }
+  }
+
+
+
+  static constexpr bool IsAggregate() { return true; }
+
+ public:
+  typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+
+ element_one() const;
+  ::emboss::support::Maybe<bool> has_element_one() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+
+ element_two() const;
+  ::emboss::support::Maybe<bool> has_element_two() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 2>>, 8>>
+
+ element_three() const;
+  ::emboss::support::Maybe<bool> has_element_three() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 3>>, 8>>
+
+ element_four() const;
+  ::emboss::support::Maybe<bool> has_element_four() const;
+
+ public:
+  class EmbossReservedDollarVirtualIntrinsicSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView() {}
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) =
+        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) =
+        default;
+    ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream *emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions
+                               &emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
+    return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ public:
+  class EmbossReservedDollarVirtualMaxSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
+    EmbossReservedDollarVirtualMaxSizeInBytesView(const EmbossReservedDollarVirtualMaxSizeInBytesView &) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(EmbossReservedDollarVirtualMaxSizeInBytesView &&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(const EmbossReservedDollarVirtualMaxSizeInBytesView &) =
+        default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(EmbossReservedDollarVirtualMaxSizeInBytesView &&) =
+        default;
+    ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream *emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions
+                               &emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+    return EmbossReservedDollarVirtualMaxSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ public:
+  class EmbossReservedDollarVirtualMinSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
+    EmbossReservedDollarVirtualMinSizeInBytesView(const EmbossReservedDollarVirtualMinSizeInBytesView &) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(EmbossReservedDollarVirtualMinSizeInBytesView &&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(const EmbossReservedDollarVirtualMinSizeInBytesView &) =
+        default;
+    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(EmbossReservedDollarVirtualMinSizeInBytesView &&) =
+        default;
+    ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream *emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions
+                               &emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+    return EmbossReservedDollarVirtualMinSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+
+
+ private:
+  Storage backing_;
+  
+  
+
+  template <class OtherStorage>
+  friend class GenericJsonTestArrayStructView;
+};
+using JsonTestArrayStructView =
+    GenericJsonTestArrayStructView</**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+using JsonTestArrayStructWriter =
+    GenericJsonTestArrayStructView</**/ ::emboss::support::ReadWriteContiguousBuffer>;
+
+template <class View>
+struct EmbossReservedInternalIsGenericJsonTestArrayStructView {
+  static constexpr const bool value = false;
+};
+
+template <class Storage>
+struct EmbossReservedInternalIsGenericJsonTestArrayStructView<
+    GenericJsonTestArrayStructView<Storage>> {
+  static constexpr const bool value = true;
+};
+
+template <typename T>
+inline GenericJsonTestArrayStructView<
+    /**/ ::emboss::support::ContiguousBuffer<
+        typename ::std::remove_reference<
+            decltype(*::std::declval<T>()->data())>::type,
+        1, 0>>
+MakeJsonTestArrayStructView( T &&emboss_reserved_local_arg) {
+  return GenericJsonTestArrayStructView<
+      /**/ ::emboss::support::ContiguousBuffer<
+          typename ::std::remove_reference<decltype(
+              *::std::declval<T>()->data())>::type,
+          1, 0>>(
+       ::std::forward<T>(emboss_reserved_local_arg));
+}
+
+template <typename T>
+inline GenericJsonTestArrayStructView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeJsonTestArrayStructView( T *emboss_reserved_local_data,
+                 ::std::size_t emboss_reserved_local_size) {
+  return GenericJsonTestArrayStructView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+       emboss_reserved_local_data,
+      emboss_reserved_local_size);
+}
+
+template <typename T, ::std::size_t kAlignment>
+inline GenericJsonTestArrayStructView<
+    /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
+MakeAlignedJsonTestArrayStructView(
+     T *emboss_reserved_local_data,
+    ::std::size_t emboss_reserved_local_size) {
+  return GenericJsonTestArrayStructView<
+      /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
+       emboss_reserved_local_data,
+      emboss_reserved_local_size);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+namespace JsonTestStruct {
+
+
+
+
+namespace EmbossReservedAnonymousField1 {
+
+}  // namespace EmbossReservedAnonymousField1
+
+
+template <class View>
+struct EmbossReservedInternalIsGenericEmbossReservedAnonymousField1View;
+
+template <class Storage>
+class GenericEmbossReservedAnonymousField1View final {
+ public:
+  GenericEmbossReservedAnonymousField1View() : backing_() {}
+  explicit GenericEmbossReservedAnonymousField1View(
+       Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) 
+         {}
+
+  template <typename OtherStorage>
+  GenericEmbossReservedAnonymousField1View(
+      const GenericEmbossReservedAnonymousField1View<OtherStorage> &emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()}
+         {}
+
+  template <typename Arg,
+            typename = typename ::std::enable_if<
+                !EmbossReservedInternalIsGenericEmbossReservedAnonymousField1View<
+                    typename ::std::remove_cv<typename ::std::remove_reference<
+                        Arg>::type>::type>::value>::type>
+  explicit GenericEmbossReservedAnonymousField1View(
+       Arg &&emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(
+            emboss_reserved_local_arg)) 
+         {}
+  template <typename Arg0, typename Arg1, typename... Args>
+  explicit GenericEmbossReservedAnonymousField1View(
+       Arg0 &&emboss_reserved_local_arg0,
+      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+      : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
+                 ::std::forward<Arg1>(emboss_reserved_local_arg1),
+                 ::std::forward<Args>(
+                     emboss_reserved_local_args)...) 
+         {}
+
+  template <typename OtherStorage>
+  GenericEmbossReservedAnonymousField1View<Storage> &operator=(
+      const GenericEmbossReservedAnonymousField1View<OtherStorage> &emboss_reserved_local_other) {
+    backing_ = emboss_reserved_local_other.BackingStorage();
+    return *this;
+  }
+
+  
+
+  bool Ok() const {
+    if (!IsComplete()) return false;
+
+    if (!has_seven_bit_uint().Known()) return false;
+    if (has_seven_bit_uint().ValueOrDefault() && !seven_bit_uint().Ok()) return false;
+
+
+    if (!has_one_bit_flag().Known()) return false;
+    if (has_one_bit_flag().ValueOrDefault() && !one_bit_flag().Ok()) return false;
+
+
+    if (!has_IntrinsicSizeInBits().Known()) return false;
+    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
+
+
+    if (!has_MaxSizeInBits().Known()) return false;
+    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
+
+
+    if (!has_MinSizeInBits().Known()) return false;
+    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
+
+
+
+    return true;
+  }
+  Storage BackingStorage() const { return backing_; }
+  bool IsComplete() const {
+    return backing_.Ok() && IntrinsicSizeInBits().Ok() &&
+           backing_.SizeInBits() >=
+               static_cast</**/ ::std::size_t>(
+                   IntrinsicSizeInBits().UncheckedRead());
+  }
+  static constexpr ::std::size_t SizeInBits() {
+    return static_cast</**/ ::std::size_t>(IntrinsicSizeInBits().Read());
+  }
+  static constexpr bool SizeIsKnown() {
+    return IntrinsicSizeInBits().Ok();
+  }
+
+
+  template <typename OtherStorage>
+  bool Equals(
+      GenericEmbossReservedAnonymousField1View<OtherStorage> emboss_reserved_local_other) const {
+    
+    if (!has_seven_bit_uint().Known()) return false;
+    if (!emboss_reserved_local_other.has_seven_bit_uint().Known()) return false;
+
+    if (emboss_reserved_local_other.has_seven_bit_uint().ValueOrDefault() &&
+        !has_seven_bit_uint().ValueOrDefault())
+      return false;
+    if (has_seven_bit_uint().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_seven_bit_uint().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_seven_bit_uint().ValueOrDefault() &&
+        has_seven_bit_uint().ValueOrDefault() &&
+        !seven_bit_uint().Equals(emboss_reserved_local_other.seven_bit_uint()))
+      return false;
+
+
+
+    if (!has_one_bit_flag().Known()) return false;
+    if (!emboss_reserved_local_other.has_one_bit_flag().Known()) return false;
+
+    if (emboss_reserved_local_other.has_one_bit_flag().ValueOrDefault() &&
+        !has_one_bit_flag().ValueOrDefault())
+      return false;
+    if (has_one_bit_flag().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_one_bit_flag().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_one_bit_flag().ValueOrDefault() &&
+        has_one_bit_flag().ValueOrDefault() &&
+        !one_bit_flag().Equals(emboss_reserved_local_other.one_bit_flag()))
+      return false;
+
+ return true;
+  }
+  template <typename OtherStorage>
+  bool UncheckedEquals(
+      GenericEmbossReservedAnonymousField1View<OtherStorage> emboss_reserved_local_other) const {
+    
+    if (emboss_reserved_local_other.has_seven_bit_uint().ValueOr(false) &&
+        !has_seven_bit_uint().ValueOr(false))
+      return false;
+    if (has_seven_bit_uint().ValueOr(false) &&
+        !emboss_reserved_local_other.has_seven_bit_uint().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_seven_bit_uint().ValueOr(false) &&
+        has_seven_bit_uint().ValueOr(false) &&
+        !seven_bit_uint().UncheckedEquals(emboss_reserved_local_other.seven_bit_uint()))
+      return false;
+
+
+
+    if (emboss_reserved_local_other.has_one_bit_flag().ValueOr(false) &&
+        !has_one_bit_flag().ValueOr(false))
+      return false;
+    if (has_one_bit_flag().ValueOr(false) &&
+        !emboss_reserved_local_other.has_one_bit_flag().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_one_bit_flag().ValueOr(false) &&
+        has_one_bit_flag().ValueOr(false) &&
+        !one_bit_flag().UncheckedEquals(emboss_reserved_local_other.one_bit_flag()))
+      return false;
+
+ return true;
+  }
+  template <typename OtherStorage>
+  void UncheckedCopyFrom(
+      GenericEmbossReservedAnonymousField1View<OtherStorage> emboss_reserved_local_other) const {
+    backing_.UncheckedCopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBits().UncheckedRead());
+  }
+
+  template <typename OtherStorage>
+  void CopyFrom(
+      GenericEmbossReservedAnonymousField1View<OtherStorage> emboss_reserved_local_other) const {
+    backing_.CopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBits().Read());
+  }
+  template <typename OtherStorage>
+  bool TryToCopyFrom(
+      GenericEmbossReservedAnonymousField1View<OtherStorage> emboss_reserved_local_other) const {
+      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBits().Read());
+  }
+
+  template <class Stream>
+  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+    ::std::string emboss_reserved_local_brace;
+    if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                      &emboss_reserved_local_brace))
+      return false;
+    if (emboss_reserved_local_brace != "{") return false;
+    for (;;) {
+      ::std::string emboss_reserved_local_name;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_name))
+        return false;
+      if (emboss_reserved_local_name == ",")
+        if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                          &emboss_reserved_local_name))
+          return false;
+      if (emboss_reserved_local_name == "}") return true;
+      ::std::string emboss_reserved_local_colon;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_colon))
+        return false;
+      if (emboss_reserved_local_colon != ":") return false;
+      if (emboss_reserved_local_name == "seven_bit_uint") {
+        if (!seven_bit_uint().UpdateFromTextStream(
+                emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "one_bit_flag") {
+        if (!one_bit_flag().UpdateFromTextStream(
+                emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      return false;
+    }
+  }
+
+  template <class Stream>
+  void WriteToTextStream(
+      Stream *emboss_reserved_local_stream,
+      ::emboss::TextOutputOptions emboss_reserved_local_options) const {
+    auto emboss_reserved_local_field_options =
+        emboss_reserved_local_options.PlusOneIndent();
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write("{\n");
+    } else {
+      emboss_reserved_local_stream->Write("{");
+    }
+    bool emboss_reserved_local_wrote_field = false;
+    if (has_seven_bit_uint().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          seven_bit_uint().IsAggregate() || seven_bit_uint().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write(" ");
+        }
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"seven_bit_uint\":");
+        } else {
+          emboss_reserved_local_stream->Write("seven_bit_uint: ");
+        }
+        seven_bit_uint().WriteToTextStream(emboss_reserved_local_stream,
+                                           emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !seven_bit_uint().IsAggregate() && !seven_bit_uint().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# seven_bit_uint: UNREADABLE\n");
+      }
+    }
+
+    if (has_one_bit_flag().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          one_bit_flag().IsAggregate() || one_bit_flag().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write(" ");
+        }
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"one_bit_flag\":");
+        } else {
+          emboss_reserved_local_stream->Write("one_bit_flag: ");
+        }
+        one_bit_flag().WriteToTextStream(emboss_reserved_local_stream,
+                                           emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !one_bit_flag().IsAggregate() && !one_bit_flag().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# one_bit_flag: UNREADABLE\n");
+      }
+    }
+
+    (void)emboss_reserved_local_wrote_field;
+    if (emboss_reserved_local_options.multiline()) {
+      if (emboss_reserved_local_wrote_field &&
+          emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write("\n");
+      }
+      emboss_reserved_local_stream->Write(
+          emboss_reserved_local_options.current_indent());
+      emboss_reserved_local_stream->Write("}");
+    } else {
+      if (!emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write(" ");
+      }
+      emboss_reserved_local_stream->Write("}");
+    }
+  }
+
+
+
+  static constexpr bool IsAggregate() { return true; }
+
+ public:
+  typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<7, ::emboss::support::AllValuesAreOk>,
+    typename Storage::template OffsetStorageType</**/0, 0>>
+
+ seven_bit_uint() const;
+  ::emboss::support::Maybe<bool> has_seven_bit_uint() const;
+
+ public:
+  typename ::emboss::prelude::FlagView<
+    /**/ ::emboss::support::FixedSizeViewParameters<1, ::emboss::support::AllValuesAreOk>,
+    typename Storage::template OffsetStorageType</**/0, 7>>
+
+ one_bit_flag() const;
+  ::emboss::support::Maybe<bool> has_one_bit_flag() const;
+
+ public:
+  class EmbossReservedDollarVirtualIntrinsicSizeInBitsView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualIntrinsicSizeInBitsView() {}
+    EmbossReservedDollarVirtualIntrinsicSizeInBitsView(const EmbossReservedDollarVirtualIntrinsicSizeInBitsView &) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBitsView(EmbossReservedDollarVirtualIntrinsicSizeInBitsView &&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBitsView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBitsView &) =
+        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBitsView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBitsView &&) =
+        default;
+    ~EmbossReservedDollarVirtualIntrinsicSizeInBitsView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream *emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions
+                               &emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBitsView IntrinsicSizeInBits() {
+    return EmbossReservedDollarVirtualIntrinsicSizeInBitsView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBits() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ public:
+  class EmbossReservedDollarVirtualMaxSizeInBitsView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMaxSizeInBitsView() {}
+    EmbossReservedDollarVirtualMaxSizeInBitsView(const EmbossReservedDollarVirtualMaxSizeInBitsView &) = default;
+    EmbossReservedDollarVirtualMaxSizeInBitsView(EmbossReservedDollarVirtualMaxSizeInBitsView &&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBitsView &operator=(const EmbossReservedDollarVirtualMaxSizeInBitsView &) =
+        default;
+    EmbossReservedDollarVirtualMaxSizeInBitsView &operator=(EmbossReservedDollarVirtualMaxSizeInBitsView &&) =
+        default;
+    ~EmbossReservedDollarVirtualMaxSizeInBitsView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream *emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions
+                               &emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBitsView MaxSizeInBits() {
+    return EmbossReservedDollarVirtualMaxSizeInBitsView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBits() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ public:
+  class EmbossReservedDollarVirtualMinSizeInBitsView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMinSizeInBitsView() {}
+    EmbossReservedDollarVirtualMinSizeInBitsView(const EmbossReservedDollarVirtualMinSizeInBitsView &) = default;
+    EmbossReservedDollarVirtualMinSizeInBitsView(EmbossReservedDollarVirtualMinSizeInBitsView &&) = default;
+    EmbossReservedDollarVirtualMinSizeInBitsView &operator=(const EmbossReservedDollarVirtualMinSizeInBitsView &) =
+        default;
+    EmbossReservedDollarVirtualMinSizeInBitsView &operator=(EmbossReservedDollarVirtualMinSizeInBitsView &&) =
+        default;
+    ~EmbossReservedDollarVirtualMinSizeInBitsView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream *emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions
+                               &emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMinSizeInBitsView MinSizeInBits() {
+    return EmbossReservedDollarVirtualMinSizeInBitsView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBits() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+
+
+ private:
+  Storage backing_;
+  
+  
+
+  template <class OtherStorage>
+  friend class GenericEmbossReservedAnonymousField1View;
+};
+using EmbossReservedAnonymousField1View =
+    GenericEmbossReservedAnonymousField1View</**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+using EmbossReservedAnonymousField1Writer =
+    GenericEmbossReservedAnonymousField1View</**/ ::emboss::support::ReadWriteContiguousBuffer>;
+
+template <class View>
+struct EmbossReservedInternalIsGenericEmbossReservedAnonymousField1View {
+  static constexpr const bool value = false;
+};
+
+template <class Storage>
+struct EmbossReservedInternalIsGenericEmbossReservedAnonymousField1View<
+    GenericEmbossReservedAnonymousField1View<Storage>> {
+  static constexpr const bool value = true;
+};
+
+template <typename T>
+inline GenericEmbossReservedAnonymousField1View<
+    /**/ ::emboss::support::ContiguousBuffer<
+        typename ::std::remove_reference<
+            decltype(*::std::declval<T>()->data())>::type,
+        1, 0>>
+MakeEmbossReservedAnonymousField1View( T &&emboss_reserved_local_arg) {
+  return GenericEmbossReservedAnonymousField1View<
+      /**/ ::emboss::support::ContiguousBuffer<
+          typename ::std::remove_reference<decltype(
+              *::std::declval<T>()->data())>::type,
+          1, 0>>(
+       ::std::forward<T>(emboss_reserved_local_arg));
+}
+
+template <typename T>
+inline GenericEmbossReservedAnonymousField1View</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeEmbossReservedAnonymousField1View( T *emboss_reserved_local_data,
+                 ::std::size_t emboss_reserved_local_size) {
+  return GenericEmbossReservedAnonymousField1View</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+       emboss_reserved_local_data,
+      emboss_reserved_local_size);
+}
+
+template <typename T, ::std::size_t kAlignment>
+inline GenericEmbossReservedAnonymousField1View<
+    /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
+MakeAlignedEmbossReservedAnonymousField1View(
+     T *emboss_reserved_local_data,
+    ::std::size_t emboss_reserved_local_size) {
+  return GenericEmbossReservedAnonymousField1View<
+      /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
+       emboss_reserved_local_data,
+      emboss_reserved_local_size);
+}
+
+}  // namespace JsonTestStruct
+
+
+template <class View>
+struct EmbossReservedInternalIsGenericJsonTestStructView;
+
+template <class Storage>
+class GenericJsonTestStructView final {
+ public:
+  GenericJsonTestStructView() : backing_() {}
+  explicit GenericJsonTestStructView(
+       Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) 
+         {}
+
+  template <typename OtherStorage>
+  GenericJsonTestStructView(
+      const GenericJsonTestStructView<OtherStorage> &emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()}
+         {}
+
+  template <typename Arg,
+            typename = typename ::std::enable_if<
+                !EmbossReservedInternalIsGenericJsonTestStructView<
+                    typename ::std::remove_cv<typename ::std::remove_reference<
+                        Arg>::type>::type>::value>::type>
+  explicit GenericJsonTestStructView(
+       Arg &&emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(
+            emboss_reserved_local_arg)) 
+         {}
+  template <typename Arg0, typename Arg1, typename... Args>
+  explicit GenericJsonTestStructView(
+       Arg0 &&emboss_reserved_local_arg0,
+      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+      : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
+                 ::std::forward<Arg1>(emboss_reserved_local_arg1),
+                 ::std::forward<Args>(
+                     emboss_reserved_local_args)...) 
+         {}
+
+  template <typename OtherStorage>
+  GenericJsonTestStructView<Storage> &operator=(
+      const GenericJsonTestStructView<OtherStorage> &emboss_reserved_local_other) {
+    backing_ = emboss_reserved_local_other.BackingStorage();
+    return *this;
+  }
+
+  
+
+  bool Ok() const {
+    if (!IsComplete()) return false;
+
+    if (!has_one_byte_enum().Known()) return false;
+    if (has_one_byte_enum().ValueOrDefault() && !one_byte_enum().Ok()) return false;
+
+
+    if (!has_emboss_reserved_anonymous_field_1().Known()) return false;
+    if (has_emboss_reserved_anonymous_field_1().ValueOrDefault() && !emboss_reserved_anonymous_field_1().Ok()) return false;
+
+
+    if (!has_seven_bit_uint().Known()) return false;
+    if (has_seven_bit_uint().ValueOrDefault() && !seven_bit_uint().Ok()) return false;
+
+
+    if (!has_one_bit_flag().Known()) return false;
+    if (has_one_bit_flag().ValueOrDefault() && !one_bit_flag().Ok()) return false;
+
+
+    if (!has_one_byte_uint().Known()) return false;
+    if (has_one_byte_uint().ValueOrDefault() && !one_byte_uint().Ok()) return false;
+
+
+    if (!has_two_byte_uint().Known()) return false;
+    if (has_two_byte_uint().ValueOrDefault() && !two_byte_uint().Ok()) return false;
+
+
+    if (!has_four_byte_uint().Known()) return false;
+    if (has_four_byte_uint().ValueOrDefault() && !four_byte_uint().Ok()) return false;
+
+
+    if (!has_eight_byte_uint().Known()) return false;
+    if (has_eight_byte_uint().ValueOrDefault() && !eight_byte_uint().Ok()) return false;
+
+
+    if (!has_uint8_array().Known()) return false;
+    if (has_uint8_array().ValueOrDefault() && !uint8_array().Ok()) return false;
+
+
+    if (!has_uint16_array().Known()) return false;
+    if (has_uint16_array().ValueOrDefault() && !uint16_array().Ok()) return false;
+
+
+    if (!has_struct_array().Known()) return false;
+    if (has_struct_array().ValueOrDefault() && !struct_array().Ok()) return false;
+
+
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+
+
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+
+
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+
+
+
+    return true;
+  }
+  Storage BackingStorage() const { return backing_; }
+  bool IsComplete() const {
+    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+           backing_.SizeInBytes() >=
+               static_cast</**/ ::std::size_t>(
+                   IntrinsicSizeInBytes().UncheckedRead());
+  }
+  static constexpr ::std::size_t SizeInBytes() {
+    return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
+  }
+  static constexpr bool SizeIsKnown() {
+    return IntrinsicSizeInBytes().Ok();
+  }
+
+
+  template <typename OtherStorage>
+  bool Equals(
+      GenericJsonTestStructView<OtherStorage> emboss_reserved_local_other) const {
+    
+    if (!has_one_byte_enum().Known()) return false;
+    if (!emboss_reserved_local_other.has_one_byte_enum().Known()) return false;
+
+    if (emboss_reserved_local_other.has_one_byte_enum().ValueOrDefault() &&
+        !has_one_byte_enum().ValueOrDefault())
+      return false;
+    if (has_one_byte_enum().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_one_byte_enum().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_one_byte_enum().ValueOrDefault() &&
+        has_one_byte_enum().ValueOrDefault() &&
+        !one_byte_enum().Equals(emboss_reserved_local_other.one_byte_enum()))
+      return false;
+
+
+
+    if (!has_emboss_reserved_anonymous_field_1().Known()) return false;
+    if (!emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1().Known()) return false;
+
+    if (emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1().ValueOrDefault() &&
+        !has_emboss_reserved_anonymous_field_1().ValueOrDefault())
+      return false;
+    if (has_emboss_reserved_anonymous_field_1().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1().ValueOrDefault() &&
+        has_emboss_reserved_anonymous_field_1().ValueOrDefault() &&
+        !emboss_reserved_anonymous_field_1().Equals(emboss_reserved_local_other.emboss_reserved_anonymous_field_1()))
+      return false;
+
+
+
+    if (!has_one_byte_uint().Known()) return false;
+    if (!emboss_reserved_local_other.has_one_byte_uint().Known()) return false;
+
+    if (emboss_reserved_local_other.has_one_byte_uint().ValueOrDefault() &&
+        !has_one_byte_uint().ValueOrDefault())
+      return false;
+    if (has_one_byte_uint().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_one_byte_uint().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_one_byte_uint().ValueOrDefault() &&
+        has_one_byte_uint().ValueOrDefault() &&
+        !one_byte_uint().Equals(emboss_reserved_local_other.one_byte_uint()))
+      return false;
+
+
+
+    if (!has_two_byte_uint().Known()) return false;
+    if (!emboss_reserved_local_other.has_two_byte_uint().Known()) return false;
+
+    if (emboss_reserved_local_other.has_two_byte_uint().ValueOrDefault() &&
+        !has_two_byte_uint().ValueOrDefault())
+      return false;
+    if (has_two_byte_uint().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_two_byte_uint().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_two_byte_uint().ValueOrDefault() &&
+        has_two_byte_uint().ValueOrDefault() &&
+        !two_byte_uint().Equals(emboss_reserved_local_other.two_byte_uint()))
+      return false;
+
+
+
+    if (!has_four_byte_uint().Known()) return false;
+    if (!emboss_reserved_local_other.has_four_byte_uint().Known()) return false;
+
+    if (emboss_reserved_local_other.has_four_byte_uint().ValueOrDefault() &&
+        !has_four_byte_uint().ValueOrDefault())
+      return false;
+    if (has_four_byte_uint().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_four_byte_uint().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_four_byte_uint().ValueOrDefault() &&
+        has_four_byte_uint().ValueOrDefault() &&
+        !four_byte_uint().Equals(emboss_reserved_local_other.four_byte_uint()))
+      return false;
+
+
+
+    if (!has_eight_byte_uint().Known()) return false;
+    if (!emboss_reserved_local_other.has_eight_byte_uint().Known()) return false;
+
+    if (emboss_reserved_local_other.has_eight_byte_uint().ValueOrDefault() &&
+        !has_eight_byte_uint().ValueOrDefault())
+      return false;
+    if (has_eight_byte_uint().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_eight_byte_uint().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_eight_byte_uint().ValueOrDefault() &&
+        has_eight_byte_uint().ValueOrDefault() &&
+        !eight_byte_uint().Equals(emboss_reserved_local_other.eight_byte_uint()))
+      return false;
+
+
+
+    if (!has_uint8_array().Known()) return false;
+    if (!emboss_reserved_local_other.has_uint8_array().Known()) return false;
+
+    if (emboss_reserved_local_other.has_uint8_array().ValueOrDefault() &&
+        !has_uint8_array().ValueOrDefault())
+      return false;
+    if (has_uint8_array().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_uint8_array().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_uint8_array().ValueOrDefault() &&
+        has_uint8_array().ValueOrDefault() &&
+        !uint8_array().Equals(emboss_reserved_local_other.uint8_array()))
+      return false;
+
+
+
+    if (!has_uint16_array().Known()) return false;
+    if (!emboss_reserved_local_other.has_uint16_array().Known()) return false;
+
+    if (emboss_reserved_local_other.has_uint16_array().ValueOrDefault() &&
+        !has_uint16_array().ValueOrDefault())
+      return false;
+    if (has_uint16_array().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_uint16_array().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_uint16_array().ValueOrDefault() &&
+        has_uint16_array().ValueOrDefault() &&
+        !uint16_array().Equals(emboss_reserved_local_other.uint16_array()))
+      return false;
+
+
+
+    if (!has_struct_array().Known()) return false;
+    if (!emboss_reserved_local_other.has_struct_array().Known()) return false;
+
+    if (emboss_reserved_local_other.has_struct_array().ValueOrDefault() &&
+        !has_struct_array().ValueOrDefault())
+      return false;
+    if (has_struct_array().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_struct_array().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_struct_array().ValueOrDefault() &&
+        has_struct_array().ValueOrDefault() &&
+        !struct_array().Equals(emboss_reserved_local_other.struct_array()))
+      return false;
+
+ return true;
+  }
+  template <typename OtherStorage>
+  bool UncheckedEquals(
+      GenericJsonTestStructView<OtherStorage> emboss_reserved_local_other) const {
+    
+    if (emboss_reserved_local_other.has_one_byte_enum().ValueOr(false) &&
+        !has_one_byte_enum().ValueOr(false))
+      return false;
+    if (has_one_byte_enum().ValueOr(false) &&
+        !emboss_reserved_local_other.has_one_byte_enum().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_one_byte_enum().ValueOr(false) &&
+        has_one_byte_enum().ValueOr(false) &&
+        !one_byte_enum().UncheckedEquals(emboss_reserved_local_other.one_byte_enum()))
+      return false;
+
+
+
+    if (emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1().ValueOr(false) &&
+        !has_emboss_reserved_anonymous_field_1().ValueOr(false))
+      return false;
+    if (has_emboss_reserved_anonymous_field_1().ValueOr(false) &&
+        !emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1().ValueOr(false) &&
+        has_emboss_reserved_anonymous_field_1().ValueOr(false) &&
+        !emboss_reserved_anonymous_field_1().UncheckedEquals(emboss_reserved_local_other.emboss_reserved_anonymous_field_1()))
+      return false;
+
+
+
+    if (emboss_reserved_local_other.has_one_byte_uint().ValueOr(false) &&
+        !has_one_byte_uint().ValueOr(false))
+      return false;
+    if (has_one_byte_uint().ValueOr(false) &&
+        !emboss_reserved_local_other.has_one_byte_uint().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_one_byte_uint().ValueOr(false) &&
+        has_one_byte_uint().ValueOr(false) &&
+        !one_byte_uint().UncheckedEquals(emboss_reserved_local_other.one_byte_uint()))
+      return false;
+
+
+
+    if (emboss_reserved_local_other.has_two_byte_uint().ValueOr(false) &&
+        !has_two_byte_uint().ValueOr(false))
+      return false;
+    if (has_two_byte_uint().ValueOr(false) &&
+        !emboss_reserved_local_other.has_two_byte_uint().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_two_byte_uint().ValueOr(false) &&
+        has_two_byte_uint().ValueOr(false) &&
+        !two_byte_uint().UncheckedEquals(emboss_reserved_local_other.two_byte_uint()))
+      return false;
+
+
+
+    if (emboss_reserved_local_other.has_four_byte_uint().ValueOr(false) &&
+        !has_four_byte_uint().ValueOr(false))
+      return false;
+    if (has_four_byte_uint().ValueOr(false) &&
+        !emboss_reserved_local_other.has_four_byte_uint().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_four_byte_uint().ValueOr(false) &&
+        has_four_byte_uint().ValueOr(false) &&
+        !four_byte_uint().UncheckedEquals(emboss_reserved_local_other.four_byte_uint()))
+      return false;
+
+
+
+    if (emboss_reserved_local_other.has_eight_byte_uint().ValueOr(false) &&
+        !has_eight_byte_uint().ValueOr(false))
+      return false;
+    if (has_eight_byte_uint().ValueOr(false) &&
+        !emboss_reserved_local_other.has_eight_byte_uint().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_eight_byte_uint().ValueOr(false) &&
+        has_eight_byte_uint().ValueOr(false) &&
+        !eight_byte_uint().UncheckedEquals(emboss_reserved_local_other.eight_byte_uint()))
+      return false;
+
+
+
+    if (emboss_reserved_local_other.has_uint8_array().ValueOr(false) &&
+        !has_uint8_array().ValueOr(false))
+      return false;
+    if (has_uint8_array().ValueOr(false) &&
+        !emboss_reserved_local_other.has_uint8_array().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_uint8_array().ValueOr(false) &&
+        has_uint8_array().ValueOr(false) &&
+        !uint8_array().UncheckedEquals(emboss_reserved_local_other.uint8_array()))
+      return false;
+
+
+
+    if (emboss_reserved_local_other.has_uint16_array().ValueOr(false) &&
+        !has_uint16_array().ValueOr(false))
+      return false;
+    if (has_uint16_array().ValueOr(false) &&
+        !emboss_reserved_local_other.has_uint16_array().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_uint16_array().ValueOr(false) &&
+        has_uint16_array().ValueOr(false) &&
+        !uint16_array().UncheckedEquals(emboss_reserved_local_other.uint16_array()))
+      return false;
+
+
+
+    if (emboss_reserved_local_other.has_struct_array().ValueOr(false) &&
+        !has_struct_array().ValueOr(false))
+      return false;
+    if (has_struct_array().ValueOr(false) &&
+        !emboss_reserved_local_other.has_struct_array().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_struct_array().ValueOr(false) &&
+        has_struct_array().ValueOr(false) &&
+        !struct_array().UncheckedEquals(emboss_reserved_local_other.struct_array()))
+      return false;
+
+ return true;
+  }
+  template <typename OtherStorage>
+  void UncheckedCopyFrom(
+      GenericJsonTestStructView<OtherStorage> emboss_reserved_local_other) const {
+    backing_.UncheckedCopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+  }
+
+  template <typename OtherStorage>
+  void CopyFrom(
+      GenericJsonTestStructView<OtherStorage> emboss_reserved_local_other) const {
+    backing_.CopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+  template <typename OtherStorage>
+  bool TryToCopyFrom(
+      GenericJsonTestStructView<OtherStorage> emboss_reserved_local_other) const {
+      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+
+  template <class Stream>
+  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+    ::std::string emboss_reserved_local_brace;
+    if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                      &emboss_reserved_local_brace))
+      return false;
+    if (emboss_reserved_local_brace != "{") return false;
+    for (;;) {
+      ::std::string emboss_reserved_local_name;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_name))
+        return false;
+      if (emboss_reserved_local_name == ",")
+        if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                          &emboss_reserved_local_name))
+          return false;
+      if (emboss_reserved_local_name == "}") return true;
+      ::std::string emboss_reserved_local_colon;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_colon))
+        return false;
+      if (emboss_reserved_local_colon != ":") return false;
+      if (emboss_reserved_local_name == "one_byte_enum") {
+        if (!one_byte_enum().UpdateFromTextStream(
+                emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "seven_bit_uint") {
+        if (!seven_bit_uint().UpdateFromTextStream(
+                emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "one_bit_flag") {
+        if (!one_bit_flag().UpdateFromTextStream(
+                emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "one_byte_uint") {
+        if (!one_byte_uint().UpdateFromTextStream(
+                emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "two_byte_uint") {
+        if (!two_byte_uint().UpdateFromTextStream(
+                emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "four_byte_uint") {
+        if (!four_byte_uint().UpdateFromTextStream(
+                emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "eight_byte_uint") {
+        if (!eight_byte_uint().UpdateFromTextStream(
+                emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "uint8_array") {
+        if (!uint8_array().UpdateFromTextStream(
+                emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "uint16_array") {
+        if (!uint16_array().UpdateFromTextStream(
+                emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "struct_array") {
+        if (!struct_array().UpdateFromTextStream(
+                emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      return false;
+    }
+  }
+
+  template <class Stream>
+  void WriteToTextStream(
+      Stream *emboss_reserved_local_stream,
+      ::emboss::TextOutputOptions emboss_reserved_local_options) const {
+    auto emboss_reserved_local_field_options =
+        emboss_reserved_local_options.PlusOneIndent();
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write("{\n");
+    } else {
+      emboss_reserved_local_stream->Write("{");
+    }
+    bool emboss_reserved_local_wrote_field = false;
+    if (has_one_byte_enum().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          one_byte_enum().IsAggregate() || one_byte_enum().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write(" ");
+        }
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"one_byte_enum\":");
+        } else {
+          emboss_reserved_local_stream->Write("one_byte_enum: ");
+        }
+        one_byte_enum().WriteToTextStream(emboss_reserved_local_stream,
+                                           emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !one_byte_enum().IsAggregate() && !one_byte_enum().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# one_byte_enum: UNREADABLE\n");
+      }
+    }
+
+    if (has_seven_bit_uint().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          seven_bit_uint().IsAggregate() || seven_bit_uint().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write(" ");
+        }
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"seven_bit_uint\":");
+        } else {
+          emboss_reserved_local_stream->Write("seven_bit_uint: ");
+        }
+        seven_bit_uint().WriteToTextStream(emboss_reserved_local_stream,
+                                           emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !seven_bit_uint().IsAggregate() && !seven_bit_uint().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# seven_bit_uint: UNREADABLE\n");
+      }
+    }
+
+    if (has_one_bit_flag().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          one_bit_flag().IsAggregate() || one_bit_flag().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write(" ");
+        }
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"one_bit_flag\":");
+        } else {
+          emboss_reserved_local_stream->Write("one_bit_flag: ");
+        }
+        one_bit_flag().WriteToTextStream(emboss_reserved_local_stream,
+                                           emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !one_bit_flag().IsAggregate() && !one_bit_flag().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# one_bit_flag: UNREADABLE\n");
+      }
+    }
+
+    if (has_one_byte_uint().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          one_byte_uint().IsAggregate() || one_byte_uint().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write(" ");
+        }
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"one_byte_uint\":");
+        } else {
+          emboss_reserved_local_stream->Write("one_byte_uint: ");
+        }
+        one_byte_uint().WriteToTextStream(emboss_reserved_local_stream,
+                                           emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !one_byte_uint().IsAggregate() && !one_byte_uint().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# one_byte_uint: UNREADABLE\n");
+      }
+    }
+
+    if (has_two_byte_uint().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          two_byte_uint().IsAggregate() || two_byte_uint().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write(" ");
+        }
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"two_byte_uint\":");
+        } else {
+          emboss_reserved_local_stream->Write("two_byte_uint: ");
+        }
+        two_byte_uint().WriteToTextStream(emboss_reserved_local_stream,
+                                           emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !two_byte_uint().IsAggregate() && !two_byte_uint().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# two_byte_uint: UNREADABLE\n");
+      }
+    }
+
+    if (has_four_byte_uint().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          four_byte_uint().IsAggregate() || four_byte_uint().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write(" ");
+        }
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"four_byte_uint\":");
+        } else {
+          emboss_reserved_local_stream->Write("four_byte_uint: ");
+        }
+        four_byte_uint().WriteToTextStream(emboss_reserved_local_stream,
+                                           emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !four_byte_uint().IsAggregate() && !four_byte_uint().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# four_byte_uint: UNREADABLE\n");
+      }
+    }
+
+    if (has_eight_byte_uint().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          eight_byte_uint().IsAggregate() || eight_byte_uint().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write(" ");
+        }
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"eight_byte_uint\":");
+        } else {
+          emboss_reserved_local_stream->Write("eight_byte_uint: ");
+        }
+        eight_byte_uint().WriteToTextStream(emboss_reserved_local_stream,
+                                           emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !eight_byte_uint().IsAggregate() && !eight_byte_uint().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# eight_byte_uint: UNREADABLE\n");
+      }
+    }
+
+    if (has_uint8_array().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          uint8_array().IsAggregate() || uint8_array().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write(" ");
+        }
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"uint8_array\":");
+        } else {
+          emboss_reserved_local_stream->Write("uint8_array: ");
+        }
+        uint8_array().WriteToTextStream(emboss_reserved_local_stream,
+                                           emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !uint8_array().IsAggregate() && !uint8_array().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# uint8_array: UNREADABLE\n");
+      }
+    }
+
+    if (has_uint16_array().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          uint16_array().IsAggregate() || uint16_array().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write(" ");
+        }
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"uint16_array\":");
+        } else {
+          emboss_reserved_local_stream->Write("uint16_array: ");
+        }
+        uint16_array().WriteToTextStream(emboss_reserved_local_stream,
+                                           emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !uint16_array().IsAggregate() && !uint16_array().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# uint16_array: UNREADABLE\n");
+      }
+    }
+
+    if (has_struct_array().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          struct_array().IsAggregate() || struct_array().Ok()) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
+            emboss_reserved_local_stream->Write(",");
+          }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write(" ");
+        }
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"struct_array\":");
+        } else {
+          emboss_reserved_local_stream->Write("struct_array: ");
+        }
+        struct_array().WriteToTextStream(emboss_reserved_local_stream,
+                                           emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !struct_array().IsAggregate() && !struct_array().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# struct_array: UNREADABLE\n");
+      }
+    }
+
+    (void)emboss_reserved_local_wrote_field;
+    if (emboss_reserved_local_options.multiline()) {
+      if (emboss_reserved_local_wrote_field &&
+          emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write("\n");
+      }
+      emboss_reserved_local_stream->Write(
+          emboss_reserved_local_options.current_indent());
+      emboss_reserved_local_stream->Write("}");
+    } else {
+      if (!emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write(" ");
+      }
+      emboss_reserved_local_stream->Write("}");
+    }
+  }
+
+
+
+  static constexpr bool IsAggregate() { return true; }
+
+ public:
+  typename ::emboss::support::EnumView<
+    /**/ ::emboss::test::JsonTestEnum,
+    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+
+ one_byte_enum() const;
+  ::emboss::support::Maybe<bool> has_one_byte_enum() const;
+
+ private:
+  typename ::emboss::test::JsonTestStruct::GenericEmbossReservedAnonymousField1View<typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+
+ emboss_reserved_anonymous_field_1() const;
+  ::emboss::support::Maybe<bool> has_emboss_reserved_anonymous_field_1() const;
+
+ public:
+  auto seven_bit_uint() const -> decltype(this->emboss_reserved_anonymous_field_1().seven_bit_uint()) {
+   return has_seven_bit_uint().ValueOrDefault() ? emboss_reserved_anonymous_field_1().seven_bit_uint()
+                                          : decltype(this->emboss_reserved_anonymous_field_1().seven_bit_uint())();
+  }
+  ::emboss::support::Maybe<bool> has_seven_bit_uint() const;
+
+ public:
+  auto one_bit_flag() const -> decltype(this->emboss_reserved_anonymous_field_1().one_bit_flag()) {
+   return has_one_bit_flag().ValueOrDefault() ? emboss_reserved_anonymous_field_1().one_bit_flag()
+                                          : decltype(this->emboss_reserved_anonymous_field_1().one_bit_flag())();
+  }
+  ::emboss::support::Maybe<bool> has_one_bit_flag() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 2>>, 8>>
+
+ one_byte_uint() const;
+  ::emboss::support::Maybe<bool> has_one_byte_uint() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<16, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 3>>, 16>>
+
+ two_byte_uint() const;
+  ::emboss::support::Maybe<bool> has_two_byte_uint() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 5>>, 32>>
+
+ four_byte_uint() const;
+  ::emboss::support::Maybe<bool> has_four_byte_uint() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<64, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 9>>, 64>>
+
+ eight_byte_uint() const;
+  ::emboss::support::Maybe<bool> has_eight_byte_uint() const;
+
+ public:
+  typename ::emboss::support::GenericArrayView<
+    typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 17>::template OffsetStorageType</**/1, 0>>, 8>>
+
+, typename Storage::template OffsetStorageType</**/0, 17>, 1,
+    8 >
+
+ uint8_array() const;
+  ::emboss::support::Maybe<bool> has_uint8_array() const;
+
+ public:
+  typename ::emboss::support::GenericArrayView<
+    typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<16, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 27>::template OffsetStorageType</**/2, 0>>, 16>>
+
+, typename Storage::template OffsetStorageType</**/0, 27>, 2,
+    8 >
+
+ uint16_array() const;
+  ::emboss::support::Maybe<bool> has_uint16_array() const;
+
+ public:
+  typename ::emboss::support::GenericArrayView<
+    typename ::emboss::test::GenericJsonTestArrayStructView<typename Storage::template OffsetStorageType</**/0, 47>::template OffsetStorageType</**/4, 0>>
+
+, typename Storage::template OffsetStorageType</**/0, 47>, 4,
+    8 >
+
+ struct_array() const;
+  ::emboss::support::Maybe<bool> has_struct_array() const;
+
+ public:
+  class EmbossReservedDollarVirtualIntrinsicSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView() {}
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) =
+        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) =
+        default;
+    ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream *emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions
+                               &emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
+    return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ public:
+  class EmbossReservedDollarVirtualMaxSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
+    EmbossReservedDollarVirtualMaxSizeInBytesView(const EmbossReservedDollarVirtualMaxSizeInBytesView &) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(EmbossReservedDollarVirtualMaxSizeInBytesView &&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(const EmbossReservedDollarVirtualMaxSizeInBytesView &) =
+        default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(EmbossReservedDollarVirtualMaxSizeInBytesView &&) =
+        default;
+    ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream *emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions
+                               &emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+    return EmbossReservedDollarVirtualMaxSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ public:
+  class EmbossReservedDollarVirtualMinSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
+    EmbossReservedDollarVirtualMinSizeInBytesView(const EmbossReservedDollarVirtualMinSizeInBytesView &) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(EmbossReservedDollarVirtualMinSizeInBytesView &&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(const EmbossReservedDollarVirtualMinSizeInBytesView &) =
+        default;
+    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(EmbossReservedDollarVirtualMinSizeInBytesView &&) =
+        default;
+    ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream *emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions
+                               &emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+    return EmbossReservedDollarVirtualMinSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+
+
+ private:
+  Storage backing_;
+  
+  
+
+  template <class OtherStorage>
+  friend class GenericJsonTestStructView;
+};
+using JsonTestStructView =
+    GenericJsonTestStructView</**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+using JsonTestStructWriter =
+    GenericJsonTestStructView</**/ ::emboss::support::ReadWriteContiguousBuffer>;
+
+template <class View>
+struct EmbossReservedInternalIsGenericJsonTestStructView {
+  static constexpr const bool value = false;
+};
+
+template <class Storage>
+struct EmbossReservedInternalIsGenericJsonTestStructView<
+    GenericJsonTestStructView<Storage>> {
+  static constexpr const bool value = true;
+};
+
+template <typename T>
+inline GenericJsonTestStructView<
+    /**/ ::emboss::support::ContiguousBuffer<
+        typename ::std::remove_reference<
+            decltype(*::std::declval<T>()->data())>::type,
+        1, 0>>
+MakeJsonTestStructView( T &&emboss_reserved_local_arg) {
+  return GenericJsonTestStructView<
+      /**/ ::emboss::support::ContiguousBuffer<
+          typename ::std::remove_reference<decltype(
+              *::std::declval<T>()->data())>::type,
+          1, 0>>(
+       ::std::forward<T>(emboss_reserved_local_arg));
+}
+
+template <typename T>
+inline GenericJsonTestStructView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeJsonTestStructView( T *emboss_reserved_local_data,
+                 ::std::size_t emboss_reserved_local_size) {
+  return GenericJsonTestStructView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+       emboss_reserved_local_data,
+      emboss_reserved_local_size);
+}
+
+template <typename T, ::std::size_t kAlignment>
+inline GenericJsonTestStructView<
+    /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
+MakeAlignedJsonTestStructView(
+     T *emboss_reserved_local_data,
+    ::std::size_t emboss_reserved_local_size) {
+  return GenericJsonTestStructView<
+      /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
+       emboss_reserved_local_data,
+      emboss_reserved_local_size);
+}
 
 namespace Vanilla {
 
@@ -1644,7 +4314,7 @@ namespace Vanilla {
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
 
  GenericVanillaView<Storage>::a()
     const {
@@ -1659,7 +4329,7 @@ inline typename ::emboss::prelude::UIntView<
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
         return ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
 
 (
                  backing_
@@ -1671,7 +4341,7 @@ inline typename ::emboss::prelude::UIntView<
   }
   return ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
 
 ();
 }
@@ -1686,7 +4356,7 @@ GenericVanillaView<Storage>::has_a() const {
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
 
  GenericVanillaView<Storage>::b()
     const {
@@ -1701,7 +4371,7 @@ inline typename ::emboss::prelude::UIntView<
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
         return ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
 
 (
                  backing_
@@ -1713,7 +4383,7 @@ inline typename ::emboss::prelude::UIntView<
   }
   return ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
 
 ();
 }
@@ -1789,7 +4459,7 @@ namespace StructWithSkippedFields {
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
 
  GenericStructWithSkippedFieldsView<Storage>::a()
     const {
@@ -1804,7 +4474,7 @@ inline typename ::emboss::prelude::UIntView<
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
         return ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
 
 (
                  backing_
@@ -1816,7 +4486,7 @@ inline typename ::emboss::prelude::UIntView<
   }
   return ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
 
 ();
 }
@@ -1831,7 +4501,7 @@ GenericStructWithSkippedFieldsView<Storage>::has_a() const {
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
 
  GenericStructWithSkippedFieldsView<Storage>::b()
     const {
@@ -1846,7 +4516,7 @@ inline typename ::emboss::prelude::UIntView<
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
         return ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
 
 (
                  backing_
@@ -1858,7 +4528,7 @@ inline typename ::emboss::prelude::UIntView<
   }
   return ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
 
 ();
 }
@@ -1873,7 +4543,7 @@ GenericStructWithSkippedFieldsView<Storage>::has_b() const {
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 2>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 2>>, 8>>
 
  GenericStructWithSkippedFieldsView<Storage>::c()
     const {
@@ -1888,7 +4558,7 @@ inline typename ::emboss::prelude::UIntView<
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
         return ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 2>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 2>>, 8>>
 
 (
                  backing_
@@ -1900,7 +4570,7 @@ inline typename ::emboss::prelude::UIntView<
   }
   return ::emboss::prelude::UIntView<
     /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::NullByteOrderer<typename Storage::template OffsetStorageType</**/0, 2>>, 8>>
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 2>>, 8>>
 
 ();
 }
@@ -2136,6 +4806,860 @@ inline constexpr ::std::int32_t
 GenericStructWithSkippedStructureFieldsView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return StructWithSkippedStructureFields::MinSizeInBytes();
+}
+namespace JsonTestArrayStruct {
+
+}  // namespace JsonTestArrayStruct
+
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+
+ GenericJsonTestArrayStructView<Storage>::element_one()
+    const {
+
+  if ( has_element_one().ValueOr(false)) {
+
+    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+
+(
+                 backing_
+                        .template GetOffsetStorage<0,
+                                                   0>(
+                                emboss_reserved_local_offset.ValueOrDefault(),
+                                emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+
+();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericJsonTestArrayStructView<Storage>::has_element_one() const {
+  return ::emboss::support::Maybe</**/bool>(true);
+}
+
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+
+ GenericJsonTestArrayStructView<Storage>::element_two()
+    const {
+
+  if ( has_element_two().ValueOr(false)) {
+
+    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+
+(
+                 backing_
+                        .template GetOffsetStorage<0,
+                                                   1>(
+                                emboss_reserved_local_offset.ValueOrDefault(),
+                                emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+
+();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericJsonTestArrayStructView<Storage>::has_element_two() const {
+  return ::emboss::support::Maybe</**/bool>(true);
+}
+
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 2>>, 8>>
+
+ GenericJsonTestArrayStructView<Storage>::element_three()
+    const {
+
+  if ( has_element_three().ValueOr(false)) {
+
+    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 2>>, 8>>
+
+(
+                 backing_
+                        .template GetOffsetStorage<0,
+                                                   2>(
+                                emboss_reserved_local_offset.ValueOrDefault(),
+                                emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 2>>, 8>>
+
+();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericJsonTestArrayStructView<Storage>::has_element_three() const {
+  return ::emboss::support::Maybe</**/bool>(true);
+}
+
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 3>>, 8>>
+
+ GenericJsonTestArrayStructView<Storage>::element_four()
+    const {
+
+  if ( has_element_four().ValueOr(false)) {
+
+    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(3LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 3>>, 8>>
+
+(
+                 backing_
+                        .template GetOffsetStorage<0,
+                                                   3>(
+                                emboss_reserved_local_offset.ValueOrDefault(),
+                                emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 3>>, 8>>
+
+();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericJsonTestArrayStructView<Storage>::has_element_four() const {
+  return ::emboss::support::Maybe</**/bool>(true);
+}
+
+
+namespace JsonTestArrayStruct {
+inline constexpr ::std::int32_t IntrinsicSizeInBytes() {
+  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)).ValueOrDefault();
+}
+}  // namespace JsonTestArrayStruct
+
+template <class Storage>
+inline constexpr ::std::int32_t
+GenericJsonTestArrayStructView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
+  return JsonTestArrayStruct::IntrinsicSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t
+GenericJsonTestArrayStructView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
+  return JsonTestArrayStruct::IntrinsicSizeInBytes();
+}
+
+namespace JsonTestArrayStruct {
+inline constexpr ::std::int32_t MaxSizeInBytes() {
+  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)).ValueOrDefault();
+}
+}  // namespace JsonTestArrayStruct
+
+template <class Storage>
+inline constexpr ::std::int32_t
+GenericJsonTestArrayStructView<Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+  return JsonTestArrayStruct::MaxSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t
+GenericJsonTestArrayStructView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
+  return JsonTestArrayStruct::MaxSizeInBytes();
+}
+
+namespace JsonTestArrayStruct {
+inline constexpr ::std::int32_t MinSizeInBytes() {
+  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)).ValueOrDefault();
+}
+}  // namespace JsonTestArrayStruct
+
+template <class Storage>
+inline constexpr ::std::int32_t
+GenericJsonTestArrayStructView<Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+  return JsonTestArrayStruct::MinSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t
+GenericJsonTestArrayStructView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
+  return JsonTestArrayStruct::MinSizeInBytes();
+}
+namespace JsonTestStruct {
+namespace EmbossReservedAnonymousField1 {
+
+}  // namespace EmbossReservedAnonymousField1
+
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<7, ::emboss::support::AllValuesAreOk>,
+    typename Storage::template OffsetStorageType</**/0, 0>>
+
+ GenericEmbossReservedAnonymousField1View<Storage>::seven_bit_uint()
+    const {
+
+  if ( has_seven_bit_uint().ValueOr(false)) {
+
+    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(7LL));
+    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<7, ::emboss::support::AllValuesAreOk>,
+    typename Storage::template OffsetStorageType</**/0, 0>>
+
+(
+                 backing_
+                        .template GetOffsetStorage<0,
+                                                   0>(
+                                emboss_reserved_local_offset.ValueOrDefault(),
+                                emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<7, ::emboss::support::AllValuesAreOk>,
+    typename Storage::template OffsetStorageType</**/0, 0>>
+
+();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericEmbossReservedAnonymousField1View<Storage>::has_seven_bit_uint() const {
+  return ::emboss::support::Maybe</**/bool>(true);
+}
+
+
+template <class Storage>
+inline typename ::emboss::prelude::FlagView<
+    /**/ ::emboss::support::FixedSizeViewParameters<1, ::emboss::support::AllValuesAreOk>,
+    typename Storage::template OffsetStorageType</**/0, 7>>
+
+ GenericEmbossReservedAnonymousField1View<Storage>::one_bit_flag()
+    const {
+
+  if ( has_one_bit_flag().ValueOr(false)) {
+
+    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(7LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        return ::emboss::prelude::FlagView<
+    /**/ ::emboss::support::FixedSizeViewParameters<1, ::emboss::support::AllValuesAreOk>,
+    typename Storage::template OffsetStorageType</**/0, 7>>
+
+(
+                 backing_
+                        .template GetOffsetStorage<0,
+                                                   7>(
+                                emboss_reserved_local_offset.ValueOrDefault(),
+                                emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::FlagView<
+    /**/ ::emboss::support::FixedSizeViewParameters<1, ::emboss::support::AllValuesAreOk>,
+    typename Storage::template OffsetStorageType</**/0, 7>>
+
+();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericEmbossReservedAnonymousField1View<Storage>::has_one_bit_flag() const {
+  return ::emboss::support::Maybe</**/bool>(true);
+}
+
+
+namespace EmbossReservedAnonymousField1 {
+inline constexpr ::std::int32_t IntrinsicSizeInBits() {
+  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)).ValueOrDefault();
+}
+}  // namespace EmbossReservedAnonymousField1
+
+template <class Storage>
+inline constexpr ::std::int32_t
+GenericEmbossReservedAnonymousField1View<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBitsView::Read() {
+  return EmbossReservedAnonymousField1::IntrinsicSizeInBits();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t
+GenericEmbossReservedAnonymousField1View<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBitsView::UncheckedRead() {
+  return EmbossReservedAnonymousField1::IntrinsicSizeInBits();
+}
+
+namespace EmbossReservedAnonymousField1 {
+inline constexpr ::std::int32_t MaxSizeInBits() {
+  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)).ValueOrDefault();
+}
+}  // namespace EmbossReservedAnonymousField1
+
+template <class Storage>
+inline constexpr ::std::int32_t
+GenericEmbossReservedAnonymousField1View<Storage>::EmbossReservedDollarVirtualMaxSizeInBitsView::Read() {
+  return EmbossReservedAnonymousField1::MaxSizeInBits();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t
+GenericEmbossReservedAnonymousField1View<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBitsView::UncheckedRead() {
+  return EmbossReservedAnonymousField1::MaxSizeInBits();
+}
+
+namespace EmbossReservedAnonymousField1 {
+inline constexpr ::std::int32_t MinSizeInBits() {
+  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)).ValueOrDefault();
+}
+}  // namespace EmbossReservedAnonymousField1
+
+template <class Storage>
+inline constexpr ::std::int32_t
+GenericEmbossReservedAnonymousField1View<Storage>::EmbossReservedDollarVirtualMinSizeInBitsView::Read() {
+  return EmbossReservedAnonymousField1::MinSizeInBits();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t
+GenericEmbossReservedAnonymousField1View<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBitsView::UncheckedRead() {
+  return EmbossReservedAnonymousField1::MinSizeInBits();
+}
+
+}  // namespace JsonTestStruct
+
+
+template <class Storage>
+inline typename ::emboss::support::EnumView<
+    /**/ ::emboss::test::JsonTestEnum,
+    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+
+ GenericJsonTestStructView<Storage>::one_byte_enum()
+    const {
+
+  if ( has_one_byte_enum().ValueOr(false)) {
+
+    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        return ::emboss::support::EnumView<
+    /**/ ::emboss::test::JsonTestEnum,
+    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+
+(
+                 backing_
+                        .template GetOffsetStorage<0,
+                                                   0>(
+                                emboss_reserved_local_offset.ValueOrDefault(),
+                                emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::support::EnumView<
+    /**/ ::emboss::test::JsonTestEnum,
+    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+
+();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericJsonTestStructView<Storage>::has_one_byte_enum() const {
+  return ::emboss::support::Maybe</**/bool>(true);
+}
+
+
+template <class Storage>
+inline typename ::emboss::test::JsonTestStruct::GenericEmbossReservedAnonymousField1View<typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+
+ GenericJsonTestStructView<Storage>::emboss_reserved_anonymous_field_1()
+    const {
+
+  if ( has_emboss_reserved_anonymous_field_1().ValueOr(false)) {
+
+    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        return ::emboss::test::JsonTestStruct::GenericEmbossReservedAnonymousField1View<typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+
+(
+                 backing_
+                        .template GetOffsetStorage<0,
+                                                   1>(
+                                emboss_reserved_local_offset.ValueOrDefault(),
+                                emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::test::JsonTestStruct::GenericEmbossReservedAnonymousField1View<typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+
+();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericJsonTestStructView<Storage>::has_emboss_reserved_anonymous_field_1() const {
+  return ::emboss::support::Maybe</**/bool>(true);
+}
+
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericJsonTestStructView<Storage>::has_seven_bit_uint() const {
+  return ::emboss::support::And</**/bool, bool, bool, bool>(::emboss::support::Maybe</**/bool>(true), ::emboss::support::Maybe</**/bool>(true));
+}
+
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericJsonTestStructView<Storage>::has_one_bit_flag() const {
+  return ::emboss::support::And</**/bool, bool, bool, bool>(::emboss::support::Maybe</**/bool>(true), ::emboss::support::Maybe</**/bool>(true));
+}
+
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 2>>, 8>>
+
+ GenericJsonTestStructView<Storage>::one_byte_uint()
+    const {
+
+  if ( has_one_byte_uint().ValueOr(false)) {
+
+    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 2>>, 8>>
+
+(
+                 backing_
+                        .template GetOffsetStorage<0,
+                                                   2>(
+                                emboss_reserved_local_offset.ValueOrDefault(),
+                                emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 2>>, 8>>
+
+();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericJsonTestStructView<Storage>::has_one_byte_uint() const {
+  return ::emboss::support::Maybe</**/bool>(true);
+}
+
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<16, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 3>>, 16>>
+
+ GenericJsonTestStructView<Storage>::two_byte_uint()
+    const {
+
+  if ( has_two_byte_uint().ValueOr(false)) {
+
+    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL));
+    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(3LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<16, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 3>>, 16>>
+
+(
+                 backing_
+                        .template GetOffsetStorage<0,
+                                                   3>(
+                                emboss_reserved_local_offset.ValueOrDefault(),
+                                emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<16, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 3>>, 16>>
+
+();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericJsonTestStructView<Storage>::has_two_byte_uint() const {
+  return ::emboss::support::Maybe</**/bool>(true);
+}
+
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 5>>, 32>>
+
+ GenericJsonTestStructView<Storage>::four_byte_uint()
+    const {
+
+  if ( has_four_byte_uint().ValueOr(false)) {
+
+    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(5LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 5>>, 32>>
+
+(
+                 backing_
+                        .template GetOffsetStorage<0,
+                                                   5>(
+                                emboss_reserved_local_offset.ValueOrDefault(),
+                                emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 5>>, 32>>
+
+();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericJsonTestStructView<Storage>::has_four_byte_uint() const {
+  return ::emboss::support::Maybe</**/bool>(true);
+}
+
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<64, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 9>>, 64>>
+
+ GenericJsonTestStructView<Storage>::eight_byte_uint()
+    const {
+
+  if ( has_eight_byte_uint().ValueOr(false)) {
+
+    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL));
+    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(9LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<64, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 9>>, 64>>
+
+(
+                 backing_
+                        .template GetOffsetStorage<0,
+                                                   9>(
+                                emboss_reserved_local_offset.ValueOrDefault(),
+                                emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<64, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 9>>, 64>>
+
+();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericJsonTestStructView<Storage>::has_eight_byte_uint() const {
+  return ::emboss::support::Maybe</**/bool>(true);
+}
+
+
+template <class Storage>
+inline typename ::emboss::support::GenericArrayView<
+    typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 17>::template OffsetStorageType</**/1, 0>>, 8>>
+
+, typename Storage::template OffsetStorageType</**/0, 17>, 1,
+    8 >
+
+ GenericJsonTestStructView<Storage>::uint8_array()
+    const {
+
+  if ( has_uint8_array().ValueOr(false)) {
+
+    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(10LL));
+    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(17LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        return ::emboss::support::GenericArrayView<
+    typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 17>::template OffsetStorageType</**/1, 0>>, 8>>
+
+, typename Storage::template OffsetStorageType</**/0, 17>, 1,
+    8 >
+
+(
+                 backing_
+                        .template GetOffsetStorage<0,
+                                                   17>(
+                                emboss_reserved_local_offset.ValueOrDefault(),
+                                emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::support::GenericArrayView<
+    typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 17>::template OffsetStorageType</**/1, 0>>, 8>>
+
+, typename Storage::template OffsetStorageType</**/0, 17>, 1,
+    8 >
+
+();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericJsonTestStructView<Storage>::has_uint8_array() const {
+  return ::emboss::support::Maybe</**/bool>(true);
+}
+
+
+template <class Storage>
+inline typename ::emboss::support::GenericArrayView<
+    typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<16, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 27>::template OffsetStorageType</**/2, 0>>, 16>>
+
+, typename Storage::template OffsetStorageType</**/0, 27>, 2,
+    8 >
+
+ GenericJsonTestStructView<Storage>::uint16_array()
+    const {
+
+  if ( has_uint16_array().ValueOr(false)) {
+
+    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(20LL));
+    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(27LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        return ::emboss::support::GenericArrayView<
+    typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<16, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 27>::template OffsetStorageType</**/2, 0>>, 16>>
+
+, typename Storage::template OffsetStorageType</**/0, 27>, 2,
+    8 >
+
+(
+                 backing_
+                        .template GetOffsetStorage<0,
+                                                   27>(
+                                emboss_reserved_local_offset.ValueOrDefault(),
+                                emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::support::GenericArrayView<
+    typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<16, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 27>::template OffsetStorageType</**/2, 0>>, 16>>
+
+, typename Storage::template OffsetStorageType</**/0, 27>, 2,
+    8 >
+
+();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericJsonTestStructView<Storage>::has_uint16_array() const {
+  return ::emboss::support::Maybe</**/bool>(true);
+}
+
+
+template <class Storage>
+inline typename ::emboss::support::GenericArrayView<
+    typename ::emboss::test::GenericJsonTestArrayStructView<typename Storage::template OffsetStorageType</**/0, 47>::template OffsetStorageType</**/4, 0>>
+
+, typename Storage::template OffsetStorageType</**/0, 47>, 4,
+    8 >
+
+ GenericJsonTestStructView<Storage>::struct_array()
+    const {
+
+  if ( has_struct_array().ValueOr(false)) {
+
+    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(40LL));
+    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(47LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        return ::emboss::support::GenericArrayView<
+    typename ::emboss::test::GenericJsonTestArrayStructView<typename Storage::template OffsetStorageType</**/0, 47>::template OffsetStorageType</**/4, 0>>
+
+, typename Storage::template OffsetStorageType</**/0, 47>, 4,
+    8 >
+
+(
+                 backing_
+                        .template GetOffsetStorage<0,
+                                                   47>(
+                                emboss_reserved_local_offset.ValueOrDefault(),
+                                emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::support::GenericArrayView<
+    typename ::emboss::test::GenericJsonTestArrayStructView<typename Storage::template OffsetStorageType</**/0, 47>::template OffsetStorageType</**/4, 0>>
+
+, typename Storage::template OffsetStorageType</**/0, 47>, 4,
+    8 >
+
+();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericJsonTestStructView<Storage>::has_struct_array() const {
+  return ::emboss::support::Maybe</**/bool>(true);
+}
+
+
+namespace JsonTestStruct {
+inline constexpr ::std::int32_t IntrinsicSizeInBytes() {
+  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(87LL)).ValueOrDefault();
+}
+}  // namespace JsonTestStruct
+
+template <class Storage>
+inline constexpr ::std::int32_t
+GenericJsonTestStructView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
+  return JsonTestStruct::IntrinsicSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t
+GenericJsonTestStructView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
+  return JsonTestStruct::IntrinsicSizeInBytes();
+}
+
+namespace JsonTestStruct {
+inline constexpr ::std::int32_t MaxSizeInBytes() {
+  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(87LL)).ValueOrDefault();
+}
+}  // namespace JsonTestStruct
+
+template <class Storage>
+inline constexpr ::std::int32_t
+GenericJsonTestStructView<Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+  return JsonTestStruct::MaxSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t
+GenericJsonTestStructView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
+  return JsonTestStruct::MaxSizeInBytes();
+}
+
+namespace JsonTestStruct {
+inline constexpr ::std::int32_t MinSizeInBytes() {
+  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(87LL)).ValueOrDefault();
+}
+}  // namespace JsonTestStruct
+
+template <class Storage>
+inline constexpr ::std::int32_t
+GenericJsonTestStructView<Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+  return JsonTestStruct::MinSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t
+GenericJsonTestStructView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
+  return JsonTestStruct::MinSizeInBytes();
 }
 
 

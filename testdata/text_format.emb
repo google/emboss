@@ -14,6 +14,7 @@
 
 -- Structures used specifically to test text format input and output.
 
+[$default byte_order: "LittleEndian"]
 [(cpp) namespace: "emboss::test"]
 
 
@@ -34,3 +35,31 @@ struct StructWithSkippedStructureFields:
   2 [+2]  Vanilla  b
     [text_output: "Skip"]
   4 [+2]  Vanilla  c
+
+enum JsonTestEnum:
+  ZERO  = 0
+  ONE   = 1
+  TWO   = 2
+  THREE = 3
+  FOUR  = 4
+
+struct JsonTestArrayStruct:
+  0 [+1]  UInt  element_one
+  1 [+1]  UInt  element_two
+  2 [+1]  UInt  element_three
+  3 [+1]  UInt  element_four
+
+
+struct JsonTestStruct:
+  0  [+1]         JsonTestEnum           one_byte_enum
+  1  [+1]  bits:
+    0  [+7]       UInt                   seven_bit_uint
+    7  [+1]       Flag                   one_bit_flag
+
+  2  [+1]         UInt                   one_byte_uint
+  3  [+2]         UInt                   two_byte_uint
+  5  [+4]         UInt                   four_byte_uint
+  9  [+8]         UInt                   eight_byte_uint
+  17 [+10]        UInt:8[]               uint8_array
+  27 [+20]        UInt:16[]              uint16_array
+  47 [+40]        JsonTestArrayStruct[]  struct_array
