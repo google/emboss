@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Regenerates testdata/golden_cpp/*.h files.
+"""Regenerates testdata/golden_cpp/*.h and testdata/golden_lua/*.lua files.
 
 Run from the repo root. Mirrors the cpp_golden_test list in
-compiler/back_end/cpp/BUILD.
+compiler/back_end/cpp/BUILD and the lua_golden_test list in
+compiler/back_end/lua/BUILD.
 """
 
 import os
@@ -47,6 +48,17 @@ GOLDENS = [
     ("importer.emb", "importer.emb.h"),
     ("importer2.emb", "importer2.emb.h"),
     ("many_conditionals.emb", "many_conditionals.emb.h"),
+]
+
+# Lua golden tests: emb file (under testdata/) -> golden file (under
+# testdata/golden_lua/).  All lua_golden_test entries from
+# compiler/back_end/lua/BUILD.
+LUA_GOLDENS = [
+    ("enum.emb", "enum.emb.lua"),
+    ("nested_structure.emb", "nested_structure.emb.lua"),
+    ("uint_sizes.emb", "uint_sizes.emb.lua"),
+    ("int_sizes.emb", "int_sizes.emb.lua"),
+    ("wireshark.emb", "wireshark.emb.lua"),
 ]
 
 
@@ -96,6 +108,27 @@ def main():
                 print(f"FAIL {emb}\n{result.stderr}", file=sys.stderr)
             else:
                 print(f"OK   {emb}")
+
+        lua_out_dir = os.path.join(REPO, "testdata", "golden_lua")
+        for emb, golden in LUA_GOLDENS:
+            emb_path = os.path.join("testdata", emb)
+            cmd = [
+                embossc,
+                "--generate",
+                "lua",
+                "--import-dir=.",
+                "--import-dir=testdata",
+                "--output-file=" + golden,
+                "--output-path=" + lua_out_dir,
+                emb_path,
+            ]
+            result = subprocess.run(cmd, cwd=REPO, capture_output=True, text=True)
+            if result.returncode != 0:
+                failures.append((emb, result.stderr))
+                print(f"FAIL {emb}\n{result.stderr}", file=sys.stderr)
+            else:
+                print(f"OK   {emb} (lua)")
+
         if failures:
             sys.exit(1)
     finally:
