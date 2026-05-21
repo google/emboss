@@ -41,9 +41,9 @@ def _parse_args(argv):
     parser.add_argument(
         "--generate",
         nargs=1,
-        choices=["cc"],
-        default="cc",
-        help="Which back end to use.  Currently only C++ is supported.",
+        choices=["cc", "lua"],
+        default=["cc"],
+        help="Which back end to use: 'cc' (C++) or 'lua' (Wireshark Lua).",
     )
     parser.add_argument(
         "--output-path",
@@ -55,7 +55,7 @@ def _parse_args(argv):
         "--output-file",
         nargs=1,
         help="""File name to be used for the generated output file.  Defaults to
-                input_file suffixed by '.h'""",
+                input_file suffixed by '.h' (cc) or '.lua' (lua)""",
     )
     parser.add_argument(
         "--cc-enum-traits",
@@ -72,9 +72,6 @@ def main(argv):
     base_path = os.path.dirname(__file__) or "."
     sys.path.append(base_path)
 
-    from compiler.back_end.cpp import ( # pylint:disable=import-outside-toplevel
-    emboss_codegen_cpp, header_generator
-    )
     from compiler.front_end import ( # pylint:disable=import-outside-toplevel
     emboss_front_end
     )
@@ -86,24 +83,44 @@ def main(argv):
     if errors:
         return 1
 
-    config = header_generator.Config(include_enum_traits=flags.cc_enum_traits)
-    header, errors = emboss_codegen_cpp.generate_headers_and_log_errors(
-        ir, flags.color_output, config
-    )
+    backend = flags.generate[0] if isinstance(flags.generate, list) else flags.generate
 
-    if errors:
+    if backend == "cc":
+        from compiler.back_end.cpp import ( # pylint:disable=import-outside-toplevel
+        emboss_codegen_cpp, header_generator
+        )
+        config = header_generator.Config(include_enum_traits=flags.cc_enum_traits)
+        output_text, gen_errors = emboss_codegen_cpp.generate_headers_and_log_errors(
+            ir, flags.color_output, config
+        )
+        default_ext = ".h"
+    elif backend == "lua":
+        from compiler.back_end.lua import ( # pylint:disable=import-outside-toplevel
+        dissector_generator, emboss_codegen_lua
+        )
+        output_text, gen_errors = dissector_generator.generate_dissector(ir)
+        if gen_errors:
+            emboss_codegen_lua._show_errors(gen_errors, ir, flags.color_output)
+        default_ext = ".lua"
+    else:
+        print("Unknown backend: {}".format(backend), file=sys.stderr)
+        return 1
+
+    if gen_errors:
         return 1
 
     if flags.output_file:
         output_file = flags.output_file[0]
     else:
-        output_file = flags.input_file[0] + ".h"
+        output_file = flags.input_file[0] + default_ext
 
     output_filepath = os.path.join(flags.output_path[0], output_file)
-    os.makedirs(os.path.dirname(output_filepath), exist_ok=True)
+    output_dir = os.path.dirname(output_filepath)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
 
     with open(output_filepath, "w") as output:
-        output.write(header)
+        output.write(output_text)
     return 0
 
 

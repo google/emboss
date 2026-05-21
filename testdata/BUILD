@@ -19,6 +19,7 @@ load(
     "cc_emboss_library",
     "emboss_cc_library",
     "emboss_library",
+    "emboss_lua_library",
 )
 
 package(
@@ -71,6 +72,7 @@ filegroup(
         "text_format.emb",
         "uint_sizes.emb",
         "virtual_field.emb",
+        "wireshark.emb",
     ],
 )
 
@@ -372,5 +374,19 @@ emboss_cc_library(
     name = "many_conditionals_emboss",
     srcs = [
         "many_conditionals.emb",
+    ],
+)
+
+emboss_cc_library(
+    name = "wireshark_emboss",
+    srcs = [
+        "wireshark.emb",
+    ],
+)
+
+emboss_lua_library(
+    name = "wireshark_lua_emboss",
+    srcs = [
+        "wireshark.emb",
     ],
 )
