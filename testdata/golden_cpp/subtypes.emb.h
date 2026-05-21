@@ -721,6 +721,40 @@ MakeAlignedInInView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericInInView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeInInView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericInInView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericInInView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericInInView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeInInView( Container &&emboss_reserved_local_container) {
+  return GenericInInView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 }  // namespace In
 
 
@@ -1558,6 +1592,40 @@ MakeAlignedInView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericInView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeInView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericInView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericInView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericInView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeInView( Container &&emboss_reserved_local_container) {
+  return GenericInView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -1973,6 +2041,40 @@ MakeAlignedIn2View(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericIn2View<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeIn2View( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericIn2View<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericIn2View<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericIn2View<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeIn2View( Container &&emboss_reserved_local_container) {
+  return GenericIn2View<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 }  // namespace Out
@@ -2939,6 +3041,40 @@ MakeAlignedOutView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericOutView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeOutView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericOutView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericOutView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericOutView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeOutView( Container &&emboss_reserved_local_container) {
+  return GenericOutView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 namespace Out {

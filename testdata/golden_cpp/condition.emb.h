@@ -845,6 +845,40 @@ MakeAlignedBasicConditionalView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericBasicConditionalView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeBasicConditionalView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericBasicConditionalView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericBasicConditionalView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericBasicConditionalView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeBasicConditionalView( Container &&emboss_reserved_local_container) {
+  return GenericBasicConditionalView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -1370,6 +1404,40 @@ MakeAlignedNegativeConditionalView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericNegativeConditionalView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeNegativeConditionalView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericNegativeConditionalView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericNegativeConditionalView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericNegativeConditionalView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeNegativeConditionalView( Container &&emboss_reserved_local_container) {
+  return GenericNegativeConditionalView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 
@@ -1966,6 +2034,40 @@ MakeAlignedConditionalAndUnconditionalOverlappingFinalFieldView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericConditionalAndUnconditionalOverlappingFinalFieldView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeConditionalAndUnconditionalOverlappingFinalFieldView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericConditionalAndUnconditionalOverlappingFinalFieldView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericConditionalAndUnconditionalOverlappingFinalFieldView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericConditionalAndUnconditionalOverlappingFinalFieldView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeConditionalAndUnconditionalOverlappingFinalFieldView( Container &&emboss_reserved_local_container) {
+  return GenericConditionalAndUnconditionalOverlappingFinalFieldView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -2477,6 +2579,40 @@ MakeAlignedConditionalBasicConditionalFieldFirstView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericConditionalBasicConditionalFieldFirstView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeConditionalBasicConditionalFieldFirstView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericConditionalBasicConditionalFieldFirstView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericConditionalBasicConditionalFieldFirstView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericConditionalBasicConditionalFieldFirstView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeConditionalBasicConditionalFieldFirstView( Container &&emboss_reserved_local_container) {
+  return GenericConditionalBasicConditionalFieldFirstView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 
@@ -3106,6 +3242,40 @@ MakeAlignedConditionalAndDynamicLocationView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericConditionalAndDynamicLocationView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeConditionalAndDynamicLocationView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericConditionalAndDynamicLocationView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericConditionalAndDynamicLocationView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericConditionalAndDynamicLocationView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeConditionalAndDynamicLocationView( Container &&emboss_reserved_local_container) {
+  return GenericConditionalAndDynamicLocationView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -3649,6 +3819,40 @@ MakeAlignedConditionUsesMinIntView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericConditionUsesMinIntView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeConditionUsesMinIntView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericConditionUsesMinIntView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericConditionUsesMinIntView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericConditionUsesMinIntView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeConditionUsesMinIntView( Container &&emboss_reserved_local_container) {
+  return GenericConditionUsesMinIntView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 
@@ -4295,6 +4499,40 @@ MakeAlignedNestedConditionalView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericNestedConditionalView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeNestedConditionalView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericNestedConditionalView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericNestedConditionalView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericNestedConditionalView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeNestedConditionalView( Container &&emboss_reserved_local_container) {
+  return GenericNestedConditionalView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -4924,6 +5162,40 @@ MakeAlignedCorrectNestedConditionalView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericCorrectNestedConditionalView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeCorrectNestedConditionalView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericCorrectNestedConditionalView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericCorrectNestedConditionalView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericCorrectNestedConditionalView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeCorrectNestedConditionalView( Container &&emboss_reserved_local_container) {
+  return GenericCorrectNestedConditionalView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -5421,6 +5693,40 @@ MakeAlignedAlwaysFalseConditionView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericAlwaysFalseConditionView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeAlwaysFalseConditionView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericAlwaysFalseConditionView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericAlwaysFalseConditionView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericAlwaysFalseConditionView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeAlwaysFalseConditionView( Container &&emboss_reserved_local_container) {
+  return GenericAlwaysFalseConditionView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 namespace OnlyAlwaysFalseCondition {
@@ -5837,6 +6143,40 @@ MakeAlignedOnlyAlwaysFalseConditionView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericOnlyAlwaysFalseConditionView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeOnlyAlwaysFalseConditionView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericOnlyAlwaysFalseConditionView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericOnlyAlwaysFalseConditionView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericOnlyAlwaysFalseConditionView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeOnlyAlwaysFalseConditionView( Container &&emboss_reserved_local_container) {
+  return GenericOnlyAlwaysFalseConditionView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 namespace EmptyStruct {
 
@@ -6174,6 +6514,40 @@ MakeAlignedEmptyStructView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericEmptyStructView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeEmptyStructView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericEmptyStructView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericEmptyStructView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericEmptyStructView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeEmptyStructView( Container &&emboss_reserved_local_container) {
+  return GenericEmptyStructView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 
@@ -6784,6 +7158,40 @@ MakeAlignedAlwaysFalseConditionDynamicSizeView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericAlwaysFalseConditionDynamicSizeView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeAlwaysFalseConditionDynamicSizeView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericAlwaysFalseConditionDynamicSizeView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericAlwaysFalseConditionDynamicSizeView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericAlwaysFalseConditionDynamicSizeView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeAlwaysFalseConditionDynamicSizeView( Container &&emboss_reserved_local_container) {
+  return GenericAlwaysFalseConditionDynamicSizeView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -7376,6 +7784,40 @@ MakeAlignedConditionDoesNotContributeToSizeView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericConditionDoesNotContributeToSizeView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeConditionDoesNotContributeToSizeView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericConditionDoesNotContributeToSizeView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericConditionDoesNotContributeToSizeView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericConditionDoesNotContributeToSizeView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeConditionDoesNotContributeToSizeView( Container &&emboss_reserved_local_container) {
+  return GenericConditionDoesNotContributeToSizeView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 enum class OnOff : ::std::uint64_t {
   OFF = static_cast</**/::std::int32_t>(0LL),
@@ -8092,6 +8534,40 @@ MakeAlignedEnumConditionView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericEnumConditionView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeEnumConditionView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericEnumConditionView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericEnumConditionView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericEnumConditionView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeEnumConditionView( Container &&emboss_reserved_local_container) {
+  return GenericEnumConditionView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -8618,6 +9094,40 @@ MakeAlignedNegativeEnumConditionView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericNegativeEnumConditionView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeNegativeEnumConditionView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericNegativeEnumConditionView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericNegativeEnumConditionView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericNegativeEnumConditionView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeNegativeEnumConditionView( Container &&emboss_reserved_local_container) {
+  return GenericNegativeEnumConditionView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 
@@ -9147,6 +9657,40 @@ MakeAlignedLessThanConditionView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericLessThanConditionView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeLessThanConditionView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericLessThanConditionView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericLessThanConditionView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericLessThanConditionView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeLessThanConditionView( Container &&emboss_reserved_local_container) {
+  return GenericLessThanConditionView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -9672,6 +10216,40 @@ MakeAlignedLessThanOrEqualConditionView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericLessThanOrEqualConditionView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeLessThanOrEqualConditionView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericLessThanOrEqualConditionView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericLessThanOrEqualConditionView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericLessThanOrEqualConditionView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeLessThanOrEqualConditionView( Container &&emboss_reserved_local_container) {
+  return GenericLessThanOrEqualConditionView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 
@@ -10201,6 +10779,40 @@ MakeAlignedGreaterThanOrEqualConditionView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericGreaterThanOrEqualConditionView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeGreaterThanOrEqualConditionView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericGreaterThanOrEqualConditionView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericGreaterThanOrEqualConditionView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericGreaterThanOrEqualConditionView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeGreaterThanOrEqualConditionView( Container &&emboss_reserved_local_container) {
+  return GenericGreaterThanOrEqualConditionView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -10726,6 +11338,40 @@ MakeAlignedGreaterThanConditionView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericGreaterThanConditionView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeGreaterThanConditionView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericGreaterThanConditionView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericGreaterThanConditionView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericGreaterThanConditionView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeGreaterThanConditionView( Container &&emboss_reserved_local_container) {
+  return GenericGreaterThanConditionView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 
@@ -11342,6 +11988,40 @@ MakeAlignedRangeConditionView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericRangeConditionView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeRangeConditionView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericRangeConditionView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericRangeConditionView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericRangeConditionView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeRangeConditionView( Container &&emboss_reserved_local_container) {
+  return GenericRangeConditionView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -11956,6 +12636,40 @@ MakeAlignedReverseRangeConditionView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericReverseRangeConditionView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeReverseRangeConditionView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericReverseRangeConditionView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericReverseRangeConditionView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericReverseRangeConditionView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeReverseRangeConditionView( Container &&emboss_reserved_local_container) {
+  return GenericReverseRangeConditionView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -12568,6 +13282,40 @@ MakeAlignedAndConditionView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericAndConditionView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeAndConditionView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericAndConditionView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericAndConditionView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericAndConditionView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeAndConditionView( Container &&emboss_reserved_local_container) {
+  return GenericAndConditionView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -13178,6 +13926,40 @@ MakeAlignedOrConditionView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericOrConditionView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeOrConditionView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericOrConditionView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericOrConditionView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericOrConditionView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeOrConditionView( Container &&emboss_reserved_local_container) {
+  return GenericOrConditionView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 
@@ -13985,6 +14767,40 @@ MakeAlignedChoiceConditionView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericChoiceConditionView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeChoiceConditionView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericChoiceConditionView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericChoiceConditionView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericChoiceConditionView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeChoiceConditionView( Container &&emboss_reserved_local_container) {
+  return GenericChoiceConditionView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -14488,6 +15304,40 @@ MakeAlignedEmbossReservedAnonymousField3View(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericEmbossReservedAnonymousField3View<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeEmbossReservedAnonymousField3View( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericEmbossReservedAnonymousField3View<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericEmbossReservedAnonymousField3View<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericEmbossReservedAnonymousField3View<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeEmbossReservedAnonymousField3View( Container &&emboss_reserved_local_container) {
+  return GenericEmbossReservedAnonymousField3View<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 }  // namespace ContainsBits
 
 
@@ -14954,6 +15804,40 @@ MakeAlignedContainsBitsView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericContainsBitsView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeContainsBitsView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericContainsBitsView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericContainsBitsView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericContainsBitsView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeContainsBitsView( Container &&emboss_reserved_local_container) {
+  return GenericContainsBitsView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 
@@ -15495,6 +16379,40 @@ MakeAlignedContainsContainsBitsView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericContainsContainsBitsView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeContainsContainsBitsView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericContainsContainsBitsView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericContainsContainsBitsView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericContainsContainsBitsView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeContainsContainsBitsView( Container &&emboss_reserved_local_container) {
+  return GenericContainsContainsBitsView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 
@@ -16081,6 +16999,40 @@ MakeAlignedType0View(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericType0View<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeType0View( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericType0View<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericType0View<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericType0View<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeType0View( Container &&emboss_reserved_local_container) {
+  return GenericType0View<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -16658,6 +17610,40 @@ MakeAlignedType1View(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericType1View<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeType1View( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericType1View<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericType1View<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericType1View<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeType1View( Container &&emboss_reserved_local_container) {
+  return GenericType1View<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 }  // namespace ConditionalInline
@@ -17279,6 +18265,40 @@ MakeAlignedConditionalInlineView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericConditionalInlineView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeConditionalInlineView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericConditionalInlineView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericConditionalInlineView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericConditionalInlineView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeConditionalInlineView( Container &&emboss_reserved_local_container) {
+  return GenericConditionalInlineView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -17879,6 +18899,40 @@ MakeAlignedEmbossReservedAnonymousField2View(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericEmbossReservedAnonymousField2View<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeEmbossReservedAnonymousField2View( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericEmbossReservedAnonymousField2View<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericEmbossReservedAnonymousField2View<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericEmbossReservedAnonymousField2View<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeEmbossReservedAnonymousField2View( Container &&emboss_reserved_local_container) {
+  return GenericEmbossReservedAnonymousField2View<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 }  // namespace ConditionalAnonymous
@@ -18507,6 +19561,40 @@ MakeAlignedConditionalAnonymousView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericConditionalAnonymousView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeConditionalAnonymousView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericConditionalAnonymousView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericConditionalAnonymousView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericConditionalAnonymousView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeConditionalAnonymousView( Container &&emboss_reserved_local_container) {
+  return GenericConditionalAnonymousView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -18927,6 +20015,40 @@ MakeAlignedEmbossReservedAnonymousField1View(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericEmbossReservedAnonymousField1View<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeEmbossReservedAnonymousField1View( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericEmbossReservedAnonymousField1View<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericEmbossReservedAnonymousField1View<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericEmbossReservedAnonymousField1View<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeEmbossReservedAnonymousField1View( Container &&emboss_reserved_local_container) {
+  return GenericEmbossReservedAnonymousField1View<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 }  // namespace ConditionalOnFlag
@@ -19456,6 +20578,40 @@ MakeAlignedConditionalOnFlagView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericConditionalOnFlagView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeConditionalOnFlagView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericConditionalOnFlagView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericConditionalOnFlagView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericConditionalOnFlagView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeConditionalOnFlagView( Container &&emboss_reserved_local_container) {
+  return GenericConditionalOnFlagView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 namespace BasicConditional {

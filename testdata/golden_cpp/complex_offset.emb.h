@@ -465,6 +465,40 @@ MakeAlignedLengthView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericLengthView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeLengthView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericLengthView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericLengthView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericLengthView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeLengthView( Container &&emboss_reserved_local_container) {
+  return GenericLengthView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -992,6 +1026,40 @@ MakeAlignedDataView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericDataView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeDataView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericDataView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericDataView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericDataView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeDataView( Container &&emboss_reserved_local_container) {
+  return GenericDataView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 
@@ -2793,6 +2861,40 @@ MakeAlignedPackedFieldsView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericPackedFieldsView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakePackedFieldsView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericPackedFieldsView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericPackedFieldsView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericPackedFieldsView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakePackedFieldsView( Container &&emboss_reserved_local_container) {
+  return GenericPackedFieldsView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 namespace Length {

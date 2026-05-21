@@ -538,6 +538,40 @@ MakeAlignedFloatsView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericFloatsView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeFloatsView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericFloatsView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericFloatsView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericFloatsView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeFloatsView( Container &&emboss_reserved_local_container) {
+  return GenericFloatsView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -1033,6 +1067,40 @@ MakeAlignedDoublesView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericDoublesView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeDoublesView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericDoublesView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericDoublesView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericDoublesView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeDoublesView( Container &&emboss_reserved_local_container) {
+  return GenericDoublesView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 namespace Floats {

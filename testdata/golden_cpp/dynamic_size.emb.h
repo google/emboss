@@ -898,6 +898,40 @@ MakeAlignedMessageView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericMessageView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeMessageView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericMessageView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericMessageView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericMessageView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeMessageView( Container &&emboss_reserved_local_container) {
+  return GenericMessageView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -1436,6 +1470,40 @@ MakeAlignedImageView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericImageView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeImageView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericImageView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericImageView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericImageView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeImageView( Container &&emboss_reserved_local_container) {
+  return GenericImageView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 
@@ -2306,6 +2374,40 @@ MakeAlignedTwoRegionsView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericTwoRegionsView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeTwoRegionsView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericTwoRegionsView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericTwoRegionsView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericTwoRegionsView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeTwoRegionsView( Container &&emboss_reserved_local_container) {
+  return GenericTwoRegionsView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -2919,6 +3021,40 @@ MakeAlignedMultipliedSizeView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericMultipliedSizeView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeMultipliedSizeView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericMultipliedSizeView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericMultipliedSizeView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericMultipliedSizeView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeMultipliedSizeView( Container &&emboss_reserved_local_container) {
+  return GenericMultipliedSizeView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 
@@ -4066,6 +4202,40 @@ MakeAlignedNegativeTermsInSizesView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericNegativeTermsInSizesView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeNegativeTermsInSizesView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericNegativeTermsInSizesView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericNegativeTermsInSizesView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericNegativeTermsInSizesView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeNegativeTermsInSizesView( Container &&emboss_reserved_local_container) {
+  return GenericNegativeTermsInSizesView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -4592,6 +4762,40 @@ MakeAlignedNegativeTermInLocationView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericNegativeTermInLocationView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeNegativeTermInLocationView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericNegativeTermInLocationView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericNegativeTermInLocationView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericNegativeTermInLocationView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeNegativeTermInLocationView( Container &&emboss_reserved_local_container) {
+  return GenericNegativeTermInLocationView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 
@@ -5291,6 +5495,40 @@ MakeAlignedChainedSizeView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericChainedSizeView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeChainedSizeView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericChainedSizeView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericChainedSizeView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericChainedSizeView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeChainedSizeView( Container &&emboss_reserved_local_container) {
+  return GenericChainedSizeView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -5867,6 +6105,40 @@ MakeAlignedFinalFieldOverlapsView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericFinalFieldOverlapsView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeFinalFieldOverlapsView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericFinalFieldOverlapsView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericFinalFieldOverlapsView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericFinalFieldOverlapsView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeFinalFieldOverlapsView( Container &&emboss_reserved_local_container) {
+  return GenericFinalFieldOverlapsView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 
@@ -6561,6 +6833,40 @@ MakeAlignedDynamicFinalFieldOverlapsView(
       emboss_reserved_local_size);
 }
 
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericDynamicFinalFieldOverlapsView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeDynamicFinalFieldOverlapsView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericDynamicFinalFieldOverlapsView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericDynamicFinalFieldOverlapsView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericDynamicFinalFieldOverlapsView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeDynamicFinalFieldOverlapsView( Container &&emboss_reserved_local_container) {
+  return GenericDynamicFinalFieldOverlapsView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
+}
+
 
 
 
@@ -7087,6 +7393,40 @@ MakeAlignedDynamicFieldDependsOnLaterFieldView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericDynamicFieldDependsOnLaterFieldView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeDynamicFieldDependsOnLaterFieldView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericDynamicFieldDependsOnLaterFieldView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericDynamicFieldDependsOnLaterFieldView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericDynamicFieldDependsOnLaterFieldView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeDynamicFieldDependsOnLaterFieldView( Container &&emboss_reserved_local_container) {
+  return GenericDynamicFieldDependsOnLaterFieldView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 
@@ -7665,6 +8005,40 @@ MakeAlignedDynamicFieldDoesNotAffectSizeView(
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
        emboss_reserved_local_data,
       emboss_reserved_local_size);
+}
+
+template <typename Iterator,
+          typename = typename ::std::enable_if<
+              !::std::is_pointer<Iterator>::value>::type>
+inline GenericDynamicFieldDoesNotAffectSizeView<
+    /**/ ::emboss::support::IteratorStorage<Iterator>>
+MakeDynamicFieldDoesNotAffectSizeView( Iterator emboss_reserved_local_begin,
+                Iterator emboss_reserved_local_end) {
+  return GenericDynamicFieldDoesNotAffectSizeView<
+      /**/ ::emboss::support::IteratorStorage<Iterator>>(
+       ::emboss::support::IteratorStorage<Iterator>(
+          ::std::move(emboss_reserved_local_begin),
+          ::std::move(emboss_reserved_local_end)));
+}
+
+template <typename Container,
+          typename = typename ::std::enable_if<
+              !EmbossReservedInternalIsGenericDynamicFieldDoesNotAffectSizeView<
+                  typename ::std::remove_cv<typename ::std::remove_reference<
+                      Container>::type>::type>::value &&
+              !::std::is_pointer<typename ::std::remove_reference<
+                  Container>::type>::value>::type>
+inline GenericDynamicFieldDoesNotAffectSizeView<
+    /**/ ::emboss::support::IteratorStorage<
+        decltype(::std::begin(::std::declval<Container &>()))>>
+MakeDynamicFieldDoesNotAffectSizeView( Container &&emboss_reserved_local_container) {
+  return GenericDynamicFieldDoesNotAffectSizeView<
+      /**/ ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>>(
+       ::emboss::support::IteratorStorage<
+          decltype(::std::begin(::std::declval<Container &>()))>(
+          ::std::begin(emboss_reserved_local_container),
+          ::std::end(emboss_reserved_local_container)));
 }
 
 namespace Message {
