@@ -376,7 +376,6 @@ class GenericBasicConditionalView final {
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
-
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
@@ -1450,7 +1449,6 @@ class GenericConditionalAndUnconditionalOverlappingFinalFieldView final {
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
-
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
@@ -2040,7 +2038,6 @@ class GenericConditionalBasicConditionalFieldFirstView final {
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
-
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
@@ -2557,7 +2554,6 @@ class GenericConditionalAndDynamicLocationView final {
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
-
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
@@ -3181,7 +3177,6 @@ class GenericConditionUsesMinIntView final {
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
-
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_3;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
@@ -3728,7 +3723,6 @@ class GenericNestedConditionalView final {
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
-
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
@@ -3745,7 +3739,6 @@ class GenericNestedConditionalView final {
     }
 
     {
-
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_4;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
@@ -4370,7 +4363,6 @@ class GenericCorrectNestedConditionalView final {
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
-
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
@@ -6862,7 +6854,6 @@ class GenericConditionDoesNotContributeToSizeView final {
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
-
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
@@ -7540,7 +7531,6 @@ class GenericEnumConditionView final {
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
-
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
@@ -13355,7 +13345,6 @@ class GenericChoiceConditionView final {
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
-
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_8;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
@@ -15030,7 +15019,6 @@ class GenericContainsContainsBitsView final {
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
-
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
@@ -16729,7 +16717,6 @@ class GenericConditionalInlineView final {
     if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
 
     {
-
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
@@ -17365,7 +17352,6 @@ class GenericEmbossReservedAnonymousField2View final {
     if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
 
     {
-
       const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {

@@ -1457,14 +1457,19 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
     for field in fields:
         discrim_expr, case_expr = _get_switch_candidate(field.existence_condition, ir)
         if discrim_expr:
-            discrim_str = _render_expression(
-                discrim_expr, ir, subexpressions=None
+            # Render the discriminant once into the active subexpression scope.
+            # The rendered string is stable for equivalent discriminants (the
+            # scope dedupes by the inner rendered form), so it doubles as a
+            # grouping key and as the C++ to emit later. This avoids a second
+            # IR traversal at emit time for every switch group.
+            discrim_rendered = _render_expression(
+                discrim_expr, ir, subexpressions=subexpressions
             ).rendered
-            key = "SWITCH:" + discrim_str
+            key = "SWITCH:" + discrim_rendered
             if key not in groups:
                 groups[key] = {
                     "type": "switch",
-                    "expr": discrim_expr,
+                    "discrim_rendered": discrim_rendered,
                     "cases": [],
                     "seen_cases": set(),
                 }
@@ -1482,7 +1487,6 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
                 if if_key not in groups:
                     groups[if_key] = {
                         "type": "if",
-                        "expr": field.existence_condition,
                         "fields": [],
                     }
                     ordered_keys.append(if_key)
@@ -1495,7 +1499,6 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
             if key not in groups:
                 groups[key] = {
                     "type": "if",
-                    "expr": field.existence_condition,
                     "fields": [],
                 }
                 ordered_keys.append(key)
@@ -1505,14 +1508,6 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
     for key in ordered_keys:
         group = groups[key]
         if group["type"] == "switch":
-            discrim_rendered = _render_expression(
-                group["expr"], ir, subexpressions=subexpressions
-            ).rendered
-            # Create a new scope for the switch block
-            inner_scope = ExpressionScope(
-                "emboss_reserved_switch_scope_", parent=subexpressions
-            )
-
             # Generate switch cases using template
             switch_cases = []
             for case_val, field in group["cases"]:
@@ -1527,8 +1522,7 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
             blocks.append(
                 code_template.format_template(
                     _TEMPLATES.ok_method_switch_block,
-                    inner_scope_definitions=inner_scope.definition_code().rstrip(),
-                    discriminant=discrim_rendered,
+                    discriminant=group["discrim_rendered"],
                     switch_cases="".join(switch_cases),
                 )
             )
