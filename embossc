@@ -103,7 +103,7 @@ def main(argv):
     os.makedirs(os.path.dirname(output_filepath), exist_ok=True)
 
     with open(output_filepath, "w") as output:
-        output.write(header)
+        output.write(emboss_codegen_cpp.format_header(header))
     return 0
 
 

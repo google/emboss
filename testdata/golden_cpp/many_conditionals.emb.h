@@ -11,135 +11,19 @@
 #include <utility>
 
 #include "runtime/cpp/emboss_cpp_util.h"
-
-#include "runtime/cpp/emboss_prelude.h"
-
 #include "runtime/cpp/emboss_enum_view.h"
-
+#include "runtime/cpp/emboss_prelude.h"
 #include "runtime/cpp/emboss_text_util.h"
-
-
 
 /* NOLINTBEGIN */
 namespace emboss {
 namespace test {
-namespace LargeConditionals {
-
-}  // namespace LargeConditionals
-
+namespace LargeConditionals {}  // namespace LargeConditionals
 
 template <class Storage>
 class GenericLargeConditionalsView;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-namespace LargeConditionals {
-
-}  // namespace LargeConditionals
-
+namespace LargeConditionals {}  // namespace LargeConditionals
 
 template <class View>
 struct EmbossReservedInternalIsGenericLargeConditionalsView;
@@ -148,679 +32,476 @@ template <class Storage>
 class GenericLargeConditionalsView final {
  public:
   GenericLargeConditionalsView() : backing_() {}
-  explicit GenericLargeConditionalsView(
-       Storage emboss_reserved_local_bytes)
-      : backing_(emboss_reserved_local_bytes) 
-         {}
+  explicit GenericLargeConditionalsView(Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
 
   template <typename OtherStorage>
-  GenericLargeConditionalsView(
-      const GenericLargeConditionalsView<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()}
-         {}
+  GenericLargeConditionalsView(const GenericLargeConditionalsView<OtherStorage>&
+                                   emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
 
   template <typename Arg,
             typename = typename ::std::enable_if<
                 !EmbossReservedInternalIsGenericLargeConditionalsView<
                     typename ::std::remove_cv<typename ::std::remove_reference<
                         Arg>::type>::type>::value>::type>
-  explicit GenericLargeConditionalsView(
-       Arg &&emboss_reserved_local_arg)
-      : backing_(::std::forward<Arg>(
-            emboss_reserved_local_arg)) 
-         {}
+  explicit GenericLargeConditionalsView(Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
   template <typename Arg0, typename Arg1, typename... Args>
-  explicit GenericLargeConditionalsView(
-       Arg0 &&emboss_reserved_local_arg0,
-      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+  explicit GenericLargeConditionalsView(Arg0&& emboss_reserved_local_arg0,
+                                        Arg1&& emboss_reserved_local_arg1,
+                                        Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
-                 ::std::forward<Args>(
-                     emboss_reserved_local_args)...) 
-         {}
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
 
   template <typename OtherStorage>
-  GenericLargeConditionalsView<Storage> &operator=(
-      const GenericLargeConditionalsView<OtherStorage> &emboss_reserved_local_other) {
+  GenericLargeConditionalsView<Storage>& operator=(
+      const GenericLargeConditionalsView<OtherStorage>&
+          emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
     return *this;
   }
 
-  
-
   bool Ok() const {
     if (!IsComplete()) return false;
 
-      const auto emboss_reserved_local_ok_subexpr_1 = tag();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>());
+    const auto emboss_reserved_local_ok_subexpr_1 = tag();
+    const auto emboss_reserved_local_ok_subexpr_2 =
+        (emboss_reserved_local_ok_subexpr_1.Ok()
+             ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                   static_cast</**/ ::std::uint32_t>(
+                       emboss_reserved_local_ok_subexpr_1.UncheckedRead()))
+             : ::emboss::support::Maybe</**/ ::std::uint32_t>());
 
     if (!has_tag().Known()) return false;
     if (has_tag().ValueOrDefault() && !tag().Ok()) return false;
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
 
     if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
 
     if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
 
     {
-
-      const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
+      const auto emboss_reserved_switch_discrim =
+          emboss_reserved_local_ok_subexpr_2;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
-        case static_cast</**/::std::int32_t>(0LL):
+        case static_cast</**/ ::std::int32_t>(0LL):
           if (!f0().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(1LL):
+        case static_cast</**/ ::std::int32_t>(1LL):
           if (!f1().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(2LL):
+        case static_cast</**/ ::std::int32_t>(2LL):
           if (!f2().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(3LL):
+        case static_cast</**/ ::std::int32_t>(3LL):
           if (!f3().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(4LL):
+        case static_cast</**/ ::std::int32_t>(4LL):
           if (!f4().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(5LL):
+        case static_cast</**/ ::std::int32_t>(5LL):
           if (!f5().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(6LL):
+        case static_cast</**/ ::std::int32_t>(6LL):
           if (!f6().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(7LL):
+        case static_cast</**/ ::std::int32_t>(7LL):
           if (!f7().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(8LL):
+        case static_cast</**/ ::std::int32_t>(8LL):
           if (!f8().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(9LL):
+        case static_cast</**/ ::std::int32_t>(9LL):
           if (!f9().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(10LL):
+        case static_cast</**/ ::std::int32_t>(10LL):
           if (!f10().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(11LL):
+        case static_cast</**/ ::std::int32_t>(11LL):
           if (!f11().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(12LL):
+        case static_cast</**/ ::std::int32_t>(12LL):
           if (!f12().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(13LL):
+        case static_cast</**/ ::std::int32_t>(13LL):
           if (!f13().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(14LL):
+        case static_cast</**/ ::std::int32_t>(14LL):
           if (!f14().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(15LL):
+        case static_cast</**/ ::std::int32_t>(15LL):
           if (!f15().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(16LL):
+        case static_cast</**/ ::std::int32_t>(16LL):
           if (!f16().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(17LL):
+        case static_cast</**/ ::std::int32_t>(17LL):
           if (!f17().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(18LL):
+        case static_cast</**/ ::std::int32_t>(18LL):
           if (!f18().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(19LL):
+        case static_cast</**/ ::std::int32_t>(19LL):
           if (!f19().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(20LL):
+        case static_cast</**/ ::std::int32_t>(20LL):
           if (!f20().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(21LL):
+        case static_cast</**/ ::std::int32_t>(21LL):
           if (!f21().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(22LL):
+        case static_cast</**/ ::std::int32_t>(22LL):
           if (!f22().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(23LL):
+        case static_cast</**/ ::std::int32_t>(23LL):
           if (!f23().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(24LL):
+        case static_cast</**/ ::std::int32_t>(24LL):
           if (!f24().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(25LL):
+        case static_cast</**/ ::std::int32_t>(25LL):
           if (!f25().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(26LL):
+        case static_cast</**/ ::std::int32_t>(26LL):
           if (!f26().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(27LL):
+        case static_cast</**/ ::std::int32_t>(27LL):
           if (!f27().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(28LL):
+        case static_cast</**/ ::std::int32_t>(28LL):
           if (!f28().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(29LL):
+        case static_cast</**/ ::std::int32_t>(29LL):
           if (!f29().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(30LL):
+        case static_cast</**/ ::std::int32_t>(30LL):
           if (!f30().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(31LL):
+        case static_cast</**/ ::std::int32_t>(31LL):
           if (!f31().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(32LL):
+        case static_cast</**/ ::std::int32_t>(32LL):
           if (!f32().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(33LL):
+        case static_cast</**/ ::std::int32_t>(33LL):
           if (!f33().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(34LL):
+        case static_cast</**/ ::std::int32_t>(34LL):
           if (!f34().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(35LL):
+        case static_cast</**/ ::std::int32_t>(35LL):
           if (!f35().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(36LL):
+        case static_cast</**/ ::std::int32_t>(36LL):
           if (!f36().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(37LL):
+        case static_cast</**/ ::std::int32_t>(37LL):
           if (!f37().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(38LL):
+        case static_cast</**/ ::std::int32_t>(38LL):
           if (!f38().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(39LL):
+        case static_cast</**/ ::std::int32_t>(39LL):
           if (!f39().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(40LL):
+        case static_cast</**/ ::std::int32_t>(40LL):
           if (!f40().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(41LL):
+        case static_cast</**/ ::std::int32_t>(41LL):
           if (!f41().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(42LL):
+        case static_cast</**/ ::std::int32_t>(42LL):
           if (!f42().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(43LL):
+        case static_cast</**/ ::std::int32_t>(43LL):
           if (!f43().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(44LL):
+        case static_cast</**/ ::std::int32_t>(44LL):
           if (!f44().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(45LL):
+        case static_cast</**/ ::std::int32_t>(45LL):
           if (!f45().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(46LL):
+        case static_cast</**/ ::std::int32_t>(46LL):
           if (!f46().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(47LL):
+        case static_cast</**/ ::std::int32_t>(47LL):
           if (!f47().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(48LL):
+        case static_cast</**/ ::std::int32_t>(48LL):
           if (!f48().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(49LL):
+        case static_cast</**/ ::std::int32_t>(49LL):
           if (!f49().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(50LL):
+        case static_cast</**/ ::std::int32_t>(50LL):
           if (!f50().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(51LL):
+        case static_cast</**/ ::std::int32_t>(51LL):
           if (!f51().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(52LL):
+        case static_cast</**/ ::std::int32_t>(52LL):
           if (!f52().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(53LL):
+        case static_cast</**/ ::std::int32_t>(53LL):
           if (!f53().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(54LL):
+        case static_cast</**/ ::std::int32_t>(54LL):
           if (!f54().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(55LL):
+        case static_cast</**/ ::std::int32_t>(55LL):
           if (!f55().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(56LL):
+        case static_cast</**/ ::std::int32_t>(56LL):
           if (!f56().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(57LL):
+        case static_cast</**/ ::std::int32_t>(57LL):
           if (!f57().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(58LL):
+        case static_cast</**/ ::std::int32_t>(58LL):
           if (!f58().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(59LL):
+        case static_cast</**/ ::std::int32_t>(59LL):
           if (!f59().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(60LL):
+        case static_cast</**/ ::std::int32_t>(60LL):
           if (!f60().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(61LL):
+        case static_cast</**/ ::std::int32_t>(61LL):
           if (!f61().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(62LL):
+        case static_cast</**/ ::std::int32_t>(62LL):
           if (!f62().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(63LL):
+        case static_cast</**/ ::std::int32_t>(63LL):
           if (!f63().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(64LL):
+        case static_cast</**/ ::std::int32_t>(64LL):
           if (!f64().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(65LL):
+        case static_cast</**/ ::std::int32_t>(65LL):
           if (!f65().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(66LL):
+        case static_cast</**/ ::std::int32_t>(66LL):
           if (!f66().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(67LL):
+        case static_cast</**/ ::std::int32_t>(67LL):
           if (!f67().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(68LL):
+        case static_cast</**/ ::std::int32_t>(68LL):
           if (!f68().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(69LL):
+        case static_cast</**/ ::std::int32_t>(69LL):
           if (!f69().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(70LL):
+        case static_cast</**/ ::std::int32_t>(70LL):
           if (!f70().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(71LL):
+        case static_cast</**/ ::std::int32_t>(71LL):
           if (!f71().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(72LL):
+        case static_cast</**/ ::std::int32_t>(72LL):
           if (!f72().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(73LL):
+        case static_cast</**/ ::std::int32_t>(73LL):
           if (!f73().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(74LL):
+        case static_cast</**/ ::std::int32_t>(74LL):
           if (!f74().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(75LL):
+        case static_cast</**/ ::std::int32_t>(75LL):
           if (!f75().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(76LL):
+        case static_cast</**/ ::std::int32_t>(76LL):
           if (!f76().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(77LL):
+        case static_cast</**/ ::std::int32_t>(77LL):
           if (!f77().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(78LL):
+        case static_cast</**/ ::std::int32_t>(78LL):
           if (!f78().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(79LL):
+        case static_cast</**/ ::std::int32_t>(79LL):
           if (!f79().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(80LL):
+        case static_cast</**/ ::std::int32_t>(80LL):
           if (!f80().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(81LL):
+        case static_cast</**/ ::std::int32_t>(81LL):
           if (!f81().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(82LL):
+        case static_cast</**/ ::std::int32_t>(82LL):
           if (!f82().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(83LL):
+        case static_cast</**/ ::std::int32_t>(83LL):
           if (!f83().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(84LL):
+        case static_cast</**/ ::std::int32_t>(84LL):
           if (!f84().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(85LL):
+        case static_cast</**/ ::std::int32_t>(85LL):
           if (!f85().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(86LL):
+        case static_cast</**/ ::std::int32_t>(86LL):
           if (!f86().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(87LL):
+        case static_cast</**/ ::std::int32_t>(87LL):
           if (!f87().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(88LL):
+        case static_cast</**/ ::std::int32_t>(88LL):
           if (!f88().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(89LL):
+        case static_cast</**/ ::std::int32_t>(89LL):
           if (!f89().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(90LL):
+        case static_cast</**/ ::std::int32_t>(90LL):
           if (!f90().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(91LL):
+        case static_cast</**/ ::std::int32_t>(91LL):
           if (!f91().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(92LL):
+        case static_cast</**/ ::std::int32_t>(92LL):
           if (!f92().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(93LL):
+        case static_cast</**/ ::std::int32_t>(93LL):
           if (!f93().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(94LL):
+        case static_cast</**/ ::std::int32_t>(94LL):
           if (!f94().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(95LL):
+        case static_cast</**/ ::std::int32_t>(95LL):
           if (!f95().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(96LL):
+        case static_cast</**/ ::std::int32_t>(96LL):
           if (!f96().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(97LL):
+        case static_cast</**/ ::std::int32_t>(97LL):
           if (!f97().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(98LL):
+        case static_cast</**/ ::std::int32_t>(98LL):
           if (!f98().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::std::int32_t>(99LL):
+        case static_cast</**/ ::std::int32_t>(99LL):
           if (!f99().Ok()) return false;
           break;
 
-
-
-
-        
-        default: break;
+        default:
+          break;
       }
     }
 
     if (!has_f0_copy().Known()) return false;
     if (has_f0_copy().ValueOrDefault() && !f0_copy().Ok()) return false;
-
-
 
     return true;
   }
@@ -836,12 +517,9 @@ class GenericLargeConditionalsView final {
   }
   bool SizeIsKnown() const { return IntrinsicSizeInBytes().Ok(); }
 
-
-
   template <typename OtherStorage>
-  bool Equals(
-      GenericLargeConditionalsView<OtherStorage> emboss_reserved_local_other) const {
-    
+  bool Equals(GenericLargeConditionalsView<OtherStorage>
+                  emboss_reserved_local_other) const {
     if (!has_tag().Known()) return false;
     if (!emboss_reserved_local_other.has_tag().Known()) return false;
 
@@ -856,8 +534,6 @@ class GenericLargeConditionalsView final {
         has_tag().ValueOrDefault() &&
         !tag().Equals(emboss_reserved_local_other.tag()))
       return false;
-
-
 
     if (!has_f0().Known()) return false;
     if (!emboss_reserved_local_other.has_f0().Known()) return false;
@@ -874,8 +550,6 @@ class GenericLargeConditionalsView final {
         !f0().Equals(emboss_reserved_local_other.f0()))
       return false;
 
-
-
     if (!has_f1().Known()) return false;
     if (!emboss_reserved_local_other.has_f1().Known()) return false;
 
@@ -890,8 +564,6 @@ class GenericLargeConditionalsView final {
         has_f1().ValueOrDefault() &&
         !f1().Equals(emboss_reserved_local_other.f1()))
       return false;
-
-
 
     if (!has_f2().Known()) return false;
     if (!emboss_reserved_local_other.has_f2().Known()) return false;
@@ -908,8 +580,6 @@ class GenericLargeConditionalsView final {
         !f2().Equals(emboss_reserved_local_other.f2()))
       return false;
 
-
-
     if (!has_f3().Known()) return false;
     if (!emboss_reserved_local_other.has_f3().Known()) return false;
 
@@ -924,8 +594,6 @@ class GenericLargeConditionalsView final {
         has_f3().ValueOrDefault() &&
         !f3().Equals(emboss_reserved_local_other.f3()))
       return false;
-
-
 
     if (!has_f4().Known()) return false;
     if (!emboss_reserved_local_other.has_f4().Known()) return false;
@@ -942,8 +610,6 @@ class GenericLargeConditionalsView final {
         !f4().Equals(emboss_reserved_local_other.f4()))
       return false;
 
-
-
     if (!has_f5().Known()) return false;
     if (!emboss_reserved_local_other.has_f5().Known()) return false;
 
@@ -958,8 +624,6 @@ class GenericLargeConditionalsView final {
         has_f5().ValueOrDefault() &&
         !f5().Equals(emboss_reserved_local_other.f5()))
       return false;
-
-
 
     if (!has_f6().Known()) return false;
     if (!emboss_reserved_local_other.has_f6().Known()) return false;
@@ -976,8 +640,6 @@ class GenericLargeConditionalsView final {
         !f6().Equals(emboss_reserved_local_other.f6()))
       return false;
 
-
-
     if (!has_f7().Known()) return false;
     if (!emboss_reserved_local_other.has_f7().Known()) return false;
 
@@ -992,8 +654,6 @@ class GenericLargeConditionalsView final {
         has_f7().ValueOrDefault() &&
         !f7().Equals(emboss_reserved_local_other.f7()))
       return false;
-
-
 
     if (!has_f8().Known()) return false;
     if (!emboss_reserved_local_other.has_f8().Known()) return false;
@@ -1010,8 +670,6 @@ class GenericLargeConditionalsView final {
         !f8().Equals(emboss_reserved_local_other.f8()))
       return false;
 
-
-
     if (!has_f9().Known()) return false;
     if (!emboss_reserved_local_other.has_f9().Known()) return false;
 
@@ -1026,8 +684,6 @@ class GenericLargeConditionalsView final {
         has_f9().ValueOrDefault() &&
         !f9().Equals(emboss_reserved_local_other.f9()))
       return false;
-
-
 
     if (!has_f10().Known()) return false;
     if (!emboss_reserved_local_other.has_f10().Known()) return false;
@@ -1044,8 +700,6 @@ class GenericLargeConditionalsView final {
         !f10().Equals(emboss_reserved_local_other.f10()))
       return false;
 
-
-
     if (!has_f11().Known()) return false;
     if (!emboss_reserved_local_other.has_f11().Known()) return false;
 
@@ -1060,8 +714,6 @@ class GenericLargeConditionalsView final {
         has_f11().ValueOrDefault() &&
         !f11().Equals(emboss_reserved_local_other.f11()))
       return false;
-
-
 
     if (!has_f12().Known()) return false;
     if (!emboss_reserved_local_other.has_f12().Known()) return false;
@@ -1078,8 +730,6 @@ class GenericLargeConditionalsView final {
         !f12().Equals(emboss_reserved_local_other.f12()))
       return false;
 
-
-
     if (!has_f13().Known()) return false;
     if (!emboss_reserved_local_other.has_f13().Known()) return false;
 
@@ -1094,8 +744,6 @@ class GenericLargeConditionalsView final {
         has_f13().ValueOrDefault() &&
         !f13().Equals(emboss_reserved_local_other.f13()))
       return false;
-
-
 
     if (!has_f14().Known()) return false;
     if (!emboss_reserved_local_other.has_f14().Known()) return false;
@@ -1112,8 +760,6 @@ class GenericLargeConditionalsView final {
         !f14().Equals(emboss_reserved_local_other.f14()))
       return false;
 
-
-
     if (!has_f15().Known()) return false;
     if (!emboss_reserved_local_other.has_f15().Known()) return false;
 
@@ -1128,8 +774,6 @@ class GenericLargeConditionalsView final {
         has_f15().ValueOrDefault() &&
         !f15().Equals(emboss_reserved_local_other.f15()))
       return false;
-
-
 
     if (!has_f16().Known()) return false;
     if (!emboss_reserved_local_other.has_f16().Known()) return false;
@@ -1146,8 +790,6 @@ class GenericLargeConditionalsView final {
         !f16().Equals(emboss_reserved_local_other.f16()))
       return false;
 
-
-
     if (!has_f17().Known()) return false;
     if (!emboss_reserved_local_other.has_f17().Known()) return false;
 
@@ -1162,8 +804,6 @@ class GenericLargeConditionalsView final {
         has_f17().ValueOrDefault() &&
         !f17().Equals(emboss_reserved_local_other.f17()))
       return false;
-
-
 
     if (!has_f18().Known()) return false;
     if (!emboss_reserved_local_other.has_f18().Known()) return false;
@@ -1180,8 +820,6 @@ class GenericLargeConditionalsView final {
         !f18().Equals(emboss_reserved_local_other.f18()))
       return false;
 
-
-
     if (!has_f19().Known()) return false;
     if (!emboss_reserved_local_other.has_f19().Known()) return false;
 
@@ -1196,8 +834,6 @@ class GenericLargeConditionalsView final {
         has_f19().ValueOrDefault() &&
         !f19().Equals(emboss_reserved_local_other.f19()))
       return false;
-
-
 
     if (!has_f20().Known()) return false;
     if (!emboss_reserved_local_other.has_f20().Known()) return false;
@@ -1214,8 +850,6 @@ class GenericLargeConditionalsView final {
         !f20().Equals(emboss_reserved_local_other.f20()))
       return false;
 
-
-
     if (!has_f21().Known()) return false;
     if (!emboss_reserved_local_other.has_f21().Known()) return false;
 
@@ -1230,8 +864,6 @@ class GenericLargeConditionalsView final {
         has_f21().ValueOrDefault() &&
         !f21().Equals(emboss_reserved_local_other.f21()))
       return false;
-
-
 
     if (!has_f22().Known()) return false;
     if (!emboss_reserved_local_other.has_f22().Known()) return false;
@@ -1248,8 +880,6 @@ class GenericLargeConditionalsView final {
         !f22().Equals(emboss_reserved_local_other.f22()))
       return false;
 
-
-
     if (!has_f23().Known()) return false;
     if (!emboss_reserved_local_other.has_f23().Known()) return false;
 
@@ -1264,8 +894,6 @@ class GenericLargeConditionalsView final {
         has_f23().ValueOrDefault() &&
         !f23().Equals(emboss_reserved_local_other.f23()))
       return false;
-
-
 
     if (!has_f24().Known()) return false;
     if (!emboss_reserved_local_other.has_f24().Known()) return false;
@@ -1282,8 +910,6 @@ class GenericLargeConditionalsView final {
         !f24().Equals(emboss_reserved_local_other.f24()))
       return false;
 
-
-
     if (!has_f25().Known()) return false;
     if (!emboss_reserved_local_other.has_f25().Known()) return false;
 
@@ -1298,8 +924,6 @@ class GenericLargeConditionalsView final {
         has_f25().ValueOrDefault() &&
         !f25().Equals(emboss_reserved_local_other.f25()))
       return false;
-
-
 
     if (!has_f26().Known()) return false;
     if (!emboss_reserved_local_other.has_f26().Known()) return false;
@@ -1316,8 +940,6 @@ class GenericLargeConditionalsView final {
         !f26().Equals(emboss_reserved_local_other.f26()))
       return false;
 
-
-
     if (!has_f27().Known()) return false;
     if (!emboss_reserved_local_other.has_f27().Known()) return false;
 
@@ -1332,8 +954,6 @@ class GenericLargeConditionalsView final {
         has_f27().ValueOrDefault() &&
         !f27().Equals(emboss_reserved_local_other.f27()))
       return false;
-
-
 
     if (!has_f28().Known()) return false;
     if (!emboss_reserved_local_other.has_f28().Known()) return false;
@@ -1350,8 +970,6 @@ class GenericLargeConditionalsView final {
         !f28().Equals(emboss_reserved_local_other.f28()))
       return false;
 
-
-
     if (!has_f29().Known()) return false;
     if (!emboss_reserved_local_other.has_f29().Known()) return false;
 
@@ -1366,8 +984,6 @@ class GenericLargeConditionalsView final {
         has_f29().ValueOrDefault() &&
         !f29().Equals(emboss_reserved_local_other.f29()))
       return false;
-
-
 
     if (!has_f30().Known()) return false;
     if (!emboss_reserved_local_other.has_f30().Known()) return false;
@@ -1384,8 +1000,6 @@ class GenericLargeConditionalsView final {
         !f30().Equals(emboss_reserved_local_other.f30()))
       return false;
 
-
-
     if (!has_f31().Known()) return false;
     if (!emboss_reserved_local_other.has_f31().Known()) return false;
 
@@ -1400,8 +1014,6 @@ class GenericLargeConditionalsView final {
         has_f31().ValueOrDefault() &&
         !f31().Equals(emboss_reserved_local_other.f31()))
       return false;
-
-
 
     if (!has_f32().Known()) return false;
     if (!emboss_reserved_local_other.has_f32().Known()) return false;
@@ -1418,8 +1030,6 @@ class GenericLargeConditionalsView final {
         !f32().Equals(emboss_reserved_local_other.f32()))
       return false;
 
-
-
     if (!has_f33().Known()) return false;
     if (!emboss_reserved_local_other.has_f33().Known()) return false;
 
@@ -1434,8 +1044,6 @@ class GenericLargeConditionalsView final {
         has_f33().ValueOrDefault() &&
         !f33().Equals(emboss_reserved_local_other.f33()))
       return false;
-
-
 
     if (!has_f34().Known()) return false;
     if (!emboss_reserved_local_other.has_f34().Known()) return false;
@@ -1452,8 +1060,6 @@ class GenericLargeConditionalsView final {
         !f34().Equals(emboss_reserved_local_other.f34()))
       return false;
 
-
-
     if (!has_f35().Known()) return false;
     if (!emboss_reserved_local_other.has_f35().Known()) return false;
 
@@ -1468,8 +1074,6 @@ class GenericLargeConditionalsView final {
         has_f35().ValueOrDefault() &&
         !f35().Equals(emboss_reserved_local_other.f35()))
       return false;
-
-
 
     if (!has_f36().Known()) return false;
     if (!emboss_reserved_local_other.has_f36().Known()) return false;
@@ -1486,8 +1090,6 @@ class GenericLargeConditionalsView final {
         !f36().Equals(emboss_reserved_local_other.f36()))
       return false;
 
-
-
     if (!has_f37().Known()) return false;
     if (!emboss_reserved_local_other.has_f37().Known()) return false;
 
@@ -1502,8 +1104,6 @@ class GenericLargeConditionalsView final {
         has_f37().ValueOrDefault() &&
         !f37().Equals(emboss_reserved_local_other.f37()))
       return false;
-
-
 
     if (!has_f38().Known()) return false;
     if (!emboss_reserved_local_other.has_f38().Known()) return false;
@@ -1520,8 +1120,6 @@ class GenericLargeConditionalsView final {
         !f38().Equals(emboss_reserved_local_other.f38()))
       return false;
 
-
-
     if (!has_f39().Known()) return false;
     if (!emboss_reserved_local_other.has_f39().Known()) return false;
 
@@ -1536,8 +1134,6 @@ class GenericLargeConditionalsView final {
         has_f39().ValueOrDefault() &&
         !f39().Equals(emboss_reserved_local_other.f39()))
       return false;
-
-
 
     if (!has_f40().Known()) return false;
     if (!emboss_reserved_local_other.has_f40().Known()) return false;
@@ -1554,8 +1150,6 @@ class GenericLargeConditionalsView final {
         !f40().Equals(emboss_reserved_local_other.f40()))
       return false;
 
-
-
     if (!has_f41().Known()) return false;
     if (!emboss_reserved_local_other.has_f41().Known()) return false;
 
@@ -1570,8 +1164,6 @@ class GenericLargeConditionalsView final {
         has_f41().ValueOrDefault() &&
         !f41().Equals(emboss_reserved_local_other.f41()))
       return false;
-
-
 
     if (!has_f42().Known()) return false;
     if (!emboss_reserved_local_other.has_f42().Known()) return false;
@@ -1588,8 +1180,6 @@ class GenericLargeConditionalsView final {
         !f42().Equals(emboss_reserved_local_other.f42()))
       return false;
 
-
-
     if (!has_f43().Known()) return false;
     if (!emboss_reserved_local_other.has_f43().Known()) return false;
 
@@ -1604,8 +1194,6 @@ class GenericLargeConditionalsView final {
         has_f43().ValueOrDefault() &&
         !f43().Equals(emboss_reserved_local_other.f43()))
       return false;
-
-
 
     if (!has_f44().Known()) return false;
     if (!emboss_reserved_local_other.has_f44().Known()) return false;
@@ -1622,8 +1210,6 @@ class GenericLargeConditionalsView final {
         !f44().Equals(emboss_reserved_local_other.f44()))
       return false;
 
-
-
     if (!has_f45().Known()) return false;
     if (!emboss_reserved_local_other.has_f45().Known()) return false;
 
@@ -1638,8 +1224,6 @@ class GenericLargeConditionalsView final {
         has_f45().ValueOrDefault() &&
         !f45().Equals(emboss_reserved_local_other.f45()))
       return false;
-
-
 
     if (!has_f46().Known()) return false;
     if (!emboss_reserved_local_other.has_f46().Known()) return false;
@@ -1656,8 +1240,6 @@ class GenericLargeConditionalsView final {
         !f46().Equals(emboss_reserved_local_other.f46()))
       return false;
 
-
-
     if (!has_f47().Known()) return false;
     if (!emboss_reserved_local_other.has_f47().Known()) return false;
 
@@ -1672,8 +1254,6 @@ class GenericLargeConditionalsView final {
         has_f47().ValueOrDefault() &&
         !f47().Equals(emboss_reserved_local_other.f47()))
       return false;
-
-
 
     if (!has_f48().Known()) return false;
     if (!emboss_reserved_local_other.has_f48().Known()) return false;
@@ -1690,8 +1270,6 @@ class GenericLargeConditionalsView final {
         !f48().Equals(emboss_reserved_local_other.f48()))
       return false;
 
-
-
     if (!has_f49().Known()) return false;
     if (!emboss_reserved_local_other.has_f49().Known()) return false;
 
@@ -1706,8 +1284,6 @@ class GenericLargeConditionalsView final {
         has_f49().ValueOrDefault() &&
         !f49().Equals(emboss_reserved_local_other.f49()))
       return false;
-
-
 
     if (!has_f50().Known()) return false;
     if (!emboss_reserved_local_other.has_f50().Known()) return false;
@@ -1724,8 +1300,6 @@ class GenericLargeConditionalsView final {
         !f50().Equals(emboss_reserved_local_other.f50()))
       return false;
 
-
-
     if (!has_f51().Known()) return false;
     if (!emboss_reserved_local_other.has_f51().Known()) return false;
 
@@ -1740,8 +1314,6 @@ class GenericLargeConditionalsView final {
         has_f51().ValueOrDefault() &&
         !f51().Equals(emboss_reserved_local_other.f51()))
       return false;
-
-
 
     if (!has_f52().Known()) return false;
     if (!emboss_reserved_local_other.has_f52().Known()) return false;
@@ -1758,8 +1330,6 @@ class GenericLargeConditionalsView final {
         !f52().Equals(emboss_reserved_local_other.f52()))
       return false;
 
-
-
     if (!has_f53().Known()) return false;
     if (!emboss_reserved_local_other.has_f53().Known()) return false;
 
@@ -1774,8 +1344,6 @@ class GenericLargeConditionalsView final {
         has_f53().ValueOrDefault() &&
         !f53().Equals(emboss_reserved_local_other.f53()))
       return false;
-
-
 
     if (!has_f54().Known()) return false;
     if (!emboss_reserved_local_other.has_f54().Known()) return false;
@@ -1792,8 +1360,6 @@ class GenericLargeConditionalsView final {
         !f54().Equals(emboss_reserved_local_other.f54()))
       return false;
 
-
-
     if (!has_f55().Known()) return false;
     if (!emboss_reserved_local_other.has_f55().Known()) return false;
 
@@ -1808,8 +1374,6 @@ class GenericLargeConditionalsView final {
         has_f55().ValueOrDefault() &&
         !f55().Equals(emboss_reserved_local_other.f55()))
       return false;
-
-
 
     if (!has_f56().Known()) return false;
     if (!emboss_reserved_local_other.has_f56().Known()) return false;
@@ -1826,8 +1390,6 @@ class GenericLargeConditionalsView final {
         !f56().Equals(emboss_reserved_local_other.f56()))
       return false;
 
-
-
     if (!has_f57().Known()) return false;
     if (!emboss_reserved_local_other.has_f57().Known()) return false;
 
@@ -1842,8 +1404,6 @@ class GenericLargeConditionalsView final {
         has_f57().ValueOrDefault() &&
         !f57().Equals(emboss_reserved_local_other.f57()))
       return false;
-
-
 
     if (!has_f58().Known()) return false;
     if (!emboss_reserved_local_other.has_f58().Known()) return false;
@@ -1860,8 +1420,6 @@ class GenericLargeConditionalsView final {
         !f58().Equals(emboss_reserved_local_other.f58()))
       return false;
 
-
-
     if (!has_f59().Known()) return false;
     if (!emboss_reserved_local_other.has_f59().Known()) return false;
 
@@ -1876,8 +1434,6 @@ class GenericLargeConditionalsView final {
         has_f59().ValueOrDefault() &&
         !f59().Equals(emboss_reserved_local_other.f59()))
       return false;
-
-
 
     if (!has_f60().Known()) return false;
     if (!emboss_reserved_local_other.has_f60().Known()) return false;
@@ -1894,8 +1450,6 @@ class GenericLargeConditionalsView final {
         !f60().Equals(emboss_reserved_local_other.f60()))
       return false;
 
-
-
     if (!has_f61().Known()) return false;
     if (!emboss_reserved_local_other.has_f61().Known()) return false;
 
@@ -1910,8 +1464,6 @@ class GenericLargeConditionalsView final {
         has_f61().ValueOrDefault() &&
         !f61().Equals(emboss_reserved_local_other.f61()))
       return false;
-
-
 
     if (!has_f62().Known()) return false;
     if (!emboss_reserved_local_other.has_f62().Known()) return false;
@@ -1928,8 +1480,6 @@ class GenericLargeConditionalsView final {
         !f62().Equals(emboss_reserved_local_other.f62()))
       return false;
 
-
-
     if (!has_f63().Known()) return false;
     if (!emboss_reserved_local_other.has_f63().Known()) return false;
 
@@ -1944,8 +1494,6 @@ class GenericLargeConditionalsView final {
         has_f63().ValueOrDefault() &&
         !f63().Equals(emboss_reserved_local_other.f63()))
       return false;
-
-
 
     if (!has_f64().Known()) return false;
     if (!emboss_reserved_local_other.has_f64().Known()) return false;
@@ -1962,8 +1510,6 @@ class GenericLargeConditionalsView final {
         !f64().Equals(emboss_reserved_local_other.f64()))
       return false;
 
-
-
     if (!has_f65().Known()) return false;
     if (!emboss_reserved_local_other.has_f65().Known()) return false;
 
@@ -1978,8 +1524,6 @@ class GenericLargeConditionalsView final {
         has_f65().ValueOrDefault() &&
         !f65().Equals(emboss_reserved_local_other.f65()))
       return false;
-
-
 
     if (!has_f66().Known()) return false;
     if (!emboss_reserved_local_other.has_f66().Known()) return false;
@@ -1996,8 +1540,6 @@ class GenericLargeConditionalsView final {
         !f66().Equals(emboss_reserved_local_other.f66()))
       return false;
 
-
-
     if (!has_f67().Known()) return false;
     if (!emboss_reserved_local_other.has_f67().Known()) return false;
 
@@ -2012,8 +1554,6 @@ class GenericLargeConditionalsView final {
         has_f67().ValueOrDefault() &&
         !f67().Equals(emboss_reserved_local_other.f67()))
       return false;
-
-
 
     if (!has_f68().Known()) return false;
     if (!emboss_reserved_local_other.has_f68().Known()) return false;
@@ -2030,8 +1570,6 @@ class GenericLargeConditionalsView final {
         !f68().Equals(emboss_reserved_local_other.f68()))
       return false;
 
-
-
     if (!has_f69().Known()) return false;
     if (!emboss_reserved_local_other.has_f69().Known()) return false;
 
@@ -2046,8 +1584,6 @@ class GenericLargeConditionalsView final {
         has_f69().ValueOrDefault() &&
         !f69().Equals(emboss_reserved_local_other.f69()))
       return false;
-
-
 
     if (!has_f70().Known()) return false;
     if (!emboss_reserved_local_other.has_f70().Known()) return false;
@@ -2064,8 +1600,6 @@ class GenericLargeConditionalsView final {
         !f70().Equals(emboss_reserved_local_other.f70()))
       return false;
 
-
-
     if (!has_f71().Known()) return false;
     if (!emboss_reserved_local_other.has_f71().Known()) return false;
 
@@ -2080,8 +1614,6 @@ class GenericLargeConditionalsView final {
         has_f71().ValueOrDefault() &&
         !f71().Equals(emboss_reserved_local_other.f71()))
       return false;
-
-
 
     if (!has_f72().Known()) return false;
     if (!emboss_reserved_local_other.has_f72().Known()) return false;
@@ -2098,8 +1630,6 @@ class GenericLargeConditionalsView final {
         !f72().Equals(emboss_reserved_local_other.f72()))
       return false;
 
-
-
     if (!has_f73().Known()) return false;
     if (!emboss_reserved_local_other.has_f73().Known()) return false;
 
@@ -2114,8 +1644,6 @@ class GenericLargeConditionalsView final {
         has_f73().ValueOrDefault() &&
         !f73().Equals(emboss_reserved_local_other.f73()))
       return false;
-
-
 
     if (!has_f74().Known()) return false;
     if (!emboss_reserved_local_other.has_f74().Known()) return false;
@@ -2132,8 +1660,6 @@ class GenericLargeConditionalsView final {
         !f74().Equals(emboss_reserved_local_other.f74()))
       return false;
 
-
-
     if (!has_f75().Known()) return false;
     if (!emboss_reserved_local_other.has_f75().Known()) return false;
 
@@ -2148,8 +1674,6 @@ class GenericLargeConditionalsView final {
         has_f75().ValueOrDefault() &&
         !f75().Equals(emboss_reserved_local_other.f75()))
       return false;
-
-
 
     if (!has_f76().Known()) return false;
     if (!emboss_reserved_local_other.has_f76().Known()) return false;
@@ -2166,8 +1690,6 @@ class GenericLargeConditionalsView final {
         !f76().Equals(emboss_reserved_local_other.f76()))
       return false;
 
-
-
     if (!has_f77().Known()) return false;
     if (!emboss_reserved_local_other.has_f77().Known()) return false;
 
@@ -2182,8 +1704,6 @@ class GenericLargeConditionalsView final {
         has_f77().ValueOrDefault() &&
         !f77().Equals(emboss_reserved_local_other.f77()))
       return false;
-
-
 
     if (!has_f78().Known()) return false;
     if (!emboss_reserved_local_other.has_f78().Known()) return false;
@@ -2200,8 +1720,6 @@ class GenericLargeConditionalsView final {
         !f78().Equals(emboss_reserved_local_other.f78()))
       return false;
 
-
-
     if (!has_f79().Known()) return false;
     if (!emboss_reserved_local_other.has_f79().Known()) return false;
 
@@ -2216,8 +1734,6 @@ class GenericLargeConditionalsView final {
         has_f79().ValueOrDefault() &&
         !f79().Equals(emboss_reserved_local_other.f79()))
       return false;
-
-
 
     if (!has_f80().Known()) return false;
     if (!emboss_reserved_local_other.has_f80().Known()) return false;
@@ -2234,8 +1750,6 @@ class GenericLargeConditionalsView final {
         !f80().Equals(emboss_reserved_local_other.f80()))
       return false;
 
-
-
     if (!has_f81().Known()) return false;
     if (!emboss_reserved_local_other.has_f81().Known()) return false;
 
@@ -2250,8 +1764,6 @@ class GenericLargeConditionalsView final {
         has_f81().ValueOrDefault() &&
         !f81().Equals(emboss_reserved_local_other.f81()))
       return false;
-
-
 
     if (!has_f82().Known()) return false;
     if (!emboss_reserved_local_other.has_f82().Known()) return false;
@@ -2268,8 +1780,6 @@ class GenericLargeConditionalsView final {
         !f82().Equals(emboss_reserved_local_other.f82()))
       return false;
 
-
-
     if (!has_f83().Known()) return false;
     if (!emboss_reserved_local_other.has_f83().Known()) return false;
 
@@ -2284,8 +1794,6 @@ class GenericLargeConditionalsView final {
         has_f83().ValueOrDefault() &&
         !f83().Equals(emboss_reserved_local_other.f83()))
       return false;
-
-
 
     if (!has_f84().Known()) return false;
     if (!emboss_reserved_local_other.has_f84().Known()) return false;
@@ -2302,8 +1810,6 @@ class GenericLargeConditionalsView final {
         !f84().Equals(emboss_reserved_local_other.f84()))
       return false;
 
-
-
     if (!has_f85().Known()) return false;
     if (!emboss_reserved_local_other.has_f85().Known()) return false;
 
@@ -2318,8 +1824,6 @@ class GenericLargeConditionalsView final {
         has_f85().ValueOrDefault() &&
         !f85().Equals(emboss_reserved_local_other.f85()))
       return false;
-
-
 
     if (!has_f86().Known()) return false;
     if (!emboss_reserved_local_other.has_f86().Known()) return false;
@@ -2336,8 +1840,6 @@ class GenericLargeConditionalsView final {
         !f86().Equals(emboss_reserved_local_other.f86()))
       return false;
 
-
-
     if (!has_f87().Known()) return false;
     if (!emboss_reserved_local_other.has_f87().Known()) return false;
 
@@ -2352,8 +1854,6 @@ class GenericLargeConditionalsView final {
         has_f87().ValueOrDefault() &&
         !f87().Equals(emboss_reserved_local_other.f87()))
       return false;
-
-
 
     if (!has_f88().Known()) return false;
     if (!emboss_reserved_local_other.has_f88().Known()) return false;
@@ -2370,8 +1870,6 @@ class GenericLargeConditionalsView final {
         !f88().Equals(emboss_reserved_local_other.f88()))
       return false;
 
-
-
     if (!has_f89().Known()) return false;
     if (!emboss_reserved_local_other.has_f89().Known()) return false;
 
@@ -2386,8 +1884,6 @@ class GenericLargeConditionalsView final {
         has_f89().ValueOrDefault() &&
         !f89().Equals(emboss_reserved_local_other.f89()))
       return false;
-
-
 
     if (!has_f90().Known()) return false;
     if (!emboss_reserved_local_other.has_f90().Known()) return false;
@@ -2404,8 +1900,6 @@ class GenericLargeConditionalsView final {
         !f90().Equals(emboss_reserved_local_other.f90()))
       return false;
 
-
-
     if (!has_f91().Known()) return false;
     if (!emboss_reserved_local_other.has_f91().Known()) return false;
 
@@ -2420,8 +1914,6 @@ class GenericLargeConditionalsView final {
         has_f91().ValueOrDefault() &&
         !f91().Equals(emboss_reserved_local_other.f91()))
       return false;
-
-
 
     if (!has_f92().Known()) return false;
     if (!emboss_reserved_local_other.has_f92().Known()) return false;
@@ -2438,8 +1930,6 @@ class GenericLargeConditionalsView final {
         !f92().Equals(emboss_reserved_local_other.f92()))
       return false;
 
-
-
     if (!has_f93().Known()) return false;
     if (!emboss_reserved_local_other.has_f93().Known()) return false;
 
@@ -2454,8 +1944,6 @@ class GenericLargeConditionalsView final {
         has_f93().ValueOrDefault() &&
         !f93().Equals(emboss_reserved_local_other.f93()))
       return false;
-
-
 
     if (!has_f94().Known()) return false;
     if (!emboss_reserved_local_other.has_f94().Known()) return false;
@@ -2472,8 +1960,6 @@ class GenericLargeConditionalsView final {
         !f94().Equals(emboss_reserved_local_other.f94()))
       return false;
 
-
-
     if (!has_f95().Known()) return false;
     if (!emboss_reserved_local_other.has_f95().Known()) return false;
 
@@ -2488,8 +1974,6 @@ class GenericLargeConditionalsView final {
         has_f95().ValueOrDefault() &&
         !f95().Equals(emboss_reserved_local_other.f95()))
       return false;
-
-
 
     if (!has_f96().Known()) return false;
     if (!emboss_reserved_local_other.has_f96().Known()) return false;
@@ -2506,8 +1990,6 @@ class GenericLargeConditionalsView final {
         !f96().Equals(emboss_reserved_local_other.f96()))
       return false;
 
-
-
     if (!has_f97().Known()) return false;
     if (!emboss_reserved_local_other.has_f97().Known()) return false;
 
@@ -2522,8 +2004,6 @@ class GenericLargeConditionalsView final {
         has_f97().ValueOrDefault() &&
         !f97().Equals(emboss_reserved_local_other.f97()))
       return false;
-
-
 
     if (!has_f98().Known()) return false;
     if (!emboss_reserved_local_other.has_f98().Known()) return false;
@@ -2540,8 +2020,6 @@ class GenericLargeConditionalsView final {
         !f98().Equals(emboss_reserved_local_other.f98()))
       return false;
 
-
-
     if (!has_f99().Known()) return false;
     if (!emboss_reserved_local_other.has_f99().Known()) return false;
 
@@ -2556,8 +2034,6 @@ class GenericLargeConditionalsView final {
         has_f99().ValueOrDefault() &&
         !f99().Equals(emboss_reserved_local_other.f99()))
       return false;
-
-
 
     if (!has_f0_copy().Known()) return false;
     if (!emboss_reserved_local_other.has_f0_copy().Known()) return false;
@@ -2574,12 +2050,11 @@ class GenericLargeConditionalsView final {
         !f0_copy().Equals(emboss_reserved_local_other.f0_copy()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
-  bool UncheckedEquals(
-      GenericLargeConditionalsView<OtherStorage> emboss_reserved_local_other) const {
-    
+  bool UncheckedEquals(GenericLargeConditionalsView<OtherStorage>
+                           emboss_reserved_local_other) const {
     if (emboss_reserved_local_other.has_tag().ValueOr(false) &&
         !has_tag().ValueOr(false))
       return false;
@@ -2591,8 +2066,6 @@ class GenericLargeConditionalsView final {
         has_tag().ValueOr(false) &&
         !tag().UncheckedEquals(emboss_reserved_local_other.tag()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f0().ValueOr(false) &&
         !has_f0().ValueOr(false))
@@ -2606,8 +2079,6 @@ class GenericLargeConditionalsView final {
         !f0().UncheckedEquals(emboss_reserved_local_other.f0()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f1().ValueOr(false) &&
         !has_f1().ValueOr(false))
       return false;
@@ -2619,8 +2090,6 @@ class GenericLargeConditionalsView final {
         has_f1().ValueOr(false) &&
         !f1().UncheckedEquals(emboss_reserved_local_other.f1()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f2().ValueOr(false) &&
         !has_f2().ValueOr(false))
@@ -2634,8 +2103,6 @@ class GenericLargeConditionalsView final {
         !f2().UncheckedEquals(emboss_reserved_local_other.f2()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f3().ValueOr(false) &&
         !has_f3().ValueOr(false))
       return false;
@@ -2647,8 +2114,6 @@ class GenericLargeConditionalsView final {
         has_f3().ValueOr(false) &&
         !f3().UncheckedEquals(emboss_reserved_local_other.f3()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f4().ValueOr(false) &&
         !has_f4().ValueOr(false))
@@ -2662,8 +2127,6 @@ class GenericLargeConditionalsView final {
         !f4().UncheckedEquals(emboss_reserved_local_other.f4()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f5().ValueOr(false) &&
         !has_f5().ValueOr(false))
       return false;
@@ -2675,8 +2138,6 @@ class GenericLargeConditionalsView final {
         has_f5().ValueOr(false) &&
         !f5().UncheckedEquals(emboss_reserved_local_other.f5()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f6().ValueOr(false) &&
         !has_f6().ValueOr(false))
@@ -2690,8 +2151,6 @@ class GenericLargeConditionalsView final {
         !f6().UncheckedEquals(emboss_reserved_local_other.f6()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f7().ValueOr(false) &&
         !has_f7().ValueOr(false))
       return false;
@@ -2703,8 +2162,6 @@ class GenericLargeConditionalsView final {
         has_f7().ValueOr(false) &&
         !f7().UncheckedEquals(emboss_reserved_local_other.f7()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f8().ValueOr(false) &&
         !has_f8().ValueOr(false))
@@ -2718,8 +2175,6 @@ class GenericLargeConditionalsView final {
         !f8().UncheckedEquals(emboss_reserved_local_other.f8()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f9().ValueOr(false) &&
         !has_f9().ValueOr(false))
       return false;
@@ -2731,8 +2186,6 @@ class GenericLargeConditionalsView final {
         has_f9().ValueOr(false) &&
         !f9().UncheckedEquals(emboss_reserved_local_other.f9()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f10().ValueOr(false) &&
         !has_f10().ValueOr(false))
@@ -2746,8 +2199,6 @@ class GenericLargeConditionalsView final {
         !f10().UncheckedEquals(emboss_reserved_local_other.f10()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f11().ValueOr(false) &&
         !has_f11().ValueOr(false))
       return false;
@@ -2759,8 +2210,6 @@ class GenericLargeConditionalsView final {
         has_f11().ValueOr(false) &&
         !f11().UncheckedEquals(emboss_reserved_local_other.f11()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f12().ValueOr(false) &&
         !has_f12().ValueOr(false))
@@ -2774,8 +2223,6 @@ class GenericLargeConditionalsView final {
         !f12().UncheckedEquals(emboss_reserved_local_other.f12()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f13().ValueOr(false) &&
         !has_f13().ValueOr(false))
       return false;
@@ -2787,8 +2234,6 @@ class GenericLargeConditionalsView final {
         has_f13().ValueOr(false) &&
         !f13().UncheckedEquals(emboss_reserved_local_other.f13()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f14().ValueOr(false) &&
         !has_f14().ValueOr(false))
@@ -2802,8 +2247,6 @@ class GenericLargeConditionalsView final {
         !f14().UncheckedEquals(emboss_reserved_local_other.f14()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f15().ValueOr(false) &&
         !has_f15().ValueOr(false))
       return false;
@@ -2815,8 +2258,6 @@ class GenericLargeConditionalsView final {
         has_f15().ValueOr(false) &&
         !f15().UncheckedEquals(emboss_reserved_local_other.f15()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f16().ValueOr(false) &&
         !has_f16().ValueOr(false))
@@ -2830,8 +2271,6 @@ class GenericLargeConditionalsView final {
         !f16().UncheckedEquals(emboss_reserved_local_other.f16()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f17().ValueOr(false) &&
         !has_f17().ValueOr(false))
       return false;
@@ -2843,8 +2282,6 @@ class GenericLargeConditionalsView final {
         has_f17().ValueOr(false) &&
         !f17().UncheckedEquals(emboss_reserved_local_other.f17()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f18().ValueOr(false) &&
         !has_f18().ValueOr(false))
@@ -2858,8 +2295,6 @@ class GenericLargeConditionalsView final {
         !f18().UncheckedEquals(emboss_reserved_local_other.f18()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f19().ValueOr(false) &&
         !has_f19().ValueOr(false))
       return false;
@@ -2871,8 +2306,6 @@ class GenericLargeConditionalsView final {
         has_f19().ValueOr(false) &&
         !f19().UncheckedEquals(emboss_reserved_local_other.f19()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f20().ValueOr(false) &&
         !has_f20().ValueOr(false))
@@ -2886,8 +2319,6 @@ class GenericLargeConditionalsView final {
         !f20().UncheckedEquals(emboss_reserved_local_other.f20()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f21().ValueOr(false) &&
         !has_f21().ValueOr(false))
       return false;
@@ -2899,8 +2330,6 @@ class GenericLargeConditionalsView final {
         has_f21().ValueOr(false) &&
         !f21().UncheckedEquals(emboss_reserved_local_other.f21()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f22().ValueOr(false) &&
         !has_f22().ValueOr(false))
@@ -2914,8 +2343,6 @@ class GenericLargeConditionalsView final {
         !f22().UncheckedEquals(emboss_reserved_local_other.f22()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f23().ValueOr(false) &&
         !has_f23().ValueOr(false))
       return false;
@@ -2927,8 +2354,6 @@ class GenericLargeConditionalsView final {
         has_f23().ValueOr(false) &&
         !f23().UncheckedEquals(emboss_reserved_local_other.f23()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f24().ValueOr(false) &&
         !has_f24().ValueOr(false))
@@ -2942,8 +2367,6 @@ class GenericLargeConditionalsView final {
         !f24().UncheckedEquals(emboss_reserved_local_other.f24()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f25().ValueOr(false) &&
         !has_f25().ValueOr(false))
       return false;
@@ -2955,8 +2378,6 @@ class GenericLargeConditionalsView final {
         has_f25().ValueOr(false) &&
         !f25().UncheckedEquals(emboss_reserved_local_other.f25()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f26().ValueOr(false) &&
         !has_f26().ValueOr(false))
@@ -2970,8 +2391,6 @@ class GenericLargeConditionalsView final {
         !f26().UncheckedEquals(emboss_reserved_local_other.f26()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f27().ValueOr(false) &&
         !has_f27().ValueOr(false))
       return false;
@@ -2983,8 +2402,6 @@ class GenericLargeConditionalsView final {
         has_f27().ValueOr(false) &&
         !f27().UncheckedEquals(emboss_reserved_local_other.f27()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f28().ValueOr(false) &&
         !has_f28().ValueOr(false))
@@ -2998,8 +2415,6 @@ class GenericLargeConditionalsView final {
         !f28().UncheckedEquals(emboss_reserved_local_other.f28()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f29().ValueOr(false) &&
         !has_f29().ValueOr(false))
       return false;
@@ -3011,8 +2426,6 @@ class GenericLargeConditionalsView final {
         has_f29().ValueOr(false) &&
         !f29().UncheckedEquals(emboss_reserved_local_other.f29()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f30().ValueOr(false) &&
         !has_f30().ValueOr(false))
@@ -3026,8 +2439,6 @@ class GenericLargeConditionalsView final {
         !f30().UncheckedEquals(emboss_reserved_local_other.f30()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f31().ValueOr(false) &&
         !has_f31().ValueOr(false))
       return false;
@@ -3039,8 +2450,6 @@ class GenericLargeConditionalsView final {
         has_f31().ValueOr(false) &&
         !f31().UncheckedEquals(emboss_reserved_local_other.f31()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f32().ValueOr(false) &&
         !has_f32().ValueOr(false))
@@ -3054,8 +2463,6 @@ class GenericLargeConditionalsView final {
         !f32().UncheckedEquals(emboss_reserved_local_other.f32()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f33().ValueOr(false) &&
         !has_f33().ValueOr(false))
       return false;
@@ -3067,8 +2474,6 @@ class GenericLargeConditionalsView final {
         has_f33().ValueOr(false) &&
         !f33().UncheckedEquals(emboss_reserved_local_other.f33()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f34().ValueOr(false) &&
         !has_f34().ValueOr(false))
@@ -3082,8 +2487,6 @@ class GenericLargeConditionalsView final {
         !f34().UncheckedEquals(emboss_reserved_local_other.f34()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f35().ValueOr(false) &&
         !has_f35().ValueOr(false))
       return false;
@@ -3095,8 +2498,6 @@ class GenericLargeConditionalsView final {
         has_f35().ValueOr(false) &&
         !f35().UncheckedEquals(emboss_reserved_local_other.f35()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f36().ValueOr(false) &&
         !has_f36().ValueOr(false))
@@ -3110,8 +2511,6 @@ class GenericLargeConditionalsView final {
         !f36().UncheckedEquals(emboss_reserved_local_other.f36()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f37().ValueOr(false) &&
         !has_f37().ValueOr(false))
       return false;
@@ -3123,8 +2522,6 @@ class GenericLargeConditionalsView final {
         has_f37().ValueOr(false) &&
         !f37().UncheckedEquals(emboss_reserved_local_other.f37()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f38().ValueOr(false) &&
         !has_f38().ValueOr(false))
@@ -3138,8 +2535,6 @@ class GenericLargeConditionalsView final {
         !f38().UncheckedEquals(emboss_reserved_local_other.f38()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f39().ValueOr(false) &&
         !has_f39().ValueOr(false))
       return false;
@@ -3151,8 +2546,6 @@ class GenericLargeConditionalsView final {
         has_f39().ValueOr(false) &&
         !f39().UncheckedEquals(emboss_reserved_local_other.f39()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f40().ValueOr(false) &&
         !has_f40().ValueOr(false))
@@ -3166,8 +2559,6 @@ class GenericLargeConditionalsView final {
         !f40().UncheckedEquals(emboss_reserved_local_other.f40()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f41().ValueOr(false) &&
         !has_f41().ValueOr(false))
       return false;
@@ -3179,8 +2570,6 @@ class GenericLargeConditionalsView final {
         has_f41().ValueOr(false) &&
         !f41().UncheckedEquals(emboss_reserved_local_other.f41()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f42().ValueOr(false) &&
         !has_f42().ValueOr(false))
@@ -3194,8 +2583,6 @@ class GenericLargeConditionalsView final {
         !f42().UncheckedEquals(emboss_reserved_local_other.f42()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f43().ValueOr(false) &&
         !has_f43().ValueOr(false))
       return false;
@@ -3207,8 +2594,6 @@ class GenericLargeConditionalsView final {
         has_f43().ValueOr(false) &&
         !f43().UncheckedEquals(emboss_reserved_local_other.f43()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f44().ValueOr(false) &&
         !has_f44().ValueOr(false))
@@ -3222,8 +2607,6 @@ class GenericLargeConditionalsView final {
         !f44().UncheckedEquals(emboss_reserved_local_other.f44()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f45().ValueOr(false) &&
         !has_f45().ValueOr(false))
       return false;
@@ -3235,8 +2618,6 @@ class GenericLargeConditionalsView final {
         has_f45().ValueOr(false) &&
         !f45().UncheckedEquals(emboss_reserved_local_other.f45()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f46().ValueOr(false) &&
         !has_f46().ValueOr(false))
@@ -3250,8 +2631,6 @@ class GenericLargeConditionalsView final {
         !f46().UncheckedEquals(emboss_reserved_local_other.f46()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f47().ValueOr(false) &&
         !has_f47().ValueOr(false))
       return false;
@@ -3263,8 +2642,6 @@ class GenericLargeConditionalsView final {
         has_f47().ValueOr(false) &&
         !f47().UncheckedEquals(emboss_reserved_local_other.f47()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f48().ValueOr(false) &&
         !has_f48().ValueOr(false))
@@ -3278,8 +2655,6 @@ class GenericLargeConditionalsView final {
         !f48().UncheckedEquals(emboss_reserved_local_other.f48()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f49().ValueOr(false) &&
         !has_f49().ValueOr(false))
       return false;
@@ -3291,8 +2666,6 @@ class GenericLargeConditionalsView final {
         has_f49().ValueOr(false) &&
         !f49().UncheckedEquals(emboss_reserved_local_other.f49()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f50().ValueOr(false) &&
         !has_f50().ValueOr(false))
@@ -3306,8 +2679,6 @@ class GenericLargeConditionalsView final {
         !f50().UncheckedEquals(emboss_reserved_local_other.f50()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f51().ValueOr(false) &&
         !has_f51().ValueOr(false))
       return false;
@@ -3319,8 +2690,6 @@ class GenericLargeConditionalsView final {
         has_f51().ValueOr(false) &&
         !f51().UncheckedEquals(emboss_reserved_local_other.f51()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f52().ValueOr(false) &&
         !has_f52().ValueOr(false))
@@ -3334,8 +2703,6 @@ class GenericLargeConditionalsView final {
         !f52().UncheckedEquals(emboss_reserved_local_other.f52()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f53().ValueOr(false) &&
         !has_f53().ValueOr(false))
       return false;
@@ -3347,8 +2714,6 @@ class GenericLargeConditionalsView final {
         has_f53().ValueOr(false) &&
         !f53().UncheckedEquals(emboss_reserved_local_other.f53()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f54().ValueOr(false) &&
         !has_f54().ValueOr(false))
@@ -3362,8 +2727,6 @@ class GenericLargeConditionalsView final {
         !f54().UncheckedEquals(emboss_reserved_local_other.f54()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f55().ValueOr(false) &&
         !has_f55().ValueOr(false))
       return false;
@@ -3375,8 +2738,6 @@ class GenericLargeConditionalsView final {
         has_f55().ValueOr(false) &&
         !f55().UncheckedEquals(emboss_reserved_local_other.f55()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f56().ValueOr(false) &&
         !has_f56().ValueOr(false))
@@ -3390,8 +2751,6 @@ class GenericLargeConditionalsView final {
         !f56().UncheckedEquals(emboss_reserved_local_other.f56()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f57().ValueOr(false) &&
         !has_f57().ValueOr(false))
       return false;
@@ -3403,8 +2762,6 @@ class GenericLargeConditionalsView final {
         has_f57().ValueOr(false) &&
         !f57().UncheckedEquals(emboss_reserved_local_other.f57()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f58().ValueOr(false) &&
         !has_f58().ValueOr(false))
@@ -3418,8 +2775,6 @@ class GenericLargeConditionalsView final {
         !f58().UncheckedEquals(emboss_reserved_local_other.f58()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f59().ValueOr(false) &&
         !has_f59().ValueOr(false))
       return false;
@@ -3431,8 +2786,6 @@ class GenericLargeConditionalsView final {
         has_f59().ValueOr(false) &&
         !f59().UncheckedEquals(emboss_reserved_local_other.f59()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f60().ValueOr(false) &&
         !has_f60().ValueOr(false))
@@ -3446,8 +2799,6 @@ class GenericLargeConditionalsView final {
         !f60().UncheckedEquals(emboss_reserved_local_other.f60()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f61().ValueOr(false) &&
         !has_f61().ValueOr(false))
       return false;
@@ -3459,8 +2810,6 @@ class GenericLargeConditionalsView final {
         has_f61().ValueOr(false) &&
         !f61().UncheckedEquals(emboss_reserved_local_other.f61()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f62().ValueOr(false) &&
         !has_f62().ValueOr(false))
@@ -3474,8 +2823,6 @@ class GenericLargeConditionalsView final {
         !f62().UncheckedEquals(emboss_reserved_local_other.f62()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f63().ValueOr(false) &&
         !has_f63().ValueOr(false))
       return false;
@@ -3487,8 +2834,6 @@ class GenericLargeConditionalsView final {
         has_f63().ValueOr(false) &&
         !f63().UncheckedEquals(emboss_reserved_local_other.f63()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f64().ValueOr(false) &&
         !has_f64().ValueOr(false))
@@ -3502,8 +2847,6 @@ class GenericLargeConditionalsView final {
         !f64().UncheckedEquals(emboss_reserved_local_other.f64()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f65().ValueOr(false) &&
         !has_f65().ValueOr(false))
       return false;
@@ -3515,8 +2858,6 @@ class GenericLargeConditionalsView final {
         has_f65().ValueOr(false) &&
         !f65().UncheckedEquals(emboss_reserved_local_other.f65()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f66().ValueOr(false) &&
         !has_f66().ValueOr(false))
@@ -3530,8 +2871,6 @@ class GenericLargeConditionalsView final {
         !f66().UncheckedEquals(emboss_reserved_local_other.f66()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f67().ValueOr(false) &&
         !has_f67().ValueOr(false))
       return false;
@@ -3543,8 +2882,6 @@ class GenericLargeConditionalsView final {
         has_f67().ValueOr(false) &&
         !f67().UncheckedEquals(emboss_reserved_local_other.f67()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f68().ValueOr(false) &&
         !has_f68().ValueOr(false))
@@ -3558,8 +2895,6 @@ class GenericLargeConditionalsView final {
         !f68().UncheckedEquals(emboss_reserved_local_other.f68()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f69().ValueOr(false) &&
         !has_f69().ValueOr(false))
       return false;
@@ -3571,8 +2906,6 @@ class GenericLargeConditionalsView final {
         has_f69().ValueOr(false) &&
         !f69().UncheckedEquals(emboss_reserved_local_other.f69()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f70().ValueOr(false) &&
         !has_f70().ValueOr(false))
@@ -3586,8 +2919,6 @@ class GenericLargeConditionalsView final {
         !f70().UncheckedEquals(emboss_reserved_local_other.f70()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f71().ValueOr(false) &&
         !has_f71().ValueOr(false))
       return false;
@@ -3599,8 +2930,6 @@ class GenericLargeConditionalsView final {
         has_f71().ValueOr(false) &&
         !f71().UncheckedEquals(emboss_reserved_local_other.f71()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f72().ValueOr(false) &&
         !has_f72().ValueOr(false))
@@ -3614,8 +2943,6 @@ class GenericLargeConditionalsView final {
         !f72().UncheckedEquals(emboss_reserved_local_other.f72()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f73().ValueOr(false) &&
         !has_f73().ValueOr(false))
       return false;
@@ -3627,8 +2954,6 @@ class GenericLargeConditionalsView final {
         has_f73().ValueOr(false) &&
         !f73().UncheckedEquals(emboss_reserved_local_other.f73()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f74().ValueOr(false) &&
         !has_f74().ValueOr(false))
@@ -3642,8 +2967,6 @@ class GenericLargeConditionalsView final {
         !f74().UncheckedEquals(emboss_reserved_local_other.f74()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f75().ValueOr(false) &&
         !has_f75().ValueOr(false))
       return false;
@@ -3655,8 +2978,6 @@ class GenericLargeConditionalsView final {
         has_f75().ValueOr(false) &&
         !f75().UncheckedEquals(emboss_reserved_local_other.f75()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f76().ValueOr(false) &&
         !has_f76().ValueOr(false))
@@ -3670,8 +2991,6 @@ class GenericLargeConditionalsView final {
         !f76().UncheckedEquals(emboss_reserved_local_other.f76()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f77().ValueOr(false) &&
         !has_f77().ValueOr(false))
       return false;
@@ -3683,8 +3002,6 @@ class GenericLargeConditionalsView final {
         has_f77().ValueOr(false) &&
         !f77().UncheckedEquals(emboss_reserved_local_other.f77()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f78().ValueOr(false) &&
         !has_f78().ValueOr(false))
@@ -3698,8 +3015,6 @@ class GenericLargeConditionalsView final {
         !f78().UncheckedEquals(emboss_reserved_local_other.f78()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f79().ValueOr(false) &&
         !has_f79().ValueOr(false))
       return false;
@@ -3711,8 +3026,6 @@ class GenericLargeConditionalsView final {
         has_f79().ValueOr(false) &&
         !f79().UncheckedEquals(emboss_reserved_local_other.f79()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f80().ValueOr(false) &&
         !has_f80().ValueOr(false))
@@ -3726,8 +3039,6 @@ class GenericLargeConditionalsView final {
         !f80().UncheckedEquals(emboss_reserved_local_other.f80()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f81().ValueOr(false) &&
         !has_f81().ValueOr(false))
       return false;
@@ -3739,8 +3050,6 @@ class GenericLargeConditionalsView final {
         has_f81().ValueOr(false) &&
         !f81().UncheckedEquals(emboss_reserved_local_other.f81()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f82().ValueOr(false) &&
         !has_f82().ValueOr(false))
@@ -3754,8 +3063,6 @@ class GenericLargeConditionalsView final {
         !f82().UncheckedEquals(emboss_reserved_local_other.f82()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f83().ValueOr(false) &&
         !has_f83().ValueOr(false))
       return false;
@@ -3767,8 +3074,6 @@ class GenericLargeConditionalsView final {
         has_f83().ValueOr(false) &&
         !f83().UncheckedEquals(emboss_reserved_local_other.f83()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f84().ValueOr(false) &&
         !has_f84().ValueOr(false))
@@ -3782,8 +3087,6 @@ class GenericLargeConditionalsView final {
         !f84().UncheckedEquals(emboss_reserved_local_other.f84()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f85().ValueOr(false) &&
         !has_f85().ValueOr(false))
       return false;
@@ -3795,8 +3098,6 @@ class GenericLargeConditionalsView final {
         has_f85().ValueOr(false) &&
         !f85().UncheckedEquals(emboss_reserved_local_other.f85()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f86().ValueOr(false) &&
         !has_f86().ValueOr(false))
@@ -3810,8 +3111,6 @@ class GenericLargeConditionalsView final {
         !f86().UncheckedEquals(emboss_reserved_local_other.f86()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f87().ValueOr(false) &&
         !has_f87().ValueOr(false))
       return false;
@@ -3823,8 +3122,6 @@ class GenericLargeConditionalsView final {
         has_f87().ValueOr(false) &&
         !f87().UncheckedEquals(emboss_reserved_local_other.f87()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f88().ValueOr(false) &&
         !has_f88().ValueOr(false))
@@ -3838,8 +3135,6 @@ class GenericLargeConditionalsView final {
         !f88().UncheckedEquals(emboss_reserved_local_other.f88()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f89().ValueOr(false) &&
         !has_f89().ValueOr(false))
       return false;
@@ -3851,8 +3146,6 @@ class GenericLargeConditionalsView final {
         has_f89().ValueOr(false) &&
         !f89().UncheckedEquals(emboss_reserved_local_other.f89()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f90().ValueOr(false) &&
         !has_f90().ValueOr(false))
@@ -3866,8 +3159,6 @@ class GenericLargeConditionalsView final {
         !f90().UncheckedEquals(emboss_reserved_local_other.f90()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f91().ValueOr(false) &&
         !has_f91().ValueOr(false))
       return false;
@@ -3879,8 +3170,6 @@ class GenericLargeConditionalsView final {
         has_f91().ValueOr(false) &&
         !f91().UncheckedEquals(emboss_reserved_local_other.f91()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f92().ValueOr(false) &&
         !has_f92().ValueOr(false))
@@ -3894,8 +3183,6 @@ class GenericLargeConditionalsView final {
         !f92().UncheckedEquals(emboss_reserved_local_other.f92()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f93().ValueOr(false) &&
         !has_f93().ValueOr(false))
       return false;
@@ -3907,8 +3194,6 @@ class GenericLargeConditionalsView final {
         has_f93().ValueOr(false) &&
         !f93().UncheckedEquals(emboss_reserved_local_other.f93()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f94().ValueOr(false) &&
         !has_f94().ValueOr(false))
@@ -3922,8 +3207,6 @@ class GenericLargeConditionalsView final {
         !f94().UncheckedEquals(emboss_reserved_local_other.f94()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f95().ValueOr(false) &&
         !has_f95().ValueOr(false))
       return false;
@@ -3935,8 +3218,6 @@ class GenericLargeConditionalsView final {
         has_f95().ValueOr(false) &&
         !f95().UncheckedEquals(emboss_reserved_local_other.f95()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f96().ValueOr(false) &&
         !has_f96().ValueOr(false))
@@ -3950,8 +3231,6 @@ class GenericLargeConditionalsView final {
         !f96().UncheckedEquals(emboss_reserved_local_other.f96()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f97().ValueOr(false) &&
         !has_f97().ValueOr(false))
       return false;
@@ -3963,8 +3242,6 @@ class GenericLargeConditionalsView final {
         has_f97().ValueOr(false) &&
         !f97().UncheckedEquals(emboss_reserved_local_other.f97()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f98().ValueOr(false) &&
         !has_f98().ValueOr(false))
@@ -3978,8 +3255,6 @@ class GenericLargeConditionalsView final {
         !f98().UncheckedEquals(emboss_reserved_local_other.f98()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_f99().ValueOr(false) &&
         !has_f99().ValueOr(false))
       return false;
@@ -3991,8 +3266,6 @@ class GenericLargeConditionalsView final {
         has_f99().ValueOr(false) &&
         !f99().UncheckedEquals(emboss_reserved_local_other.f99()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_f0_copy().ValueOr(false) &&
         !has_f0_copy().ValueOr(false))
@@ -4006,33 +3279,34 @@ class GenericLargeConditionalsView final {
         !f0_copy().UncheckedEquals(emboss_reserved_local_other.f0_copy()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
-  void UncheckedCopyFrom(
-      GenericLargeConditionalsView<OtherStorage> emboss_reserved_local_other) const {
+  void UncheckedCopyFrom(GenericLargeConditionalsView<OtherStorage>
+                             emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
         emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
   }
 
   template <typename OtherStorage>
-  void CopyFrom(
-      GenericLargeConditionalsView<OtherStorage> emboss_reserved_local_other) const {
+  void CopyFrom(GenericLargeConditionalsView<OtherStorage>
+                    emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
         emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
   template <typename OtherStorage>
-  bool TryToCopyFrom(
-      GenericLargeConditionalsView<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  bool TryToCopyFrom(GenericLargeConditionalsView<OtherStorage>
+                         emboss_reserved_local_other) const {
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
 
   template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
     ::std::string emboss_reserved_local_brace;
     if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
                                       &emboss_reserved_local_brace))
@@ -4054,816 +3328,714 @@ class GenericLargeConditionalsView final {
         return false;
       if (emboss_reserved_local_colon != ":") return false;
       if (emboss_reserved_local_name == "tag") {
-        if (!tag().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!tag().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f0") {
-        if (!f0().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f0().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f1") {
-        if (!f1().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f1().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f2") {
-        if (!f2().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f2().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f3") {
-        if (!f3().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f3().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f4") {
-        if (!f4().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f4().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f5") {
-        if (!f5().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f5().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f6") {
-        if (!f6().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f6().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f7") {
-        if (!f7().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f7().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f8") {
-        if (!f8().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f8().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f9") {
-        if (!f9().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f9().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f10") {
-        if (!f10().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f10().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f11") {
-        if (!f11().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f11().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f12") {
-        if (!f12().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f12().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f13") {
-        if (!f13().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f13().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f14") {
-        if (!f14().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f14().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f15") {
-        if (!f15().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f15().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f16") {
-        if (!f16().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f16().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f17") {
-        if (!f17().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f17().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f18") {
-        if (!f18().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f18().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f19") {
-        if (!f19().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f19().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f20") {
-        if (!f20().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f20().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f21") {
-        if (!f21().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f21().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f22") {
-        if (!f22().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f22().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f23") {
-        if (!f23().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f23().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f24") {
-        if (!f24().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f24().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f25") {
-        if (!f25().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f25().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f26") {
-        if (!f26().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f26().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f27") {
-        if (!f27().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f27().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f28") {
-        if (!f28().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f28().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f29") {
-        if (!f29().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f29().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f30") {
-        if (!f30().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f30().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f31") {
-        if (!f31().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f31().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f32") {
-        if (!f32().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f32().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f33") {
-        if (!f33().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f33().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f34") {
-        if (!f34().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f34().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f35") {
-        if (!f35().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f35().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f36") {
-        if (!f36().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f36().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f37") {
-        if (!f37().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f37().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f38") {
-        if (!f38().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f38().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f39") {
-        if (!f39().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f39().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f40") {
-        if (!f40().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f40().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f41") {
-        if (!f41().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f41().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f42") {
-        if (!f42().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f42().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f43") {
-        if (!f43().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f43().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f44") {
-        if (!f44().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f44().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f45") {
-        if (!f45().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f45().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f46") {
-        if (!f46().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f46().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f47") {
-        if (!f47().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f47().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f48") {
-        if (!f48().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f48().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f49") {
-        if (!f49().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f49().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f50") {
-        if (!f50().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f50().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f51") {
-        if (!f51().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f51().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f52") {
-        if (!f52().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f52().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f53") {
-        if (!f53().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f53().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f54") {
-        if (!f54().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f54().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f55") {
-        if (!f55().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f55().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f56") {
-        if (!f56().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f56().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f57") {
-        if (!f57().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f57().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f58") {
-        if (!f58().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f58().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f59") {
-        if (!f59().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f59().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f60") {
-        if (!f60().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f60().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f61") {
-        if (!f61().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f61().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f62") {
-        if (!f62().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f62().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f63") {
-        if (!f63().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f63().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f64") {
-        if (!f64().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f64().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f65") {
-        if (!f65().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f65().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f66") {
-        if (!f66().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f66().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f67") {
-        if (!f67().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f67().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f68") {
-        if (!f68().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f68().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f69") {
-        if (!f69().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f69().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f70") {
-        if (!f70().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f70().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f71") {
-        if (!f71().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f71().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f72") {
-        if (!f72().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f72().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f73") {
-        if (!f73().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f73().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f74") {
-        if (!f74().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f74().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f75") {
-        if (!f75().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f75().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f76") {
-        if (!f76().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f76().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f77") {
-        if (!f77().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f77().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f78") {
-        if (!f78().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f78().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f79") {
-        if (!f79().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f79().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f80") {
-        if (!f80().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f80().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f81") {
-        if (!f81().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f81().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f82") {
-        if (!f82().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f82().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f83") {
-        if (!f83().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f83().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f84") {
-        if (!f84().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f84().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f85") {
-        if (!f85().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f85().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f86") {
-        if (!f86().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f86().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f87") {
-        if (!f87().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f87().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f88") {
-        if (!f88().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f88().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f89") {
-        if (!f89().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f89().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f90") {
-        if (!f90().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f90().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f91") {
-        if (!f91().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f91().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f92") {
-        if (!f92().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f92().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f93") {
-        if (!f93().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f93().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f94") {
-        if (!f94().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f94().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f95") {
-        if (!f95().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f95().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f96") {
-        if (!f96().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f96().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f97") {
-        if (!f97().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f97().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f98") {
-        if (!f98().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f98().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f99") {
-        if (!f99().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f99().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "f0_copy") {
-        if (!f0_copy().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!f0_copy().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
@@ -4875,7 +4047,7 @@ class GenericLargeConditionalsView final {
 
   template <class Stream>
   void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
+      Stream* emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
     ::emboss::TextOutputOptions emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
@@ -4899,7 +4071,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("tag: ");
         tag().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -4929,7 +4101,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f0: ");
         f0().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                               emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -4959,7 +4131,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f1: ");
         f1().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                               emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -4989,7 +4161,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f2: ");
         f2().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                               emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5019,7 +4191,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f3: ");
         f3().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                               emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5049,7 +4221,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f4: ");
         f4().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                               emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5079,7 +4251,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f5: ");
         f5().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                               emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5109,7 +4281,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f6: ");
         f6().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                               emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5139,7 +4311,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f7: ");
         f7().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                               emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5169,7 +4341,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f8: ");
         f8().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                               emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5199,7 +4371,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f9: ");
         f9().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                               emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5229,7 +4401,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f10: ");
         f10().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5259,7 +4431,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f11: ");
         f11().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5289,7 +4461,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f12: ");
         f12().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5319,7 +4491,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f13: ");
         f13().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5349,7 +4521,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f14: ");
         f14().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5379,7 +4551,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f15: ");
         f15().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5409,7 +4581,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f16: ");
         f16().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5439,7 +4611,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f17: ");
         f17().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5469,7 +4641,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f18: ");
         f18().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5499,7 +4671,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f19: ");
         f19().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5529,7 +4701,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f20: ");
         f20().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5559,7 +4731,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f21: ");
         f21().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5589,7 +4761,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f22: ");
         f22().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5619,7 +4791,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f23: ");
         f23().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5649,7 +4821,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f24: ");
         f24().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5679,7 +4851,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f25: ");
         f25().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5709,7 +4881,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f26: ");
         f26().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5739,7 +4911,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f27: ");
         f27().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5769,7 +4941,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f28: ");
         f28().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5799,7 +4971,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f29: ");
         f29().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5829,7 +5001,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f30: ");
         f30().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5859,7 +5031,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f31: ");
         f31().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5889,7 +5061,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f32: ");
         f32().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5919,7 +5091,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f33: ");
         f33().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5949,7 +5121,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f34: ");
         f34().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5979,7 +5151,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f35: ");
         f35().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6009,7 +5181,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f36: ");
         f36().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6039,7 +5211,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f37: ");
         f37().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6069,7 +5241,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f38: ");
         f38().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6099,7 +5271,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f39: ");
         f39().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6129,7 +5301,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f40: ");
         f40().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6159,7 +5331,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f41: ");
         f41().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6189,7 +5361,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f42: ");
         f42().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6219,7 +5391,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f43: ");
         f43().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6249,7 +5421,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f44: ");
         f44().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6279,7 +5451,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f45: ");
         f45().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6309,7 +5481,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f46: ");
         f46().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6339,7 +5511,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f47: ");
         f47().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6369,7 +5541,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f48: ");
         f48().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6399,7 +5571,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f49: ");
         f49().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6429,7 +5601,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f50: ");
         f50().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6459,7 +5631,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f51: ");
         f51().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6489,7 +5661,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f52: ");
         f52().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6519,7 +5691,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f53: ");
         f53().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6549,7 +5721,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f54: ");
         f54().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6579,7 +5751,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f55: ");
         f55().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6609,7 +5781,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f56: ");
         f56().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6639,7 +5811,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f57: ");
         f57().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6669,7 +5841,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f58: ");
         f58().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6699,7 +5871,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f59: ");
         f59().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6729,7 +5901,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f60: ");
         f60().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6759,7 +5931,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f61: ");
         f61().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6789,7 +5961,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f62: ");
         f62().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6819,7 +5991,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f63: ");
         f63().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6849,7 +6021,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f64: ");
         f64().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6879,7 +6051,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f65: ");
         f65().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6909,7 +6081,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f66: ");
         f66().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6939,7 +6111,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f67: ");
         f67().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6969,7 +6141,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f68: ");
         f68().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6999,7 +6171,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f69: ");
         f69().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7029,7 +6201,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f70: ");
         f70().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7059,7 +6231,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f71: ");
         f71().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7089,7 +6261,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f72: ");
         f72().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7119,7 +6291,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f73: ");
         f73().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7149,7 +6321,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f74: ");
         f74().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7179,7 +6351,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f75: ");
         f75().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7209,7 +6381,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f76: ");
         f76().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7239,7 +6411,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f77: ");
         f77().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7269,7 +6441,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f78: ");
         f78().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7299,7 +6471,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f79: ");
         f79().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7329,7 +6501,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f80: ");
         f80().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7359,7 +6531,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f81: ");
         f81().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7389,7 +6561,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f82: ");
         f82().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7419,7 +6591,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f83: ");
         f83().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7449,7 +6621,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f84: ");
         f84().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7479,7 +6651,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f85: ");
         f85().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7509,7 +6681,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f86: ");
         f86().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7539,7 +6711,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f87: ");
         f87().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7569,7 +6741,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f88: ");
         f88().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7599,7 +6771,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f89: ");
         f89().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7629,7 +6801,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f90: ");
         f90().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7659,7 +6831,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f91: ");
         f91().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7689,7 +6861,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f92: ");
         f92().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7719,7 +6891,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f93: ");
         f93().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7749,7 +6921,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f94: ");
         f94().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7779,7 +6951,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f95: ");
         f95().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7809,7 +6981,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f96: ");
         f96().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7839,7 +7011,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f97: ");
         f97().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7869,7 +7041,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f98: ");
         f98().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7899,7 +7071,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f99: ");
         f99().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7929,7 +7101,7 @@ class GenericLargeConditionalsView final {
         }
         emboss_reserved_local_stream->Write("f0_copy: ");
         f0_copy().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                    emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7955,824 +7127,1230 @@ class GenericLargeConditionalsView final {
     }
   }
 
-
-
   static constexpr bool IsAggregate() { return true; }
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          32>>
 
- tag() const;
+  tag() const;
   ::emboss::support::Maybe<bool> has_tag() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f0() const;
+  f0() const;
   ::emboss::support::Maybe<bool> has_f0() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f1() const;
+  f1() const;
   ::emboss::support::Maybe<bool> has_f1() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f2() const;
+  f2() const;
   ::emboss::support::Maybe<bool> has_f2() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f3() const;
+  f3() const;
   ::emboss::support::Maybe<bool> has_f3() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f4() const;
+  f4() const;
   ::emboss::support::Maybe<bool> has_f4() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f5() const;
+  f5() const;
   ::emboss::support::Maybe<bool> has_f5() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f6() const;
+  f6() const;
   ::emboss::support::Maybe<bool> has_f6() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f7() const;
+  f7() const;
   ::emboss::support::Maybe<bool> has_f7() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f8() const;
+  f8() const;
   ::emboss::support::Maybe<bool> has_f8() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f9() const;
+  f9() const;
   ::emboss::support::Maybe<bool> has_f9() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f10() const;
+  f10() const;
   ::emboss::support::Maybe<bool> has_f10() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f11() const;
+  f11() const;
   ::emboss::support::Maybe<bool> has_f11() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f12() const;
+  f12() const;
   ::emboss::support::Maybe<bool> has_f12() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f13() const;
+  f13() const;
   ::emboss::support::Maybe<bool> has_f13() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f14() const;
+  f14() const;
   ::emboss::support::Maybe<bool> has_f14() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f15() const;
+  f15() const;
   ::emboss::support::Maybe<bool> has_f15() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f16() const;
+  f16() const;
   ::emboss::support::Maybe<bool> has_f16() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f17() const;
+  f17() const;
   ::emboss::support::Maybe<bool> has_f17() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f18() const;
+  f18() const;
   ::emboss::support::Maybe<bool> has_f18() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f19() const;
+  f19() const;
   ::emboss::support::Maybe<bool> has_f19() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f20() const;
+  f20() const;
   ::emboss::support::Maybe<bool> has_f20() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f21() const;
+  f21() const;
   ::emboss::support::Maybe<bool> has_f21() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f22() const;
+  f22() const;
   ::emboss::support::Maybe<bool> has_f22() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f23() const;
+  f23() const;
   ::emboss::support::Maybe<bool> has_f23() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f24() const;
+  f24() const;
   ::emboss::support::Maybe<bool> has_f24() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f25() const;
+  f25() const;
   ::emboss::support::Maybe<bool> has_f25() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f26() const;
+  f26() const;
   ::emboss::support::Maybe<bool> has_f26() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f27() const;
+  f27() const;
   ::emboss::support::Maybe<bool> has_f27() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f28() const;
+  f28() const;
   ::emboss::support::Maybe<bool> has_f28() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f29() const;
+  f29() const;
   ::emboss::support::Maybe<bool> has_f29() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f30() const;
+  f30() const;
   ::emboss::support::Maybe<bool> has_f30() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f31() const;
+  f31() const;
   ::emboss::support::Maybe<bool> has_f31() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f32() const;
+  f32() const;
   ::emboss::support::Maybe<bool> has_f32() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f33() const;
+  f33() const;
   ::emboss::support::Maybe<bool> has_f33() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f34() const;
+  f34() const;
   ::emboss::support::Maybe<bool> has_f34() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f35() const;
+  f35() const;
   ::emboss::support::Maybe<bool> has_f35() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f36() const;
+  f36() const;
   ::emboss::support::Maybe<bool> has_f36() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f37() const;
+  f37() const;
   ::emboss::support::Maybe<bool> has_f37() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f38() const;
+  f38() const;
   ::emboss::support::Maybe<bool> has_f38() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f39() const;
+  f39() const;
   ::emboss::support::Maybe<bool> has_f39() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f40() const;
+  f40() const;
   ::emboss::support::Maybe<bool> has_f40() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f41() const;
+  f41() const;
   ::emboss::support::Maybe<bool> has_f41() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f42() const;
+  f42() const;
   ::emboss::support::Maybe<bool> has_f42() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f43() const;
+  f43() const;
   ::emboss::support::Maybe<bool> has_f43() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f44() const;
+  f44() const;
   ::emboss::support::Maybe<bool> has_f44() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f45() const;
+  f45() const;
   ::emboss::support::Maybe<bool> has_f45() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f46() const;
+  f46() const;
   ::emboss::support::Maybe<bool> has_f46() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f47() const;
+  f47() const;
   ::emboss::support::Maybe<bool> has_f47() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f48() const;
+  f48() const;
   ::emboss::support::Maybe<bool> has_f48() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f49() const;
+  f49() const;
   ::emboss::support::Maybe<bool> has_f49() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f50() const;
+  f50() const;
   ::emboss::support::Maybe<bool> has_f50() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f51() const;
+  f51() const;
   ::emboss::support::Maybe<bool> has_f51() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f52() const;
+  f52() const;
   ::emboss::support::Maybe<bool> has_f52() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f53() const;
+  f53() const;
   ::emboss::support::Maybe<bool> has_f53() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f54() const;
+  f54() const;
   ::emboss::support::Maybe<bool> has_f54() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f55() const;
+  f55() const;
   ::emboss::support::Maybe<bool> has_f55() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f56() const;
+  f56() const;
   ::emboss::support::Maybe<bool> has_f56() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f57() const;
+  f57() const;
   ::emboss::support::Maybe<bool> has_f57() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f58() const;
+  f58() const;
   ::emboss::support::Maybe<bool> has_f58() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f59() const;
+  f59() const;
   ::emboss::support::Maybe<bool> has_f59() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f60() const;
+  f60() const;
   ::emboss::support::Maybe<bool> has_f60() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f61() const;
+  f61() const;
   ::emboss::support::Maybe<bool> has_f61() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f62() const;
+  f62() const;
   ::emboss::support::Maybe<bool> has_f62() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f63() const;
+  f63() const;
   ::emboss::support::Maybe<bool> has_f63() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f64() const;
+  f64() const;
   ::emboss::support::Maybe<bool> has_f64() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f65() const;
+  f65() const;
   ::emboss::support::Maybe<bool> has_f65() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f66() const;
+  f66() const;
   ::emboss::support::Maybe<bool> has_f66() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f67() const;
+  f67() const;
   ::emboss::support::Maybe<bool> has_f67() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f68() const;
+  f68() const;
   ::emboss::support::Maybe<bool> has_f68() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f69() const;
+  f69() const;
   ::emboss::support::Maybe<bool> has_f69() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f70() const;
+  f70() const;
   ::emboss::support::Maybe<bool> has_f70() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f71() const;
+  f71() const;
   ::emboss::support::Maybe<bool> has_f71() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f72() const;
+  f72() const;
   ::emboss::support::Maybe<bool> has_f72() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f73() const;
+  f73() const;
   ::emboss::support::Maybe<bool> has_f73() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f74() const;
+  f74() const;
   ::emboss::support::Maybe<bool> has_f74() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f75() const;
+  f75() const;
   ::emboss::support::Maybe<bool> has_f75() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f76() const;
+  f76() const;
   ::emboss::support::Maybe<bool> has_f76() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f77() const;
+  f77() const;
   ::emboss::support::Maybe<bool> has_f77() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f78() const;
+  f78() const;
   ::emboss::support::Maybe<bool> has_f78() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f79() const;
+  f79() const;
   ::emboss::support::Maybe<bool> has_f79() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f80() const;
+  f80() const;
   ::emboss::support::Maybe<bool> has_f80() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f81() const;
+  f81() const;
   ::emboss::support::Maybe<bool> has_f81() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f82() const;
+  f82() const;
   ::emboss::support::Maybe<bool> has_f82() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f83() const;
+  f83() const;
   ::emboss::support::Maybe<bool> has_f83() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f84() const;
+  f84() const;
   ::emboss::support::Maybe<bool> has_f84() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f85() const;
+  f85() const;
   ::emboss::support::Maybe<bool> has_f85() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f86() const;
+  f86() const;
   ::emboss::support::Maybe<bool> has_f86() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f87() const;
+  f87() const;
   ::emboss::support::Maybe<bool> has_f87() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f88() const;
+  f88() const;
   ::emboss::support::Maybe<bool> has_f88() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f89() const;
+  f89() const;
   ::emboss::support::Maybe<bool> has_f89() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f90() const;
+  f90() const;
   ::emboss::support::Maybe<bool> has_f90() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f91() const;
+  f91() const;
   ::emboss::support::Maybe<bool> has_f91() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f92() const;
+  f92() const;
   ::emboss::support::Maybe<bool> has_f92() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f93() const;
+  f93() const;
   ::emboss::support::Maybe<bool> has_f93() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f94() const;
+  f94() const;
   ::emboss::support::Maybe<bool> has_f94() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f95() const;
+  f95() const;
   ::emboss::support::Maybe<bool> has_f95() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f96() const;
+  f96() const;
   ::emboss::support::Maybe<bool> has_f96() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f97() const;
+  f97() const;
   ::emboss::support::Maybe<bool> has_f97() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f98() const;
+  f98() const;
   ::emboss::support::Maybe<bool> has_f98() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- f99() const;
+  f99() const;
   ::emboss::support::Maybe<bool> has_f99() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 8>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 8>>,
+          32>>
 
- f0_copy() const;
+  f0_copy() const;
   ::emboss::support::Maybe<bool> has_f0_copy() const;
 
  public:
@@ -8781,15 +8359,17 @@ class GenericLargeConditionalsView final {
     using ValueType = ::std::int32_t;
 
     explicit EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
-        const GenericLargeConditionalsView &emboss_reserved_local_view)
+        const GenericLargeConditionalsView& emboss_reserved_local_view)
         : view_(emboss_reserved_local_view) {}
     EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = delete;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
     ::std::int32_t Read() const {
@@ -8808,223 +8388,1515 @@ class GenericLargeConditionalsView final {
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
     static constexpr bool IsAggregate() { return false; }
 
-
-
    private:
     ::emboss::support::Maybe</**/ ::std::int32_t> MaybeRead() const {
       const auto emboss_reserved_local_subexpr_1 = view_.tag();
-      const auto emboss_reserved_local_subexpr_2 = (emboss_reserved_local_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(emboss_reserved_local_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>());
-      const auto emboss_reserved_local_subexpr_3 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_4 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_3, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_5 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)));
-      const auto emboss_reserved_local_subexpr_6 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_5, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_7 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL)));
-      const auto emboss_reserved_local_subexpr_8 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_7, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_9 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(3LL)));
-      const auto emboss_reserved_local_subexpr_10 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_9, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_11 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)));
-      const auto emboss_reserved_local_subexpr_12 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_11, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_13 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(5LL)));
-      const auto emboss_reserved_local_subexpr_14 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_13, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_15 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(6LL)));
-      const auto emboss_reserved_local_subexpr_16 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_15, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_17 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(7LL)));
-      const auto emboss_reserved_local_subexpr_18 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_17, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_19 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)));
-      const auto emboss_reserved_local_subexpr_20 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_19, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_21 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(9LL)));
-      const auto emboss_reserved_local_subexpr_22 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_21, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_23 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(10LL)));
-      const auto emboss_reserved_local_subexpr_24 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_23, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_25 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(11LL)));
-      const auto emboss_reserved_local_subexpr_26 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_25, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_27 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(12LL)));
-      const auto emboss_reserved_local_subexpr_28 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_27, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_29 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(13LL)));
-      const auto emboss_reserved_local_subexpr_30 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_29, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_31 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(14LL)));
-      const auto emboss_reserved_local_subexpr_32 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_31, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_33 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(15LL)));
-      const auto emboss_reserved_local_subexpr_34 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_33, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_35 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(16LL)));
-      const auto emboss_reserved_local_subexpr_36 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_35, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_37 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(17LL)));
-      const auto emboss_reserved_local_subexpr_38 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_37, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_39 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(18LL)));
-      const auto emboss_reserved_local_subexpr_40 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_39, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_41 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(19LL)));
-      const auto emboss_reserved_local_subexpr_42 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_41, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_43 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(20LL)));
-      const auto emboss_reserved_local_subexpr_44 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_43, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_45 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(21LL)));
-      const auto emboss_reserved_local_subexpr_46 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_45, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_47 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(22LL)));
-      const auto emboss_reserved_local_subexpr_48 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_47, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_49 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(23LL)));
-      const auto emboss_reserved_local_subexpr_50 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_49, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_51 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(24LL)));
-      const auto emboss_reserved_local_subexpr_52 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_51, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_53 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(25LL)));
-      const auto emboss_reserved_local_subexpr_54 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_53, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_55 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(26LL)));
-      const auto emboss_reserved_local_subexpr_56 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_55, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_57 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(27LL)));
-      const auto emboss_reserved_local_subexpr_58 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_57, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_59 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(28LL)));
-      const auto emboss_reserved_local_subexpr_60 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_59, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_61 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(29LL)));
-      const auto emboss_reserved_local_subexpr_62 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_61, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_63 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(30LL)));
-      const auto emboss_reserved_local_subexpr_64 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_63, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_65 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(31LL)));
-      const auto emboss_reserved_local_subexpr_66 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_65, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_67 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(32LL)));
-      const auto emboss_reserved_local_subexpr_68 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_67, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_69 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(33LL)));
-      const auto emboss_reserved_local_subexpr_70 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_69, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_71 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(34LL)));
-      const auto emboss_reserved_local_subexpr_72 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_71, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_73 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(35LL)));
-      const auto emboss_reserved_local_subexpr_74 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_73, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_75 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(36LL)));
-      const auto emboss_reserved_local_subexpr_76 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_75, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_77 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(37LL)));
-      const auto emboss_reserved_local_subexpr_78 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_77, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_79 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(38LL)));
-      const auto emboss_reserved_local_subexpr_80 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_79, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_81 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(39LL)));
-      const auto emboss_reserved_local_subexpr_82 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_81, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_83 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(40LL)));
-      const auto emboss_reserved_local_subexpr_84 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_83, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_85 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(41LL)));
-      const auto emboss_reserved_local_subexpr_86 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_85, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_87 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(42LL)));
-      const auto emboss_reserved_local_subexpr_88 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_87, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_89 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(43LL)));
-      const auto emboss_reserved_local_subexpr_90 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_89, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_91 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(44LL)));
-      const auto emboss_reserved_local_subexpr_92 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_91, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_93 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(45LL)));
-      const auto emboss_reserved_local_subexpr_94 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_93, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_95 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(46LL)));
-      const auto emboss_reserved_local_subexpr_96 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_95, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_97 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(47LL)));
-      const auto emboss_reserved_local_subexpr_98 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_97, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_99 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(48LL)));
-      const auto emboss_reserved_local_subexpr_100 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_99, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_101 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(49LL)));
-      const auto emboss_reserved_local_subexpr_102 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_101, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_103 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(50LL)));
-      const auto emboss_reserved_local_subexpr_104 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_103, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_105 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(51LL)));
-      const auto emboss_reserved_local_subexpr_106 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_105, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_107 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(52LL)));
-      const auto emboss_reserved_local_subexpr_108 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_107, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_109 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(53LL)));
-      const auto emboss_reserved_local_subexpr_110 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_109, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_111 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(54LL)));
-      const auto emboss_reserved_local_subexpr_112 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_111, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_113 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(55LL)));
-      const auto emboss_reserved_local_subexpr_114 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_113, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_115 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(56LL)));
-      const auto emboss_reserved_local_subexpr_116 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_115, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_117 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(57LL)));
-      const auto emboss_reserved_local_subexpr_118 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_117, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_119 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(58LL)));
-      const auto emboss_reserved_local_subexpr_120 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_119, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_121 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(59LL)));
-      const auto emboss_reserved_local_subexpr_122 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_121, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_123 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(60LL)));
-      const auto emboss_reserved_local_subexpr_124 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_123, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_125 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(61LL)));
-      const auto emboss_reserved_local_subexpr_126 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_125, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_127 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(62LL)));
-      const auto emboss_reserved_local_subexpr_128 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_127, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_129 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(63LL)));
-      const auto emboss_reserved_local_subexpr_130 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_129, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_131 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(64LL)));
-      const auto emboss_reserved_local_subexpr_132 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_131, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_133 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(65LL)));
-      const auto emboss_reserved_local_subexpr_134 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_133, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_135 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(66LL)));
-      const auto emboss_reserved_local_subexpr_136 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_135, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_137 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(67LL)));
-      const auto emboss_reserved_local_subexpr_138 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_137, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_139 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(68LL)));
-      const auto emboss_reserved_local_subexpr_140 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_139, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_141 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(69LL)));
-      const auto emboss_reserved_local_subexpr_142 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_141, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_143 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(70LL)));
-      const auto emboss_reserved_local_subexpr_144 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_143, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_145 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(71LL)));
-      const auto emboss_reserved_local_subexpr_146 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_145, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_147 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(72LL)));
-      const auto emboss_reserved_local_subexpr_148 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_147, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_149 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(73LL)));
-      const auto emboss_reserved_local_subexpr_150 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_149, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_151 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(74LL)));
-      const auto emboss_reserved_local_subexpr_152 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_151, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_153 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(75LL)));
-      const auto emboss_reserved_local_subexpr_154 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_153, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_155 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(76LL)));
-      const auto emboss_reserved_local_subexpr_156 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_155, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_157 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(77LL)));
-      const auto emboss_reserved_local_subexpr_158 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_157, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_159 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(78LL)));
-      const auto emboss_reserved_local_subexpr_160 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_159, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_161 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(79LL)));
-      const auto emboss_reserved_local_subexpr_162 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_161, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_163 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(80LL)));
-      const auto emboss_reserved_local_subexpr_164 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_163, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_165 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(81LL)));
-      const auto emboss_reserved_local_subexpr_166 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_165, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_167 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(82LL)));
-      const auto emboss_reserved_local_subexpr_168 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_167, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_169 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(83LL)));
-      const auto emboss_reserved_local_subexpr_170 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_169, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_171 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(84LL)));
-      const auto emboss_reserved_local_subexpr_172 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_171, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_173 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(85LL)));
-      const auto emboss_reserved_local_subexpr_174 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_173, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_175 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(86LL)));
-      const auto emboss_reserved_local_subexpr_176 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_175, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_177 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(87LL)));
-      const auto emboss_reserved_local_subexpr_178 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_177, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_179 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(88LL)));
-      const auto emboss_reserved_local_subexpr_180 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_179, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_181 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(89LL)));
-      const auto emboss_reserved_local_subexpr_182 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_181, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_183 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(90LL)));
-      const auto emboss_reserved_local_subexpr_184 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_183, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_185 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(91LL)));
-      const auto emboss_reserved_local_subexpr_186 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_185, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_187 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(92LL)));
-      const auto emboss_reserved_local_subexpr_188 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_187, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_189 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(93LL)));
-      const auto emboss_reserved_local_subexpr_190 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_189, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_191 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(94LL)));
-      const auto emboss_reserved_local_subexpr_192 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_191, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_193 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(95LL)));
-      const auto emboss_reserved_local_subexpr_194 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_193, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_195 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(96LL)));
-      const auto emboss_reserved_local_subexpr_196 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_195, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_197 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(97LL)));
-      const auto emboss_reserved_local_subexpr_198 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_197, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_199 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(98LL)));
-      const auto emboss_reserved_local_subexpr_200 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_199, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_201 = ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(99LL)));
-      const auto emboss_reserved_local_subexpr_202 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_201, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_203 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_3, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(12LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_204 = ::emboss::support::Maximum</**/::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)), emboss_reserved_local_subexpr_4, emboss_reserved_local_subexpr_6, emboss_reserved_local_subexpr_8, emboss_reserved_local_subexpr_10, emboss_reserved_local_subexpr_12, emboss_reserved_local_subexpr_14, emboss_reserved_local_subexpr_16, emboss_reserved_local_subexpr_18, emboss_reserved_local_subexpr_20, emboss_reserved_local_subexpr_22, emboss_reserved_local_subexpr_24, emboss_reserved_local_subexpr_26, emboss_reserved_local_subexpr_28, emboss_reserved_local_subexpr_30, emboss_reserved_local_subexpr_32, emboss_reserved_local_subexpr_34, emboss_reserved_local_subexpr_36, emboss_reserved_local_subexpr_38, emboss_reserved_local_subexpr_40, emboss_reserved_local_subexpr_42, emboss_reserved_local_subexpr_44, emboss_reserved_local_subexpr_46, emboss_reserved_local_subexpr_48, emboss_reserved_local_subexpr_50, emboss_reserved_local_subexpr_52, emboss_reserved_local_subexpr_54, emboss_reserved_local_subexpr_56, emboss_reserved_local_subexpr_58, emboss_reserved_local_subexpr_60, emboss_reserved_local_subexpr_62, emboss_reserved_local_subexpr_64, emboss_reserved_local_subexpr_66, emboss_reserved_local_subexpr_68, emboss_reserved_local_subexpr_70, emboss_reserved_local_subexpr_72, emboss_reserved_local_subexpr_74, emboss_reserved_local_subexpr_76, emboss_reserved_local_subexpr_78, emboss_reserved_local_subexpr_80, emboss_reserved_local_subexpr_82, emboss_reserved_local_subexpr_84, emboss_reserved_local_subexpr_86, emboss_reserved_local_subexpr_88, emboss_reserved_local_subexpr_90, emboss_reserved_local_subexpr_92, emboss_reserved_local_subexpr_94, emboss_reserved_local_subexpr_96, emboss_reserved_local_subexpr_98, emboss_reserved_local_subexpr_100, emboss_reserved_local_subexpr_102, emboss_reserved_local_subexpr_104, emboss_reserved_local_subexpr_106, emboss_reserved_local_subexpr_108, emboss_reserved_local_subexpr_110, emboss_reserved_local_subexpr_112, emboss_reserved_local_subexpr_114, emboss_reserved_local_subexpr_116, emboss_reserved_local_subexpr_118, emboss_reserved_local_subexpr_120, emboss_reserved_local_subexpr_122, emboss_reserved_local_subexpr_124, emboss_reserved_local_subexpr_126, emboss_reserved_local_subexpr_128, emboss_reserved_local_subexpr_130, emboss_reserved_local_subexpr_132, emboss_reserved_local_subexpr_134, emboss_reserved_local_subexpr_136, emboss_reserved_local_subexpr_138, emboss_reserved_local_subexpr_140, emboss_reserved_local_subexpr_142, emboss_reserved_local_subexpr_144, emboss_reserved_local_subexpr_146, emboss_reserved_local_subexpr_148, emboss_reserved_local_subexpr_150, emboss_reserved_local_subexpr_152, emboss_reserved_local_subexpr_154, emboss_reserved_local_subexpr_156, emboss_reserved_local_subexpr_158, emboss_reserved_local_subexpr_160, emboss_reserved_local_subexpr_162, emboss_reserved_local_subexpr_164, emboss_reserved_local_subexpr_166, emboss_reserved_local_subexpr_168, emboss_reserved_local_subexpr_170, emboss_reserved_local_subexpr_172, emboss_reserved_local_subexpr_174, emboss_reserved_local_subexpr_176, emboss_reserved_local_subexpr_178, emboss_reserved_local_subexpr_180, emboss_reserved_local_subexpr_182, emboss_reserved_local_subexpr_184, emboss_reserved_local_subexpr_186, emboss_reserved_local_subexpr_188, emboss_reserved_local_subexpr_190, emboss_reserved_local_subexpr_192, emboss_reserved_local_subexpr_194, emboss_reserved_local_subexpr_196, emboss_reserved_local_subexpr_198, emboss_reserved_local_subexpr_200, emboss_reserved_local_subexpr_202, emboss_reserved_local_subexpr_203);
+      const auto emboss_reserved_local_subexpr_2 =
+          (emboss_reserved_local_subexpr_1.Ok()
+               ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                     static_cast</**/ ::std::uint32_t>(
+                         emboss_reserved_local_subexpr_1.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::uint32_t>());
+      const auto emboss_reserved_local_subexpr_3 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_4 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_3,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_5 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(1LL)));
+      const auto emboss_reserved_local_subexpr_6 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_5,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_7 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(2LL)));
+      const auto emboss_reserved_local_subexpr_8 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_7,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_9 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(3LL)));
+      const auto emboss_reserved_local_subexpr_10 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_9,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_11 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(4LL)));
+      const auto emboss_reserved_local_subexpr_12 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_11,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_13 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(5LL)));
+      const auto emboss_reserved_local_subexpr_14 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_13,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_15 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(6LL)));
+      const auto emboss_reserved_local_subexpr_16 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_15,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_17 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(7LL)));
+      const auto emboss_reserved_local_subexpr_18 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_17,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_19 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)));
+      const auto emboss_reserved_local_subexpr_20 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_19,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_21 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(9LL)));
+      const auto emboss_reserved_local_subexpr_22 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_21,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_23 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(10LL)));
+      const auto emboss_reserved_local_subexpr_24 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_23,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_25 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(11LL)));
+      const auto emboss_reserved_local_subexpr_26 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_25,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_27 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(12LL)));
+      const auto emboss_reserved_local_subexpr_28 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_27,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_29 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(13LL)));
+      const auto emboss_reserved_local_subexpr_30 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_29,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_31 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(14LL)));
+      const auto emboss_reserved_local_subexpr_32 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_31,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_33 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(15LL)));
+      const auto emboss_reserved_local_subexpr_34 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_33,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_35 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(16LL)));
+      const auto emboss_reserved_local_subexpr_36 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_35,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_37 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(17LL)));
+      const auto emboss_reserved_local_subexpr_38 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_37,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_39 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(18LL)));
+      const auto emboss_reserved_local_subexpr_40 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_39,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_41 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(19LL)));
+      const auto emboss_reserved_local_subexpr_42 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_41,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_43 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(20LL)));
+      const auto emboss_reserved_local_subexpr_44 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_43,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_45 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(21LL)));
+      const auto emboss_reserved_local_subexpr_46 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_45,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_47 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(22LL)));
+      const auto emboss_reserved_local_subexpr_48 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_47,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_49 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(23LL)));
+      const auto emboss_reserved_local_subexpr_50 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_49,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_51 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(24LL)));
+      const auto emboss_reserved_local_subexpr_52 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_51,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_53 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(25LL)));
+      const auto emboss_reserved_local_subexpr_54 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_53,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_55 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(26LL)));
+      const auto emboss_reserved_local_subexpr_56 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_55,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_57 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(27LL)));
+      const auto emboss_reserved_local_subexpr_58 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_57,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_59 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(28LL)));
+      const auto emboss_reserved_local_subexpr_60 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_59,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_61 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(29LL)));
+      const auto emboss_reserved_local_subexpr_62 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_61,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_63 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(30LL)));
+      const auto emboss_reserved_local_subexpr_64 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_63,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_65 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(31LL)));
+      const auto emboss_reserved_local_subexpr_66 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_65,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_67 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(32LL)));
+      const auto emboss_reserved_local_subexpr_68 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_67,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_69 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(33LL)));
+      const auto emboss_reserved_local_subexpr_70 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_69,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_71 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(34LL)));
+      const auto emboss_reserved_local_subexpr_72 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_71,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_73 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(35LL)));
+      const auto emboss_reserved_local_subexpr_74 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_73,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_75 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(36LL)));
+      const auto emboss_reserved_local_subexpr_76 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_75,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_77 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(37LL)));
+      const auto emboss_reserved_local_subexpr_78 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_77,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_79 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(38LL)));
+      const auto emboss_reserved_local_subexpr_80 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_79,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_81 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(39LL)));
+      const auto emboss_reserved_local_subexpr_82 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_81,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_83 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(40LL)));
+      const auto emboss_reserved_local_subexpr_84 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_83,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_85 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(41LL)));
+      const auto emboss_reserved_local_subexpr_86 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_85,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_87 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(42LL)));
+      const auto emboss_reserved_local_subexpr_88 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_87,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_89 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(43LL)));
+      const auto emboss_reserved_local_subexpr_90 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_89,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_91 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(44LL)));
+      const auto emboss_reserved_local_subexpr_92 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_91,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_93 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(45LL)));
+      const auto emboss_reserved_local_subexpr_94 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_93,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_95 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(46LL)));
+      const auto emboss_reserved_local_subexpr_96 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_95,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_97 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(47LL)));
+      const auto emboss_reserved_local_subexpr_98 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_97,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_99 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(48LL)));
+      const auto emboss_reserved_local_subexpr_100 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_99,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_101 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(49LL)));
+      const auto emboss_reserved_local_subexpr_102 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_101,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_103 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(50LL)));
+      const auto emboss_reserved_local_subexpr_104 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_103,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_105 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(51LL)));
+      const auto emboss_reserved_local_subexpr_106 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_105,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_107 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(52LL)));
+      const auto emboss_reserved_local_subexpr_108 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_107,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_109 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(53LL)));
+      const auto emboss_reserved_local_subexpr_110 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_109,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_111 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(54LL)));
+      const auto emboss_reserved_local_subexpr_112 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_111,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_113 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(55LL)));
+      const auto emboss_reserved_local_subexpr_114 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_113,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_115 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(56LL)));
+      const auto emboss_reserved_local_subexpr_116 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_115,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_117 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(57LL)));
+      const auto emboss_reserved_local_subexpr_118 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_117,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_119 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(58LL)));
+      const auto emboss_reserved_local_subexpr_120 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_119,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_121 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(59LL)));
+      const auto emboss_reserved_local_subexpr_122 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_121,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_123 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(60LL)));
+      const auto emboss_reserved_local_subexpr_124 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_123,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_125 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(61LL)));
+      const auto emboss_reserved_local_subexpr_126 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_125,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_127 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(62LL)));
+      const auto emboss_reserved_local_subexpr_128 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_127,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_129 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(63LL)));
+      const auto emboss_reserved_local_subexpr_130 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_129,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_131 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(64LL)));
+      const auto emboss_reserved_local_subexpr_132 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_131,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_133 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(65LL)));
+      const auto emboss_reserved_local_subexpr_134 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_133,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_135 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(66LL)));
+      const auto emboss_reserved_local_subexpr_136 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_135,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_137 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(67LL)));
+      const auto emboss_reserved_local_subexpr_138 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_137,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_139 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(68LL)));
+      const auto emboss_reserved_local_subexpr_140 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_139,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_141 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(69LL)));
+      const auto emboss_reserved_local_subexpr_142 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_141,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_143 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(70LL)));
+      const auto emboss_reserved_local_subexpr_144 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_143,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_145 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(71LL)));
+      const auto emboss_reserved_local_subexpr_146 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_145,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_147 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(72LL)));
+      const auto emboss_reserved_local_subexpr_148 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_147,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_149 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(73LL)));
+      const auto emboss_reserved_local_subexpr_150 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_149,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_151 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(74LL)));
+      const auto emboss_reserved_local_subexpr_152 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_151,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_153 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(75LL)));
+      const auto emboss_reserved_local_subexpr_154 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_153,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_155 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(76LL)));
+      const auto emboss_reserved_local_subexpr_156 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_155,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_157 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(77LL)));
+      const auto emboss_reserved_local_subexpr_158 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_157,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_159 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(78LL)));
+      const auto emboss_reserved_local_subexpr_160 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_159,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_161 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(79LL)));
+      const auto emboss_reserved_local_subexpr_162 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_161,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_163 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(80LL)));
+      const auto emboss_reserved_local_subexpr_164 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_163,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_165 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(81LL)));
+      const auto emboss_reserved_local_subexpr_166 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_165,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_167 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(82LL)));
+      const auto emboss_reserved_local_subexpr_168 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_167,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_169 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(83LL)));
+      const auto emboss_reserved_local_subexpr_170 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_169,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_171 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(84LL)));
+      const auto emboss_reserved_local_subexpr_172 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_171,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_173 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(85LL)));
+      const auto emboss_reserved_local_subexpr_174 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_173,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_175 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(86LL)));
+      const auto emboss_reserved_local_subexpr_176 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_175,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_177 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(87LL)));
+      const auto emboss_reserved_local_subexpr_178 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_177,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_179 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(88LL)));
+      const auto emboss_reserved_local_subexpr_180 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_179,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_181 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(89LL)));
+      const auto emboss_reserved_local_subexpr_182 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_181,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_183 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(90LL)));
+      const auto emboss_reserved_local_subexpr_184 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_183,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_185 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(91LL)));
+      const auto emboss_reserved_local_subexpr_186 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_185,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_187 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(92LL)));
+      const auto emboss_reserved_local_subexpr_188 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_187,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_189 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(93LL)));
+      const auto emboss_reserved_local_subexpr_190 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_189,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_191 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(94LL)));
+      const auto emboss_reserved_local_subexpr_192 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_191,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_193 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(95LL)));
+      const auto emboss_reserved_local_subexpr_194 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_193,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_195 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(96LL)));
+      const auto emboss_reserved_local_subexpr_196 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_195,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_197 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(97LL)));
+      const auto emboss_reserved_local_subexpr_198 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_197,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_199 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(98LL)));
+      const auto emboss_reserved_local_subexpr_200 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_199,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_201 =
+          ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(99LL)));
+      const auto emboss_reserved_local_subexpr_202 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_201,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_203 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_3,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(12LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_204 = ::emboss::support::Maximum<
+          /**/ ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t>(
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(0LL)),
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(4LL)),
+          emboss_reserved_local_subexpr_4, emboss_reserved_local_subexpr_6,
+          emboss_reserved_local_subexpr_8, emboss_reserved_local_subexpr_10,
+          emboss_reserved_local_subexpr_12, emboss_reserved_local_subexpr_14,
+          emboss_reserved_local_subexpr_16, emboss_reserved_local_subexpr_18,
+          emboss_reserved_local_subexpr_20, emboss_reserved_local_subexpr_22,
+          emboss_reserved_local_subexpr_24, emboss_reserved_local_subexpr_26,
+          emboss_reserved_local_subexpr_28, emboss_reserved_local_subexpr_30,
+          emboss_reserved_local_subexpr_32, emboss_reserved_local_subexpr_34,
+          emboss_reserved_local_subexpr_36, emboss_reserved_local_subexpr_38,
+          emboss_reserved_local_subexpr_40, emboss_reserved_local_subexpr_42,
+          emboss_reserved_local_subexpr_44, emboss_reserved_local_subexpr_46,
+          emboss_reserved_local_subexpr_48, emboss_reserved_local_subexpr_50,
+          emboss_reserved_local_subexpr_52, emboss_reserved_local_subexpr_54,
+          emboss_reserved_local_subexpr_56, emboss_reserved_local_subexpr_58,
+          emboss_reserved_local_subexpr_60, emboss_reserved_local_subexpr_62,
+          emboss_reserved_local_subexpr_64, emboss_reserved_local_subexpr_66,
+          emboss_reserved_local_subexpr_68, emboss_reserved_local_subexpr_70,
+          emboss_reserved_local_subexpr_72, emboss_reserved_local_subexpr_74,
+          emboss_reserved_local_subexpr_76, emboss_reserved_local_subexpr_78,
+          emboss_reserved_local_subexpr_80, emboss_reserved_local_subexpr_82,
+          emboss_reserved_local_subexpr_84, emboss_reserved_local_subexpr_86,
+          emboss_reserved_local_subexpr_88, emboss_reserved_local_subexpr_90,
+          emboss_reserved_local_subexpr_92, emboss_reserved_local_subexpr_94,
+          emboss_reserved_local_subexpr_96, emboss_reserved_local_subexpr_98,
+          emboss_reserved_local_subexpr_100, emboss_reserved_local_subexpr_102,
+          emboss_reserved_local_subexpr_104, emboss_reserved_local_subexpr_106,
+          emboss_reserved_local_subexpr_108, emboss_reserved_local_subexpr_110,
+          emboss_reserved_local_subexpr_112, emboss_reserved_local_subexpr_114,
+          emboss_reserved_local_subexpr_116, emboss_reserved_local_subexpr_118,
+          emboss_reserved_local_subexpr_120, emboss_reserved_local_subexpr_122,
+          emboss_reserved_local_subexpr_124, emboss_reserved_local_subexpr_126,
+          emboss_reserved_local_subexpr_128, emboss_reserved_local_subexpr_130,
+          emboss_reserved_local_subexpr_132, emboss_reserved_local_subexpr_134,
+          emboss_reserved_local_subexpr_136, emboss_reserved_local_subexpr_138,
+          emboss_reserved_local_subexpr_140, emboss_reserved_local_subexpr_142,
+          emboss_reserved_local_subexpr_144, emboss_reserved_local_subexpr_146,
+          emboss_reserved_local_subexpr_148, emboss_reserved_local_subexpr_150,
+          emboss_reserved_local_subexpr_152, emboss_reserved_local_subexpr_154,
+          emboss_reserved_local_subexpr_156, emboss_reserved_local_subexpr_158,
+          emboss_reserved_local_subexpr_160, emboss_reserved_local_subexpr_162,
+          emboss_reserved_local_subexpr_164, emboss_reserved_local_subexpr_166,
+          emboss_reserved_local_subexpr_168, emboss_reserved_local_subexpr_170,
+          emboss_reserved_local_subexpr_172, emboss_reserved_local_subexpr_174,
+          emboss_reserved_local_subexpr_176, emboss_reserved_local_subexpr_178,
+          emboss_reserved_local_subexpr_180, emboss_reserved_local_subexpr_182,
+          emboss_reserved_local_subexpr_184, emboss_reserved_local_subexpr_186,
+          emboss_reserved_local_subexpr_188, emboss_reserved_local_subexpr_190,
+          emboss_reserved_local_subexpr_192, emboss_reserved_local_subexpr_194,
+          emboss_reserved_local_subexpr_196, emboss_reserved_local_subexpr_198,
+          emboss_reserved_local_subexpr_200, emboss_reserved_local_subexpr_202,
+          emboss_reserved_local_subexpr_203);
 
       return emboss_reserved_local_subexpr_204;
     }
@@ -9037,7 +9909,8 @@ class GenericLargeConditionalsView final {
 
     const GenericLargeConditionalsView view_;
   };
-  EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() const;
+  EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes()
+      const;
   ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() const;
 
  public:
@@ -9046,21 +9919,23 @@ class GenericLargeConditionalsView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
-    EmbossReservedDollarVirtualMaxSizeInBytesView(const EmbossReservedDollarVirtualMaxSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView(EmbossReservedDollarVirtualMaxSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(const EmbossReservedDollarVirtualMaxSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(EmbossReservedDollarVirtualMaxSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -9068,7 +9943,8 @@ class GenericLargeConditionalsView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
@@ -9081,21 +9957,23 @@ class GenericLargeConditionalsView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
-    EmbossReservedDollarVirtualMinSizeInBytesView(const EmbossReservedDollarVirtualMinSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView(EmbossReservedDollarVirtualMinSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(const EmbossReservedDollarVirtualMinSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(EmbossReservedDollarVirtualMinSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -9103,27 +9981,24 @@ class GenericLargeConditionalsView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
-
-
  private:
   Storage backing_;
-  
-  
 
   template <class OtherStorage>
   friend class GenericLargeConditionalsView;
 };
-using LargeConditionalsView =
-    GenericLargeConditionalsView</**/ ::emboss::support::ReadOnlyContiguousBuffer>;
-using LargeConditionalsWriter =
-    GenericLargeConditionalsView</**/ ::emboss::support::ReadWriteContiguousBuffer>;
+using LargeConditionalsView = GenericLargeConditionalsView<
+    /**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+using LargeConditionalsWriter = GenericLargeConditionalsView<
+    /**/ ::emboss::support::ReadWriteContiguousBuffer>;
 
 template <class View>
 struct EmbossReservedInternalIsGenericLargeConditionalsView {
@@ -9142,4389 +10017,6003 @@ inline GenericLargeConditionalsView<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
         1, 0>>
-MakeLargeConditionalsView( T &&emboss_reserved_local_arg) {
+MakeLargeConditionalsView(T&& emboss_reserved_local_arg) {
   return GenericLargeConditionalsView<
       /**/ ::emboss::support::ContiguousBuffer<
-          typename ::std::remove_reference<decltype(
-              *::std::declval<T>()->data())>::type,
-          1, 0>>(
-       ::std::forward<T>(emboss_reserved_local_arg));
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
 }
 
 template <typename T>
-inline GenericLargeConditionalsView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
-MakeLargeConditionalsView( T *emboss_reserved_local_data,
-                 ::std::size_t emboss_reserved_local_size) {
-  return GenericLargeConditionalsView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+inline GenericLargeConditionalsView<
+    /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeLargeConditionalsView(T* emboss_reserved_local_data,
+                          ::std::size_t emboss_reserved_local_size) {
+  return GenericLargeConditionalsView<
+      /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
 template <typename T, ::std::size_t kAlignment>
 inline GenericLargeConditionalsView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
-MakeAlignedLargeConditionalsView(
-     T *emboss_reserved_local_data,
-    ::std::size_t emboss_reserved_local_size) {
+MakeAlignedLargeConditionalsView(T* emboss_reserved_local_data,
+                                 ::std::size_t emboss_reserved_local_size) {
   return GenericLargeConditionalsView<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
-namespace LargeConditionals {
-
-}  // namespace LargeConditionals
-
+namespace LargeConditionals {}  // namespace LargeConditionals
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::tag()
-    const {
-
-  if ( has_tag().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+GenericLargeConditionalsView<Storage>::tag() const {
+  if (has_tag().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_tag() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f0()
-    const {
-
-  if ( has_f0().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f0() const {
+  if (has_f0().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f0() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(0LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f1()
-    const {
-
-  if ( has_f1().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f1() const {
+  if (has_f1().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f1() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(1LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f2()
-    const {
-
-  if ( has_f2().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f2() const {
+  if (has_f2().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f2() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(2LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f3()
-    const {
-
-  if ( has_f3().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f3() const {
+  if (has_f3().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f3() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(3LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(3LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f4()
-    const {
-
-  if ( has_f4().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f4() const {
+  if (has_f4().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f4() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(4LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f5()
-    const {
-
-  if ( has_f5().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f5() const {
+  if (has_f5().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f5() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(5LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(5LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f6()
-    const {
-
-  if ( has_f6().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f6() const {
+  if (has_f6().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f6() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(6LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(6LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f7()
-    const {
-
-  if ( has_f7().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f7() const {
+  if (has_f7().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f7() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(7LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(7LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f8()
-    const {
-
-  if ( has_f8().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f8() const {
+  if (has_f8().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f8() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(8LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f9()
-    const {
-
-  if ( has_f9().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f9() const {
+  if (has_f9().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f9() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(9LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(9LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f10()
-    const {
-
-  if ( has_f10().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f10() const {
+  if (has_f10().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f10() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(10LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(10LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f11()
-    const {
-
-  if ( has_f11().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f11() const {
+  if (has_f11().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f11() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(11LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(11LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f12()
-    const {
-
-  if ( has_f12().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f12() const {
+  if (has_f12().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f12() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(12LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(12LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f13()
-    const {
-
-  if ( has_f13().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f13() const {
+  if (has_f13().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f13() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(13LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(13LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f14()
-    const {
-
-  if ( has_f14().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f14() const {
+  if (has_f14().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f14() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(14LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(14LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f15()
-    const {
-
-  if ( has_f15().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f15() const {
+  if (has_f15().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f15() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(15LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(15LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f16()
-    const {
-
-  if ( has_f16().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f16() const {
+  if (has_f16().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f16() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(16LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(16LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f17()
-    const {
-
-  if ( has_f17().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f17() const {
+  if (has_f17().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f17() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(17LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(17LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f18()
-    const {
-
-  if ( has_f18().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f18() const {
+  if (has_f18().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f18() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(18LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(18LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f19()
-    const {
-
-  if ( has_f19().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f19() const {
+  if (has_f19().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f19() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(19LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(19LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f20()
-    const {
-
-  if ( has_f20().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f20() const {
+  if (has_f20().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f20() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(20LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(20LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f21()
-    const {
-
-  if ( has_f21().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f21() const {
+  if (has_f21().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f21() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(21LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(21LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f22()
-    const {
-
-  if ( has_f22().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f22() const {
+  if (has_f22().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f22() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(22LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(22LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f23()
-    const {
-
-  if ( has_f23().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f23() const {
+  if (has_f23().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f23() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(23LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(23LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f24()
-    const {
-
-  if ( has_f24().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f24() const {
+  if (has_f24().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f24() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(24LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(24LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f25()
-    const {
-
-  if ( has_f25().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f25() const {
+  if (has_f25().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f25() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(25LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(25LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f26()
-    const {
-
-  if ( has_f26().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f26() const {
+  if (has_f26().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f26() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(26LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(26LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f27()
-    const {
-
-  if ( has_f27().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f27() const {
+  if (has_f27().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f27() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(27LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(27LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f28()
-    const {
-
-  if ( has_f28().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f28() const {
+  if (has_f28().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f28() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(28LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(28LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f29()
-    const {
-
-  if ( has_f29().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f29() const {
+  if (has_f29().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f29() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(29LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(29LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f30()
-    const {
-
-  if ( has_f30().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f30() const {
+  if (has_f30().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f30() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(30LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(30LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f31()
-    const {
-
-  if ( has_f31().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f31() const {
+  if (has_f31().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f31() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(31LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(31LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f32()
-    const {
-
-  if ( has_f32().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f32() const {
+  if (has_f32().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f32() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(32LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(32LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f33()
-    const {
-
-  if ( has_f33().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f33() const {
+  if (has_f33().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f33() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(33LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(33LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f34()
-    const {
-
-  if ( has_f34().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f34() const {
+  if (has_f34().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f34() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(34LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(34LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f35()
-    const {
-
-  if ( has_f35().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f35() const {
+  if (has_f35().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f35() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(35LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(35LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f36()
-    const {
-
-  if ( has_f36().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f36() const {
+  if (has_f36().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f36() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(36LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(36LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f37()
-    const {
-
-  if ( has_f37().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f37() const {
+  if (has_f37().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f37() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(37LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(37LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f38()
-    const {
-
-  if ( has_f38().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f38() const {
+  if (has_f38().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f38() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(38LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(38LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f39()
-    const {
-
-  if ( has_f39().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f39() const {
+  if (has_f39().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f39() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(39LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(39LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f40()
-    const {
-
-  if ( has_f40().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f40() const {
+  if (has_f40().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f40() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(40LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(40LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f41()
-    const {
-
-  if ( has_f41().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f41() const {
+  if (has_f41().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f41() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(41LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(41LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f42()
-    const {
-
-  if ( has_f42().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f42() const {
+  if (has_f42().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f42() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(42LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(42LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f43()
-    const {
-
-  if ( has_f43().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f43() const {
+  if (has_f43().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f43() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(43LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(43LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f44()
-    const {
-
-  if ( has_f44().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f44() const {
+  if (has_f44().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f44() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(44LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(44LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f45()
-    const {
-
-  if ( has_f45().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f45() const {
+  if (has_f45().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f45() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(45LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(45LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f46()
-    const {
-
-  if ( has_f46().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f46() const {
+  if (has_f46().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f46() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(46LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(46LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f47()
-    const {
-
-  if ( has_f47().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f47() const {
+  if (has_f47().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f47() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(47LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(47LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f48()
-    const {
-
-  if ( has_f48().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f48() const {
+  if (has_f48().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f48() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(48LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(48LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f49()
-    const {
-
-  if ( has_f49().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f49() const {
+  if (has_f49().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f49() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(49LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(49LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f50()
-    const {
-
-  if ( has_f50().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f50() const {
+  if (has_f50().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f50() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(50LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(50LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f51()
-    const {
-
-  if ( has_f51().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f51() const {
+  if (has_f51().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f51() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(51LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(51LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f52()
-    const {
-
-  if ( has_f52().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f52() const {
+  if (has_f52().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f52() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(52LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(52LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f53()
-    const {
-
-  if ( has_f53().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f53() const {
+  if (has_f53().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f53() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(53LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(53LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f54()
-    const {
-
-  if ( has_f54().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f54() const {
+  if (has_f54().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f54() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(54LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(54LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f55()
-    const {
-
-  if ( has_f55().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f55() const {
+  if (has_f55().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f55() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(55LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(55LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f56()
-    const {
-
-  if ( has_f56().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f56() const {
+  if (has_f56().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f56() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(56LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(56LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f57()
-    const {
-
-  if ( has_f57().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f57() const {
+  if (has_f57().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f57() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(57LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(57LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f58()
-    const {
-
-  if ( has_f58().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f58() const {
+  if (has_f58().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f58() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(58LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(58LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f59()
-    const {
-
-  if ( has_f59().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f59() const {
+  if (has_f59().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f59() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(59LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(59LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f60()
-    const {
-
-  if ( has_f60().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f60() const {
+  if (has_f60().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f60() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(60LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(60LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f61()
-    const {
-
-  if ( has_f61().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f61() const {
+  if (has_f61().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f61() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(61LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(61LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f62()
-    const {
-
-  if ( has_f62().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f62() const {
+  if (has_f62().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f62() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(62LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(62LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f63()
-    const {
-
-  if ( has_f63().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f63() const {
+  if (has_f63().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f63() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(63LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(63LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f64()
-    const {
-
-  if ( has_f64().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f64() const {
+  if (has_f64().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f64() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(64LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(64LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f65()
-    const {
-
-  if ( has_f65().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f65() const {
+  if (has_f65().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f65() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(65LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(65LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f66()
-    const {
-
-  if ( has_f66().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f66() const {
+  if (has_f66().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f66() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(66LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(66LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f67()
-    const {
-
-  if ( has_f67().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f67() const {
+  if (has_f67().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f67() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(67LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(67LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f68()
-    const {
-
-  if ( has_f68().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f68() const {
+  if (has_f68().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f68() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(68LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(68LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f69()
-    const {
-
-  if ( has_f69().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f69() const {
+  if (has_f69().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f69() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(69LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(69LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f70()
-    const {
-
-  if ( has_f70().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f70() const {
+  if (has_f70().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f70() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(70LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(70LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f71()
-    const {
-
-  if ( has_f71().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f71() const {
+  if (has_f71().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f71() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(71LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(71LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f72()
-    const {
-
-  if ( has_f72().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f72() const {
+  if (has_f72().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f72() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(72LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(72LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f73()
-    const {
-
-  if ( has_f73().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f73() const {
+  if (has_f73().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f73() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(73LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(73LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f74()
-    const {
-
-  if ( has_f74().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f74() const {
+  if (has_f74().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f74() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(74LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(74LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f75()
-    const {
-
-  if ( has_f75().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f75() const {
+  if (has_f75().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f75() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(75LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(75LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f76()
-    const {
-
-  if ( has_f76().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f76() const {
+  if (has_f76().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f76() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(76LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(76LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f77()
-    const {
-
-  if ( has_f77().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f77() const {
+  if (has_f77().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f77() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(77LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(77LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f78()
-    const {
-
-  if ( has_f78().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f78() const {
+  if (has_f78().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f78() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(78LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(78LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f79()
-    const {
-
-  if ( has_f79().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f79() const {
+  if (has_f79().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f79() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(79LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(79LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f80()
-    const {
-
-  if ( has_f80().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f80() const {
+  if (has_f80().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f80() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(80LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(80LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f81()
-    const {
-
-  if ( has_f81().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f81() const {
+  if (has_f81().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f81() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(81LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(81LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f82()
-    const {
-
-  if ( has_f82().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f82() const {
+  if (has_f82().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f82() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(82LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(82LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f83()
-    const {
-
-  if ( has_f83().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f83() const {
+  if (has_f83().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f83() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(83LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(83LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f84()
-    const {
-
-  if ( has_f84().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f84() const {
+  if (has_f84().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f84() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(84LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(84LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f85()
-    const {
-
-  if ( has_f85().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f85() const {
+  if (has_f85().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f85() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(85LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(85LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f86()
-    const {
-
-  if ( has_f86().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f86() const {
+  if (has_f86().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f86() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(86LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(86LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f87()
-    const {
-
-  if ( has_f87().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f87() const {
+  if (has_f87().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f87() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(87LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(87LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f88()
-    const {
-
-  if ( has_f88().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f88() const {
+  if (has_f88().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f88() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(88LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(88LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f89()
-    const {
-
-  if ( has_f89().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f89() const {
+  if (has_f89().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f89() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(89LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(89LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f90()
-    const {
-
-  if ( has_f90().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f90() const {
+  if (has_f90().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f90() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(90LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(90LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f91()
-    const {
-
-  if ( has_f91().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f91() const {
+  if (has_f91().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f91() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(91LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(91LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f92()
-    const {
-
-  if ( has_f92().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f92() const {
+  if (has_f92().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f92() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(92LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(92LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f93()
-    const {
-
-  if ( has_f93().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f93() const {
+  if (has_f93().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f93() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(93LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(93LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f94()
-    const {
-
-  if ( has_f94().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f94() const {
+  if (has_f94().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f94() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(94LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(94LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f95()
-    const {
-
-  if ( has_f95().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f95() const {
+  if (has_f95().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f95() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(95LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(95LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f96()
-    const {
-
-  if ( has_f96().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f96() const {
+  if (has_f96().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f96() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(96LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(96LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f97()
-    const {
-
-  if ( has_f97().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f97() const {
+  if (has_f97().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f97() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(97LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(97LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f98()
-    const {
-
-  if ( has_f98().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f98() const {
+  if (has_f98().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f98() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(98LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(98LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f99()
-    const {
-
-  if ( has_f99().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericLargeConditionalsView<Storage>::f99() const {
+  if (has_f99().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f99() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(99LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(99LL)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 8>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 8>>,
+        32>>
 
- GenericLargeConditionalsView<Storage>::f0_copy()
-    const {
-
-  if ( has_f0_copy().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL));
+GenericLargeConditionalsView<Storage>::f0_copy() const {
+  if (has_f0_copy().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 8>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 8>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   8>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 8>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 8>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 8>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_f0_copy() const {
-  return ::emboss::support::Equal</**/::std::uint32_t, bool, ::std::uint32_t, ::std::int32_t>((tag().Ok()    ? ::emboss::support::Maybe</**/::std::uint32_t>(static_cast</**/::std::uint32_t>(tag().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::uint32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
+  return ::emboss::support::Equal</**/ ::std::uint32_t, bool, ::std::uint32_t,
+                                  ::std::int32_t>(
+      (tag().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::uint32_t>(
+                 static_cast</**/ ::std::uint32_t>(tag().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::uint32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(0LL)));
 }
 
-
 template <class Storage>
-inline typename GenericLargeConditionalsView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+inline typename GenericLargeConditionalsView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
 GenericLargeConditionalsView<Storage>::IntrinsicSizeInBytes() const {
-  return
-      typename GenericLargeConditionalsView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
-          *this);
+  return typename GenericLargeConditionalsView<
+      Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView(*this);
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericLargeConditionalsView<Storage>::has_IntrinsicSizeInBytes() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 namespace LargeConditionals {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(12LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(12LL))
+      .ValueOrDefault();
 }
 }  // namespace LargeConditionals
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericLargeConditionalsView<Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericLargeConditionalsView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
   return LargeConditionals::MaxSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericLargeConditionalsView<
+inline constexpr ::std::int32_t GenericLargeConditionalsView<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
   return LargeConditionals::MaxSizeInBytes();
 }
 
 namespace LargeConditionals {
 inline constexpr ::std::int32_t MinSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(4LL))
+      .ValueOrDefault();
 }
 }  // namespace LargeConditionals
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericLargeConditionalsView<Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericLargeConditionalsView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
   return LargeConditionals::MinSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericLargeConditionalsView<
+inline constexpr ::std::int32_t GenericLargeConditionalsView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return LargeConditionals::MinSizeInBytes();
 }
 
-
-
 }  // namespace test
 
-
-
 }  // namespace emboss
-
-
 
 /* NOLINTEND */
 
 #endif  // TESTDATA_MANY_CONDITIONALS_EMB_H_
-

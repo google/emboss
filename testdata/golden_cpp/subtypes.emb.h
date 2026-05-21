@@ -11,14 +11,9 @@
 #include <utility>
 
 #include "runtime/cpp/emboss_cpp_util.h"
-
-#include "runtime/cpp/emboss_prelude.h"
-
 #include "runtime/cpp/emboss_enum_view.h"
-
+#include "runtime/cpp/emboss_prelude.h"
 #include "runtime/cpp/emboss_text_util.h"
-
-
 
 /* NOLINTBEGIN */
 namespace emboss {
@@ -28,66 +23,34 @@ namespace In {
 namespace InIn {
 enum class InInIn : ::std::uint64_t;
 
-
 }  // namespace InIn
-
 
 template <class Storage>
 class GenericInInView;
 
-
 }  // namespace In
-
 
 template <class Storage>
 class GenericInView;
 
-
-namespace In2 {
-
-}  // namespace In2
-
+namespace In2 {}  // namespace In2
 
 template <class Storage>
 class GenericIn2View;
 
-
 }  // namespace Out
-
 
 template <class Storage>
 class GenericOutView;
 
-
-
-
-
-
-
-
-
-
-
-
 namespace Out {
-
-
-
-
-
-
-
 
 namespace In {
 
-
-
-
-
 namespace InIn {
 enum class InInIn : ::std::uint64_t {
-  NO = static_cast</**/::std::int32_t>(0LL),
-  YES = static_cast</**/::std::int32_t>(1LL),
+  NO = static_cast</**/ ::std::int32_t>(0LL),
+  YES = static_cast</**/ ::std::int32_t>(1LL),
 
 };
 template <class Enum>
@@ -96,8 +59,8 @@ class EnumTraits;
 template <>
 class EnumTraits<InInIn> final {
  public:
-  static bool TryToGetEnumFromName(const char *emboss_reserved_local_name,
-                                   InInIn *emboss_reserved_local_result) {
+  static bool TryToGetEnumFromName(const char* emboss_reserved_local_name,
+                                   InInIn* emboss_reserved_local_result) {
     if (emboss_reserved_local_name == nullptr) return false;
     if (!strcmp("NO", emboss_reserved_local_name)) {
       *emboss_reserved_local_result = InInIn::NO;
@@ -112,31 +75,35 @@ class EnumTraits<InInIn> final {
     return false;
   }
 
-  static const char *TryToGetNameFromEnum(
-      InInIn emboss_reserved_local_value) {
+  static const char* TryToGetNameFromEnum(InInIn emboss_reserved_local_value) {
     switch (emboss_reserved_local_value) {
-      case InInIn::NO: return "NO";
+      case InInIn::NO:
+        return "NO";
 
-      case InInIn::YES: return "YES";
+      case InInIn::YES:
+        return "YES";
 
-      default: return nullptr;
+      default:
+        return nullptr;
     }
   }
 
   static bool EnumIsKnown(InInIn emboss_reserved_local_value) {
     switch (emboss_reserved_local_value) {
-      case InInIn::NO: return true;
+      case InInIn::NO:
+        return true;
 
-      case InInIn::YES: return true;
+      case InInIn::YES:
+        return true;
 
       default:
         return false;
     }
   }
 
-  static ::std::ostream &SendToOstream(::std::ostream &emboss_reserved_local_os,
+  static ::std::ostream& SendToOstream(::std::ostream& emboss_reserved_local_os,
                                        InInIn emboss_reserved_local_value) {
-    const char *emboss_reserved_local_name =
+    const char* emboss_reserved_local_name =
         TryToGetNameFromEnum(emboss_reserved_local_value);
     if (emboss_reserved_local_name == nullptr) {
       emboss_reserved_local_os
@@ -149,32 +116,29 @@ class EnumTraits<InInIn> final {
   }
 };
 
-static inline bool TryToGetEnumFromName(
-    const char *emboss_reserved_local_name,
-    InInIn *emboss_reserved_local_result) {
-  return EnumTraits<InInIn>::TryToGetEnumFromName(
-      emboss_reserved_local_name, emboss_reserved_local_result);
+static inline bool TryToGetEnumFromName(const char* emboss_reserved_local_name,
+                                        InInIn* emboss_reserved_local_result) {
+  return EnumTraits<InInIn>::TryToGetEnumFromName(emboss_reserved_local_name,
+                                                  emboss_reserved_local_result);
 }
 
-static inline const char *TryToGetNameFromEnum(
+static inline const char* TryToGetNameFromEnum(
     InInIn emboss_reserved_local_value) {
-  return EnumTraits<InInIn>::TryToGetNameFromEnum(
-      emboss_reserved_local_value);
+  return EnumTraits<InInIn>::TryToGetNameFromEnum(emboss_reserved_local_value);
 }
 
 static inline bool EnumIsKnown(InInIn emboss_reserved_local_value) {
   return EnumTraits<InInIn>::EnumIsKnown(emboss_reserved_local_value);
 }
 
-static inline ::std::ostream &operator<<(
-    ::std::ostream &emboss_reserved_local_os,
+static inline ::std::ostream& operator<<(
+    ::std::ostream& emboss_reserved_local_os,
     InInIn emboss_reserved_local_value) {
   return EnumTraits<InInIn>::SendToOstream(emboss_reserved_local_os,
-                                             emboss_reserved_local_value);
+                                           emboss_reserved_local_value);
 }
 
 }  // namespace InIn
-
 
 template <class View>
 struct EmbossReservedInternalIsGenericInInView;
@@ -183,52 +147,44 @@ template <class Storage>
 class GenericInInView final {
  public:
   GenericInInView() : backing_() {}
-  explicit GenericInInView(
-       Storage emboss_reserved_local_bytes)
-      : backing_(emboss_reserved_local_bytes) 
-         {}
+  explicit GenericInInView(Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
 
   template <typename OtherStorage>
   GenericInInView(
-      const GenericInInView<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()}
-         {}
+      const GenericInInView<OtherStorage>& emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
 
-  template <typename Arg,
-            typename = typename ::std::enable_if<
-                !EmbossReservedInternalIsGenericInInView<
-                    typename ::std::remove_cv<typename ::std::remove_reference<
-                        Arg>::type>::type>::value>::type>
-  explicit GenericInInView(
-       Arg &&emboss_reserved_local_arg)
-      : backing_(::std::forward<Arg>(
-            emboss_reserved_local_arg)) 
-         {}
+  template <
+      typename Arg,
+      typename = typename ::std::enable_if<
+          !EmbossReservedInternalIsGenericInInView<typename ::std::remove_cv<
+              typename ::std::remove_reference<Arg>::type>::type>::value>::type>
+  explicit GenericInInView(Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
   template <typename Arg0, typename Arg1, typename... Args>
-  explicit GenericInInView(
-       Arg0 &&emboss_reserved_local_arg0,
-      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+  explicit GenericInInView(Arg0&& emboss_reserved_local_arg0,
+                           Arg1&& emboss_reserved_local_arg1,
+                           Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
-                 ::std::forward<Args>(
-                     emboss_reserved_local_args)...) 
-         {}
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
 
   template <typename OtherStorage>
-  GenericInInView<Storage> &operator=(
-      const GenericInInView<OtherStorage> &emboss_reserved_local_other) {
+  GenericInInView<Storage>& operator=(
+      const GenericInInView<OtherStorage>& emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
     return *this;
   }
 
-    using InInIn = ::emboss::test::Out::In::InIn::InInIn;
+  using InInIn = ::emboss::test::Out::In::InIn::InInIn;
 
   bool Ok() const {
     if (!IsComplete()) return false;
 
-
     if (!has_outer_offset().Known()) return false;
-    if (has_outer_offset().ValueOrDefault() && !outer_offset().Ok()) return false;
+    if (has_outer_offset().ValueOrDefault() && !outer_offset().Ok())
+      return false;
 
     if (!has_field_enum().Known()) return false;
     if (has_field_enum().ValueOrDefault() && !field_enum().Ok()) return false;
@@ -237,15 +193,17 @@ class GenericInInView final {
     if (has_in_2().ValueOrDefault() && !in_2().Ok()) return false;
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
 
     if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
 
     if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
-
-
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
 
     return true;
   }
@@ -259,15 +217,10 @@ class GenericInInView final {
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
   }
-  static constexpr bool SizeIsKnown() {
-    return IntrinsicSizeInBytes().Ok();
-  }
-
+  static constexpr bool SizeIsKnown() { return IntrinsicSizeInBytes().Ok(); }
 
   template <typename OtherStorage>
-  bool Equals(
-      GenericInInView<OtherStorage> emboss_reserved_local_other) const {
-    
+  bool Equals(GenericInInView<OtherStorage> emboss_reserved_local_other) const {
     if (!has_field_enum().Known()) return false;
     if (!emboss_reserved_local_other.has_field_enum().Known()) return false;
 
@@ -282,8 +235,6 @@ class GenericInInView final {
         has_field_enum().ValueOrDefault() &&
         !field_enum().Equals(emboss_reserved_local_other.field_enum()))
       return false;
-
-
 
     if (!has_in_2().Known()) return false;
     if (!emboss_reserved_local_other.has_in_2().Known()) return false;
@@ -300,12 +251,11 @@ class GenericInInView final {
         !in_2().Equals(emboss_reserved_local_other.in_2()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   bool UncheckedEquals(
       GenericInInView<OtherStorage> emboss_reserved_local_other) const {
-    
     if (emboss_reserved_local_other.has_field_enum().ValueOr(false) &&
         !has_field_enum().ValueOr(false))
       return false;
@@ -317,8 +267,6 @@ class GenericInInView final {
         has_field_enum().ValueOr(false) &&
         !field_enum().UncheckedEquals(emboss_reserved_local_other.field_enum()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_in_2().ValueOr(false) &&
         !has_in_2().ValueOr(false))
@@ -332,7 +280,7 @@ class GenericInInView final {
         !in_2().UncheckedEquals(emboss_reserved_local_other.in_2()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   void UncheckedCopyFrom(
@@ -352,13 +300,14 @@ class GenericInInView final {
   template <typename OtherStorage>
   bool TryToCopyFrom(
       GenericInInView<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
 
   template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
     ::std::string emboss_reserved_local_brace;
     if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
                                       &emboss_reserved_local_brace))
@@ -380,16 +329,14 @@ class GenericInInView final {
         return false;
       if (emboss_reserved_local_colon != ":") return false;
       if (emboss_reserved_local_name == "field_enum") {
-        if (!field_enum().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!field_enum().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "in_2") {
-        if (!in_2().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!in_2().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
@@ -401,7 +348,7 @@ class GenericInInView final {
 
   template <class Stream>
   void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
+      Stream* emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
     ::emboss::TextOutputOptions emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
@@ -419,7 +366,7 @@ class GenericInInView final {
             emboss_reserved_local_field_options.current_indent());
         emboss_reserved_local_stream->Write("# outer_offset: ");
         outer_offset().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                         emboss_reserved_local_field_options);
         emboss_reserved_local_stream->Write("\n");
       } else {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -444,7 +391,7 @@ class GenericInInView final {
         }
         emboss_reserved_local_stream->Write("field_enum: ");
         field_enum().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                       emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -474,7 +421,7 @@ class GenericInInView final {
         }
         emboss_reserved_local_stream->Write("in_2: ");
         in_2().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                 emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -500,8 +447,6 @@ class GenericInInView final {
     }
   }
 
-
-
   static constexpr bool IsAggregate() { return true; }
 
  public:
@@ -510,21 +455,23 @@ class GenericInInView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedVirtualOuterOffsetView() {}
-    EmbossReservedVirtualOuterOffsetView(const EmbossReservedVirtualOuterOffsetView &) = default;
-    EmbossReservedVirtualOuterOffsetView(EmbossReservedVirtualOuterOffsetView &&) = default;
-    EmbossReservedVirtualOuterOffsetView &operator=(const EmbossReservedVirtualOuterOffsetView &) =
-        default;
-    EmbossReservedVirtualOuterOffsetView &operator=(EmbossReservedVirtualOuterOffsetView &&) =
-        default;
+    EmbossReservedVirtualOuterOffsetView(
+        const EmbossReservedVirtualOuterOffsetView&) = default;
+    EmbossReservedVirtualOuterOffsetView(
+        EmbossReservedVirtualOuterOffsetView&&) = default;
+    EmbossReservedVirtualOuterOffsetView& operator=(
+        const EmbossReservedVirtualOuterOffsetView&) = default;
+    EmbossReservedVirtualOuterOffsetView& operator=(
+        EmbossReservedVirtualOuterOffsetView&&) = default;
     ~EmbossReservedVirtualOuterOffsetView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -541,17 +488,22 @@ class GenericInInView final {
 
  public:
   typename ::emboss::support::EnumView<
-    /**/ ::emboss::test::Out::In::InIn::InInIn,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      /**/ ::emboss::test::Out::In::InIn::InInIn,
+      ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
 
- field_enum() const;
+  field_enum() const;
   ::emboss::support::Maybe<bool> has_field_enum() const;
 
  public:
-  typename ::emboss::test::Out::GenericIn2View<typename Storage::template OffsetStorageType</**/0, 1>>
+  typename ::emboss::test::Out::GenericIn2View<
+      typename Storage::template OffsetStorageType</**/ 0, 1>>
 
- in_2() const;
+  in_2() const;
   ::emboss::support::Maybe<bool> has_in_2() const;
 
  public:
@@ -560,21 +512,23 @@ class GenericInInView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView() {}
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -582,7 +536,8 @@ class GenericInInView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+  IntrinsicSizeInBytes() {
     return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
@@ -595,21 +550,23 @@ class GenericInInView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
-    EmbossReservedDollarVirtualMaxSizeInBytesView(const EmbossReservedDollarVirtualMaxSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView(EmbossReservedDollarVirtualMaxSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(const EmbossReservedDollarVirtualMaxSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(EmbossReservedDollarVirtualMaxSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -617,7 +574,8 @@ class GenericInInView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
@@ -630,21 +588,23 @@ class GenericInInView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
-    EmbossReservedDollarVirtualMinSizeInBytesView(const EmbossReservedDollarVirtualMinSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView(EmbossReservedDollarVirtualMinSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(const EmbossReservedDollarVirtualMinSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(EmbossReservedDollarVirtualMinSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -652,19 +612,16 @@ class GenericInInView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
-
-
  private:
   Storage backing_;
-  
-  
 
   template <class OtherStorage>
   friend class GenericInInView;
@@ -680,8 +637,7 @@ struct EmbossReservedInternalIsGenericInInView {
 };
 
 template <class Storage>
-struct EmbossReservedInternalIsGenericInInView<
-    GenericInInView<Storage>> {
+struct EmbossReservedInternalIsGenericInInView<GenericInInView<Storage>> {
   static constexpr const bool value = true;
 };
 
@@ -691,38 +647,33 @@ inline GenericInInView<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
         1, 0>>
-MakeInInView( T &&emboss_reserved_local_arg) {
+MakeInInView(T&& emboss_reserved_local_arg) {
   return GenericInInView<
       /**/ ::emboss::support::ContiguousBuffer<
-          typename ::std::remove_reference<decltype(
-              *::std::declval<T>()->data())>::type,
-          1, 0>>(
-       ::std::forward<T>(emboss_reserved_local_arg));
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
 }
 
 template <typename T>
 inline GenericInInView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
-MakeInInView( T *emboss_reserved_local_data,
-                 ::std::size_t emboss_reserved_local_size) {
+MakeInInView(T* emboss_reserved_local_data,
+             ::std::size_t emboss_reserved_local_size) {
   return GenericInInView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
 template <typename T, ::std::size_t kAlignment>
 inline GenericInInView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
-MakeAlignedInInView(
-     T *emboss_reserved_local_data,
-    ::std::size_t emboss_reserved_local_size) {
+MakeAlignedInInView(T* emboss_reserved_local_data,
+                    ::std::size_t emboss_reserved_local_size) {
   return GenericInInView<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
 }  // namespace In
-
 
 template <class View>
 struct EmbossReservedInternalIsGenericInView;
@@ -731,49 +682,37 @@ template <class Storage>
 class GenericInView final {
  public:
   GenericInView() : backing_() {}
-  explicit GenericInView(
-       Storage emboss_reserved_local_bytes)
-      : backing_(emboss_reserved_local_bytes) 
-         {}
+  explicit GenericInView(Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
 
   template <typename OtherStorage>
-  GenericInView(
-      const GenericInView<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()}
-         {}
+  GenericInView(const GenericInView<OtherStorage>& emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
 
-  template <typename Arg,
-            typename = typename ::std::enable_if<
-                !EmbossReservedInternalIsGenericInView<
-                    typename ::std::remove_cv<typename ::std::remove_reference<
-                        Arg>::type>::type>::value>::type>
-  explicit GenericInView(
-       Arg &&emboss_reserved_local_arg)
-      : backing_(::std::forward<Arg>(
-            emboss_reserved_local_arg)) 
-         {}
+  template <
+      typename Arg,
+      typename = typename ::std::enable_if<
+          !EmbossReservedInternalIsGenericInView<typename ::std::remove_cv<
+              typename ::std::remove_reference<Arg>::type>::type>::value>::type>
+  explicit GenericInView(Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
   template <typename Arg0, typename Arg1, typename... Args>
-  explicit GenericInView(
-       Arg0 &&emboss_reserved_local_arg0,
-      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+  explicit GenericInView(Arg0&& emboss_reserved_local_arg0,
+                         Arg1&& emboss_reserved_local_arg1,
+                         Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
-                 ::std::forward<Args>(
-                     emboss_reserved_local_args)...) 
-         {}
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
 
   template <typename OtherStorage>
-  GenericInView<Storage> &operator=(
-      const GenericInView<OtherStorage> &emboss_reserved_local_other) {
+  GenericInView<Storage>& operator=(
+      const GenericInView<OtherStorage>& emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
     return *this;
   }
 
-  
-
   bool Ok() const {
     if (!IsComplete()) return false;
-
 
     if (!has_in_in_1().Known()) return false;
     if (has_in_in_1().ValueOrDefault() && !in_in_1().Ok()) return false;
@@ -788,21 +727,26 @@ class GenericInView final {
     if (has_in_2().ValueOrDefault() && !in_2().Ok()) return false;
 
     if (!has_name_collision().Known()) return false;
-    if (has_name_collision().ValueOrDefault() && !name_collision().Ok()) return false;
+    if (has_name_collision().ValueOrDefault() && !name_collision().Ok())
+      return false;
 
     if (!has_name_collision_check().Known()) return false;
-    if (has_name_collision_check().ValueOrDefault() && !name_collision_check().Ok()) return false;
+    if (has_name_collision_check().ValueOrDefault() &&
+        !name_collision_check().Ok())
+      return false;
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
 
     if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
 
     if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
-
-
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
 
     return true;
   }
@@ -818,12 +762,8 @@ class GenericInView final {
   }
   bool SizeIsKnown() const { return IntrinsicSizeInBytes().Ok(); }
 
-
-
   template <typename OtherStorage>
-  bool Equals(
-      GenericInView<OtherStorage> emboss_reserved_local_other) const {
-    
+  bool Equals(GenericInView<OtherStorage> emboss_reserved_local_other) const {
     if (!has_in_in_1().Known()) return false;
     if (!emboss_reserved_local_other.has_in_in_1().Known()) return false;
 
@@ -838,8 +778,6 @@ class GenericInView final {
         has_in_in_1().ValueOrDefault() &&
         !in_in_1().Equals(emboss_reserved_local_other.in_in_1()))
       return false;
-
-
 
     if (!has_in_in_2().Known()) return false;
     if (!emboss_reserved_local_other.has_in_in_2().Known()) return false;
@@ -856,8 +794,6 @@ class GenericInView final {
         !in_in_2().Equals(emboss_reserved_local_other.in_in_2()))
       return false;
 
-
-
     if (!has_in_in_in_1().Known()) return false;
     if (!emboss_reserved_local_other.has_in_in_in_1().Known()) return false;
 
@@ -872,8 +808,6 @@ class GenericInView final {
         has_in_in_in_1().ValueOrDefault() &&
         !in_in_in_1().Equals(emboss_reserved_local_other.in_in_in_1()))
       return false;
-
-
 
     if (!has_in_2().Known()) return false;
     if (!emboss_reserved_local_other.has_in_2().Known()) return false;
@@ -890,8 +824,6 @@ class GenericInView final {
         !in_2().Equals(emboss_reserved_local_other.in_2()))
       return false;
 
-
-
     if (!has_name_collision().Known()) return false;
     if (!emboss_reserved_local_other.has_name_collision().Known()) return false;
 
@@ -907,29 +839,31 @@ class GenericInView final {
         !name_collision().Equals(emboss_reserved_local_other.name_collision()))
       return false;
 
-
-
     if (!has_name_collision_check().Known()) return false;
-    if (!emboss_reserved_local_other.has_name_collision_check().Known()) return false;
+    if (!emboss_reserved_local_other.has_name_collision_check().Known())
+      return false;
 
-    if (emboss_reserved_local_other.has_name_collision_check().ValueOrDefault() &&
+    if (emboss_reserved_local_other.has_name_collision_check()
+            .ValueOrDefault() &&
         !has_name_collision_check().ValueOrDefault())
       return false;
     if (has_name_collision_check().ValueOrDefault() &&
-        !emboss_reserved_local_other.has_name_collision_check().ValueOrDefault())
+        !emboss_reserved_local_other.has_name_collision_check()
+             .ValueOrDefault())
       return false;
 
-    if (emboss_reserved_local_other.has_name_collision_check().ValueOrDefault() &&
+    if (emboss_reserved_local_other.has_name_collision_check()
+            .ValueOrDefault() &&
         has_name_collision_check().ValueOrDefault() &&
-        !name_collision_check().Equals(emboss_reserved_local_other.name_collision_check()))
+        !name_collision_check().Equals(
+            emboss_reserved_local_other.name_collision_check()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   bool UncheckedEquals(
       GenericInView<OtherStorage> emboss_reserved_local_other) const {
-    
     if (emboss_reserved_local_other.has_in_in_1().ValueOr(false) &&
         !has_in_in_1().ValueOr(false))
       return false;
@@ -941,8 +875,6 @@ class GenericInView final {
         has_in_in_1().ValueOr(false) &&
         !in_in_1().UncheckedEquals(emboss_reserved_local_other.in_in_1()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_in_in_2().ValueOr(false) &&
         !has_in_in_2().ValueOr(false))
@@ -956,8 +888,6 @@ class GenericInView final {
         !in_in_2().UncheckedEquals(emboss_reserved_local_other.in_in_2()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_in_in_in_1().ValueOr(false) &&
         !has_in_in_in_1().ValueOr(false))
       return false;
@@ -969,8 +899,6 @@ class GenericInView final {
         has_in_in_in_1().ValueOr(false) &&
         !in_in_in_1().UncheckedEquals(emboss_reserved_local_other.in_in_in_1()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_in_2().ValueOr(false) &&
         !has_in_2().ValueOr(false))
@@ -984,8 +912,6 @@ class GenericInView final {
         !in_2().UncheckedEquals(emboss_reserved_local_other.in_2()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_name_collision().ValueOr(false) &&
         !has_name_collision().ValueOr(false))
       return false;
@@ -995,10 +921,9 @@ class GenericInView final {
 
     if (emboss_reserved_local_other.has_name_collision().ValueOr(false) &&
         has_name_collision().ValueOr(false) &&
-        !name_collision().UncheckedEquals(emboss_reserved_local_other.name_collision()))
+        !name_collision().UncheckedEquals(
+            emboss_reserved_local_other.name_collision()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_name_collision_check().ValueOr(false) &&
         !has_name_collision_check().ValueOr(false))
@@ -1009,10 +934,11 @@ class GenericInView final {
 
     if (emboss_reserved_local_other.has_name_collision_check().ValueOr(false) &&
         has_name_collision_check().ValueOr(false) &&
-        !name_collision_check().UncheckedEquals(emboss_reserved_local_other.name_collision_check()))
+        !name_collision_check().UncheckedEquals(
+            emboss_reserved_local_other.name_collision_check()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   void UncheckedCopyFrom(
@@ -1023,8 +949,7 @@ class GenericInView final {
   }
 
   template <typename OtherStorage>
-  void CopyFrom(
-      GenericInView<OtherStorage> emboss_reserved_local_other) const {
+  void CopyFrom(GenericInView<OtherStorage> emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
         emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
@@ -1032,13 +957,14 @@ class GenericInView final {
   template <typename OtherStorage>
   bool TryToCopyFrom(
       GenericInView<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
 
   template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
     ::std::string emboss_reserved_local_brace;
     if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
                                       &emboss_reserved_local_brace))
@@ -1060,32 +986,28 @@ class GenericInView final {
         return false;
       if (emboss_reserved_local_colon != ":") return false;
       if (emboss_reserved_local_name == "in_in_1") {
-        if (!in_in_1().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!in_in_1().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "in_in_2") {
-        if (!in_in_2().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!in_in_2().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "in_in_in_1") {
-        if (!in_in_in_1().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!in_in_in_1().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "in_2") {
-        if (!in_2().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!in_2().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
@@ -1113,7 +1035,7 @@ class GenericInView final {
 
   template <class Stream>
   void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
+      Stream* emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
     ::emboss::TextOutputOptions emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
@@ -1137,7 +1059,7 @@ class GenericInView final {
         }
         emboss_reserved_local_stream->Write("in_in_1: ");
         in_in_1().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                    emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -1167,7 +1089,7 @@ class GenericInView final {
         }
         emboss_reserved_local_stream->Write("in_in_2: ");
         in_in_2().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                    emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -1197,7 +1119,7 @@ class GenericInView final {
         }
         emboss_reserved_local_stream->Write("in_in_in_1: ");
         in_in_in_1().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                       emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -1227,7 +1149,7 @@ class GenericInView final {
         }
         emboss_reserved_local_stream->Write("in_2: ");
         in_2().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                 emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -1286,20 +1208,22 @@ class GenericInView final {
           emboss_reserved_local_stream->Write(" ");
         }
         emboss_reserved_local_stream->Write("name_collision_check: ");
-        name_collision_check().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+        name_collision_check().WriteToTextStream(
+            emboss_reserved_local_stream, emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
-                 !name_collision_check().IsAggregate() && !name_collision_check().Ok()) {
+                 !name_collision_check().IsAggregate() &&
+                 !name_collision_check().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
         }
-        emboss_reserved_local_stream->Write("# name_collision_check: UNREADABLE\n");
+        emboss_reserved_local_stream->Write(
+            "# name_collision_check: UNREADABLE\n");
       }
     }
 
@@ -1313,51 +1237,64 @@ class GenericInView final {
     }
   }
 
-
-
   static constexpr bool IsAggregate() { return true; }
 
  public:
-  typename ::emboss::test::Out::In::GenericInInView<typename Storage::template OffsetStorageType</**/0, 0>>
+  typename ::emboss::test::Out::In::GenericInInView<
+      typename Storage::template OffsetStorageType</**/ 0, 0>>
 
- in_in_1() const;
+  in_in_1() const;
   ::emboss::support::Maybe<bool> has_in_in_1() const;
 
  public:
-  typename ::emboss::test::Out::In::GenericInInView<typename Storage::template OffsetStorageType</**/0, 2>>
+  typename ::emboss::test::Out::In::GenericInInView<
+      typename Storage::template OffsetStorageType</**/ 0, 2>>
 
- in_in_2() const;
+  in_in_2() const;
   ::emboss::support::Maybe<bool> has_in_in_2() const;
 
  public:
   typename ::emboss::support::EnumView<
-    /**/ ::emboss::test::Out::In::InIn::InInIn,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 8>>
+      /**/ ::emboss::test::Out::In::InIn::InInIn,
+      ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          8>>
 
- in_in_in_1() const;
+  in_in_in_1() const;
   ::emboss::support::Maybe<bool> has_in_in_in_1() const;
 
  public:
-  typename ::emboss::test::Out::GenericIn2View<typename Storage::template OffsetStorageType</**/0, 5>>
+  typename ::emboss::test::Out::GenericIn2View<
+      typename Storage::template OffsetStorageType</**/ 0, 5>>
 
- in_2() const;
+  in_2() const;
   ::emboss::support::Maybe<bool> has_in_2() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 6>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 6>>,
+          8>>
 
- name_collision() const;
+  name_collision() const;
   ::emboss::support::Maybe<bool> has_name_collision() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/1, 0>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 1, 0>>,
+          8>>
 
- name_collision_check() const;
+  name_collision_check() const;
   ::emboss::support::Maybe<bool> has_name_collision_check() const;
 
  public:
@@ -1366,15 +1303,17 @@ class GenericInView final {
     using ValueType = ::std::int32_t;
 
     explicit EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
-        const GenericInView &emboss_reserved_local_view)
+        const GenericInView& emboss_reserved_local_view)
         : view_(emboss_reserved_local_view) {}
     EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = delete;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
     ::std::int32_t Read() const {
@@ -1393,24 +1332,53 @@ class GenericInView final {
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
     static constexpr bool IsAggregate() { return false; }
 
-
-
    private:
     ::emboss::support::Maybe</**/ ::std::int32_t> MaybeRead() const {
       const auto emboss_reserved_local_subexpr_1 = view_.name_collision();
-      const auto emboss_reserved_local_subexpr_2 = (emboss_reserved_local_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_subexpr_3 = ::emboss::support::Sum</**/::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)));
-      const auto emboss_reserved_local_subexpr_4 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(::emboss::support::Maybe</**/bool>(true), emboss_reserved_local_subexpr_3, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_5 = ::emboss::support::Maximum</**/::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(5LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(6LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(7LL)), emboss_reserved_local_subexpr_4);
+      const auto emboss_reserved_local_subexpr_2 =
+          (emboss_reserved_local_subexpr_1.Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(
+                         emboss_reserved_local_subexpr_1.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>());
+      const auto emboss_reserved_local_subexpr_3 =
+          ::emboss::support::Sum</**/ ::std::int32_t, ::std::int32_t,
+                                 ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(1LL)));
+      const auto emboss_reserved_local_subexpr_4 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              ::emboss::support::Maybe</**/ bool>(true),
+              emboss_reserved_local_subexpr_3,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_5 = ::emboss::support::Maximum<
+          /**/ ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t>(::emboss::support::Maybe</**/ ::std::int32_t>(
+                              static_cast</**/ ::std::int32_t>(0LL)),
+                          ::emboss::support::Maybe</**/ ::std::int32_t>(
+                              static_cast</**/ ::std::int32_t>(2LL)),
+                          ::emboss::support::Maybe</**/ ::std::int32_t>(
+                              static_cast</**/ ::std::int32_t>(4LL)),
+                          ::emboss::support::Maybe</**/ ::std::int32_t>(
+                              static_cast</**/ ::std::int32_t>(5LL)),
+                          ::emboss::support::Maybe</**/ ::std::int32_t>(
+                              static_cast</**/ ::std::int32_t>(6LL)),
+                          ::emboss::support::Maybe</**/ ::std::int32_t>(
+                              static_cast</**/ ::std::int32_t>(7LL)),
+                          emboss_reserved_local_subexpr_4);
 
       return emboss_reserved_local_subexpr_5;
     }
@@ -1423,7 +1391,8 @@ class GenericInView final {
 
     const GenericInView view_;
   };
-  EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() const;
+  EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes()
+      const;
   ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() const;
 
  public:
@@ -1432,21 +1401,23 @@ class GenericInView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
-    EmbossReservedDollarVirtualMaxSizeInBytesView(const EmbossReservedDollarVirtualMaxSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView(EmbossReservedDollarVirtualMaxSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(const EmbossReservedDollarVirtualMaxSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(EmbossReservedDollarVirtualMaxSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -1454,7 +1425,8 @@ class GenericInView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
@@ -1467,21 +1439,23 @@ class GenericInView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
-    EmbossReservedDollarVirtualMinSizeInBytesView(const EmbossReservedDollarVirtualMinSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView(EmbossReservedDollarVirtualMinSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(const EmbossReservedDollarVirtualMinSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(EmbossReservedDollarVirtualMinSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -1489,25 +1463,21 @@ class GenericInView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
-
-
  private:
   Storage backing_;
-  
-  
 
   template <class OtherStorage>
   friend class GenericInView;
 };
-using InView =
-    GenericInView</**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+using InView = GenericInView</**/ ::emboss::support::ReadOnlyContiguousBuffer>;
 using InWriter =
     GenericInView</**/ ::emboss::support::ReadWriteContiguousBuffer>;
 
@@ -1517,8 +1487,7 @@ struct EmbossReservedInternalIsGenericInView {
 };
 
 template <class Storage>
-struct EmbossReservedInternalIsGenericInView<
-    GenericInView<Storage>> {
+struct EmbossReservedInternalIsGenericInView<GenericInView<Storage>> {
   static constexpr const bool value = true;
 };
 
@@ -1528,43 +1497,33 @@ inline GenericInView<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
         1, 0>>
-MakeInView( T &&emboss_reserved_local_arg) {
+MakeInView(T&& emboss_reserved_local_arg) {
   return GenericInView<
       /**/ ::emboss::support::ContiguousBuffer<
-          typename ::std::remove_reference<decltype(
-              *::std::declval<T>()->data())>::type,
-          1, 0>>(
-       ::std::forward<T>(emboss_reserved_local_arg));
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
 }
 
 template <typename T>
 inline GenericInView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
-MakeInView( T *emboss_reserved_local_data,
-                 ::std::size_t emboss_reserved_local_size) {
+MakeInView(T* emboss_reserved_local_data,
+           ::std::size_t emboss_reserved_local_size) {
   return GenericInView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
 template <typename T, ::std::size_t kAlignment>
 inline GenericInView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
-MakeAlignedInView(
-     T *emboss_reserved_local_data,
-    ::std::size_t emboss_reserved_local_size) {
+MakeAlignedInView(T* emboss_reserved_local_data,
+                  ::std::size_t emboss_reserved_local_size) {
   return GenericInView<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
-
-
-
-namespace In2 {
-
-}  // namespace In2
-
+namespace In2 {}  // namespace In2
 
 template <class View>
 struct EmbossReservedInternalIsGenericIn2View;
@@ -1573,63 +1532,54 @@ template <class Storage>
 class GenericIn2View final {
  public:
   GenericIn2View() : backing_() {}
-  explicit GenericIn2View(
-       Storage emboss_reserved_local_bytes)
-      : backing_(emboss_reserved_local_bytes) 
-         {}
+  explicit GenericIn2View(Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
 
   template <typename OtherStorage>
   GenericIn2View(
-      const GenericIn2View<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()}
-         {}
+      const GenericIn2View<OtherStorage>& emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
 
-  template <typename Arg,
-            typename = typename ::std::enable_if<
-                !EmbossReservedInternalIsGenericIn2View<
-                    typename ::std::remove_cv<typename ::std::remove_reference<
-                        Arg>::type>::type>::value>::type>
-  explicit GenericIn2View(
-       Arg &&emboss_reserved_local_arg)
-      : backing_(::std::forward<Arg>(
-            emboss_reserved_local_arg)) 
-         {}
+  template <
+      typename Arg,
+      typename = typename ::std::enable_if<
+          !EmbossReservedInternalIsGenericIn2View<typename ::std::remove_cv<
+              typename ::std::remove_reference<Arg>::type>::type>::value>::type>
+  explicit GenericIn2View(Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
   template <typename Arg0, typename Arg1, typename... Args>
-  explicit GenericIn2View(
-       Arg0 &&emboss_reserved_local_arg0,
-      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+  explicit GenericIn2View(Arg0&& emboss_reserved_local_arg0,
+                          Arg1&& emboss_reserved_local_arg1,
+                          Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
-                 ::std::forward<Args>(
-                     emboss_reserved_local_args)...) 
-         {}
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
 
   template <typename OtherStorage>
-  GenericIn2View<Storage> &operator=(
-      const GenericIn2View<OtherStorage> &emboss_reserved_local_other) {
+  GenericIn2View<Storage>& operator=(
+      const GenericIn2View<OtherStorage>& emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
     return *this;
   }
 
-  
-
   bool Ok() const {
     if (!IsComplete()) return false;
-
 
     if (!has_field_byte().Known()) return false;
     if (has_field_byte().ValueOrDefault() && !field_byte().Ok()) return false;
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
 
     if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
 
     if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
-
-
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
 
     return true;
   }
@@ -1643,15 +1593,10 @@ class GenericIn2View final {
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
   }
-  static constexpr bool SizeIsKnown() {
-    return IntrinsicSizeInBytes().Ok();
-  }
-
+  static constexpr bool SizeIsKnown() { return IntrinsicSizeInBytes().Ok(); }
 
   template <typename OtherStorage>
-  bool Equals(
-      GenericIn2View<OtherStorage> emboss_reserved_local_other) const {
-    
+  bool Equals(GenericIn2View<OtherStorage> emboss_reserved_local_other) const {
     if (!has_field_byte().Known()) return false;
     if (!emboss_reserved_local_other.has_field_byte().Known()) return false;
 
@@ -1667,12 +1612,11 @@ class GenericIn2View final {
         !field_byte().Equals(emboss_reserved_local_other.field_byte()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   bool UncheckedEquals(
       GenericIn2View<OtherStorage> emboss_reserved_local_other) const {
-    
     if (emboss_reserved_local_other.has_field_byte().ValueOr(false) &&
         !has_field_byte().ValueOr(false))
       return false;
@@ -1685,7 +1629,7 @@ class GenericIn2View final {
         !field_byte().UncheckedEquals(emboss_reserved_local_other.field_byte()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   void UncheckedCopyFrom(
@@ -1705,13 +1649,14 @@ class GenericIn2View final {
   template <typename OtherStorage>
   bool TryToCopyFrom(
       GenericIn2View<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
 
   template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
     ::std::string emboss_reserved_local_brace;
     if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
                                       &emboss_reserved_local_brace))
@@ -1733,8 +1678,7 @@ class GenericIn2View final {
         return false;
       if (emboss_reserved_local_colon != ":") return false;
       if (emboss_reserved_local_name == "field_byte") {
-        if (!field_byte().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!field_byte().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
@@ -1746,7 +1690,7 @@ class GenericIn2View final {
 
   template <class Stream>
   void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
+      Stream* emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
     ::emboss::TextOutputOptions emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
@@ -1770,7 +1714,7 @@ class GenericIn2View final {
         }
         emboss_reserved_local_stream->Write("field_byte: ");
         field_byte().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                       emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -1796,16 +1740,18 @@ class GenericIn2View final {
     }
   }
 
-
-
   static constexpr bool IsAggregate() { return true; }
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
 
- field_byte() const;
+  field_byte() const;
   ::emboss::support::Maybe<bool> has_field_byte() const;
 
  public:
@@ -1814,21 +1760,23 @@ class GenericIn2View final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView() {}
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -1836,7 +1784,8 @@ class GenericIn2View final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+  IntrinsicSizeInBytes() {
     return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
@@ -1849,21 +1798,23 @@ class GenericIn2View final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
-    EmbossReservedDollarVirtualMaxSizeInBytesView(const EmbossReservedDollarVirtualMaxSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView(EmbossReservedDollarVirtualMaxSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(const EmbossReservedDollarVirtualMaxSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(EmbossReservedDollarVirtualMaxSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -1871,7 +1822,8 @@ class GenericIn2View final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
@@ -1884,21 +1836,23 @@ class GenericIn2View final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
-    EmbossReservedDollarVirtualMinSizeInBytesView(const EmbossReservedDollarVirtualMinSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView(EmbossReservedDollarVirtualMinSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(const EmbossReservedDollarVirtualMinSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(EmbossReservedDollarVirtualMinSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -1906,19 +1860,16 @@ class GenericIn2View final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
-
-
  private:
   Storage backing_;
-  
-  
 
   template <class OtherStorage>
   friend class GenericIn2View;
@@ -1934,8 +1885,7 @@ struct EmbossReservedInternalIsGenericIn2View {
 };
 
 template <class Storage>
-struct EmbossReservedInternalIsGenericIn2View<
-    GenericIn2View<Storage>> {
+struct EmbossReservedInternalIsGenericIn2View<GenericIn2View<Storage>> {
   static constexpr const bool value = true;
 };
 
@@ -1945,38 +1895,33 @@ inline GenericIn2View<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
         1, 0>>
-MakeIn2View( T &&emboss_reserved_local_arg) {
+MakeIn2View(T&& emboss_reserved_local_arg) {
   return GenericIn2View<
       /**/ ::emboss::support::ContiguousBuffer<
-          typename ::std::remove_reference<decltype(
-              *::std::declval<T>()->data())>::type,
-          1, 0>>(
-       ::std::forward<T>(emboss_reserved_local_arg));
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
 }
 
 template <typename T>
 inline GenericIn2View</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
-MakeIn2View( T *emboss_reserved_local_data,
-                 ::std::size_t emboss_reserved_local_size) {
+MakeIn2View(T* emboss_reserved_local_data,
+            ::std::size_t emboss_reserved_local_size) {
   return GenericIn2View</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
 template <typename T, ::std::size_t kAlignment>
 inline GenericIn2View<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
-MakeAlignedIn2View(
-     T *emboss_reserved_local_data,
-    ::std::size_t emboss_reserved_local_size) {
+MakeAlignedIn2View(T* emboss_reserved_local_data,
+                   ::std::size_t emboss_reserved_local_size) {
   return GenericIn2View<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
 }  // namespace Out
-
 
 template <class View>
 struct EmbossReservedInternalIsGenericOutView;
@@ -1985,49 +1930,38 @@ template <class Storage>
 class GenericOutView final {
  public:
   GenericOutView() : backing_() {}
-  explicit GenericOutView(
-       Storage emboss_reserved_local_bytes)
-      : backing_(emboss_reserved_local_bytes) 
-         {}
+  explicit GenericOutView(Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
 
   template <typename OtherStorage>
   GenericOutView(
-      const GenericOutView<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()}
-         {}
+      const GenericOutView<OtherStorage>& emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
 
-  template <typename Arg,
-            typename = typename ::std::enable_if<
-                !EmbossReservedInternalIsGenericOutView<
-                    typename ::std::remove_cv<typename ::std::remove_reference<
-                        Arg>::type>::type>::value>::type>
-  explicit GenericOutView(
-       Arg &&emboss_reserved_local_arg)
-      : backing_(::std::forward<Arg>(
-            emboss_reserved_local_arg)) 
-         {}
+  template <
+      typename Arg,
+      typename = typename ::std::enable_if<
+          !EmbossReservedInternalIsGenericOutView<typename ::std::remove_cv<
+              typename ::std::remove_reference<Arg>::type>::type>::value>::type>
+  explicit GenericOutView(Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
   template <typename Arg0, typename Arg1, typename... Args>
-  explicit GenericOutView(
-       Arg0 &&emboss_reserved_local_arg0,
-      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+  explicit GenericOutView(Arg0&& emboss_reserved_local_arg0,
+                          Arg1&& emboss_reserved_local_arg1,
+                          Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
-                 ::std::forward<Args>(
-                     emboss_reserved_local_args)...) 
-         {}
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
 
   template <typename OtherStorage>
-  GenericOutView<Storage> &operator=(
-      const GenericOutView<OtherStorage> &emboss_reserved_local_other) {
+  GenericOutView<Storage>& operator=(
+      const GenericOutView<OtherStorage>& emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
     return *this;
   }
 
-  
-
   bool Ok() const {
     if (!IsComplete()) return false;
-
 
     if (!has_in_1().Known()) return false;
     if (has_in_1().ValueOrDefault() && !in_1().Ok()) return false;
@@ -2048,21 +1982,26 @@ class GenericOutView final {
     if (has_in_in_in_2().ValueOrDefault() && !in_in_in_2().Ok()) return false;
 
     if (!has_name_collision().Known()) return false;
-    if (has_name_collision().ValueOrDefault() && !name_collision().Ok()) return false;
+    if (has_name_collision().ValueOrDefault() && !name_collision().Ok())
+      return false;
 
     if (!has_nested_constant_check().Known()) return false;
-    if (has_nested_constant_check().ValueOrDefault() && !nested_constant_check().Ok()) return false;
+    if (has_nested_constant_check().ValueOrDefault() &&
+        !nested_constant_check().Ok())
+      return false;
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
 
     if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
 
     if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
-
-
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
 
     return true;
   }
@@ -2076,15 +2015,10 @@ class GenericOutView final {
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
   }
-  static constexpr bool SizeIsKnown() {
-    return IntrinsicSizeInBytes().Ok();
-  }
-
+  static constexpr bool SizeIsKnown() { return IntrinsicSizeInBytes().Ok(); }
 
   template <typename OtherStorage>
-  bool Equals(
-      GenericOutView<OtherStorage> emboss_reserved_local_other) const {
-    
+  bool Equals(GenericOutView<OtherStorage> emboss_reserved_local_other) const {
     if (!has_in_1().Known()) return false;
     if (!emboss_reserved_local_other.has_in_1().Known()) return false;
 
@@ -2099,8 +2033,6 @@ class GenericOutView final {
         has_in_1().ValueOrDefault() &&
         !in_1().Equals(emboss_reserved_local_other.in_1()))
       return false;
-
-
 
     if (!has_in_2().Known()) return false;
     if (!emboss_reserved_local_other.has_in_2().Known()) return false;
@@ -2117,8 +2049,6 @@ class GenericOutView final {
         !in_2().Equals(emboss_reserved_local_other.in_2()))
       return false;
 
-
-
     if (!has_in_in_1().Known()) return false;
     if (!emboss_reserved_local_other.has_in_in_1().Known()) return false;
 
@@ -2133,8 +2063,6 @@ class GenericOutView final {
         has_in_in_1().ValueOrDefault() &&
         !in_in_1().Equals(emboss_reserved_local_other.in_in_1()))
       return false;
-
-
 
     if (!has_in_in_2().Known()) return false;
     if (!emboss_reserved_local_other.has_in_in_2().Known()) return false;
@@ -2151,8 +2079,6 @@ class GenericOutView final {
         !in_in_2().Equals(emboss_reserved_local_other.in_in_2()))
       return false;
 
-
-
     if (!has_in_in_in_1().Known()) return false;
     if (!emboss_reserved_local_other.has_in_in_in_1().Known()) return false;
 
@@ -2167,8 +2093,6 @@ class GenericOutView final {
         has_in_in_in_1().ValueOrDefault() &&
         !in_in_in_1().Equals(emboss_reserved_local_other.in_in_in_1()))
       return false;
-
-
 
     if (!has_in_in_in_2().Known()) return false;
     if (!emboss_reserved_local_other.has_in_in_in_2().Known()) return false;
@@ -2185,8 +2109,6 @@ class GenericOutView final {
         !in_in_in_2().Equals(emboss_reserved_local_other.in_in_in_2()))
       return false;
 
-
-
     if (!has_name_collision().Known()) return false;
     if (!emboss_reserved_local_other.has_name_collision().Known()) return false;
 
@@ -2202,29 +2124,31 @@ class GenericOutView final {
         !name_collision().Equals(emboss_reserved_local_other.name_collision()))
       return false;
 
-
-
     if (!has_nested_constant_check().Known()) return false;
-    if (!emboss_reserved_local_other.has_nested_constant_check().Known()) return false;
+    if (!emboss_reserved_local_other.has_nested_constant_check().Known())
+      return false;
 
-    if (emboss_reserved_local_other.has_nested_constant_check().ValueOrDefault() &&
+    if (emboss_reserved_local_other.has_nested_constant_check()
+            .ValueOrDefault() &&
         !has_nested_constant_check().ValueOrDefault())
       return false;
     if (has_nested_constant_check().ValueOrDefault() &&
-        !emboss_reserved_local_other.has_nested_constant_check().ValueOrDefault())
+        !emboss_reserved_local_other.has_nested_constant_check()
+             .ValueOrDefault())
       return false;
 
-    if (emboss_reserved_local_other.has_nested_constant_check().ValueOrDefault() &&
+    if (emboss_reserved_local_other.has_nested_constant_check()
+            .ValueOrDefault() &&
         has_nested_constant_check().ValueOrDefault() &&
-        !nested_constant_check().Equals(emboss_reserved_local_other.nested_constant_check()))
+        !nested_constant_check().Equals(
+            emboss_reserved_local_other.nested_constant_check()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   bool UncheckedEquals(
       GenericOutView<OtherStorage> emboss_reserved_local_other) const {
-    
     if (emboss_reserved_local_other.has_in_1().ValueOr(false) &&
         !has_in_1().ValueOr(false))
       return false;
@@ -2236,8 +2160,6 @@ class GenericOutView final {
         has_in_1().ValueOr(false) &&
         !in_1().UncheckedEquals(emboss_reserved_local_other.in_1()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_in_2().ValueOr(false) &&
         !has_in_2().ValueOr(false))
@@ -2251,8 +2173,6 @@ class GenericOutView final {
         !in_2().UncheckedEquals(emboss_reserved_local_other.in_2()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_in_in_1().ValueOr(false) &&
         !has_in_in_1().ValueOr(false))
       return false;
@@ -2264,8 +2184,6 @@ class GenericOutView final {
         has_in_in_1().ValueOr(false) &&
         !in_in_1().UncheckedEquals(emboss_reserved_local_other.in_in_1()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_in_in_2().ValueOr(false) &&
         !has_in_in_2().ValueOr(false))
@@ -2279,8 +2197,6 @@ class GenericOutView final {
         !in_in_2().UncheckedEquals(emboss_reserved_local_other.in_in_2()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_in_in_in_1().ValueOr(false) &&
         !has_in_in_in_1().ValueOr(false))
       return false;
@@ -2292,8 +2208,6 @@ class GenericOutView final {
         has_in_in_in_1().ValueOr(false) &&
         !in_in_in_1().UncheckedEquals(emboss_reserved_local_other.in_in_in_1()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_in_in_in_2().ValueOr(false) &&
         !has_in_in_in_2().ValueOr(false))
@@ -2307,8 +2221,6 @@ class GenericOutView final {
         !in_in_in_2().UncheckedEquals(emboss_reserved_local_other.in_in_in_2()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_name_collision().ValueOr(false) &&
         !has_name_collision().ValueOr(false))
       return false;
@@ -2318,24 +2230,26 @@ class GenericOutView final {
 
     if (emboss_reserved_local_other.has_name_collision().ValueOr(false) &&
         has_name_collision().ValueOr(false) &&
-        !name_collision().UncheckedEquals(emboss_reserved_local_other.name_collision()))
+        !name_collision().UncheckedEquals(
+            emboss_reserved_local_other.name_collision()))
       return false;
 
-
-
-    if (emboss_reserved_local_other.has_nested_constant_check().ValueOr(false) &&
+    if (emboss_reserved_local_other.has_nested_constant_check().ValueOr(
+            false) &&
         !has_nested_constant_check().ValueOr(false))
       return false;
     if (has_nested_constant_check().ValueOr(false) &&
         !emboss_reserved_local_other.has_nested_constant_check().ValueOr(false))
       return false;
 
-    if (emboss_reserved_local_other.has_nested_constant_check().ValueOr(false) &&
+    if (emboss_reserved_local_other.has_nested_constant_check().ValueOr(
+            false) &&
         has_nested_constant_check().ValueOr(false) &&
-        !nested_constant_check().UncheckedEquals(emboss_reserved_local_other.nested_constant_check()))
+        !nested_constant_check().UncheckedEquals(
+            emboss_reserved_local_other.nested_constant_check()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   void UncheckedCopyFrom(
@@ -2355,13 +2269,14 @@ class GenericOutView final {
   template <typename OtherStorage>
   bool TryToCopyFrom(
       GenericOutView<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
 
   template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
     ::std::string emboss_reserved_local_brace;
     if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
                                       &emboss_reserved_local_brace))
@@ -2383,48 +2298,42 @@ class GenericOutView final {
         return false;
       if (emboss_reserved_local_colon != ":") return false;
       if (emboss_reserved_local_name == "in_1") {
-        if (!in_1().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!in_1().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "in_2") {
-        if (!in_2().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!in_2().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "in_in_1") {
-        if (!in_in_1().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!in_in_1().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "in_in_2") {
-        if (!in_in_2().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!in_in_2().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "in_in_in_1") {
-        if (!in_in_in_1().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!in_in_in_1().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "in_in_in_2") {
-        if (!in_in_in_2().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!in_in_in_2().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
@@ -2452,7 +2361,7 @@ class GenericOutView final {
 
   template <class Stream>
   void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
+      Stream* emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
     ::emboss::TextOutputOptions emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
@@ -2476,7 +2385,7 @@ class GenericOutView final {
         }
         emboss_reserved_local_stream->Write("in_1: ");
         in_1().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                 emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -2506,7 +2415,7 @@ class GenericOutView final {
         }
         emboss_reserved_local_stream->Write("in_2: ");
         in_2().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                 emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -2536,7 +2445,7 @@ class GenericOutView final {
         }
         emboss_reserved_local_stream->Write("in_in_1: ");
         in_in_1().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                    emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -2566,7 +2475,7 @@ class GenericOutView final {
         }
         emboss_reserved_local_stream->Write("in_in_2: ");
         in_in_2().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                    emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -2596,7 +2505,7 @@ class GenericOutView final {
         }
         emboss_reserved_local_stream->Write("in_in_in_1: ");
         in_in_in_1().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                       emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -2626,7 +2535,7 @@ class GenericOutView final {
         }
         emboss_reserved_local_stream->Write("in_in_in_2: ");
         in_in_in_2().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                       emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -2674,7 +2583,8 @@ class GenericOutView final {
 
     if (has_nested_constant_check().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
-          nested_constant_check().IsAggregate() || nested_constant_check().Ok()) {
+          nested_constant_check().IsAggregate() ||
+          nested_constant_check().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
@@ -2685,20 +2595,22 @@ class GenericOutView final {
           emboss_reserved_local_stream->Write(" ");
         }
         emboss_reserved_local_stream->Write("nested_constant_check: ");
-        nested_constant_check().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+        nested_constant_check().WriteToTextStream(
+            emboss_reserved_local_stream, emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
-                 !nested_constant_check().IsAggregate() && !nested_constant_check().Ok()) {
+                 !nested_constant_check().IsAggregate() &&
+                 !nested_constant_check().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
         }
-        emboss_reserved_local_stream->Write("# nested_constant_check: UNREADABLE\n");
+        emboss_reserved_local_stream->Write(
+            "# nested_constant_check: UNREADABLE\n");
       }
     }
 
@@ -2712,66 +2624,84 @@ class GenericOutView final {
     }
   }
 
-
-
   static constexpr bool IsAggregate() { return true; }
 
  public:
-  typename ::emboss::test::Out::GenericInView<typename Storage::template OffsetStorageType</**/0, 0>>
+  typename ::emboss::test::Out::GenericInView<
+      typename Storage::template OffsetStorageType</**/ 0, 0>>
 
- in_1() const;
+  in_1() const;
   ::emboss::support::Maybe<bool> has_in_1() const;
 
  public:
-  typename ::emboss::test::Out::GenericInView<typename Storage::template OffsetStorageType</**/0, 8>>
+  typename ::emboss::test::Out::GenericInView<
+      typename Storage::template OffsetStorageType</**/ 0, 8>>
 
- in_2() const;
+  in_2() const;
   ::emboss::support::Maybe<bool> has_in_2() const;
 
  public:
-  typename ::emboss::test::Out::In::GenericInInView<typename Storage::template OffsetStorageType</**/0, 16>>
+  typename ::emboss::test::Out::In::GenericInInView<
+      typename Storage::template OffsetStorageType</**/ 0, 16>>
 
- in_in_1() const;
+  in_in_1() const;
   ::emboss::support::Maybe<bool> has_in_in_1() const;
 
  public:
-  typename ::emboss::test::Out::In::GenericInInView<typename Storage::template OffsetStorageType</**/0, 18>>
+  typename ::emboss::test::Out::In::GenericInInView<
+      typename Storage::template OffsetStorageType</**/ 0, 18>>
 
- in_in_2() const;
+  in_in_2() const;
   ::emboss::support::Maybe<bool> has_in_in_2() const;
 
  public:
   typename ::emboss::support::EnumView<
-    /**/ ::emboss::test::Out::In::InIn::InInIn,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 20>>, 8>>
+      /**/ ::emboss::test::Out::In::InIn::InInIn,
+      ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 20>>,
+          8>>
 
- in_in_in_1() const;
+  in_in_in_1() const;
   ::emboss::support::Maybe<bool> has_in_in_in_1() const;
 
  public:
   typename ::emboss::support::EnumView<
-    /**/ ::emboss::test::Out::In::InIn::InInIn,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 21>>, 8>>
+      /**/ ::emboss::test::Out::In::InIn::InInIn,
+      ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 21>>,
+          8>>
 
- in_in_in_2() const;
+  in_in_in_2() const;
   ::emboss::support::Maybe<bool> has_in_in_in_2() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<16, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 22>>, 16>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          16, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 22>>,
+          16>>
 
- name_collision() const;
+  name_collision() const;
   ::emboss::support::Maybe<bool> has_name_collision() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 24>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 24>>,
+          8>>
 
- nested_constant_check() const;
+  nested_constant_check() const;
   ::emboss::support::Maybe<bool> has_nested_constant_check() const;
 
  public:
@@ -2780,21 +2710,23 @@ class GenericOutView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView() {}
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -2802,7 +2734,8 @@ class GenericOutView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+  IntrinsicSizeInBytes() {
     return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
@@ -2815,21 +2748,23 @@ class GenericOutView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
-    EmbossReservedDollarVirtualMaxSizeInBytesView(const EmbossReservedDollarVirtualMaxSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView(EmbossReservedDollarVirtualMaxSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(const EmbossReservedDollarVirtualMaxSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(EmbossReservedDollarVirtualMaxSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -2837,7 +2772,8 @@ class GenericOutView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
@@ -2850,21 +2786,23 @@ class GenericOutView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
-    EmbossReservedDollarVirtualMinSizeInBytesView(const EmbossReservedDollarVirtualMinSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView(EmbossReservedDollarVirtualMinSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(const EmbossReservedDollarVirtualMinSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(EmbossReservedDollarVirtualMinSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -2872,19 +2810,16 @@ class GenericOutView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
-
-
  private:
   Storage backing_;
-  
-  
 
   template <class OtherStorage>
   friend class GenericOutView;
@@ -2900,8 +2835,7 @@ struct EmbossReservedInternalIsGenericOutView {
 };
 
 template <class Storage>
-struct EmbossReservedInternalIsGenericOutView<
-    GenericOutView<Storage>> {
+struct EmbossReservedInternalIsGenericOutView<GenericOutView<Storage>> {
   static constexpr const bool value = true;
 };
 
@@ -2911,46 +2845,41 @@ inline GenericOutView<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
         1, 0>>
-MakeOutView( T &&emboss_reserved_local_arg) {
+MakeOutView(T&& emboss_reserved_local_arg) {
   return GenericOutView<
       /**/ ::emboss::support::ContiguousBuffer<
-          typename ::std::remove_reference<decltype(
-              *::std::declval<T>()->data())>::type,
-          1, 0>>(
-       ::std::forward<T>(emboss_reserved_local_arg));
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
 }
 
 template <typename T>
 inline GenericOutView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
-MakeOutView( T *emboss_reserved_local_data,
-                 ::std::size_t emboss_reserved_local_size) {
+MakeOutView(T* emboss_reserved_local_data,
+            ::std::size_t emboss_reserved_local_size) {
   return GenericOutView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
 template <typename T, ::std::size_t kAlignment>
 inline GenericOutView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
-MakeAlignedOutView(
-     T *emboss_reserved_local_data,
-    ::std::size_t emboss_reserved_local_size) {
+MakeAlignedOutView(T* emboss_reserved_local_data,
+                   ::std::size_t emboss_reserved_local_size) {
   return GenericOutView<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
 namespace Out {
 namespace In {
-namespace InIn {
-
-}  // namespace InIn
-
+namespace InIn {}  // namespace InIn
 
 namespace InIn {
 inline constexpr ::std::int32_t outer_offset() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(24LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(24LL))
+      .ValueOrDefault();
 }
 }  // namespace InIn
 
@@ -2961,8 +2890,7 @@ GenericInInView<Storage>::EmbossReservedVirtualOuterOffsetView::Read() {
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericInInView<
+inline constexpr ::std::int32_t GenericInInView<
     Storage>::EmbossReservedVirtualOuterOffsetView::UncheckedRead() {
   return InIn::outer_offset();
 }
@@ -2970,401 +2898,443 @@ GenericInInView<
 template <class Storage>
 inline typename ::emboss::support::EnumView<
     /**/ ::emboss::test::Out::In::InIn::InInIn,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+    ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        8>>
 
- GenericInInView<Storage>::field_enum()
-    const {
-
-  if ( has_field_enum().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+GenericInInView<Storage>::field_enum() const {
+  if (has_field_enum().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::support::EnumView<
-    /**/ ::emboss::test::Out::In::InIn::InInIn,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      return ::emboss::support::EnumView<
+          /**/ ::emboss::test::Out::In::InIn::InInIn,
+          ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              8>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::support::EnumView<
-    /**/ ::emboss::test::Out::In::InIn::InInIn,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      /**/ ::emboss::test::Out::In::InIn::InInIn,
+      ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericInInView<Storage>::has_field_enum() const {
-  return ::emboss::support::Maybe</**/bool>(true);
-}
-
-
-template <class Storage>
-inline typename ::emboss::test::Out::GenericIn2View<typename Storage::template OffsetStorageType</**/0, 1>>
-
- GenericInInView<Storage>::in_2()
+inline ::emboss::support::Maybe<bool> GenericInInView<Storage>::has_field_enum()
     const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
 
-  if ( has_in_2().ValueOr(false)) {
+template <class Storage>
+inline typename ::emboss::test::Out::GenericIn2View<
+    typename Storage::template OffsetStorageType</**/ 0, 1>>
 
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
+GenericInInView<Storage>::in_2() const {
+  if (has_in_2().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::test::Out::GenericIn2View<typename Storage::template OffsetStorageType</**/0, 1>>
+      return ::emboss::test::Out::GenericIn2View<
+          typename Storage::template OffsetStorageType</**/ 0, 1>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   1>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 1>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
-  return ::emboss::test::Out::GenericIn2View<typename Storage::template OffsetStorageType</**/0, 1>>
+  return ::emboss::test::Out::GenericIn2View<
+      typename Storage::template OffsetStorageType</**/ 0, 1>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericInInView<Storage>::has_in_2() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+inline ::emboss::support::Maybe<bool> GenericInInView<Storage>::has_in_2()
+    const {
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 namespace InIn {
 inline constexpr ::std::int32_t IntrinsicSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(2LL))
+      .ValueOrDefault();
 }
 }  // namespace InIn
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericInInView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericInInView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
   return InIn::IntrinsicSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericInInView<
-    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
+inline constexpr ::std::int32_t GenericInInView<Storage>::
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
   return InIn::IntrinsicSizeInBytes();
 }
 
 namespace InIn {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(2LL))
+      .ValueOrDefault();
 }
 }  // namespace InIn
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericInInView<Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericInInView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
   return InIn::MaxSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericInInView<
+inline constexpr ::std::int32_t GenericInInView<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
   return InIn::MaxSizeInBytes();
 }
 
 namespace InIn {
 inline constexpr ::std::int32_t MinSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(2LL))
+      .ValueOrDefault();
 }
 }  // namespace InIn
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericInInView<Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericInInView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
   return InIn::MinSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericInInView<
+inline constexpr ::std::int32_t GenericInInView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return InIn::MinSizeInBytes();
 }
 
 }  // namespace In
 
-
 template <class Storage>
-inline typename ::emboss::test::Out::In::GenericInInView<typename Storage::template OffsetStorageType</**/0, 0>>
+inline typename ::emboss::test::Out::In::GenericInInView<
+    typename Storage::template OffsetStorageType</**/ 0, 0>>
 
- GenericInView<Storage>::in_in_1()
-    const {
-
-  if ( has_in_in_1().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+GenericInView<Storage>::in_in_1() const {
+  if (has_in_in_1().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(2LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::test::Out::In::GenericInInView<typename Storage::template OffsetStorageType</**/0, 0>>
+      return ::emboss::test::Out::In::GenericInInView<
+          typename Storage::template OffsetStorageType</**/ 0, 0>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
-  return ::emboss::test::Out::In::GenericInInView<typename Storage::template OffsetStorageType</**/0, 0>>
+  return ::emboss::test::Out::In::GenericInInView<
+      typename Storage::template OffsetStorageType</**/ 0, 0>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericInView<Storage>::has_in_in_1() const {
-  return ::emboss::support::Maybe</**/bool>(true);
-}
-
-
-template <class Storage>
-inline typename ::emboss::test::Out::In::GenericInInView<typename Storage::template OffsetStorageType</**/0, 2>>
-
- GenericInView<Storage>::in_in_2()
+inline ::emboss::support::Maybe<bool> GenericInView<Storage>::has_in_in_1()
     const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
 
-  if ( has_in_in_2().ValueOr(false)) {
+template <class Storage>
+inline typename ::emboss::test::Out::In::GenericInInView<
+    typename Storage::template OffsetStorageType</**/ 0, 2>>
 
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL));
+GenericInView<Storage>::in_in_2() const {
+  if (has_in_in_2().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(2LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(2LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::test::Out::In::GenericInInView<typename Storage::template OffsetStorageType</**/0, 2>>
+      return ::emboss::test::Out::In::GenericInInView<
+          typename Storage::template OffsetStorageType</**/ 0, 2>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   2>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 2>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
-  return ::emboss::test::Out::In::GenericInInView<typename Storage::template OffsetStorageType</**/0, 2>>
+  return ::emboss::test::Out::In::GenericInInView<
+      typename Storage::template OffsetStorageType</**/ 0, 2>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericInView<Storage>::has_in_in_2() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+inline ::emboss::support::Maybe<bool> GenericInView<Storage>::has_in_in_2()
+    const {
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 template <class Storage>
 inline typename ::emboss::support::EnumView<
     /**/ ::emboss::test::Out::In::InIn::InInIn,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 8>>
+    ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        8>>
 
- GenericInView<Storage>::in_in_in_1()
-    const {
-
-  if ( has_in_in_in_1().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericInView<Storage>::in_in_in_1() const {
+  if (has_in_in_in_1().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::support::EnumView<
-    /**/ ::emboss::test::Out::In::InIn::InInIn,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 8>>
+      return ::emboss::support::EnumView<
+          /**/ ::emboss::test::Out::In::InIn::InInIn,
+          ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              8>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::support::EnumView<
-    /**/ ::emboss::test::Out::In::InIn::InInIn,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 8>>
+      /**/ ::emboss::test::Out::In::InIn::InInIn,
+      ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          8>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericInView<Storage>::has_in_in_in_1() const {
-  return ::emboss::support::Maybe</**/bool>(true);
-}
-
-
-template <class Storage>
-inline typename ::emboss::test::Out::GenericIn2View<typename Storage::template OffsetStorageType</**/0, 5>>
-
- GenericInView<Storage>::in_2()
+inline ::emboss::support::Maybe<bool> GenericInView<Storage>::has_in_in_in_1()
     const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
 
-  if ( has_in_2().ValueOr(false)) {
+template <class Storage>
+inline typename ::emboss::test::Out::GenericIn2View<
+    typename Storage::template OffsetStorageType</**/ 0, 5>>
 
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(5LL));
+GenericInView<Storage>::in_2() const {
+  if (has_in_2().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(5LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::test::Out::GenericIn2View<typename Storage::template OffsetStorageType</**/0, 5>>
+      return ::emboss::test::Out::GenericIn2View<
+          typename Storage::template OffsetStorageType</**/ 0, 5>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   5>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 5>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
-  return ::emboss::test::Out::GenericIn2View<typename Storage::template OffsetStorageType</**/0, 5>>
+  return ::emboss::test::Out::GenericIn2View<
+      typename Storage::template OffsetStorageType</**/ 0, 5>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericInView<Storage>::has_in_2() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+inline ::emboss::support::Maybe<bool> GenericInView<Storage>::has_in_2() const {
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 6>>, 8>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 6>>,
+        8>>
 
- GenericInView<Storage>::name_collision()
-    const {
-
-  if ( has_name_collision().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(6LL));
+GenericInView<Storage>::name_collision() const {
+  if (has_name_collision().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(6LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 6>>, 8>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 6>>,
+              8>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   6>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 6>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 6>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 6>>,
+          8>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericInView<Storage>::has_name_collision() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/1, 0>>, 8>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 1, 0>>,
+        8>>
 
- GenericInView<Storage>::name_collision_check()
-    const {
-
-  if ( has_name_collision_check().ValueOr(false)) {
+GenericInView<Storage>::name_collision_check() const {
+  if (has_name_collision_check().ValueOr(false)) {
     const auto emboss_reserved_local_subexpr_1 = name_collision();
-    const auto emboss_reserved_local_subexpr_2 = (emboss_reserved_local_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
+    const auto emboss_reserved_local_subexpr_2 =
+        (emboss_reserved_local_subexpr_1.Ok()
+             ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                   static_cast</**/ ::std::int32_t>(
+                       emboss_reserved_local_subexpr_1.UncheckedRead()))
+             : ::emboss::support::Maybe</**/ ::std::int32_t>());
 
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
     auto emboss_reserved_local_offset = emboss_reserved_local_subexpr_2;
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/1, 0>>, 8>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 1, 0>>,
+              8>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<1,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<1, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/1, 0>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 1, 0>>,
+          8>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericInView<Storage>::has_name_collision_check() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
 
-
 template <class Storage>
-inline typename GenericInView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+inline typename GenericInView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
 GenericInView<Storage>::IntrinsicSizeInBytes() const {
-  return
-      typename GenericInView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
-          *this);
+  return typename GenericInView<
+      Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView(*this);
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericInView<Storage>::has_IntrinsicSizeInBytes() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 namespace In {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(256LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(256LL))
+      .ValueOrDefault();
 }
 }  // namespace In
 
@@ -3375,15 +3345,16 @@ GenericInView<Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericInView<
+inline constexpr ::std::int32_t GenericInView<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
   return In::MaxSizeInBytes();
 }
 
 namespace In {
 inline constexpr ::std::int32_t MinSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(7LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(7LL))
+      .ValueOrDefault();
 }
 }  // namespace In
 
@@ -3394,81 +3365,89 @@ GenericInView<Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericInView<
+inline constexpr ::std::int32_t GenericInView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return In::MinSizeInBytes();
 }
 
-namespace In2 {
-
-}  // namespace In2
-
+namespace In2 {}  // namespace In2
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        8>>
 
- GenericIn2View<Storage>::field_byte()
-    const {
-
-  if ( has_field_byte().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+GenericIn2View<Storage>::field_byte() const {
+  if (has_field_byte().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              8>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericIn2View<Storage>::has_field_byte() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+inline ::emboss::support::Maybe<bool> GenericIn2View<Storage>::has_field_byte()
+    const {
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 namespace In2 {
 inline constexpr ::std::int32_t IntrinsicSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
 }
 }  // namespace In2
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericIn2View<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericIn2View<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
   return In2::IntrinsicSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericIn2View<
-    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
+inline constexpr ::std::int32_t GenericIn2View<Storage>::
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
   return In2::IntrinsicSizeInBytes();
 }
 
 namespace In2 {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
 }
 }  // namespace In2
 
@@ -3479,15 +3458,16 @@ GenericIn2View<Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericIn2View<
+inline constexpr ::std::int32_t GenericIn2View<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
   return In2::MaxSizeInBytes();
 }
 
 namespace In2 {
 inline constexpr ::std::int32_t MinSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
 }
 }  // namespace In2
 
@@ -3498,355 +3478,392 @@ GenericIn2View<Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericIn2View<
+inline constexpr ::std::int32_t GenericIn2View<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return In2::MinSizeInBytes();
 }
 
 }  // namespace Out
 
-
 template <class Storage>
-inline typename ::emboss::test::Out::GenericInView<typename Storage::template OffsetStorageType</**/0, 0>>
+inline typename ::emboss::test::Out::GenericInView<
+    typename Storage::template OffsetStorageType</**/ 0, 0>>
 
- GenericOutView<Storage>::in_1()
-    const {
-
-  if ( has_in_1().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+GenericOutView<Storage>::in_1() const {
+  if (has_in_1().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(8LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::test::Out::GenericInView<typename Storage::template OffsetStorageType</**/0, 0>>
+      return ::emboss::test::Out::GenericInView<
+          typename Storage::template OffsetStorageType</**/ 0, 0>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
-  return ::emboss::test::Out::GenericInView<typename Storage::template OffsetStorageType</**/0, 0>>
+  return ::emboss::test::Out::GenericInView<
+      typename Storage::template OffsetStorageType</**/ 0, 0>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericOutView<Storage>::has_in_1() const {
-  return ::emboss::support::Maybe</**/bool>(true);
-}
-
-
-template <class Storage>
-inline typename ::emboss::test::Out::GenericInView<typename Storage::template OffsetStorageType</**/0, 8>>
-
- GenericOutView<Storage>::in_2()
+inline ::emboss::support::Maybe<bool> GenericOutView<Storage>::has_in_1()
     const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
 
-  if ( has_in_2().ValueOr(false)) {
+template <class Storage>
+inline typename ::emboss::test::Out::GenericInView<
+    typename Storage::template OffsetStorageType</**/ 0, 8>>
 
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL));
+GenericOutView<Storage>::in_2() const {
+  if (has_in_2().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(8LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::test::Out::GenericInView<typename Storage::template OffsetStorageType</**/0, 8>>
+      return ::emboss::test::Out::GenericInView<
+          typename Storage::template OffsetStorageType</**/ 0, 8>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   8>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 8>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
-  return ::emboss::test::Out::GenericInView<typename Storage::template OffsetStorageType</**/0, 8>>
+  return ::emboss::test::Out::GenericInView<
+      typename Storage::template OffsetStorageType</**/ 0, 8>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericOutView<Storage>::has_in_2() const {
-  return ::emboss::support::Maybe</**/bool>(true);
-}
-
-
-template <class Storage>
-inline typename ::emboss::test::Out::In::GenericInInView<typename Storage::template OffsetStorageType</**/0, 16>>
-
- GenericOutView<Storage>::in_in_1()
+inline ::emboss::support::Maybe<bool> GenericOutView<Storage>::has_in_2()
     const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
 
-  if ( has_in_in_1().ValueOr(false)) {
+template <class Storage>
+inline typename ::emboss::test::Out::In::GenericInInView<
+    typename Storage::template OffsetStorageType</**/ 0, 16>>
 
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(16LL));
+GenericOutView<Storage>::in_in_1() const {
+  if (has_in_in_1().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(2LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(16LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::test::Out::In::GenericInInView<typename Storage::template OffsetStorageType</**/0, 16>>
+      return ::emboss::test::Out::In::GenericInInView<
+          typename Storage::template OffsetStorageType</**/ 0, 16>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   16>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 16>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
-  return ::emboss::test::Out::In::GenericInInView<typename Storage::template OffsetStorageType</**/0, 16>>
+  return ::emboss::test::Out::In::GenericInInView<
+      typename Storage::template OffsetStorageType</**/ 0, 16>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericOutView<Storage>::has_in_in_1() const {
-  return ::emboss::support::Maybe</**/bool>(true);
-}
-
-
-template <class Storage>
-inline typename ::emboss::test::Out::In::GenericInInView<typename Storage::template OffsetStorageType</**/0, 18>>
-
- GenericOutView<Storage>::in_in_2()
+inline ::emboss::support::Maybe<bool> GenericOutView<Storage>::has_in_in_1()
     const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
 
-  if ( has_in_in_2().ValueOr(false)) {
+template <class Storage>
+inline typename ::emboss::test::Out::In::GenericInInView<
+    typename Storage::template OffsetStorageType</**/ 0, 18>>
 
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(18LL));
+GenericOutView<Storage>::in_in_2() const {
+  if (has_in_in_2().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(2LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(18LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::test::Out::In::GenericInInView<typename Storage::template OffsetStorageType</**/0, 18>>
+      return ::emboss::test::Out::In::GenericInInView<
+          typename Storage::template OffsetStorageType</**/ 0, 18>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   18>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 18>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
-  return ::emboss::test::Out::In::GenericInInView<typename Storage::template OffsetStorageType</**/0, 18>>
+  return ::emboss::test::Out::In::GenericInInView<
+      typename Storage::template OffsetStorageType</**/ 0, 18>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericOutView<Storage>::has_in_in_2() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+inline ::emboss::support::Maybe<bool> GenericOutView<Storage>::has_in_in_2()
+    const {
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 template <class Storage>
 inline typename ::emboss::support::EnumView<
     /**/ ::emboss::test::Out::In::InIn::InInIn,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 20>>, 8>>
+    ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 20>>,
+        8>>
 
- GenericOutView<Storage>::in_in_in_1()
-    const {
-
-  if ( has_in_in_in_1().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(20LL));
+GenericOutView<Storage>::in_in_in_1() const {
+  if (has_in_in_in_1().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(20LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::support::EnumView<
-    /**/ ::emboss::test::Out::In::InIn::InInIn,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 20>>, 8>>
+      return ::emboss::support::EnumView<
+          /**/ ::emboss::test::Out::In::InIn::InInIn,
+          ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 20>>,
+              8>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   20>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 20>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::support::EnumView<
-    /**/ ::emboss::test::Out::In::InIn::InInIn,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 20>>, 8>>
+      /**/ ::emboss::test::Out::In::InIn::InInIn,
+      ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 20>>,
+          8>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericOutView<Storage>::has_in_in_in_1() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+inline ::emboss::support::Maybe<bool> GenericOutView<Storage>::has_in_in_in_1()
+    const {
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 template <class Storage>
 inline typename ::emboss::support::EnumView<
     /**/ ::emboss::test::Out::In::InIn::InInIn,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 21>>, 8>>
+    ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 21>>,
+        8>>
 
- GenericOutView<Storage>::in_in_in_2()
-    const {
-
-  if ( has_in_in_in_2().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(21LL));
+GenericOutView<Storage>::in_in_in_2() const {
+  if (has_in_in_in_2().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(21LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::support::EnumView<
-    /**/ ::emboss::test::Out::In::InIn::InInIn,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 21>>, 8>>
+      return ::emboss::support::EnumView<
+          /**/ ::emboss::test::Out::In::InIn::InInIn,
+          ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 21>>,
+              8>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   21>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 21>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::support::EnumView<
-    /**/ ::emboss::test::Out::In::InIn::InInIn,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 21>>, 8>>
+      /**/ ::emboss::test::Out::In::InIn::InInIn,
+      ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 21>>,
+          8>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericOutView<Storage>::has_in_in_in_2() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+inline ::emboss::support::Maybe<bool> GenericOutView<Storage>::has_in_in_in_2()
+    const {
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<16, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 22>>, 16>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        16, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 22>>,
+        16>>
 
- GenericOutView<Storage>::name_collision()
-    const {
-
-  if ( has_name_collision().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(22LL));
+GenericOutView<Storage>::name_collision() const {
+  if (has_name_collision().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(2LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(22LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<16, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 22>>, 16>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              16, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 22>>,
+              16>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   22>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 22>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<16, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 22>>, 16>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          16, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 22>>,
+          16>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericOutView<Storage>::has_name_collision() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 24>>, 8>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 24>>,
+        8>>
 
- GenericOutView<Storage>::nested_constant_check()
-    const {
-
-  if ( has_nested_constant_check().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(24LL));
+GenericOutView<Storage>::nested_constant_check() const {
+  if (has_nested_constant_check().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(24LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 24>>, 8>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 24>>,
+              8>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   24>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 24>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 24>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 24>>,
+          8>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericOutView<Storage>::has_nested_constant_check() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 namespace Out {
 inline constexpr ::std::int32_t IntrinsicSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(25LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(25LL))
+      .ValueOrDefault();
 }
 }  // namespace Out
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericOutView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericOutView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
   return Out::IntrinsicSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericOutView<
-    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
+inline constexpr ::std::int32_t GenericOutView<Storage>::
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
   return Out::IntrinsicSizeInBytes();
 }
 
 namespace Out {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(25LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(25LL))
+      .ValueOrDefault();
 }
 }  // namespace Out
 
@@ -3857,15 +3874,16 @@ GenericOutView<Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericOutView<
+inline constexpr ::std::int32_t GenericOutView<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
   return Out::MaxSizeInBytes();
 }
 
 namespace Out {
 inline constexpr ::std::int32_t MinSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(25LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(25LL))
+      .ValueOrDefault();
 }
 }  // namespace Out
 
@@ -3876,23 +3894,15 @@ GenericOutView<Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericOutView<
+inline constexpr ::std::int32_t GenericOutView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return Out::MinSizeInBytes();
 }
 
-
-
 }  // namespace test
 
-
-
 }  // namespace emboss
-
-
 
 /* NOLINTEND */
 
 #endif  // TESTDATA_SUBTYPES_EMB_H_
-
