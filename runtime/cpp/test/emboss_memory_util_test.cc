@@ -150,6 +150,118 @@ TEST(MemoryAccessor, LittleEndianReads) {
   TestMemoryAccessor<unsigned char, 8, 0, 64>();
 }
 
+#if EMBOSS_HAS_INT128
+// Test 128-bit MemoryAccessor operations
+TEST(MemoryAccessor, Int128LittleEndianReadWrite) {
+  alignas(16) unsigned char bytes[16] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06,
+                                         0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c,
+                                         0x0d, 0x0e, 0x0f, 0x10};
+  __uint128_t expected_le =
+      (static_cast<__uint128_t>(0x100f0e0d0c0b0a09UL) << 64) |
+      static_cast<__uint128_t>(0x0807060504030201UL);
+  EXPECT_EQ(expected_le,
+            (MemoryAccessor<unsigned char, 1, 0, 128>::ReadLittleEndianUInt(
+                bytes)));
+
+  // Write and verify
+  __uint128_t write_value =
+      (static_cast<__uint128_t>(0xfedcba9876543210UL) << 64) |
+      static_cast<__uint128_t>(0x0123456789abcdefUL);
+  MemoryAccessor<unsigned char, 1, 0, 128>::WriteLittleEndianUInt(bytes,
+                                                                   write_value);
+  EXPECT_EQ(0xef, bytes[0]);
+  EXPECT_EQ(0xcd, bytes[1]);
+  EXPECT_EQ(0xab, bytes[2]);
+  EXPECT_EQ(0x89, bytes[3]);
+  EXPECT_EQ(0x67, bytes[4]);
+  EXPECT_EQ(0x45, bytes[5]);
+  EXPECT_EQ(0x23, bytes[6]);
+  EXPECT_EQ(0x01, bytes[7]);
+  EXPECT_EQ(0x10, bytes[8]);
+  EXPECT_EQ(0x32, bytes[9]);
+  EXPECT_EQ(0x54, bytes[10]);
+  EXPECT_EQ(0x76, bytes[11]);
+  EXPECT_EQ(0x98, bytes[12]);
+  EXPECT_EQ(0xba, bytes[13]);
+  EXPECT_EQ(0xdc, bytes[14]);
+  EXPECT_EQ(0xfe, bytes[15]);
+}
+
+TEST(MemoryAccessor, Int128BigEndianReadWrite) {
+  alignas(16) unsigned char bytes[16] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06,
+                                         0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c,
+                                         0x0d, 0x0e, 0x0f, 0x10};
+  __uint128_t expected_be =
+      (static_cast<__uint128_t>(0x0102030405060708UL) << 64) |
+      static_cast<__uint128_t>(0x090a0b0c0d0e0f10UL);
+  EXPECT_EQ(
+      expected_be,
+      (MemoryAccessor<unsigned char, 1, 0, 128>::ReadBigEndianUInt(bytes)));
+
+  // Write and verify
+  __uint128_t write_value =
+      (static_cast<__uint128_t>(0xfedcba9876543210UL) << 64) |
+      static_cast<__uint128_t>(0x0123456789abcdefUL);
+  MemoryAccessor<unsigned char, 1, 0, 128>::WriteBigEndianUInt(bytes,
+                                                               write_value);
+  EXPECT_EQ(0xfe, bytes[0]);
+  EXPECT_EQ(0xdc, bytes[1]);
+  EXPECT_EQ(0xba, bytes[2]);
+  EXPECT_EQ(0x98, bytes[3]);
+  EXPECT_EQ(0x76, bytes[4]);
+  EXPECT_EQ(0x54, bytes[5]);
+  EXPECT_EQ(0x32, bytes[6]);
+  EXPECT_EQ(0x10, bytes[7]);
+  EXPECT_EQ(0x01, bytes[8]);
+  EXPECT_EQ(0x23, bytes[9]);
+  EXPECT_EQ(0x45, bytes[10]);
+  EXPECT_EQ(0x67, bytes[11]);
+  EXPECT_EQ(0x89, bytes[12]);
+  EXPECT_EQ(0xab, bytes[13]);
+  EXPECT_EQ(0xcd, bytes[14]);
+  EXPECT_EQ(0xef, bytes[15]);
+}
+
+TEST(MemoryAccessor, Int128NonFullWidth) {
+  // Test reading/writing values less than 128 bits but more than 64
+  alignas(16) unsigned char bytes[16] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06,
+                                         0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c,
+                                         0x0d, 0x0e, 0x0f, 0x10};
+
+  // Read 72 bits (9 bytes) little-endian
+  __uint128_t expected_72_le =
+      (static_cast<__uint128_t>(0x09UL) << 64) |
+      static_cast<__uint128_t>(0x0807060504030201UL);
+  EXPECT_EQ(expected_72_le,
+            (MemoryAccessor<unsigned char, 1, 0, 72>::ReadLittleEndianUInt(
+                bytes)));
+
+  // Read 72 bits (9 bytes) big-endian
+  __uint128_t expected_72_be =
+      (static_cast<__uint128_t>(0x01UL) << 64) |
+      static_cast<__uint128_t>(0x0203040506070809UL);
+  EXPECT_EQ(
+      expected_72_be,
+      (MemoryAccessor<unsigned char, 1, 0, 72>::ReadBigEndianUInt(bytes)));
+
+  // Read 96 bits (12 bytes) little-endian
+  __uint128_t expected_96_le =
+      (static_cast<__uint128_t>(0x0c0b0a09UL) << 64) |
+      static_cast<__uint128_t>(0x0807060504030201UL);
+  EXPECT_EQ(expected_96_le,
+            (MemoryAccessor<unsigned char, 1, 0, 96>::ReadLittleEndianUInt(
+                bytes)));
+
+  // Read 96 bits (12 bytes) big-endian
+  __uint128_t expected_96_be =
+      (static_cast<__uint128_t>(0x01020304UL) << 64) |
+      static_cast<__uint128_t>(0x05060708090a0b0cUL);
+  EXPECT_EQ(
+      expected_96_be,
+      (MemoryAccessor<unsigned char, 1, 0, 96>::ReadBigEndianUInt(bytes)));
+}
+#endif  // EMBOSS_HAS_INT128
+
 TEST(ContiguousBuffer, OffsetStorageType) {
   EXPECT_TRUE((::std::is_same<
                ContiguousBuffer<char, 2, 0>,
@@ -674,6 +786,156 @@ TEST(BitBlock, GetOffsetStorage) {
   EXPECT_EQ(10U, (bit_block.GetOffsetStorage<1, 0>(bit_block.SizeInBits(), 10)
                       .SizeInBits()));
 }
+
+#if EMBOSS_HAS_INT128
+template </**/ ::std::size_t kBits>
+using BigEndianBitBlockN128 =
+    BitBlock<BigEndianByteOrderer<ReadWriteContiguousBuffer>, kBits>;
+
+template </**/ ::std::size_t kBits>
+using LittleEndianBitBlockN128 =
+    BitBlock<LittleEndianByteOrderer<ReadWriteContiguousBuffer>, kBits>;
+
+TEST(BitBlock, Int128BigEndianMethods) {
+  ::std::uint8_t bytes[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                            0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10};
+  const auto big_endian =
+      BigEndianBitBlockN128<128>{ReadWriteContiguousBuffer{bytes, 16}};
+  EXPECT_EQ(128U, big_endian.SizeInBits());
+  EXPECT_TRUE(big_endian.Ok());
+
+  __uint128_t expected =
+      (static_cast<__uint128_t>(0x0102030405060708UL) << 64) |
+      static_cast<__uint128_t>(0x090a0b0c0d0e0f10UL);
+  EXPECT_EQ(expected, big_endian.ReadUInt());
+  EXPECT_EQ(expected, big_endian.UncheckedReadUInt());
+  EXPECT_FALSE(BigEndianBitBlockN128<128>().Ok());
+  EXPECT_EQ(128U, BigEndianBitBlockN128<128>().SizeInBits());
+}
+
+TEST(BitBlock, Int128LittleEndianMethods) {
+  ::std::uint8_t bytes[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                            0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10};
+  const auto little_endian =
+      LittleEndianBitBlockN128<128>{ReadWriteContiguousBuffer{bytes, 16}};
+  EXPECT_EQ(128U, little_endian.SizeInBits());
+  EXPECT_TRUE(little_endian.Ok());
+
+  __uint128_t expected =
+      (static_cast<__uint128_t>(0x100f0e0d0c0b0a09UL) << 64) |
+      static_cast<__uint128_t>(0x0807060504030201UL);
+  EXPECT_EQ(expected, little_endian.ReadUInt());
+  EXPECT_EQ(expected, little_endian.UncheckedReadUInt());
+  EXPECT_FALSE(LittleEndianBitBlockN128<128>().Ok());
+  EXPECT_EQ(128U, LittleEndianBitBlockN128<128>().SizeInBits());
+}
+
+TEST(BitBlock, Int128WriteOperations) {
+  ::std::uint8_t bytes[16] = {};
+  auto little_endian =
+      LittleEndianBitBlockN128<128>{ReadWriteContiguousBuffer{bytes, 16}};
+
+  __uint128_t write_value =
+      (static_cast<__uint128_t>(0xfedcba9876543210UL) << 64) |
+      static_cast<__uint128_t>(0x0123456789abcdefUL);
+  little_endian.WriteUInt(write_value);
+
+  // Verify little-endian byte order
+  EXPECT_EQ(0xef, bytes[0]);
+  EXPECT_EQ(0xcd, bytes[1]);
+  EXPECT_EQ(0xab, bytes[2]);
+  EXPECT_EQ(0x89, bytes[3]);
+  EXPECT_EQ(0x67, bytes[4]);
+  EXPECT_EQ(0x45, bytes[5]);
+  EXPECT_EQ(0x23, bytes[6]);
+  EXPECT_EQ(0x01, bytes[7]);
+  EXPECT_EQ(0x10, bytes[8]);
+  EXPECT_EQ(0x32, bytes[9]);
+  EXPECT_EQ(0x54, bytes[10]);
+  EXPECT_EQ(0x76, bytes[11]);
+  EXPECT_EQ(0x98, bytes[12]);
+  EXPECT_EQ(0xba, bytes[13]);
+  EXPECT_EQ(0xdc, bytes[14]);
+  EXPECT_EQ(0xfe, bytes[15]);
+
+  EXPECT_EQ(write_value, little_endian.ReadUInt());
+}
+
+TEST(BitBlock, Int128NonFullWidthSizes) {
+  // Test 72-bit (9-byte), 96-bit (12-byte), 104-bit (13-byte) values
+  ::std::uint8_t bytes[16] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                              0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10};
+
+  // Test 72-bit little-endian
+  const auto le_72 =
+      LittleEndianBitBlockN128<72>{ReadWriteContiguousBuffer{bytes, 9}};
+  EXPECT_TRUE(le_72.Ok());
+  __uint128_t expected_72_le =
+      (static_cast<__uint128_t>(0x09UL) << 64) |
+      static_cast<__uint128_t>(0x0807060504030201UL);
+  EXPECT_EQ(expected_72_le, le_72.ReadUInt());
+
+  // Test 96-bit big-endian
+  const auto be_96 =
+      BigEndianBitBlockN128<96>{ReadWriteContiguousBuffer{bytes, 12}};
+  EXPECT_TRUE(be_96.Ok());
+  __uint128_t expected_96_be =
+      (static_cast<__uint128_t>(0x01020304UL) << 64) |
+      static_cast<__uint128_t>(0x05060708090a0b0cUL);
+  EXPECT_EQ(expected_96_be, be_96.ReadUInt());
+}
+
+TEST(BitBlock, Int128GetOffsetStorage) {
+  ::std::uint8_t bytes[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                            0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10};
+  const auto bit_block =
+      LittleEndianBitBlockN128<128>{ReadWriteContiguousBuffer{bytes, 16}};
+
+  // Get offset storage for bits 64-127 (upper 64 bits)
+  const auto offset_block = bit_block.GetOffsetStorage<1, 0>(64, 64);
+  EXPECT_EQ(64U, offset_block.SizeInBits());
+  EXPECT_TRUE(offset_block.Ok());
+  EXPECT_EQ(0x100f0e0d0c0b0a09UL, offset_block.ReadUInt());
+
+  // Get offset storage for bits 0-63 (lower 64 bits)
+  const auto lower_block = bit_block.GetOffsetStorage<1, 0>(0, 64);
+  EXPECT_EQ(64U, lower_block.SizeInBits());
+  EXPECT_TRUE(lower_block.Ok());
+  EXPECT_EQ(0x0807060504030201UL, lower_block.ReadUInt());
+
+  // Get offset storage that spans the 64-bit boundary
+  const auto span_block = bit_block.GetOffsetStorage<1, 0>(32, 64);
+  EXPECT_EQ(64U, span_block.SizeInBits());
+  EXPECT_TRUE(span_block.Ok());
+  // Bits 32-95 from original value
+  __uint128_t full_value =
+      (static_cast<__uint128_t>(0x100f0e0d0c0b0a09UL) << 64) |
+      static_cast<__uint128_t>(0x0807060504030201UL);
+  EXPECT_EQ(static_cast<::std::uint64_t>((full_value >> 32) & 0xFFFFFFFFFFFFFFFFUL),
+            span_block.ReadUInt());
+}
+
+TEST(ContiguousBuffer, Int128ReturnType) {
+  const auto buffer = ContiguousBuffer<char, 1, 0>();
+
+#if EMBOSS_HAS_INT128
+  EXPECT_TRUE((::std::is_same<decltype(buffer.ReadBigEndianUInt<128>()),
+                              __uint128_t>::value));
+  EXPECT_TRUE((::std::is_same<decltype(buffer.ReadBigEndianUInt<72>()),
+                              __uint128_t>::value));
+  EXPECT_TRUE((::std::is_same<decltype(buffer.ReadLittleEndianUInt<128>()),
+                              __uint128_t>::value));
+  EXPECT_TRUE((::std::is_same<decltype(buffer.ReadLittleEndianUInt<96>()),
+                              __uint128_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<decltype(buffer.UncheckedReadBigEndianUInt<128>()),
+                      __uint128_t>::value));
+  EXPECT_TRUE(
+      (::std::is_same<decltype(buffer.UncheckedReadLittleEndianUInt<128>()),
+                      __uint128_t>::value));
+#endif  // EMBOSS_HAS_INT128
+}
+#endif  // EMBOSS_HAS_INT128
 
 TEST(OffsetBitBlock, Methods) {
   ::std::vector</**/ ::std::uint8_t> bytes = {
