@@ -21,9 +21,9 @@ the neighboring BUILD file -- with a shim that returns an alternative
 clang-format path, without touching any other Emboss source.
 """
 
+from clang_format import get_executable
+
 
 def get_clang_format_path():
     """Returns the path to the clang-format executable."""
-    from clang_format import get_executable
-
     return get_executable("clang-format")
