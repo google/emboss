@@ -11,14 +11,9 @@
 #include <utility>
 
 #include "runtime/cpp/emboss_cpp_util.h"
-
-#include "runtime/cpp/emboss_prelude.h"
-
 #include "runtime/cpp/emboss_enum_view.h"
-
+#include "runtime/cpp/emboss_prelude.h"
 #include "runtime/cpp/emboss_text_util.h"
-
-
 
 /* NOLINTBEGIN */
 namespace emboss {
@@ -27,52 +22,34 @@ enum class Product : ::std::uint64_t;
 
 enum class MessageId : ::std::uint64_t;
 
-namespace MultiVersion {
-
-}  // namespace MultiVersion
-
+namespace MultiVersion {}  // namespace MultiVersion
 
 template <class Storage>
 class GenericMultiVersionView;
 
-namespace Axes {
-
-}  // namespace Axes
-
+namespace Axes {}  // namespace Axes
 
 template <class Storage>
 class GenericAxesView;
 
-namespace AxisPair {
-
-}  // namespace AxisPair
-
+namespace AxisPair {}  // namespace AxisPair
 
 template <class Storage>
 class GenericAxisPairView;
 
-namespace AxesEnvelope {
-
-}  // namespace AxesEnvelope
-
+namespace AxesEnvelope {}  // namespace AxesEnvelope
 
 template <class Storage>
 class GenericAxesEnvelopeView;
 
 enum class AxisType : ::std::int64_t;
 
-namespace Axis {
-
-}  // namespace Axis
-
+namespace Axis {}  // namespace Axis
 
 template <class Storage>
 class GenericAxisView;
 
-namespace Config {
-
-}  // namespace Config
-
+namespace Config {}  // namespace Config
 
 template <class Storage>
 class GenericConfigView;
@@ -82,21 +59,15 @@ namespace EmbossReservedAnonymousField1 {
 
 }  // namespace EmbossReservedAnonymousField1
 
-
 template <class Storage>
 class GenericEmbossReservedAnonymousField1View;
 
-
 }  // namespace ConfigVX
-
 
 template <class Storage>
 class GenericConfigVXView;
 
-namespace StructWithUnusedParameter {
-
-}  // namespace StructWithUnusedParameter
-
+namespace StructWithUnusedParameter {}  // namespace StructWithUnusedParameter
 
 template <class Storage>
 class GenericStructWithUnusedParameterView;
@@ -105,22 +76,15 @@ namespace StructContainingStructWithUnusedParameter {
 
 }  // namespace StructContainingStructWithUnusedParameter
 
-
 template <class Storage>
 class GenericStructContainingStructWithUnusedParameterView;
 
-namespace BiasedValue {
-
-}  // namespace BiasedValue
-
+namespace BiasedValue {}  // namespace BiasedValue
 
 template <class Storage>
 class GenericBiasedValueView;
 
-namespace VirtualFirstFieldWithParam {
-
-}  // namespace VirtualFirstFieldWithParam
-
+namespace VirtualFirstFieldWithParam {}  // namespace VirtualFirstFieldWithParam
 
 template <class Storage>
 class GenericVirtualFirstFieldWithParamView;
@@ -129,23 +93,18 @@ namespace ConstVirtualFirstFieldWithParam {
 
 }  // namespace ConstVirtualFirstFieldWithParam
 
-
 template <class Storage>
 class GenericConstVirtualFirstFieldWithParamView;
 
-namespace SizedArrayOfBiasedValues {
-
-}  // namespace SizedArrayOfBiasedValues
-
+namespace SizedArrayOfBiasedValues {}  // namespace SizedArrayOfBiasedValues
 
 template <class Storage>
 class GenericSizedArrayOfBiasedValuesView;
 
-
 enum class Product : ::std::uint64_t {
-  VERSION_1 = static_cast</**/::std::int32_t>(0LL),
-  VERSION_2 = static_cast</**/::std::int32_t>(10LL),
-  VERSION_X = static_cast</**/::std::int32_t>(23LL),
+  VERSION_1 = static_cast</**/ ::std::int32_t>(0LL),
+  VERSION_2 = static_cast</**/ ::std::int32_t>(10LL),
+  VERSION_X = static_cast</**/ ::std::int32_t>(23LL),
 
 };
 template <class Enum>
@@ -154,8 +113,8 @@ class EnumTraits;
 template <>
 class EnumTraits<Product> final {
  public:
-  static bool TryToGetEnumFromName(const char *emboss_reserved_local_name,
-                                   Product *emboss_reserved_local_result) {
+  static bool TryToGetEnumFromName(const char* emboss_reserved_local_name,
+                                   Product* emboss_reserved_local_result) {
     if (emboss_reserved_local_name == nullptr) return false;
     if (!strcmp("VERSION_1", emboss_reserved_local_name)) {
       *emboss_reserved_local_result = Product::VERSION_1;
@@ -175,35 +134,41 @@ class EnumTraits<Product> final {
     return false;
   }
 
-  static const char *TryToGetNameFromEnum(
-      Product emboss_reserved_local_value) {
+  static const char* TryToGetNameFromEnum(Product emboss_reserved_local_value) {
     switch (emboss_reserved_local_value) {
-      case Product::VERSION_1: return "VERSION_1";
+      case Product::VERSION_1:
+        return "VERSION_1";
 
-      case Product::VERSION_2: return "VERSION_2";
+      case Product::VERSION_2:
+        return "VERSION_2";
 
-      case Product::VERSION_X: return "VERSION_X";
+      case Product::VERSION_X:
+        return "VERSION_X";
 
-      default: return nullptr;
+      default:
+        return nullptr;
     }
   }
 
   static bool EnumIsKnown(Product emboss_reserved_local_value) {
     switch (emboss_reserved_local_value) {
-      case Product::VERSION_1: return true;
+      case Product::VERSION_1:
+        return true;
 
-      case Product::VERSION_2: return true;
+      case Product::VERSION_2:
+        return true;
 
-      case Product::VERSION_X: return true;
+      case Product::VERSION_X:
+        return true;
 
       default:
         return false;
     }
   }
 
-  static ::std::ostream &SendToOstream(::std::ostream &emboss_reserved_local_os,
+  static ::std::ostream& SendToOstream(::std::ostream& emboss_reserved_local_os,
                                        Product emboss_reserved_local_value) {
-    const char *emboss_reserved_local_name =
+    const char* emboss_reserved_local_name =
         TryToGetNameFromEnum(emboss_reserved_local_value);
     if (emboss_reserved_local_name == nullptr) {
       emboss_reserved_local_os
@@ -216,32 +181,30 @@ class EnumTraits<Product> final {
   }
 };
 
-static inline bool TryToGetEnumFromName(
-    const char *emboss_reserved_local_name,
-    Product *emboss_reserved_local_result) {
+static inline bool TryToGetEnumFromName(const char* emboss_reserved_local_name,
+                                        Product* emboss_reserved_local_result) {
   return EnumTraits<Product>::TryToGetEnumFromName(
       emboss_reserved_local_name, emboss_reserved_local_result);
 }
 
-static inline const char *TryToGetNameFromEnum(
+static inline const char* TryToGetNameFromEnum(
     Product emboss_reserved_local_value) {
-  return EnumTraits<Product>::TryToGetNameFromEnum(
-      emboss_reserved_local_value);
+  return EnumTraits<Product>::TryToGetNameFromEnum(emboss_reserved_local_value);
 }
 
 static inline bool EnumIsKnown(Product emboss_reserved_local_value) {
   return EnumTraits<Product>::EnumIsKnown(emboss_reserved_local_value);
 }
 
-static inline ::std::ostream &operator<<(
-    ::std::ostream &emboss_reserved_local_os,
+static inline ::std::ostream& operator<<(
+    ::std::ostream& emboss_reserved_local_os,
     Product emboss_reserved_local_value) {
   return EnumTraits<Product>::SendToOstream(emboss_reserved_local_os,
-                                             emboss_reserved_local_value);
+                                            emboss_reserved_local_value);
 }
 enum class MessageId : ::std::uint64_t {
-  AXIS = static_cast</**/::std::int32_t>(0LL),
-  CONFIG = static_cast</**/::std::int32_t>(1LL),
+  AXIS = static_cast</**/ ::std::int32_t>(0LL),
+  CONFIG = static_cast</**/ ::std::int32_t>(1LL),
 
 };
 template <class Enum>
@@ -250,8 +213,8 @@ class EnumTraits;
 template <>
 class EnumTraits<MessageId> final {
  public:
-  static bool TryToGetEnumFromName(const char *emboss_reserved_local_name,
-                                   MessageId *emboss_reserved_local_result) {
+  static bool TryToGetEnumFromName(const char* emboss_reserved_local_name,
+                                   MessageId* emboss_reserved_local_result) {
     if (emboss_reserved_local_name == nullptr) return false;
     if (!strcmp("AXIS", emboss_reserved_local_name)) {
       *emboss_reserved_local_result = MessageId::AXIS;
@@ -266,31 +229,36 @@ class EnumTraits<MessageId> final {
     return false;
   }
 
-  static const char *TryToGetNameFromEnum(
+  static const char* TryToGetNameFromEnum(
       MessageId emboss_reserved_local_value) {
     switch (emboss_reserved_local_value) {
-      case MessageId::AXIS: return "AXIS";
+      case MessageId::AXIS:
+        return "AXIS";
 
-      case MessageId::CONFIG: return "CONFIG";
+      case MessageId::CONFIG:
+        return "CONFIG";
 
-      default: return nullptr;
+      default:
+        return nullptr;
     }
   }
 
   static bool EnumIsKnown(MessageId emboss_reserved_local_value) {
     switch (emboss_reserved_local_value) {
-      case MessageId::AXIS: return true;
+      case MessageId::AXIS:
+        return true;
 
-      case MessageId::CONFIG: return true;
+      case MessageId::CONFIG:
+        return true;
 
       default:
         return false;
     }
   }
 
-  static ::std::ostream &SendToOstream(::std::ostream &emboss_reserved_local_os,
+  static ::std::ostream& SendToOstream(::std::ostream& emboss_reserved_local_os,
                                        MessageId emboss_reserved_local_value) {
-    const char *emboss_reserved_local_name =
+    const char* emboss_reserved_local_name =
         TryToGetNameFromEnum(emboss_reserved_local_value);
     if (emboss_reserved_local_name == nullptr) {
       emboss_reserved_local_os
@@ -304,13 +272,13 @@ class EnumTraits<MessageId> final {
 };
 
 static inline bool TryToGetEnumFromName(
-    const char *emboss_reserved_local_name,
-    MessageId *emboss_reserved_local_result) {
+    const char* emboss_reserved_local_name,
+    MessageId* emboss_reserved_local_result) {
   return EnumTraits<MessageId>::TryToGetEnumFromName(
       emboss_reserved_local_name, emboss_reserved_local_result);
 }
 
-static inline const char *TryToGetNameFromEnum(
+static inline const char* TryToGetNameFromEnum(
     MessageId emboss_reserved_local_value) {
   return EnumTraits<MessageId>::TryToGetNameFromEnum(
       emboss_reserved_local_value);
@@ -320,22 +288,14 @@ static inline bool EnumIsKnown(MessageId emboss_reserved_local_value) {
   return EnumTraits<MessageId>::EnumIsKnown(emboss_reserved_local_value);
 }
 
-static inline ::std::ostream &operator<<(
-    ::std::ostream &emboss_reserved_local_os,
+static inline ::std::ostream& operator<<(
+    ::std::ostream& emboss_reserved_local_os,
     MessageId emboss_reserved_local_value) {
   return EnumTraits<MessageId>::SendToOstream(emboss_reserved_local_os,
-                                             emboss_reserved_local_value);
+                                              emboss_reserved_local_value);
 }
 
-
-
-
-
-
-namespace MultiVersion {
-
-}  // namespace MultiVersion
-
+namespace MultiVersion {}  // namespace MultiVersion
 
 template <class View>
 struct EmbossReservedInternalIsGenericMultiVersionView;
@@ -344,92 +304,96 @@ template <class Storage>
 class GenericMultiVersionView final {
  public:
   GenericMultiVersionView() : backing_() {}
-  explicit GenericMultiVersionView(
-      ::emboss::test::Product product,  Storage emboss_reserved_local_bytes)
-      : backing_(emboss_reserved_local_bytes) , product_(product)
-        , parameters_initialized_(true) {}
+  explicit GenericMultiVersionView(::emboss::test::Product product,
+                                   Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes),
+        product_(product),
+        parameters_initialized_(true) {}
 
   template <typename OtherStorage>
   GenericMultiVersionView(
-      const GenericMultiVersionView<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()}
-        , product_(emboss_reserved_local_other.product_)
-, parameters_initialized_(emboss_reserved_local_other.parameters_initialized_) {}
+      const GenericMultiVersionView<OtherStorage>& emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()},
+        product_(emboss_reserved_local_other.product_),
+        parameters_initialized_(
+            emboss_reserved_local_other.parameters_initialized_) {}
 
   template <typename Arg,
             typename = typename ::std::enable_if<
                 !EmbossReservedInternalIsGenericMultiVersionView<
                     typename ::std::remove_cv<typename ::std::remove_reference<
                         Arg>::type>::type>::value>::type>
-  explicit GenericMultiVersionView(
-      ::emboss::test::Product product,  Arg &&emboss_reserved_local_arg)
-      : backing_(::std::forward<Arg>(
-            emboss_reserved_local_arg)) , product_(product)
-        , parameters_initialized_(true) {}
+  explicit GenericMultiVersionView(::emboss::test::Product product,
+                                   Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)),
+        product_(product),
+        parameters_initialized_(true) {}
   template <typename Arg0, typename Arg1, typename... Args>
-  explicit GenericMultiVersionView(
-      ::emboss::test::Product product,  Arg0 &&emboss_reserved_local_arg0,
-      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+  explicit GenericMultiVersionView(::emboss::test::Product product,
+                                   Arg0&& emboss_reserved_local_arg0,
+                                   Arg1&& emboss_reserved_local_arg1,
+                                   Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
-                 ::std::forward<Args>(
-                     emboss_reserved_local_args)...) , product_(product)
-        , parameters_initialized_(true) {}
+                 ::std::forward<Args>(emboss_reserved_local_args)...),
+        product_(product),
+        parameters_initialized_(true) {}
 
   template <typename OtherStorage>
-  GenericMultiVersionView<Storage> &operator=(
-      const GenericMultiVersionView<OtherStorage> &emboss_reserved_local_other) {
+  GenericMultiVersionView<Storage>& operator=(
+      const GenericMultiVersionView<OtherStorage>&
+          emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
     return *this;
   }
 
-  
-
   bool Ok() const {
     if (!IsComplete()) return false;
-if (!parameters_initialized_) return false;
-      const auto emboss_reserved_local_ok_subexpr_1 = message_id();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::emboss::test::MessageId>(static_cast</**/::emboss::test::MessageId>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::MessageId>());
+    if (!parameters_initialized_) return false;
+    const auto emboss_reserved_local_ok_subexpr_1 = message_id();
+    const auto emboss_reserved_local_ok_subexpr_2 =
+        (emboss_reserved_local_ok_subexpr_1.Ok()
+             ? ::emboss::support::Maybe</**/ ::emboss::test::MessageId>(
+                   static_cast</**/ ::emboss::test::MessageId>(
+                       emboss_reserved_local_ok_subexpr_1.UncheckedRead()))
+             : ::emboss::support::Maybe</**/ ::emboss::test::MessageId>());
 
     if (!has_message_id().Known()) return false;
     if (has_message_id().ValueOrDefault() && !message_id().Ok()) return false;
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
 
     if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
 
     if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
 
     {
-
-      const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
+      const auto emboss_reserved_switch_discrim =
+          emboss_reserved_local_ok_subexpr_2;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
-        case static_cast</**/::emboss::test::MessageId>(0):
+        case static_cast</**/ ::emboss::test::MessageId>(0):
           if (!axes().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::emboss::test::MessageId>(1):
+        case static_cast</**/ ::emboss::test::MessageId>(1):
           if (!config().Ok()) return false;
           break;
 
-
-
-
-        
-        default: break;
+        default:
+          break;
       }
     }
 
     if (!has_config_vx().Known()) return false;
     if (has_config_vx().ValueOrDefault() && !config_vx().Ok()) return false;
-
-
 
     return true;
   }
@@ -445,12 +409,9 @@ if (!parameters_initialized_) return false;
   }
   bool SizeIsKnown() const { return IntrinsicSizeInBytes().Ok(); }
 
-
-
   template <typename OtherStorage>
   bool Equals(
       GenericMultiVersionView<OtherStorage> emboss_reserved_local_other) const {
-    
     if (!has_product().Known()) return false;
     if (!emboss_reserved_local_other.has_product().Known()) return false;
 
@@ -465,8 +426,6 @@ if (!parameters_initialized_) return false;
         has_product().ValueOrDefault() &&
         !product().Equals(emboss_reserved_local_other.product()))
       return false;
-
-
 
     if (!has_message_id().Known()) return false;
     if (!emboss_reserved_local_other.has_message_id().Known()) return false;
@@ -483,8 +442,6 @@ if (!parameters_initialized_) return false;
         !message_id().Equals(emboss_reserved_local_other.message_id()))
       return false;
 
-
-
     if (!has_axes().Known()) return false;
     if (!emboss_reserved_local_other.has_axes().Known()) return false;
 
@@ -499,8 +456,6 @@ if (!parameters_initialized_) return false;
         has_axes().ValueOrDefault() &&
         !axes().Equals(emboss_reserved_local_other.axes()))
       return false;
-
-
 
     if (!has_config().Known()) return false;
     if (!emboss_reserved_local_other.has_config().Known()) return false;
@@ -517,8 +472,6 @@ if (!parameters_initialized_) return false;
         !config().Equals(emboss_reserved_local_other.config()))
       return false;
 
-
-
     if (!has_config_vx().Known()) return false;
     if (!emboss_reserved_local_other.has_config_vx().Known()) return false;
 
@@ -534,12 +487,11 @@ if (!parameters_initialized_) return false;
         !config_vx().Equals(emboss_reserved_local_other.config_vx()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   bool UncheckedEquals(
       GenericMultiVersionView<OtherStorage> emboss_reserved_local_other) const {
-    
     if (emboss_reserved_local_other.has_product().ValueOr(false) &&
         !has_product().ValueOr(false))
       return false;
@@ -551,8 +503,6 @@ if (!parameters_initialized_) return false;
         has_product().ValueOr(false) &&
         !product().UncheckedEquals(emboss_reserved_local_other.product()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_message_id().ValueOr(false) &&
         !has_message_id().ValueOr(false))
@@ -566,8 +516,6 @@ if (!parameters_initialized_) return false;
         !message_id().UncheckedEquals(emboss_reserved_local_other.message_id()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_axes().ValueOr(false) &&
         !has_axes().ValueOr(false))
       return false;
@@ -579,8 +527,6 @@ if (!parameters_initialized_) return false;
         has_axes().ValueOr(false) &&
         !axes().UncheckedEquals(emboss_reserved_local_other.axes()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_config().ValueOr(false) &&
         !has_config().ValueOr(false))
@@ -594,8 +540,6 @@ if (!parameters_initialized_) return false;
         !config().UncheckedEquals(emboss_reserved_local_other.config()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_config_vx().ValueOr(false) &&
         !has_config_vx().ValueOr(false))
       return false;
@@ -608,7 +552,7 @@ if (!parameters_initialized_) return false;
         !config_vx().UncheckedEquals(emboss_reserved_local_other.config_vx()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   void UncheckedCopyFrom(
@@ -628,13 +572,14 @@ if (!parameters_initialized_) return false;
   template <typename OtherStorage>
   bool TryToCopyFrom(
       GenericMultiVersionView<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
 
   template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
     ::std::string emboss_reserved_local_brace;
     if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
                                       &emboss_reserved_local_brace))
@@ -656,32 +601,28 @@ if (!parameters_initialized_) return false;
         return false;
       if (emboss_reserved_local_colon != ":") return false;
       if (emboss_reserved_local_name == "message_id") {
-        if (!message_id().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!message_id().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "axes") {
-        if (!axes().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!axes().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "config") {
-        if (!config().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!config().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "config_vx") {
-        if (!config_vx().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!config_vx().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
@@ -693,7 +634,7 @@ if (!parameters_initialized_) return false;
 
   template <class Stream>
   void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
+      Stream* emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
     ::emboss::TextOutputOptions emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
@@ -717,7 +658,7 @@ if (!parameters_initialized_) return false;
         }
         emboss_reserved_local_stream->Write("message_id: ");
         message_id().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                       emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -747,7 +688,7 @@ if (!parameters_initialized_) return false;
         }
         emboss_reserved_local_stream->Write("axes: ");
         axes().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                 emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -777,7 +718,7 @@ if (!parameters_initialized_) return false;
         }
         emboss_reserved_local_stream->Write("config: ");
         config().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                   emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -807,7 +748,7 @@ if (!parameters_initialized_) return false;
         }
         emboss_reserved_local_stream->Write("config_vx: ");
         config_vx().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                      emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -833,17 +774,15 @@ if (!parameters_initialized_) return false;
     }
   }
 
-
-
   static constexpr bool IsAggregate() { return true; }
 
  private:
   constexpr ::emboss::support::MaybeConstantView</**/ ::emboss::test::Product>
   product() const {
-    return parameters_initialized_
-               ? ::emboss::support::MaybeConstantView</**/ ::emboss::test::Product>(
-                     product_)
-               : ::emboss::support::MaybeConstantView</**/ ::emboss::test::Product>();
+    return parameters_initialized_ ? ::emboss::support::MaybeConstantView<
+                                         /**/ ::emboss::test::Product>(product_)
+                                   : ::emboss::support::MaybeConstantView<
+                                         /**/ ::emboss::test::Product>();
   }
   constexpr ::emboss::support::Maybe<bool> has_product() const {
     return ::emboss::support::Maybe<bool>(parameters_initialized_);
@@ -851,29 +790,39 @@ if (!parameters_initialized_) return false;
 
  public:
   typename ::emboss::support::EnumView<
-    /**/ ::emboss::test::MessageId,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      /**/ ::emboss::test::MessageId,
+      ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
 
- message_id() const;
+  message_id() const;
   ::emboss::support::Maybe<bool> has_message_id() const;
 
  public:
-  typename ::emboss::test::GenericAxesView<typename Storage::template OffsetStorageType</**/0, 1>>
+  typename ::emboss::test::GenericAxesView<
+      typename Storage::template OffsetStorageType</**/ 0, 1>>
 
- axes() const;
+  axes() const;
   ::emboss::support::Maybe<bool> has_axes() const;
 
  public:
-  typename ::emboss::test::GenericConfigView<typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 32>>
+  typename ::emboss::test::GenericConfigView<
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 1>>,
+          32>>
 
- config() const;
+  config() const;
   ::emboss::support::Maybe<bool> has_config() const;
 
  public:
-  typename ::emboss::test::GenericConfigVXView<typename Storage::template OffsetStorageType</**/0, 1>>
+  typename ::emboss::test::GenericConfigVXView<
+      typename Storage::template OffsetStorageType</**/ 0, 1>>
 
- config_vx() const;
+  config_vx() const;
   ::emboss::support::Maybe<bool> has_config_vx() const;
 
  public:
@@ -882,15 +831,17 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     explicit EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
-        const GenericMultiVersionView &emboss_reserved_local_view)
+        const GenericMultiVersionView& emboss_reserved_local_view)
         : view_(emboss_reserved_local_view) {}
     EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = delete;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
     ::std::int32_t Read() const {
@@ -909,31 +860,88 @@ if (!parameters_initialized_) return false;
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
     static constexpr bool IsAggregate() { return false; }
 
-
-
    private:
     ::emboss::support::Maybe</**/ ::std::int32_t> MaybeRead() const {
       const auto emboss_reserved_local_subexpr_1 = view_.message_id();
-      const auto emboss_reserved_local_subexpr_2 = (emboss_reserved_local_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::emboss::test::MessageId>(static_cast</**/::emboss::test::MessageId>(emboss_reserved_local_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::MessageId>());
-      const auto emboss_reserved_local_subexpr_3 = ::emboss::support::Equal</**/::emboss::test::MessageId, bool, ::emboss::test::MessageId, ::emboss::test::MessageId>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::emboss::test::MessageId>(static_cast</**/::emboss::test::MessageId>(0)));
-      const auto emboss_reserved_local_subexpr_4 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_3, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(13LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_5 = ::emboss::support::Equal</**/::emboss::test::MessageId, bool, ::emboss::test::MessageId, ::emboss::test::MessageId>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::emboss::test::MessageId>(static_cast</**/::emboss::test::MessageId>(1)));
-      const auto emboss_reserved_local_subexpr_6 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_5, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(5LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_2 =
+          (emboss_reserved_local_subexpr_1.Ok()
+               ? ::emboss::support::Maybe</**/ ::emboss::test::MessageId>(
+                     static_cast</**/ ::emboss::test::MessageId>(
+                         emboss_reserved_local_subexpr_1.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::emboss::test::MessageId>());
+      const auto emboss_reserved_local_subexpr_3 =
+          ::emboss::support::Equal</**/ ::emboss::test::MessageId, bool,
+                                   ::emboss::test::MessageId,
+                                   ::emboss::test::MessageId>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::emboss::test::MessageId>(
+                  static_cast</**/ ::emboss::test::MessageId>(0)));
+      const auto emboss_reserved_local_subexpr_4 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_3,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(13LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_5 =
+          ::emboss::support::Equal</**/ ::emboss::test::MessageId, bool,
+                                   ::emboss::test::MessageId,
+                                   ::emboss::test::MessageId>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::emboss::test::MessageId>(
+                  static_cast</**/ ::emboss::test::MessageId>(1)));
+      const auto emboss_reserved_local_subexpr_6 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_5,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(5LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
       const auto emboss_reserved_local_subexpr_7 = view_.product();
-      const auto emboss_reserved_local_subexpr_8 = (emboss_reserved_local_subexpr_7.Ok()    ? ::emboss::support::Maybe</**/::emboss::test::Product>(static_cast</**/::emboss::test::Product>(emboss_reserved_local_subexpr_7.UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::Product>());
-      const auto emboss_reserved_local_subexpr_9 = ::emboss::support::Equal</**/::emboss::test::Product, bool, ::emboss::test::Product, ::emboss::test::Product>(emboss_reserved_local_subexpr_8, ::emboss::support::Maybe</**/::emboss::test::Product>(static_cast</**/::emboss::test::Product>(23)));
-      const auto emboss_reserved_local_subexpr_10 = ::emboss::support::And</**/bool, bool, bool, bool>(emboss_reserved_local_subexpr_9, emboss_reserved_local_subexpr_5);
-      const auto emboss_reserved_local_subexpr_11 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_10, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(9LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_12 = ::emboss::support::Maximum</**/::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)), emboss_reserved_local_subexpr_4, emboss_reserved_local_subexpr_6, emboss_reserved_local_subexpr_11);
+      const auto emboss_reserved_local_subexpr_8 =
+          (emboss_reserved_local_subexpr_7.Ok()
+               ? ::emboss::support::Maybe</**/ ::emboss::test::Product>(
+                     static_cast</**/ ::emboss::test::Product>(
+                         emboss_reserved_local_subexpr_7.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::emboss::test::Product>());
+      const auto emboss_reserved_local_subexpr_9 =
+          ::emboss::support::Equal</**/ ::emboss::test::Product, bool,
+                                   ::emboss::test::Product,
+                                   ::emboss::test::Product>(
+              emboss_reserved_local_subexpr_8,
+              ::emboss::support::Maybe</**/ ::emboss::test::Product>(
+                  static_cast</**/ ::emboss::test::Product>(23)));
+      const auto emboss_reserved_local_subexpr_10 =
+          ::emboss::support::And</**/ bool, bool, bool, bool>(
+              emboss_reserved_local_subexpr_9, emboss_reserved_local_subexpr_5);
+      const auto emboss_reserved_local_subexpr_11 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_10,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(9LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_12 = ::emboss::support::Maximum<
+          /**/ ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t>(
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(0LL)),
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(1LL)),
+          emboss_reserved_local_subexpr_4, emboss_reserved_local_subexpr_6,
+          emboss_reserved_local_subexpr_11);
 
       return emboss_reserved_local_subexpr_12;
     }
@@ -946,7 +954,8 @@ if (!parameters_initialized_) return false;
 
     const GenericMultiVersionView view_;
   };
-  EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() const;
+  EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes()
+      const;
   ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() const;
 
  public:
@@ -955,21 +964,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
-    EmbossReservedDollarVirtualMaxSizeInBytesView(const EmbossReservedDollarVirtualMaxSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView(EmbossReservedDollarVirtualMaxSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(const EmbossReservedDollarVirtualMaxSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(EmbossReservedDollarVirtualMaxSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -977,7 +988,8 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
@@ -990,21 +1002,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
-    EmbossReservedDollarVirtualMinSizeInBytesView(const EmbossReservedDollarVirtualMinSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView(EmbossReservedDollarVirtualMinSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(const EmbossReservedDollarVirtualMinSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(EmbossReservedDollarVirtualMinSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -1012,14 +1026,13 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
-
-
 
  private:
   Storage backing_;
@@ -1051,46 +1064,41 @@ inline GenericMultiVersionView<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
         1, 0>>
-MakeMultiVersionView(::emboss::test::Product product,  T &&emboss_reserved_local_arg) {
+MakeMultiVersionView(::emboss::test::Product product,
+                     T&& emboss_reserved_local_arg) {
   return GenericMultiVersionView<
       /**/ ::emboss::support::ContiguousBuffer<
-          typename ::std::remove_reference<decltype(
-              *::std::declval<T>()->data())>::type,
-          1, 0>>(
-      ::std::forward</**/::emboss::test::Product>(product), ::std::forward<T>(emboss_reserved_local_arg));
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward</**/ ::emboss::test::Product>(product),
+                 ::std::forward<T>(emboss_reserved_local_arg));
 }
 
 template <typename T>
-inline GenericMultiVersionView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
-MakeMultiVersionView(::emboss::test::Product product,  T *emboss_reserved_local_data,
-                 ::std::size_t emboss_reserved_local_size) {
-  return GenericMultiVersionView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
-      ::std::forward</**/::emboss::test::Product>(product), emboss_reserved_local_data,
-      emboss_reserved_local_size);
+inline GenericMultiVersionView<
+    /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeMultiVersionView(::emboss::test::Product product,
+                     T* emboss_reserved_local_data,
+                     ::std::size_t emboss_reserved_local_size) {
+  return GenericMultiVersionView<
+      /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+      ::std::forward</**/ ::emboss::test::Product>(product),
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
 template <typename T, ::std::size_t kAlignment>
 inline GenericMultiVersionView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
-MakeAlignedMultiVersionView(
-    ::emboss::test::Product product,  T *emboss_reserved_local_data,
-    ::std::size_t emboss_reserved_local_size) {
+MakeAlignedMultiVersionView(::emboss::test::Product product,
+                            T* emboss_reserved_local_data,
+                            ::std::size_t emboss_reserved_local_size) {
   return GenericMultiVersionView<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
-      ::std::forward</**/::emboss::test::Product>(product), emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      ::std::forward</**/ ::emboss::test::Product>(product),
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
-
-
-
-
-
-
-namespace Axes {
-
-}  // namespace Axes
-
+namespace Axes {}  // namespace Axes
 
 template <class View>
 struct EmbossReservedInternalIsGenericAxesView;
@@ -1099,65 +1107,71 @@ template <class Storage>
 class GenericAxesView final {
  public:
   GenericAxesView() : backing_() {}
-  explicit GenericAxesView(
-      ::std::int32_t axes,  Storage emboss_reserved_local_bytes)
-      : backing_(emboss_reserved_local_bytes) , axes_(axes)
-        , parameters_initialized_(true) {}
+  explicit GenericAxesView(::std::int32_t axes,
+                           Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes),
+        axes_(axes),
+        parameters_initialized_(true) {}
 
   template <typename OtherStorage>
   GenericAxesView(
-      const GenericAxesView<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()}
-        , axes_(emboss_reserved_local_other.axes_)
-, parameters_initialized_(emboss_reserved_local_other.parameters_initialized_) {}
+      const GenericAxesView<OtherStorage>& emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()},
+        axes_(emboss_reserved_local_other.axes_),
+        parameters_initialized_(
+            emboss_reserved_local_other.parameters_initialized_) {}
 
-  template <typename Arg,
-            typename = typename ::std::enable_if<
-                !EmbossReservedInternalIsGenericAxesView<
-                    typename ::std::remove_cv<typename ::std::remove_reference<
-                        Arg>::type>::type>::value>::type>
-  explicit GenericAxesView(
-      ::std::int32_t axes,  Arg &&emboss_reserved_local_arg)
-      : backing_(::std::forward<Arg>(
-            emboss_reserved_local_arg)) , axes_(axes)
-        , parameters_initialized_(true) {}
+  template <
+      typename Arg,
+      typename = typename ::std::enable_if<
+          !EmbossReservedInternalIsGenericAxesView<typename ::std::remove_cv<
+              typename ::std::remove_reference<Arg>::type>::type>::value>::type>
+  explicit GenericAxesView(::std::int32_t axes, Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)),
+        axes_(axes),
+        parameters_initialized_(true) {}
   template <typename Arg0, typename Arg1, typename... Args>
-  explicit GenericAxesView(
-      ::std::int32_t axes,  Arg0 &&emboss_reserved_local_arg0,
-      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+  explicit GenericAxesView(::std::int32_t axes,
+                           Arg0&& emboss_reserved_local_arg0,
+                           Arg1&& emboss_reserved_local_arg1,
+                           Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
-                 ::std::forward<Args>(
-                     emboss_reserved_local_args)...) , axes_(axes)
-        , parameters_initialized_(true) {}
+                 ::std::forward<Args>(emboss_reserved_local_args)...),
+        axes_(axes),
+        parameters_initialized_(true) {}
 
   template <typename OtherStorage>
-  GenericAxesView<Storage> &operator=(
-      const GenericAxesView<OtherStorage> &emboss_reserved_local_other) {
+  GenericAxesView<Storage>& operator=(
+      const GenericAxesView<OtherStorage>& emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
     return *this;
   }
 
-  
-
   bool Ok() const {
     if (!IsComplete()) return false;
-if (!parameters_initialized_) return false;
+    if (!parameters_initialized_) return false;
 
     if (!has_values().Known()) return false;
     if (has_values().ValueOrDefault() && !values().Ok()) return false;
 
     if (!has_axis_count_plus_one().Known()) return false;
-    if (has_axis_count_plus_one().ValueOrDefault() && !axis_count_plus_one().Ok()) return false;
+    if (has_axis_count_plus_one().ValueOrDefault() &&
+        !axis_count_plus_one().Ok())
+      return false;
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
 
     if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
 
     if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
 
     if (!has_x().Known()) return false;
     if (has_x().ValueOrDefault() && !x().Ok()) return false;
@@ -1167,8 +1181,6 @@ if (!parameters_initialized_) return false;
 
     if (!has_z().Known()) return false;
     if (has_z().ValueOrDefault() && !z().Ok()) return false;
-
-
 
     return true;
   }
@@ -1184,12 +1196,8 @@ if (!parameters_initialized_) return false;
   }
   bool SizeIsKnown() const { return IntrinsicSizeInBytes().Ok(); }
 
-
-
   template <typename OtherStorage>
-  bool Equals(
-      GenericAxesView<OtherStorage> emboss_reserved_local_other) const {
-    
+  bool Equals(GenericAxesView<OtherStorage> emboss_reserved_local_other) const {
     if (!has_axes().Known()) return false;
     if (!emboss_reserved_local_other.has_axes().Known()) return false;
 
@@ -1204,8 +1212,6 @@ if (!parameters_initialized_) return false;
         has_axes().ValueOrDefault() &&
         !axes().Equals(emboss_reserved_local_other.axes()))
       return false;
-
-
 
     if (!has_values().Known()) return false;
     if (!emboss_reserved_local_other.has_values().Known()) return false;
@@ -1222,8 +1228,6 @@ if (!parameters_initialized_) return false;
         !values().Equals(emboss_reserved_local_other.values()))
       return false;
 
-
-
     if (!has_x().Known()) return false;
     if (!emboss_reserved_local_other.has_x().Known()) return false;
 
@@ -1238,8 +1242,6 @@ if (!parameters_initialized_) return false;
         has_x().ValueOrDefault() &&
         !x().Equals(emboss_reserved_local_other.x()))
       return false;
-
-
 
     if (!has_y().Known()) return false;
     if (!emboss_reserved_local_other.has_y().Known()) return false;
@@ -1256,8 +1258,6 @@ if (!parameters_initialized_) return false;
         !y().Equals(emboss_reserved_local_other.y()))
       return false;
 
-
-
     if (!has_z().Known()) return false;
     if (!emboss_reserved_local_other.has_z().Known()) return false;
 
@@ -1273,12 +1273,11 @@ if (!parameters_initialized_) return false;
         !z().Equals(emboss_reserved_local_other.z()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   bool UncheckedEquals(
       GenericAxesView<OtherStorage> emboss_reserved_local_other) const {
-    
     if (emboss_reserved_local_other.has_axes().ValueOr(false) &&
         !has_axes().ValueOr(false))
       return false;
@@ -1290,8 +1289,6 @@ if (!parameters_initialized_) return false;
         has_axes().ValueOr(false) &&
         !axes().UncheckedEquals(emboss_reserved_local_other.axes()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_values().ValueOr(false) &&
         !has_values().ValueOr(false))
@@ -1305,8 +1302,6 @@ if (!parameters_initialized_) return false;
         !values().UncheckedEquals(emboss_reserved_local_other.values()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_x().ValueOr(false) &&
         !has_x().ValueOr(false))
       return false;
@@ -1318,8 +1313,6 @@ if (!parameters_initialized_) return false;
         has_x().ValueOr(false) &&
         !x().UncheckedEquals(emboss_reserved_local_other.x()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_y().ValueOr(false) &&
         !has_y().ValueOr(false))
@@ -1333,8 +1326,6 @@ if (!parameters_initialized_) return false;
         !y().UncheckedEquals(emboss_reserved_local_other.y()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_z().ValueOr(false) &&
         !has_z().ValueOr(false))
       return false;
@@ -1347,7 +1338,7 @@ if (!parameters_initialized_) return false;
         !z().UncheckedEquals(emboss_reserved_local_other.z()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   void UncheckedCopyFrom(
@@ -1367,13 +1358,14 @@ if (!parameters_initialized_) return false;
   template <typename OtherStorage>
   bool TryToCopyFrom(
       GenericAxesView<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
 
   template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
     ::std::string emboss_reserved_local_brace;
     if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
                                       &emboss_reserved_local_brace))
@@ -1395,32 +1387,28 @@ if (!parameters_initialized_) return false;
         return false;
       if (emboss_reserved_local_colon != ":") return false;
       if (emboss_reserved_local_name == "values") {
-        if (!values().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!values().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "x") {
-        if (!x().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!x().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "y") {
-        if (!y().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!y().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "z") {
-        if (!z().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!z().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
@@ -1432,7 +1420,7 @@ if (!parameters_initialized_) return false;
 
   template <class Stream>
   void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
+      Stream* emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
     ::emboss::TextOutputOptions emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
@@ -1456,7 +1444,7 @@ if (!parameters_initialized_) return false;
         }
         emboss_reserved_local_stream->Write("values: ");
         values().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                   emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -1486,7 +1474,7 @@ if (!parameters_initialized_) return false;
         }
         emboss_reserved_local_stream->Write("x: ");
         x().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                              emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -1516,7 +1504,7 @@ if (!parameters_initialized_) return false;
         }
         emboss_reserved_local_stream->Write("y: ");
         y().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                              emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -1546,7 +1534,7 @@ if (!parameters_initialized_) return false;
         }
         emboss_reserved_local_stream->Write("z: ");
         z().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                              emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -1569,15 +1557,16 @@ if (!parameters_initialized_) return false;
         emboss_reserved_local_stream->Write(
             emboss_reserved_local_field_options.current_indent());
         emboss_reserved_local_stream->Write("# axis_count_plus_one: ");
-        axis_count_plus_one().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+        axis_count_plus_one().WriteToTextStream(
+            emboss_reserved_local_stream, emboss_reserved_local_field_options);
         emboss_reserved_local_stream->Write("\n");
       } else {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
               emboss_reserved_local_field_options.current_indent());
         }
-        emboss_reserved_local_stream->Write("# axis_count_plus_one: UNREADABLE\n");
+        emboss_reserved_local_stream->Write(
+            "# axis_count_plus_one: UNREADABLE\n");
       }
     }
 
@@ -1591,13 +1580,11 @@ if (!parameters_initialized_) return false;
     }
   }
 
-
-
   static constexpr bool IsAggregate() { return true; }
 
  private:
-  constexpr ::emboss::support::MaybeConstantView</**/ ::std::int32_t>
-  axes() const {
+  constexpr ::emboss::support::MaybeConstantView</**/ ::std::int32_t> axes()
+      const {
     return parameters_initialized_
                ? ::emboss::support::MaybeConstantView</**/ ::std::int32_t>(
                      axes_)
@@ -1609,30 +1596,36 @@ if (!parameters_initialized_) return false;
 
  public:
   typename ::emboss::support::GenericArrayView<
-    typename ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 0>::template OffsetStorageType</**/4, 0>>
+      typename ::emboss::test::GenericAxisView<
+          typename Storage::template OffsetStorageType<
+              /**/ 0, 0>::template OffsetStorageType</**/ 4, 0>>
 
-, typename Storage::template OffsetStorageType</**/0, 0>, 4,
-    8 , ::emboss::test::AxisType>
+      ,
+      typename Storage::template OffsetStorageType</**/ 0, 0>, 4, 8,
+      ::emboss::test::AxisType>
 
- values() const;
+  values() const;
   ::emboss::support::Maybe<bool> has_values() const;
 
  public:
-  typename ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 0>>
+  typename ::emboss::test::GenericAxisView<
+      typename Storage::template OffsetStorageType</**/ 0, 0>>
 
- x() const;
+  x() const;
   ::emboss::support::Maybe<bool> has_x() const;
 
  public:
-  typename ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 4>>
+  typename ::emboss::test::GenericAxisView<
+      typename Storage::template OffsetStorageType</**/ 0, 4>>
 
- y() const;
+  y() const;
   ::emboss::support::Maybe<bool> has_y() const;
 
  public:
-  typename ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 8>>
+  typename ::emboss::test::GenericAxisView<
+      typename Storage::template OffsetStorageType</**/ 0, 8>>
 
- z() const;
+  z() const;
   ::emboss::support::Maybe<bool> has_z() const;
 
  public:
@@ -1641,15 +1634,17 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     explicit EmbossReservedVirtualAxisCountPlusOneView(
-        const GenericAxesView &emboss_reserved_local_view)
+        const GenericAxesView& emboss_reserved_local_view)
         : view_(emboss_reserved_local_view) {}
     EmbossReservedVirtualAxisCountPlusOneView() = delete;
-    EmbossReservedVirtualAxisCountPlusOneView(const EmbossReservedVirtualAxisCountPlusOneView &) = default;
-    EmbossReservedVirtualAxisCountPlusOneView(EmbossReservedVirtualAxisCountPlusOneView &&) = default;
-    EmbossReservedVirtualAxisCountPlusOneView &operator=(const EmbossReservedVirtualAxisCountPlusOneView &) =
-        default;
-    EmbossReservedVirtualAxisCountPlusOneView &operator=(EmbossReservedVirtualAxisCountPlusOneView &&) =
-        default;
+    EmbossReservedVirtualAxisCountPlusOneView(
+        const EmbossReservedVirtualAxisCountPlusOneView&) = default;
+    EmbossReservedVirtualAxisCountPlusOneView(
+        EmbossReservedVirtualAxisCountPlusOneView&&) = default;
+    EmbossReservedVirtualAxisCountPlusOneView& operator=(
+        const EmbossReservedVirtualAxisCountPlusOneView&) = default;
+    EmbossReservedVirtualAxisCountPlusOneView& operator=(
+        EmbossReservedVirtualAxisCountPlusOneView&&) = default;
     ~EmbossReservedVirtualAxisCountPlusOneView() = default;
 
     ::std::int32_t Read() const {
@@ -1668,22 +1663,30 @@ if (!parameters_initialized_) return false;
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
     static constexpr bool IsAggregate() { return false; }
 
-
-
    private:
     ::emboss::support::Maybe</**/ ::std::int32_t> MaybeRead() const {
       const auto emboss_reserved_local_subexpr_1 = view_.axes();
-      const auto emboss_reserved_local_subexpr_2 = (emboss_reserved_local_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_subexpr_3 = ::emboss::support::Sum</**/::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)));
+      const auto emboss_reserved_local_subexpr_2 =
+          (emboss_reserved_local_subexpr_1.Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(
+                         emboss_reserved_local_subexpr_1.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>());
+      const auto emboss_reserved_local_subexpr_3 =
+          ::emboss::support::Sum</**/ ::std::int32_t, ::std::int32_t,
+                                 ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(1LL)));
 
       return emboss_reserved_local_subexpr_3;
     }
@@ -1705,15 +1708,17 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     explicit EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
-        const GenericAxesView &emboss_reserved_local_view)
+        const GenericAxesView& emboss_reserved_local_view)
         : view_(emboss_reserved_local_view) {}
     EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = delete;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
     ::std::int32_t Read() const {
@@ -1732,31 +1737,92 @@ if (!parameters_initialized_) return false;
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
     static constexpr bool IsAggregate() { return false; }
 
-
-
    private:
     ::emboss::support::Maybe</**/ ::std::int32_t> MaybeRead() const {
       const auto emboss_reserved_local_subexpr_1 = view_.axes();
-      const auto emboss_reserved_local_subexpr_2 = (emboss_reserved_local_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_subexpr_3 = ::emboss::support::Product</**/::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)));
-      const auto emboss_reserved_local_subexpr_4 = ::emboss::support::Sum</**/::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)), emboss_reserved_local_subexpr_3);
-      const auto emboss_reserved_local_subexpr_5 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(::emboss::support::Maybe</**/bool>(true), emboss_reserved_local_subexpr_4, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_6 = ::emboss::support::GreaterThan</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_7 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_6, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_8 = ::emboss::support::GreaterThan</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)));
-      const auto emboss_reserved_local_subexpr_9 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_8, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_10 = ::emboss::support::GreaterThan</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL)));
-      const auto emboss_reserved_local_subexpr_11 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_10, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(12LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_12 = ::emboss::support::Maximum</**/::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)), emboss_reserved_local_subexpr_5, emboss_reserved_local_subexpr_7, emboss_reserved_local_subexpr_9, emboss_reserved_local_subexpr_11);
+      const auto emboss_reserved_local_subexpr_2 =
+          (emboss_reserved_local_subexpr_1.Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(
+                         emboss_reserved_local_subexpr_1.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>());
+      const auto emboss_reserved_local_subexpr_3 =
+          ::emboss::support::Product</**/ ::std::int32_t, ::std::int32_t,
+                                     ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(4LL)));
+      const auto emboss_reserved_local_subexpr_4 =
+          ::emboss::support::Sum</**/ ::std::int32_t, ::std::int32_t,
+                                 ::std::int32_t, ::std::int32_t>(
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)),
+              emboss_reserved_local_subexpr_3);
+      const auto emboss_reserved_local_subexpr_5 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              ::emboss::support::Maybe</**/ bool>(true),
+              emboss_reserved_local_subexpr_4,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_6 =
+          ::emboss::support::GreaterThan</**/ ::std::int32_t, bool,
+                                         ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_7 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_6,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(4LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_8 =
+          ::emboss::support::GreaterThan</**/ ::std::int32_t, bool,
+                                         ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(1LL)));
+      const auto emboss_reserved_local_subexpr_9 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_8,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(8LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_10 =
+          ::emboss::support::GreaterThan</**/ ::std::int32_t, bool,
+                                         ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(2LL)));
+      const auto emboss_reserved_local_subexpr_11 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_10,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(12LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_12 = ::emboss::support::Maximum<
+          /**/ ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t>(
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(0LL)),
+          emboss_reserved_local_subexpr_5, emboss_reserved_local_subexpr_7,
+          emboss_reserved_local_subexpr_9, emboss_reserved_local_subexpr_11);
 
       return emboss_reserved_local_subexpr_12;
     }
@@ -1769,7 +1835,8 @@ if (!parameters_initialized_) return false;
 
     const GenericAxesView view_;
   };
-  EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() const;
+  EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes()
+      const;
   ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() const;
 
  public:
@@ -1778,21 +1845,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
-    EmbossReservedDollarVirtualMaxSizeInBytesView(const EmbossReservedDollarVirtualMaxSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView(EmbossReservedDollarVirtualMaxSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(const EmbossReservedDollarVirtualMaxSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(EmbossReservedDollarVirtualMaxSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -1800,7 +1869,8 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
@@ -1813,21 +1883,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
-    EmbossReservedDollarVirtualMinSizeInBytesView(const EmbossReservedDollarVirtualMinSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView(EmbossReservedDollarVirtualMinSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(const EmbossReservedDollarVirtualMinSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(EmbossReservedDollarVirtualMinSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -1835,14 +1907,13 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
-
-
 
  private:
   Storage backing_;
@@ -1863,8 +1934,7 @@ struct EmbossReservedInternalIsGenericAxesView {
 };
 
 template <class Storage>
-struct EmbossReservedInternalIsGenericAxesView<
-    GenericAxesView<Storage>> {
+struct EmbossReservedInternalIsGenericAxesView<GenericAxesView<Storage>> {
   static constexpr const bool value = true;
 };
 
@@ -1874,45 +1944,36 @@ inline GenericAxesView<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
         1, 0>>
-MakeAxesView(::std::int32_t axes,  T &&emboss_reserved_local_arg) {
+MakeAxesView(::std::int32_t axes, T&& emboss_reserved_local_arg) {
   return GenericAxesView<
       /**/ ::emboss::support::ContiguousBuffer<
-          typename ::std::remove_reference<decltype(
-              *::std::declval<T>()->data())>::type,
-          1, 0>>(
-      ::std::forward</**/::std::int32_t>(axes), ::std::forward<T>(emboss_reserved_local_arg));
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward</**/ ::std::int32_t>(axes),
+                 ::std::forward<T>(emboss_reserved_local_arg));
 }
 
 template <typename T>
 inline GenericAxesView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
-MakeAxesView(::std::int32_t axes,  T *emboss_reserved_local_data,
-                 ::std::size_t emboss_reserved_local_size) {
+MakeAxesView(::std::int32_t axes, T* emboss_reserved_local_data,
+             ::std::size_t emboss_reserved_local_size) {
   return GenericAxesView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
-      ::std::forward</**/::std::int32_t>(axes), emboss_reserved_local_data,
+      ::std::forward</**/ ::std::int32_t>(axes), emboss_reserved_local_data,
       emboss_reserved_local_size);
 }
 
 template <typename T, ::std::size_t kAlignment>
 inline GenericAxesView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
-MakeAlignedAxesView(
-    ::std::int32_t axes,  T *emboss_reserved_local_data,
-    ::std::size_t emboss_reserved_local_size) {
+MakeAlignedAxesView(::std::int32_t axes, T* emboss_reserved_local_data,
+                    ::std::size_t emboss_reserved_local_size) {
   return GenericAxesView<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
-      ::std::forward</**/::std::int32_t>(axes), emboss_reserved_local_data,
+      ::std::forward</**/ ::std::int32_t>(axes), emboss_reserved_local_data,
       emboss_reserved_local_size);
 }
 
-
-
-
-
-
-namespace AxisPair {
-
-}  // namespace AxisPair
-
+namespace AxisPair {}  // namespace AxisPair
 
 template <class View>
 struct EmbossReservedInternalIsGenericAxisPairView;
@@ -1921,54 +1982,60 @@ template <class Storage>
 class GenericAxisPairView final {
  public:
   GenericAxisPairView() : backing_() {}
-  explicit GenericAxisPairView(
-      ::emboss::test::AxisType axis_type_a_parameter, ::emboss::test::AxisType axis_type_b_parameter,  Storage emboss_reserved_local_bytes)
-      : backing_(emboss_reserved_local_bytes) , axis_type_a_parameter_(axis_type_a_parameter)
-, axis_type_b_parameter_(axis_type_b_parameter)
-        , parameters_initialized_(true) {}
+  explicit GenericAxisPairView(::emboss::test::AxisType axis_type_a_parameter,
+                               ::emboss::test::AxisType axis_type_b_parameter,
+                               Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes),
+        axis_type_a_parameter_(axis_type_a_parameter),
+        axis_type_b_parameter_(axis_type_b_parameter),
+        parameters_initialized_(true) {}
 
   template <typename OtherStorage>
   GenericAxisPairView(
-      const GenericAxisPairView<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()}
-        , axis_type_a_parameter_(emboss_reserved_local_other.axis_type_a_parameter_)
-, axis_type_b_parameter_(emboss_reserved_local_other.axis_type_b_parameter_)
-, parameters_initialized_(emboss_reserved_local_other.parameters_initialized_) {}
+      const GenericAxisPairView<OtherStorage>& emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()},
+        axis_type_a_parameter_(
+            emboss_reserved_local_other.axis_type_a_parameter_),
+        axis_type_b_parameter_(
+            emboss_reserved_local_other.axis_type_b_parameter_),
+        parameters_initialized_(
+            emboss_reserved_local_other.parameters_initialized_) {}
 
   template <typename Arg,
             typename = typename ::std::enable_if<
                 !EmbossReservedInternalIsGenericAxisPairView<
                     typename ::std::remove_cv<typename ::std::remove_reference<
                         Arg>::type>::type>::value>::type>
-  explicit GenericAxisPairView(
-      ::emboss::test::AxisType axis_type_a_parameter, ::emboss::test::AxisType axis_type_b_parameter,  Arg &&emboss_reserved_local_arg)
-      : backing_(::std::forward<Arg>(
-            emboss_reserved_local_arg)) , axis_type_a_parameter_(axis_type_a_parameter)
-, axis_type_b_parameter_(axis_type_b_parameter)
-        , parameters_initialized_(true) {}
+  explicit GenericAxisPairView(::emboss::test::AxisType axis_type_a_parameter,
+                               ::emboss::test::AxisType axis_type_b_parameter,
+                               Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)),
+        axis_type_a_parameter_(axis_type_a_parameter),
+        axis_type_b_parameter_(axis_type_b_parameter),
+        parameters_initialized_(true) {}
   template <typename Arg0, typename Arg1, typename... Args>
-  explicit GenericAxisPairView(
-      ::emboss::test::AxisType axis_type_a_parameter, ::emboss::test::AxisType axis_type_b_parameter,  Arg0 &&emboss_reserved_local_arg0,
-      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+  explicit GenericAxisPairView(::emboss::test::AxisType axis_type_a_parameter,
+                               ::emboss::test::AxisType axis_type_b_parameter,
+                               Arg0&& emboss_reserved_local_arg0,
+                               Arg1&& emboss_reserved_local_arg1,
+                               Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
-                 ::std::forward<Args>(
-                     emboss_reserved_local_args)...) , axis_type_a_parameter_(axis_type_a_parameter)
-, axis_type_b_parameter_(axis_type_b_parameter)
-        , parameters_initialized_(true) {}
+                 ::std::forward<Args>(emboss_reserved_local_args)...),
+        axis_type_a_parameter_(axis_type_a_parameter),
+        axis_type_b_parameter_(axis_type_b_parameter),
+        parameters_initialized_(true) {}
 
   template <typename OtherStorage>
-  GenericAxisPairView<Storage> &operator=(
-      const GenericAxisPairView<OtherStorage> &emboss_reserved_local_other) {
+  GenericAxisPairView<Storage>& operator=(
+      const GenericAxisPairView<OtherStorage>& emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
     return *this;
   }
 
-  
-
   bool Ok() const {
     if (!IsComplete()) return false;
-if (!parameters_initialized_) return false;
+    if (!parameters_initialized_) return false;
 
     if (!has_axis_type_a().Known()) return false;
     if (has_axis_type_a().ValueOrDefault() && !axis_type_a().Ok()) return false;
@@ -1983,15 +2050,17 @@ if (!parameters_initialized_) return false;
     if (has_axis_b().ValueOrDefault() && !axis_b().Ok()) return false;
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
 
     if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
 
     if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
-
-
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
 
     return true;
   }
@@ -2005,48 +2074,50 @@ if (!parameters_initialized_) return false;
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
   }
-  static constexpr bool SizeIsKnown() {
-    return IntrinsicSizeInBytes().Ok();
-  }
-
+  static constexpr bool SizeIsKnown() { return IntrinsicSizeInBytes().Ok(); }
 
   template <typename OtherStorage>
   bool Equals(
       GenericAxisPairView<OtherStorage> emboss_reserved_local_other) const {
-    
     if (!has_axis_type_a_parameter().Known()) return false;
-    if (!emboss_reserved_local_other.has_axis_type_a_parameter().Known()) return false;
+    if (!emboss_reserved_local_other.has_axis_type_a_parameter().Known())
+      return false;
 
-    if (emboss_reserved_local_other.has_axis_type_a_parameter().ValueOrDefault() &&
+    if (emboss_reserved_local_other.has_axis_type_a_parameter()
+            .ValueOrDefault() &&
         !has_axis_type_a_parameter().ValueOrDefault())
       return false;
     if (has_axis_type_a_parameter().ValueOrDefault() &&
-        !emboss_reserved_local_other.has_axis_type_a_parameter().ValueOrDefault())
+        !emboss_reserved_local_other.has_axis_type_a_parameter()
+             .ValueOrDefault())
       return false;
 
-    if (emboss_reserved_local_other.has_axis_type_a_parameter().ValueOrDefault() &&
+    if (emboss_reserved_local_other.has_axis_type_a_parameter()
+            .ValueOrDefault() &&
         has_axis_type_a_parameter().ValueOrDefault() &&
-        !axis_type_a_parameter().Equals(emboss_reserved_local_other.axis_type_a_parameter()))
+        !axis_type_a_parameter().Equals(
+            emboss_reserved_local_other.axis_type_a_parameter()))
       return false;
-
-
 
     if (!has_axis_type_b_parameter().Known()) return false;
-    if (!emboss_reserved_local_other.has_axis_type_b_parameter().Known()) return false;
+    if (!emboss_reserved_local_other.has_axis_type_b_parameter().Known())
+      return false;
 
-    if (emboss_reserved_local_other.has_axis_type_b_parameter().ValueOrDefault() &&
+    if (emboss_reserved_local_other.has_axis_type_b_parameter()
+            .ValueOrDefault() &&
         !has_axis_type_b_parameter().ValueOrDefault())
       return false;
     if (has_axis_type_b_parameter().ValueOrDefault() &&
-        !emboss_reserved_local_other.has_axis_type_b_parameter().ValueOrDefault())
+        !emboss_reserved_local_other.has_axis_type_b_parameter()
+             .ValueOrDefault())
       return false;
 
-    if (emboss_reserved_local_other.has_axis_type_b_parameter().ValueOrDefault() &&
+    if (emboss_reserved_local_other.has_axis_type_b_parameter()
+            .ValueOrDefault() &&
         has_axis_type_b_parameter().ValueOrDefault() &&
-        !axis_type_b_parameter().Equals(emboss_reserved_local_other.axis_type_b_parameter()))
+        !axis_type_b_parameter().Equals(
+            emboss_reserved_local_other.axis_type_b_parameter()))
       return false;
-
-
 
     if (!has_axis_a().Known()) return false;
     if (!emboss_reserved_local_other.has_axis_a().Known()) return false;
@@ -2063,8 +2134,6 @@ if (!parameters_initialized_) return false;
         !axis_a().Equals(emboss_reserved_local_other.axis_a()))
       return false;
 
-
-
     if (!has_axis_b().Known()) return false;
     if (!emboss_reserved_local_other.has_axis_b().Known()) return false;
 
@@ -2080,39 +2149,40 @@ if (!parameters_initialized_) return false;
         !axis_b().Equals(emboss_reserved_local_other.axis_b()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   bool UncheckedEquals(
       GenericAxisPairView<OtherStorage> emboss_reserved_local_other) const {
-    
-    if (emboss_reserved_local_other.has_axis_type_a_parameter().ValueOr(false) &&
+    if (emboss_reserved_local_other.has_axis_type_a_parameter().ValueOr(
+            false) &&
         !has_axis_type_a_parameter().ValueOr(false))
       return false;
     if (has_axis_type_a_parameter().ValueOr(false) &&
         !emboss_reserved_local_other.has_axis_type_a_parameter().ValueOr(false))
       return false;
 
-    if (emboss_reserved_local_other.has_axis_type_a_parameter().ValueOr(false) &&
+    if (emboss_reserved_local_other.has_axis_type_a_parameter().ValueOr(
+            false) &&
         has_axis_type_a_parameter().ValueOr(false) &&
-        !axis_type_a_parameter().UncheckedEquals(emboss_reserved_local_other.axis_type_a_parameter()))
+        !axis_type_a_parameter().UncheckedEquals(
+            emboss_reserved_local_other.axis_type_a_parameter()))
       return false;
 
-
-
-    if (emboss_reserved_local_other.has_axis_type_b_parameter().ValueOr(false) &&
+    if (emboss_reserved_local_other.has_axis_type_b_parameter().ValueOr(
+            false) &&
         !has_axis_type_b_parameter().ValueOr(false))
       return false;
     if (has_axis_type_b_parameter().ValueOr(false) &&
         !emboss_reserved_local_other.has_axis_type_b_parameter().ValueOr(false))
       return false;
 
-    if (emboss_reserved_local_other.has_axis_type_b_parameter().ValueOr(false) &&
+    if (emboss_reserved_local_other.has_axis_type_b_parameter().ValueOr(
+            false) &&
         has_axis_type_b_parameter().ValueOr(false) &&
-        !axis_type_b_parameter().UncheckedEquals(emboss_reserved_local_other.axis_type_b_parameter()))
+        !axis_type_b_parameter().UncheckedEquals(
+            emboss_reserved_local_other.axis_type_b_parameter()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_axis_a().ValueOr(false) &&
         !has_axis_a().ValueOr(false))
@@ -2126,8 +2196,6 @@ if (!parameters_initialized_) return false;
         !axis_a().UncheckedEquals(emboss_reserved_local_other.axis_a()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_axis_b().ValueOr(false) &&
         !has_axis_b().ValueOr(false))
       return false;
@@ -2140,7 +2208,7 @@ if (!parameters_initialized_) return false;
         !axis_b().UncheckedEquals(emboss_reserved_local_other.axis_b()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   void UncheckedCopyFrom(
@@ -2160,13 +2228,14 @@ if (!parameters_initialized_) return false;
   template <typename OtherStorage>
   bool TryToCopyFrom(
       GenericAxisPairView<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
 
   template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
     ::std::string emboss_reserved_local_brace;
     if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
                                       &emboss_reserved_local_brace))
@@ -2188,16 +2257,14 @@ if (!parameters_initialized_) return false;
         return false;
       if (emboss_reserved_local_colon != ":") return false;
       if (emboss_reserved_local_name == "axis_a") {
-        if (!axis_a().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!axis_a().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "axis_b") {
-        if (!axis_b().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!axis_b().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
@@ -2209,7 +2276,7 @@ if (!parameters_initialized_) return false;
 
   template <class Stream>
   void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
+      Stream* emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
     ::emboss::TextOutputOptions emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
@@ -2227,7 +2294,7 @@ if (!parameters_initialized_) return false;
             emboss_reserved_local_field_options.current_indent());
         emboss_reserved_local_stream->Write("# axis_type_a: ");
         axis_type_a().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                        emboss_reserved_local_field_options);
         emboss_reserved_local_stream->Write("\n");
       } else {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -2252,7 +2319,7 @@ if (!parameters_initialized_) return false;
         }
         emboss_reserved_local_stream->Write("axis_a: ");
         axis_a().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                   emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -2276,7 +2343,7 @@ if (!parameters_initialized_) return false;
             emboss_reserved_local_field_options.current_indent());
         emboss_reserved_local_stream->Write("# axis_type_b: ");
         axis_type_b().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                        emboss_reserved_local_field_options);
         emboss_reserved_local_stream->Write("\n");
       } else {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -2301,7 +2368,7 @@ if (!parameters_initialized_) return false;
         }
         emboss_reserved_local_stream->Write("axis_b: ");
         axis_b().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                   emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -2327,17 +2394,16 @@ if (!parameters_initialized_) return false;
     }
   }
 
-
-
   static constexpr bool IsAggregate() { return true; }
 
  private:
   constexpr ::emboss::support::MaybeConstantView</**/ ::emboss::test::AxisType>
   axis_type_a_parameter() const {
     return parameters_initialized_
-               ? ::emboss::support::MaybeConstantView</**/ ::emboss::test::AxisType>(
-                     axis_type_a_parameter_)
-               : ::emboss::support::MaybeConstantView</**/ ::emboss::test::AxisType>();
+               ? ::emboss::support::MaybeConstantView<
+                     /**/ ::emboss::test::AxisType>(axis_type_a_parameter_)
+               : ::emboss::support::MaybeConstantView<
+                     /**/ ::emboss::test::AxisType>();
   }
   constexpr ::emboss::support::Maybe<bool> has_axis_type_a_parameter() const {
     return ::emboss::support::Maybe<bool>(parameters_initialized_);
@@ -2347,9 +2413,10 @@ if (!parameters_initialized_) return false;
   constexpr ::emboss::support::MaybeConstantView</**/ ::emboss::test::AxisType>
   axis_type_b_parameter() const {
     return parameters_initialized_
-               ? ::emboss::support::MaybeConstantView</**/ ::emboss::test::AxisType>(
-                     axis_type_b_parameter_)
-               : ::emboss::support::MaybeConstantView</**/ ::emboss::test::AxisType>();
+               ? ::emboss::support::MaybeConstantView<
+                     /**/ ::emboss::test::AxisType>(axis_type_b_parameter_)
+               : ::emboss::support::MaybeConstantView<
+                     /**/ ::emboss::test::AxisType>();
   }
   constexpr ::emboss::support::Maybe<bool> has_axis_type_b_parameter() const {
     return ::emboss::support::Maybe<bool>(parameters_initialized_);
@@ -2361,15 +2428,17 @@ if (!parameters_initialized_) return false;
     using ValueType = ::emboss::test::AxisType;
 
     explicit EmbossReservedVirtualAxisTypeAView(
-        const GenericAxisPairView &emboss_reserved_local_view)
+        const GenericAxisPairView& emboss_reserved_local_view)
         : view_(emboss_reserved_local_view) {}
     EmbossReservedVirtualAxisTypeAView() = delete;
-    EmbossReservedVirtualAxisTypeAView(const EmbossReservedVirtualAxisTypeAView &) = default;
-    EmbossReservedVirtualAxisTypeAView(EmbossReservedVirtualAxisTypeAView &&) = default;
-    EmbossReservedVirtualAxisTypeAView &operator=(const EmbossReservedVirtualAxisTypeAView &) =
+    EmbossReservedVirtualAxisTypeAView(
+        const EmbossReservedVirtualAxisTypeAView&) = default;
+    EmbossReservedVirtualAxisTypeAView(EmbossReservedVirtualAxisTypeAView&&) =
         default;
-    EmbossReservedVirtualAxisTypeAView &operator=(EmbossReservedVirtualAxisTypeAView &&) =
-        default;
+    EmbossReservedVirtualAxisTypeAView& operator=(
+        const EmbossReservedVirtualAxisTypeAView&) = default;
+    EmbossReservedVirtualAxisTypeAView& operator=(
+        EmbossReservedVirtualAxisTypeAView&&) = default;
     ~EmbossReservedVirtualAxisTypeAView() = default;
 
     ::emboss::test::AxisType Read() const {
@@ -2388,21 +2457,25 @@ if (!parameters_initialized_) return false;
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteEnumViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
     static constexpr bool IsAggregate() { return false; }
 
-
-
    private:
     ::emboss::support::Maybe</**/ ::emboss::test::AxisType> MaybeRead() const {
-      const auto emboss_reserved_local_subexpr_1 = view_.axis_type_a_parameter();
-      const auto emboss_reserved_local_subexpr_2 = (emboss_reserved_local_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(emboss_reserved_local_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::AxisType>());
+      const auto emboss_reserved_local_subexpr_1 =
+          view_.axis_type_a_parameter();
+      const auto emboss_reserved_local_subexpr_2 =
+          (emboss_reserved_local_subexpr_1.Ok()
+               ? ::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+                     static_cast</**/ ::emboss::test::AxisType>(
+                         emboss_reserved_local_subexpr_1.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::emboss::test::AxisType>());
 
       return emboss_reserved_local_subexpr_2;
     }
@@ -2419,9 +2492,10 @@ if (!parameters_initialized_) return false;
   ::emboss::support::Maybe<bool> has_axis_type_a() const;
 
  public:
-  typename ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 0>>
+  typename ::emboss::test::GenericAxisView<
+      typename Storage::template OffsetStorageType</**/ 0, 0>>
 
- axis_a() const;
+  axis_a() const;
   ::emboss::support::Maybe<bool> has_axis_a() const;
 
  public:
@@ -2430,15 +2504,17 @@ if (!parameters_initialized_) return false;
     using ValueType = ::emboss::test::AxisType;
 
     explicit EmbossReservedVirtualAxisTypeBView(
-        const GenericAxisPairView &emboss_reserved_local_view)
+        const GenericAxisPairView& emboss_reserved_local_view)
         : view_(emboss_reserved_local_view) {}
     EmbossReservedVirtualAxisTypeBView() = delete;
-    EmbossReservedVirtualAxisTypeBView(const EmbossReservedVirtualAxisTypeBView &) = default;
-    EmbossReservedVirtualAxisTypeBView(EmbossReservedVirtualAxisTypeBView &&) = default;
-    EmbossReservedVirtualAxisTypeBView &operator=(const EmbossReservedVirtualAxisTypeBView &) =
+    EmbossReservedVirtualAxisTypeBView(
+        const EmbossReservedVirtualAxisTypeBView&) = default;
+    EmbossReservedVirtualAxisTypeBView(EmbossReservedVirtualAxisTypeBView&&) =
         default;
-    EmbossReservedVirtualAxisTypeBView &operator=(EmbossReservedVirtualAxisTypeBView &&) =
-        default;
+    EmbossReservedVirtualAxisTypeBView& operator=(
+        const EmbossReservedVirtualAxisTypeBView&) = default;
+    EmbossReservedVirtualAxisTypeBView& operator=(
+        EmbossReservedVirtualAxisTypeBView&&) = default;
     ~EmbossReservedVirtualAxisTypeBView() = default;
 
     ::emboss::test::AxisType Read() const {
@@ -2457,21 +2533,25 @@ if (!parameters_initialized_) return false;
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteEnumViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
     static constexpr bool IsAggregate() { return false; }
 
-
-
    private:
     ::emboss::support::Maybe</**/ ::emboss::test::AxisType> MaybeRead() const {
-      const auto emboss_reserved_local_subexpr_1 = view_.axis_type_b_parameter();
-      const auto emboss_reserved_local_subexpr_2 = (emboss_reserved_local_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(emboss_reserved_local_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::AxisType>());
+      const auto emboss_reserved_local_subexpr_1 =
+          view_.axis_type_b_parameter();
+      const auto emboss_reserved_local_subexpr_2 =
+          (emboss_reserved_local_subexpr_1.Ok()
+               ? ::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+                     static_cast</**/ ::emboss::test::AxisType>(
+                         emboss_reserved_local_subexpr_1.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::emboss::test::AxisType>());
 
       return emboss_reserved_local_subexpr_2;
     }
@@ -2488,9 +2568,10 @@ if (!parameters_initialized_) return false;
   ::emboss::support::Maybe<bool> has_axis_type_b() const;
 
  public:
-  typename ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 4>>
+  typename ::emboss::test::GenericAxisView<
+      typename Storage::template OffsetStorageType</**/ 0, 4>>
 
- axis_b() const;
+  axis_b() const;
   ::emboss::support::Maybe<bool> has_axis_b() const;
 
  public:
@@ -2499,21 +2580,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView() {}
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -2521,7 +2604,8 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+  IntrinsicSizeInBytes() {
     return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
@@ -2534,21 +2618,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
-    EmbossReservedDollarVirtualMaxSizeInBytesView(const EmbossReservedDollarVirtualMaxSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView(EmbossReservedDollarVirtualMaxSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(const EmbossReservedDollarVirtualMaxSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(EmbossReservedDollarVirtualMaxSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -2556,7 +2642,8 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
@@ -2569,21 +2656,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
-    EmbossReservedDollarVirtualMinSizeInBytesView(const EmbossReservedDollarVirtualMinSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView(EmbossReservedDollarVirtualMinSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(const EmbossReservedDollarVirtualMinSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(EmbossReservedDollarVirtualMinSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -2591,19 +2680,18 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
-
-
  private:
   Storage backing_;
   ::emboss::test::AxisType axis_type_a_parameter_;
-::emboss::test::AxisType axis_type_b_parameter_;
+  ::emboss::test::AxisType axis_type_b_parameter_;
   bool parameters_initialized_ = false;
 
   template <class OtherStorage>
@@ -2631,43 +2719,46 @@ inline GenericAxisPairView<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
         1, 0>>
-MakeAxisPairView(::emboss::test::AxisType axis_type_a_parameter, ::emboss::test::AxisType axis_type_b_parameter,  T &&emboss_reserved_local_arg) {
+MakeAxisPairView(::emboss::test::AxisType axis_type_a_parameter,
+                 ::emboss::test::AxisType axis_type_b_parameter,
+                 T&& emboss_reserved_local_arg) {
   return GenericAxisPairView<
       /**/ ::emboss::support::ContiguousBuffer<
-          typename ::std::remove_reference<decltype(
-              *::std::declval<T>()->data())>::type,
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
           1, 0>>(
-      ::std::forward</**/::emboss::test::AxisType>(axis_type_a_parameter),::std::forward</**/::emboss::test::AxisType>(axis_type_b_parameter), ::std::forward<T>(emboss_reserved_local_arg));
+      ::std::forward</**/ ::emboss::test::AxisType>(axis_type_a_parameter),
+      ::std::forward</**/ ::emboss::test::AxisType>(axis_type_b_parameter),
+      ::std::forward<T>(emboss_reserved_local_arg));
 }
 
 template <typename T>
 inline GenericAxisPairView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
-MakeAxisPairView(::emboss::test::AxisType axis_type_a_parameter, ::emboss::test::AxisType axis_type_b_parameter,  T *emboss_reserved_local_data,
+MakeAxisPairView(::emboss::test::AxisType axis_type_a_parameter,
+                 ::emboss::test::AxisType axis_type_b_parameter,
+                 T* emboss_reserved_local_data,
                  ::std::size_t emboss_reserved_local_size) {
   return GenericAxisPairView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
-      ::std::forward</**/::emboss::test::AxisType>(axis_type_a_parameter),::std::forward</**/::emboss::test::AxisType>(axis_type_b_parameter), emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      ::std::forward</**/ ::emboss::test::AxisType>(axis_type_a_parameter),
+      ::std::forward</**/ ::emboss::test::AxisType>(axis_type_b_parameter),
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
 template <typename T, ::std::size_t kAlignment>
 inline GenericAxisPairView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
-MakeAlignedAxisPairView(
-    ::emboss::test::AxisType axis_type_a_parameter, ::emboss::test::AxisType axis_type_b_parameter,  T *emboss_reserved_local_data,
-    ::std::size_t emboss_reserved_local_size) {
+MakeAlignedAxisPairView(::emboss::test::AxisType axis_type_a_parameter,
+                        ::emboss::test::AxisType axis_type_b_parameter,
+                        T* emboss_reserved_local_data,
+                        ::std::size_t emboss_reserved_local_size) {
   return GenericAxisPairView<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
-      ::std::forward</**/::emboss::test::AxisType>(axis_type_a_parameter),::std::forward</**/::emboss::test::AxisType>(axis_type_b_parameter), emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      ::std::forward</**/ ::emboss::test::AxisType>(axis_type_a_parameter),
+      ::std::forward</**/ ::emboss::test::AxisType>(axis_type_b_parameter),
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
-
-
-
-namespace AxesEnvelope {
-
-}  // namespace AxesEnvelope
-
+namespace AxesEnvelope {}  // namespace AxesEnvelope
 
 template <class View>
 struct EmbossReservedInternalIsGenericAxesEnvelopeView;
@@ -2676,49 +2767,39 @@ template <class Storage>
 class GenericAxesEnvelopeView final {
  public:
   GenericAxesEnvelopeView() : backing_() {}
-  explicit GenericAxesEnvelopeView(
-       Storage emboss_reserved_local_bytes)
-      : backing_(emboss_reserved_local_bytes) 
-         {}
+  explicit GenericAxesEnvelopeView(Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
 
   template <typename OtherStorage>
   GenericAxesEnvelopeView(
-      const GenericAxesEnvelopeView<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()}
-         {}
+      const GenericAxesEnvelopeView<OtherStorage>& emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
 
   template <typename Arg,
             typename = typename ::std::enable_if<
                 !EmbossReservedInternalIsGenericAxesEnvelopeView<
                     typename ::std::remove_cv<typename ::std::remove_reference<
                         Arg>::type>::type>::value>::type>
-  explicit GenericAxesEnvelopeView(
-       Arg &&emboss_reserved_local_arg)
-      : backing_(::std::forward<Arg>(
-            emboss_reserved_local_arg)) 
-         {}
+  explicit GenericAxesEnvelopeView(Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
   template <typename Arg0, typename Arg1, typename... Args>
-  explicit GenericAxesEnvelopeView(
-       Arg0 &&emboss_reserved_local_arg0,
-      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+  explicit GenericAxesEnvelopeView(Arg0&& emboss_reserved_local_arg0,
+                                   Arg1&& emboss_reserved_local_arg1,
+                                   Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
-                 ::std::forward<Args>(
-                     emboss_reserved_local_args)...) 
-         {}
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
 
   template <typename OtherStorage>
-  GenericAxesEnvelopeView<Storage> &operator=(
-      const GenericAxesEnvelopeView<OtherStorage> &emboss_reserved_local_other) {
+  GenericAxesEnvelopeView<Storage>& operator=(
+      const GenericAxesEnvelopeView<OtherStorage>&
+          emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
     return *this;
   }
 
-  
-
   bool Ok() const {
     if (!IsComplete()) return false;
-
 
     if (!has_axis_count().Known()) return false;
     if (has_axis_count().ValueOrDefault() && !axis_count().Ok()) return false;
@@ -2727,15 +2808,17 @@ class GenericAxesEnvelopeView final {
     if (has_axes().ValueOrDefault() && !axes().Ok()) return false;
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
 
     if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
 
     if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
-
-
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
 
     return true;
   }
@@ -2751,12 +2834,9 @@ class GenericAxesEnvelopeView final {
   }
   bool SizeIsKnown() const { return IntrinsicSizeInBytes().Ok(); }
 
-
-
   template <typename OtherStorage>
   bool Equals(
       GenericAxesEnvelopeView<OtherStorage> emboss_reserved_local_other) const {
-    
     if (!has_axis_count().Known()) return false;
     if (!emboss_reserved_local_other.has_axis_count().Known()) return false;
 
@@ -2771,8 +2851,6 @@ class GenericAxesEnvelopeView final {
         has_axis_count().ValueOrDefault() &&
         !axis_count().Equals(emboss_reserved_local_other.axis_count()))
       return false;
-
-
 
     if (!has_axes().Known()) return false;
     if (!emboss_reserved_local_other.has_axes().Known()) return false;
@@ -2789,12 +2867,11 @@ class GenericAxesEnvelopeView final {
         !axes().Equals(emboss_reserved_local_other.axes()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   bool UncheckedEquals(
       GenericAxesEnvelopeView<OtherStorage> emboss_reserved_local_other) const {
-    
     if (emboss_reserved_local_other.has_axis_count().ValueOr(false) &&
         !has_axis_count().ValueOr(false))
       return false;
@@ -2806,8 +2883,6 @@ class GenericAxesEnvelopeView final {
         has_axis_count().ValueOr(false) &&
         !axis_count().UncheckedEquals(emboss_reserved_local_other.axis_count()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_axes().ValueOr(false) &&
         !has_axes().ValueOr(false))
@@ -2821,7 +2896,7 @@ class GenericAxesEnvelopeView final {
         !axes().UncheckedEquals(emboss_reserved_local_other.axes()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   void UncheckedCopyFrom(
@@ -2841,13 +2916,14 @@ class GenericAxesEnvelopeView final {
   template <typename OtherStorage>
   bool TryToCopyFrom(
       GenericAxesEnvelopeView<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
 
   template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
     ::std::string emboss_reserved_local_brace;
     if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
                                       &emboss_reserved_local_brace))
@@ -2869,16 +2945,14 @@ class GenericAxesEnvelopeView final {
         return false;
       if (emboss_reserved_local_colon != ":") return false;
       if (emboss_reserved_local_name == "axis_count") {
-        if (!axis_count().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!axis_count().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "axes") {
-        if (!axes().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!axes().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
@@ -2890,7 +2964,7 @@ class GenericAxesEnvelopeView final {
 
   template <class Stream>
   void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
+      Stream* emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
     ::emboss::TextOutputOptions emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
@@ -2914,7 +2988,7 @@ class GenericAxesEnvelopeView final {
         }
         emboss_reserved_local_stream->Write("axis_count: ");
         axis_count().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                       emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -2944,7 +3018,7 @@ class GenericAxesEnvelopeView final {
         }
         emboss_reserved_local_stream->Write("axes: ");
         axes().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                 emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -2970,22 +3044,25 @@ class GenericAxesEnvelopeView final {
     }
   }
 
-
-
   static constexpr bool IsAggregate() { return true; }
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
 
- axis_count() const;
+  axis_count() const;
   ::emboss::support::Maybe<bool> has_axis_count() const;
 
  public:
-  typename ::emboss::test::GenericAxesView<typename Storage::template OffsetStorageType</**/0, 1>>
+  typename ::emboss::test::GenericAxesView<
+      typename Storage::template OffsetStorageType</**/ 0, 1>>
 
- axes() const;
+  axes() const;
   ::emboss::support::Maybe<bool> has_axes() const;
 
  public:
@@ -2994,15 +3071,17 @@ class GenericAxesEnvelopeView final {
     using ValueType = ::std::int32_t;
 
     explicit EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
-        const GenericAxesEnvelopeView &emboss_reserved_local_view)
+        const GenericAxesEnvelopeView& emboss_reserved_local_view)
         : view_(emboss_reserved_local_view) {}
     EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = delete;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
     ::std::int32_t Read() const {
@@ -3021,25 +3100,52 @@ class GenericAxesEnvelopeView final {
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
     static constexpr bool IsAggregate() { return false; }
 
-
-
    private:
     ::emboss::support::Maybe</**/ ::std::int32_t> MaybeRead() const {
       const auto emboss_reserved_local_subexpr_1 = view_.axis_count();
-      const auto emboss_reserved_local_subexpr_2 = (emboss_reserved_local_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_subexpr_3 = ::emboss::support::Product</**/::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)));
-      const auto emboss_reserved_local_subexpr_4 = ::emboss::support::Sum</**/::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)), emboss_reserved_local_subexpr_3);
-      const auto emboss_reserved_local_subexpr_5 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(::emboss::support::Maybe</**/bool>(true), emboss_reserved_local_subexpr_4, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_6 = ::emboss::support::Maximum</**/::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)), emboss_reserved_local_subexpr_5);
+      const auto emboss_reserved_local_subexpr_2 =
+          (emboss_reserved_local_subexpr_1.Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(
+                         emboss_reserved_local_subexpr_1.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>());
+      const auto emboss_reserved_local_subexpr_3 =
+          ::emboss::support::Product</**/ ::std::int32_t, ::std::int32_t,
+                                     ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(4LL)));
+      const auto emboss_reserved_local_subexpr_4 =
+          ::emboss::support::Sum</**/ ::std::int32_t, ::std::int32_t,
+                                 ::std::int32_t, ::std::int32_t>(
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(1LL)),
+              emboss_reserved_local_subexpr_3);
+      const auto emboss_reserved_local_subexpr_5 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              ::emboss::support::Maybe</**/ bool>(true),
+              emboss_reserved_local_subexpr_4,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_6 =
+          ::emboss::support::Maximum</**/ ::std::int32_t, ::std::int32_t,
+                                     ::std::int32_t, ::std::int32_t,
+                                     ::std::int32_t>(
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(1LL)),
+              emboss_reserved_local_subexpr_5);
 
       return emboss_reserved_local_subexpr_6;
     }
@@ -3052,7 +3158,8 @@ class GenericAxesEnvelopeView final {
 
     const GenericAxesEnvelopeView view_;
   };
-  EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() const;
+  EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes()
+      const;
   ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() const;
 
  public:
@@ -3061,21 +3168,23 @@ class GenericAxesEnvelopeView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
-    EmbossReservedDollarVirtualMaxSizeInBytesView(const EmbossReservedDollarVirtualMaxSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView(EmbossReservedDollarVirtualMaxSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(const EmbossReservedDollarVirtualMaxSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(EmbossReservedDollarVirtualMaxSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -3083,7 +3192,8 @@ class GenericAxesEnvelopeView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
@@ -3096,21 +3206,23 @@ class GenericAxesEnvelopeView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
-    EmbossReservedDollarVirtualMinSizeInBytesView(const EmbossReservedDollarVirtualMinSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView(EmbossReservedDollarVirtualMinSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(const EmbossReservedDollarVirtualMinSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(EmbossReservedDollarVirtualMinSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -3118,19 +3230,16 @@ class GenericAxesEnvelopeView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
-
-
  private:
   Storage backing_;
-  
-  
 
   template <class OtherStorage>
   friend class GenericAxesEnvelopeView;
@@ -3157,40 +3266,38 @@ inline GenericAxesEnvelopeView<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
         1, 0>>
-MakeAxesEnvelopeView( T &&emboss_reserved_local_arg) {
+MakeAxesEnvelopeView(T&& emboss_reserved_local_arg) {
   return GenericAxesEnvelopeView<
       /**/ ::emboss::support::ContiguousBuffer<
-          typename ::std::remove_reference<decltype(
-              *::std::declval<T>()->data())>::type,
-          1, 0>>(
-       ::std::forward<T>(emboss_reserved_local_arg));
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
 }
 
 template <typename T>
-inline GenericAxesEnvelopeView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
-MakeAxesEnvelopeView( T *emboss_reserved_local_data,
-                 ::std::size_t emboss_reserved_local_size) {
-  return GenericAxesEnvelopeView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+inline GenericAxesEnvelopeView<
+    /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeAxesEnvelopeView(T* emboss_reserved_local_data,
+                     ::std::size_t emboss_reserved_local_size) {
+  return GenericAxesEnvelopeView<
+      /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
 template <typename T, ::std::size_t kAlignment>
 inline GenericAxesEnvelopeView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
-MakeAlignedAxesEnvelopeView(
-     T *emboss_reserved_local_data,
-    ::std::size_t emboss_reserved_local_size) {
+MakeAlignedAxesEnvelopeView(T* emboss_reserved_local_data,
+                            ::std::size_t emboss_reserved_local_size) {
   return GenericAxesEnvelopeView<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 enum class AxisType : ::std::int64_t {
-  GENERIC = static_cast</**/::std::int32_t>(-1LL),
-  X_AXIS = static_cast</**/::std::int32_t>(1LL),
-  Y_AXIS = static_cast</**/::std::int32_t>(2LL),
-  Z_AXIS = static_cast</**/::std::int32_t>(3LL),
+  GENERIC = static_cast</**/ ::std::int32_t>(-1LL),
+  X_AXIS = static_cast</**/ ::std::int32_t>(1LL),
+  Y_AXIS = static_cast</**/ ::std::int32_t>(2LL),
+  Z_AXIS = static_cast</**/ ::std::int32_t>(3LL),
 
 };
 template <class Enum>
@@ -3199,8 +3306,8 @@ class EnumTraits;
 template <>
 class EnumTraits<AxisType> final {
  public:
-  static bool TryToGetEnumFromName(const char *emboss_reserved_local_name,
-                                   AxisType *emboss_reserved_local_result) {
+  static bool TryToGetEnumFromName(const char* emboss_reserved_local_name,
+                                   AxisType* emboss_reserved_local_result) {
     if (emboss_reserved_local_name == nullptr) return false;
     if (!strcmp("GENERIC", emboss_reserved_local_name)) {
       *emboss_reserved_local_result = AxisType::GENERIC;
@@ -3225,39 +3332,48 @@ class EnumTraits<AxisType> final {
     return false;
   }
 
-  static const char *TryToGetNameFromEnum(
+  static const char* TryToGetNameFromEnum(
       AxisType emboss_reserved_local_value) {
     switch (emboss_reserved_local_value) {
-      case AxisType::GENERIC: return "GENERIC";
+      case AxisType::GENERIC:
+        return "GENERIC";
 
-      case AxisType::X_AXIS: return "X_AXIS";
+      case AxisType::X_AXIS:
+        return "X_AXIS";
 
-      case AxisType::Y_AXIS: return "Y_AXIS";
+      case AxisType::Y_AXIS:
+        return "Y_AXIS";
 
-      case AxisType::Z_AXIS: return "Z_AXIS";
+      case AxisType::Z_AXIS:
+        return "Z_AXIS";
 
-      default: return nullptr;
+      default:
+        return nullptr;
     }
   }
 
   static bool EnumIsKnown(AxisType emboss_reserved_local_value) {
     switch (emboss_reserved_local_value) {
-      case AxisType::GENERIC: return true;
+      case AxisType::GENERIC:
+        return true;
 
-      case AxisType::X_AXIS: return true;
+      case AxisType::X_AXIS:
+        return true;
 
-      case AxisType::Y_AXIS: return true;
+      case AxisType::Y_AXIS:
+        return true;
 
-      case AxisType::Z_AXIS: return true;
+      case AxisType::Z_AXIS:
+        return true;
 
       default:
         return false;
     }
   }
 
-  static ::std::ostream &SendToOstream(::std::ostream &emboss_reserved_local_os,
+  static ::std::ostream& SendToOstream(::std::ostream& emboss_reserved_local_os,
                                        AxisType emboss_reserved_local_value) {
-    const char *emboss_reserved_local_name =
+    const char* emboss_reserved_local_name =
         TryToGetNameFromEnum(emboss_reserved_local_value);
     if (emboss_reserved_local_name == nullptr) {
       emboss_reserved_local_os
@@ -3271,13 +3387,13 @@ class EnumTraits<AxisType> final {
 };
 
 static inline bool TryToGetEnumFromName(
-    const char *emboss_reserved_local_name,
-    AxisType *emboss_reserved_local_result) {
+    const char* emboss_reserved_local_name,
+    AxisType* emboss_reserved_local_result) {
   return EnumTraits<AxisType>::TryToGetEnumFromName(
       emboss_reserved_local_name, emboss_reserved_local_result);
 }
 
-static inline const char *TryToGetNameFromEnum(
+static inline const char* TryToGetNameFromEnum(
     AxisType emboss_reserved_local_value) {
   return EnumTraits<AxisType>::TryToGetNameFromEnum(
       emboss_reserved_local_value);
@@ -3287,23 +3403,14 @@ static inline bool EnumIsKnown(AxisType emboss_reserved_local_value) {
   return EnumTraits<AxisType>::EnumIsKnown(emboss_reserved_local_value);
 }
 
-static inline ::std::ostream &operator<<(
-    ::std::ostream &emboss_reserved_local_os,
+static inline ::std::ostream& operator<<(
+    ::std::ostream& emboss_reserved_local_os,
     AxisType emboss_reserved_local_value) {
   return EnumTraits<AxisType>::SendToOstream(emboss_reserved_local_os,
                                              emboss_reserved_local_value);
 }
 
-
-
-
-
-
-
-namespace Axis {
-
-}  // namespace Axis
-
+namespace Axis {}  // namespace Axis
 
 template <class View>
 struct EmbossReservedInternalIsGenericAxisView;
@@ -3312,52 +3419,58 @@ template <class Storage>
 class GenericAxisView final {
  public:
   GenericAxisView() : backing_() {}
-  explicit GenericAxisView(
-      ::emboss::test::AxisType axis_type_parameter,  Storage emboss_reserved_local_bytes)
-      : backing_(emboss_reserved_local_bytes) , axis_type_parameter_(axis_type_parameter)
-        , parameters_initialized_(true) {}
+  explicit GenericAxisView(::emboss::test::AxisType axis_type_parameter,
+                           Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes),
+        axis_type_parameter_(axis_type_parameter),
+        parameters_initialized_(true) {}
 
   template <typename OtherStorage>
   GenericAxisView(
-      const GenericAxisView<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()}
-        , axis_type_parameter_(emboss_reserved_local_other.axis_type_parameter_)
-, parameters_initialized_(emboss_reserved_local_other.parameters_initialized_) {}
+      const GenericAxisView<OtherStorage>& emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()},
+        axis_type_parameter_(emboss_reserved_local_other.axis_type_parameter_),
+        parameters_initialized_(
+            emboss_reserved_local_other.parameters_initialized_) {}
 
-  template <typename Arg,
-            typename = typename ::std::enable_if<
-                !EmbossReservedInternalIsGenericAxisView<
-                    typename ::std::remove_cv<typename ::std::remove_reference<
-                        Arg>::type>::type>::value>::type>
-  explicit GenericAxisView(
-      ::emboss::test::AxisType axis_type_parameter,  Arg &&emboss_reserved_local_arg)
-      : backing_(::std::forward<Arg>(
-            emboss_reserved_local_arg)) , axis_type_parameter_(axis_type_parameter)
-        , parameters_initialized_(true) {}
+  template <
+      typename Arg,
+      typename = typename ::std::enable_if<
+          !EmbossReservedInternalIsGenericAxisView<typename ::std::remove_cv<
+              typename ::std::remove_reference<Arg>::type>::type>::value>::type>
+  explicit GenericAxisView(::emboss::test::AxisType axis_type_parameter,
+                           Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)),
+        axis_type_parameter_(axis_type_parameter),
+        parameters_initialized_(true) {}
   template <typename Arg0, typename Arg1, typename... Args>
-  explicit GenericAxisView(
-      ::emboss::test::AxisType axis_type_parameter,  Arg0 &&emboss_reserved_local_arg0,
-      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+  explicit GenericAxisView(::emboss::test::AxisType axis_type_parameter,
+                           Arg0&& emboss_reserved_local_arg0,
+                           Arg1&& emboss_reserved_local_arg1,
+                           Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
-                 ::std::forward<Args>(
-                     emboss_reserved_local_args)...) , axis_type_parameter_(axis_type_parameter)
-        , parameters_initialized_(true) {}
+                 ::std::forward<Args>(emboss_reserved_local_args)...),
+        axis_type_parameter_(axis_type_parameter),
+        parameters_initialized_(true) {}
 
   template <typename OtherStorage>
-  GenericAxisView<Storage> &operator=(
-      const GenericAxisView<OtherStorage> &emboss_reserved_local_other) {
+  GenericAxisView<Storage>& operator=(
+      const GenericAxisView<OtherStorage>& emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
     return *this;
   }
 
-  
-
   bool Ok() const {
     if (!IsComplete()) return false;
-if (!parameters_initialized_) return false;
-      const auto emboss_reserved_local_ok_subexpr_1 = axis_type();
-      const auto emboss_reserved_local_ok_subexpr_2 = (emboss_reserved_local_ok_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(emboss_reserved_local_ok_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::AxisType>());
+    if (!parameters_initialized_) return false;
+    const auto emboss_reserved_local_ok_subexpr_1 = axis_type();
+    const auto emboss_reserved_local_ok_subexpr_2 =
+        (emboss_reserved_local_ok_subexpr_1.Ok()
+             ? ::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+                   static_cast</**/ ::emboss::test::AxisType>(
+                       emboss_reserved_local_ok_subexpr_1.UncheckedRead()))
+             : ::emboss::support::Maybe</**/ ::emboss::test::AxisType>());
 
     if (!has_value().Known()) return false;
     if (has_value().ValueOrDefault() && !value().Ok()) return false;
@@ -3366,44 +3479,39 @@ if (!parameters_initialized_) return false;
     if (has_axis_type().ValueOrDefault() && !axis_type().Ok()) return false;
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
 
     if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
 
     if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
 
     {
-
-      const auto emboss_reserved_switch_discrim = emboss_reserved_local_ok_subexpr_2;
+      const auto emboss_reserved_switch_discrim =
+          emboss_reserved_local_ok_subexpr_2;
       if (!emboss_reserved_switch_discrim.Known()) return false;
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
-        case static_cast</**/::emboss::test::AxisType>(1):
+        case static_cast</**/ ::emboss::test::AxisType>(1):
           if (!x().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::emboss::test::AxisType>(2):
+        case static_cast</**/ ::emboss::test::AxisType>(2):
           if (!y().Ok()) return false;
           break;
 
-
-
-        case static_cast</**/::emboss::test::AxisType>(3):
+        case static_cast</**/ ::emboss::test::AxisType>(3):
           if (!z().Ok()) return false;
           break;
 
-
-
-
-        
-        default: break;
+        default:
+          break;
       }
     }
-
-
 
     return true;
   }
@@ -3417,31 +3525,28 @@ if (!parameters_initialized_) return false;
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
   }
-  static constexpr bool SizeIsKnown() {
-    return IntrinsicSizeInBytes().Ok();
-  }
-
+  static constexpr bool SizeIsKnown() { return IntrinsicSizeInBytes().Ok(); }
 
   template <typename OtherStorage>
-  bool Equals(
-      GenericAxisView<OtherStorage> emboss_reserved_local_other) const {
-    
+  bool Equals(GenericAxisView<OtherStorage> emboss_reserved_local_other) const {
     if (!has_axis_type_parameter().Known()) return false;
-    if (!emboss_reserved_local_other.has_axis_type_parameter().Known()) return false;
+    if (!emboss_reserved_local_other.has_axis_type_parameter().Known())
+      return false;
 
-    if (emboss_reserved_local_other.has_axis_type_parameter().ValueOrDefault() &&
+    if (emboss_reserved_local_other.has_axis_type_parameter()
+            .ValueOrDefault() &&
         !has_axis_type_parameter().ValueOrDefault())
       return false;
     if (has_axis_type_parameter().ValueOrDefault() &&
         !emboss_reserved_local_other.has_axis_type_parameter().ValueOrDefault())
       return false;
 
-    if (emboss_reserved_local_other.has_axis_type_parameter().ValueOrDefault() &&
+    if (emboss_reserved_local_other.has_axis_type_parameter()
+            .ValueOrDefault() &&
         has_axis_type_parameter().ValueOrDefault() &&
-        !axis_type_parameter().Equals(emboss_reserved_local_other.axis_type_parameter()))
+        !axis_type_parameter().Equals(
+            emboss_reserved_local_other.axis_type_parameter()))
       return false;
-
-
 
     if (!has_value().Known()) return false;
     if (!emboss_reserved_local_other.has_value().Known()) return false;
@@ -3458,8 +3563,6 @@ if (!parameters_initialized_) return false;
         !value().Equals(emboss_reserved_local_other.value()))
       return false;
 
-
-
     if (!has_x().Known()) return false;
     if (!emboss_reserved_local_other.has_x().Known()) return false;
 
@@ -3474,8 +3577,6 @@ if (!parameters_initialized_) return false;
         has_x().ValueOrDefault() &&
         !x().Equals(emboss_reserved_local_other.x()))
       return false;
-
-
 
     if (!has_y().Known()) return false;
     if (!emboss_reserved_local_other.has_y().Known()) return false;
@@ -3492,8 +3593,6 @@ if (!parameters_initialized_) return false;
         !y().Equals(emboss_reserved_local_other.y()))
       return false;
 
-
-
     if (!has_z().Known()) return false;
     if (!emboss_reserved_local_other.has_z().Known()) return false;
 
@@ -3509,12 +3608,11 @@ if (!parameters_initialized_) return false;
         !z().Equals(emboss_reserved_local_other.z()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   bool UncheckedEquals(
       GenericAxisView<OtherStorage> emboss_reserved_local_other) const {
-    
     if (emboss_reserved_local_other.has_axis_type_parameter().ValueOr(false) &&
         !has_axis_type_parameter().ValueOr(false))
       return false;
@@ -3524,10 +3622,9 @@ if (!parameters_initialized_) return false;
 
     if (emboss_reserved_local_other.has_axis_type_parameter().ValueOr(false) &&
         has_axis_type_parameter().ValueOr(false) &&
-        !axis_type_parameter().UncheckedEquals(emboss_reserved_local_other.axis_type_parameter()))
+        !axis_type_parameter().UncheckedEquals(
+            emboss_reserved_local_other.axis_type_parameter()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_value().ValueOr(false) &&
         !has_value().ValueOr(false))
@@ -3541,8 +3638,6 @@ if (!parameters_initialized_) return false;
         !value().UncheckedEquals(emboss_reserved_local_other.value()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_x().ValueOr(false) &&
         !has_x().ValueOr(false))
       return false;
@@ -3554,8 +3649,6 @@ if (!parameters_initialized_) return false;
         has_x().ValueOr(false) &&
         !x().UncheckedEquals(emboss_reserved_local_other.x()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_y().ValueOr(false) &&
         !has_y().ValueOr(false))
@@ -3569,8 +3662,6 @@ if (!parameters_initialized_) return false;
         !y().UncheckedEquals(emboss_reserved_local_other.y()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_z().ValueOr(false) &&
         !has_z().ValueOr(false))
       return false;
@@ -3583,7 +3674,7 @@ if (!parameters_initialized_) return false;
         !z().UncheckedEquals(emboss_reserved_local_other.z()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   void UncheckedCopyFrom(
@@ -3603,13 +3694,14 @@ if (!parameters_initialized_) return false;
   template <typename OtherStorage>
   bool TryToCopyFrom(
       GenericAxisView<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
 
   template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
     ::std::string emboss_reserved_local_brace;
     if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
                                       &emboss_reserved_local_brace))
@@ -3631,32 +3723,28 @@ if (!parameters_initialized_) return false;
         return false;
       if (emboss_reserved_local_colon != ":") return false;
       if (emboss_reserved_local_name == "value") {
-        if (!value().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!value().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "x") {
-        if (!x().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!x().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "y") {
-        if (!y().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!y().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "z") {
-        if (!z().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!z().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
@@ -3668,7 +3756,7 @@ if (!parameters_initialized_) return false;
 
   template <class Stream>
   void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
+      Stream* emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
     ::emboss::TextOutputOptions emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
@@ -3692,7 +3780,7 @@ if (!parameters_initialized_) return false;
         }
         emboss_reserved_local_stream->Write("value: ");
         value().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                  emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -3716,7 +3804,7 @@ if (!parameters_initialized_) return false;
             emboss_reserved_local_field_options.current_indent());
         emboss_reserved_local_stream->Write("# axis_type: ");
         axis_type().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                      emboss_reserved_local_field_options);
         emboss_reserved_local_stream->Write("\n");
       } else {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -3741,7 +3829,7 @@ if (!parameters_initialized_) return false;
         }
         emboss_reserved_local_stream->Write("x: ");
         x().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                              emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -3771,7 +3859,7 @@ if (!parameters_initialized_) return false;
         }
         emboss_reserved_local_stream->Write("y: ");
         y().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                              emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -3801,7 +3889,7 @@ if (!parameters_initialized_) return false;
         }
         emboss_reserved_local_stream->Write("z: ");
         z().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                              emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -3827,17 +3915,16 @@ if (!parameters_initialized_) return false;
     }
   }
 
-
-
   static constexpr bool IsAggregate() { return true; }
 
  private:
   constexpr ::emboss::support::MaybeConstantView</**/ ::emboss::test::AxisType>
   axis_type_parameter() const {
     return parameters_initialized_
-               ? ::emboss::support::MaybeConstantView</**/ ::emboss::test::AxisType>(
-                     axis_type_parameter_)
-               : ::emboss::support::MaybeConstantView</**/ ::emboss::test::AxisType>();
+               ? ::emboss::support::MaybeConstantView<
+                     /**/ ::emboss::test::AxisType>(axis_type_parameter_)
+               : ::emboss::support::MaybeConstantView<
+                     /**/ ::emboss::test::AxisType>();
   }
   constexpr ::emboss::support::Maybe<bool> has_axis_type_parameter() const {
     return ::emboss::support::Maybe<bool>(parameters_initialized_);
@@ -3845,10 +3932,14 @@ if (!parameters_initialized_) return false;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          32>>
 
- value() const;
+  value() const;
   ::emboss::support::Maybe<bool> has_value() const;
 
  public:
@@ -3857,15 +3948,17 @@ if (!parameters_initialized_) return false;
     using ValueType = ::emboss::test::AxisType;
 
     explicit EmbossReservedVirtualAxisTypeView(
-        const GenericAxisView &emboss_reserved_local_view)
+        const GenericAxisView& emboss_reserved_local_view)
         : view_(emboss_reserved_local_view) {}
     EmbossReservedVirtualAxisTypeView() = delete;
-    EmbossReservedVirtualAxisTypeView(const EmbossReservedVirtualAxisTypeView &) = default;
-    EmbossReservedVirtualAxisTypeView(EmbossReservedVirtualAxisTypeView &&) = default;
-    EmbossReservedVirtualAxisTypeView &operator=(const EmbossReservedVirtualAxisTypeView &) =
+    EmbossReservedVirtualAxisTypeView(
+        const EmbossReservedVirtualAxisTypeView&) = default;
+    EmbossReservedVirtualAxisTypeView(EmbossReservedVirtualAxisTypeView&&) =
         default;
-    EmbossReservedVirtualAxisTypeView &operator=(EmbossReservedVirtualAxisTypeView &&) =
-        default;
+    EmbossReservedVirtualAxisTypeView& operator=(
+        const EmbossReservedVirtualAxisTypeView&) = default;
+    EmbossReservedVirtualAxisTypeView& operator=(
+        EmbossReservedVirtualAxisTypeView&&) = default;
     ~EmbossReservedVirtualAxisTypeView() = default;
 
     ::emboss::test::AxisType Read() const {
@@ -3884,21 +3977,24 @@ if (!parameters_initialized_) return false;
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteEnumViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
     static constexpr bool IsAggregate() { return false; }
 
-
-
    private:
     ::emboss::support::Maybe</**/ ::emboss::test::AxisType> MaybeRead() const {
       const auto emboss_reserved_local_subexpr_1 = view_.axis_type_parameter();
-      const auto emboss_reserved_local_subexpr_2 = (emboss_reserved_local_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(emboss_reserved_local_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::AxisType>());
+      const auto emboss_reserved_local_subexpr_2 =
+          (emboss_reserved_local_subexpr_1.Ok()
+               ? ::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+                     static_cast</**/ ::emboss::test::AxisType>(
+                         emboss_reserved_local_subexpr_1.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::emboss::test::AxisType>());
 
       return emboss_reserved_local_subexpr_2;
     }
@@ -3916,26 +4012,38 @@ if (!parameters_initialized_) return false;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          32>>
 
- x() const;
+  x() const;
   ::emboss::support::Maybe<bool> has_x() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          32>>
 
- y() const;
+  y() const;
   ::emboss::support::Maybe<bool> has_y() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          32>>
 
- z() const;
+  z() const;
   ::emboss::support::Maybe<bool> has_z() const;
 
  public:
@@ -3944,21 +4052,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView() {}
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -3966,7 +4076,8 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+  IntrinsicSizeInBytes() {
     return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
@@ -3979,21 +4090,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
-    EmbossReservedDollarVirtualMaxSizeInBytesView(const EmbossReservedDollarVirtualMaxSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView(EmbossReservedDollarVirtualMaxSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(const EmbossReservedDollarVirtualMaxSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(EmbossReservedDollarVirtualMaxSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -4001,7 +4114,8 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
@@ -4014,21 +4128,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
-    EmbossReservedDollarVirtualMinSizeInBytesView(const EmbossReservedDollarVirtualMinSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView(EmbossReservedDollarVirtualMinSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(const EmbossReservedDollarVirtualMinSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(EmbossReservedDollarVirtualMinSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -4036,14 +4152,13 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
-
-
 
  private:
   Storage backing_;
@@ -4064,8 +4179,7 @@ struct EmbossReservedInternalIsGenericAxisView {
 };
 
 template <class Storage>
-struct EmbossReservedInternalIsGenericAxisView<
-    GenericAxisView<Storage>> {
+struct EmbossReservedInternalIsGenericAxisView<GenericAxisView<Storage>> {
   static constexpr const bool value = true;
 };
 
@@ -4075,42 +4189,40 @@ inline GenericAxisView<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
         1, 0>>
-MakeAxisView(::emboss::test::AxisType axis_type_parameter,  T &&emboss_reserved_local_arg) {
+MakeAxisView(::emboss::test::AxisType axis_type_parameter,
+             T&& emboss_reserved_local_arg) {
   return GenericAxisView<
       /**/ ::emboss::support::ContiguousBuffer<
-          typename ::std::remove_reference<decltype(
-              *::std::declval<T>()->data())>::type,
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
           1, 0>>(
-      ::std::forward</**/::emboss::test::AxisType>(axis_type_parameter), ::std::forward<T>(emboss_reserved_local_arg));
+      ::std::forward</**/ ::emboss::test::AxisType>(axis_type_parameter),
+      ::std::forward<T>(emboss_reserved_local_arg));
 }
 
 template <typename T>
 inline GenericAxisView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
-MakeAxisView(::emboss::test::AxisType axis_type_parameter,  T *emboss_reserved_local_data,
-                 ::std::size_t emboss_reserved_local_size) {
+MakeAxisView(::emboss::test::AxisType axis_type_parameter,
+             T* emboss_reserved_local_data,
+             ::std::size_t emboss_reserved_local_size) {
   return GenericAxisView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
-      ::std::forward</**/::emboss::test::AxisType>(axis_type_parameter), emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      ::std::forward</**/ ::emboss::test::AxisType>(axis_type_parameter),
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
 template <typename T, ::std::size_t kAlignment>
 inline GenericAxisView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
-MakeAlignedAxisView(
-    ::emboss::test::AxisType axis_type_parameter,  T *emboss_reserved_local_data,
-    ::std::size_t emboss_reserved_local_size) {
+MakeAlignedAxisView(::emboss::test::AxisType axis_type_parameter,
+                    T* emboss_reserved_local_data,
+                    ::std::size_t emboss_reserved_local_size) {
   return GenericAxisView<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
-      ::std::forward</**/::emboss::test::AxisType>(axis_type_parameter), emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      ::std::forward</**/ ::emboss::test::AxisType>(axis_type_parameter),
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
-
-
-namespace Config {
-
-}  // namespace Config
-
+namespace Config {}  // namespace Config
 
 template <class View>
 struct EmbossReservedInternalIsGenericConfigView;
@@ -4119,85 +4231,71 @@ template <class Storage>
 class GenericConfigView final {
  public:
   GenericConfigView() : backing_() {}
-  explicit GenericConfigView(
-       Storage emboss_reserved_local_bytes)
-      : backing_(emboss_reserved_local_bytes) 
-         {}
+  explicit GenericConfigView(Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
 
   template <typename OtherStorage>
   GenericConfigView(
-      const GenericConfigView<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()}
-         {}
+      const GenericConfigView<OtherStorage>& emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
 
-  template <typename Arg,
-            typename = typename ::std::enable_if<
-                !EmbossReservedInternalIsGenericConfigView<
-                    typename ::std::remove_cv<typename ::std::remove_reference<
-                        Arg>::type>::type>::value>::type>
-  explicit GenericConfigView(
-       Arg &&emboss_reserved_local_arg)
-      : backing_(::std::forward<Arg>(
-            emboss_reserved_local_arg)) 
-         {}
+  template <
+      typename Arg,
+      typename = typename ::std::enable_if<
+          !EmbossReservedInternalIsGenericConfigView<typename ::std::remove_cv<
+              typename ::std::remove_reference<Arg>::type>::type>::value>::type>
+  explicit GenericConfigView(Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
   template <typename Arg0, typename Arg1, typename... Args>
-  explicit GenericConfigView(
-       Arg0 &&emboss_reserved_local_arg0,
-      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+  explicit GenericConfigView(Arg0&& emboss_reserved_local_arg0,
+                             Arg1&& emboss_reserved_local_arg1,
+                             Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
-                 ::std::forward<Args>(
-                     emboss_reserved_local_args)...) 
-         {}
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
 
   template <typename OtherStorage>
-  GenericConfigView<Storage> &operator=(
-      const GenericConfigView<OtherStorage> &emboss_reserved_local_other) {
+  GenericConfigView<Storage>& operator=(
+      const GenericConfigView<OtherStorage>& emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
     return *this;
   }
 
-  
-
   bool Ok() const {
     if (!IsComplete()) return false;
-
 
     if (!has_power().Known()) return false;
     if (has_power().ValueOrDefault() && !power().Ok()) return false;
 
     if (!has_IntrinsicSizeInBits().Known()) return false;
-    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
+    if (has_IntrinsicSizeInBits().ValueOrDefault() &&
+        !IntrinsicSizeInBits().Ok())
+      return false;
 
     if (!has_MaxSizeInBits().Known()) return false;
-    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
+    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok())
+      return false;
 
     if (!has_MinSizeInBits().Known()) return false;
-    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
-
-
+    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok())
+      return false;
 
     return true;
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
     return backing_.Ok() && IntrinsicSizeInBits().Ok() &&
-           backing_.SizeInBits() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBits().UncheckedRead());
+           backing_.SizeInBits() >= static_cast</**/ ::std::size_t>(
+                                        IntrinsicSizeInBits().UncheckedRead());
   }
   static constexpr ::std::size_t SizeInBits() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBits().Read());
   }
-  static constexpr bool SizeIsKnown() {
-    return IntrinsicSizeInBits().Ok();
-  }
-
+  static constexpr bool SizeIsKnown() { return IntrinsicSizeInBits().Ok(); }
 
   template <typename OtherStorage>
   bool Equals(
       GenericConfigView<OtherStorage> emboss_reserved_local_other) const {
-    
     if (!has_power().Known()) return false;
     if (!emboss_reserved_local_other.has_power().Known()) return false;
 
@@ -4213,12 +4311,11 @@ class GenericConfigView final {
         !power().Equals(emboss_reserved_local_other.power()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   bool UncheckedEquals(
       GenericConfigView<OtherStorage> emboss_reserved_local_other) const {
-    
     if (emboss_reserved_local_other.has_power().ValueOr(false) &&
         !has_power().ValueOr(false))
       return false;
@@ -4231,7 +4328,7 @@ class GenericConfigView final {
         !power().UncheckedEquals(emboss_reserved_local_other.power()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   void UncheckedCopyFrom(
@@ -4244,20 +4341,20 @@ class GenericConfigView final {
   template <typename OtherStorage>
   void CopyFrom(
       GenericConfigView<OtherStorage> emboss_reserved_local_other) const {
-    backing_.CopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBits().Read());
+    backing_.CopyFrom(emboss_reserved_local_other.BackingStorage(),
+                      emboss_reserved_local_other.IntrinsicSizeInBits().Read());
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(
       GenericConfigView<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBits().Read());
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBits().Read());
   }
 
   template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
     ::std::string emboss_reserved_local_brace;
     if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
                                       &emboss_reserved_local_brace))
@@ -4279,8 +4376,7 @@ class GenericConfigView final {
         return false;
       if (emboss_reserved_local_colon != ":") return false;
       if (emboss_reserved_local_name == "power") {
-        if (!power().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!power().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
@@ -4292,7 +4388,7 @@ class GenericConfigView final {
 
   template <class Stream>
   void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
+      Stream* emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
     ::emboss::TextOutputOptions emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
@@ -4316,7 +4412,7 @@ class GenericConfigView final {
         }
         emboss_reserved_local_stream->Write("power: ");
         power().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                  emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -4342,16 +4438,15 @@ class GenericConfigView final {
     }
   }
 
-
-
   static constexpr bool IsAggregate() { return true; }
 
  public:
   typename ::emboss::prelude::FlagView<
-    /**/ ::emboss::support::FixedSizeViewParameters<1, ::emboss::support::AllValuesAreOk>,
-    typename Storage::template OffsetStorageType</**/0, 31>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          1, ::emboss::support::AllValuesAreOk>,
+      typename Storage::template OffsetStorageType</**/ 0, 31>>
 
- power() const;
+  power() const;
   ::emboss::support::Maybe<bool> has_power() const;
 
  public:
@@ -4360,21 +4455,23 @@ class GenericConfigView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualIntrinsicSizeInBitsView() {}
-    EmbossReservedDollarVirtualIntrinsicSizeInBitsView(const EmbossReservedDollarVirtualIntrinsicSizeInBitsView &) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBitsView(EmbossReservedDollarVirtualIntrinsicSizeInBitsView &&) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBitsView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBitsView &) =
-        default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBitsView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBitsView &&) =
-        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBitsView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBitsView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBitsView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBitsView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBitsView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBitsView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBitsView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBitsView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBitsView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -4382,7 +4479,8 @@ class GenericConfigView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBitsView IntrinsicSizeInBits() {
+  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBitsView
+  IntrinsicSizeInBits() {
     return EmbossReservedDollarVirtualIntrinsicSizeInBitsView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBits() {
@@ -4395,21 +4493,23 @@ class GenericConfigView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMaxSizeInBitsView() {}
-    EmbossReservedDollarVirtualMaxSizeInBitsView(const EmbossReservedDollarVirtualMaxSizeInBitsView &) = default;
-    EmbossReservedDollarVirtualMaxSizeInBitsView(EmbossReservedDollarVirtualMaxSizeInBitsView &&) = default;
-    EmbossReservedDollarVirtualMaxSizeInBitsView &operator=(const EmbossReservedDollarVirtualMaxSizeInBitsView &) =
-        default;
-    EmbossReservedDollarVirtualMaxSizeInBitsView &operator=(EmbossReservedDollarVirtualMaxSizeInBitsView &&) =
-        default;
+    EmbossReservedDollarVirtualMaxSizeInBitsView(
+        const EmbossReservedDollarVirtualMaxSizeInBitsView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBitsView(
+        EmbossReservedDollarVirtualMaxSizeInBitsView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBitsView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBitsView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBitsView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBitsView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBitsView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -4417,7 +4517,8 @@ class GenericConfigView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBitsView MaxSizeInBits() {
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBitsView
+  MaxSizeInBits() {
     return EmbossReservedDollarVirtualMaxSizeInBitsView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBits() {
@@ -4430,21 +4531,23 @@ class GenericConfigView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMinSizeInBitsView() {}
-    EmbossReservedDollarVirtualMinSizeInBitsView(const EmbossReservedDollarVirtualMinSizeInBitsView &) = default;
-    EmbossReservedDollarVirtualMinSizeInBitsView(EmbossReservedDollarVirtualMinSizeInBitsView &&) = default;
-    EmbossReservedDollarVirtualMinSizeInBitsView &operator=(const EmbossReservedDollarVirtualMinSizeInBitsView &) =
-        default;
-    EmbossReservedDollarVirtualMinSizeInBitsView &operator=(EmbossReservedDollarVirtualMinSizeInBitsView &&) =
-        default;
+    EmbossReservedDollarVirtualMinSizeInBitsView(
+        const EmbossReservedDollarVirtualMinSizeInBitsView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBitsView(
+        EmbossReservedDollarVirtualMinSizeInBitsView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBitsView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBitsView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBitsView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBitsView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBitsView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -4452,19 +4555,16 @@ class GenericConfigView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBitsView MinSizeInBits() {
+  static constexpr EmbossReservedDollarVirtualMinSizeInBitsView
+  MinSizeInBits() {
     return EmbossReservedDollarVirtualMinSizeInBitsView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBits() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
-
-
  private:
   Storage backing_;
-  
-  
 
   template <class OtherStorage>
   friend class GenericConfigView;
@@ -4480,8 +4580,7 @@ struct EmbossReservedInternalIsGenericConfigView {
 };
 
 template <class Storage>
-struct EmbossReservedInternalIsGenericConfigView<
-    GenericConfigView<Storage>> {
+struct EmbossReservedInternalIsGenericConfigView<GenericConfigView<Storage>> {
   static constexpr const bool value = true;
 };
 
@@ -4491,48 +4590,37 @@ inline GenericConfigView<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
         1, 0>>
-MakeConfigView( T &&emboss_reserved_local_arg) {
+MakeConfigView(T&& emboss_reserved_local_arg) {
   return GenericConfigView<
       /**/ ::emboss::support::ContiguousBuffer<
-          typename ::std::remove_reference<decltype(
-              *::std::declval<T>()->data())>::type,
-          1, 0>>(
-       ::std::forward<T>(emboss_reserved_local_arg));
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
 }
 
 template <typename T>
 inline GenericConfigView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
-MakeConfigView( T *emboss_reserved_local_data,
-                 ::std::size_t emboss_reserved_local_size) {
+MakeConfigView(T* emboss_reserved_local_data,
+               ::std::size_t emboss_reserved_local_size) {
   return GenericConfigView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
 template <typename T, ::std::size_t kAlignment>
 inline GenericConfigView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
-MakeAlignedConfigView(
-     T *emboss_reserved_local_data,
-    ::std::size_t emboss_reserved_local_size) {
+MakeAlignedConfigView(T* emboss_reserved_local_data,
+                      ::std::size_t emboss_reserved_local_size) {
   return GenericConfigView<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
-
-
-
-
 namespace ConfigVX {
-
-
 
 namespace EmbossReservedAnonymousField1 {
 
 }  // namespace EmbossReservedAnonymousField1
-
 
 template <class View>
 struct EmbossReservedInternalIsGenericEmbossReservedAnonymousField1View;
@@ -4542,84 +4630,75 @@ class GenericEmbossReservedAnonymousField1View final {
  public:
   GenericEmbossReservedAnonymousField1View() : backing_() {}
   explicit GenericEmbossReservedAnonymousField1View(
-       Storage emboss_reserved_local_bytes)
-      : backing_(emboss_reserved_local_bytes) 
-         {}
+      Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
 
   template <typename OtherStorage>
   GenericEmbossReservedAnonymousField1View(
-      const GenericEmbossReservedAnonymousField1View<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()}
-         {}
+      const GenericEmbossReservedAnonymousField1View<OtherStorage>&
+          emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
 
-  template <typename Arg,
-            typename = typename ::std::enable_if<
-                !EmbossReservedInternalIsGenericEmbossReservedAnonymousField1View<
-                    typename ::std::remove_cv<typename ::std::remove_reference<
-                        Arg>::type>::type>::value>::type>
+  template <
+      typename Arg,
+      typename = typename ::std::enable_if<
+          !EmbossReservedInternalIsGenericEmbossReservedAnonymousField1View<
+              typename ::std::remove_cv<typename ::std::remove_reference<
+                  Arg>::type>::type>::value>::type>
   explicit GenericEmbossReservedAnonymousField1View(
-       Arg &&emboss_reserved_local_arg)
-      : backing_(::std::forward<Arg>(
-            emboss_reserved_local_arg)) 
-         {}
+      Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
   template <typename Arg0, typename Arg1, typename... Args>
   explicit GenericEmbossReservedAnonymousField1View(
-       Arg0 &&emboss_reserved_local_arg0,
-      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+      Arg0&& emboss_reserved_local_arg0, Arg1&& emboss_reserved_local_arg1,
+      Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
-                 ::std::forward<Args>(
-                     emboss_reserved_local_args)...) 
-         {}
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
 
   template <typename OtherStorage>
-  GenericEmbossReservedAnonymousField1View<Storage> &operator=(
-      const GenericEmbossReservedAnonymousField1View<OtherStorage> &emboss_reserved_local_other) {
+  GenericEmbossReservedAnonymousField1View<Storage>& operator=(
+      const GenericEmbossReservedAnonymousField1View<OtherStorage>&
+          emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
     return *this;
   }
 
-  
-
   bool Ok() const {
     if (!IsComplete()) return false;
-
 
     if (!has_power().Known()) return false;
     if (has_power().ValueOrDefault() && !power().Ok()) return false;
 
     if (!has_IntrinsicSizeInBits().Known()) return false;
-    if (has_IntrinsicSizeInBits().ValueOrDefault() && !IntrinsicSizeInBits().Ok()) return false;
+    if (has_IntrinsicSizeInBits().ValueOrDefault() &&
+        !IntrinsicSizeInBits().Ok())
+      return false;
 
     if (!has_MaxSizeInBits().Known()) return false;
-    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok()) return false;
+    if (has_MaxSizeInBits().ValueOrDefault() && !MaxSizeInBits().Ok())
+      return false;
 
     if (!has_MinSizeInBits().Known()) return false;
-    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok()) return false;
-
-
+    if (has_MinSizeInBits().ValueOrDefault() && !MinSizeInBits().Ok())
+      return false;
 
     return true;
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
     return backing_.Ok() && IntrinsicSizeInBits().Ok() &&
-           backing_.SizeInBits() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBits().UncheckedRead());
+           backing_.SizeInBits() >= static_cast</**/ ::std::size_t>(
+                                        IntrinsicSizeInBits().UncheckedRead());
   }
   static constexpr ::std::size_t SizeInBits() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBits().Read());
   }
-  static constexpr bool SizeIsKnown() {
-    return IntrinsicSizeInBits().Ok();
-  }
-
+  static constexpr bool SizeIsKnown() { return IntrinsicSizeInBits().Ok(); }
 
   template <typename OtherStorage>
-  bool Equals(
-      GenericEmbossReservedAnonymousField1View<OtherStorage> emboss_reserved_local_other) const {
-    
+  bool Equals(GenericEmbossReservedAnonymousField1View<OtherStorage>
+                  emboss_reserved_local_other) const {
     if (!has_power().Known()) return false;
     if (!emboss_reserved_local_other.has_power().Known()) return false;
 
@@ -4635,12 +4714,11 @@ class GenericEmbossReservedAnonymousField1View final {
         !power().Equals(emboss_reserved_local_other.power()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
-  bool UncheckedEquals(
-      GenericEmbossReservedAnonymousField1View<OtherStorage> emboss_reserved_local_other) const {
-    
+  bool UncheckedEquals(GenericEmbossReservedAnonymousField1View<OtherStorage>
+                           emboss_reserved_local_other) const {
     if (emboss_reserved_local_other.has_power().ValueOr(false) &&
         !has_power().ValueOr(false))
       return false;
@@ -4653,33 +4731,33 @@ class GenericEmbossReservedAnonymousField1View final {
         !power().UncheckedEquals(emboss_reserved_local_other.power()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
-  void UncheckedCopyFrom(
-      GenericEmbossReservedAnonymousField1View<OtherStorage> emboss_reserved_local_other) const {
+  void UncheckedCopyFrom(GenericEmbossReservedAnonymousField1View<OtherStorage>
+                             emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
         emboss_reserved_local_other.IntrinsicSizeInBits().UncheckedRead());
   }
 
   template <typename OtherStorage>
-  void CopyFrom(
-      GenericEmbossReservedAnonymousField1View<OtherStorage> emboss_reserved_local_other) const {
-    backing_.CopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBits().Read());
+  void CopyFrom(GenericEmbossReservedAnonymousField1View<OtherStorage>
+                    emboss_reserved_local_other) const {
+    backing_.CopyFrom(emboss_reserved_local_other.BackingStorage(),
+                      emboss_reserved_local_other.IntrinsicSizeInBits().Read());
   }
   template <typename OtherStorage>
-  bool TryToCopyFrom(
-      GenericEmbossReservedAnonymousField1View<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBits().Read());
+  bool TryToCopyFrom(GenericEmbossReservedAnonymousField1View<OtherStorage>
+                         emboss_reserved_local_other) const {
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBits().Read());
   }
 
   template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
     ::std::string emboss_reserved_local_brace;
     if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
                                       &emboss_reserved_local_brace))
@@ -4701,8 +4779,7 @@ class GenericEmbossReservedAnonymousField1View final {
         return false;
       if (emboss_reserved_local_colon != ":") return false;
       if (emboss_reserved_local_name == "power") {
-        if (!power().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!power().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
@@ -4714,7 +4791,7 @@ class GenericEmbossReservedAnonymousField1View final {
 
   template <class Stream>
   void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
+      Stream* emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
     ::emboss::TextOutputOptions emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
@@ -4738,7 +4815,7 @@ class GenericEmbossReservedAnonymousField1View final {
         }
         emboss_reserved_local_stream->Write("power: ");
         power().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                  emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -4764,16 +4841,15 @@ class GenericEmbossReservedAnonymousField1View final {
     }
   }
 
-
-
   static constexpr bool IsAggregate() { return true; }
 
  public:
   typename ::emboss::prelude::FlagView<
-    /**/ ::emboss::support::FixedSizeViewParameters<1, ::emboss::support::AllValuesAreOk>,
-    typename Storage::template OffsetStorageType</**/0, 31>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          1, ::emboss::support::AllValuesAreOk>,
+      typename Storage::template OffsetStorageType</**/ 0, 31>>
 
- power() const;
+  power() const;
   ::emboss::support::Maybe<bool> has_power() const;
 
  public:
@@ -4782,21 +4858,23 @@ class GenericEmbossReservedAnonymousField1View final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualIntrinsicSizeInBitsView() {}
-    EmbossReservedDollarVirtualIntrinsicSizeInBitsView(const EmbossReservedDollarVirtualIntrinsicSizeInBitsView &) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBitsView(EmbossReservedDollarVirtualIntrinsicSizeInBitsView &&) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBitsView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBitsView &) =
-        default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBitsView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBitsView &&) =
-        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBitsView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBitsView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBitsView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBitsView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBitsView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBitsView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBitsView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBitsView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBitsView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -4804,7 +4882,8 @@ class GenericEmbossReservedAnonymousField1View final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBitsView IntrinsicSizeInBits() {
+  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBitsView
+  IntrinsicSizeInBits() {
     return EmbossReservedDollarVirtualIntrinsicSizeInBitsView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBits() {
@@ -4817,21 +4896,23 @@ class GenericEmbossReservedAnonymousField1View final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMaxSizeInBitsView() {}
-    EmbossReservedDollarVirtualMaxSizeInBitsView(const EmbossReservedDollarVirtualMaxSizeInBitsView &) = default;
-    EmbossReservedDollarVirtualMaxSizeInBitsView(EmbossReservedDollarVirtualMaxSizeInBitsView &&) = default;
-    EmbossReservedDollarVirtualMaxSizeInBitsView &operator=(const EmbossReservedDollarVirtualMaxSizeInBitsView &) =
-        default;
-    EmbossReservedDollarVirtualMaxSizeInBitsView &operator=(EmbossReservedDollarVirtualMaxSizeInBitsView &&) =
-        default;
+    EmbossReservedDollarVirtualMaxSizeInBitsView(
+        const EmbossReservedDollarVirtualMaxSizeInBitsView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBitsView(
+        EmbossReservedDollarVirtualMaxSizeInBitsView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBitsView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBitsView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBitsView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBitsView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBitsView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -4839,7 +4920,8 @@ class GenericEmbossReservedAnonymousField1View final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBitsView MaxSizeInBits() {
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBitsView
+  MaxSizeInBits() {
     return EmbossReservedDollarVirtualMaxSizeInBitsView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBits() {
@@ -4852,21 +4934,23 @@ class GenericEmbossReservedAnonymousField1View final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMinSizeInBitsView() {}
-    EmbossReservedDollarVirtualMinSizeInBitsView(const EmbossReservedDollarVirtualMinSizeInBitsView &) = default;
-    EmbossReservedDollarVirtualMinSizeInBitsView(EmbossReservedDollarVirtualMinSizeInBitsView &&) = default;
-    EmbossReservedDollarVirtualMinSizeInBitsView &operator=(const EmbossReservedDollarVirtualMinSizeInBitsView &) =
-        default;
-    EmbossReservedDollarVirtualMinSizeInBitsView &operator=(EmbossReservedDollarVirtualMinSizeInBitsView &&) =
-        default;
+    EmbossReservedDollarVirtualMinSizeInBitsView(
+        const EmbossReservedDollarVirtualMinSizeInBitsView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBitsView(
+        EmbossReservedDollarVirtualMinSizeInBitsView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBitsView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBitsView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBitsView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBitsView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBitsView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -4874,27 +4958,26 @@ class GenericEmbossReservedAnonymousField1View final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBitsView MinSizeInBits() {
+  static constexpr EmbossReservedDollarVirtualMinSizeInBitsView
+  MinSizeInBits() {
     return EmbossReservedDollarVirtualMinSizeInBitsView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBits() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
-
-
  private:
   Storage backing_;
-  
-  
 
   template <class OtherStorage>
   friend class GenericEmbossReservedAnonymousField1View;
 };
 using EmbossReservedAnonymousField1View =
-    GenericEmbossReservedAnonymousField1View</**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+    GenericEmbossReservedAnonymousField1View<
+        /**/ ::emboss::support::ReadOnlyContiguousBuffer>;
 using EmbossReservedAnonymousField1Writer =
-    GenericEmbossReservedAnonymousField1View</**/ ::emboss::support::ReadWriteContiguousBuffer>;
+    GenericEmbossReservedAnonymousField1View<
+        /**/ ::emboss::support::ReadWriteContiguousBuffer>;
 
 template <class View>
 struct EmbossReservedInternalIsGenericEmbossReservedAnonymousField1View {
@@ -4913,38 +4996,35 @@ inline GenericEmbossReservedAnonymousField1View<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
         1, 0>>
-MakeEmbossReservedAnonymousField1View( T &&emboss_reserved_local_arg) {
+MakeEmbossReservedAnonymousField1View(T&& emboss_reserved_local_arg) {
   return GenericEmbossReservedAnonymousField1View<
       /**/ ::emboss::support::ContiguousBuffer<
-          typename ::std::remove_reference<decltype(
-              *::std::declval<T>()->data())>::type,
-          1, 0>>(
-       ::std::forward<T>(emboss_reserved_local_arg));
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
 }
 
 template <typename T>
-inline GenericEmbossReservedAnonymousField1View</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
-MakeEmbossReservedAnonymousField1View( T *emboss_reserved_local_data,
-                 ::std::size_t emboss_reserved_local_size) {
-  return GenericEmbossReservedAnonymousField1View</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+inline GenericEmbossReservedAnonymousField1View<
+    /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeEmbossReservedAnonymousField1View(
+    T* emboss_reserved_local_data, ::std::size_t emboss_reserved_local_size) {
+  return GenericEmbossReservedAnonymousField1View<
+      /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
 template <typename T, ::std::size_t kAlignment>
 inline GenericEmbossReservedAnonymousField1View<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
 MakeAlignedEmbossReservedAnonymousField1View(
-     T *emboss_reserved_local_data,
-    ::std::size_t emboss_reserved_local_size) {
+    T* emboss_reserved_local_data, ::std::size_t emboss_reserved_local_size) {
   return GenericEmbossReservedAnonymousField1View<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
 }  // namespace ConfigVX
-
 
 template <class View>
 struct EmbossReservedInternalIsGenericConfigVXView;
@@ -4953,69 +5033,62 @@ template <class Storage>
 class GenericConfigVXView final {
  public:
   GenericConfigVXView() : backing_() {}
-  explicit GenericConfigVXView(
-       Storage emboss_reserved_local_bytes)
-      : backing_(emboss_reserved_local_bytes) 
-         {}
+  explicit GenericConfigVXView(Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
 
   template <typename OtherStorage>
   GenericConfigVXView(
-      const GenericConfigVXView<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()}
-         {}
+      const GenericConfigVXView<OtherStorage>& emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
 
   template <typename Arg,
             typename = typename ::std::enable_if<
                 !EmbossReservedInternalIsGenericConfigVXView<
                     typename ::std::remove_cv<typename ::std::remove_reference<
                         Arg>::type>::type>::value>::type>
-  explicit GenericConfigVXView(
-       Arg &&emboss_reserved_local_arg)
-      : backing_(::std::forward<Arg>(
-            emboss_reserved_local_arg)) 
-         {}
+  explicit GenericConfigVXView(Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
   template <typename Arg0, typename Arg1, typename... Args>
-  explicit GenericConfigVXView(
-       Arg0 &&emboss_reserved_local_arg0,
-      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+  explicit GenericConfigVXView(Arg0&& emboss_reserved_local_arg0,
+                               Arg1&& emboss_reserved_local_arg1,
+                               Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
-                 ::std::forward<Args>(
-                     emboss_reserved_local_args)...) 
-         {}
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
 
   template <typename OtherStorage>
-  GenericConfigVXView<Storage> &operator=(
-      const GenericConfigVXView<OtherStorage> &emboss_reserved_local_other) {
+  GenericConfigVXView<Storage>& operator=(
+      const GenericConfigVXView<OtherStorage>& emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
     return *this;
   }
 
-  
-
   bool Ok() const {
     if (!IsComplete()) return false;
 
-
     if (!has_emboss_reserved_anonymous_field_1().Known()) return false;
-    if (has_emboss_reserved_anonymous_field_1().ValueOrDefault() && !emboss_reserved_anonymous_field_1().Ok()) return false;
+    if (has_emboss_reserved_anonymous_field_1().ValueOrDefault() &&
+        !emboss_reserved_anonymous_field_1().Ok())
+      return false;
 
     if (!has_gain().Known()) return false;
     if (has_gain().ValueOrDefault() && !gain().Ok()) return false;
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
 
     if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
 
     if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
 
     if (!has_power().Known()) return false;
     if (has_power().ValueOrDefault() && !power().Ok()) return false;
-
-
 
     return true;
   }
@@ -5029,31 +5102,31 @@ class GenericConfigVXView final {
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
   }
-  static constexpr bool SizeIsKnown() {
-    return IntrinsicSizeInBytes().Ok();
-  }
-
+  static constexpr bool SizeIsKnown() { return IntrinsicSizeInBytes().Ok(); }
 
   template <typename OtherStorage>
   bool Equals(
       GenericConfigVXView<OtherStorage> emboss_reserved_local_other) const {
-    
     if (!has_emboss_reserved_anonymous_field_1().Known()) return false;
-    if (!emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1().Known()) return false;
+    if (!emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1()
+             .Known())
+      return false;
 
-    if (emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1().ValueOrDefault() &&
+    if (emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1()
+            .ValueOrDefault() &&
         !has_emboss_reserved_anonymous_field_1().ValueOrDefault())
       return false;
     if (has_emboss_reserved_anonymous_field_1().ValueOrDefault() &&
-        !emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1().ValueOrDefault())
+        !emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1()
+             .ValueOrDefault())
       return false;
 
-    if (emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1().ValueOrDefault() &&
+    if (emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1()
+            .ValueOrDefault() &&
         has_emboss_reserved_anonymous_field_1().ValueOrDefault() &&
-        !emboss_reserved_anonymous_field_1().Equals(emboss_reserved_local_other.emboss_reserved_anonymous_field_1()))
+        !emboss_reserved_anonymous_field_1().Equals(
+            emboss_reserved_local_other.emboss_reserved_anonymous_field_1()))
       return false;
-
-
 
     if (!has_gain().Known()) return false;
     if (!emboss_reserved_local_other.has_gain().Known()) return false;
@@ -5070,25 +5143,26 @@ class GenericConfigVXView final {
         !gain().Equals(emboss_reserved_local_other.gain()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   bool UncheckedEquals(
       GenericConfigVXView<OtherStorage> emboss_reserved_local_other) const {
-    
-    if (emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1().ValueOr(false) &&
+    if (emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1()
+            .ValueOr(false) &&
         !has_emboss_reserved_anonymous_field_1().ValueOr(false))
       return false;
     if (has_emboss_reserved_anonymous_field_1().ValueOr(false) &&
-        !emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1().ValueOr(false))
+        !emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1()
+             .ValueOr(false))
       return false;
 
-    if (emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1().ValueOr(false) &&
+    if (emboss_reserved_local_other.has_emboss_reserved_anonymous_field_1()
+            .ValueOr(false) &&
         has_emboss_reserved_anonymous_field_1().ValueOr(false) &&
-        !emboss_reserved_anonymous_field_1().UncheckedEquals(emboss_reserved_local_other.emboss_reserved_anonymous_field_1()))
+        !emboss_reserved_anonymous_field_1().UncheckedEquals(
+            emboss_reserved_local_other.emboss_reserved_anonymous_field_1()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_gain().ValueOr(false) &&
         !has_gain().ValueOr(false))
@@ -5102,7 +5176,7 @@ class GenericConfigVXView final {
         !gain().UncheckedEquals(emboss_reserved_local_other.gain()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   void UncheckedCopyFrom(
@@ -5122,13 +5196,14 @@ class GenericConfigVXView final {
   template <typename OtherStorage>
   bool TryToCopyFrom(
       GenericConfigVXView<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
 
   template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
     ::std::string emboss_reserved_local_brace;
     if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
                                       &emboss_reserved_local_brace))
@@ -5150,16 +5225,14 @@ class GenericConfigVXView final {
         return false;
       if (emboss_reserved_local_colon != ":") return false;
       if (emboss_reserved_local_name == "power") {
-        if (!power().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!power().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "gain") {
-        if (!gain().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!gain().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
@@ -5171,7 +5244,7 @@ class GenericConfigVXView final {
 
   template <class Stream>
   void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
+      Stream* emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
     ::emboss::TextOutputOptions emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
@@ -5195,7 +5268,7 @@ class GenericConfigVXView final {
         }
         emboss_reserved_local_stream->Write("power: ");
         power().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                  emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5225,7 +5298,7 @@ class GenericConfigVXView final {
         }
         emboss_reserved_local_stream->Write("gain: ");
         gain().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                 emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5251,29 +5324,37 @@ class GenericConfigVXView final {
     }
   }
 
-
-
   static constexpr bool IsAggregate() { return true; }
 
  private:
-  typename ::emboss::test::ConfigVX::GenericEmbossReservedAnonymousField1View<typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+  typename ::emboss::test::ConfigVX::GenericEmbossReservedAnonymousField1View<
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          32>>
 
- emboss_reserved_anonymous_field_1() const;
+  emboss_reserved_anonymous_field_1() const;
   ::emboss::support::Maybe<bool> has_emboss_reserved_anonymous_field_1() const;
 
  public:
-  auto power() const -> decltype(this->emboss_reserved_anonymous_field_1().power()) {
-   return has_power().ValueOrDefault() ? emboss_reserved_anonymous_field_1().power()
-                                          : decltype(this->emboss_reserved_anonymous_field_1().power())();
+  auto power() const
+      -> decltype(this->emboss_reserved_anonymous_field_1().power()) {
+    return has_power().ValueOrDefault()
+               ? emboss_reserved_anonymous_field_1().power()
+               : decltype(this->emboss_reserved_anonymous_field_1().power())();
   }
   ::emboss::support::Maybe<bool> has_power() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
- gain() const;
+  gain() const;
   ::emboss::support::Maybe<bool> has_gain() const;
 
  public:
@@ -5282,21 +5363,23 @@ class GenericConfigVXView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView() {}
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -5304,7 +5387,8 @@ class GenericConfigVXView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+  IntrinsicSizeInBytes() {
     return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
@@ -5317,21 +5401,23 @@ class GenericConfigVXView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
-    EmbossReservedDollarVirtualMaxSizeInBytesView(const EmbossReservedDollarVirtualMaxSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView(EmbossReservedDollarVirtualMaxSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(const EmbossReservedDollarVirtualMaxSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(EmbossReservedDollarVirtualMaxSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -5339,7 +5425,8 @@ class GenericConfigVXView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
@@ -5352,21 +5439,23 @@ class GenericConfigVXView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
-    EmbossReservedDollarVirtualMinSizeInBytesView(const EmbossReservedDollarVirtualMinSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView(EmbossReservedDollarVirtualMinSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(const EmbossReservedDollarVirtualMinSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(EmbossReservedDollarVirtualMinSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -5374,19 +5463,16 @@ class GenericConfigVXView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
-
-
  private:
   Storage backing_;
-  
-  
 
   template <class OtherStorage>
   friend class GenericConfigVXView;
@@ -5413,42 +5499,33 @@ inline GenericConfigVXView<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
         1, 0>>
-MakeConfigVXView( T &&emboss_reserved_local_arg) {
+MakeConfigVXView(T&& emboss_reserved_local_arg) {
   return GenericConfigVXView<
       /**/ ::emboss::support::ContiguousBuffer<
-          typename ::std::remove_reference<decltype(
-              *::std::declval<T>()->data())>::type,
-          1, 0>>(
-       ::std::forward<T>(emboss_reserved_local_arg));
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
 }
 
 template <typename T>
 inline GenericConfigVXView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
-MakeConfigVXView( T *emboss_reserved_local_data,
+MakeConfigVXView(T* emboss_reserved_local_data,
                  ::std::size_t emboss_reserved_local_size) {
   return GenericConfigVXView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
 template <typename T, ::std::size_t kAlignment>
 inline GenericConfigVXView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
-MakeAlignedConfigVXView(
-     T *emboss_reserved_local_data,
-    ::std::size_t emboss_reserved_local_size) {
+MakeAlignedConfigVXView(T* emboss_reserved_local_data,
+                        ::std::size_t emboss_reserved_local_size) {
   return GenericConfigVXView<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
-
-
-namespace StructWithUnusedParameter {
-
-}  // namespace StructWithUnusedParameter
-
+namespace StructWithUnusedParameter {}  // namespace StructWithUnusedParameter
 
 template <class View>
 struct EmbossReservedInternalIsGenericStructWithUnusedParameterView;
@@ -5458,63 +5535,67 @@ class GenericStructWithUnusedParameterView final {
  public:
   GenericStructWithUnusedParameterView() : backing_() {}
   explicit GenericStructWithUnusedParameterView(
-      ::std::int32_t x,  Storage emboss_reserved_local_bytes)
-      : backing_(emboss_reserved_local_bytes) , x_(x)
-        , parameters_initialized_(true) {}
+      ::std::int32_t x, Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes),
+        x_(x),
+        parameters_initialized_(true) {}
 
   template <typename OtherStorage>
   GenericStructWithUnusedParameterView(
-      const GenericStructWithUnusedParameterView<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()}
-        , x_(emboss_reserved_local_other.x_)
-, parameters_initialized_(emboss_reserved_local_other.parameters_initialized_) {}
+      const GenericStructWithUnusedParameterView<OtherStorage>&
+          emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()},
+        x_(emboss_reserved_local_other.x_),
+        parameters_initialized_(
+            emboss_reserved_local_other.parameters_initialized_) {}
 
   template <typename Arg,
             typename = typename ::std::enable_if<
                 !EmbossReservedInternalIsGenericStructWithUnusedParameterView<
                     typename ::std::remove_cv<typename ::std::remove_reference<
                         Arg>::type>::type>::value>::type>
-  explicit GenericStructWithUnusedParameterView(
-      ::std::int32_t x,  Arg &&emboss_reserved_local_arg)
-      : backing_(::std::forward<Arg>(
-            emboss_reserved_local_arg)) , x_(x)
-        , parameters_initialized_(true) {}
+  explicit GenericStructWithUnusedParameterView(::std::int32_t x,
+                                                Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)),
+        x_(x),
+        parameters_initialized_(true) {}
   template <typename Arg0, typename Arg1, typename... Args>
   explicit GenericStructWithUnusedParameterView(
-      ::std::int32_t x,  Arg0 &&emboss_reserved_local_arg0,
-      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+      ::std::int32_t x, Arg0&& emboss_reserved_local_arg0,
+      Arg1&& emboss_reserved_local_arg1, Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
-                 ::std::forward<Args>(
-                     emboss_reserved_local_args)...) , x_(x)
-        , parameters_initialized_(true) {}
+                 ::std::forward<Args>(emboss_reserved_local_args)...),
+        x_(x),
+        parameters_initialized_(true) {}
 
   template <typename OtherStorage>
-  GenericStructWithUnusedParameterView<Storage> &operator=(
-      const GenericStructWithUnusedParameterView<OtherStorage> &emboss_reserved_local_other) {
+  GenericStructWithUnusedParameterView<Storage>& operator=(
+      const GenericStructWithUnusedParameterView<OtherStorage>&
+          emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
     return *this;
   }
 
-  
-
   bool Ok() const {
     if (!IsComplete()) return false;
-if (!parameters_initialized_) return false;
+    if (!parameters_initialized_) return false;
 
     if (!has_y().Known()) return false;
     if (has_y().ValueOrDefault() && !y().Ok()) return false;
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
 
     if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
 
     if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
-
-
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
 
     return true;
   }
@@ -5528,15 +5609,11 @@ if (!parameters_initialized_) return false;
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
   }
-  static constexpr bool SizeIsKnown() {
-    return IntrinsicSizeInBytes().Ok();
-  }
-
+  static constexpr bool SizeIsKnown() { return IntrinsicSizeInBytes().Ok(); }
 
   template <typename OtherStorage>
-  bool Equals(
-      GenericStructWithUnusedParameterView<OtherStorage> emboss_reserved_local_other) const {
-    
+  bool Equals(GenericStructWithUnusedParameterView<OtherStorage>
+                  emboss_reserved_local_other) const {
     if (!has_x().Known()) return false;
     if (!emboss_reserved_local_other.has_x().Known()) return false;
 
@@ -5551,8 +5628,6 @@ if (!parameters_initialized_) return false;
         has_x().ValueOrDefault() &&
         !x().Equals(emboss_reserved_local_other.x()))
       return false;
-
-
 
     if (!has_y().Known()) return false;
     if (!emboss_reserved_local_other.has_y().Known()) return false;
@@ -5569,12 +5644,11 @@ if (!parameters_initialized_) return false;
         !y().Equals(emboss_reserved_local_other.y()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
-  bool UncheckedEquals(
-      GenericStructWithUnusedParameterView<OtherStorage> emboss_reserved_local_other) const {
-    
+  bool UncheckedEquals(GenericStructWithUnusedParameterView<OtherStorage>
+                           emboss_reserved_local_other) const {
     if (emboss_reserved_local_other.has_x().ValueOr(false) &&
         !has_x().ValueOr(false))
       return false;
@@ -5586,8 +5660,6 @@ if (!parameters_initialized_) return false;
         has_x().ValueOr(false) &&
         !x().UncheckedEquals(emboss_reserved_local_other.x()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_y().ValueOr(false) &&
         !has_y().ValueOr(false))
@@ -5601,33 +5673,34 @@ if (!parameters_initialized_) return false;
         !y().UncheckedEquals(emboss_reserved_local_other.y()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
-  void UncheckedCopyFrom(
-      GenericStructWithUnusedParameterView<OtherStorage> emboss_reserved_local_other) const {
+  void UncheckedCopyFrom(GenericStructWithUnusedParameterView<OtherStorage>
+                             emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
         emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
   }
 
   template <typename OtherStorage>
-  void CopyFrom(
-      GenericStructWithUnusedParameterView<OtherStorage> emboss_reserved_local_other) const {
+  void CopyFrom(GenericStructWithUnusedParameterView<OtherStorage>
+                    emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
         emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
   template <typename OtherStorage>
-  bool TryToCopyFrom(
-      GenericStructWithUnusedParameterView<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  bool TryToCopyFrom(GenericStructWithUnusedParameterView<OtherStorage>
+                         emboss_reserved_local_other) const {
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
 
   template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
     ::std::string emboss_reserved_local_brace;
     if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
                                       &emboss_reserved_local_brace))
@@ -5649,8 +5722,7 @@ if (!parameters_initialized_) return false;
         return false;
       if (emboss_reserved_local_colon != ":") return false;
       if (emboss_reserved_local_name == "y") {
-        if (!y().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!y().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
@@ -5662,7 +5734,7 @@ if (!parameters_initialized_) return false;
 
   template <class Stream>
   void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
+      Stream* emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
     ::emboss::TextOutputOptions emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
@@ -5686,7 +5758,7 @@ if (!parameters_initialized_) return false;
         }
         emboss_reserved_local_stream->Write("y: ");
         y().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                              emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -5712,16 +5784,13 @@ if (!parameters_initialized_) return false;
     }
   }
 
-
-
   static constexpr bool IsAggregate() { return true; }
 
  private:
-  constexpr ::emboss::support::MaybeConstantView</**/ ::std::int32_t>
-  x() const {
+  constexpr ::emboss::support::MaybeConstantView</**/ ::std::int32_t> x()
+      const {
     return parameters_initialized_
-               ? ::emboss::support::MaybeConstantView</**/ ::std::int32_t>(
-                     x_)
+               ? ::emboss::support::MaybeConstantView</**/ ::std::int32_t>(x_)
                : ::emboss::support::MaybeConstantView</**/ ::std::int32_t>();
   }
   constexpr ::emboss::support::Maybe<bool> has_x() const {
@@ -5730,10 +5799,14 @@ if (!parameters_initialized_) return false;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
 
- y() const;
+  y() const;
   ::emboss::support::Maybe<bool> has_y() const;
 
  public:
@@ -5742,21 +5815,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView() {}
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -5764,7 +5839,8 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+  IntrinsicSizeInBytes() {
     return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
@@ -5777,21 +5853,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
-    EmbossReservedDollarVirtualMaxSizeInBytesView(const EmbossReservedDollarVirtualMaxSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView(EmbossReservedDollarVirtualMaxSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(const EmbossReservedDollarVirtualMaxSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(EmbossReservedDollarVirtualMaxSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -5799,7 +5877,8 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
@@ -5812,21 +5891,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
-    EmbossReservedDollarVirtualMinSizeInBytesView(const EmbossReservedDollarVirtualMinSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView(EmbossReservedDollarVirtualMinSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(const EmbossReservedDollarVirtualMinSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(EmbossReservedDollarVirtualMinSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -5834,14 +5915,13 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
-
-
 
  private:
   Storage backing_;
@@ -5851,10 +5931,10 @@ if (!parameters_initialized_) return false;
   template <class OtherStorage>
   friend class GenericStructWithUnusedParameterView;
 };
-using StructWithUnusedParameterView =
-    GenericStructWithUnusedParameterView</**/ ::emboss::support::ReadOnlyContiguousBuffer>;
-using StructWithUnusedParameterWriter =
-    GenericStructWithUnusedParameterView</**/ ::emboss::support::ReadWriteContiguousBuffer>;
+using StructWithUnusedParameterView = GenericStructWithUnusedParameterView<
+    /**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+using StructWithUnusedParameterWriter = GenericStructWithUnusedParameterView<
+    /**/ ::emboss::support::ReadWriteContiguousBuffer>;
 
 template <class View>
 struct EmbossReservedInternalIsGenericStructWithUnusedParameterView {
@@ -5873,21 +5953,25 @@ inline GenericStructWithUnusedParameterView<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
         1, 0>>
-MakeStructWithUnusedParameterView(::std::int32_t x,  T &&emboss_reserved_local_arg) {
+MakeStructWithUnusedParameterView(::std::int32_t x,
+                                  T&& emboss_reserved_local_arg) {
   return GenericStructWithUnusedParameterView<
       /**/ ::emboss::support::ContiguousBuffer<
-          typename ::std::remove_reference<decltype(
-              *::std::declval<T>()->data())>::type,
-          1, 0>>(
-      ::std::forward</**/::std::int32_t>(x), ::std::forward<T>(emboss_reserved_local_arg));
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward</**/ ::std::int32_t>(x),
+                 ::std::forward<T>(emboss_reserved_local_arg));
 }
 
 template <typename T>
-inline GenericStructWithUnusedParameterView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
-MakeStructWithUnusedParameterView(::std::int32_t x,  T *emboss_reserved_local_data,
-                 ::std::size_t emboss_reserved_local_size) {
-  return GenericStructWithUnusedParameterView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
-      ::std::forward</**/::std::int32_t>(x), emboss_reserved_local_data,
+inline GenericStructWithUnusedParameterView<
+    /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeStructWithUnusedParameterView(::std::int32_t x,
+                                  T* emboss_reserved_local_data,
+                                  ::std::size_t emboss_reserved_local_size) {
+  return GenericStructWithUnusedParameterView<
+      /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+      ::std::forward</**/ ::std::int32_t>(x), emboss_reserved_local_data,
       emboss_reserved_local_size);
 }
 
@@ -5895,72 +5979,63 @@ template <typename T, ::std::size_t kAlignment>
 inline GenericStructWithUnusedParameterView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
 MakeAlignedStructWithUnusedParameterView(
-    ::std::int32_t x,  T *emboss_reserved_local_data,
+    ::std::int32_t x, T* emboss_reserved_local_data,
     ::std::size_t emboss_reserved_local_size) {
   return GenericStructWithUnusedParameterView<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
-      ::std::forward</**/::std::int32_t>(x), emboss_reserved_local_data,
+      ::std::forward</**/ ::std::int32_t>(x), emboss_reserved_local_data,
       emboss_reserved_local_size);
 }
-
-
-
 
 namespace StructContainingStructWithUnusedParameter {
 
 }  // namespace StructContainingStructWithUnusedParameter
 
-
 template <class View>
-struct EmbossReservedInternalIsGenericStructContainingStructWithUnusedParameterView;
+struct
+    EmbossReservedInternalIsGenericStructContainingStructWithUnusedParameterView;
 
 template <class Storage>
 class GenericStructContainingStructWithUnusedParameterView final {
  public:
   GenericStructContainingStructWithUnusedParameterView() : backing_() {}
   explicit GenericStructContainingStructWithUnusedParameterView(
-       Storage emboss_reserved_local_bytes)
-      : backing_(emboss_reserved_local_bytes) 
-         {}
+      Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
 
   template <typename OtherStorage>
   GenericStructContainingStructWithUnusedParameterView(
-      const GenericStructContainingStructWithUnusedParameterView<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()}
-         {}
+      const GenericStructContainingStructWithUnusedParameterView<OtherStorage>&
+          emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
 
-  template <typename Arg,
-            typename = typename ::std::enable_if<
-                !EmbossReservedInternalIsGenericStructContainingStructWithUnusedParameterView<
-                    typename ::std::remove_cv<typename ::std::remove_reference<
-                        Arg>::type>::type>::value>::type>
+  template <
+      typename Arg,
+      typename = typename ::std::enable_if<
+          !EmbossReservedInternalIsGenericStructContainingStructWithUnusedParameterView<
+              typename ::std::remove_cv<typename ::std::remove_reference<
+                  Arg>::type>::type>::value>::type>
   explicit GenericStructContainingStructWithUnusedParameterView(
-       Arg &&emboss_reserved_local_arg)
-      : backing_(::std::forward<Arg>(
-            emboss_reserved_local_arg)) 
-         {}
+      Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
   template <typename Arg0, typename Arg1, typename... Args>
   explicit GenericStructContainingStructWithUnusedParameterView(
-       Arg0 &&emboss_reserved_local_arg0,
-      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+      Arg0&& emboss_reserved_local_arg0, Arg1&& emboss_reserved_local_arg1,
+      Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
-                 ::std::forward<Args>(
-                     emboss_reserved_local_args)...) 
-         {}
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
 
   template <typename OtherStorage>
-  GenericStructContainingStructWithUnusedParameterView<Storage> &operator=(
-      const GenericStructContainingStructWithUnusedParameterView<OtherStorage> &emboss_reserved_local_other) {
+  GenericStructContainingStructWithUnusedParameterView<Storage>& operator=(
+      const GenericStructContainingStructWithUnusedParameterView<OtherStorage>&
+          emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
     return *this;
   }
 
-  
-
   bool Ok() const {
     if (!IsComplete()) return false;
-
 
     if (!has_x().Known()) return false;
     if (has_x().ValueOrDefault() && !x().Ok()) return false;
@@ -5969,15 +6044,17 @@ class GenericStructContainingStructWithUnusedParameterView final {
     if (has_swup().ValueOrDefault() && !swup().Ok()) return false;
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
 
     if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
 
     if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
-
-
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
 
     return true;
   }
@@ -5991,15 +6068,11 @@ class GenericStructContainingStructWithUnusedParameterView final {
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
   }
-  static constexpr bool SizeIsKnown() {
-    return IntrinsicSizeInBytes().Ok();
-  }
-
+  static constexpr bool SizeIsKnown() { return IntrinsicSizeInBytes().Ok(); }
 
   template <typename OtherStorage>
-  bool Equals(
-      GenericStructContainingStructWithUnusedParameterView<OtherStorage> emboss_reserved_local_other) const {
-    
+  bool Equals(GenericStructContainingStructWithUnusedParameterView<OtherStorage>
+                  emboss_reserved_local_other) const {
     if (!has_x().Known()) return false;
     if (!emboss_reserved_local_other.has_x().Known()) return false;
 
@@ -6014,8 +6087,6 @@ class GenericStructContainingStructWithUnusedParameterView final {
         has_x().ValueOrDefault() &&
         !x().Equals(emboss_reserved_local_other.x()))
       return false;
-
-
 
     if (!has_swup().Known()) return false;
     if (!emboss_reserved_local_other.has_swup().Known()) return false;
@@ -6032,12 +6103,12 @@ class GenericStructContainingStructWithUnusedParameterView final {
         !swup().Equals(emboss_reserved_local_other.swup()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   bool UncheckedEquals(
-      GenericStructContainingStructWithUnusedParameterView<OtherStorage> emboss_reserved_local_other) const {
-    
+      GenericStructContainingStructWithUnusedParameterView<OtherStorage>
+          emboss_reserved_local_other) const {
     if (emboss_reserved_local_other.has_x().ValueOr(false) &&
         !has_x().ValueOr(false))
       return false;
@@ -6049,8 +6120,6 @@ class GenericStructContainingStructWithUnusedParameterView final {
         has_x().ValueOr(false) &&
         !x().UncheckedEquals(emboss_reserved_local_other.x()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_swup().ValueOr(false) &&
         !has_swup().ValueOr(false))
@@ -6064,11 +6133,12 @@ class GenericStructContainingStructWithUnusedParameterView final {
         !swup().UncheckedEquals(emboss_reserved_local_other.swup()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   void UncheckedCopyFrom(
-      GenericStructContainingStructWithUnusedParameterView<OtherStorage> emboss_reserved_local_other) const {
+      GenericStructContainingStructWithUnusedParameterView<OtherStorage>
+          emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
         emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
@@ -6076,21 +6146,24 @@ class GenericStructContainingStructWithUnusedParameterView final {
 
   template <typename OtherStorage>
   void CopyFrom(
-      GenericStructContainingStructWithUnusedParameterView<OtherStorage> emboss_reserved_local_other) const {
+      GenericStructContainingStructWithUnusedParameterView<OtherStorage>
+          emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
         emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(
-      GenericStructContainingStructWithUnusedParameterView<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+      GenericStructContainingStructWithUnusedParameterView<OtherStorage>
+          emboss_reserved_local_other) const {
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
 
   template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
     ::std::string emboss_reserved_local_brace;
     if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
                                       &emboss_reserved_local_brace))
@@ -6112,16 +6185,14 @@ class GenericStructContainingStructWithUnusedParameterView final {
         return false;
       if (emboss_reserved_local_colon != ":") return false;
       if (emboss_reserved_local_name == "x") {
-        if (!x().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!x().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "swup") {
-        if (!swup().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!swup().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
@@ -6133,7 +6204,7 @@ class GenericStructContainingStructWithUnusedParameterView final {
 
   template <class Stream>
   void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
+      Stream* emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
     ::emboss::TextOutputOptions emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
@@ -6157,7 +6228,7 @@ class GenericStructContainingStructWithUnusedParameterView final {
         }
         emboss_reserved_local_stream->Write("x: ");
         x().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                              emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6187,7 +6258,7 @@ class GenericStructContainingStructWithUnusedParameterView final {
         }
         emboss_reserved_local_stream->Write("swup: ");
         swup().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                 emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6213,22 +6284,25 @@ class GenericStructContainingStructWithUnusedParameterView final {
     }
   }
 
-
-
   static constexpr bool IsAggregate() { return true; }
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 1>>,
+          8>>
 
- x() const;
+  x() const;
   ::emboss::support::Maybe<bool> has_x() const;
 
  public:
-  typename ::emboss::test::GenericStructWithUnusedParameterView<typename Storage::template OffsetStorageType</**/0, 0>>
+  typename ::emboss::test::GenericStructWithUnusedParameterView<
+      typename Storage::template OffsetStorageType</**/ 0, 0>>
 
- swup() const;
+  swup() const;
   ::emboss::support::Maybe<bool> has_swup() const;
 
  public:
@@ -6237,21 +6311,23 @@ class GenericStructContainingStructWithUnusedParameterView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView() {}
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -6259,7 +6335,8 @@ class GenericStructContainingStructWithUnusedParameterView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+  IntrinsicSizeInBytes() {
     return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
@@ -6272,21 +6349,23 @@ class GenericStructContainingStructWithUnusedParameterView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
-    EmbossReservedDollarVirtualMaxSizeInBytesView(const EmbossReservedDollarVirtualMaxSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView(EmbossReservedDollarVirtualMaxSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(const EmbossReservedDollarVirtualMaxSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(EmbossReservedDollarVirtualMaxSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -6294,7 +6373,8 @@ class GenericStructContainingStructWithUnusedParameterView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
@@ -6307,21 +6387,23 @@ class GenericStructContainingStructWithUnusedParameterView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
-    EmbossReservedDollarVirtualMinSizeInBytesView(const EmbossReservedDollarVirtualMinSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView(EmbossReservedDollarVirtualMinSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(const EmbossReservedDollarVirtualMinSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(EmbossReservedDollarVirtualMinSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -6329,36 +6411,37 @@ class GenericStructContainingStructWithUnusedParameterView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
-
-
  private:
   Storage backing_;
-  
-  
 
   template <class OtherStorage>
   friend class GenericStructContainingStructWithUnusedParameterView;
 };
 using StructContainingStructWithUnusedParameterView =
-    GenericStructContainingStructWithUnusedParameterView</**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+    GenericStructContainingStructWithUnusedParameterView<
+        /**/ ::emboss::support::ReadOnlyContiguousBuffer>;
 using StructContainingStructWithUnusedParameterWriter =
-    GenericStructContainingStructWithUnusedParameterView</**/ ::emboss::support::ReadWriteContiguousBuffer>;
+    GenericStructContainingStructWithUnusedParameterView<
+        /**/ ::emboss::support::ReadWriteContiguousBuffer>;
 
 template <class View>
-struct EmbossReservedInternalIsGenericStructContainingStructWithUnusedParameterView {
+struct
+    EmbossReservedInternalIsGenericStructContainingStructWithUnusedParameterView {
   static constexpr const bool value = false;
 };
 
 template <class Storage>
-struct EmbossReservedInternalIsGenericStructContainingStructWithUnusedParameterView<
-    GenericStructContainingStructWithUnusedParameterView<Storage>> {
+struct
+    EmbossReservedInternalIsGenericStructContainingStructWithUnusedParameterView<
+        GenericStructContainingStructWithUnusedParameterView<Storage>> {
   static constexpr const bool value = true;
 };
 
@@ -6368,43 +6451,36 @@ inline GenericStructContainingStructWithUnusedParameterView<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
         1, 0>>
-MakeStructContainingStructWithUnusedParameterView( T &&emboss_reserved_local_arg) {
+MakeStructContainingStructWithUnusedParameterView(
+    T&& emboss_reserved_local_arg) {
   return GenericStructContainingStructWithUnusedParameterView<
       /**/ ::emboss::support::ContiguousBuffer<
-          typename ::std::remove_reference<decltype(
-              *::std::declval<T>()->data())>::type,
-          1, 0>>(
-       ::std::forward<T>(emboss_reserved_local_arg));
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
 }
 
 template <typename T>
-inline GenericStructContainingStructWithUnusedParameterView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
-MakeStructContainingStructWithUnusedParameterView( T *emboss_reserved_local_data,
-                 ::std::size_t emboss_reserved_local_size) {
-  return GenericStructContainingStructWithUnusedParameterView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+inline GenericStructContainingStructWithUnusedParameterView<
+    /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeStructContainingStructWithUnusedParameterView(
+    T* emboss_reserved_local_data, ::std::size_t emboss_reserved_local_size) {
+  return GenericStructContainingStructWithUnusedParameterView<
+      /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
 template <typename T, ::std::size_t kAlignment>
 inline GenericStructContainingStructWithUnusedParameterView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
 MakeAlignedStructContainingStructWithUnusedParameterView(
-     T *emboss_reserved_local_data,
-    ::std::size_t emboss_reserved_local_size) {
+    T* emboss_reserved_local_data, ::std::size_t emboss_reserved_local_size) {
   return GenericStructContainingStructWithUnusedParameterView<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
-
-
-
-namespace BiasedValue {
-
-}  // namespace BiasedValue
-
+namespace BiasedValue {}  // namespace BiasedValue
 
 template <class View>
 struct EmbossReservedInternalIsGenericBiasedValueView;
@@ -6413,50 +6489,51 @@ template <class Storage>
 class GenericBiasedValueView final {
  public:
   GenericBiasedValueView() : backing_() {}
-  explicit GenericBiasedValueView(
-      ::std::int32_t bias,  Storage emboss_reserved_local_bytes)
-      : backing_(emboss_reserved_local_bytes) , bias_(bias)
-        , parameters_initialized_(true) {}
+  explicit GenericBiasedValueView(::std::int32_t bias,
+                                  Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes),
+        bias_(bias),
+        parameters_initialized_(true) {}
 
   template <typename OtherStorage>
   GenericBiasedValueView(
-      const GenericBiasedValueView<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()}
-        , bias_(emboss_reserved_local_other.bias_)
-, parameters_initialized_(emboss_reserved_local_other.parameters_initialized_) {}
+      const GenericBiasedValueView<OtherStorage>& emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()},
+        bias_(emboss_reserved_local_other.bias_),
+        parameters_initialized_(
+            emboss_reserved_local_other.parameters_initialized_) {}
 
   template <typename Arg,
             typename = typename ::std::enable_if<
                 !EmbossReservedInternalIsGenericBiasedValueView<
                     typename ::std::remove_cv<typename ::std::remove_reference<
                         Arg>::type>::type>::value>::type>
-  explicit GenericBiasedValueView(
-      ::std::int32_t bias,  Arg &&emboss_reserved_local_arg)
-      : backing_(::std::forward<Arg>(
-            emboss_reserved_local_arg)) , bias_(bias)
-        , parameters_initialized_(true) {}
+  explicit GenericBiasedValueView(::std::int32_t bias,
+                                  Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)),
+        bias_(bias),
+        parameters_initialized_(true) {}
   template <typename Arg0, typename Arg1, typename... Args>
-  explicit GenericBiasedValueView(
-      ::std::int32_t bias,  Arg0 &&emboss_reserved_local_arg0,
-      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+  explicit GenericBiasedValueView(::std::int32_t bias,
+                                  Arg0&& emboss_reserved_local_arg0,
+                                  Arg1&& emboss_reserved_local_arg1,
+                                  Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
-                 ::std::forward<Args>(
-                     emboss_reserved_local_args)...) , bias_(bias)
-        , parameters_initialized_(true) {}
+                 ::std::forward<Args>(emboss_reserved_local_args)...),
+        bias_(bias),
+        parameters_initialized_(true) {}
 
   template <typename OtherStorage>
-  GenericBiasedValueView<Storage> &operator=(
-      const GenericBiasedValueView<OtherStorage> &emboss_reserved_local_other) {
+  GenericBiasedValueView<Storage>& operator=(
+      const GenericBiasedValueView<OtherStorage>& emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
     return *this;
   }
 
-  
-
   bool Ok() const {
     if (!IsComplete()) return false;
-if (!parameters_initialized_) return false;
+    if (!parameters_initialized_) return false;
 
     if (!has_raw_value().Known()) return false;
     if (has_raw_value().ValueOrDefault() && !raw_value().Ok()) return false;
@@ -6465,15 +6542,17 @@ if (!parameters_initialized_) return false;
     if (has_value().ValueOrDefault() && !value().Ok()) return false;
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
 
     if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
 
     if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
-
-
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
 
     return true;
   }
@@ -6487,15 +6566,11 @@ if (!parameters_initialized_) return false;
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
   }
-  static constexpr bool SizeIsKnown() {
-    return IntrinsicSizeInBytes().Ok();
-  }
-
+  static constexpr bool SizeIsKnown() { return IntrinsicSizeInBytes().Ok(); }
 
   template <typename OtherStorage>
   bool Equals(
       GenericBiasedValueView<OtherStorage> emboss_reserved_local_other) const {
-    
     if (!has_bias().Known()) return false;
     if (!emboss_reserved_local_other.has_bias().Known()) return false;
 
@@ -6510,8 +6585,6 @@ if (!parameters_initialized_) return false;
         has_bias().ValueOrDefault() &&
         !bias().Equals(emboss_reserved_local_other.bias()))
       return false;
-
-
 
     if (!has_raw_value().Known()) return false;
     if (!emboss_reserved_local_other.has_raw_value().Known()) return false;
@@ -6528,12 +6601,11 @@ if (!parameters_initialized_) return false;
         !raw_value().Equals(emboss_reserved_local_other.raw_value()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   bool UncheckedEquals(
       GenericBiasedValueView<OtherStorage> emboss_reserved_local_other) const {
-    
     if (emboss_reserved_local_other.has_bias().ValueOr(false) &&
         !has_bias().ValueOr(false))
       return false;
@@ -6545,8 +6617,6 @@ if (!parameters_initialized_) return false;
         has_bias().ValueOr(false) &&
         !bias().UncheckedEquals(emboss_reserved_local_other.bias()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_raw_value().ValueOr(false) &&
         !has_raw_value().ValueOr(false))
@@ -6560,7 +6630,7 @@ if (!parameters_initialized_) return false;
         !raw_value().UncheckedEquals(emboss_reserved_local_other.raw_value()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   void UncheckedCopyFrom(
@@ -6580,13 +6650,14 @@ if (!parameters_initialized_) return false;
   template <typename OtherStorage>
   bool TryToCopyFrom(
       GenericBiasedValueView<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
 
   template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
     ::std::string emboss_reserved_local_brace;
     if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
                                       &emboss_reserved_local_brace))
@@ -6608,8 +6679,7 @@ if (!parameters_initialized_) return false;
         return false;
       if (emboss_reserved_local_colon != ":") return false;
       if (emboss_reserved_local_name == "raw_value") {
-        if (!raw_value().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!raw_value().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
@@ -6621,7 +6691,7 @@ if (!parameters_initialized_) return false;
 
   template <class Stream>
   void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
+      Stream* emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
     ::emboss::TextOutputOptions emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
@@ -6645,7 +6715,7 @@ if (!parameters_initialized_) return false;
         }
         emboss_reserved_local_stream->Write("raw_value: ");
         raw_value().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                      emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -6669,7 +6739,7 @@ if (!parameters_initialized_) return false;
             emboss_reserved_local_field_options.current_indent());
         emboss_reserved_local_stream->Write("# value: ");
         value().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                  emboss_reserved_local_field_options);
         emboss_reserved_local_stream->Write("\n");
       } else {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -6690,13 +6760,11 @@ if (!parameters_initialized_) return false;
     }
   }
 
-
-
   static constexpr bool IsAggregate() { return true; }
 
  private:
-  constexpr ::emboss::support::MaybeConstantView</**/ ::std::int32_t>
-  bias() const {
+  constexpr ::emboss::support::MaybeConstantView</**/ ::std::int32_t> bias()
+      const {
     return parameters_initialized_
                ? ::emboss::support::MaybeConstantView</**/ ::std::int32_t>(
                      bias_)
@@ -6708,10 +6776,14 @@ if (!parameters_initialized_) return false;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
 
- raw_value() const;
+  raw_value() const;
   ::emboss::support::Maybe<bool> has_raw_value() const;
 
  public:
@@ -6720,15 +6792,16 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     explicit EmbossReservedVirtualValueView(
-        const GenericBiasedValueView &emboss_reserved_local_view)
+        const GenericBiasedValueView& emboss_reserved_local_view)
         : view_(emboss_reserved_local_view) {}
     EmbossReservedVirtualValueView() = delete;
-    EmbossReservedVirtualValueView(const EmbossReservedVirtualValueView &) = default;
-    EmbossReservedVirtualValueView(EmbossReservedVirtualValueView &&) = default;
-    EmbossReservedVirtualValueView &operator=(const EmbossReservedVirtualValueView &) =
+    EmbossReservedVirtualValueView(const EmbossReservedVirtualValueView&) =
         default;
-    EmbossReservedVirtualValueView &operator=(EmbossReservedVirtualValueView &&) =
-        default;
+    EmbossReservedVirtualValueView(EmbossReservedVirtualValueView&&) = default;
+    EmbossReservedVirtualValueView& operator=(
+        const EmbossReservedVirtualValueView&) = default;
+    EmbossReservedVirtualValueView& operator=(
+        EmbossReservedVirtualValueView&&) = default;
     ~EmbossReservedVirtualValueView() = default;
 
     ::std::int32_t Read() const {
@@ -6747,24 +6820,35 @@ if (!parameters_initialized_) return false;
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
     static constexpr bool IsAggregate() { return false; }
 
-
-
    private:
     ::emboss::support::Maybe</**/ ::std::int32_t> MaybeRead() const {
       const auto emboss_reserved_local_subexpr_1 = view_.raw_value();
-      const auto emboss_reserved_local_subexpr_2 = (emboss_reserved_local_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
+      const auto emboss_reserved_local_subexpr_2 =
+          (emboss_reserved_local_subexpr_1.Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(
+                         emboss_reserved_local_subexpr_1.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>());
       const auto emboss_reserved_local_subexpr_3 = view_.bias();
-      const auto emboss_reserved_local_subexpr_4 = (emboss_reserved_local_subexpr_3.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_subexpr_3.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_subexpr_5 = ::emboss::support::Sum</**/::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, emboss_reserved_local_subexpr_4);
+      const auto emboss_reserved_local_subexpr_4 =
+          (emboss_reserved_local_subexpr_3.Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(
+                         emboss_reserved_local_subexpr_3.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>());
+      const auto emboss_reserved_local_subexpr_5 =
+          ::emboss::support::Sum</**/ ::std::int32_t, ::std::int32_t,
+                                 ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_2, emboss_reserved_local_subexpr_4);
 
       return emboss_reserved_local_subexpr_5;
     }
@@ -6786,21 +6870,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView() {}
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -6808,7 +6894,8 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+  IntrinsicSizeInBytes() {
     return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
@@ -6821,21 +6908,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
-    EmbossReservedDollarVirtualMaxSizeInBytesView(const EmbossReservedDollarVirtualMaxSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView(EmbossReservedDollarVirtualMaxSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(const EmbossReservedDollarVirtualMaxSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(EmbossReservedDollarVirtualMaxSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -6843,7 +6932,8 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
@@ -6856,21 +6946,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
-    EmbossReservedDollarVirtualMinSizeInBytesView(const EmbossReservedDollarVirtualMinSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView(EmbossReservedDollarVirtualMinSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(const EmbossReservedDollarVirtualMinSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(EmbossReservedDollarVirtualMinSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -6878,14 +6970,13 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
-
-
 
  private:
   Storage backing_;
@@ -6917,43 +7008,37 @@ inline GenericBiasedValueView<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
         1, 0>>
-MakeBiasedValueView(::std::int32_t bias,  T &&emboss_reserved_local_arg) {
+MakeBiasedValueView(::std::int32_t bias, T&& emboss_reserved_local_arg) {
   return GenericBiasedValueView<
       /**/ ::emboss::support::ContiguousBuffer<
-          typename ::std::remove_reference<decltype(
-              *::std::declval<T>()->data())>::type,
-          1, 0>>(
-      ::std::forward</**/::std::int32_t>(bias), ::std::forward<T>(emboss_reserved_local_arg));
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward</**/ ::std::int32_t>(bias),
+                 ::std::forward<T>(emboss_reserved_local_arg));
 }
 
 template <typename T>
 inline GenericBiasedValueView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
-MakeBiasedValueView(::std::int32_t bias,  T *emboss_reserved_local_data,
-                 ::std::size_t emboss_reserved_local_size) {
-  return GenericBiasedValueView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
-      ::std::forward</**/::std::int32_t>(bias), emboss_reserved_local_data,
+MakeBiasedValueView(::std::int32_t bias, T* emboss_reserved_local_data,
+                    ::std::size_t emboss_reserved_local_size) {
+  return GenericBiasedValueView<
+      /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+      ::std::forward</**/ ::std::int32_t>(bias), emboss_reserved_local_data,
       emboss_reserved_local_size);
 }
 
 template <typename T, ::std::size_t kAlignment>
 inline GenericBiasedValueView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
-MakeAlignedBiasedValueView(
-    ::std::int32_t bias,  T *emboss_reserved_local_data,
-    ::std::size_t emboss_reserved_local_size) {
+MakeAlignedBiasedValueView(::std::int32_t bias, T* emboss_reserved_local_data,
+                           ::std::size_t emboss_reserved_local_size) {
   return GenericBiasedValueView<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
-      ::std::forward</**/::std::int32_t>(bias), emboss_reserved_local_data,
+      ::std::forward</**/ ::std::int32_t>(bias), emboss_reserved_local_data,
       emboss_reserved_local_size);
 }
 
-
-
-
-namespace VirtualFirstFieldWithParam {
-
-}  // namespace VirtualFirstFieldWithParam
-
+namespace VirtualFirstFieldWithParam {}  // namespace VirtualFirstFieldWithParam
 
 template <class View>
 struct EmbossReservedInternalIsGenericVirtualFirstFieldWithParamView;
@@ -6963,16 +7048,19 @@ class GenericVirtualFirstFieldWithParamView final {
  public:
   GenericVirtualFirstFieldWithParamView() : backing_() {}
   explicit GenericVirtualFirstFieldWithParamView(
-      ::std::int32_t param,  Storage emboss_reserved_local_bytes)
-      : backing_(emboss_reserved_local_bytes) , param_(param)
-        , parameters_initialized_(true) {}
+      ::std::int32_t param, Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes),
+        param_(param),
+        parameters_initialized_(true) {}
 
   template <typename OtherStorage>
   GenericVirtualFirstFieldWithParamView(
-      const GenericVirtualFirstFieldWithParamView<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()}
-        , param_(emboss_reserved_local_other.param_)
-, parameters_initialized_(emboss_reserved_local_other.parameters_initialized_) {}
+      const GenericVirtualFirstFieldWithParamView<OtherStorage>&
+          emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()},
+        param_(emboss_reserved_local_other.param_),
+        parameters_initialized_(
+            emboss_reserved_local_other.parameters_initialized_) {}
 
   template <typename Arg,
             typename = typename ::std::enable_if<
@@ -6980,32 +7068,31 @@ class GenericVirtualFirstFieldWithParamView final {
                     typename ::std::remove_cv<typename ::std::remove_reference<
                         Arg>::type>::type>::value>::type>
   explicit GenericVirtualFirstFieldWithParamView(
-      ::std::int32_t param,  Arg &&emboss_reserved_local_arg)
-      : backing_(::std::forward<Arg>(
-            emboss_reserved_local_arg)) , param_(param)
-        , parameters_initialized_(true) {}
+      ::std::int32_t param, Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)),
+        param_(param),
+        parameters_initialized_(true) {}
   template <typename Arg0, typename Arg1, typename... Args>
   explicit GenericVirtualFirstFieldWithParamView(
-      ::std::int32_t param,  Arg0 &&emboss_reserved_local_arg0,
-      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+      ::std::int32_t param, Arg0&& emboss_reserved_local_arg0,
+      Arg1&& emboss_reserved_local_arg1, Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
-                 ::std::forward<Args>(
-                     emboss_reserved_local_args)...) , param_(param)
-        , parameters_initialized_(true) {}
+                 ::std::forward<Args>(emboss_reserved_local_args)...),
+        param_(param),
+        parameters_initialized_(true) {}
 
   template <typename OtherStorage>
-  GenericVirtualFirstFieldWithParamView<Storage> &operator=(
-      const GenericVirtualFirstFieldWithParamView<OtherStorage> &emboss_reserved_local_other) {
+  GenericVirtualFirstFieldWithParamView<Storage>& operator=(
+      const GenericVirtualFirstFieldWithParamView<OtherStorage>&
+          emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
     return *this;
   }
 
-  
-
   bool Ok() const {
     if (!IsComplete()) return false;
-if (!parameters_initialized_) return false;
+    if (!parameters_initialized_) return false;
 
     if (!has_x().Known()) return false;
     if (has_x().ValueOrDefault() && !x().Ok()) return false;
@@ -7014,15 +7101,17 @@ if (!parameters_initialized_) return false;
     if (has_value().ValueOrDefault() && !value().Ok()) return false;
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
 
     if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
 
     if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
-
-
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
 
     return true;
   }
@@ -7036,15 +7125,11 @@ if (!parameters_initialized_) return false;
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
   }
-  static constexpr bool SizeIsKnown() {
-    return IntrinsicSizeInBytes().Ok();
-  }
-
+  static constexpr bool SizeIsKnown() { return IntrinsicSizeInBytes().Ok(); }
 
   template <typename OtherStorage>
-  bool Equals(
-      GenericVirtualFirstFieldWithParamView<OtherStorage> emboss_reserved_local_other) const {
-    
+  bool Equals(GenericVirtualFirstFieldWithParamView<OtherStorage>
+                  emboss_reserved_local_other) const {
     if (!has_param().Known()) return false;
     if (!emboss_reserved_local_other.has_param().Known()) return false;
 
@@ -7059,8 +7144,6 @@ if (!parameters_initialized_) return false;
         has_param().ValueOrDefault() &&
         !param().Equals(emboss_reserved_local_other.param()))
       return false;
-
-
 
     if (!has_x().Known()) return false;
     if (!emboss_reserved_local_other.has_x().Known()) return false;
@@ -7077,12 +7160,11 @@ if (!parameters_initialized_) return false;
         !x().Equals(emboss_reserved_local_other.x()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
-  bool UncheckedEquals(
-      GenericVirtualFirstFieldWithParamView<OtherStorage> emboss_reserved_local_other) const {
-    
+  bool UncheckedEquals(GenericVirtualFirstFieldWithParamView<OtherStorage>
+                           emboss_reserved_local_other) const {
     if (emboss_reserved_local_other.has_param().ValueOr(false) &&
         !has_param().ValueOr(false))
       return false;
@@ -7094,8 +7176,6 @@ if (!parameters_initialized_) return false;
         has_param().ValueOr(false) &&
         !param().UncheckedEquals(emboss_reserved_local_other.param()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_x().ValueOr(false) &&
         !has_x().ValueOr(false))
@@ -7109,33 +7189,34 @@ if (!parameters_initialized_) return false;
         !x().UncheckedEquals(emboss_reserved_local_other.x()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
-  void UncheckedCopyFrom(
-      GenericVirtualFirstFieldWithParamView<OtherStorage> emboss_reserved_local_other) const {
+  void UncheckedCopyFrom(GenericVirtualFirstFieldWithParamView<OtherStorage>
+                             emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
         emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
   }
 
   template <typename OtherStorage>
-  void CopyFrom(
-      GenericVirtualFirstFieldWithParamView<OtherStorage> emboss_reserved_local_other) const {
+  void CopyFrom(GenericVirtualFirstFieldWithParamView<OtherStorage>
+                    emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
         emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
   template <typename OtherStorage>
-  bool TryToCopyFrom(
-      GenericVirtualFirstFieldWithParamView<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  bool TryToCopyFrom(GenericVirtualFirstFieldWithParamView<OtherStorage>
+                         emboss_reserved_local_other) const {
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
 
   template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
     ::std::string emboss_reserved_local_brace;
     if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
                                       &emboss_reserved_local_brace))
@@ -7157,16 +7238,14 @@ if (!parameters_initialized_) return false;
         return false;
       if (emboss_reserved_local_colon != ":") return false;
       if (emboss_reserved_local_name == "x") {
-        if (!x().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!x().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "value") {
-        if (!value().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!value().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
@@ -7178,7 +7257,7 @@ if (!parameters_initialized_) return false;
 
   template <class Stream>
   void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
+      Stream* emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
     ::emboss::TextOutputOptions emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
@@ -7202,7 +7281,7 @@ if (!parameters_initialized_) return false;
         }
         emboss_reserved_local_stream->Write("x: ");
         x().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                              emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7232,7 +7311,7 @@ if (!parameters_initialized_) return false;
         }
         emboss_reserved_local_stream->Write("value: ");
         value().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                  emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7258,13 +7337,11 @@ if (!parameters_initialized_) return false;
     }
   }
 
-
-
   static constexpr bool IsAggregate() { return true; }
 
  private:
-  constexpr ::emboss::support::MaybeConstantView</**/ ::std::int32_t>
-  param() const {
+  constexpr ::emboss::support::MaybeConstantView</**/ ::std::int32_t> param()
+      const {
     return parameters_initialized_
                ? ::emboss::support::MaybeConstantView</**/ ::std::int32_t>(
                      param_)
@@ -7276,16 +7353,19 @@ if (!parameters_initialized_) return false;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
 
- x() const;
+  x() const;
   ::emboss::support::Maybe<bool> has_x() const;
 
  public:
   auto value() const -> decltype(this->x()) {
-   return has_value().ValueOrDefault() ? x()
-                                          : decltype(this->x())();
+    return has_value().ValueOrDefault() ? x() : decltype(this->x())();
   }
   ::emboss::support::Maybe<bool> has_value() const;
 
@@ -7295,21 +7375,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView() {}
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -7317,7 +7399,8 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+  IntrinsicSizeInBytes() {
     return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
@@ -7330,21 +7413,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
-    EmbossReservedDollarVirtualMaxSizeInBytesView(const EmbossReservedDollarVirtualMaxSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView(EmbossReservedDollarVirtualMaxSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(const EmbossReservedDollarVirtualMaxSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(EmbossReservedDollarVirtualMaxSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -7352,7 +7437,8 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
@@ -7365,21 +7451,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
-    EmbossReservedDollarVirtualMinSizeInBytesView(const EmbossReservedDollarVirtualMinSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView(EmbossReservedDollarVirtualMinSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(const EmbossReservedDollarVirtualMinSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(EmbossReservedDollarVirtualMinSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -7387,14 +7475,13 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
-
-
 
  private:
   Storage backing_;
@@ -7404,10 +7491,10 @@ if (!parameters_initialized_) return false;
   template <class OtherStorage>
   friend class GenericVirtualFirstFieldWithParamView;
 };
-using VirtualFirstFieldWithParamView =
-    GenericVirtualFirstFieldWithParamView</**/ ::emboss::support::ReadOnlyContiguousBuffer>;
-using VirtualFirstFieldWithParamWriter =
-    GenericVirtualFirstFieldWithParamView</**/ ::emboss::support::ReadWriteContiguousBuffer>;
+using VirtualFirstFieldWithParamView = GenericVirtualFirstFieldWithParamView<
+    /**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+using VirtualFirstFieldWithParamWriter = GenericVirtualFirstFieldWithParamView<
+    /**/ ::emboss::support::ReadWriteContiguousBuffer>;
 
 template <class View>
 struct EmbossReservedInternalIsGenericVirtualFirstFieldWithParamView {
@@ -7426,21 +7513,25 @@ inline GenericVirtualFirstFieldWithParamView<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
         1, 0>>
-MakeVirtualFirstFieldWithParamView(::std::int32_t param,  T &&emboss_reserved_local_arg) {
+MakeVirtualFirstFieldWithParamView(::std::int32_t param,
+                                   T&& emboss_reserved_local_arg) {
   return GenericVirtualFirstFieldWithParamView<
       /**/ ::emboss::support::ContiguousBuffer<
-          typename ::std::remove_reference<decltype(
-              *::std::declval<T>()->data())>::type,
-          1, 0>>(
-      ::std::forward</**/::std::int32_t>(param), ::std::forward<T>(emboss_reserved_local_arg));
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward</**/ ::std::int32_t>(param),
+                 ::std::forward<T>(emboss_reserved_local_arg));
 }
 
 template <typename T>
-inline GenericVirtualFirstFieldWithParamView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
-MakeVirtualFirstFieldWithParamView(::std::int32_t param,  T *emboss_reserved_local_data,
-                 ::std::size_t emboss_reserved_local_size) {
-  return GenericVirtualFirstFieldWithParamView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
-      ::std::forward</**/::std::int32_t>(param), emboss_reserved_local_data,
+inline GenericVirtualFirstFieldWithParamView<
+    /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeVirtualFirstFieldWithParamView(::std::int32_t param,
+                                   T* emboss_reserved_local_data,
+                                   ::std::size_t emboss_reserved_local_size) {
+  return GenericVirtualFirstFieldWithParamView<
+      /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+      ::std::forward</**/ ::std::int32_t>(param), emboss_reserved_local_data,
       emboss_reserved_local_size);
 }
 
@@ -7448,21 +7539,17 @@ template <typename T, ::std::size_t kAlignment>
 inline GenericVirtualFirstFieldWithParamView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
 MakeAlignedVirtualFirstFieldWithParamView(
-    ::std::int32_t param,  T *emboss_reserved_local_data,
+    ::std::int32_t param, T* emboss_reserved_local_data,
     ::std::size_t emboss_reserved_local_size) {
   return GenericVirtualFirstFieldWithParamView<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
-      ::std::forward</**/::std::int32_t>(param), emboss_reserved_local_data,
+      ::std::forward</**/ ::std::int32_t>(param), emboss_reserved_local_data,
       emboss_reserved_local_size);
 }
-
-
-
 
 namespace ConstVirtualFirstFieldWithParam {
 
 }  // namespace ConstVirtualFirstFieldWithParam
-
 
 template <class View>
 struct EmbossReservedInternalIsGenericConstVirtualFirstFieldWithParamView;
@@ -7472,49 +7559,52 @@ class GenericConstVirtualFirstFieldWithParamView final {
  public:
   GenericConstVirtualFirstFieldWithParamView() : backing_() {}
   explicit GenericConstVirtualFirstFieldWithParamView(
-      ::std::int32_t param,  Storage emboss_reserved_local_bytes)
-      : backing_(emboss_reserved_local_bytes) , param_(param)
-        , parameters_initialized_(true) {}
+      ::std::int32_t param, Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes),
+        param_(param),
+        parameters_initialized_(true) {}
 
   template <typename OtherStorage>
   GenericConstVirtualFirstFieldWithParamView(
-      const GenericConstVirtualFirstFieldWithParamView<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()}
-        , param_(emboss_reserved_local_other.param_)
-, parameters_initialized_(emboss_reserved_local_other.parameters_initialized_) {}
+      const GenericConstVirtualFirstFieldWithParamView<OtherStorage>&
+          emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()},
+        param_(emboss_reserved_local_other.param_),
+        parameters_initialized_(
+            emboss_reserved_local_other.parameters_initialized_) {}
 
-  template <typename Arg,
-            typename = typename ::std::enable_if<
-                !EmbossReservedInternalIsGenericConstVirtualFirstFieldWithParamView<
-                    typename ::std::remove_cv<typename ::std::remove_reference<
-                        Arg>::type>::type>::value>::type>
+  template <
+      typename Arg,
+      typename = typename ::std::enable_if<
+          !EmbossReservedInternalIsGenericConstVirtualFirstFieldWithParamView<
+              typename ::std::remove_cv<typename ::std::remove_reference<
+                  Arg>::type>::type>::value>::type>
   explicit GenericConstVirtualFirstFieldWithParamView(
-      ::std::int32_t param,  Arg &&emboss_reserved_local_arg)
-      : backing_(::std::forward<Arg>(
-            emboss_reserved_local_arg)) , param_(param)
-        , parameters_initialized_(true) {}
+      ::std::int32_t param, Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)),
+        param_(param),
+        parameters_initialized_(true) {}
   template <typename Arg0, typename Arg1, typename... Args>
   explicit GenericConstVirtualFirstFieldWithParamView(
-      ::std::int32_t param,  Arg0 &&emboss_reserved_local_arg0,
-      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+      ::std::int32_t param, Arg0&& emboss_reserved_local_arg0,
+      Arg1&& emboss_reserved_local_arg1, Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
-                 ::std::forward<Args>(
-                     emboss_reserved_local_args)...) , param_(param)
-        , parameters_initialized_(true) {}
+                 ::std::forward<Args>(emboss_reserved_local_args)...),
+        param_(param),
+        parameters_initialized_(true) {}
 
   template <typename OtherStorage>
-  GenericConstVirtualFirstFieldWithParamView<Storage> &operator=(
-      const GenericConstVirtualFirstFieldWithParamView<OtherStorage> &emboss_reserved_local_other) {
+  GenericConstVirtualFirstFieldWithParamView<Storage>& operator=(
+      const GenericConstVirtualFirstFieldWithParamView<OtherStorage>&
+          emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
     return *this;
   }
 
-  
-
   bool Ok() const {
     if (!IsComplete()) return false;
-if (!parameters_initialized_) return false;
+    if (!parameters_initialized_) return false;
 
     if (!has_value().Known()) return false;
     if (has_value().ValueOrDefault() && !value().Ok()) return false;
@@ -7523,15 +7613,17 @@ if (!parameters_initialized_) return false;
     if (has_x().ValueOrDefault() && !x().Ok()) return false;
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
 
     if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
 
     if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
-
-
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
 
     return true;
   }
@@ -7545,15 +7637,11 @@ if (!parameters_initialized_) return false;
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
   }
-  static constexpr bool SizeIsKnown() {
-    return IntrinsicSizeInBytes().Ok();
-  }
-
+  static constexpr bool SizeIsKnown() { return IntrinsicSizeInBytes().Ok(); }
 
   template <typename OtherStorage>
-  bool Equals(
-      GenericConstVirtualFirstFieldWithParamView<OtherStorage> emboss_reserved_local_other) const {
-    
+  bool Equals(GenericConstVirtualFirstFieldWithParamView<OtherStorage>
+                  emboss_reserved_local_other) const {
     if (!has_param().Known()) return false;
     if (!emboss_reserved_local_other.has_param().Known()) return false;
 
@@ -7568,8 +7656,6 @@ if (!parameters_initialized_) return false;
         has_param().ValueOrDefault() &&
         !param().Equals(emboss_reserved_local_other.param()))
       return false;
-
-
 
     if (!has_x().Known()) return false;
     if (!emboss_reserved_local_other.has_x().Known()) return false;
@@ -7586,12 +7672,11 @@ if (!parameters_initialized_) return false;
         !x().Equals(emboss_reserved_local_other.x()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
-  bool UncheckedEquals(
-      GenericConstVirtualFirstFieldWithParamView<OtherStorage> emboss_reserved_local_other) const {
-    
+  bool UncheckedEquals(GenericConstVirtualFirstFieldWithParamView<OtherStorage>
+                           emboss_reserved_local_other) const {
     if (emboss_reserved_local_other.has_param().ValueOr(false) &&
         !has_param().ValueOr(false))
       return false;
@@ -7603,8 +7688,6 @@ if (!parameters_initialized_) return false;
         has_param().ValueOr(false) &&
         !param().UncheckedEquals(emboss_reserved_local_other.param()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_x().ValueOr(false) &&
         !has_x().ValueOr(false))
@@ -7618,33 +7701,35 @@ if (!parameters_initialized_) return false;
         !x().UncheckedEquals(emboss_reserved_local_other.x()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
   void UncheckedCopyFrom(
-      GenericConstVirtualFirstFieldWithParamView<OtherStorage> emboss_reserved_local_other) const {
+      GenericConstVirtualFirstFieldWithParamView<OtherStorage>
+          emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
         emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
   }
 
   template <typename OtherStorage>
-  void CopyFrom(
-      GenericConstVirtualFirstFieldWithParamView<OtherStorage> emboss_reserved_local_other) const {
+  void CopyFrom(GenericConstVirtualFirstFieldWithParamView<OtherStorage>
+                    emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
         emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
   template <typename OtherStorage>
-  bool TryToCopyFrom(
-      GenericConstVirtualFirstFieldWithParamView<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  bool TryToCopyFrom(GenericConstVirtualFirstFieldWithParamView<OtherStorage>
+                         emboss_reserved_local_other) const {
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
 
   template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
     ::std::string emboss_reserved_local_brace;
     if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
                                       &emboss_reserved_local_brace))
@@ -7666,8 +7751,7 @@ if (!parameters_initialized_) return false;
         return false;
       if (emboss_reserved_local_colon != ":") return false;
       if (emboss_reserved_local_name == "x") {
-        if (!x().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!x().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
@@ -7679,7 +7763,7 @@ if (!parameters_initialized_) return false;
 
   template <class Stream>
   void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
+      Stream* emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
     ::emboss::TextOutputOptions emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
@@ -7697,7 +7781,7 @@ if (!parameters_initialized_) return false;
             emboss_reserved_local_field_options.current_indent());
         emboss_reserved_local_stream->Write("# value: ");
         value().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                  emboss_reserved_local_field_options);
         emboss_reserved_local_stream->Write("\n");
       } else {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -7722,7 +7806,7 @@ if (!parameters_initialized_) return false;
         }
         emboss_reserved_local_stream->Write("x: ");
         x().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                              emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -7748,13 +7832,11 @@ if (!parameters_initialized_) return false;
     }
   }
 
-
-
   static constexpr bool IsAggregate() { return true; }
 
  private:
-  constexpr ::emboss::support::MaybeConstantView</**/ ::std::int32_t>
-  param() const {
+  constexpr ::emboss::support::MaybeConstantView</**/ ::std::int32_t> param()
+      const {
     return parameters_initialized_
                ? ::emboss::support::MaybeConstantView</**/ ::std::int32_t>(
                      param_)
@@ -7770,21 +7852,22 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedVirtualValueView() {}
-    EmbossReservedVirtualValueView(const EmbossReservedVirtualValueView &) = default;
-    EmbossReservedVirtualValueView(EmbossReservedVirtualValueView &&) = default;
-    EmbossReservedVirtualValueView &operator=(const EmbossReservedVirtualValueView &) =
+    EmbossReservedVirtualValueView(const EmbossReservedVirtualValueView&) =
         default;
-    EmbossReservedVirtualValueView &operator=(EmbossReservedVirtualValueView &&) =
-        default;
+    EmbossReservedVirtualValueView(EmbossReservedVirtualValueView&&) = default;
+    EmbossReservedVirtualValueView& operator=(
+        const EmbossReservedVirtualValueView&) = default;
+    EmbossReservedVirtualValueView& operator=(
+        EmbossReservedVirtualValueView&&) = default;
     ~EmbossReservedVirtualValueView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -7801,10 +7884,14 @@ if (!parameters_initialized_) return false;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
 
- x() const;
+  x() const;
   ::emboss::support::Maybe<bool> has_x() const;
 
  public:
@@ -7813,21 +7900,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView() {}
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -7835,7 +7924,8 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+  IntrinsicSizeInBytes() {
     return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
@@ -7848,21 +7938,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
-    EmbossReservedDollarVirtualMaxSizeInBytesView(const EmbossReservedDollarVirtualMaxSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView(EmbossReservedDollarVirtualMaxSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(const EmbossReservedDollarVirtualMaxSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(EmbossReservedDollarVirtualMaxSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -7870,7 +7962,8 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
@@ -7883,21 +7976,23 @@ if (!parameters_initialized_) return false;
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
-    EmbossReservedDollarVirtualMinSizeInBytesView(const EmbossReservedDollarVirtualMinSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView(EmbossReservedDollarVirtualMinSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(const EmbossReservedDollarVirtualMinSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(EmbossReservedDollarVirtualMinSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -7905,14 +8000,13 @@ if (!parameters_initialized_) return false;
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
-
-
 
  private:
   Storage backing_;
@@ -7923,9 +8017,11 @@ if (!parameters_initialized_) return false;
   friend class GenericConstVirtualFirstFieldWithParamView;
 };
 using ConstVirtualFirstFieldWithParamView =
-    GenericConstVirtualFirstFieldWithParamView</**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+    GenericConstVirtualFirstFieldWithParamView<
+        /**/ ::emboss::support::ReadOnlyContiguousBuffer>;
 using ConstVirtualFirstFieldWithParamWriter =
-    GenericConstVirtualFirstFieldWithParamView</**/ ::emboss::support::ReadWriteContiguousBuffer>;
+    GenericConstVirtualFirstFieldWithParamView<
+        /**/ ::emboss::support::ReadWriteContiguousBuffer>;
 
 template <class View>
 struct EmbossReservedInternalIsGenericConstVirtualFirstFieldWithParamView {
@@ -7944,21 +8040,25 @@ inline GenericConstVirtualFirstFieldWithParamView<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
         1, 0>>
-MakeConstVirtualFirstFieldWithParamView(::std::int32_t param,  T &&emboss_reserved_local_arg) {
+MakeConstVirtualFirstFieldWithParamView(::std::int32_t param,
+                                        T&& emboss_reserved_local_arg) {
   return GenericConstVirtualFirstFieldWithParamView<
       /**/ ::emboss::support::ContiguousBuffer<
-          typename ::std::remove_reference<decltype(
-              *::std::declval<T>()->data())>::type,
-          1, 0>>(
-      ::std::forward</**/::std::int32_t>(param), ::std::forward<T>(emboss_reserved_local_arg));
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward</**/ ::std::int32_t>(param),
+                 ::std::forward<T>(emboss_reserved_local_arg));
 }
 
 template <typename T>
-inline GenericConstVirtualFirstFieldWithParamView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
-MakeConstVirtualFirstFieldWithParamView(::std::int32_t param,  T *emboss_reserved_local_data,
-                 ::std::size_t emboss_reserved_local_size) {
-  return GenericConstVirtualFirstFieldWithParamView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
-      ::std::forward</**/::std::int32_t>(param), emboss_reserved_local_data,
+inline GenericConstVirtualFirstFieldWithParamView<
+    /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeConstVirtualFirstFieldWithParamView(
+    ::std::int32_t param, T* emboss_reserved_local_data,
+    ::std::size_t emboss_reserved_local_size) {
+  return GenericConstVirtualFirstFieldWithParamView<
+      /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+      ::std::forward</**/ ::std::int32_t>(param), emboss_reserved_local_data,
       emboss_reserved_local_size);
 }
 
@@ -7966,22 +8066,15 @@ template <typename T, ::std::size_t kAlignment>
 inline GenericConstVirtualFirstFieldWithParamView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
 MakeAlignedConstVirtualFirstFieldWithParamView(
-    ::std::int32_t param,  T *emboss_reserved_local_data,
+    ::std::int32_t param, T* emboss_reserved_local_data,
     ::std::size_t emboss_reserved_local_size) {
   return GenericConstVirtualFirstFieldWithParamView<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
-      ::std::forward</**/::std::int32_t>(param), emboss_reserved_local_data,
+      ::std::forward</**/ ::std::int32_t>(param), emboss_reserved_local_data,
       emboss_reserved_local_size);
 }
 
-
-
-
-
-namespace SizedArrayOfBiasedValues {
-
-}  // namespace SizedArrayOfBiasedValues
-
+namespace SizedArrayOfBiasedValues {}  // namespace SizedArrayOfBiasedValues
 
 template <class View>
 struct EmbossReservedInternalIsGenericSizedArrayOfBiasedValuesView;
@@ -7991,51 +8084,44 @@ class GenericSizedArrayOfBiasedValuesView final {
  public:
   GenericSizedArrayOfBiasedValuesView() : backing_() {}
   explicit GenericSizedArrayOfBiasedValuesView(
-       Storage emboss_reserved_local_bytes)
-      : backing_(emboss_reserved_local_bytes) 
-         {}
+      Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
 
   template <typename OtherStorage>
   GenericSizedArrayOfBiasedValuesView(
-      const GenericSizedArrayOfBiasedValuesView<OtherStorage> &emboss_reserved_local_other)
-      : backing_{emboss_reserved_local_other.BackingStorage()}
-         {}
+      const GenericSizedArrayOfBiasedValuesView<OtherStorage>&
+          emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
 
   template <typename Arg,
             typename = typename ::std::enable_if<
                 !EmbossReservedInternalIsGenericSizedArrayOfBiasedValuesView<
                     typename ::std::remove_cv<typename ::std::remove_reference<
                         Arg>::type>::type>::value>::type>
-  explicit GenericSizedArrayOfBiasedValuesView(
-       Arg &&emboss_reserved_local_arg)
-      : backing_(::std::forward<Arg>(
-            emboss_reserved_local_arg)) 
-         {}
+  explicit GenericSizedArrayOfBiasedValuesView(Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
   template <typename Arg0, typename Arg1, typename... Args>
   explicit GenericSizedArrayOfBiasedValuesView(
-       Arg0 &&emboss_reserved_local_arg0,
-      Arg1 &&emboss_reserved_local_arg1, Args &&... emboss_reserved_local_args)
+      Arg0&& emboss_reserved_local_arg0, Arg1&& emboss_reserved_local_arg1,
+      Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
-                 ::std::forward<Args>(
-                     emboss_reserved_local_args)...) 
-         {}
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
 
   template <typename OtherStorage>
-  GenericSizedArrayOfBiasedValuesView<Storage> &operator=(
-      const GenericSizedArrayOfBiasedValuesView<OtherStorage> &emboss_reserved_local_other) {
+  GenericSizedArrayOfBiasedValuesView<Storage>& operator=(
+      const GenericSizedArrayOfBiasedValuesView<OtherStorage>&
+          emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
     return *this;
   }
 
-  
-
   bool Ok() const {
     if (!IsComplete()) return false;
 
-
     if (!has_element_count().Known()) return false;
-    if (has_element_count().ValueOrDefault() && !element_count().Ok()) return false;
+    if (has_element_count().ValueOrDefault() && !element_count().Ok())
+      return false;
 
     if (!has_bias().Known()) return false;
     if (has_bias().ValueOrDefault() && !bias().Ok()) return false;
@@ -8044,15 +8130,17 @@ class GenericSizedArrayOfBiasedValuesView final {
     if (has_values().ValueOrDefault() && !values().Ok()) return false;
 
     if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() && !IntrinsicSizeInBytes().Ok()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
 
     if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
 
     if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok()) return false;
-
-
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
 
     return true;
   }
@@ -8068,12 +8156,9 @@ class GenericSizedArrayOfBiasedValuesView final {
   }
   bool SizeIsKnown() const { return IntrinsicSizeInBytes().Ok(); }
 
-
-
   template <typename OtherStorage>
-  bool Equals(
-      GenericSizedArrayOfBiasedValuesView<OtherStorage> emboss_reserved_local_other) const {
-    
+  bool Equals(GenericSizedArrayOfBiasedValuesView<OtherStorage>
+                  emboss_reserved_local_other) const {
     if (!has_element_count().Known()) return false;
     if (!emboss_reserved_local_other.has_element_count().Known()) return false;
 
@@ -8088,8 +8173,6 @@ class GenericSizedArrayOfBiasedValuesView final {
         has_element_count().ValueOrDefault() &&
         !element_count().Equals(emboss_reserved_local_other.element_count()))
       return false;
-
-
 
     if (!has_bias().Known()) return false;
     if (!emboss_reserved_local_other.has_bias().Known()) return false;
@@ -8106,8 +8189,6 @@ class GenericSizedArrayOfBiasedValuesView final {
         !bias().Equals(emboss_reserved_local_other.bias()))
       return false;
 
-
-
     if (!has_values().Known()) return false;
     if (!emboss_reserved_local_other.has_values().Known()) return false;
 
@@ -8123,12 +8204,11 @@ class GenericSizedArrayOfBiasedValuesView final {
         !values().Equals(emboss_reserved_local_other.values()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
-  bool UncheckedEquals(
-      GenericSizedArrayOfBiasedValuesView<OtherStorage> emboss_reserved_local_other) const {
-    
+  bool UncheckedEquals(GenericSizedArrayOfBiasedValuesView<OtherStorage>
+                           emboss_reserved_local_other) const {
     if (emboss_reserved_local_other.has_element_count().ValueOr(false) &&
         !has_element_count().ValueOr(false))
       return false;
@@ -8138,10 +8218,9 @@ class GenericSizedArrayOfBiasedValuesView final {
 
     if (emboss_reserved_local_other.has_element_count().ValueOr(false) &&
         has_element_count().ValueOr(false) &&
-        !element_count().UncheckedEquals(emboss_reserved_local_other.element_count()))
+        !element_count().UncheckedEquals(
+            emboss_reserved_local_other.element_count()))
       return false;
-
-
 
     if (emboss_reserved_local_other.has_bias().ValueOr(false) &&
         !has_bias().ValueOr(false))
@@ -8155,8 +8234,6 @@ class GenericSizedArrayOfBiasedValuesView final {
         !bias().UncheckedEquals(emboss_reserved_local_other.bias()))
       return false;
 
-
-
     if (emboss_reserved_local_other.has_values().ValueOr(false) &&
         !has_values().ValueOr(false))
       return false;
@@ -8169,33 +8246,34 @@ class GenericSizedArrayOfBiasedValuesView final {
         !values().UncheckedEquals(emboss_reserved_local_other.values()))
       return false;
 
- return true;
+    return true;
   }
   template <typename OtherStorage>
-  void UncheckedCopyFrom(
-      GenericSizedArrayOfBiasedValuesView<OtherStorage> emboss_reserved_local_other) const {
+  void UncheckedCopyFrom(GenericSizedArrayOfBiasedValuesView<OtherStorage>
+                             emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
         emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
   }
 
   template <typename OtherStorage>
-  void CopyFrom(
-      GenericSizedArrayOfBiasedValuesView<OtherStorage> emboss_reserved_local_other) const {
+  void CopyFrom(GenericSizedArrayOfBiasedValuesView<OtherStorage>
+                    emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
         emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
   template <typename OtherStorage>
-  bool TryToCopyFrom(
-      GenericSizedArrayOfBiasedValuesView<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  bool TryToCopyFrom(GenericSizedArrayOfBiasedValuesView<OtherStorage>
+                         emboss_reserved_local_other) const {
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
 
   template <class Stream>
-  bool UpdateFromTextStream(Stream *emboss_reserved_local_stream) const {
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
     ::std::string emboss_reserved_local_brace;
     if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
                                       &emboss_reserved_local_brace))
@@ -8225,16 +8303,14 @@ class GenericSizedArrayOfBiasedValuesView final {
       }
 
       if (emboss_reserved_local_name == "bias") {
-        if (!bias().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!bias().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
       }
 
       if (emboss_reserved_local_name == "values") {
-        if (!values().UpdateFromTextStream(
-                emboss_reserved_local_stream)) {
+        if (!values().UpdateFromTextStream(emboss_reserved_local_stream)) {
           return false;
         }
         continue;
@@ -8246,7 +8322,7 @@ class GenericSizedArrayOfBiasedValuesView final {
 
   template <class Stream>
   void WriteToTextStream(
-      Stream *emboss_reserved_local_stream,
+      Stream* emboss_reserved_local_stream,
       ::emboss::TextOutputOptions emboss_reserved_local_options) const {
     ::emboss::TextOutputOptions emboss_reserved_local_field_options =
         emboss_reserved_local_options.PlusOneIndent();
@@ -8270,7 +8346,7 @@ class GenericSizedArrayOfBiasedValuesView final {
         }
         emboss_reserved_local_stream->Write("element_count: ");
         element_count().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                          emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -8300,7 +8376,7 @@ class GenericSizedArrayOfBiasedValuesView final {
         }
         emboss_reserved_local_stream->Write("bias: ");
         bias().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                 emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -8330,7 +8406,7 @@ class GenericSizedArrayOfBiasedValuesView final {
         }
         emboss_reserved_local_stream->Write("values: ");
         values().WriteToTextStream(emboss_reserved_local_stream,
-                                           emboss_reserved_local_field_options);
+                                   emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write("\n");
@@ -8356,34 +8432,43 @@ class GenericSizedArrayOfBiasedValuesView final {
     }
   }
 
-
-
   static constexpr bool IsAggregate() { return true; }
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
 
- element_count() const;
+  element_count() const;
   ::emboss::support::Maybe<bool> has_element_count() const;
 
  public:
   typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 1>>,
+          8>>
 
- bias() const;
+  bias() const;
   ::emboss::support::Maybe<bool> has_bias() const;
 
  public:
   typename ::emboss::support::GenericArrayView<
-    typename ::emboss::test::GenericBiasedValueView<typename Storage::template OffsetStorageType</**/0, 2>::template OffsetStorageType</**/1, 0>>
+      typename ::emboss::test::GenericBiasedValueView<
+          typename Storage::template OffsetStorageType<
+              /**/ 0, 2>::template OffsetStorageType</**/ 1, 0>>
 
-, typename Storage::template OffsetStorageType</**/0, 2>, 1,
-    8 , ::std::int32_t>
+      ,
+      typename Storage::template OffsetStorageType</**/ 0, 2>, 1, 8,
+      ::std::int32_t>
 
- values() const;
+  values() const;
   ::emboss::support::Maybe<bool> has_values() const;
 
  public:
@@ -8392,15 +8477,17 @@ class GenericSizedArrayOfBiasedValuesView final {
     using ValueType = ::std::int32_t;
 
     explicit EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
-        const GenericSizedArrayOfBiasedValuesView &emboss_reserved_local_view)
+        const GenericSizedArrayOfBiasedValuesView& emboss_reserved_local_view)
         : view_(emboss_reserved_local_view) {}
     EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = delete;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(const EmbossReservedDollarVirtualIntrinsicSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualIntrinsicSizeInBytesView &operator=(EmbossReservedDollarVirtualIntrinsicSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
     ::std::int32_t Read() const {
@@ -8419,24 +8506,48 @@ class GenericSizedArrayOfBiasedValuesView final {
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
 
     static constexpr bool IsAggregate() { return false; }
 
-
-
    private:
     ::emboss::support::Maybe</**/ ::std::int32_t> MaybeRead() const {
       const auto emboss_reserved_local_subexpr_1 = view_.element_count();
-      const auto emboss_reserved_local_subexpr_2 = (emboss_reserved_local_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-      const auto emboss_reserved_local_subexpr_3 = ::emboss::support::Sum</**/::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL)), emboss_reserved_local_subexpr_2);
-      const auto emboss_reserved_local_subexpr_4 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(::emboss::support::Maybe</**/bool>(true), emboss_reserved_local_subexpr_3, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
-      const auto emboss_reserved_local_subexpr_5 = ::emboss::support::Maximum</**/::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL)), emboss_reserved_local_subexpr_4);
+      const auto emboss_reserved_local_subexpr_2 =
+          (emboss_reserved_local_subexpr_1.Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(
+                         emboss_reserved_local_subexpr_1.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>());
+      const auto emboss_reserved_local_subexpr_3 =
+          ::emboss::support::Sum</**/ ::std::int32_t, ::std::int32_t,
+                                 ::std::int32_t, ::std::int32_t>(
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(2LL)),
+              emboss_reserved_local_subexpr_2);
+      const auto emboss_reserved_local_subexpr_4 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              ::emboss::support::Maybe</**/ bool>(true),
+              emboss_reserved_local_subexpr_3,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_5 =
+          ::emboss::support::Maximum</**/ ::std::int32_t, ::std::int32_t,
+                                     ::std::int32_t, ::std::int32_t,
+                                     ::std::int32_t, ::std::int32_t>(
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(1LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(2LL)),
+              emboss_reserved_local_subexpr_4);
 
       return emboss_reserved_local_subexpr_5;
     }
@@ -8449,7 +8560,8 @@ class GenericSizedArrayOfBiasedValuesView final {
 
     const GenericSizedArrayOfBiasedValuesView view_;
   };
-  EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes() const;
+  EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes()
+      const;
   ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() const;
 
  public:
@@ -8458,21 +8570,23 @@ class GenericSizedArrayOfBiasedValuesView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
-    EmbossReservedDollarVirtualMaxSizeInBytesView(const EmbossReservedDollarVirtualMaxSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView(EmbossReservedDollarVirtualMaxSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(const EmbossReservedDollarVirtualMaxSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMaxSizeInBytesView &operator=(EmbossReservedDollarVirtualMaxSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -8480,7 +8594,8 @@ class GenericSizedArrayOfBiasedValuesView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView MaxSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
@@ -8493,21 +8608,23 @@ class GenericSizedArrayOfBiasedValuesView final {
     using ValueType = ::std::int32_t;
 
     constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
-    EmbossReservedDollarVirtualMinSizeInBytesView(const EmbossReservedDollarVirtualMinSizeInBytesView &) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView(EmbossReservedDollarVirtualMinSizeInBytesView &&) = default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(const EmbossReservedDollarVirtualMinSizeInBytesView &) =
-        default;
-    EmbossReservedDollarVirtualMinSizeInBytesView &operator=(EmbossReservedDollarVirtualMinSizeInBytesView &&) =
-        default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
     template <class Stream>
-    void WriteToTextStream(Stream *emboss_reserved_local_stream,
-                           const ::emboss::TextOutputOptions
-                               &emboss_reserved_local_options) const {
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
       ::emboss::support::WriteIntegerViewToTextStream(
           this, emboss_reserved_local_stream, emboss_reserved_local_options);
     }
@@ -8515,27 +8632,24 @@ class GenericSizedArrayOfBiasedValuesView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView MinSizeInBytes() {
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
   static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
-
-
  private:
   Storage backing_;
-  
-  
 
   template <class OtherStorage>
   friend class GenericSizedArrayOfBiasedValuesView;
 };
-using SizedArrayOfBiasedValuesView =
-    GenericSizedArrayOfBiasedValuesView</**/ ::emboss::support::ReadOnlyContiguousBuffer>;
-using SizedArrayOfBiasedValuesWriter =
-    GenericSizedArrayOfBiasedValuesView</**/ ::emboss::support::ReadWriteContiguousBuffer>;
+using SizedArrayOfBiasedValuesView = GenericSizedArrayOfBiasedValuesView<
+    /**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+using SizedArrayOfBiasedValuesWriter = GenericSizedArrayOfBiasedValuesView<
+    /**/ ::emboss::support::ReadWriteContiguousBuffer>;
 
 template <class View>
 struct EmbossReservedInternalIsGenericSizedArrayOfBiasedValuesView {
@@ -8554,485 +8668,607 @@ inline GenericSizedArrayOfBiasedValuesView<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
         1, 0>>
-MakeSizedArrayOfBiasedValuesView( T &&emboss_reserved_local_arg) {
+MakeSizedArrayOfBiasedValuesView(T&& emboss_reserved_local_arg) {
   return GenericSizedArrayOfBiasedValuesView<
       /**/ ::emboss::support::ContiguousBuffer<
-          typename ::std::remove_reference<decltype(
-              *::std::declval<T>()->data())>::type,
-          1, 0>>(
-       ::std::forward<T>(emboss_reserved_local_arg));
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
 }
 
 template <typename T>
-inline GenericSizedArrayOfBiasedValuesView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
-MakeSizedArrayOfBiasedValuesView( T *emboss_reserved_local_data,
-                 ::std::size_t emboss_reserved_local_size) {
-  return GenericSizedArrayOfBiasedValuesView</**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+inline GenericSizedArrayOfBiasedValuesView<
+    /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeSizedArrayOfBiasedValuesView(T* emboss_reserved_local_data,
+                                 ::std::size_t emboss_reserved_local_size) {
+  return GenericSizedArrayOfBiasedValuesView<
+      /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
 template <typename T, ::std::size_t kAlignment>
 inline GenericSizedArrayOfBiasedValuesView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
 MakeAlignedSizedArrayOfBiasedValuesView(
-     T *emboss_reserved_local_data,
-    ::std::size_t emboss_reserved_local_size) {
+    T* emboss_reserved_local_data, ::std::size_t emboss_reserved_local_size) {
   return GenericSizedArrayOfBiasedValuesView<
       /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
-       emboss_reserved_local_data,
-      emboss_reserved_local_size);
+      emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
-namespace MultiVersion {
-
-}  // namespace MultiVersion
-
+namespace MultiVersion {}  // namespace MultiVersion
 
 template <class Storage>
 inline typename ::emboss::support::EnumView<
     /**/ ::emboss::test::MessageId,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+    ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        8>>
 
- GenericMultiVersionView<Storage>::message_id()
-    const {
-
-  if ( has_message_id().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+GenericMultiVersionView<Storage>::message_id() const {
+  if (has_message_id().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::support::EnumView<
-    /**/ ::emboss::test::MessageId,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      return ::emboss::support::EnumView<
+          /**/ ::emboss::test::MessageId,
+          ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              8>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::support::EnumView<
-    /**/ ::emboss::test::MessageId,
-    ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      /**/ ::emboss::test::MessageId,
+      ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericMultiVersionView<Storage>::has_message_id() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
 
-
 template <class Storage>
-inline typename ::emboss::test::GenericAxesView<typename Storage::template OffsetStorageType</**/0, 1>>
+inline typename ::emboss::test::GenericAxesView<
+    typename Storage::template OffsetStorageType</**/ 0, 1>>
 
- GenericMultiVersionView<Storage>::axes()
-    const {
+GenericMultiVersionView<Storage>::axes() const {
   const auto emboss_reserved_local_subexpr_1 = product();
-  const auto emboss_reserved_local_subexpr_2 = (emboss_reserved_local_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::emboss::test::Product>(static_cast</**/::emboss::test::Product>(emboss_reserved_local_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::Product>());
-  const auto emboss_reserved_local_subexpr_3 = ::emboss::support::Equal</**/::emboss::test::Product, bool, ::emboss::test::Product, ::emboss::test::Product>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::emboss::test::Product>(static_cast</**/::emboss::test::Product>(23)));
-  const auto emboss_reserved_local_subexpr_4 = ::emboss::support::Choice</**/::std::int32_t, ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_3, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(3LL)), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL)));
+  const auto emboss_reserved_local_subexpr_2 =
+      (emboss_reserved_local_subexpr_1.Ok()
+           ? ::emboss::support::Maybe</**/ ::emboss::test::Product>(
+                 static_cast</**/ ::emboss::test::Product>(
+                     emboss_reserved_local_subexpr_1.UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::emboss::test::Product>());
+  const auto emboss_reserved_local_subexpr_3 =
+      ::emboss::support::Equal</**/ ::emboss::test::Product, bool,
+                               ::emboss::test::Product,
+                               ::emboss::test::Product>(
+          emboss_reserved_local_subexpr_2,
+          ::emboss::support::Maybe</**/ ::emboss::test::Product>(
+              static_cast</**/ ::emboss::test::Product>(23)));
+  const auto emboss_reserved_local_subexpr_4 =
+      ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                ::std::int32_t, ::std::int32_t>(
+          emboss_reserved_local_subexpr_3,
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(3LL)),
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(2LL)));
 
-  if (emboss_reserved_local_subexpr_4.Known() &&  has_axes().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(12LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
+  if (emboss_reserved_local_subexpr_4.Known() && has_axes().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(12LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::test::GenericAxesView<typename Storage::template OffsetStorageType</**/0, 1>>
+      return ::emboss::test::GenericAxesView<
+          typename Storage::template OffsetStorageType</**/ 0, 1>>
 
-(
-                emboss_reserved_local_subexpr_4.ValueOrDefault(),  backing_
-                        .template GetOffsetStorage<0,
-                                                   1>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (emboss_reserved_local_subexpr_4.ValueOrDefault(),
+           backing_.template GetOffsetStorage<0, 1>(
+               emboss_reserved_local_offset.ValueOrDefault(),
+               emboss_reserved_local_size.ValueOrDefault()));
     }
   }
-  return ::emboss::test::GenericAxesView<typename Storage::template OffsetStorageType</**/0, 1>>
+  return ::emboss::test::GenericAxesView<
+      typename Storage::template OffsetStorageType</**/ 0, 1>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericMultiVersionView<Storage>::has_axes() const {
-  return ::emboss::support::Equal</**/::emboss::test::MessageId, bool, ::emboss::test::MessageId, ::emboss::test::MessageId>((message_id().Ok()    ? ::emboss::support::Maybe</**/::emboss::test::MessageId>(static_cast</**/::emboss::test::MessageId>(message_id().UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::MessageId>()), ::emboss::support::Maybe</**/::emboss::test::MessageId>(static_cast</**/::emboss::test::MessageId>(0)));
+  return ::emboss::support::Equal</**/ ::emboss::test::MessageId, bool,
+                                  ::emboss::test::MessageId,
+                                  ::emboss::test::MessageId>(
+      (message_id().Ok()
+           ? ::emboss::support::Maybe</**/ ::emboss::test::MessageId>(
+                 static_cast</**/ ::emboss::test::MessageId>(
+                     message_id().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::emboss::test::MessageId>()),
+      ::emboss::support::Maybe</**/ ::emboss::test::MessageId>(
+          static_cast</**/ ::emboss::test::MessageId>(0)));
 }
 
-
 template <class Storage>
-inline typename ::emboss::test::GenericConfigView<typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 32>>
+inline typename ::emboss::test::GenericConfigView<
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 1>>,
+        32>>
 
- GenericMultiVersionView<Storage>::config()
-    const {
-
-  if ( has_config().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
+GenericMultiVersionView<Storage>::config() const {
+  if (has_config().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::test::GenericConfigView<typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 32>>
+      return ::emboss::test::GenericConfigView<
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 1>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   1>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 1>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
-  return ::emboss::test::GenericConfigView<typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 32>>
+  return ::emboss::test::GenericConfigView<typename ::emboss::support::BitBlock<
+      /**/ ::emboss::support::LittleEndianByteOrderer<
+          typename Storage::template OffsetStorageType</**/ 0, 1>>,
+      32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericMultiVersionView<Storage>::has_config() const {
-  return ::emboss::support::Equal</**/::emboss::test::MessageId, bool, ::emboss::test::MessageId, ::emboss::test::MessageId>((message_id().Ok()    ? ::emboss::support::Maybe</**/::emboss::test::MessageId>(static_cast</**/::emboss::test::MessageId>(message_id().UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::MessageId>()), ::emboss::support::Maybe</**/::emboss::test::MessageId>(static_cast</**/::emboss::test::MessageId>(1)));
+  return ::emboss::support::Equal</**/ ::emboss::test::MessageId, bool,
+                                  ::emboss::test::MessageId,
+                                  ::emboss::test::MessageId>(
+      (message_id().Ok()
+           ? ::emboss::support::Maybe</**/ ::emboss::test::MessageId>(
+                 static_cast</**/ ::emboss::test::MessageId>(
+                     message_id().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::emboss::test::MessageId>()),
+      ::emboss::support::Maybe</**/ ::emboss::test::MessageId>(
+          static_cast</**/ ::emboss::test::MessageId>(1)));
 }
 
-
 template <class Storage>
-inline typename ::emboss::test::GenericConfigVXView<typename Storage::template OffsetStorageType</**/0, 1>>
+inline typename ::emboss::test::GenericConfigVXView<
+    typename Storage::template OffsetStorageType</**/ 0, 1>>
 
- GenericMultiVersionView<Storage>::config_vx()
-    const {
-
-  if ( has_config_vx().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
+GenericMultiVersionView<Storage>::config_vx() const {
+  if (has_config_vx().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(8LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::test::GenericConfigVXView<typename Storage::template OffsetStorageType</**/0, 1>>
+      return ::emboss::test::GenericConfigVXView<
+          typename Storage::template OffsetStorageType</**/ 0, 1>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   1>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 1>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
-  return ::emboss::test::GenericConfigVXView<typename Storage::template OffsetStorageType</**/0, 1>>
+  return ::emboss::test::GenericConfigVXView<
+      typename Storage::template OffsetStorageType</**/ 0, 1>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericMultiVersionView<Storage>::has_config_vx() const {
-  return ::emboss::support::And</**/bool, bool, bool, bool>(::emboss::support::Equal</**/::emboss::test::Product, bool, ::emboss::test::Product, ::emboss::test::Product>((product().Ok()    ? ::emboss::support::Maybe</**/::emboss::test::Product>(static_cast</**/::emboss::test::Product>(product().UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::Product>()), ::emboss::support::Maybe</**/::emboss::test::Product>(static_cast</**/::emboss::test::Product>(23))), ::emboss::support::Equal</**/::emboss::test::MessageId, bool, ::emboss::test::MessageId, ::emboss::test::MessageId>((message_id().Ok()    ? ::emboss::support::Maybe</**/::emboss::test::MessageId>(static_cast</**/::emboss::test::MessageId>(message_id().UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::MessageId>()), ::emboss::support::Maybe</**/::emboss::test::MessageId>(static_cast</**/::emboss::test::MessageId>(1))));
+  return ::emboss::support::And</**/ bool, bool, bool, bool>(
+      ::emboss::support::Equal</**/ ::emboss::test::Product, bool,
+                               ::emboss::test::Product,
+                               ::emboss::test::Product>(
+          (product().Ok()
+               ? ::emboss::support::Maybe</**/ ::emboss::test::Product>(
+                     static_cast</**/ ::emboss::test::Product>(
+                         product().UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::emboss::test::Product>()),
+          ::emboss::support::Maybe</**/ ::emboss::test::Product>(
+              static_cast</**/ ::emboss::test::Product>(23))),
+      ::emboss::support::Equal</**/ ::emboss::test::MessageId, bool,
+                               ::emboss::test::MessageId,
+                               ::emboss::test::MessageId>(
+          (message_id().Ok()
+               ? ::emboss::support::Maybe</**/ ::emboss::test::MessageId>(
+                     static_cast</**/ ::emboss::test::MessageId>(
+                         message_id().UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::emboss::test::MessageId>()),
+          ::emboss::support::Maybe</**/ ::emboss::test::MessageId>(
+              static_cast</**/ ::emboss::test::MessageId>(1))));
 }
 
-
 template <class Storage>
-inline typename GenericMultiVersionView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+inline typename GenericMultiVersionView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
 GenericMultiVersionView<Storage>::IntrinsicSizeInBytes() const {
-  return
-      typename GenericMultiVersionView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
-          *this);
+  return typename GenericMultiVersionView<
+      Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView(*this);
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericMultiVersionView<Storage>::has_IntrinsicSizeInBytes() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 namespace MultiVersion {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(13LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(13LL))
+      .ValueOrDefault();
 }
 }  // namespace MultiVersion
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericMultiVersionView<Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericMultiVersionView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
   return MultiVersion::MaxSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericMultiVersionView<
+inline constexpr ::std::int32_t GenericMultiVersionView<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
   return MultiVersion::MaxSizeInBytes();
 }
 
 namespace MultiVersion {
 inline constexpr ::std::int32_t MinSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
 }
 }  // namespace MultiVersion
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericMultiVersionView<Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericMultiVersionView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
   return MultiVersion::MinSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericMultiVersionView<
+inline constexpr ::std::int32_t GenericMultiVersionView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return MultiVersion::MinSizeInBytes();
 }
-namespace Axes {
-
-}  // namespace Axes
-
+namespace Axes {}  // namespace Axes
 
 template <class Storage>
 inline typename ::emboss::support::GenericArrayView<
-    typename ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 0>::template OffsetStorageType</**/4, 0>>
+    typename ::emboss::test::GenericAxisView<
+        typename Storage::template OffsetStorageType<
+            /**/ 0, 0>::template OffsetStorageType</**/ 4, 0>>
 
-, typename Storage::template OffsetStorageType</**/0, 0>, 4,
-    8 , ::emboss::test::AxisType>
+    ,
+    typename Storage::template OffsetStorageType</**/ 0, 0>, 4, 8,
+    ::emboss::test::AxisType>
 
- GenericAxesView<Storage>::values()
-    const {
-
-  if (::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(-1)).Known() &&  has_values().ValueOr(false)) {
+GenericAxesView<Storage>::values() const {
+  if (::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+          static_cast</**/ ::emboss::test::AxisType>(-1))
+          .Known() &&
+      has_values().ValueOr(false)) {
     const auto emboss_reserved_local_subexpr_1 = axes();
-    const auto emboss_reserved_local_subexpr_2 = (emboss_reserved_local_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
-    const auto emboss_reserved_local_subexpr_3 = ::emboss::support::Product</**/::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)));
+    const auto emboss_reserved_local_subexpr_2 =
+        (emboss_reserved_local_subexpr_1.Ok()
+             ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                   static_cast</**/ ::std::int32_t>(
+                       emboss_reserved_local_subexpr_1.UncheckedRead()))
+             : ::emboss::support::Maybe</**/ ::std::int32_t>());
+    const auto emboss_reserved_local_subexpr_3 =
+        ::emboss::support::Product</**/ ::std::int32_t, ::std::int32_t,
+                                   ::std::int32_t, ::std::int32_t>(
+            emboss_reserved_local_subexpr_2,
+            ::emboss::support::Maybe</**/ ::std::int32_t>(
+                static_cast</**/ ::std::int32_t>(4LL)));
 
     auto emboss_reserved_local_size = emboss_reserved_local_subexpr_3;
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::support::GenericArrayView<
-    typename ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 0>::template OffsetStorageType</**/4, 0>>
+      return ::emboss::support::GenericArrayView<
+          typename ::emboss::test::GenericAxisView<
+              typename Storage::template OffsetStorageType<
+                  /**/ 0, 0>::template OffsetStorageType</**/ 4, 0>>
 
-, typename Storage::template OffsetStorageType</**/0, 0>, 4,
-    8 , ::emboss::test::AxisType>
+          ,
+          typename Storage::template OffsetStorageType</**/ 0, 0>, 4, 8,
+          ::emboss::test::AxisType>
 
-(
-                ::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(-1)).ValueOrDefault(),  backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+               static_cast</**/ ::emboss::test::AxisType>(-1))
+               .ValueOrDefault(),
+           backing_.template GetOffsetStorage<0, 0>(
+               emboss_reserved_local_offset.ValueOrDefault(),
+               emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::support::GenericArrayView<
-    typename ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 0>::template OffsetStorageType</**/4, 0>>
+      typename ::emboss::test::GenericAxisView<
+          typename Storage::template OffsetStorageType<
+              /**/ 0, 0>::template OffsetStorageType</**/ 4, 0>>
 
-, typename Storage::template OffsetStorageType</**/0, 0>, 4,
-    8 , ::emboss::test::AxisType>
+      ,
+      typename Storage::template OffsetStorageType</**/ 0, 0>, 4, 8,
+      ::emboss::test::AxisType>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericAxesView<Storage>::has_values() const {
-  return ::emboss::support::Maybe</**/bool>(true);
-}
-
-
-template <class Storage>
-inline typename ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 0>>
-
- GenericAxesView<Storage>::x()
+inline ::emboss::support::Maybe<bool> GenericAxesView<Storage>::has_values()
     const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
 
-  if (::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(1)).Known() &&  has_x().ValueOr(false)) {
+template <class Storage>
+inline typename ::emboss::test::GenericAxisView<
+    typename Storage::template OffsetStorageType</**/ 0, 0>>
 
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+GenericAxesView<Storage>::x() const {
+  if (::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+          static_cast</**/ ::emboss::test::AxisType>(1))
+          .Known() &&
+      has_x().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 0>>
+      return ::emboss::test::GenericAxisView<
+          typename Storage::template OffsetStorageType</**/ 0, 0>>
 
-(
-                ::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(1)).ValueOrDefault(),  backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+               static_cast</**/ ::emboss::test::AxisType>(1))
+               .ValueOrDefault(),
+           backing_.template GetOffsetStorage<0, 0>(
+               emboss_reserved_local_offset.ValueOrDefault(),
+               emboss_reserved_local_size.ValueOrDefault()));
     }
   }
-  return ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 0>>
+  return ::emboss::test::GenericAxisView<
+      typename Storage::template OffsetStorageType</**/ 0, 0>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericAxesView<Storage>::has_x() const {
-  return ::emboss::support::GreaterThan</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>((axes().Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(axes().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)));
+inline ::emboss::support::Maybe<bool> GenericAxesView<Storage>::has_x() const {
+  return ::emboss::support::GreaterThan</**/ ::std::int32_t, bool,
+                                        ::std::int32_t, ::std::int32_t>(
+      (axes().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                 static_cast</**/ ::std::int32_t>(axes().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(0LL)));
 }
 
-
 template <class Storage>
-inline typename ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 4>>
+inline typename ::emboss::test::GenericAxisView<
+    typename Storage::template OffsetStorageType</**/ 0, 4>>
 
- GenericAxesView<Storage>::y()
-    const {
-
-  if (::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(2)).Known() &&  has_y().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericAxesView<Storage>::y() const {
+  if (::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+          static_cast</**/ ::emboss::test::AxisType>(2))
+          .Known() &&
+      has_y().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 4>>
+      return ::emboss::test::GenericAxisView<
+          typename Storage::template OffsetStorageType</**/ 0, 4>>
 
-(
-                ::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(2)).ValueOrDefault(),  backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+               static_cast</**/ ::emboss::test::AxisType>(2))
+               .ValueOrDefault(),
+           backing_.template GetOffsetStorage<0, 4>(
+               emboss_reserved_local_offset.ValueOrDefault(),
+               emboss_reserved_local_size.ValueOrDefault()));
     }
   }
-  return ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 4>>
+  return ::emboss::test::GenericAxisView<
+      typename Storage::template OffsetStorageType</**/ 0, 4>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericAxesView<Storage>::has_y() const {
-  return ::emboss::support::GreaterThan</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>((axes().Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(axes().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)));
+inline ::emboss::support::Maybe<bool> GenericAxesView<Storage>::has_y() const {
+  return ::emboss::support::GreaterThan</**/ ::std::int32_t, bool,
+                                        ::std::int32_t, ::std::int32_t>(
+      (axes().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                 static_cast</**/ ::std::int32_t>(axes().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(1LL)));
 }
 
-
 template <class Storage>
-inline typename ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 8>>
+inline typename ::emboss::test::GenericAxisView<
+    typename Storage::template OffsetStorageType</**/ 0, 8>>
 
- GenericAxesView<Storage>::z()
-    const {
-
-  if (::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(3)).Known() &&  has_z().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL));
+GenericAxesView<Storage>::z() const {
+  if (::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+          static_cast</**/ ::emboss::test::AxisType>(3))
+          .Known() &&
+      has_z().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 8>>
+      return ::emboss::test::GenericAxisView<
+          typename Storage::template OffsetStorageType</**/ 0, 8>>
 
-(
-                ::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(3)).ValueOrDefault(),  backing_
-                        .template GetOffsetStorage<0,
-                                                   8>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+               static_cast</**/ ::emboss::test::AxisType>(3))
+               .ValueOrDefault(),
+           backing_.template GetOffsetStorage<0, 8>(
+               emboss_reserved_local_offset.ValueOrDefault(),
+               emboss_reserved_local_size.ValueOrDefault()));
     }
   }
-  return ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 8>>
+  return ::emboss::test::GenericAxisView<
+      typename Storage::template OffsetStorageType</**/ 0, 8>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericAxesView<Storage>::has_z() const {
-  return ::emboss::support::GreaterThan</**/::std::int32_t, bool, ::std::int32_t, ::std::int32_t>((axes().Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(axes().UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>()), ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL)));
+inline ::emboss::support::Maybe<bool> GenericAxesView<Storage>::has_z() const {
+  return ::emboss::support::GreaterThan</**/ ::std::int32_t, bool,
+                                        ::std::int32_t, ::std::int32_t>(
+      (axes().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                 static_cast</**/ ::std::int32_t>(axes().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(2LL)));
 }
 
-
 template <class Storage>
-inline typename GenericAxesView<Storage>::EmbossReservedVirtualAxisCountPlusOneView
-GenericAxesView<Storage>::axis_count_plus_one() const {
-  return
-      typename GenericAxesView<Storage>::EmbossReservedVirtualAxisCountPlusOneView(
-          *this);
+inline
+    typename GenericAxesView<Storage>::EmbossReservedVirtualAxisCountPlusOneView
+    GenericAxesView<Storage>::axis_count_plus_one() const {
+  return typename GenericAxesView<
+      Storage>::EmbossReservedVirtualAxisCountPlusOneView(*this);
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericAxesView<Storage>::has_axis_count_plus_one() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
 
-
 template <class Storage>
-inline typename GenericAxesView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+inline typename GenericAxesView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
 GenericAxesView<Storage>::IntrinsicSizeInBytes() const {
-  return
-      typename GenericAxesView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
-          *this);
+  return typename GenericAxesView<
+      Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView(*this);
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericAxesView<Storage>::has_IntrinsicSizeInBytes() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 namespace Axes {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(60LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(60LL))
+      .ValueOrDefault();
 }
 }  // namespace Axes
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxesView<Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericAxesView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
   return Axes::MaxSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxesView<
+inline constexpr ::std::int32_t GenericAxesView<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
   return Axes::MaxSizeInBytes();
 }
 
 namespace Axes {
 inline constexpr ::std::int32_t MinSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(0LL))
+      .ValueOrDefault();
 }
 }  // namespace Axes
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxesView<Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericAxesView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
   return Axes::MinSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxesView<
+inline constexpr ::std::int32_t GenericAxesView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return Axes::MinSizeInBytes();
 }
-namespace AxisPair {
-
-}  // namespace AxisPair
-
+namespace AxisPair {}  // namespace AxisPair
 
 template <class Storage>
 inline typename GenericAxisPairView<Storage>::EmbossReservedVirtualAxisTypeAView
@@ -9045,47 +9281,53 @@ GenericAxisPairView<Storage>::axis_type_a() const {
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericAxisPairView<Storage>::has_axis_type_a() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
 
-
 template <class Storage>
-inline typename ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 0>>
+inline typename ::emboss::test::GenericAxisView<
+    typename Storage::template OffsetStorageType</**/ 0, 0>>
 
- GenericAxisPairView<Storage>::axis_a()
-    const {
+GenericAxisPairView<Storage>::axis_a() const {
   const auto emboss_reserved_local_subexpr_1 = axis_type_a();
-  const auto emboss_reserved_local_subexpr_2 = (emboss_reserved_local_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(emboss_reserved_local_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::AxisType>());
+  const auto emboss_reserved_local_subexpr_2 =
+      (emboss_reserved_local_subexpr_1.Ok()
+           ? ::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+                 static_cast</**/ ::emboss::test::AxisType>(
+                     emboss_reserved_local_subexpr_1.UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::emboss::test::AxisType>());
 
-  if (emboss_reserved_local_subexpr_2.Known() &&  has_axis_a().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+  if (emboss_reserved_local_subexpr_2.Known() && has_axis_a().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 0>>
+      return ::emboss::test::GenericAxisView<
+          typename Storage::template OffsetStorageType</**/ 0, 0>>
 
-(
-                emboss_reserved_local_subexpr_2.ValueOrDefault(),  backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (emboss_reserved_local_subexpr_2.ValueOrDefault(),
+           backing_.template GetOffsetStorage<0, 0>(
+               emboss_reserved_local_offset.ValueOrDefault(),
+               emboss_reserved_local_size.ValueOrDefault()));
     }
   }
-  return ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 0>>
+  return ::emboss::test::GenericAxisView<
+      typename Storage::template OffsetStorageType</**/ 0, 0>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericAxisPairView<Storage>::has_axis_a() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+inline ::emboss::support::Maybe<bool> GenericAxisPairView<Storage>::has_axis_a()
+    const {
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 template <class Storage>
 inline typename GenericAxisPairView<Storage>::EmbossReservedVirtualAxisTypeBView
@@ -9098,586 +9340,671 @@ GenericAxisPairView<Storage>::axis_type_b() const {
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericAxisPairView<Storage>::has_axis_type_b() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
 
-
 template <class Storage>
-inline typename ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 4>>
+inline typename ::emboss::test::GenericAxisView<
+    typename Storage::template OffsetStorageType</**/ 0, 4>>
 
- GenericAxisPairView<Storage>::axis_b()
-    const {
+GenericAxisPairView<Storage>::axis_b() const {
   const auto emboss_reserved_local_subexpr_1 = axis_type_b();
-  const auto emboss_reserved_local_subexpr_2 = (emboss_reserved_local_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(emboss_reserved_local_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::AxisType>());
+  const auto emboss_reserved_local_subexpr_2 =
+      (emboss_reserved_local_subexpr_1.Ok()
+           ? ::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+                 static_cast</**/ ::emboss::test::AxisType>(
+                     emboss_reserved_local_subexpr_1.UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::emboss::test::AxisType>());
 
-  if (emboss_reserved_local_subexpr_2.Known() &&  has_axis_b().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+  if (emboss_reserved_local_subexpr_2.Known() && has_axis_b().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 4>>
+      return ::emboss::test::GenericAxisView<
+          typename Storage::template OffsetStorageType</**/ 0, 4>>
 
-(
-                emboss_reserved_local_subexpr_2.ValueOrDefault(),  backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (emboss_reserved_local_subexpr_2.ValueOrDefault(),
+           backing_.template GetOffsetStorage<0, 4>(
+               emboss_reserved_local_offset.ValueOrDefault(),
+               emboss_reserved_local_size.ValueOrDefault()));
     }
   }
-  return ::emboss::test::GenericAxisView<typename Storage::template OffsetStorageType</**/0, 4>>
+  return ::emboss::test::GenericAxisView<
+      typename Storage::template OffsetStorageType</**/ 0, 4>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericAxisPairView<Storage>::has_axis_b() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+inline ::emboss::support::Maybe<bool> GenericAxisPairView<Storage>::has_axis_b()
+    const {
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 namespace AxisPair {
 inline constexpr ::std::int32_t IntrinsicSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(8LL))
+      .ValueOrDefault();
 }
 }  // namespace AxisPair
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxisPairView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericAxisPairView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
   return AxisPair::IntrinsicSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxisPairView<
-    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
+inline constexpr ::std::int32_t GenericAxisPairView<Storage>::
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
   return AxisPair::IntrinsicSizeInBytes();
 }
 
 namespace AxisPair {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(8LL))
+      .ValueOrDefault();
 }
 }  // namespace AxisPair
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxisPairView<Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericAxisPairView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
   return AxisPair::MaxSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxisPairView<
+inline constexpr ::std::int32_t GenericAxisPairView<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
   return AxisPair::MaxSizeInBytes();
 }
 
 namespace AxisPair {
 inline constexpr ::std::int32_t MinSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(8LL))
+      .ValueOrDefault();
 }
 }  // namespace AxisPair
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxisPairView<Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericAxisPairView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
   return AxisPair::MinSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxisPairView<
+inline constexpr ::std::int32_t GenericAxisPairView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return AxisPair::MinSizeInBytes();
 }
-namespace AxesEnvelope {
-
-}  // namespace AxesEnvelope
-
+namespace AxesEnvelope {}  // namespace AxesEnvelope
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        8>>
 
- GenericAxesEnvelopeView<Storage>::axis_count()
-    const {
-
-  if ( has_axis_count().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+GenericAxesEnvelopeView<Storage>::axis_count() const {
+  if (has_axis_count().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              8>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericAxesEnvelopeView<Storage>::has_axis_count() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
 
-
 template <class Storage>
-inline typename ::emboss::test::GenericAxesView<typename Storage::template OffsetStorageType</**/0, 1>>
+inline typename ::emboss::test::GenericAxesView<
+    typename Storage::template OffsetStorageType</**/ 0, 1>>
 
- GenericAxesEnvelopeView<Storage>::axes()
-    const {
+GenericAxesEnvelopeView<Storage>::axes() const {
   const auto emboss_reserved_local_subexpr_1 = axis_count();
-  const auto emboss_reserved_local_subexpr_2 = (emboss_reserved_local_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
+  const auto emboss_reserved_local_subexpr_2 =
+      (emboss_reserved_local_subexpr_1.Ok()
+           ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                 static_cast</**/ ::std::int32_t>(
+                     emboss_reserved_local_subexpr_1.UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::int32_t>());
 
-  if (emboss_reserved_local_subexpr_2.Known() &&  has_axes().ValueOr(false)) {
-    const auto emboss_reserved_local_subexpr_3 = ::emboss::support::Product</**/::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t>(emboss_reserved_local_subexpr_2, ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)));
+  if (emboss_reserved_local_subexpr_2.Known() && has_axes().ValueOr(false)) {
+    const auto emboss_reserved_local_subexpr_3 =
+        ::emboss::support::Product</**/ ::std::int32_t, ::std::int32_t,
+                                   ::std::int32_t, ::std::int32_t>(
+            emboss_reserved_local_subexpr_2,
+            ::emboss::support::Maybe</**/ ::std::int32_t>(
+                static_cast</**/ ::std::int32_t>(4LL)));
 
     auto emboss_reserved_local_size = emboss_reserved_local_subexpr_3;
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::test::GenericAxesView<typename Storage::template OffsetStorageType</**/0, 1>>
+      return ::emboss::test::GenericAxesView<
+          typename Storage::template OffsetStorageType</**/ 0, 1>>
 
-(
-                emboss_reserved_local_subexpr_2.ValueOrDefault(),  backing_
-                        .template GetOffsetStorage<0,
-                                                   1>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (emboss_reserved_local_subexpr_2.ValueOrDefault(),
+           backing_.template GetOffsetStorage<0, 1>(
+               emboss_reserved_local_offset.ValueOrDefault(),
+               emboss_reserved_local_size.ValueOrDefault()));
     }
   }
-  return ::emboss::test::GenericAxesView<typename Storage::template OffsetStorageType</**/0, 1>>
+  return ::emboss::test::GenericAxesView<
+      typename Storage::template OffsetStorageType</**/ 0, 1>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericAxesEnvelopeView<Storage>::has_axes() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
 
-
 template <class Storage>
-inline typename GenericAxesEnvelopeView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+inline typename GenericAxesEnvelopeView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
 GenericAxesEnvelopeView<Storage>::IntrinsicSizeInBytes() const {
-  return
-      typename GenericAxesEnvelopeView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
-          *this);
+  return typename GenericAxesEnvelopeView<
+      Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView(*this);
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericAxesEnvelopeView<Storage>::has_IntrinsicSizeInBytes() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 namespace AxesEnvelope {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1021LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1021LL))
+      .ValueOrDefault();
 }
 }  // namespace AxesEnvelope
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxesEnvelopeView<Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericAxesEnvelopeView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
   return AxesEnvelope::MaxSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxesEnvelopeView<
+inline constexpr ::std::int32_t GenericAxesEnvelopeView<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
   return AxesEnvelope::MaxSizeInBytes();
 }
 
 namespace AxesEnvelope {
 inline constexpr ::std::int32_t MinSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
 }
 }  // namespace AxesEnvelope
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxesEnvelopeView<Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericAxesEnvelopeView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
   return AxesEnvelope::MinSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxesEnvelopeView<
+inline constexpr ::std::int32_t GenericAxesEnvelopeView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return AxesEnvelope::MinSizeInBytes();
 }
-namespace Axis {
-
-}  // namespace Axis
-
+namespace Axis {}  // namespace Axis
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        32>>
 
- GenericAxisView<Storage>::value()
-    const {
-
-  if ( has_value().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+GenericAxisView<Storage>::value() const {
+  if (has_value().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericAxisView<Storage>::has_value() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+inline ::emboss::support::Maybe<bool> GenericAxisView<Storage>::has_value()
+    const {
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 template <class Storage>
 inline typename GenericAxisView<Storage>::EmbossReservedVirtualAxisTypeView
 GenericAxisView<Storage>::axis_type() const {
-  return
-      typename GenericAxisView<Storage>::EmbossReservedVirtualAxisTypeView(
-          *this);
+  return typename GenericAxisView<Storage>::EmbossReservedVirtualAxisTypeView(
+      *this);
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericAxisView<Storage>::has_axis_type() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+inline ::emboss::support::Maybe<bool> GenericAxisView<Storage>::has_axis_type()
+    const {
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        32>>
 
- GenericAxisView<Storage>::x()
-    const {
-
-  if ( has_x().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+GenericAxisView<Storage>::x() const {
+  if (has_x().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericAxisView<Storage>::has_x() const {
-  return ::emboss::support::Equal</**/::emboss::test::AxisType, bool, ::emboss::test::AxisType, ::emboss::test::AxisType>((axis_type().Ok()    ? ::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(axis_type().UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::AxisType>()), ::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(1)));
+inline ::emboss::support::Maybe<bool> GenericAxisView<Storage>::has_x() const {
+  return ::emboss::support::Equal</**/ ::emboss::test::AxisType, bool,
+                                  ::emboss::test::AxisType,
+                                  ::emboss::test::AxisType>(
+      (axis_type().Ok()
+           ? ::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+                 static_cast</**/ ::emboss::test::AxisType>(
+                     axis_type().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::emboss::test::AxisType>()),
+      ::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+          static_cast</**/ ::emboss::test::AxisType>(1)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        32>>
 
- GenericAxisView<Storage>::y()
-    const {
-
-  if ( has_y().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+GenericAxisView<Storage>::y() const {
+  if (has_y().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericAxisView<Storage>::has_y() const {
-  return ::emboss::support::Equal</**/::emboss::test::AxisType, bool, ::emboss::test::AxisType, ::emboss::test::AxisType>((axis_type().Ok()    ? ::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(axis_type().UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::AxisType>()), ::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(2)));
+inline ::emboss::support::Maybe<bool> GenericAxisView<Storage>::has_y() const {
+  return ::emboss::support::Equal</**/ ::emboss::test::AxisType, bool,
+                                  ::emboss::test::AxisType,
+                                  ::emboss::test::AxisType>(
+      (axis_type().Ok()
+           ? ::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+                 static_cast</**/ ::emboss::test::AxisType>(
+                     axis_type().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::emboss::test::AxisType>()),
+      ::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+          static_cast</**/ ::emboss::test::AxisType>(2)));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        32>>
 
- GenericAxisView<Storage>::z()
-    const {
-
-  if ( has_z().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+GenericAxisView<Storage>::z() const {
+  if (has_z().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericAxisView<Storage>::has_z() const {
-  return ::emboss::support::Equal</**/::emboss::test::AxisType, bool, ::emboss::test::AxisType, ::emboss::test::AxisType>((axis_type().Ok()    ? ::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(axis_type().UncheckedRead()))    : ::emboss::support::Maybe</**/::emboss::test::AxisType>()), ::emboss::support::Maybe</**/::emboss::test::AxisType>(static_cast</**/::emboss::test::AxisType>(3)));
+inline ::emboss::support::Maybe<bool> GenericAxisView<Storage>::has_z() const {
+  return ::emboss::support::Equal</**/ ::emboss::test::AxisType, bool,
+                                  ::emboss::test::AxisType,
+                                  ::emboss::test::AxisType>(
+      (axis_type().Ok()
+           ? ::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+                 static_cast</**/ ::emboss::test::AxisType>(
+                     axis_type().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::emboss::test::AxisType>()),
+      ::emboss::support::Maybe</**/ ::emboss::test::AxisType>(
+          static_cast</**/ ::emboss::test::AxisType>(3)));
 }
-
 
 namespace Axis {
 inline constexpr ::std::int32_t IntrinsicSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(4LL))
+      .ValueOrDefault();
 }
 }  // namespace Axis
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxisView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericAxisView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
   return Axis::IntrinsicSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxisView<
-    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
+inline constexpr ::std::int32_t GenericAxisView<Storage>::
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
   return Axis::IntrinsicSizeInBytes();
 }
 
 namespace Axis {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(4LL))
+      .ValueOrDefault();
 }
 }  // namespace Axis
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxisView<Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericAxisView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
   return Axis::MaxSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxisView<
+inline constexpr ::std::int32_t GenericAxisView<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
   return Axis::MaxSizeInBytes();
 }
 
 namespace Axis {
 inline constexpr ::std::int32_t MinSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(4LL))
+      .ValueOrDefault();
 }
 }  // namespace Axis
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxisView<Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericAxisView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
   return Axis::MinSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericAxisView<
+inline constexpr ::std::int32_t GenericAxisView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return Axis::MinSizeInBytes();
 }
-namespace Config {
-
-}  // namespace Config
-
+namespace Config {}  // namespace Config
 
 template <class Storage>
 inline typename ::emboss::prelude::FlagView<
-    /**/ ::emboss::support::FixedSizeViewParameters<1, ::emboss::support::AllValuesAreOk>,
-    typename Storage::template OffsetStorageType</**/0, 31>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        1, ::emboss::support::AllValuesAreOk>,
+    typename Storage::template OffsetStorageType</**/ 0, 31>>
 
- GenericConfigView<Storage>::power()
-    const {
-
-  if ( has_power().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(31LL));
+GenericConfigView<Storage>::power() const {
+  if (has_power().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(31LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::FlagView<
-    /**/ ::emboss::support::FixedSizeViewParameters<1, ::emboss::support::AllValuesAreOk>,
-    typename Storage::template OffsetStorageType</**/0, 31>>
+      return ::emboss::prelude::FlagView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              1, ::emboss::support::AllValuesAreOk>,
+          typename Storage::template OffsetStorageType</**/ 0, 31>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   31>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 31>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::FlagView<
-    /**/ ::emboss::support::FixedSizeViewParameters<1, ::emboss::support::AllValuesAreOk>,
-    typename Storage::template OffsetStorageType</**/0, 31>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          1, ::emboss::support::AllValuesAreOk>,
+      typename Storage::template OffsetStorageType</**/ 0, 31>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericConfigView<Storage>::has_power() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+inline ::emboss::support::Maybe<bool> GenericConfigView<Storage>::has_power()
+    const {
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 namespace Config {
 inline constexpr ::std::int32_t IntrinsicSizeInBits() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(32LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(32LL))
+      .ValueOrDefault();
 }
 }  // namespace Config
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericConfigView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBitsView::Read() {
+inline constexpr ::std::int32_t GenericConfigView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBitsView::Read() {
   return Config::IntrinsicSizeInBits();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericConfigView<
-    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBitsView::UncheckedRead() {
+inline constexpr ::std::int32_t GenericConfigView<Storage>::
+    EmbossReservedDollarVirtualIntrinsicSizeInBitsView::UncheckedRead() {
   return Config::IntrinsicSizeInBits();
 }
 
 namespace Config {
 inline constexpr ::std::int32_t MaxSizeInBits() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(32LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(32LL))
+      .ValueOrDefault();
 }
 }  // namespace Config
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericConfigView<Storage>::EmbossReservedDollarVirtualMaxSizeInBitsView::Read() {
+inline constexpr ::std::int32_t GenericConfigView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBitsView::Read() {
   return Config::MaxSizeInBits();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericConfigView<
+inline constexpr ::std::int32_t GenericConfigView<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBitsView::UncheckedRead() {
   return Config::MaxSizeInBits();
 }
 
 namespace Config {
 inline constexpr ::std::int32_t MinSizeInBits() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(32LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(32LL))
+      .ValueOrDefault();
 }
 }  // namespace Config
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericConfigView<Storage>::EmbossReservedDollarVirtualMinSizeInBitsView::Read() {
+inline constexpr ::std::int32_t GenericConfigView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBitsView::Read() {
   return Config::MinSizeInBits();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericConfigView<
+inline constexpr ::std::int32_t GenericConfigView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBitsView::UncheckedRead() {
   return Config::MinSizeInBits();
 }
@@ -9686,350 +10013,384 @@ namespace EmbossReservedAnonymousField1 {
 
 }  // namespace EmbossReservedAnonymousField1
 
-
 template <class Storage>
 inline typename ::emboss::prelude::FlagView<
-    /**/ ::emboss::support::FixedSizeViewParameters<1, ::emboss::support::AllValuesAreOk>,
-    typename Storage::template OffsetStorageType</**/0, 31>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        1, ::emboss::support::AllValuesAreOk>,
+    typename Storage::template OffsetStorageType</**/ 0, 31>>
 
- GenericEmbossReservedAnonymousField1View<Storage>::power()
-    const {
-
-  if ( has_power().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(31LL));
+GenericEmbossReservedAnonymousField1View<Storage>::power() const {
+  if (has_power().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(31LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::FlagView<
-    /**/ ::emboss::support::FixedSizeViewParameters<1, ::emboss::support::AllValuesAreOk>,
-    typename Storage::template OffsetStorageType</**/0, 31>>
+      return ::emboss::prelude::FlagView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              1, ::emboss::support::AllValuesAreOk>,
+          typename Storage::template OffsetStorageType</**/ 0, 31>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   31>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 31>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::FlagView<
-    /**/ ::emboss::support::FixedSizeViewParameters<1, ::emboss::support::AllValuesAreOk>,
-    typename Storage::template OffsetStorageType</**/0, 31>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          1, ::emboss::support::AllValuesAreOk>,
+      typename Storage::template OffsetStorageType</**/ 0, 31>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericEmbossReservedAnonymousField1View<Storage>::has_power() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 namespace EmbossReservedAnonymousField1 {
 inline constexpr ::std::int32_t IntrinsicSizeInBits() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(32LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(32LL))
+      .ValueOrDefault();
 }
 }  // namespace EmbossReservedAnonymousField1
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericEmbossReservedAnonymousField1View<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBitsView::Read() {
+inline constexpr ::std::int32_t GenericEmbossReservedAnonymousField1View<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBitsView::Read() {
   return EmbossReservedAnonymousField1::IntrinsicSizeInBits();
 }
 
 template <class Storage>
 inline constexpr ::std::int32_t
-GenericEmbossReservedAnonymousField1View<
-    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBitsView::UncheckedRead() {
+GenericEmbossReservedAnonymousField1View<Storage>::
+    EmbossReservedDollarVirtualIntrinsicSizeInBitsView::UncheckedRead() {
   return EmbossReservedAnonymousField1::IntrinsicSizeInBits();
 }
 
 namespace EmbossReservedAnonymousField1 {
 inline constexpr ::std::int32_t MaxSizeInBits() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(32LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(32LL))
+      .ValueOrDefault();
 }
 }  // namespace EmbossReservedAnonymousField1
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericEmbossReservedAnonymousField1View<Storage>::EmbossReservedDollarVirtualMaxSizeInBitsView::Read() {
+inline constexpr ::std::int32_t GenericEmbossReservedAnonymousField1View<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBitsView::Read() {
   return EmbossReservedAnonymousField1::MaxSizeInBits();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericEmbossReservedAnonymousField1View<
+inline constexpr ::std::int32_t GenericEmbossReservedAnonymousField1View<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBitsView::UncheckedRead() {
   return EmbossReservedAnonymousField1::MaxSizeInBits();
 }
 
 namespace EmbossReservedAnonymousField1 {
 inline constexpr ::std::int32_t MinSizeInBits() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(32LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(32LL))
+      .ValueOrDefault();
 }
 }  // namespace EmbossReservedAnonymousField1
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericEmbossReservedAnonymousField1View<Storage>::EmbossReservedDollarVirtualMinSizeInBitsView::Read() {
+inline constexpr ::std::int32_t GenericEmbossReservedAnonymousField1View<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBitsView::Read() {
   return EmbossReservedAnonymousField1::MinSizeInBits();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericEmbossReservedAnonymousField1View<
+inline constexpr ::std::int32_t GenericEmbossReservedAnonymousField1View<
     Storage>::EmbossReservedDollarVirtualMinSizeInBitsView::UncheckedRead() {
   return EmbossReservedAnonymousField1::MinSizeInBits();
 }
 
 }  // namespace ConfigVX
 
-
 template <class Storage>
-inline typename ::emboss::test::ConfigVX::GenericEmbossReservedAnonymousField1View<typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+inline
+    typename ::emboss::test::ConfigVX::GenericEmbossReservedAnonymousField1View<
+        typename ::emboss::support::BitBlock<
+            /**/ ::emboss::support::LittleEndianByteOrderer<
+                typename Storage::template OffsetStorageType</**/ 0, 0>>,
+            32>>
 
- GenericConfigVXView<Storage>::emboss_reserved_anonymous_field_1()
-    const {
-
-  if ( has_emboss_reserved_anonymous_field_1().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+    GenericConfigVXView<Storage>::emboss_reserved_anonymous_field_1() const {
+  if (has_emboss_reserved_anonymous_field_1().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::test::ConfigVX::GenericEmbossReservedAnonymousField1View<typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+      return ::emboss::test::ConfigVX::GenericEmbossReservedAnonymousField1View<
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
-  return ::emboss::test::ConfigVX::GenericEmbossReservedAnonymousField1View<typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 32>>
+  return ::emboss::test::ConfigVX::GenericEmbossReservedAnonymousField1View<
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericConfigVXView<Storage>::has_emboss_reserved_anonymous_field_1() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericConfigVXView<Storage>::has_power() const {
-  return ::emboss::support::And</**/bool, bool, bool, bool>(::emboss::support::Maybe</**/bool>(true), ::emboss::support::Maybe</**/bool>(true));
+inline ::emboss::support::Maybe<bool> GenericConfigVXView<Storage>::has_power()
+    const {
+  return ::emboss::support::And</**/ bool, bool, bool, bool>(
+      ::emboss::support::Maybe</**/ bool>(true),
+      ::emboss::support::Maybe</**/ bool>(true));
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        32, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 4>>,
+        32>>
 
- GenericConfigVXView<Storage>::gain()
-    const {
-
-  if ( has_gain().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(4LL));
+GenericConfigVXView<Storage>::gain() const {
+  if (has_gain().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              32, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 4>>,
+              32>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   4>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 4>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<32, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 4>>, 32>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          32, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 4>>,
+          32>>
 
-();
+      ();
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
-GenericConfigVXView<Storage>::has_gain() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+inline ::emboss::support::Maybe<bool> GenericConfigVXView<Storage>::has_gain()
+    const {
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 namespace ConfigVX {
 inline constexpr ::std::int32_t IntrinsicSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(8LL))
+      .ValueOrDefault();
 }
 }  // namespace ConfigVX
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericConfigVXView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericConfigVXView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
   return ConfigVX::IntrinsicSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericConfigVXView<
-    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
+inline constexpr ::std::int32_t GenericConfigVXView<Storage>::
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
   return ConfigVX::IntrinsicSizeInBytes();
 }
 
 namespace ConfigVX {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(8LL))
+      .ValueOrDefault();
 }
 }  // namespace ConfigVX
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericConfigVXView<Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericConfigVXView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
   return ConfigVX::MaxSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericConfigVXView<
+inline constexpr ::std::int32_t GenericConfigVXView<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
   return ConfigVX::MaxSizeInBytes();
 }
 
 namespace ConfigVX {
 inline constexpr ::std::int32_t MinSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(8LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(8LL))
+      .ValueOrDefault();
 }
 }  // namespace ConfigVX
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericConfigVXView<Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericConfigVXView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
   return ConfigVX::MinSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericConfigVXView<
+inline constexpr ::std::int32_t GenericConfigVXView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return ConfigVX::MinSizeInBytes();
 }
-namespace StructWithUnusedParameter {
-
-}  // namespace StructWithUnusedParameter
-
+namespace StructWithUnusedParameter {}  // namespace StructWithUnusedParameter
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        8>>
 
- GenericStructWithUnusedParameterView<Storage>::y()
-    const {
-
-  if ( has_y().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+GenericStructWithUnusedParameterView<Storage>::y() const {
+  if (has_y().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              8>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericStructWithUnusedParameterView<Storage>::has_y() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 namespace StructWithUnusedParameter {
 inline constexpr ::std::int32_t IntrinsicSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
 }
 }  // namespace StructWithUnusedParameter
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericStructWithUnusedParameterView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericStructWithUnusedParameterView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
   return StructWithUnusedParameter::IntrinsicSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericStructWithUnusedParameterView<
-    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
+inline constexpr ::std::int32_t GenericStructWithUnusedParameterView<Storage>::
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
   return StructWithUnusedParameter::IntrinsicSizeInBytes();
 }
 
 namespace StructWithUnusedParameter {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
 }
 }  // namespace StructWithUnusedParameter
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericStructWithUnusedParameterView<Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericStructWithUnusedParameterView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
   return StructWithUnusedParameter::MaxSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericStructWithUnusedParameterView<
+inline constexpr ::std::int32_t GenericStructWithUnusedParameterView<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
   return StructWithUnusedParameter::MaxSizeInBytes();
 }
 
 namespace StructWithUnusedParameter {
 inline constexpr ::std::int32_t MinSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
 }
 }  // namespace StructWithUnusedParameter
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericStructWithUnusedParameterView<Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericStructWithUnusedParameterView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
   return StructWithUnusedParameter::MinSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericStructWithUnusedParameterView<
+inline constexpr ::std::int32_t GenericStructWithUnusedParameterView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return StructWithUnusedParameter::MinSizeInBytes();
 }
@@ -10037,115 +10398,137 @@ namespace StructContainingStructWithUnusedParameter {
 
 }  // namespace StructContainingStructWithUnusedParameter
 
-
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 1>>,
+        8>>
 
- GenericStructContainingStructWithUnusedParameterView<Storage>::x()
-    const {
-
-  if ( has_x().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
+GenericStructContainingStructWithUnusedParameterView<Storage>::x() const {
+  if (has_x().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 1>>,
+              8>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   1>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 1>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 1>>,
+          8>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericStructContainingStructWithUnusedParameterView<Storage>::has_x() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
 
-
 template <class Storage>
-inline typename ::emboss::test::GenericStructWithUnusedParameterView<typename Storage::template OffsetStorageType</**/0, 0>>
+inline typename ::emboss::test::GenericStructWithUnusedParameterView<
+    typename Storage::template OffsetStorageType</**/ 0, 0>>
 
- GenericStructContainingStructWithUnusedParameterView<Storage>::swup()
-    const {
+GenericStructContainingStructWithUnusedParameterView<Storage>::swup() const {
   const auto emboss_reserved_local_subexpr_1 = x();
-  const auto emboss_reserved_local_subexpr_2 = (emboss_reserved_local_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
+  const auto emboss_reserved_local_subexpr_2 =
+      (emboss_reserved_local_subexpr_1.Ok()
+           ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                 static_cast</**/ ::std::int32_t>(
+                     emboss_reserved_local_subexpr_1.UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::int32_t>());
 
-  if (emboss_reserved_local_subexpr_2.Known() &&  has_swup().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+  if (emboss_reserved_local_subexpr_2.Known() && has_swup().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::test::GenericStructWithUnusedParameterView<typename Storage::template OffsetStorageType</**/0, 0>>
+      return ::emboss::test::GenericStructWithUnusedParameterView<
+          typename Storage::template OffsetStorageType</**/ 0, 0>>
 
-(
-                emboss_reserved_local_subexpr_2.ValueOrDefault(),  backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (emboss_reserved_local_subexpr_2.ValueOrDefault(),
+           backing_.template GetOffsetStorage<0, 0>(
+               emboss_reserved_local_offset.ValueOrDefault(),
+               emboss_reserved_local_size.ValueOrDefault()));
     }
   }
-  return ::emboss::test::GenericStructWithUnusedParameterView<typename Storage::template OffsetStorageType</**/0, 0>>
+  return ::emboss::test::GenericStructWithUnusedParameterView<
+      typename Storage::template OffsetStorageType</**/ 0, 0>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
-GenericStructContainingStructWithUnusedParameterView<Storage>::has_swup() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+GenericStructContainingStructWithUnusedParameterView<Storage>::has_swup()
+    const {
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 namespace StructContainingStructWithUnusedParameter {
 inline constexpr ::std::int32_t IntrinsicSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(2LL))
+      .ValueOrDefault();
 }
 }  // namespace StructContainingStructWithUnusedParameter
 
 template <class Storage>
 inline constexpr ::std::int32_t
-GenericStructContainingStructWithUnusedParameterView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
+GenericStructContainingStructWithUnusedParameterView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
   return StructContainingStructWithUnusedParameter::IntrinsicSizeInBytes();
 }
 
 template <class Storage>
 inline constexpr ::std::int32_t
-GenericStructContainingStructWithUnusedParameterView<
-    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
+GenericStructContainingStructWithUnusedParameterView<Storage>::
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
   return StructContainingStructWithUnusedParameter::IntrinsicSizeInBytes();
 }
 
 namespace StructContainingStructWithUnusedParameter {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(2LL))
+      .ValueOrDefault();
 }
 }  // namespace StructContainingStructWithUnusedParameter
 
 template <class Storage>
 inline constexpr ::std::int32_t
-GenericStructContainingStructWithUnusedParameterView<Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+GenericStructContainingStructWithUnusedParameterView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
   return StructContainingStructWithUnusedParameter::MaxSizeInBytes();
 }
 
@@ -10158,13 +10541,16 @@ GenericStructContainingStructWithUnusedParameterView<
 
 namespace StructContainingStructWithUnusedParameter {
 inline constexpr ::std::int32_t MinSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(2LL))
+      .ValueOrDefault();
 }
 }  // namespace StructContainingStructWithUnusedParameter
 
 template <class Storage>
 inline constexpr ::std::int32_t
-GenericStructContainingStructWithUnusedParameterView<Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+GenericStructContainingStructWithUnusedParameterView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
   return StructContainingStructWithUnusedParameter::MinSizeInBytes();
 }
 
@@ -10174,52 +10560,58 @@ GenericStructContainingStructWithUnusedParameterView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return StructContainingStructWithUnusedParameter::MinSizeInBytes();
 }
-namespace BiasedValue {
-
-}  // namespace BiasedValue
-
+namespace BiasedValue {}  // namespace BiasedValue
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        8>>
 
- GenericBiasedValueView<Storage>::raw_value()
-    const {
-
-  if ( has_raw_value().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+GenericBiasedValueView<Storage>::raw_value() const {
+  if (has_raw_value().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              8>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericBiasedValueView<Storage>::has_raw_value() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 template <class Storage>
 inline typename GenericBiasedValueView<Storage>::EmbossReservedVirtualValueView
@@ -10232,173 +10624,183 @@ GenericBiasedValueView<Storage>::value() const {
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericBiasedValueView<Storage>::has_value() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 namespace BiasedValue {
 inline constexpr ::std::int32_t IntrinsicSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
 }
 }  // namespace BiasedValue
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericBiasedValueView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericBiasedValueView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
   return BiasedValue::IntrinsicSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericBiasedValueView<
-    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
+inline constexpr ::std::int32_t GenericBiasedValueView<Storage>::
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
   return BiasedValue::IntrinsicSizeInBytes();
 }
 
 namespace BiasedValue {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
 }
 }  // namespace BiasedValue
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericBiasedValueView<Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericBiasedValueView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
   return BiasedValue::MaxSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericBiasedValueView<
+inline constexpr ::std::int32_t GenericBiasedValueView<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
   return BiasedValue::MaxSizeInBytes();
 }
 
 namespace BiasedValue {
 inline constexpr ::std::int32_t MinSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
 }
 }  // namespace BiasedValue
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericBiasedValueView<Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericBiasedValueView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
   return BiasedValue::MinSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericBiasedValueView<
+inline constexpr ::std::int32_t GenericBiasedValueView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return BiasedValue::MinSizeInBytes();
 }
-namespace VirtualFirstFieldWithParam {
-
-}  // namespace VirtualFirstFieldWithParam
-
+namespace VirtualFirstFieldWithParam {}  // namespace VirtualFirstFieldWithParam
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        8>>
 
- GenericVirtualFirstFieldWithParamView<Storage>::x()
-    const {
-
-  if ( has_x().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+GenericVirtualFirstFieldWithParamView<Storage>::x() const {
+  if (has_x().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              8>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericVirtualFirstFieldWithParamView<Storage>::has_x() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericVirtualFirstFieldWithParamView<Storage>::has_value() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 namespace VirtualFirstFieldWithParam {
 inline constexpr ::std::int32_t IntrinsicSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
 }
 }  // namespace VirtualFirstFieldWithParam
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericVirtualFirstFieldWithParamView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericVirtualFirstFieldWithParamView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
   return VirtualFirstFieldWithParam::IntrinsicSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericVirtualFirstFieldWithParamView<
-    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
+inline constexpr ::std::int32_t GenericVirtualFirstFieldWithParamView<Storage>::
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
   return VirtualFirstFieldWithParam::IntrinsicSizeInBytes();
 }
 
 namespace VirtualFirstFieldWithParam {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
 }
 }  // namespace VirtualFirstFieldWithParam
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericVirtualFirstFieldWithParamView<Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericVirtualFirstFieldWithParamView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
   return VirtualFirstFieldWithParam::MaxSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericVirtualFirstFieldWithParamView<
+inline constexpr ::std::int32_t GenericVirtualFirstFieldWithParamView<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
   return VirtualFirstFieldWithParam::MaxSizeInBytes();
 }
 
 namespace VirtualFirstFieldWithParam {
 inline constexpr ::std::int32_t MinSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
 }
 }  // namespace VirtualFirstFieldWithParam
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericVirtualFirstFieldWithParamView<Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericVirtualFirstFieldWithParamView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
   return VirtualFirstFieldWithParam::MinSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericVirtualFirstFieldWithParamView<
+inline constexpr ::std::int32_t GenericVirtualFirstFieldWithParamView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return VirtualFirstFieldWithParam::MinSizeInBytes();
 }
@@ -10406,329 +10808,368 @@ namespace ConstVirtualFirstFieldWithParam {
 
 }  // namespace ConstVirtualFirstFieldWithParam
 
-
 namespace ConstVirtualFirstFieldWithParam {
 inline constexpr ::std::int32_t value() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(10LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(10LL))
+      .ValueOrDefault();
 }
 }  // namespace ConstVirtualFirstFieldWithParam
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericConstVirtualFirstFieldWithParamView<Storage>::EmbossReservedVirtualValueView::Read() {
+inline constexpr ::std::int32_t GenericConstVirtualFirstFieldWithParamView<
+    Storage>::EmbossReservedVirtualValueView::Read() {
   return ConstVirtualFirstFieldWithParam::value();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericConstVirtualFirstFieldWithParamView<
+inline constexpr ::std::int32_t GenericConstVirtualFirstFieldWithParamView<
     Storage>::EmbossReservedVirtualValueView::UncheckedRead() {
   return ConstVirtualFirstFieldWithParam::value();
 }
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        8>>
 
- GenericConstVirtualFirstFieldWithParamView<Storage>::x()
-    const {
-
-  if ( has_x().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+GenericConstVirtualFirstFieldWithParamView<Storage>::x() const {
+  if (has_x().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              8>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericConstVirtualFirstFieldWithParamView<Storage>::has_x() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 namespace ConstVirtualFirstFieldWithParam {
 inline constexpr ::std::int32_t IntrinsicSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
 }
 }  // namespace ConstVirtualFirstFieldWithParam
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericConstVirtualFirstFieldWithParamView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericConstVirtualFirstFieldWithParamView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
   return ConstVirtualFirstFieldWithParam::IntrinsicSizeInBytes();
 }
 
 template <class Storage>
 inline constexpr ::std::int32_t
-GenericConstVirtualFirstFieldWithParamView<
-    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
+GenericConstVirtualFirstFieldWithParamView<Storage>::
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
   return ConstVirtualFirstFieldWithParam::IntrinsicSizeInBytes();
 }
 
 namespace ConstVirtualFirstFieldWithParam {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
 }
 }  // namespace ConstVirtualFirstFieldWithParam
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericConstVirtualFirstFieldWithParamView<Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericConstVirtualFirstFieldWithParamView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
   return ConstVirtualFirstFieldWithParam::MaxSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericConstVirtualFirstFieldWithParamView<
+inline constexpr ::std::int32_t GenericConstVirtualFirstFieldWithParamView<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
   return ConstVirtualFirstFieldWithParam::MaxSizeInBytes();
 }
 
 namespace ConstVirtualFirstFieldWithParam {
 inline constexpr ::std::int32_t MinSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
 }
 }  // namespace ConstVirtualFirstFieldWithParam
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericConstVirtualFirstFieldWithParamView<Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericConstVirtualFirstFieldWithParamView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
   return ConstVirtualFirstFieldWithParam::MinSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericConstVirtualFirstFieldWithParamView<
+inline constexpr ::std::int32_t GenericConstVirtualFirstFieldWithParamView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return ConstVirtualFirstFieldWithParam::MinSizeInBytes();
 }
-namespace SizedArrayOfBiasedValues {
-
-}  // namespace SizedArrayOfBiasedValues
-
+namespace SizedArrayOfBiasedValues {}  // namespace SizedArrayOfBiasedValues
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        8>>
 
- GenericSizedArrayOfBiasedValuesView<Storage>::element_count()
-    const {
-
-  if ( has_element_count().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(0LL));
+GenericSizedArrayOfBiasedValuesView<Storage>::element_count() const {
+  if (has_element_count().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              8>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   0>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 0>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericSizedArrayOfBiasedValuesView<Storage>::has_element_count() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 template <class Storage>
 inline typename ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 1>>,
+        8>>
 
- GenericSizedArrayOfBiasedValuesView<Storage>::bias()
-    const {
-
-  if ( has_bias().ValueOr(false)) {
-
-    auto emboss_reserved_local_size = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(1LL));
+GenericSizedArrayOfBiasedValuesView<Storage>::bias() const {
+  if (has_bias().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 1>>,
+              8>>
 
-(
-                 backing_
-                        .template GetOffsetStorage<0,
-                                                   1>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (backing_.template GetOffsetStorage<0, 1>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::prelude::UIntView<
-    /**/ ::emboss::support::FixedSizeViewParameters<8, ::emboss::support::AllValuesAreOk>,
-    typename ::emboss::support::BitBlock</**/::emboss::support::LittleEndianByteOrderer<typename Storage::template OffsetStorageType</**/0, 1>>, 8>>
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 1>>,
+          8>>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericSizedArrayOfBiasedValuesView<Storage>::has_bias() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 template <class Storage>
 inline typename ::emboss::support::GenericArrayView<
-    typename ::emboss::test::GenericBiasedValueView<typename Storage::template OffsetStorageType</**/0, 2>::template OffsetStorageType</**/1, 0>>
+    typename ::emboss::test::GenericBiasedValueView<
+        typename Storage::template OffsetStorageType<
+            /**/ 0, 2>::template OffsetStorageType</**/ 1, 0>>
 
-, typename Storage::template OffsetStorageType</**/0, 2>, 1,
-    8 , ::std::int32_t>
+    ,
+    typename Storage::template OffsetStorageType</**/ 0, 2>, 1, 8,
+    ::std::int32_t>
 
- GenericSizedArrayOfBiasedValuesView<Storage>::values()
-    const {
+GenericSizedArrayOfBiasedValuesView<Storage>::values() const {
   const auto emboss_reserved_local_subexpr_1 = bias();
-  const auto emboss_reserved_local_subexpr_2 = (emboss_reserved_local_subexpr_1.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_subexpr_1.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
+  const auto emboss_reserved_local_subexpr_2 =
+      (emboss_reserved_local_subexpr_1.Ok()
+           ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                 static_cast</**/ ::std::int32_t>(
+                     emboss_reserved_local_subexpr_1.UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::int32_t>());
 
-  if (emboss_reserved_local_subexpr_2.Known() &&  has_values().ValueOr(false)) {
+  if (emboss_reserved_local_subexpr_2.Known() && has_values().ValueOr(false)) {
     const auto emboss_reserved_local_subexpr_3 = element_count();
-    const auto emboss_reserved_local_subexpr_4 = (emboss_reserved_local_subexpr_3.Ok()    ? ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(emboss_reserved_local_subexpr_3.UncheckedRead()))    : ::emboss::support::Maybe</**/::std::int32_t>());
+    const auto emboss_reserved_local_subexpr_4 =
+        (emboss_reserved_local_subexpr_3.Ok()
+             ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                   static_cast</**/ ::std::int32_t>(
+                       emboss_reserved_local_subexpr_3.UncheckedRead()))
+             : ::emboss::support::Maybe</**/ ::std::int32_t>());
 
     auto emboss_reserved_local_size = emboss_reserved_local_subexpr_4;
-    auto emboss_reserved_local_offset = ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(2LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
         emboss_reserved_local_offset.ValueOr(0) >= 0) {
-        return ::emboss::support::GenericArrayView<
-    typename ::emboss::test::GenericBiasedValueView<typename Storage::template OffsetStorageType</**/0, 2>::template OffsetStorageType</**/1, 0>>
+      return ::emboss::support::GenericArrayView<
+          typename ::emboss::test::GenericBiasedValueView<
+              typename Storage::template OffsetStorageType<
+                  /**/ 0, 2>::template OffsetStorageType</**/ 1, 0>>
 
-, typename Storage::template OffsetStorageType</**/0, 2>, 1,
-    8 , ::std::int32_t>
+          ,
+          typename Storage::template OffsetStorageType</**/ 0, 2>, 1, 8,
+          ::std::int32_t>
 
-(
-                emboss_reserved_local_subexpr_2.ValueOrDefault(),  backing_
-                        .template GetOffsetStorage<0,
-                                                   2>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+          (emboss_reserved_local_subexpr_2.ValueOrDefault(),
+           backing_.template GetOffsetStorage<0, 2>(
+               emboss_reserved_local_offset.ValueOrDefault(),
+               emboss_reserved_local_size.ValueOrDefault()));
     }
   }
   return ::emboss::support::GenericArrayView<
-    typename ::emboss::test::GenericBiasedValueView<typename Storage::template OffsetStorageType</**/0, 2>::template OffsetStorageType</**/1, 0>>
+      typename ::emboss::test::GenericBiasedValueView<
+          typename Storage::template OffsetStorageType<
+              /**/ 0, 2>::template OffsetStorageType</**/ 1, 0>>
 
-, typename Storage::template OffsetStorageType</**/0, 2>, 1,
-    8 , ::std::int32_t>
+      ,
+      typename Storage::template OffsetStorageType</**/ 0, 2>, 1, 8,
+      ::std::int32_t>
 
-();
+      ();
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericSizedArrayOfBiasedValuesView<Storage>::has_values() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
 
-
 template <class Storage>
-inline typename GenericSizedArrayOfBiasedValuesView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+inline typename GenericSizedArrayOfBiasedValuesView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
 GenericSizedArrayOfBiasedValuesView<Storage>::IntrinsicSizeInBytes() const {
-  return
-      typename GenericSizedArrayOfBiasedValuesView<Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
-          *this);
+  return typename GenericSizedArrayOfBiasedValuesView<
+      Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView(*this);
 }
 
 template <class Storage>
 inline ::emboss::support::Maybe<bool>
 GenericSizedArrayOfBiasedValuesView<Storage>::has_IntrinsicSizeInBytes() const {
-  return ::emboss::support::Maybe</**/bool>(true);
+  return ::emboss::support::Maybe</**/ bool>(true);
 }
-
 
 namespace SizedArrayOfBiasedValues {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(257LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(257LL))
+      .ValueOrDefault();
 }
 }  // namespace SizedArrayOfBiasedValues
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericSizedArrayOfBiasedValuesView<Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericSizedArrayOfBiasedValuesView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
   return SizedArrayOfBiasedValues::MaxSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericSizedArrayOfBiasedValuesView<
+inline constexpr ::std::int32_t GenericSizedArrayOfBiasedValuesView<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
   return SizedArrayOfBiasedValues::MaxSizeInBytes();
 }
 
 namespace SizedArrayOfBiasedValues {
 inline constexpr ::std::int32_t MinSizeInBytes() {
-  return ::emboss::support::Maybe</**/::std::int32_t>(static_cast</**/::std::int32_t>(2LL)).ValueOrDefault();
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(2LL))
+      .ValueOrDefault();
 }
 }  // namespace SizedArrayOfBiasedValues
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericSizedArrayOfBiasedValuesView<Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+inline constexpr ::std::int32_t GenericSizedArrayOfBiasedValuesView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
   return SizedArrayOfBiasedValues::MinSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t
-GenericSizedArrayOfBiasedValuesView<
+inline constexpr ::std::int32_t GenericSizedArrayOfBiasedValuesView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return SizedArrayOfBiasedValues::MinSizeInBytes();
 }
 
-
-
 }  // namespace test
 
-
-
 }  // namespace emboss
-
-
 
 /* NOLINTEND */
 
 #endif  // TESTDATA_PARAMETERS_EMB_H_
-
