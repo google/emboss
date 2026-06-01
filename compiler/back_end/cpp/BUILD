@@ -14,6 +14,7 @@
 
 # Emboss C++ code generator.
 
+load("@pip//:requirements.bzl", "requirement")
 load("@rules_python//python:py_binary.bzl", "py_binary")
 load("@rules_python//python:py_library.bzl", "py_library")
 load("@rules_python//python:py_test.bzl", "py_test")
@@ -31,8 +32,21 @@ py_binary(
     srcs = ["emboss_codegen_cpp.py"],
     visibility = ["//visibility:public"],
     deps = [
+        ":clang_format_path",
         ":header_generator",
         "//compiler/util:ir_data",
+    ],
+)
+
+# Single seam for locating the clang-format binary. Downstream forks that
+# cannot use the upstream `clang-format` PyPI package can rewrite this
+# target's srcs and deps to point at an alternative source for the binary.
+py_library(
+    name = "clang_format_path",
+    srcs = ["clang_format_path.py"],
+    visibility = ["//visibility:public"],
+    deps = [
+        requirement("clang-format"),
     ],
 )
 

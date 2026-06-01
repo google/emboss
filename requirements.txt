@@ -9,3 +9,6 @@ packaging>=22.0
 pathspec>=1.0.0
 platformdirs>=2
 pytokens>=0.4.0
+
+# clang-format, used by the C++ back end to format generated headers
+clang-format==22.1.5

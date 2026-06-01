@@ -11,14 +11,9 @@
 #include <utility>
 
 #include "runtime/cpp/emboss_cpp_util.h"
-
-#include "runtime/cpp/emboss_prelude.h"
-
 #include "runtime/cpp/emboss_enum_view.h"
-
+#include "runtime/cpp/emboss_prelude.h"
 #include "runtime/cpp/emboss_text_util.h"
-
-
 
 /* NOLINTBEGIN */
 namespace emboss {
@@ -26,9 +21,8 @@ namespace test {
 namespace leading_double_colon {
 enum class Foo : ::std::uint64_t;
 
-
 enum class Foo : ::std::uint64_t {
-  VALUE = static_cast</**/::std::int32_t>(12LL),
+  VALUE = static_cast</**/ ::std::int32_t>(12LL),
 
 };
 template <class Enum>
@@ -37,8 +31,8 @@ class EnumTraits;
 template <>
 class EnumTraits<Foo> final {
  public:
-  static bool TryToGetEnumFromName(const char *emboss_reserved_local_name,
-                                   Foo *emboss_reserved_local_result) {
+  static bool TryToGetEnumFromName(const char* emboss_reserved_local_name,
+                                   Foo* emboss_reserved_local_result) {
     if (emboss_reserved_local_name == nullptr) return false;
     if (!strcmp("VALUE", emboss_reserved_local_name)) {
       *emboss_reserved_local_result = Foo::VALUE;
@@ -48,27 +42,29 @@ class EnumTraits<Foo> final {
     return false;
   }
 
-  static const char *TryToGetNameFromEnum(
-      Foo emboss_reserved_local_value) {
+  static const char* TryToGetNameFromEnum(Foo emboss_reserved_local_value) {
     switch (emboss_reserved_local_value) {
-      case Foo::VALUE: return "VALUE";
+      case Foo::VALUE:
+        return "VALUE";
 
-      default: return nullptr;
+      default:
+        return nullptr;
     }
   }
 
   static bool EnumIsKnown(Foo emboss_reserved_local_value) {
     switch (emboss_reserved_local_value) {
-      case Foo::VALUE: return true;
+      case Foo::VALUE:
+        return true;
 
       default:
         return false;
     }
   }
 
-  static ::std::ostream &SendToOstream(::std::ostream &emboss_reserved_local_os,
+  static ::std::ostream& SendToOstream(::std::ostream& emboss_reserved_local_os,
                                        Foo emboss_reserved_local_value) {
-    const char *emboss_reserved_local_name =
+    const char* emboss_reserved_local_name =
         TryToGetNameFromEnum(emboss_reserved_local_value);
     if (emboss_reserved_local_name == nullptr) {
       emboss_reserved_local_os
@@ -81,46 +77,33 @@ class EnumTraits<Foo> final {
   }
 };
 
-static inline bool TryToGetEnumFromName(
-    const char *emboss_reserved_local_name,
-    Foo *emboss_reserved_local_result) {
-  return EnumTraits<Foo>::TryToGetEnumFromName(
-      emboss_reserved_local_name, emboss_reserved_local_result);
+static inline bool TryToGetEnumFromName(const char* emboss_reserved_local_name,
+                                        Foo* emboss_reserved_local_result) {
+  return EnumTraits<Foo>::TryToGetEnumFromName(emboss_reserved_local_name,
+                                               emboss_reserved_local_result);
 }
 
-static inline const char *TryToGetNameFromEnum(
+static inline const char* TryToGetNameFromEnum(
     Foo emboss_reserved_local_value) {
-  return EnumTraits<Foo>::TryToGetNameFromEnum(
-      emboss_reserved_local_value);
+  return EnumTraits<Foo>::TryToGetNameFromEnum(emboss_reserved_local_value);
 }
 
 static inline bool EnumIsKnown(Foo emboss_reserved_local_value) {
   return EnumTraits<Foo>::EnumIsKnown(emboss_reserved_local_value);
 }
 
-static inline ::std::ostream &operator<<(
-    ::std::ostream &emboss_reserved_local_os,
-    Foo emboss_reserved_local_value) {
+static inline ::std::ostream& operator<<(
+    ::std::ostream& emboss_reserved_local_os, Foo emboss_reserved_local_value) {
   return EnumTraits<Foo>::SendToOstream(emboss_reserved_local_os,
-                                             emboss_reserved_local_value);
+                                        emboss_reserved_local_value);
 }
-
-
-
 
 }  // namespace leading_double_colon
 
-
-
 }  // namespace test
 
-
-
 }  // namespace emboss
-
-
 
 /* NOLINTEND */
 
 #endif  // TESTDATA_ABSOLUTE_CPP_NAMESPACE_EMB_H_
-

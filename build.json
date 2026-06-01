@@ -6,6 +6,7 @@
     "compiler/back_end/__init__.py",
     "compiler/back_end/cpp/__init__.py",
     "compiler/back_end/cpp/attributes.py",
+    "compiler/back_end/cpp/clang_format_path.py",
     "compiler/back_end/cpp/emboss_codegen_cpp.py",
     "compiler/back_end/cpp/generated_code_templates",
     "compiler/back_end/cpp/header_generator.py",

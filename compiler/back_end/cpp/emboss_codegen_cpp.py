@@ -22,12 +22,30 @@ from __future__ import print_function
 
 import argparse
 import os
+import subprocess
 import sys
 
+from compiler.back_end.cpp import clang_format_path
 from compiler.back_end.cpp import header_generator
 from compiler.util import error
 from compiler.util import ir_data
 from compiler.util import ir_data_utils
+
+
+def format_header(header):
+    """Runs the generated header through clang-format (Google style)."""
+    clang_format_subprocess = subprocess.run(
+        [
+            clang_format_path.get_clang_format_path(),
+            "--assume-filename=header.emb.h",
+            "--style=google",
+        ],
+        input=header,
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    return clang_format_subprocess.stdout
 
 
 def _parse_command_line(argv):
@@ -97,6 +115,7 @@ def main(flags):
     header, errors = generate_headers_and_log_errors(ir, flags.color_output, config)
     if errors:
         return 1
+    header = format_header(header)
     if flags.output_file:
         with open(flags.output_file, "w") as f:
             f.write(header)
