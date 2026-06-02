@@ -17,6 +17,7 @@
 #define EMBOSS_RUNTIME_CPP_EMBOSS_TEXT_UTIL_H_
 
 #include <array>
+#include <cctype>
 #include <climits>
 #include <cmath>
 #include <cstdint>
@@ -25,11 +26,27 @@
 #include <limits>
 #include <sstream>
 #include <string>
+#include <type_traits>
+#include <utility>
 #include <vector>
 
 #include "runtime/cpp/emboss_defines.h"
 
 namespace emboss {
+
+// Controls how large integers are serialized in JSON output.  JSON numbers are
+// 64-bit floating-point, so integers outside the range [-2^53, 2^53] may lose
+// precision when parsed by standard JSON parsers.
+enum class JsonLargeIntegerHandling {
+  // Serialize all integers as JSON numbers.  Integers outside [-2^53, 2^53] may
+  // lose precision when parsed by JSON parsers that back numbers with IEEE-754
+  // doubles, so use this only when every value is known to fit safely or the
+  // consumer preserves full 64-bit integers.
+  kAsNumber,
+  // Serialize integers wider than 32 bits as quoted base-10 strings (the
+  // default), avoiding the precision loss described above.
+  kLargeAsString,
+};
 
 // TextOutputOptions are used to configure text output.  Typically, one can just
 // use a default TextOutputOptions() (for compact output) or MultilineText()
@@ -80,13 +97,30 @@ class TextOutputOptions final {
     return result;
   }
 
+  TextOutputOptions Json(bool new_value) const {
+    TextOutputOptions result = *this;
+    result.json_ = new_value;
+    return result;
+  }
+
+  TextOutputOptions WithJsonLargeIntegerHandling(
+      JsonLargeIntegerHandling new_value) const {
+    TextOutputOptions result = *this;
+    result.json_large_integer_handling_ = new_value;
+    return result;
+  }
+
   ::std::string current_indent() const { return current_indent_; }
   ::std::string indent() const { return indent_; }
   bool multiline() const { return multiline_; }
-  bool digit_grouping() const { return digit_grouping_; }
-  bool comments() const { return comments_; }
-  ::std::uint8_t numeric_base() const { return numeric_base_; }
+  bool digit_grouping() const { return digit_grouping_ && !json_; }
+  bool comments() const { return comments_ && !json_; }
+  ::std::uint8_t numeric_base() const { return json_ ? 10 : numeric_base_; }
+  bool json() const { return json_; }
   bool allow_partial_output() const { return allow_partial_output_; }
+  JsonLargeIntegerHandling json_large_integer_handling() const {
+    return json_large_integer_handling_;
+  }
 
  private:
   ::std::string indent_;
@@ -95,7 +129,10 @@ class TextOutputOptions final {
   bool multiline_ = false;
   bool digit_grouping_ = false;
   bool allow_partial_output_ = false;
+  bool json_ = false;
   ::std::uint8_t numeric_base_ = 10;
+  JsonLargeIntegerHandling json_large_integer_handling_ =
+      JsonLargeIntegerHandling::kLargeAsString;
 };
 
 namespace support {
@@ -337,8 +374,21 @@ void WriteIntegerToTextStream(IntegralType value, Stream *stream,
 template <class Stream, class View>
 void WriteIntegerViewToTextStream(View *view, Stream *stream,
                                   const TextOutputOptions &options) {
+  // In JSON mode with kLargeAsString, serialize integers larger than 32 bits
+  // as quoted strings to avoid precision loss in JSON parsers.
+  bool quote_value =
+      options.json() &&
+      options.json_large_integer_handling() ==
+          JsonLargeIntegerHandling::kLargeAsString &&
+      sizeof(typename View::ValueType) > 4;
+  if (quote_value) {
+    stream->Write("\"");
+  }
   WriteIntegerToTextStream(view->Read(), stream, options.numeric_base(),
                            options.digit_grouping());
+  if (quote_value) {
+    stream->Write("\"");
+  }
   if (options.comments()) {
     stream->Write("  # ");
     WriteIntegerToTextStream(view->Read(), stream,
@@ -562,6 +612,10 @@ void WriteFloatToTextStream(Float n, Stream *stream,
   // currently available.
 
   if (::std::isnan(n)) {
+    if (options.json()) {
+      stream->Write("\"NaN\"");
+      return;
+    }
     // The printf format for NaN is just "NaN".  In the interests of keeping
     // things bit-exact, Emboss prints the exact NaN.
     typename FloatConstants<Float>::MatchingIntegerType bits;
@@ -585,6 +639,14 @@ void WriteFloatToTextStream(Float n, Stream *stream,
   }
 
   if (::std::isinf(n)) {
+    if (options.json()) {
+      if (n < 0.0) {
+        stream->Write("\"-Infinity\"");
+      } else {
+        stream->Write("\"Infinity\"");
+      }
+      return;
+    }
     if (n < 0.0) {
       stream->Write("-Inf");
     } else {
@@ -636,18 +698,34 @@ void WriteEnumViewToTextStream(View *view, Stream *stream,
                                const TextOutputOptions &options) {
   const char *name = TryToGetNameFromEnum(view->Read());
   if (name != nullptr) {
+    if (options.json()) stream->Write("\"");
     stream->Write(name);
+    if (options.json()) stream->Write("\"");
   }
   // If the enum value has no known name, then write its numeric value
   // instead.  If it does have a known name, and comments are enabled on the
   // output, then write the numeric value as a comment.
   if (name == nullptr || options.comments()) {
     if (name != nullptr) stream->Write("  # ");
+    // In JSON, an unnamed enum value is emitted as its underlying number.  Quote
+    // it as a string when the enum's underlying type is wider than 32 bits
+    // (matching integer handling) so large values survive parsers that treat
+    // JSON numbers as IEEE-754 doubles.  sizeof(ValueType) is used rather than
+    // the field width because virtual enum views have no fixed bit width.  A
+    // named value only reaches here as a `  # ` comment, which JSON never emits,
+    // so this never quotes a comment.
+    const bool quote_value =
+        name == nullptr && options.json() &&
+        options.json_large_integer_handling() ==
+            JsonLargeIntegerHandling::kLargeAsString &&
+        sizeof(typename View::ValueType) > 4;
+    if (quote_value) stream->Write("\"");
     WriteIntegerToTextStream(
         static_cast<
             typename ::std::underlying_type<typename View::ValueType>::type>(
             view->Read()),
         stream, options.numeric_base(), options.digit_grouping());
+    if (quote_value) stream->Write("\"");
   }
 }
 
@@ -756,7 +834,29 @@ template <class Array, class Stream>
 void WriteArrayToTextStream(Array *array, Stream *stream,
                             const TextOutputOptions &options) {
   TextOutputOptions element_options = options.PlusOneIndent();
-  if (options.multiline()) {
+  if (options.json()) {
+    stream->Write("[");
+    bool first = true;
+    for (::std::size_t i = 0; i < array->ElementCount(); ++i) {
+      if (!options.allow_partial_output() || (*array)[i].IsAggregate() ||
+          (*array)[i].Ok()) {
+        if (!first) {
+          stream->Write(",");
+        }
+        if (options.multiline()) {
+          stream->Write("\n");
+          stream->Write(element_options.current_indent());
+        }
+        (*array)[i].WriteToTextStream(stream, element_options);
+        first = false;
+      }
+    }
+    if (options.multiline()) {
+      stream->Write("\n");
+      stream->Write(options.current_indent());
+    }
+    stream->Write("]");
+  } else if (options.multiline()) {
     stream->Write("{");
     WriteShorthandArrayCommentToTextStream(array, stream, element_options);
     for (::std::size_t i = 0; i < array->ElementCount(); ++i) {
