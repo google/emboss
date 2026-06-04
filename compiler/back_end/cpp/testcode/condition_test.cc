@@ -396,6 +396,120 @@ TEST(Conditional, BareConditionalDiscriminantNotOkWhenGatedFieldTruncated) {
   EXPECT_FALSE(writer.Ok());
 }
 
+// Distinguishing test: a bare arm on a conditional discriminant whose field is
+// size-dominated by an always-present field.  IsComplete() stays true, so only
+// the discriminant Known() guard can reject the message.  This is the case
+// where a `if (has_tag().ValueOrDefault())` wrapper diverges (it would accept).
+TEST(Conditional, DominatedBareDiscriminantNotOkWhenDiscriminantAbsent) {
+  ::std::uint8_t buffer[4] = {0, 0, 0, 9};
+  auto writer = DominatedBareDiscriminantWriter(buffer, sizeof buffer);
+  EXPECT_TRUE(writer.IsComplete());
+  EXPECT_FALSE(writer.has_a().Known());
+  EXPECT_FALSE(writer.has_b().Known());
+  EXPECT_FALSE(writer.Ok());
+}
+
+TEST(Conditional, DominatedBareDiscriminantOkWhenDiscriminantPresent) {
+  // outer == 1, tag == 0: `a` present and readable; `tail` present.
+  ::std::uint8_t buffer[4] = {1, 0, 5, 9};
+  auto writer = DominatedBareDiscriminantWriter(buffer, sizeof buffer);
+  EXPECT_TRUE(writer.Ok());
+  EXPECT_TRUE(writer.has_a().Value());
+  EXPECT_EQ(5, writer.a().Read());
+  EXPECT_EQ(9, writer.tail().Read());
+}
+
+// Disjunction arms (#256 matcher) on a conditional discriminant, all carrying a
+// residual -> the residual-only guarded switch with coalesced case labels.
+TEST(Conditional, DisjunctionConditionalDiscriminantOkWhenDiscriminantAbsent) {
+  ::std::uint8_t buffer[1] = {0};
+  auto writer = DisjunctionConditionalDiscriminantWriter(buffer, sizeof buffer);
+  EXPECT_TRUE(writer.Ok());
+  EXPECT_FALSE(writer.has_a().Value());
+  EXPECT_FALSE(writer.has_b().Value());
+}
+
+TEST(Conditional, DisjunctionConditionalDiscriminantBothDisjunctsSelectField) {
+  // tag == 0 and tag == 1 both make `a` present.
+  ::std::uint8_t buffer0[3] = {1, 0, 7};
+  auto w0 = DisjunctionConditionalDiscriminantWriter(buffer0, sizeof buffer0);
+  EXPECT_TRUE(w0.Ok());
+  EXPECT_TRUE(w0.has_a().Value());
+  EXPECT_EQ(7, w0.a().Read());
+
+  ::std::uint8_t buffer1[3] = {1, 1, 8};
+  auto w1 = DisjunctionConditionalDiscriminantWriter(buffer1, sizeof buffer1);
+  EXPECT_TRUE(w1.Ok());
+  EXPECT_TRUE(w1.has_a().Value());
+  EXPECT_EQ(8, w1.a().Read());
+}
+
+TEST(Conditional, DisjunctionConditionalDiscriminantSecondArmAndNoMatch) {
+  // tag == 2 selects `b`; tag == 9 selects neither (still valid).
+  ::std::uint8_t buffer2[4] = {1, 2, 0, 6};
+  auto w2 = DisjunctionConditionalDiscriminantWriter(buffer2, sizeof buffer2);
+  EXPECT_TRUE(w2.Ok());
+  EXPECT_TRUE(w2.has_b().Value());
+  EXPECT_EQ(6, w2.b().Read());
+
+  ::std::uint8_t buffer9[2] = {1, 9};
+  auto w9 = DisjunctionConditionalDiscriminantWriter(buffer9, sizeof buffer9);
+  EXPECT_TRUE(w9.Ok());
+  EXPECT_FALSE(w9.has_a().Value());
+  EXPECT_FALSE(w9.has_b().Value());
+}
+
+// Single-entry group on a conditional discriminant: demoted to a has_X() check
+// (#256), so no discriminant guard is emitted and the bug cannot arise.
+TEST(Conditional, SingleEntryConditionalDiscriminantOkWhenDiscriminantAbsent) {
+  ::std::uint8_t buffer[1] = {0};
+  auto writer = SingleEntryConditionalDiscriminantWriter(buffer, sizeof buffer);
+  EXPECT_TRUE(writer.Ok());
+  EXPECT_TRUE(writer.has_a().Known());
+  EXPECT_FALSE(writer.has_a().Value());
+}
+
+TEST(Conditional, SingleEntryConditionalDiscriminantOkWhenPresent) {
+  ::std::uint8_t buffer[3] = {1, 0, 4};
+  auto writer = SingleEntryConditionalDiscriminantWriter(buffer, sizeof buffer);
+  EXPECT_TRUE(writer.Ok());
+  EXPECT_TRUE(writer.has_a().Value());
+  EXPECT_EQ(4, writer.a().Read());
+}
+
+TEST(Conditional,
+     SingleEntryConditionalDiscriminantNotOkWhenDiscriminantTruncated) {
+  // outer == 1 but the buffer is too short for tag: a's existence is Unknown.
+  ::std::uint8_t buffer[1] = {1};
+  auto writer = SingleEntryConditionalDiscriminantWriter(buffer, sizeof buffer);
+  EXPECT_FALSE(writer.has_a().Known());
+  EXPECT_FALSE(writer.Ok());
+}
+
+// Enum-typed conditional discriminant with residual arms (static_cast case
+// labels in the guarded switch).
+TEST(Conditional, EnumConditionalDiscriminantOkWhenDiscriminantAbsent) {
+  ::std::uint8_t buffer[1] = {0};  // outer == OFF
+  auto writer = EnumConditionalDiscriminantWriter(buffer, sizeof buffer);
+  EXPECT_TRUE(writer.Ok());
+  EXPECT_FALSE(writer.has_a().Value());
+  EXPECT_FALSE(writer.has_b().Value());
+}
+
+TEST(Conditional, EnumConditionalDiscriminantOkWhenPresent) {
+  ::std::uint8_t buffer[3] = {1, 0, 7};  // outer == ON, tag == OFF -> a present
+  auto writer = EnumConditionalDiscriminantWriter(buffer, sizeof buffer);
+  EXPECT_TRUE(writer.Ok());
+  EXPECT_TRUE(writer.has_a().Value());
+  EXPECT_EQ(7, writer.a().Read());
+}
+
+TEST(Conditional, EnumConditionalDiscriminantNotOkWhenDiscriminantTruncated) {
+  ::std::uint8_t buffer[1] = {1};  // outer == ON, tag truncated
+  auto writer = EnumConditionalDiscriminantWriter(buffer, sizeof buffer);
+  EXPECT_FALSE(writer.Ok());
+}
+
 TEST(Conditional, AlwaysMissingFieldDoesNotContributeToStaticSize) {
   EXPECT_EQ(0U, OnlyAlwaysFalseConditionWriter::SizeInBytes());
   EXPECT_EQ(1U, AlwaysFalseConditionWriter::SizeInBytes());

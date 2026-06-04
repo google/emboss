@@ -263,3 +263,65 @@ struct BareConditionalDiscriminant:
 
   if tag == 1:
     3 [+1]  UInt  b
+
+
+struct DominatedBareDiscriminant:
+  # Bare arms on a conditional discriminant, plus an always-present `tail`
+  # field that dominates the structure size.  When `outer != 1`, `tag` is
+  # absent and has_a()/has_b() are Unknown, but `tail` keeps the size Known so
+  # IsComplete() is true.  Ok() must still be false: a/b's existence is
+  # indeterminate, and the discriminant Known() guard -- not IsComplete() --
+  # is what enforces that.  (A `if (has_tag().ValueOrDefault())` wrapper would
+  # wrongly accept this message.)
+  0 [+1]    UInt  outer
+  if outer == 1:
+    1 [+1]  UInt  tag
+
+  if tag == 0:
+    2 [+1]  UInt  a
+
+  if tag == 1:
+    2 [+1]  UInt  b
+
+  3 [+1]    UInt  tail
+
+
+struct DisjunctionConditionalDiscriminant:
+  # Disjunction arms (`tag == 0 || tag == 1`) on a conditional discriminant,
+  # each carrying a residual.  Exercises the disjunction matcher and case-label
+  # coalescing together with the residual-only guarded switch.
+  0 [+1]    UInt  outer
+  if outer == 1:
+    1 [+1]  UInt  tag
+
+  if (tag == 0 || tag == 1) && outer == 1:
+    2 [+1]  UInt  a
+
+  if (tag == 2 || tag == 3) && outer == 1:
+    3 [+1]  UInt  b
+
+
+struct SingleEntryConditionalDiscriminant:
+  # A single residual arm on a conditional discriminant.  The switch group has
+  # one entry, so it is demoted to a has_X() check instead of a switch; no
+  # discriminant guard is emitted, so the bug cannot arise here.
+  0 [+1]    UInt  outer
+  if outer == 1:
+    1 [+1]  UInt  tag
+
+  if tag == 0 && outer == 1:
+    2 [+1]  UInt  a
+
+
+struct EnumConditionalDiscriminant:
+  # Conditional discriminant of enum type, with residual arms.  Exercises the
+  # enum-typed case labels in the guarded switch.
+  0 [+1]    OnOff  outer
+  if outer == OnOff.ON:
+    1 [+1]  OnOff  tag
+
+  if tag == OnOff.OFF && outer == OnOff.ON:
+    2 [+1]  UInt   a
+
+  if tag == OnOff.ON && outer == OnOff.ON:
+    3 [+1]  UInt   b
