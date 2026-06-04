@@ -1801,18 +1801,56 @@ def _emit_switch_block(group):
             )
         )
 
-    if group.get("known_check_required", True):
-        known_check = (
-            "      if (!emboss_reserved_switch_discrim.Known()) return false;\n"
+    if not group.get("known_check_required", True):
+        # Provably-present discriminant: the per-field validation loop has
+        # already proven the discriminant readable, so dispatch is always safe.
+        return code_template.format_template(
+            _TEMPLATES.ok_method_switch_block,
+            discriminant=group["discrim_rendered"],
+            known_check="",
+            switch_cases="".join(rendered_arms),
         )
-    else:
-        known_check = ""
 
+    # A "bare" arm is one whose existence condition is exactly `discrim == K`,
+    # with no residual conjuncts.  When the group has at least one bare arm, an
+    # Unknown discriminant leaves that field's has_X() Unknown, so the simple
+    # `if (!discrim.Known()) return false;` guard faithfully reproduces the
+    # unoptimized Ok() (which bails for the same reason).  This covers ordinary
+    # tagged unions and always-present-but-virtual discriminants (e.g. a `let`
+    # alias of a parameter).
+    has_bare_arm = any(
+        not has_residual
+        for case_entry in group["cases_by_label"].values()
+        for (_field, has_residual) in case_entry["entries"]
+    )
+    if has_bare_arm:
+        return code_template.format_template(
+            _TEMPLATES.ok_method_switch_block,
+            discriminant=group["discrim_rendered"],
+            known_check=(
+                "      if (!emboss_reserved_switch_discrim.Known()) return false;\n"
+            ),
+            switch_cases="".join(rendered_arms),
+        )
+
+    # Every arm carries a residual and the discriminant is not provably present.
+    # The `Known()` guard would be unsound here: a valid message can have an
+    # out-of-bounds (Unknown) discriminant while every arm's residual is
+    # statically false, making every has_X() Known-false (absent).  Dispatch
+    # only when the discriminant is in bounds; otherwise fall back to per-field
+    # existence checks.  (With the discriminant Unknown, has_X() can never be
+    # Known-true, so the fallback needs only the Known() test.)
+    fallback_checks = "".join(
+        "        if (!has_{}().Known()) return false;\n".format(
+            _cpp_field_name(field.name.name.text)
+        )
+        for field in group["encounter_order"]
+    )
     return code_template.format_template(
-        _TEMPLATES.ok_method_switch_block,
+        _TEMPLATES.ok_method_switch_block_guarded,
         discriminant=group["discrim_rendered"],
-        known_check=known_check,
         switch_cases="".join(rendered_arms),
+        fallback_checks=fallback_checks,
     )
 
 

@@ -229,3 +229,37 @@ struct ConditionalOnFlag:
     0 [+1]  Flag  enabled
   if enabled:
     1 [+1]  UInt  value
+
+
+struct ResidualConditionalDiscriminant:
+  # `tag` is itself conditional, and is the switch discriminant for `a`/`b`
+  # (it is the first conjunct of their existence conditions).  Every arm
+  # carries a residual (`outer == 1`), so when `outer != 1` the message is
+  # valid even though `tag` is absent -- and on a buffer too short to hold
+  # `tag`, reading the discriminant is Unknown.  The optimized Ok() must not
+  # reject such a message.
+  0 [+1]    UInt  outer
+  if outer == 1:
+    1 [+1]  UInt  tag
+
+  if tag == 0 && outer == 1:
+    2 [+1]  UInt  a
+
+  if tag == 1 && outer == 1:
+    3 [+1]  UInt  b
+
+
+struct BareConditionalDiscriminant:
+  # Like above, but `a`/`b` reference the conditional discriminant `tag`
+  # without re-guarding `outer == 1`, so the switch arms are bare.  Here the
+  # discriminant Known() guard is sound: an Unknown `tag` leaves has_a()/
+  # has_b() Unknown, so Ok() correctly reports the message as invalid.
+  0 [+1]    UInt  outer
+  if outer == 1:
+    1 [+1]  UInt  tag
+
+  if tag == 0:
+    2 [+1]  UInt  a
+
+  if tag == 1:
+    3 [+1]  UInt  b

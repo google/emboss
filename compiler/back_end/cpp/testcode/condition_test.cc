@@ -300,6 +300,102 @@ TEST(Conditional, StructWithNestedConditionIsOkWhenOuterConditionExists) {
   EXPECT_EQ(2U, writer.SizeInBytes());
 }
 
+// Regression tests for the optimized Ok() switch when the discriminant (`tag`)
+// is itself a conditionally-present field.  In ResidualConditionalDiscriminant
+// every arm carries a residual (`outer == 1`), so when `outer != 1` the message
+// is valid even though `tag` is absent -- and the optimized Ok() must not
+// reject it just because the (out-of-bounds) discriminant reads as Unknown.
+TEST(Conditional,
+     ResidualConditionalDiscriminantOkWhenDiscriminantFieldIsAbsent) {
+  // outer == 0, so `tag` is absent and `a`/`b` cannot exist.  The 1-byte
+  // buffer is too short to read `tag`, but the message is still valid.
+  ::std::uint8_t buffer[1] = {0};
+  auto writer = ResidualConditionalDiscriminantWriter(buffer, sizeof buffer);
+  EXPECT_TRUE(writer.Ok());
+  EXPECT_TRUE(writer.has_tag().Known());
+  EXPECT_FALSE(writer.has_tag().Value());
+  EXPECT_TRUE(writer.has_a().Known());
+  EXPECT_FALSE(writer.has_a().Value());
+  EXPECT_TRUE(writer.has_b().Known());
+  EXPECT_FALSE(writer.has_b().Value());
+}
+
+TEST(Conditional,
+     ResidualConditionalDiscriminantNotOkWhenDiscriminantPresentButTruncated) {
+  // outer == 1, so `tag` is present, but the buffer is too short to read it:
+  // whether `a`/`b` exist is indeterminate, so the message is invalid.
+  ::std::uint8_t buffer[1] = {1};
+  auto writer = ResidualConditionalDiscriminantWriter(buffer, sizeof buffer);
+  EXPECT_FALSE(writer.Ok());
+  EXPECT_TRUE(writer.has_tag().Known());
+  EXPECT_TRUE(writer.has_tag().Value());
+  EXPECT_FALSE(writer.has_a().Known());
+}
+
+TEST(Conditional, ResidualConditionalDiscriminantOkWhenGatedFieldIsPresent) {
+  // outer == 1, tag == 0, so `a` exists and is in bounds; `b` is absent.
+  ::std::uint8_t buffer[3] = {1, 0, 7};
+  auto writer = ResidualConditionalDiscriminantWriter(buffer, sizeof buffer);
+  EXPECT_TRUE(writer.Ok());
+  EXPECT_TRUE(writer.has_a().Known());
+  EXPECT_TRUE(writer.has_a().Value());
+  EXPECT_TRUE(writer.has_b().Known());
+  EXPECT_FALSE(writer.has_b().Value());
+  EXPECT_EQ(7, writer.a().Read());
+}
+
+TEST(Conditional, ResidualConditionalDiscriminantNotOkWhenGatedFieldTruncated) {
+  // outer == 1, tag == 0, so `a` exists, but the buffer is too short for it.
+  ::std::uint8_t buffer[2] = {1, 0};
+  auto writer = ResidualConditionalDiscriminantWriter(buffer, sizeof buffer);
+  EXPECT_TRUE(writer.has_a().Known());
+  EXPECT_TRUE(writer.has_a().Value());
+  EXPECT_FALSE(writer.a().Ok());
+  EXPECT_FALSE(writer.Ok());
+}
+
+TEST(Conditional, ResidualConditionalDiscriminantOkWhenDiscriminantMatchesNoArm) {
+  // outer == 1, tag == 5: neither `a` nor `b` exists, so the message is valid.
+  ::std::uint8_t buffer[2] = {1, 5};
+  auto writer = ResidualConditionalDiscriminantWriter(buffer, sizeof buffer);
+  EXPECT_TRUE(writer.Ok());
+  EXPECT_FALSE(writer.has_a().Value());
+  EXPECT_FALSE(writer.has_b().Value());
+}
+
+// BareConditionalDiscriminant keeps the simple discriminant Known() guard:
+// the arms are bare (`if tag == K:`), so an Unknown `tag` leaves has_a()/
+// has_b() Unknown and Ok() must report the message as invalid.
+TEST(Conditional, BareConditionalDiscriminantNotOkWhenDiscriminantTruncated) {
+  // 1-byte buffer: `tag` (offset 1) is out of bounds, so has_a()/has_b() are
+  // Unknown and the message's validity cannot be determined.
+  ::std::uint8_t buffer[1] = {0};
+  auto writer = BareConditionalDiscriminantWriter(buffer, sizeof buffer);
+  EXPECT_FALSE(writer.Ok());
+  EXPECT_FALSE(writer.has_a().Known());
+  EXPECT_FALSE(writer.has_b().Known());
+}
+
+TEST(Conditional, BareConditionalDiscriminantOkWhenGatedFieldIsPresent) {
+  // outer == 1 (so `tag` is present) and tag == 0, so `a` exists and is in
+  // bounds.
+  ::std::uint8_t buffer[3] = {1, 0, 7};
+  auto writer = BareConditionalDiscriminantWriter(buffer, sizeof buffer);
+  EXPECT_TRUE(writer.Ok());
+  EXPECT_TRUE(writer.has_a().Known());
+  EXPECT_TRUE(writer.has_a().Value());
+  EXPECT_EQ(7, writer.a().Read());
+}
+
+TEST(Conditional, BareConditionalDiscriminantNotOkWhenGatedFieldTruncated) {
+  // outer == 1, tag == 0, so `a` exists, but the buffer is too short for it.
+  ::std::uint8_t buffer[2] = {1, 0};
+  auto writer = BareConditionalDiscriminantWriter(buffer, sizeof buffer);
+  EXPECT_TRUE(writer.has_a().Known());
+  EXPECT_TRUE(writer.has_a().Value());
+  EXPECT_FALSE(writer.Ok());
+}
+
 TEST(Conditional, AlwaysMissingFieldDoesNotContributeToStaticSize) {
   EXPECT_EQ(0U, OnlyAlwaysFalseConditionWriter::SizeInBytes());
   EXPECT_EQ(1U, AlwaysFalseConditionWriter::SizeInBytes());

@@ -411,6 +411,26 @@ ${switch_cases}
     }
 
 
+// ** ok_method_switch_block_guarded ** ////////////////////////////////////////
+    // Check fields that share a conditionally-present discriminant.  Every arm
+    // carries a residual, so when the discriminant is out of bounds the message
+    // is still valid for any arm whose residual is statically false.  Dispatch
+    // only when the discriminant can be read; otherwise fall back to per-field
+    // existence checks.  (An Unknown discriminant can never make has_X()
+    // Known-true, so only the Known() test is needed in the fallback.)
+    {
+      const auto emboss_reserved_switch_discrim = ${discriminant};
+      if (emboss_reserved_switch_discrim.Known()) {
+        switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
+${switch_cases}
+
+          default: break;
+        }
+      } else {
+${fallback_checks}      }
+    }
+
+
 // ** ok_method_switch_arm ** //////////////////////////////////////////////////
 ${case_labels}${case_body}          break;
 
