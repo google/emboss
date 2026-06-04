@@ -66,6 +66,19 @@ py_test(
     ],
 )
 
+# End-to-end check that runs a generated dissector under a real TShark.  It
+# skips itself when `tshark` / `text2pcap` aren't on PATH (e.g. in CI), so it is
+# safe to include in the default test set.
+py_test(
+    name = "tshark_smoke_test",
+    srcs = ["tshark_smoke_test.py"],
+    deps = [
+        ":dissector_generator",
+        "//compiler/front_end:glue",
+        "//compiler/util:test_util",
+    ],
+)
+
 py_library(
     name = "one_golden_test_lib",
     srcs = ["one_golden_test.py"],
@@ -108,4 +121,10 @@ lua_golden_test(
     name = "wireshark_golden_test",
     emb_file = "//testdata:wireshark.emb",
     golden_file = "//testdata/golden_lua:wireshark.emb.lua",
+)
+
+lua_golden_test(
+    name = "wireshark_dynamic_golden_test",
+    emb_file = "//testdata:wireshark_dynamic.emb",
+    golden_file = "//testdata/golden_lua:wireshark_dynamic.emb.lua",
 )

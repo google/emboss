@@ -73,6 +73,7 @@ filegroup(
         "uint_sizes.emb",
         "virtual_field.emb",
         "wireshark.emb",
+        "wireshark_dynamic.emb",
     ],
 )
 
@@ -388,5 +389,19 @@ emboss_lua_library(
     name = "wireshark_lua_emboss",
     srcs = [
         "wireshark.emb",
+    ],
+)
+
+emboss_cc_library(
+    name = "wireshark_dynamic_emboss",
+    srcs = [
+        "wireshark_dynamic.emb",
+    ],
+)
+
+emboss_lua_library(
+    name = "wireshark_dynamic_lua_emboss",
+    srcs = [
+        "wireshark_dynamic.emb",
     ],
 )

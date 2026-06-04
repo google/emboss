@@ -59,6 +59,7 @@ LUA_GOLDENS = [
     ("uint_sizes.emb", "uint_sizes.emb.lua"),
     ("int_sizes.emb", "int_sizes.emb.lua"),
     ("wireshark.emb", "wireshark.emb.lua"),
+    ("wireshark_dynamic.emb", "wireshark_dynamic.emb.lua"),
 ]
 
 

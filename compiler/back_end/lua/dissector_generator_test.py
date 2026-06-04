@@ -285,5 +285,192 @@ class NestedStructTest(unittest.TestCase):
         self.assertIn("dissect_Inner(buffer, pinfo, subtree, offset + 0)", text)
 
 
+_FM = dissector_generator.ir_data.FunctionMapping
+
+
+def _const_expr(value):
+    return dissector_generator.ir_data.Expression(
+        constant=dissector_generator.ir_data.NumericConstant(value=str(value))
+    )
+
+
+def _bool_expr(value):
+    return dissector_generator.ir_data.Expression(
+        boolean_constant=dissector_generator.ir_data.BooleanConstant(value=value)
+    )
+
+
+def _field_ref_expr(*object_path):
+    return dissector_generator.ir_data.Expression(
+        field_reference=dissector_generator.ir_data.FieldReference(
+            path=[
+                dissector_generator.ir_data.Reference(
+                    canonical_name=dissector_generator.ir_data.CanonicalName(
+                        module_file="m.emb", object_path=list(object_path)
+                    )
+                )
+            ]
+        )
+    )
+
+
+def _fn_expr(mapping, *args):
+    return dissector_generator.ir_data.Expression(
+        function=dissector_generator.ir_data.Function(function=mapping, args=list(args))
+    )
+
+
+class ExpressionTranslationTest(unittest.TestCase):
+    """Unit tests for the Emboss-expression -> Lua translator."""
+
+    @staticmethod
+    def _resolve(field_reference):
+        path = list(field_reference.path[0].canonical_name.object_path)
+        return "val_x" if path == ["M", "x"] else None
+
+    def _translate(self, expression):
+        return dissector_generator._translate_expression(expression, self._resolve)
+
+    def test_numeric_constant(self):
+        self.assertEqual("7", self._translate(_const_expr(7)))
+
+    def test_boolean_constant(self):
+        self.assertEqual("true", self._translate(_bool_expr(True)))
+        self.assertEqual("false", self._translate(_bool_expr(False)))
+
+    def test_resolved_field_reference(self):
+        self.assertEqual("val_x", self._translate(_field_ref_expr("M", "x")))
+
+    def test_unresolved_field_reference(self):
+        self.assertIsNone(self._translate(_field_ref_expr("M", "other")))
+
+    def test_equality(self):
+        self.assertEqual(
+            "(val_x == 3)",
+            self._translate(
+                _fn_expr(_FM.EQUALITY, _field_ref_expr("M", "x"), _const_expr(3))
+            ),
+        )
+
+    def test_inequality_uses_lua_operator(self):
+        self.assertEqual(
+            "(val_x ~= 0)",
+            self._translate(
+                _fn_expr(_FM.INEQUALITY, _field_ref_expr("M", "x"), _const_expr(0))
+            ),
+        )
+
+    def test_comparison_and_logical_operators(self):
+        expr = _fn_expr(
+            _FM.AND,
+            _fn_expr(_FM.LESS, _field_ref_expr("M", "x"), _const_expr(10)),
+            _fn_expr(_FM.GREATER_OR_EQUAL, _field_ref_expr("M", "x"), _const_expr(2)),
+        )
+        self.assertEqual("((val_x < 10) and (val_x >= 2))", self._translate(expr))
+
+    def test_arithmetic(self):
+        expr = _fn_expr(_FM.ADDITION, _field_ref_expr("M", "x"), _const_expr(1))
+        self.assertEqual("(val_x + 1)", self._translate(expr))
+
+    def test_maximum_maps_to_math_max(self):
+        expr = _fn_expr(_FM.MAXIMUM, _field_ref_expr("M", "x"), _const_expr(1))
+        self.assertEqual("math.max(val_x, 1)", self._translate(expr))
+
+    def test_unsupported_choice_returns_none(self):
+        expr = _fn_expr(
+            _FM.CHOICE, _field_ref_expr("M", "x"), _const_expr(1), _const_expr(2)
+        )
+        self.assertIsNone(self._translate(expr))
+
+    def test_unresolved_subexpression_propagates_none(self):
+        expr = _fn_expr(_FM.EQUALITY, _field_ref_expr("M", "other"), _const_expr(1))
+        self.assertIsNone(self._translate(expr))
+
+
+class ConditionalFieldTest(unittest.TestCase):
+
+    def test_wraps_conditional_field_in_if(self):
+        text, errors = _generate(
+            '[expected_back_ends: "cpp, wireshark"]\n'
+            '[$default byte_order: "BigEndian"]\n'
+            "struct Msg:\n"
+            "  0 [+1]  UInt  a\n"
+            "  if a == 1:\n"
+            "    1 [+1]  UInt  b\n"
+        )
+        self.assertEqual([], errors)
+        self.assertIn("local val_Msg_a = buffer(offset + 0, 1):uint()", text)
+        # The conditional read is nested under the translated `if`.
+        self.assertIn(
+            '  if (val_Msg_a == 1) then\n    subtree:add(f["Msg.b"], '
+            "buffer(offset + 1, 1))\n  end",
+            text,
+        )
+
+    def test_no_value_capture_without_reference(self):
+        text, errors = _generate(
+            '[expected_back_ends: "cpp, wireshark"]\n'
+            '[$default byte_order: "BigEndian"]\n'
+            "struct Msg:\n"
+            "  0 [+1]  UInt  a\n"
+            "  1 [+1]  UInt  b\n"
+        )
+        self.assertEqual([], errors)
+        self.assertNotIn("local val_", text)
+
+    def test_little_endian_capture_uses_le_reader(self):
+        text, errors = _generate(
+            '[expected_back_ends: "cpp, wireshark"]\n'
+            '[$default byte_order: "LittleEndian"]\n'
+            "struct Msg:\n"
+            "  0 [+2]  UInt  a\n"
+            "  if a == 1:\n"
+            "    2 [+1]  UInt  b\n"
+        )
+        self.assertEqual([], errors)
+        self.assertIn("local val_Msg_a = buffer(offset + 0, 2):le_uint()", text)
+
+    def test_condition_on_wide_field_is_skipped(self):
+        # A reference to an 8-byte field can't be captured as a Lua number, so
+        # the dependent field is skipped rather than mistranslated.
+        text, errors = _generate(
+            '[expected_back_ends: "cpp, wireshark"]\n'
+            '[$default byte_order: "BigEndian"]\n'
+            "struct Msg:\n"
+            "  0 [+8]  UInt  big\n"
+            "  if big == 1:\n"
+            "    8 [+1]  UInt  b\n"
+        )
+        self.assertEqual([], errors)
+        self.assertIn("-- skipped conditional field b (unsupported condition)", text)
+
+
+class VariableLengthArrayTest(unittest.TestCase):
+
+    def test_dynamic_count_loop(self):
+        text, errors = _generate(
+            '[expected_back_ends: "cpp, wireshark"]\n'
+            '[$default byte_order: "BigEndian"]\n'
+            "struct Msg:\n"
+            "  0 [+1]      UInt       n\n"
+            "  1 [+n]      UInt:8[n]  data\n"
+        )
+        self.assertEqual([], errors)
+        self.assertIn("local val_Msg_n = buffer(offset + 0, 1):uint()", text)
+        self.assertIn("for i = 0, val_Msg_n - 1 do", text)
+        self.assertIn('subtree:add(f["Msg.data"], buffer(offset + 1 + i * 1, 1))', text)
+
+    def test_auto_sized_array_skipped(self):
+        text, errors = _generate(
+            '[expected_back_ends: "cpp, wireshark"]\n'
+            '[$default byte_order: "BigEndian"]\n'
+            "struct Msg:\n"
+            "  0 [+1]  UInt       n\n"
+            "  1 [+n]  UInt:8[]   data\n"
+        )
+        self.assertEqual([], errors)
+        self.assertIn("-- skipped auto-sized array field data", text)
+
+
 if __name__ == "__main__":
     unittest.main()
