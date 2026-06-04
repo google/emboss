@@ -97,6 +97,7 @@ class GenericLargeConditionalsView final {
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
         case static_cast</**/ ::std::int32_t>(0LL):
           if (!f0().Ok()) return false;
+          if (!f0_copy().Ok()) return false;
           break;
 
         case static_cast</**/ ::std::int32_t>(1LL):
@@ -499,9 +500,6 @@ class GenericLargeConditionalsView final {
           break;
       }
     }
-
-    if (!has_f0_copy().Known()) return false;
-    if (has_f0_copy().ValueOrDefault() && !f0_copy().Ok()) return false;
 
     return true;
   }
