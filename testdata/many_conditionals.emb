@@ -306,3 +306,16 @@ struct LargeConditionals:
 
   if tag == 0:
     8 [+4]  UInt  f0_copy
+
+
+# Exercises disjunction-of-equality matching: each conditional field is
+# guarded by an `||` of multiple discriminant values, which collapses into a
+# single multi-label switch arm under the optimized Ok() generator.
+struct DisjunctionConditionals:
+  0 [+4]                                       UInt  tag
+  if tag == 0 || tag == 1 || tag == 2:
+    4 [+4]                                     UInt  shared_low
+  if tag == 10 || tag == 11:
+    4 [+4]                                     UInt  shared_high
+  if tag == 100 || tag == 200 || tag == 300:
+    4 [+4]                                     UInt  shared_far

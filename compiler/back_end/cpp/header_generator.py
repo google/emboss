@@ -1403,6 +1403,116 @@ def _get_switch_candidate(expression, ir):
     return None, None
 
 
+def _flatten_function(expression, function):
+    """Flatten a binary function chain into a flat list of operands.
+
+    Both `(a OP b) OP c` and `a OP (b OP c)` flatten to `[a, b, c]`.
+    """
+    if (
+        expression.which_expression == "function"
+        and expression.function.function == function
+    ):
+        out = []
+        for arg in expression.function.args:
+            out.extend(_flatten_function(arg, function))
+        return out
+    return [expression]
+
+
+def _flatten_or(expression):
+    return _flatten_function(expression, ir_data.FunctionMapping.OR)
+
+
+def _flatten_and(expression):
+    return _flatten_function(expression, ir_data.FunctionMapping.AND)
+
+
+def _extract_switch_arms(expression, ir):
+    """Decomposes `expression` into a list of switch arms.
+
+    Returns either:
+      * (discriminant_expr, [(case_value_expr, residual_conjuncts), ...])
+        when the expression decomposes into a switch on a single
+        discriminant. `residual_conjuncts` is an empty list when the arm
+        is a bare equality on the discriminant; otherwise it is the list
+        of additional IR sub-expressions (`AND`-conjuncts) that the arm
+        must also satisfy. Case values are returned in encounter order;
+        the caller is responsible for sorting/coalescing.
+      * (None, None) when the expression doesn't decompose into a switch.
+
+    Supported shapes:
+      * `discrim == K`                         → one arm, no residual.
+      * `discrim == K1 || discrim == K2 || …`  → one arm per Ki, no
+        residual. Common for tagged unions where several tag values
+        share a payload (`if tag == 0x10 || tag == 0x11: …`).
+      * `discrim == K && other_predicate`      → one arm with residual
+        `[other_predicate]`. Useful for nested guards like
+        `if outer_flag && tag == K:`.
+      * `(discrim == K1 || …) && other`        → multiple arms each
+        carrying `[other]` as residual.
+      * Disjunction whose disjuncts mix shapes: `(tag == 0 && a) ||
+        (tag == 1 && b) || tag == 2` → three arms with respective
+        residuals `[a]`, `[b]`, `[]`.
+
+    Residuals are rendered into the case body at emit time as an extra
+    `if (residual.ValueOrDefault())` guard around the field's `Ok()`
+    check, so the optimization stays sound for partially-Known
+    residuals (we still `return false` if the residual isn't Known()).
+    """
+    # Bare equality.
+    discrim, case_val = _get_switch_candidate(expression, ir)
+    if discrim is not None:
+        return discrim, [(case_val, [])]
+
+    # Conjunction: try each conjunct as the switch source; if exactly one
+    # extracts, the others become the residual.
+    if (
+        expression.which_expression == "function"
+        and expression.function.function == ir_data.FunctionMapping.AND
+    ):
+        conjuncts = _flatten_and(expression)
+        for i, c in enumerate(conjuncts):
+            sub = _extract_switch_arms(c, ir)
+            if sub[0] is None:
+                continue
+            other_conjuncts = [conjuncts[j] for j in range(len(conjuncts)) if j != i]
+            sub_discrim, sub_arms = sub
+            merged = [
+                (case_val, residual + other_conjuncts)
+                for (case_val, residual) in sub_arms
+            ]
+            return sub_discrim, merged
+        return None, None
+
+    # Disjunction: each disjunct must independently extract a switch on
+    # the same discriminant.
+    if (
+        expression.which_expression == "function"
+        and expression.function.function == ir_data.FunctionMapping.OR
+    ):
+        disjuncts = _flatten_or(expression)
+        common_discrim = None
+        common_discrim_str = None
+        all_arms = []
+        for d in disjuncts:
+            sub_discrim, sub_arms = _extract_switch_arms(d, ir)
+            if sub_discrim is None:
+                return None, None
+            sub_discrim_str = _render_expression(
+                sub_discrim, ir, subexpressions=None
+            ).rendered
+            if common_discrim_str is None:
+                common_discrim = sub_discrim
+                common_discrim_str = sub_discrim_str
+            elif sub_discrim_str != common_discrim_str:
+                # Disjuncts disagree on the discriminant; can't be one switch.
+                return None, None
+            all_arms.extend(sub_arms)
+        return common_discrim, all_arms
+
+    return None, None
+
+
 def _generate_optimized_ok_method_body(fields, ir, subexpressions):
     """Generates optimized C++ code for the Ok() method body.
 
@@ -1469,31 +1579,51 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
     """
     groups = {}
     ordered_keys = []
+    # Track which group each field was routed to and whether the field's
+    # arms have residuals; the demotion pass at the end uses this to fall
+    # back to ok_method_test for groups where switch-ifying isn't a net
+    # win (single-entry groups, where the switch wrapper costs more than
+    # the dedupe saves).
+    field_group_key = {}
 
     for field in fields:
-        discrim_expr, case_expr = _get_switch_candidate(field.existence_condition, ir)
+        discrim_expr, arms = _extract_switch_arms(field.existence_condition, ir)
         if discrim_expr:
-            # Render the discriminant once into the active subexpression scope.
-            # The rendered string is stable for equivalent discriminants (the
-            # scope dedupes by the inner rendered form), so it doubles as a
-            # grouping key and as the C++ to emit later. This avoids a second
-            # IR traversal at emit time for every switch group.
-            discrim_rendered = _render_expression(
-                discrim_expr, ir, subexpressions=subexpressions
+            # Render the discriminant unscoped to build the grouping key.
+            # We can't render-with-scope yet because we don't know which
+            # groups will survive demotion (see below); committing a
+            # subexpression to `subexpressions` for a group that ends up
+            # demoted would leave a dead `const auto = ...` definition in
+            # the emitted C++. The scoped render happens at emit time,
+            # only for groups that survive.
+            discrim_key = _render_expression(
+                discrim_expr, ir, subexpressions=None
             ).rendered
-            key = "SWITCH:" + discrim_rendered
+            key = "SWITCH:" + discrim_key
             if key not in groups:
                 groups[key] = {
                     "type": "switch",
-                    "discrim_rendered": discrim_rendered,
+                    "discrim_expr": discrim_expr,
                     "cases_by_label": {},
+                    "encounter_order": [],
+                    "encountered_field_ids": set(),
                 }
                 ordered_keys.append(key)
-            case_str = _render_case_label(case_expr, ir)
-            case_entry = groups[key]["cases_by_label"].setdefault(
-                case_str, {"sort_key": _case_sort_key(case_expr), "fields": []}
-            )
-            case_entry["fields"].append(field)
+            group = groups[key]
+            if id(field) not in group["encountered_field_ids"]:
+                group["encountered_field_ids"].add(id(field))
+                group["encounter_order"].append(field)
+            for case_expr, residual in arms:
+                case_str = _render_case_label(case_expr, ir)
+                case_entry = group["cases_by_label"].setdefault(
+                    case_str, {"sort_key": _case_sort_key(case_expr), "entries": []}
+                )
+                # Avoid duplicating a field across cases that map to the same
+                # case label twice (`tag == 0 || tag == 0`); after #9 the
+                # simplifier should normally prevent this from reaching us.
+                if not any(e[0] is field for e in case_entry["entries"]):
+                    case_entry["entries"].append((field, bool(residual)))
+            field_group_key[id(field)] = key
         else:
             cond_res = _render_expression(
                 field.existence_condition, ir, subexpressions=None
@@ -1506,12 +1636,46 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
                 }
                 ordered_keys.append(key)
             groups[key]["fields"].append(field)
+            field_group_key[id(field)] = key
+
+    # Demote switch groups that wouldn't actually benefit from a switch.
+    # A switch's overhead — the temporary discriminant variable, the
+    # Known() guard, the scope braces — is only worthwhile if the switch
+    # dedupes either at least two distinct case labels (sharing one
+    # subexpression read) or at least two distinct fields (sharing one
+    # discriminant evaluation). When a group has just one entry total
+    # (one field, one bare case), the unoptimized has_${field}()-based
+    # check is strictly smaller.
+    for key in ordered_keys:
+        group = groups[key]
+        if group["type"] != "switch":
+            continue
+        total_entries = sum(
+            len(case_entry["entries"])
+            for case_entry in group["cases_by_label"].values()
+        )
+        if total_entries < 2:
+            group["type"] = "demoted_to_if"
 
     blocks = []
     for key in ordered_keys:
         group = groups[key]
         if group["type"] == "switch":
+            # Now that we know this group survived demotion, render the
+            # discriminant with the active scope so it shares
+            # subexpression slots with the rest of Ok().
+            group["discrim_rendered"] = _render_expression(
+                group["discrim_expr"], ir, subexpressions=subexpressions
+            ).rendered
             blocks.append(_emit_switch_block(group))
+        elif group["type"] == "demoted_to_if":
+            for field in group["encounter_order"]:
+                blocks.append(
+                    code_template.format_template(
+                        _TEMPLATES.ok_method_test,
+                        field=_cpp_field_name(field.name.name.text),
+                    )
+                )
         else:
             for field in group["fields"]:
                 blocks.append(
@@ -1524,14 +1688,34 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
     return "".join(blocks)
 
 
-def _render_case_body(fields):
-    """Renders the body of a single switch arm — the field validation tests."""
-    return "".join(
-        "          if (!{}().Ok()) return false;\n".format(
-            _cpp_field_name(f.name.name.text)
-        )
-        for f in fields
-    )
+def _render_case_body(entries):
+    """Renders the body of a single switch arm.
+
+    Each entry is `(field, has_residual)` where `has_residual` indicates
+    whether the field's existence condition has predicate conjuncts beyond
+    the discriminant equality. When there is no residual the case body is
+    a single direct Ok() check; when there is a residual the body falls
+    back to the has_${field}() accessor, which encapsulates the full
+    existence check including the residual conjuncts. The C++ compiler is
+    then trusted to fold the now-trivially-true discriminant comparison
+    inside the has_${field}() call (it's inlined and the case label has
+    pinned the discriminant value).
+    """
+    parts = []
+    for field, has_residual in entries:
+        name = _cpp_field_name(field.name.name.text)
+        if has_residual:
+            parts.append(
+                "          if (!has_{0}().Known()) return false;\n".format(name)
+            )
+            parts.append(
+                "          if (has_{0}().ValueOrDefault() && !{0}().Ok()) return false;\n".format(
+                    name
+                )
+            )
+        else:
+            parts.append("          if (!{}().Ok()) return false;\n".format(name))
+    return "".join(parts)
 
 
 def _emit_switch_block(group):
@@ -1551,7 +1735,7 @@ def _emit_switch_block(group):
     body_to_labels = {}
     body_first_seen = {}
     for case_str, case_entry in group["cases_by_label"].items():
-        body = _render_case_body(case_entry["fields"])
+        body = _render_case_body(case_entry["entries"])
         body_to_labels.setdefault(body, []).append((case_entry["sort_key"], case_str))
         if body not in body_first_seen:
             body_first_seen[body] = case_entry["sort_key"]
