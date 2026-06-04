@@ -19982,7 +19982,7 @@ class GenericResidualConditionalDiscriminantView final {
           8, ::emboss::support::AllValuesAreOk>,
       typename ::emboss::support::BitBlock<
           /**/ ::emboss::support::LittleEndianByteOrderer<
-              typename Storage::template OffsetStorageType</**/ 0, 3>>,
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
           8>>
 
   b() const;
@@ -20095,7 +20095,7 @@ class GenericResidualConditionalDiscriminantView final {
                                     ::std::int32_t, ::std::int32_t>(
               emboss_reserved_local_subexpr_11,
               ::emboss::support::Maybe</**/ ::std::int32_t>(
-                  static_cast</**/ ::std::int32_t>(4LL)),
+                  static_cast</**/ ::std::int32_t>(3LL)),
               ::emboss::support::Maybe</**/ ::std::int32_t>(
                   static_cast</**/ ::std::int32_t>(0LL)));
       const auto emboss_reserved_local_subexpr_13 = ::emboss::support::Maximum<
@@ -20746,7 +20746,7 @@ class GenericBareConditionalDiscriminantView final {
           8, ::emboss::support::AllValuesAreOk>,
       typename ::emboss::support::BitBlock<
           /**/ ::emboss::support::LittleEndianByteOrderer<
-              typename Storage::template OffsetStorageType</**/ 0, 3>>,
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
           8>>
 
   b() const;
@@ -20852,7 +20852,7 @@ class GenericBareConditionalDiscriminantView final {
                                     ::std::int32_t, ::std::int32_t>(
               emboss_reserved_local_subexpr_9,
               ::emboss::support::Maybe</**/ ::std::int32_t>(
-                  static_cast</**/ ::std::int32_t>(4LL)),
+                  static_cast</**/ ::std::int32_t>(3LL)),
               ::emboss::support::Maybe</**/ ::std::int32_t>(
                   static_cast</**/ ::std::int32_t>(0LL)));
       const auto emboss_reserved_local_subexpr_11 = ::emboss::support::Maximum<
@@ -22254,7 +22254,7 @@ class GenericDisjunctionConditionalDiscriminantView final {
           8, ::emboss::support::AllValuesAreOk>,
       typename ::emboss::support::BitBlock<
           /**/ ::emboss::support::LittleEndianByteOrderer<
-              typename Storage::template OffsetStorageType</**/ 0, 3>>,
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
           8>>
 
   b() const;
@@ -22386,7 +22386,7 @@ class GenericDisjunctionConditionalDiscriminantView final {
                                     ::std::int32_t, ::std::int32_t>(
               emboss_reserved_local_subexpr_15,
               ::emboss::support::Maybe</**/ ::std::int32_t>(
-                  static_cast</**/ ::std::int32_t>(4LL)),
+                  static_cast</**/ ::std::int32_t>(3LL)),
               ::emboss::support::Maybe</**/ ::std::int32_t>(
                   static_cast</**/ ::std::int32_t>(0LL)));
       const auto emboss_reserved_local_subexpr_17 = ::emboss::support::Maximum<
@@ -23695,7 +23695,7 @@ class GenericEnumConditionalDiscriminantView final {
           8, ::emboss::support::AllValuesAreOk>,
       typename ::emboss::support::BitBlock<
           /**/ ::emboss::support::LittleEndianByteOrderer<
-              typename Storage::template OffsetStorageType</**/ 0, 3>>,
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
           8>>
 
   b() const;
@@ -23811,7 +23811,7 @@ class GenericEnumConditionalDiscriminantView final {
                                     ::std::int32_t, ::std::int32_t>(
               emboss_reserved_local_subexpr_11,
               ::emboss::support::Maybe</**/ ::std::int32_t>(
-                  static_cast</**/ ::std::int32_t>(4LL)),
+                  static_cast</**/ ::std::int32_t>(3LL)),
               ::emboss::support::Maybe</**/ ::std::int32_t>(
                   static_cast</**/ ::std::int32_t>(0LL)));
       const auto emboss_reserved_local_subexpr_13 = ::emboss::support::Maximum<
@@ -30459,7 +30459,7 @@ inline typename ::emboss::prelude::UIntView<
         8, ::emboss::support::AllValuesAreOk>,
     typename ::emboss::support::BitBlock<
         /**/ ::emboss::support::LittleEndianByteOrderer<
-            typename Storage::template OffsetStorageType</**/ 0, 3>>,
+            typename Storage::template OffsetStorageType</**/ 0, 2>>,
         8>>
 
 GenericResidualConditionalDiscriminantView<Storage>::b() const {
@@ -30469,7 +30469,7 @@ GenericResidualConditionalDiscriminantView<Storage>::b() const {
             static_cast</**/ ::std::int32_t>(1LL));
     auto emboss_reserved_local_offset =
         ::emboss::support::Maybe</**/ ::std::int32_t>(
-            static_cast</**/ ::std::int32_t>(3LL));
+            static_cast</**/ ::std::int32_t>(2LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
@@ -30479,10 +30479,10 @@ GenericResidualConditionalDiscriminantView<Storage>::b() const {
               8, ::emboss::support::AllValuesAreOk>,
           typename ::emboss::support::BitBlock<
               /**/ ::emboss::support::LittleEndianByteOrderer<
-                  typename Storage::template OffsetStorageType</**/ 0, 3>>,
+                  typename Storage::template OffsetStorageType</**/ 0, 2>>,
               8>>
 
-          (backing_.template GetOffsetStorage<0, 3>(
+          (backing_.template GetOffsetStorage<0, 2>(
               emboss_reserved_local_offset.ValueOrDefault(),
               emboss_reserved_local_size.ValueOrDefault()));
     }
@@ -30492,7 +30492,7 @@ GenericResidualConditionalDiscriminantView<Storage>::b() const {
           8, ::emboss::support::AllValuesAreOk>,
       typename ::emboss::support::BitBlock<
           /**/ ::emboss::support::LittleEndianByteOrderer<
-              typename Storage::template OffsetStorageType</**/ 0, 3>>,
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
           8>>
 
       ();
@@ -30539,7 +30539,7 @@ GenericResidualConditionalDiscriminantView<Storage>::has_IntrinsicSizeInBytes()
 namespace ResidualConditionalDiscriminant {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
   return ::emboss::support::Maybe</**/ ::std::int32_t>(
-             static_cast</**/ ::std::int32_t>(4LL))
+             static_cast</**/ ::std::int32_t>(3LL))
       .ValueOrDefault();
 }
 }  // namespace ResidualConditionalDiscriminant
@@ -30751,7 +30751,7 @@ inline typename ::emboss::prelude::UIntView<
         8, ::emboss::support::AllValuesAreOk>,
     typename ::emboss::support::BitBlock<
         /**/ ::emboss::support::LittleEndianByteOrderer<
-            typename Storage::template OffsetStorageType</**/ 0, 3>>,
+            typename Storage::template OffsetStorageType</**/ 0, 2>>,
         8>>
 
 GenericBareConditionalDiscriminantView<Storage>::b() const {
@@ -30761,7 +30761,7 @@ GenericBareConditionalDiscriminantView<Storage>::b() const {
             static_cast</**/ ::std::int32_t>(1LL));
     auto emboss_reserved_local_offset =
         ::emboss::support::Maybe</**/ ::std::int32_t>(
-            static_cast</**/ ::std::int32_t>(3LL));
+            static_cast</**/ ::std::int32_t>(2LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
@@ -30771,10 +30771,10 @@ GenericBareConditionalDiscriminantView<Storage>::b() const {
               8, ::emboss::support::AllValuesAreOk>,
           typename ::emboss::support::BitBlock<
               /**/ ::emboss::support::LittleEndianByteOrderer<
-                  typename Storage::template OffsetStorageType</**/ 0, 3>>,
+                  typename Storage::template OffsetStorageType</**/ 0, 2>>,
               8>>
 
-          (backing_.template GetOffsetStorage<0, 3>(
+          (backing_.template GetOffsetStorage<0, 2>(
               emboss_reserved_local_offset.ValueOrDefault(),
               emboss_reserved_local_size.ValueOrDefault()));
     }
@@ -30784,7 +30784,7 @@ GenericBareConditionalDiscriminantView<Storage>::b() const {
           8, ::emboss::support::AllValuesAreOk>,
       typename ::emboss::support::BitBlock<
           /**/ ::emboss::support::LittleEndianByteOrderer<
-              typename Storage::template OffsetStorageType</**/ 0, 3>>,
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
           8>>
 
       ();
@@ -30819,7 +30819,7 @@ inline ::emboss::support::Maybe<bool> GenericBareConditionalDiscriminantView<
 namespace BareConditionalDiscriminant {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
   return ::emboss::support::Maybe</**/ ::std::int32_t>(
-             static_cast</**/ ::std::int32_t>(4LL))
+             static_cast</**/ ::std::int32_t>(3LL))
       .ValueOrDefault();
 }
 }  // namespace BareConditionalDiscriminant
@@ -31385,7 +31385,7 @@ inline typename ::emboss::prelude::UIntView<
         8, ::emboss::support::AllValuesAreOk>,
     typename ::emboss::support::BitBlock<
         /**/ ::emboss::support::LittleEndianByteOrderer<
-            typename Storage::template OffsetStorageType</**/ 0, 3>>,
+            typename Storage::template OffsetStorageType</**/ 0, 2>>,
         8>>
 
 GenericDisjunctionConditionalDiscriminantView<Storage>::b() const {
@@ -31395,7 +31395,7 @@ GenericDisjunctionConditionalDiscriminantView<Storage>::b() const {
             static_cast</**/ ::std::int32_t>(1LL));
     auto emboss_reserved_local_offset =
         ::emboss::support::Maybe</**/ ::std::int32_t>(
-            static_cast</**/ ::std::int32_t>(3LL));
+            static_cast</**/ ::std::int32_t>(2LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
@@ -31405,10 +31405,10 @@ GenericDisjunctionConditionalDiscriminantView<Storage>::b() const {
               8, ::emboss::support::AllValuesAreOk>,
           typename ::emboss::support::BitBlock<
               /**/ ::emboss::support::LittleEndianByteOrderer<
-                  typename Storage::template OffsetStorageType</**/ 0, 3>>,
+                  typename Storage::template OffsetStorageType</**/ 0, 2>>,
               8>>
 
-          (backing_.template GetOffsetStorage<0, 3>(
+          (backing_.template GetOffsetStorage<0, 2>(
               emboss_reserved_local_offset.ValueOrDefault(),
               emboss_reserved_local_size.ValueOrDefault()));
     }
@@ -31418,7 +31418,7 @@ GenericDisjunctionConditionalDiscriminantView<Storage>::b() const {
           8, ::emboss::support::AllValuesAreOk>,
       typename ::emboss::support::BitBlock<
           /**/ ::emboss::support::LittleEndianByteOrderer<
-              typename Storage::template OffsetStorageType</**/ 0, 3>>,
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
           8>>
 
       ();
@@ -31474,7 +31474,7 @@ GenericDisjunctionConditionalDiscriminantView<
 namespace DisjunctionConditionalDiscriminant {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
   return ::emboss::support::Maybe</**/ ::std::int32_t>(
-             static_cast</**/ ::std::int32_t>(4LL))
+             static_cast</**/ ::std::int32_t>(3LL))
       .ValueOrDefault();
 }
 }  // namespace DisjunctionConditionalDiscriminant
@@ -31938,7 +31938,7 @@ inline typename ::emboss::prelude::UIntView<
         8, ::emboss::support::AllValuesAreOk>,
     typename ::emboss::support::BitBlock<
         /**/ ::emboss::support::LittleEndianByteOrderer<
-            typename Storage::template OffsetStorageType</**/ 0, 3>>,
+            typename Storage::template OffsetStorageType</**/ 0, 2>>,
         8>>
 
 GenericEnumConditionalDiscriminantView<Storage>::b() const {
@@ -31948,7 +31948,7 @@ GenericEnumConditionalDiscriminantView<Storage>::b() const {
             static_cast</**/ ::std::int32_t>(1LL));
     auto emboss_reserved_local_offset =
         ::emboss::support::Maybe</**/ ::std::int32_t>(
-            static_cast</**/ ::std::int32_t>(3LL));
+            static_cast</**/ ::std::int32_t>(2LL));
     if (emboss_reserved_local_size.Known() &&
         emboss_reserved_local_size.ValueOr(0) >= 0 &&
         emboss_reserved_local_offset.Known() &&
@@ -31958,10 +31958,10 @@ GenericEnumConditionalDiscriminantView<Storage>::b() const {
               8, ::emboss::support::AllValuesAreOk>,
           typename ::emboss::support::BitBlock<
               /**/ ::emboss::support::LittleEndianByteOrderer<
-                  typename Storage::template OffsetStorageType</**/ 0, 3>>,
+                  typename Storage::template OffsetStorageType</**/ 0, 2>>,
               8>>
 
-          (backing_.template GetOffsetStorage<0, 3>(
+          (backing_.template GetOffsetStorage<0, 2>(
               emboss_reserved_local_offset.ValueOrDefault(),
               emboss_reserved_local_size.ValueOrDefault()));
     }
@@ -31971,7 +31971,7 @@ GenericEnumConditionalDiscriminantView<Storage>::b() const {
           8, ::emboss::support::AllValuesAreOk>,
       typename ::emboss::support::BitBlock<
           /**/ ::emboss::support::LittleEndianByteOrderer<
-              typename Storage::template OffsetStorageType</**/ 0, 3>>,
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
           8>>
 
       ();
@@ -32017,7 +32017,7 @@ inline ::emboss::support::Maybe<bool> GenericEnumConditionalDiscriminantView<
 namespace EnumConditionalDiscriminant {
 inline constexpr ::std::int32_t MaxSizeInBytes() {
   return ::emboss::support::Maybe</**/ ::std::int32_t>(
-             static_cast</**/ ::std::int32_t>(4LL))
+             static_cast</**/ ::std::int32_t>(3LL))
       .ValueOrDefault();
 }
 }  // namespace EnumConditionalDiscriminant

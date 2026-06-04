@@ -445,8 +445,9 @@ TEST(Conditional, DisjunctionConditionalDiscriminantBothDisjunctsSelectField) {
 }
 
 TEST(Conditional, DisjunctionConditionalDiscriminantSecondArmAndNoMatch) {
-  // tag == 2 selects `b`; tag == 9 selects neither (still valid).
-  ::std::uint8_t buffer2[4] = {1, 2, 0, 6};
+  // tag == 2 selects `b` (which overlaps `a` at offset 2); tag == 9 selects
+  // neither (still valid).
+  ::std::uint8_t buffer2[3] = {1, 2, 6};
   auto w2 = DisjunctionConditionalDiscriminantWriter(buffer2, sizeof buffer2);
   EXPECT_TRUE(w2.Ok());
   EXPECT_TRUE(w2.has_b().Value());
