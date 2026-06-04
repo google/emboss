@@ -213,6 +213,114 @@ def _add_call(byte_order):
     return "add"
 
 
+# ---------------------------------------------------------------------------
+# Expression translation
+#
+# Conditional fields, dynamically-located fields, and variable-length arrays
+# all need to evaluate an Emboss expression at dissection time.  These helpers
+# translate an Emboss IR Expression into a Lua expression string, or return
+# None when the expression refers to something the back end can't (yet)
+# express.  In the latter case the dependent field is skipped with a comment,
+# preserving the "always emit valid Lua" guarantee.
+# ---------------------------------------------------------------------------
+
+
+# Emboss operators that map directly onto a Lua infix operator.  ADDITION,
+# MULTIPLICATION, AND, and OR are associative and may appear with more than two
+# arguments; the comparison operators are strictly binary.
+_LUA_INFIX_OPERATORS = {
+    ir_data.FunctionMapping.ADDITION: "+",
+    ir_data.FunctionMapping.SUBTRACTION: "-",
+    ir_data.FunctionMapping.MULTIPLICATION: "*",
+    ir_data.FunctionMapping.EQUALITY: "==",
+    ir_data.FunctionMapping.INEQUALITY: "~=",
+    ir_data.FunctionMapping.AND: "and",
+    ir_data.FunctionMapping.OR: "or",
+    ir_data.FunctionMapping.LESS: "<",
+    ir_data.FunctionMapping.LESS_OR_EQUAL: "<=",
+    ir_data.FunctionMapping.GREATER: ">",
+    ir_data.FunctionMapping.GREATER_OR_EQUAL: ">=",
+}
+
+
+def _collect_field_references(expression, out):
+    """Appends every FieldReference appearing in `expression` to `out`."""
+    if expression is None or expression.which_expression is None:
+        return
+    kind = expression.which_expression
+    if kind == "field_reference":
+        out.append(expression.field_reference)
+    elif kind == "function":
+        for arg in expression.function.args:
+            _collect_field_references(arg, out)
+
+
+def _translate_expression(expression, resolve_field):
+    """Translates an Emboss Expression into a Lua expression string.
+
+    Arguments:
+      expression: the ir_data.Expression to translate.
+      resolve_field: a callable mapping an ir_data.FieldReference to the Lua
+        text holding that field's runtime value, or None if the value isn't
+        available.
+
+    Returns:
+      A Lua expression string, or None if the expression can't be fully
+      translated.
+    """
+    if expression is None or expression.which_expression is None:
+        return None
+    # Constant subexpressions -- including enum constants such as
+    # `Kind.RESPONSE` -- fold to a literal, exactly as the C++ back end does.
+    # This also covers the `constant`, `constant_reference`, and
+    # `boolean_constant` expression kinds.
+    value = ir_util.constant_value(expression)
+    if value is not None:
+        if isinstance(value, bool):
+            return "true" if value else "false"
+        return str(value)
+    kind = expression.which_expression
+    if kind == "field_reference":
+        return resolve_field(expression.field_reference)
+    if kind == "function":
+        return _translate_function(expression.function, resolve_field)
+    # A non-constant builtin_reference (e.g. `$size_in_bytes`) is not supported.
+    return None
+
+
+def _translate_function(function, resolve_field):
+    """Translates an ir_data.Function into a Lua expression string, or None."""
+    args = [_translate_expression(arg, resolve_field) for arg in function.args]
+    if any(arg is None for arg in args):
+        return None
+    if function.function == ir_data.FunctionMapping.MAXIMUM:
+        return "math.max(" + ", ".join(args) + ")"
+    operator = _LUA_INFIX_OPERATORS.get(function.function)
+    if operator is None or len(args) < 2:
+        # CHOICE (?:), PRESENCE, the bound functions, and unary operators are
+        # not supported.
+        return None
+    return "(" + (" " + operator + " ").join(args) + ")"
+
+
+def _value_reader(primitive, size, byte_order):
+    """Returns the TvbRange reader method for capturing a scalar value, or None.
+
+    Only fixed-size integer-like fields of 1-4 bytes are capturable; Wireshark's
+    `TvbRange:uint`/`:int` accessors return a plain Lua number for those widths.
+    Wider or non-integer fields return None and simply aren't captured, so any
+    expression referring to them is skipped rather than mistranslated.
+    """
+    if size is None or size < 1 or size > 4:
+        return None
+    little_endian = byte_order == "LittleEndian"
+    if primitive == "Int":
+        return "le_int" if little_endian else "int"
+    if primitive in ("UInt", "Bcd", "Enum"):
+        return "le_uint" if little_endian else "uint"
+    return None
+
+
 class _FieldEmitter:
     """Accumulates ProtoField declarations and dissector body lines."""
 
@@ -227,9 +335,70 @@ class _FieldEmitter:
         # for fixed-size byte structs; None if unknown.
         self._struct_size_bytes = {}
         self.errors = []
+        # Per-struct expression-translation state, reset in visit_struct():
+        #   _referenced:    hashable canonical names of fields referenced by some
+        #                   sibling's condition / location / array-count.
+        #   _value_locals:  hashable canonical name -> Lua local holding the
+        #                   captured runtime value of that field.
+        self._referenced = set()
+        self._value_locals = {}
 
     def _emit_field_decl(self, key, declaration):
         self.field_decls.append((key, declaration))
+
+    def _resolve_field(self, field_reference):
+        """Returns the Lua local holding a referenced field's value, or None."""
+        if len(field_reference.path) != 1:
+            return None
+        key = ir_util.hashable_form_of_reference(field_reference.path[0])
+        return self._value_locals.get(key)
+
+    def _translate(self, expression):
+        """Translates `expression` to Lua, resolving sibling field references."""
+        return _translate_expression(expression, self._resolve_field)
+
+    def _compute_referenced_fields(self, struct):
+        """Collects fields referenced by sibling conditions/locations/counts."""
+        referenced = set()
+        for field in struct.field:
+            refs = []
+            _collect_field_references(field.existence_condition, refs)
+            # Virtual fields have no physical location, and aren't emitted.
+            if field.location is not None:
+                _collect_field_references(field.location.start, refs)
+                _collect_field_references(field.location.size, refs)
+            if (
+                field.type is not None
+                and field.type.has_field("array_type")
+                and (field.type.array_type.which_size == "element_count")
+            ):
+                _collect_field_references(field.type.array_type.element_count, refs)
+            for ref in refs:
+                if len(ref.path) == 1:
+                    referenced.add(ir_util.hashable_form_of_reference(ref.path[0]))
+        return referenced
+
+    def _maybe_capture_value(
+        self, field, primitive, start_lua, size, byte_order, body_lines
+    ):
+        """Emits a value-capturing local for `field` if a sibling references it.
+
+        Only called for unconditional, fixed-offset scalar fields, so the local
+        is always in scope wherever a later expression uses it.
+        """
+        key = ir_util.hashable_form_of_reference(field.name)
+        if key not in self._referenced:
+            return
+        reader = _value_reader(primitive, size, byte_order)
+        if reader is None:
+            return
+        var = "val_" + _qualified_lua_name(field.name.canonical_name)
+        body_lines.append(
+            "local {var} = buffer(offset + {start}, {size}):{reader}()".format(
+                var=var, start=start_lua, size=size, reader=reader
+            )
+        )
+        self._value_locals[key] = var
 
     def _proto_filter(self, *segments):
         return ".".join((self._protocol_name,) + tuple(segments))
@@ -271,6 +440,11 @@ class _FieldEmitter:
     def visit_struct(self, type_def):
         struct = type_def.structure
         is_bits = type_def.addressable_unit == ir_data.AddressableUnit.BIT
+        # Reset per-struct expression-translation state.  Value locals are only
+        # emitted for fields some sibling actually refers to, so structs with no
+        # conditional / dynamic fields produce exactly the same output as before.
+        self._referenced = self._compute_referenced_fields(struct)
+        self._value_locals = {}
         # The struct filter qualifies every contained field, so it must be
         # unique across the module.  Use the override if present; otherwise
         # the dotted canonical path of the type (e.g. `parent.child`).
@@ -317,95 +491,129 @@ class _FieldEmitter:
             # representation, so the dissector simply doesn't emit anything
             # for them.
             return
-        if not _is_unconditional(field):
-            body_lines.append(
-                "-- skipped conditional field {}".format(
-                    _local_name(field.name.canonical_name)
-                )
-            )
-            return
-        start = ir_util.constant_value(field.location.start)
-        size = ir_util.constant_value(field.location.size)
-        if start is None or size is None:
-            body_lines.append(
-                "-- skipped dynamic-location field {}".format(
-                    _local_name(field.name.canonical_name)
-                )
-            )
-            return
 
         field_name = _local_name(field.name.canonical_name)
+
+        # Presence condition.  Unconditional fields get no wrapper; a
+        # conditional field whose condition can't be translated is skipped.
+        conditional = not _is_unconditional(field)
+        condition_lua = None
+        if conditional:
+            condition_lua = self._translate(field.existence_condition)
+            if condition_lua is None:
+                body_lines.append(
+                    "-- skipped conditional field {} (unsupported condition)".format(
+                        field_name
+                    )
+                )
+                return
+
+        # Field location.  A constant start renders to an integer literal, so
+        # fixed-offset fields produce byte-identical output to the prior
+        # constant-only implementation.
+        start_lua = self._translate(field.location.start)
+        if start_lua is None:
+            body_lines.append("-- skipped dynamic-location field {}".format(field_name))
+            return
+        size = ir_util.constant_value(field.location.size)
+
         proto_filter = self._proto_filter(self._field_filter_path(struct_filter, field))
         key = _qualified_lua_name(type_def.name.canonical_name) + "." + field_name
         doc = _doc_text(field.documentation)
         byte_order = _byte_order_of_field(field)
 
         type_ir = field.type
+        primitive = _primitive_name_of(type_ir)
+        referenced_type = (
+            None if primitive else _referenced_type_definition(type_ir, self._ir)
+        )
+        is_enum = referenced_type is not None and referenced_type.has_field(
+            "enumeration"
+        )
+
+        # Capture this field's value for any sibling expression that refers to
+        # it.  Only unconditional, fixed-size scalar fields are eligible, so the
+        # local is always emitted at function-body scope (never inside the `if`
+        # wrapper below) and is therefore in scope wherever it is used.
+        if not conditional:
+            capture_primitive = primitive or ("Enum" if is_enum else None)
+            if capture_primitive is not None:
+                self._maybe_capture_value(
+                    field, capture_primitive, start_lua, size, byte_order, body_lines
+                )
+
+        field_lines = []
         if type_ir.has_field("array_type"):
             self._emit_byte_array_field(
                 type_def,
                 field,
                 type_ir,
-                start,
+                start_lua,
                 size,
                 proto_filter,
                 key,
                 doc,
                 byte_order,
-                body_lines,
+                field_lines,
             )
-            return
-
-        primitive = _primitive_name_of(type_ir)
-        if primitive:
-            self._emit_primitive_field(
-                primitive,
-                field_name,
-                proto_filter,
-                key,
-                start,
-                size,
-                doc,
-                byte_order,
-                body_lines,
-            )
-            return
-
-        referenced = _referenced_type_definition(type_ir, self._ir)
-        if referenced is None:
-            body_lines.append(
+        elif primitive:
+            if size is None:
+                field_lines.append(
+                    "-- skipped dynamic-size field {}".format(field_name)
+                )
+            else:
+                self._emit_primitive_field(
+                    primitive,
+                    field_name,
+                    proto_filter,
+                    key,
+                    start_lua,
+                    size,
+                    doc,
+                    byte_order,
+                    field_lines,
+                )
+        elif referenced_type is None:
+            field_lines.append(
                 "-- skipped field with unsupported type: {}".format(field_name)
             )
-            return
-
-        if referenced.has_field("enumeration"):
-            self._emit_enum_field(
-                referenced,
-                field_name,
-                proto_filter,
-                key,
-                start,
-                size,
-                doc,
-                byte_order,
-                body_lines,
-            )
-            return
-
-        if referenced.has_field("structure"):
+        elif is_enum:
+            if size is None:
+                field_lines.append(
+                    "-- skipped dynamic-size field {}".format(field_name)
+                )
+            else:
+                self._emit_enum_field(
+                    referenced_type,
+                    field_name,
+                    proto_filter,
+                    key,
+                    start_lua,
+                    size,
+                    doc,
+                    byte_order,
+                    field_lines,
+                )
+        elif referenced_type.has_field("structure"):
             self._emit_substruct_field(
-                referenced,
+                referenced_type,
                 field_name,
-                start,
+                start_lua,
                 size,
                 doc,
-                body_lines,
+                field_lines,
             )
-            return
+        else:
+            field_lines.append(
+                "-- skipped field with unsupported type: {}".format(field_name)
+            )
 
-        body_lines.append(
-            "-- skipped field with unsupported type: {}".format(field_name)
-        )
+        if conditional:
+            body_lines.append("if {} then".format(condition_lua))
+            body_lines.extend("  " + line for line in field_lines)
+            body_lines.append("end")
+        else:
+            body_lines.extend(field_lines)
 
     def _emit_primitive_field(
         self,
@@ -505,38 +713,42 @@ class _FieldEmitter:
         byte_order,
         body_lines,
     ):
-        # Fixed-element-count arrays only.  Element size must be known.
+        # Explicit-element-count arrays only (`[n]`, constant or a reference to
+        # a sibling length field); auto-sized (`[]`) arrays are skipped.  The
+        # element size must be a whole number of bytes.
         array_type = type_ir.array_type
+        field_name = _local_name(field.name.canonical_name)
         if array_type.which_size != "element_count":
-            body_lines.append(
-                "-- skipped auto-sized array field {}".format(
-                    _local_name(field.name.canonical_name)
-                )
-            )
+            body_lines.append("-- skipped auto-sized array field {}".format(field_name))
             return
         element_count = ir_util.constant_value(array_type.element_count)
-        if element_count is None or element_count <= 0:
-            body_lines.append(
-                "-- skipped variable-length array field {}".format(
-                    _local_name(field.name.canonical_name)
+        if element_count is not None:
+            if element_count <= 0:
+                body_lines.append("-- skipped empty array field {}".format(field_name))
+                return
+            count_lua = str(element_count)
+        else:
+            # A variable element count, e.g. `UInt:8[length]`.  Translatable
+            # only if every field it references was captured as a value local.
+            count_lua = self._translate(array_type.element_count)
+            if count_lua is None:
+                body_lines.append(
+                    "-- skipped variable-length array field {} "
+                    "(unsupported length)".format(field_name)
                 )
-            )
-            return
+                return
 
         element_size_bits = ir_util.fixed_size_of_type_in_bits(
             array_type.base_type, self._ir
         )
         if element_size_bits is None or element_size_bits % 8 != 0:
             body_lines.append(
-                "-- skipped array with non-byte element size: {}".format(
-                    _local_name(field.name.canonical_name)
-                )
+                "-- skipped array with non-byte element size: {}".format(field_name)
             )
             return
         element_size = element_size_bits // 8
-        field_name = _local_name(field.name.canonical_name)
         body_lines.append(
-            "-- array field {} ({} elements)".format(field_name, element_count)
+            "-- array field {} ({} elements)".format(field_name, count_lua)
         )
 
         base_type = array_type.base_type
@@ -555,7 +767,7 @@ class _FieldEmitter:
                 field_name,
                 description=doc or None,
             )
-            body_lines.append("for i = 0, {n} - 1 do".format(n=element_count))
+            body_lines.append("for i = 0, {n} - 1 do".format(n=count_lua))
             body_lines.append(
                 "  subtree:{call}(f[{key}], buffer(offset + {start} + i * "
                 "{esize}, {esize}))".format(
@@ -580,7 +792,7 @@ class _FieldEmitter:
                 valuestring=valuestring,
                 description=doc or None,
             )
-            body_lines.append("for i = 0, {n} - 1 do".format(n=element_count))
+            body_lines.append("for i = 0, {n} - 1 do".format(n=count_lua))
             body_lines.append(
                 "  subtree:{call}(f[{key}], buffer(offset + {start} + i * "
                 "{esize}, {esize}))".format(
@@ -594,7 +806,7 @@ class _FieldEmitter:
             return
 
         if referenced and referenced.has_field("structure"):
-            body_lines.append("for i = 0, {n} - 1 do".format(n=element_count))
+            body_lines.append("for i = 0, {n} - 1 do".format(n=count_lua))
             body_lines.append(
                 "  {fn}(buffer, pinfo, subtree, offset + {start} + i * "
                 "{esize})".format(
