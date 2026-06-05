@@ -1,0 +1,132 @@
+# Copyright 2026 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+-- FIXED BENCHMARK FIXTURE -- avoid editing.
+--
+-- This schema exists solely to measure the *size* and *instruction count* of
+-- the code Emboss generates, across a deliberately broad slice of language
+-- features. It is NOT a correctness test and is held fixed so the numbers stay
+-- comparable over time: a change here moves the measured baseline. Only edit it
+-- to cover a genuinely new language feature, accepting that the numbers shift.
+--
+-- The benchmark driver instantiates each parameter-free top-level struct
+-- (Scalars, Bitfields, Repeated, Conditional, Nested) and exercises Ok(),
+-- Equals() (read-all) and CopyFrom() (read-all + write-all).
+
+[$default byte_order: "LittleEndian"]
+[(cpp) namespace: "emboss::benchmark"]
+
+
+enum Shape:
+  CIRCLE   = 0
+  SQUARE   = 1
+  TRIANGLE = 2
+  HEXAGON  = 7
+
+
+enum WideId:
+  [maximum_bits: 64]
+  LOW  = 0
+  HIGH = 0x7fff_ffff_ffff_ffff
+
+
+bits PackedFlags:
+  7 [+1]  Flag  alpha
+  6 [+1]  Flag  beta
+  2 [+4]  UInt  nibble
+  0 [+2]  UInt  pair
+
+
+struct Point:
+  0 [+2]  UInt  x
+  2 [+2]  UInt  y
+
+
+struct Scaled(scale: UInt:8):
+  0 [+4]  UInt  raw
+    [requires: this < 1000000]
+  let scaled = raw * scale
+
+
+# Scalar coverage: integer widths, signedness, an arbitrary byte width, an
+# opposite-endianness field, an enum, two floats, $next, and virtual fields.
+struct Scalars:
+  0     [+1]  UInt    u8
+  1     [+2]  UInt    u16
+  3     [+4]  UInt    u32
+  7     [+8]  UInt    u64
+  15    [+4]  Int     s32
+  19    [+3]  UInt    u24
+  22    [+4]  UInt    be32
+    [byte_order: "BigEndian"]
+  26    [+1]  Shape   shape
+  27    [+8]  WideId  wide
+  35    [+4]  Float   f32
+  39    [+8]  Float   f64
+  $next [+1]  UInt    trailer
+  let u32_doubled = u32 * 2
+  let u16_plus_u8 = u16 + u8
+
+
+# Bitfields: a named bits type, an inline anonymous bits block, and an inline
+# anonymous enum inside it.
+struct Bitfields:
+  0 [+1]  PackedFlags  flags
+  1 [+4]  bits:
+    31 [+1]  Flag  top
+    14 [+4]  enum  mode:
+      IDLE = 0
+      RUN  = 1
+    0  [+9]  UInt  low9
+  5 [+1]  UInt  tail
+
+
+# Arrays: fixed byte array, sub-byte-element array, array of structs, and a
+# dynamically-sized trailing array.
+struct Repeated:
+  0  [+1]      UInt:8      count
+  1  [+8]      UInt:8[8]   fixed_bytes
+  9  [+4]      UInt:16[2]  words
+  13 [+8]      Point[2]    points
+  21 [+count]  UInt:8[]    variable
+  let total = count + 8
+
+
+# Conditionals: a run of single-tag `if`s (switch-coalesced by the optimizer),
+# a disjunction, and a range conjunction.
+struct Conditional:
+  0 [+4]  UInt  tag
+  if tag == 0:
+    4 [+4]  UInt  a0
+  if tag == 1:
+    4 [+4]  UInt  a1
+  if tag == 2:
+    4 [+4]  UInt  a2
+  if tag == 3:
+    4 [+4]  UInt  a3
+  if tag == 4:
+    4 [+4]  UInt  a4
+  if tag == 10 || tag == 11 || tag == 12 || tag == 13:
+    4 [+4]  UInt  grouped
+  if tag >= 100 && tag <= 200:
+    8 [+4]  UInt  ranged
+
+
+# Nesting + parameter passing + a [requires] constraint.
+struct Nested:
+  0  [+1]  UInt       factor
+  1  [+4]  Scaled(2)  doubled
+  5  [+4]  Scaled(4)  quadrupled
+  9  [+4]  Point      origin
+  13 [+8]  Point[2]   corners

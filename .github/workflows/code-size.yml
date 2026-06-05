@@ -1,0 +1,121 @@
+name: Code size
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    # Only run when something that can change generated code size moves.
+    paths:
+      - 'compiler/**'
+      - 'runtime/**'
+      - 'embossc'
+      - 'testdata/benchmark.emb'
+      - 'testdata/many_conditionals.emb'
+      - 'scripts/size_bench.py'
+      - 'scripts/size_comment.py'
+      - '.github/workflows/code-size.yml'
+
+# Read the PR's commits; post/update one sticky size comment.
+permissions:
+  contents: read
+  pull-requests: write
+
+# Supersede an in-flight size run when the PR is pushed again.
+concurrency:
+  group: code-size-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  size-report:
+    name: Generated code size
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out PR head (full history for merge-base + revision checkouts)
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      # embossc formats generated headers with clang-format (the clang-format
+      # PyPI package, pinned in requirements.txt), so the codegen run needs the
+      # Emboss Python deps. setup-python avoids the runner's externally-managed
+      # system Python (PEP 668).
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+          cache: 'pip'
+          cache-dependency-path: requirements.txt
+      - name: Install Emboss Python deps (clang-format for codegen)
+        run: pip install -r requirements.txt
+
+      - name: Install host clang and the ARM (STM32 / Cortex-M4) gcc toolchain
+        run: sudo apt-get update && sudo apt-get install -y clang gcc-arm-none-eabi
+
+      # embedded code-size targets compile against the MicroBlaze gcc toolchain
+      # hard-coded under /opt/microblaze/...; cache the Bootlin tarball in a
+      # runner-writable path (caching /opt fights root perms on restore), then
+      # extract it into place. clang has no MicroBlaze back end, so MicroBlaze is
+      # gcc-only.
+      - name: Cache MicroBlaze (Bootlin) toolchain tarball
+        uses: actions/cache@v4
+        with:
+          path: ~/mb-toolchain/mb.tar.xz
+          key: bootlin-microblazebe--glibc--stable-2025.08-1
+      - name: Provision MicroBlaze toolchain
+        run: |
+          set -euo pipefail
+          url="https://toolchains.bootlin.com/downloads/releases/toolchains/microblazebe/tarballs/microblazebe--glibc--stable-2025.08-1.tar.xz"
+          if [ ! -f "$HOME/mb-toolchain/mb.tar.xz" ]; then
+            mkdir -p "$HOME/mb-toolchain"
+            curl -fsSL "$url" -o "$HOME/mb-toolchain/mb.tar.xz"
+          fi
+          sudo mkdir -p /opt/microblaze
+          sudo tar -C /opt/microblaze -xJf "$HOME/mb-toolchain/mb.tar.xz"
+          test -x /opt/microblaze/microblazebe--glibc--stable-2025.08-1/bin/microblaze-buildroot-linux-gnu-g++
+
+      - name: Measure generated code size (merge-base vs PR head)
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          # Baseline against the merge-base, NOT the base-branch tip, so codegen
+          # that landed on the base after this PR branched is not misattributed.
+          # size_bench.py holds the benchmark schema fixed (pulled forward from
+          # head), so only the generator/runtime under test differs.
+          base="$(git merge-base "$BASE_SHA" "$HEAD_SHA")"
+          echo "Comparing merge-base $base  ->  head $HEAD_SHA"
+          python3 scripts/size_bench.py --revisions "$base" "$HEAD_SHA" --out-dir "$RUNNER_TEMP/size"
+          # Fail loudly rather than post an empty table if the head build produced
+          # no data (missing toolchain/dep or a codegen break).
+          python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); h=d["revisions"][-1]["results"]; sys.exit(0 if any(cfg.get("benchmark") for t in h.values() for c in t.values() for cfg in c.values()) else 1)' "$RUNNER_TEMP/size/size_bench.json" \
+            || { echo "::error::size_bench produced no head benchmark data (toolchain/codegen failure); see output above."; exit 1; }
+          python3 scripts/size_comment.py "$RUNNER_TEMP/size/size_bench.json" > "$RUNNER_TEMP/size/comment.md"
+
+      - name: Post / update size comment
+        # Fork PRs get a read-only GITHUB_TOKEN; same-repo PRs (the chain branches)
+        # can comment. (Fork-safe upgrade: a separate workflow_run job.)
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        uses: actions/github-script@v7
+        env:
+          COMMENT_PATH: ${{ runner.temp }}/size/comment.md
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- emboss-size-bench -->';
+            let body;
+            try {
+              body = fs.readFileSync(process.env.COMMENT_PATH, 'utf8');
+            } catch (e) {
+              return;  // measure step failed; its red check is the signal.
+            }
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number, per_page: 100,
+            });
+            const existing = comments.find(c => c.body && c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
