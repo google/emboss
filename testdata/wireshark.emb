@@ -1,0 +1,46 @@
+# Copyright 2026 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+-- Smoke-test fixture for the Wireshark Lua dissector backend.
+
+[expected_back_ends: "cpp, wireshark"]
+[$default byte_order: "BigEndian"]
+[(cpp) namespace: "emboss::test::wireshark"]
+[(wireshark) protocol: "myproto"]
+[(wireshark) root: "Packet"]
+[(wireshark) register_on: "udp.port == 12345 or tcp.port == 12345"]
+
+
+enum Kind:
+  -- Type of message.
+  REQUEST  = 0
+  RESPONSE = 1
+  ERROR    = 2
+
+
+struct Header:
+  -- Header at the front of every message.
+  [(wireshark) filter: "hdr"]
+  0 [+1]  Kind  kind
+    -- Message kind.
+  1 [+4]  UInt  seq_num
+    -- Sequence number used for matching requests with responses.
+
+
+struct Packet:
+  -- Top-level packet.
+  0  [+5]  Header  header
+  5  [+4]  UInt    payload_len
+    -- Number of bytes of payload following.
+  9  [+4]  UInt    checksum
