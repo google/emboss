@@ -382,3 +382,61 @@ emboss_cc_library(
         "many_conditionals.emb",
     ],
 )
+
+
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
+load("//:build_defs.bzl", "emboss_rust_library")
+
+emboss_rust_library(
+    name = "imported_emb_rs",
+    srcs = ["imported.emb"],
+)
+
+emboss_rust_library(
+    name = "imported_genfiles_emb_rs",
+    srcs = ["imported_genfiles.emb"],
+)
+
+emboss_rust_library(
+    name = "importer_emb_rs",
+    srcs = ["importer.emb"],
+    deps = [
+        ":imported_emb_rs",
+        ":imported_genfiles_emb_rs",
+    ],
+)
+
+emboss_rust_library(
+    name = "next_keyword_emb_rs",
+    srcs = ["next_keyword.emb"],
+)
+
+emboss_rust_library(
+    name = "nested_structure_emb_rs",
+    srcs = ["nested_structure.emb"],
+)
+
+emboss_rust_library(
+    name = "endian_emb_rs",
+    srcs = ["endian.emb"],
+)
+
+emboss_rust_library(
+    name = "int_sizes_emb_rs",
+    srcs = ["int_sizes.emb"],
+)
+
+emboss_rust_library(
+    name = "enum_emb_rs",
+    srcs = ["enum.emb"],
+)
+
+emboss_rust_library(
+    name = "dynamic_size_emb_rs",
+    srcs = ["dynamic_size.emb"],
+)
+
+emboss_rust_library(
+    name = "auto_array_size_emb_rs",
+    srcs = ["auto_array_size.emb"],
+)

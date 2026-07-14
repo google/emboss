@@ -1,5 +1,5 @@
 use emboss_runtime::{prelude::*, Error};
-use imported_emb_rs::*;
+use testdata_imported_emb::*;
 
 #[cfg(test)]
 mod tests {

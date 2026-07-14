@@ -1,4 +1,4 @@
-pub use dynamic_size_emb_rs::*;
+pub use testdata_dynamic_size_emb::*;
 use emboss_runtime::{prelude::*, Error};
 
 #[test]

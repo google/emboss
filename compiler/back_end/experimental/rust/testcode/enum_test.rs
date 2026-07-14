@@ -1,4 +1,4 @@
-pub use enum_emb_rs::*;
+pub use testdata_enum_emb::*;
 
 #[test]
 fn generates_correct_enum_variants() {

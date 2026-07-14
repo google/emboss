@@ -22,7 +22,7 @@ fn reads_endian_values_correctly() {
         0xAB, // 8:9 single_byte == 0xAB
     ];
 
-    let view = endian_emb_rs::Message::new(container);
+    let view = testdata_endian_emb::Message::new(container);
 
     let little_val: u32 = view.little_uint32().try_read().unwrap();
     assert_eq!(little_val, 0x12345678);
@@ -41,7 +41,7 @@ fn handles_endian_out_of_bounds() {
         0x12, 0x34, 0x56, // TRUNCATED 4:7
     ];
 
-    let view = endian_emb_rs::Message::new(container);
+    let view = testdata_endian_emb::Message::new(container);
 
     let little_val: u32 = view.little_uint32().try_read().unwrap();
     assert_eq!(little_val, 0x12345678);
@@ -54,7 +54,7 @@ fn handles_endian_out_of_bounds() {
 fn writes_endian_values_correctly() {
     let mut container: [u8; 9] = [0; 9];
     {
-        let mut view = endian_emb_rs::MessageMut::new(&mut container[..]);
+        let mut view = testdata_endian_emb::MessageMut::new(&mut container[..]);
         view.little_uint32().try_write(0x12345678).unwrap();
         view.big_uint32().try_write(0x12345678).unwrap();
         view.single_byte().try_write(0xAB).unwrap();
@@ -70,7 +70,7 @@ fn writes_endian_values_correctly() {
 #[test]
 fn handles_endian_write_out_of_bounds() {
     let mut container: [u8; 7] = [0; 7];
-    let mut view = endian_emb_rs::MessageMut::new(&mut container[..]);
+    let mut view = testdata_endian_emb::MessageMut::new(&mut container[..]);
 
     assert!(view.little_uint32().try_write(0x12345678).is_ok());
     assert_eq!(view.big_uint32().try_write(0x12345678), Err(Error::OutOfBounds));

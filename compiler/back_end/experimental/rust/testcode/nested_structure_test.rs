@@ -10,7 +10,7 @@ fn container_field_values_are_correct() {
         0xcc, 0xbb, 0xaa, 0x00, // 16:20  other_box.count == 0xaabbcc
     ];
 
-    let view = nested_structure_emb_rs::Container::new(container);
+    let view = testdata_nested_structure_emb::Container::new(container);
 
     // Static explicit typing assertions
     let weight: u32 = view.weight().try_read().unwrap();
@@ -37,7 +37,7 @@ fn nested_out_of_bounds_handles_cascading_reads_dynamically() {
         0x03, 0x02, 0x01, 0x00, // 8:12   important_box.count == 0x010203
     ]; // TRUNCATED struct! Missing the entire 8 bytes of other_box!
 
-    let view = nested_structure_emb_rs::Container::new(container);
+    let view = testdata_nested_structure_emb::Container::new(container);
 
     // weight and important_box can still be read successfully cleanly over the bounds organically
     assert_eq!(view.weight().try_read().unwrap(), 40);

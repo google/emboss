@@ -73,46 +73,42 @@ def generate_code(ir: ir_data.EmbossIr) -> tuple[Source, Diagnostics]:
             ]
         )
 
+    imports_list = []
     struct_definitions = []
-    for module in ir.module:
+    module = ir.module[0]
+    
+    real_imports = [
+        imp for imp in module.foreign_import if imp.file_name.text != ""
+    ]
+    for imp in real_imports:
+        crate_name = imp.file_name.text.replace("/", "_").replace(".", "_")
+        alias = imp.local_name.text
+        imports_list.append(f"use {crate_name} as {alias};\n")
 
-        real_imports = [
-            imp for imp in module.foreign_import if imp.file_name.text != ""
-        ]
-        if real_imports:
+    for attr in module.attribute:
+        if not attr.is_default:
+            if attr.has_field("back_end") and attr.back_end.text != "rust":
+                continue
+            if attr.name.text in _SYNTHETIC_ATTRIBUTES:
+                continue
             diagnostics.append(
                 [
                     error.warn(
                         module.source_file_name,
-                        real_imports[0].source_location,
-                        f"Imports are not yet supported in this backend. Foreign imports will be omitted.",
+                        attr.source_location,
+                        f"Module-level attribute '{attr.name.text}' is not yet supported in this backend. It will be omitted.",
                     )
                 ]
             )
 
-        for attr in module.attribute:
-            if not attr.is_default:
-                if attr.has_field("back_end") and attr.back_end.text != "rust":
-                    continue
-                if attr.name.text in _SYNTHETIC_ATTRIBUTES:
-                    continue
-                diagnostics.append(
-                    [
-                        error.warn(
-                            module.source_file_name,
-                            attr.source_location,
-                            f"Module-level attribute '{attr.name.text}' is not yet supported in this backend. It will be omitted.",
-                        )
-                    ]
-                )
-
-        for type_def in module.type:
-            struct_definitions.append(
-                _generate_type(type_def, ir, module, templates, diagnostics)
-            )
+    for type_def in module.type:
+        struct_definitions.append(
+            _generate_type(type_def, ir, module, templates, diagnostics)
+        )
 
     rust_source = code_template.format_template(
         templates.rust_module,
+        imports_list="".join(imports_list),
         struct_definitions="".join(struct_definitions),
     )
 
@@ -447,7 +443,7 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
             )
             continue
 
-        source_name = base_type.atomic_type.reference.source_name[0].text
+        source_name = "::".join(part.text for part in base_type.atomic_type.reference.source_name)
 
         if source_name in _UNSUPPORTED_PRELUDE_TYPES:
             diagnostics.append(
@@ -538,20 +534,6 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
             const_byte_length = 0
 
         referenced_type = ir_util.find_object(base_type.atomic_type.reference, ir)
-
-        if referenced_type not in module.type and not referenced_type.has_field(
-            "external"
-        ):
-            diagnostics.append(
-                [
-                    error.warn(
-                        module.source_file_name,
-                        field.source_location,
-                        f"Cross-module dependencies are not yet supported in this backend. Field '{field_name}' will be omitted.",
-                    )
-                ]
-            )
-            continue
 
         if is_array:
             # Generate a unique struct for each array field.

@@ -29,7 +29,7 @@ fn reads_int_sizes_correctly() {
         0xfd, 0xfe, 0xff, 0x80, // 32:36  eight_byte == -0x7f00010203040506
     ];
 
-    let view = int_sizes_emb_rs::Sizes::new(container);
+    let view = testdata_int_sizes_emb::Sizes::new(container);
 
     assert_eq!(view.one_byte().try_read().unwrap(), 2i8);
     assert_eq!(view.two_byte().try_read().unwrap(), -260i16);
@@ -47,7 +47,7 @@ fn reads_int_sizes_correctly() {
 #[test]
 fn reads_negative_ones_correctly() {
     let container: &[u8] = &[0xff; 36];
-    let view = int_sizes_emb_rs::Sizes::new(container);
+    let view = testdata_int_sizes_emb::Sizes::new(container);
 
     assert_eq!(view.one_byte().try_read().unwrap(), -1i8);
     assert_eq!(view.two_byte().try_read().unwrap(), -1i16);

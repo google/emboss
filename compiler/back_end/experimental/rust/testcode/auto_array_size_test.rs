@@ -1,4 +1,4 @@
-use auto_array_size_emb_rs::*;
+use testdata_auto_array_size_emb::*;
 
 #[test]
 fn test_array_access() {

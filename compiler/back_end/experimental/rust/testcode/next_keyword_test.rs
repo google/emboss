@@ -1,5 +1,5 @@
 use emboss_runtime::Error;
-use next_keyword_emb_rs::*;
+use testdata_next_keyword_emb::*;
 
 #[cfg(test)]
 mod tests {

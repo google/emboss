@@ -19,6 +19,8 @@
 use emboss_runtime::prelude::*;
 pub use emboss_runtime::{Error, Storage, MutStorage, TryRead, TryWrite, UInt};
 
+${imports_list}
+
 ${struct_definitions}
 
 // ** struct_view ** //
