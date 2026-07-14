@@ -577,47 +577,47 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
                 if field.type.has_field("size_in_bits"):
                     bits = ir_util.constant_value(field.type.size_in_bits)
 
-                    accessor_template = templates.external_field_accessor
-                    mut_accessor_template = templates.external_mut_field_accessor
-                    
-                    if type_ir.addressable_unit == 1:
-                        bit_offset_str = str(ir_util.constant_value(field.location.start))
-                        field_accessors.append(
-                            code_template.format_template(
-                                templates.bit_external_field_accessor,
-                                field_name=field_name,
-                                type_name=source_name,
-                                bits=str(bits),
-                                byte_order=byte_order,
-                                bit_offset=bit_offset_str,
-                                byte_length=str(byte_length),
-                            )
+                accessor_template = templates.external_field_accessor
+                mut_accessor_template = templates.external_mut_field_accessor
+                
+                if type_ir.addressable_unit == 1:
+                    bit_offset_str = str(ir_util.constant_value(field.location.start))
+                    field_accessors.append(
+                        code_template.format_template(
+                            templates.bit_external_field_accessor,
+                            field_name=field_name,
+                            type_name=source_name,
+                            bits=str(bits),
+                            byte_order=byte_order,
+                            bit_offset=bit_offset_str,
+                            byte_length=str(byte_length),
                         )
-                        # We don't have bit_external_mut_field_accessor implemented cleanly yet,
-                        # but in templates it is mapped to BitUIntMut which we can define identically.
-                    else:
-                        field_accessors.append(
-                            code_template.format_template(
-                                templates.external_field_accessor,
-                                field_name=field_name,
-                                type_name=source_name,
-                                bits=str(bits),
-                                byte_order=byte_order,
-                                byte_offset=str(byte_offset),
-                                byte_length=str(byte_length),
-                            )
+                    )
+                    # We don't have bit_external_mut_field_accessor implemented cleanly yet,
+                    # but in templates it is mapped to BitUIntMut which we can define identically.
+                else:
+                    field_accessors.append(
+                        code_template.format_template(
+                            templates.external_field_accessor,
+                            field_name=field_name,
+                            type_name=source_name,
+                            bits=str(bits),
+                            byte_order=byte_order,
+                            byte_offset=str(byte_offset),
+                            byte_length=str(byte_length),
                         )
-                        mut_field_accessors.append(
-                            code_template.format_template(
-                                templates.external_mut_field_accessor,
-                                field_name=field_name,
-                                type_name=source_name,
-                                bits=str(bits),
-                                byte_order=byte_order,
-                                byte_offset=str(byte_offset),
-                                byte_length=str(byte_length),
-                            )
+                    )
+                    mut_field_accessors.append(
+                        code_template.format_template(
+                            templates.external_mut_field_accessor,
+                            field_name=field_name,
+                            type_name=source_name,
+                            bits=str(bits),
+                            byte_order=byte_order,
+                            byte_offset=str(byte_offset),
+                            byte_length=str(byte_length),
                         )
+                    )
             elif referenced_type.has_field("structure"):
                 field_accessors.append(
                     code_template.format_template(
