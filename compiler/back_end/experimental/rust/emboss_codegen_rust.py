@@ -706,31 +706,58 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
                     )
                 )
             elif referenced_type.has_field("enumeration"):
-                bits = const_byte_length * 8
+                bits = const_byte_length * type_ir.addressable_unit
                 if field.type.has_field("size_in_bits"):
                     bits = ir_util.constant_value(field.type.size_in_bits)
-                field_accessors.append(
-                    code_template.format_template(
-                        templates.enum_field_accessor,
-                        field_name=field_name,
-                        enum_name=source_name,
-                        bits=str(bits),
-                        byte_order=byte_order,
-                        byte_offset=str(byte_offset),
-                        byte_length=str(byte_length),
+                if type_ir.addressable_unit == 1:
+                    bit_offset_int = int(ir_util.constant_value(field.location.start))
+                    bits_int = int(bits)
+                    byte_len_int = ((bit_offset_int + bits_int - 1) // 8) + 1
+                    field_accessors.append(
+                        code_template.format_template(
+                            templates.bit_enum_field_accessor,
+                            field_name=field_name,
+                            enum_name=source_name,
+                            bits=str(bits),
+                            byte_order=byte_order,
+                            bit_offset=str(bit_offset_int),
+                            byte_length=str(byte_len_int),
+                        )
                     )
-                )
-                mut_field_accessors.append(
-                    code_template.format_template(
-                        templates.enum_mut_field_accessor,
-                        field_name=field_name,
-                        enum_name=source_name,
-                        bits=str(bits),
-                        byte_order=byte_order,
-                        byte_offset=str(byte_offset),
-                        byte_length=str(byte_length),
+                    mut_field_accessors.append(
+                        code_template.format_template(
+                            templates.bit_enum_mut_field_accessor,
+                            field_name=field_name,
+                            enum_name=source_name,
+                            bits=str(bits),
+                            byte_order=byte_order,
+                            bit_offset=str(bit_offset_int),
+                            byte_length=str(byte_len_int),
+                        )
                     )
-                )
+                else:
+                    field_accessors.append(
+                        code_template.format_template(
+                            templates.enum_field_accessor,
+                            field_name=field_name,
+                            enum_name=source_name,
+                            bits=str(bits),
+                            byte_order=byte_order,
+                            byte_offset=str(byte_offset),
+                            byte_length=str(byte_length),
+                        )
+                    )
+                    mut_field_accessors.append(
+                        code_template.format_template(
+                            templates.enum_mut_field_accessor,
+                            field_name=field_name,
+                            enum_name=source_name,
+                            bits=str(bits),
+                            byte_order=byte_order,
+                            byte_offset=str(byte_offset),
+                            byte_length=str(byte_length),
+                        )
+                    )
             else:
                 diagnostics.append(
                     [

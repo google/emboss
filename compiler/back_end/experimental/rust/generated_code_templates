@@ -182,7 +182,7 @@ ${enum_aliases}
 ${constant_value}
 
 // ** expr_field_reference ** //
-{ let val = ${self_ref}.${field_name}().try_read()?; val as usize }
+{ let val = ${self_ref}.${field_name}().try_read().map_err(|e| match e { emboss_runtime::Error::OutOfBounds => emboss_runtime::Error::OutOfBounds, emboss_runtime::Error::UnknownEnum(_) => emboss_runtime::Error::UnknownEnum(()) })?; val as usize }
 
 // ** expr_maximum ** //
 core::cmp::max((${left}) as i64, (${right}) as i64)
@@ -330,7 +330,7 @@ emboss_runtime::EnumViewMut::new(emboss_runtime::UInt::new(storage))
 
 
 // ** expr_field_reference_no_cast ** //
-{ let val = ${self_ref}${path_expr}.try_read()?; val }
+({ let val = ${self_ref}${path_expr}.try_read().map_err(|e| match e { emboss_runtime::Error::OutOfBounds => emboss_runtime::Error::OutOfBounds, emboss_runtime::Error::UnknownEnum(_) => emboss_runtime::Error::UnknownEnum(()) })?; val })
 
 // ** expr_equality ** //
 (${left} == ${right})
@@ -352,5 +352,33 @@ emboss_runtime::EnumViewMut::new(emboss_runtime::UInt::new(storage))
         core::result::Result::Ok( (${expression}) as ${return_type} )
     })();
         emboss_runtime::VirtualField::new(value)
+    }
+
+// ** bit_enum_field_accessor ** //
+    pub fn ${field_name}(&self) -> emboss_runtime::EnumView<${enum_name}, emboss_runtime::BitUInt<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>>> {
+        let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
+            let offset = 0;
+            let len = (${byte_length}) as usize;
+            core::result::Result::Ok((offset, len))
+        })();
+        let storage = match offset_res {
+            core::result::Result::Ok((offset, len)) => self.storage.slice(offset, len),
+            core::result::Result::Err(e) => core::result::Result::Err(e),
+        };
+        emboss_runtime::EnumView::new(emboss_runtime::BitUInt::new(storage))
+    }
+
+// ** bit_enum_mut_field_accessor ** //
+    pub fn ${field_name}(&mut self) -> emboss_runtime::EnumViewMut<${enum_name}, emboss_runtime::BitUInt<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>>> {
+        let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
+            let offset = 0;
+            let len = (${byte_length}) as usize;
+            core::result::Result::Ok((offset, len))
+        })();
+        let storage = match offset_res {
+            core::result::Result::Ok((offset, len)) => self.storage.slice_mut(offset, len),
+            core::result::Result::Err(e) => core::result::Result::Err(e),
+        };
+        emboss_runtime::EnumViewMut::new(emboss_runtime::BitUInt::new(storage))
     }
 
