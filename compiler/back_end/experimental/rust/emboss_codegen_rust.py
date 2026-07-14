@@ -142,11 +142,10 @@ def _resolve_type(reference, ir):
 def _generate_type(type_ir, ir, module, templates, diagnostics) -> str:
     definitions = []
 
+    type_name = "_".join(type_ir.name.canonical_name.object_path)
+
     if type_ir.has_field("external"):
         return ""
-
-    if type_ir.has_field("enumeration"):
-        return _generate_enum(type_ir, ir, module, templates, diagnostics)
 
     if type_ir.runtime_parameter:
         diagnostics.append(
@@ -154,7 +153,7 @@ def _generate_type(type_ir, ir, module, templates, diagnostics) -> str:
                 error.warn(
                     module.source_file_name,
                     type_ir.source_location,
-                    f"Parameterized types are not yet supported in this backend. Parameters for '{type_ir.name.name.text}' will be omitted.",
+                    f"Parameterized types are not yet supported in this backend. Parameters for '{type_name}' will be omitted.",
                 )
             ]
         )
@@ -177,36 +176,30 @@ def _generate_type(type_ir, ir, module, templates, diagnostics) -> str:
         )
 
     if type_ir.subtype:
-        diagnostics.append(
-            [
-                error.warn(
-                    module.source_file_name,
-                    type_ir.subtype[0].source_location,
-                    f"Subtypes are not yet supported in this backend. All subtypes in '{type_ir.name.name.text}' will be omitted.",
-                )
-            ]
-        )
+        for st in type_ir.subtype:
+            definitions.append(
+                _generate_type(st, ir, module, templates, diagnostics)
+            )
 
-
-
-    if not type_ir.has_field("structure"):
+    if type_ir.has_field("structure"):
+        definitions.append(_generate_struct(type_ir, ir, module, templates, diagnostics, type_name))
+    elif type_ir.has_field("enumeration"):
+        definitions.append(_generate_enum(type_ir, ir, module, templates, diagnostics, type_name))
+    else:
         diagnostics.append(
             [
                 error.warn(
                     module.source_file_name,
                     type_ir.source_location,
-                    f"Non-structure types are not yet supported in this backend. Type '{type_ir.name.name.text}' will be omitted.",
+                    f"Non-structure/enum types are not yet supported in this backend. Type '{type_name}' will be omitted.",
                 )
             ]
         )
-        return "".join(definitions)
 
-    definitions.append(_generate_struct(type_ir, ir, module, templates, diagnostics))
     return "".join(definitions)
 
 
-def _generate_enum(type_ir, ir, module, templates, diagnostics) -> str:
-    enum_name = type_ir.name.name.text
+def _generate_enum(type_ir, ir, module, templates, diagnostics, enum_name) -> str:
     enum_variants = []
     enum_match_variants = []
     enum_aliases = []
@@ -340,15 +333,13 @@ def _generate_array_field(
         element_constructor = code_template.format_template(templates.array_element_constructor_external, source_name=source_name)
         element_constructor_mut = code_template.format_template(templates.array_element_constructor_external, source_name=source_name)
     elif referenced_type.has_field("structure"):
-        struct_clean_name = source_name.replace(".", "::")
-        element_type = code_template.format_template(templates.array_element_type_structure, struct_clean_name=struct_clean_name, storage_type=storage_type)
-        element_type_mut = code_template.format_template(templates.array_element_type_structure, struct_clean_name=struct_clean_name + "Mut", storage_type=storage_type_mut)
-        element_constructor = code_template.format_template(templates.array_element_constructor_structure, struct_clean_name=struct_clean_name)
-        element_constructor_mut = code_template.format_template(templates.array_element_constructor_structure, struct_clean_name=struct_clean_name + "Mut")
+        element_type = code_template.format_template(templates.array_element_type_structure, struct_clean_name=source_name, storage_type=storage_type)
+        element_type_mut = code_template.format_template(templates.array_element_type_structure, struct_clean_name=source_name + "Mut", storage_type=storage_type_mut)
+        element_constructor = code_template.format_template(templates.array_element_constructor_structure, struct_clean_name=source_name)
+        element_constructor_mut = code_template.format_template(templates.array_element_constructor_structure, struct_clean_name=source_name + "Mut")
     elif referenced_type.has_field("enumeration"):
-        enum_clean_name = source_name.replace(".", "::")
-        element_type = code_template.format_template(templates.array_element_type_enumeration, enum_clean_name=enum_clean_name, bits=str(bits), byte_order=byte_order, storage_type=storage_type)
-        element_type_mut = code_template.format_template(templates.array_element_type_mut_enumeration, enum_clean_name=enum_clean_name, bits=str(bits), byte_order=byte_order, storage_type=storage_type_mut)
+        element_type = code_template.format_template(templates.array_element_type_enumeration, enum_clean_name=source_name, bits=str(bits), byte_order=byte_order, storage_type=storage_type)
+        element_type_mut = code_template.format_template(templates.array_element_type_mut_enumeration, enum_clean_name=source_name, bits=str(bits), byte_order=byte_order, storage_type=storage_type_mut)
         element_constructor = code_template.format_template(templates.array_element_constructor_enumeration)
         element_constructor_mut = code_template.format_template(templates.array_element_constructor_mut_enumeration)
     else:
@@ -387,8 +378,7 @@ def _generate_array_field(
     )
 
 
-def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
-    struct_name = type_ir.name.name.text
+def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -> str:
     field_accessors = []
     mut_field_accessors = []
     generated_nested_types = []
@@ -457,15 +447,26 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
             )
             continue
 
-        source_name = "::".join(part.text for part in base_type.atomic_type.reference.source_name)
+        orig_source_name = [part.text for part in base_type.atomic_type.reference.source_name]
+        obj_path = [part for part in base_type.atomic_type.reference.canonical_name.object_path]
 
-        if source_name in _UNSUPPORTED_PRELUDE_TYPES:
+        num_module_parts = len(orig_source_name) - len(obj_path)
+        if num_module_parts > 0:
+            module_prefix = "::".join(orig_source_name[:num_module_parts]) + "::"
+            type_name = "_".join(obj_path)
+            source_name = module_prefix + type_name
+            source_name_for_prelude = "::".join(orig_source_name) # original style for checking preludes
+        else:
+            source_name = "_".join(obj_path)
+            source_name_for_prelude = "::".join(orig_source_name)
+
+        if source_name_for_prelude in _UNSUPPORTED_PRELUDE_TYPES:
             diagnostics.append(
                 [
                     error.warn(
                         module.source_file_name,
                         field.source_location,
-                        f"Type '{source_name}' is not yet supported in this backend. Field '{field_name}' will be omitted.",
+                        f"Type '{source_name_for_prelude}' is not yet supported in this backend. Field '{field_name}' will be omitted.",
                     )
                 ]
             )
@@ -623,7 +624,7 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
                     code_template.format_template(
                         templates.struct_field_accessor,
                         field_name=field_name,
-                        type_name=source_name.replace(".", "::"),
+                        type_name=source_name,
                         byte_offset=str(byte_offset),
                         byte_length=str(byte_length),
                     )
@@ -632,7 +633,7 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
                     code_template.format_template(
                         templates.struct_mut_field_accessor,
                         field_name=field_name,
-                        type_name=source_name.replace(".", "::"),
+                        type_name=source_name,
                         byte_offset=str(byte_offset),
                         byte_length=str(byte_length),
                     )
@@ -645,7 +646,7 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
                     code_template.format_template(
                         templates.enum_field_accessor,
                         field_name=field_name,
-                        enum_name=source_name.replace(".", "::"),
+                        enum_name=source_name,
                         bits=str(bits),
                         byte_order=byte_order,
                         byte_offset=str(byte_offset),
@@ -656,7 +657,7 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
                     code_template.format_template(
                         templates.enum_mut_field_accessor,
                         field_name=field_name,
-                        enum_name=source_name.replace(".", "::"),
+                        enum_name=source_name,
                         bits=str(bits),
                         byte_order=byte_order,
                         byte_offset=str(byte_offset),
