@@ -17,7 +17,7 @@
 #![allow(dead_code, unused_imports, unused_variables, non_camel_case_types)]
 
 use emboss_runtime::prelude::*;
-use emboss_runtime::{Error, Storage};
+use emboss_runtime::{Error, Storage, MutStorage};
 
 ${struct_definitions}
 
@@ -33,12 +33,33 @@ impl<S: Storage> ${struct_name}<S> {
 ${field_accessors}
 }
 
+pub struct ${struct_name}Mut<S: MutStorage> {
+    storage: S,
+}
+
+impl<S: MutStorage> ${struct_name}Mut<S> {
+    pub fn new(storage: S) -> Self {
+        Self { storage }
+    }
+${mut_field_accessors}
+}
+
 // ** external_field_accessor ** //
-    pub fn ${field_name}(&self) -> ${type_name}<${bits}, emboss_runtime::${byte_order}, S::Sliced> {
-        ${type_name}::<${bits}, emboss_runtime::${byte_order}, S::Sliced>::new(self.storage.slice(${byte_offset}, ${byte_length}))
+    pub fn ${field_name}(&self) -> ${type_name}<${bits}, emboss_runtime::${byte_order}, S::Sliced<'_>> {
+        ${type_name}::<${bits}, emboss_runtime::${byte_order}, S::Sliced<'_>>::new(self.storage.slice(${byte_offset}, ${byte_length}))
+    }
+
+// ** external_mut_field_accessor ** //
+    pub fn ${field_name}(&mut self) -> ${type_name}<${bits}, emboss_runtime::${byte_order}, S::SlicedMut<'_>> {
+        ${type_name}::<${bits}, emboss_runtime::${byte_order}, S::SlicedMut<'_>>::new(self.storage.slice_mut(${byte_offset}, ${byte_length}))
     }
 
 // ** struct_field_accessor ** //
-    pub fn ${field_name}(&self) -> ${type_name}<S::Sliced> {
+    pub fn ${field_name}(&self) -> ${type_name}<S::Sliced<'_>> {
         ${type_name}::new(self.storage.slice(${byte_offset}, ${byte_length}))
+    }
+
+// ** struct_mut_field_accessor ** //
+    pub fn ${field_name}(&mut self) -> ${type_name}Mut<S::SlicedMut<'_>> {
+        ${type_name}Mut::new(self.storage.slice_mut(${byte_offset}, ${byte_length}))
     }

@@ -195,6 +195,7 @@ def _generate_type(type_ir, ir, module, templates, diagnostics) -> str:
 def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
     struct_name = type_ir.name.name.text
     field_accessors = []
+    mut_field_accessors = []
 
     for field in type_ir.structure.field:
         field_name = field.name.name.text
@@ -349,10 +350,30 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
                     byte_length=str(byte_length),
                 )
             )
+            mut_field_accessors.append(
+                code_template.format_template(
+                    templates.external_mut_field_accessor,
+                    field_name=field_name,
+                    type_name=source_name,
+                    bits=str(bits),
+                    byte_order=byte_order,
+                    byte_offset=str(byte_offset),
+                    byte_length=str(byte_length),
+                )
+            )
         elif referenced_type.has_field("structure"):
             field_accessors.append(
                 code_template.format_template(
                     templates.struct_field_accessor,
+                    field_name=field_name,
+                    type_name=source_name.replace(".", "::"),
+                    byte_offset=str(byte_offset),
+                    byte_length=str(byte_length),
+                )
+            )
+            mut_field_accessors.append(
+                code_template.format_template(
+                    templates.struct_mut_field_accessor,
                     field_name=field_name,
                     type_name=source_name.replace(".", "::"),
                     byte_offset=str(byte_offset),
@@ -379,6 +400,7 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
         templates.struct_view,
         struct_name=struct_name,
         field_accessors="".join(field_accessors),
+        mut_field_accessors="".join(mut_field_accessors),
     )
 
 

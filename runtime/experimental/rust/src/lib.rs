@@ -25,6 +25,24 @@ pub trait Storage {
     fn try_read_byte(&self, offset: usize) -> Result<u8, Error>;
 }
 
+pub trait MutStorage: Storage {
+    type SlicedMut<'a>: MutStorage where Self: 'a;
+    fn slice_mut(&mut self, offset: usize, length: usize) -> Self::SlicedMut<'_>;
+    fn try_write_byte(&mut self, offset: usize, val: u8) -> Result<(), Error>;
+}
+
+impl<'a, T: ?Sized + AsRef<[u8]>> Storage for &'a mut T {
+    type Sliced<'b> = Result<&'b [u8], Error> where Self: 'b;
+    fn slice(&self, offset: usize, length: usize) -> Self::Sliced<'_> {
+        let bytes = self.as_ref();
+        bytes.get(offset..offset + length).ok_or(Error::OutOfBounds)
+    }
+    fn try_read_byte(&self, offset: usize) -> Result<u8, Error> {
+        let bytes = self.as_ref();
+        bytes.get(offset).copied().ok_or(Error::OutOfBounds)
+    }
+}
+
 impl<'a, T: ?Sized + AsRef<[u8]>> Storage for &'a T {
     type Sliced<'b> = Result<&'b [u8], Error> where Self: 'b;
     fn slice(&self, offset: usize, length: usize) -> Self::Sliced<'_> {
@@ -34,6 +52,20 @@ impl<'a, T: ?Sized + AsRef<[u8]>> Storage for &'a T {
     fn try_read_byte(&self, offset: usize) -> Result<u8, Error> {
         let bytes = self.as_ref();
         bytes.get(offset).copied().ok_or(Error::OutOfBounds)
+    }
+}
+
+impl<'a, T: ?Sized + AsMut<[u8]> + AsRef<[u8]>> MutStorage for &'a mut T {
+    type SlicedMut<'b> = Result<&'b mut [u8], Error> where Self: 'b;
+    fn slice_mut(&mut self, offset: usize, length: usize) -> Self::SlicedMut<'_> {
+        let bytes = self.as_mut();
+        bytes.get_mut(offset..offset + length).ok_or(Error::OutOfBounds)
+    }
+    fn try_write_byte(&mut self, offset: usize, val: u8) -> Result<(), Error> {
+        let bytes = self.as_mut();
+        let b = bytes.get_mut(offset).ok_or(Error::OutOfBounds)?;
+        *b = val;
+        Ok(())
     }
 }
 
@@ -48,6 +80,22 @@ impl<T: Storage> Storage for Result<T, Error> {
     fn try_read_byte(&self, offset: usize) -> Result<u8, Error> {
         match self {
             Ok(s) => s.try_read_byte(offset),
+            Err(e) => Err(*e),
+        }
+    }
+}
+
+impl<T: MutStorage> MutStorage for Result<T, Error> {
+    type SlicedMut<'a> = Result<T::SlicedMut<'a>, Error> where Self: 'a;
+    fn slice_mut(&mut self, offset: usize, length: usize) -> Self::SlicedMut<'_> {
+        match self {
+            Ok(s) => Ok(s.slice_mut(offset, length)),
+            Err(e) => Err(*e), // Forwards the previous failure transparently
+        }
+    }
+    fn try_write_byte(&mut self, offset: usize, val: u8) -> Result<(), Error> {
+        match self {
+            Ok(s) => s.try_write_byte(offset, val),
             Err(e) => Err(*e),
         }
     }
@@ -88,6 +136,10 @@ pub trait DecodeFromStorage<E: ByteOrder>: Sized {
     fn decode<S: Storage>(storage: &S, size_in_bytes: usize) -> Result<Self, Error>;
 }
 
+pub trait EncodeToStorage<E: ByteOrder>: Sized {
+    fn encode<S: MutStorage>(&self, storage: &mut S, size_in_bytes: usize) -> Result<(), Error>;
+}
+
 macro_rules! impl_decode_uint {
     ($type:ty) => {
         impl<E: ByteOrder> DecodeFromStorage<E> for $type {
@@ -97,6 +149,14 @@ macro_rules! impl_decode_uint {
                     val |= (storage.try_read_byte(i)? as $type) << E::shift(i, size_in_bytes);
                 }
                 Ok(val)
+            }
+        }
+        impl<E: ByteOrder> EncodeToStorage<E> for $type {
+            fn encode<S: MutStorage>(&self, storage: &mut S, size_in_bytes: usize) -> Result<(), Error> {
+                for i in 0..size_in_bytes {
+                    storage.try_write_byte(i, ((*self) >> E::shift(i, size_in_bytes)) as u8)?;
+                }
+                Ok(())
             }
         }
     };
@@ -160,10 +220,22 @@ where
     }
 }
 
+impl<const BITS: usize, E: ByteOrder, S: MutStorage> UInt<BITS, E, S>
+where
+    SizeSelector<BITS>: SmallestUInt,
+    <SizeSelector<BITS> as SmallestUInt>::T: EncodeToStorage<E>,
+{
+    pub fn try_write(&mut self, val: <SizeSelector<BITS> as SmallestUInt>::T) -> Result<(), Error> {
+        let size_in_bytes = (BITS + 7) / 8;
+        val.encode(&mut self.storage, size_in_bytes)
+    }
+}
+
 pub trait SmallestInt {
     type T;
     type U;
     fn sign_extend(raw: Self::U, bits: usize) -> Self::T;
+    fn mask_to_unsigned(val: Self::T, bits: usize) -> Self::U;
 }
 
 macro_rules! impl_smallest_int {
@@ -177,6 +249,15 @@ macro_rules! impl_smallest_int {
                     let shift_amount = (core::mem::size_of::<$type>() * 8) - bits;
                     let sign_extended = (raw as $type) << shift_amount;
                     sign_extended >> shift_amount
+                }
+                #[inline]
+                fn mask_to_unsigned(val: Self::T, bits: usize) -> Self::U {
+                    let mask = if bits == core::mem::size_of::<$utype>() * 8 {
+                        !0
+                    } else {
+                        (1 << bits) - 1
+                    };
+                    (val as Self::U) & mask
                 }
             }
         )+
@@ -219,5 +300,17 @@ where
         let slice = self.storage.slice(0, size_in_bytes);
         let raw = UInt::<BITS, E, S::Sliced<'_>>::new(slice).try_read()?;
         Ok(<SizeSelector<BITS> as SmallestInt>::sign_extend(raw, BITS))
+    }
+}
+
+impl<const BITS: usize, E: ByteOrder, S: MutStorage> Int<BITS, E, S>
+where
+    SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
+    <SizeSelector<BITS> as SmallestUInt>::T: EncodeToStorage<E>,
+{
+    pub fn try_write(&mut self, val: <SizeSelector<BITS> as SmallestInt>::T) -> Result<(), Error> {
+        let unsigned = <SizeSelector<BITS> as SmallestInt>::mask_to_unsigned(val, BITS);
+        let mut uint_view = UInt::<BITS, E, S::SlicedMut<'_>>::new(self.storage.slice_mut(0, (BITS + 7) / 8));
+        uint_view.try_write(unsigned)
     }
 }
