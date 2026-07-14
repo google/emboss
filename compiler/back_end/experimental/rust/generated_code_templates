@@ -34,8 +34,8 @@ ${field_accessors}
 }
 
 // ** external_field_accessor ** //
-    pub fn ${field_name}(&self) -> ${type_name}<${bits}, S::Sliced> {
-        ${type_name}::<${bits}, S::Sliced>::new(self.storage.slice(${byte_offset}, ${byte_length}))
+    pub fn ${field_name}(&self) -> ${type_name}<${bits}, emboss_runtime::${byte_order}, S::Sliced> {
+        ${type_name}::<${bits}, emboss_runtime::${byte_order}, S::Sliced>::new(self.storage.slice(${byte_offset}, ${byte_length}))
     }
 
 // ** struct_field_accessor ** //

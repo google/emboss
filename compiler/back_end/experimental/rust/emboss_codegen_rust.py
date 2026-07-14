@@ -311,17 +311,8 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
         byte_order_attr = ir_util.get_attribute(field.attribute, "byte_order")
         if byte_order_attr:
             byte_order = byte_order_attr.string_constant.text
-            if byte_order != "LittleEndian":
-                diagnostics.append(
-                    [
-                        error.warn(
-                            module.source_file_name,
-                            byte_order_attr.source_location,
-                            f"Byte order '{byte_order}' is not yet supported in this backend. Field '{field_name}' will be omitted.",
-                        )
-                    ]
-                )
-                continue
+        else:
+            byte_order = "Null"
 
         byte_offset = ir_util.constant_value(field.location.start)
         byte_length = ir_util.constant_value(field.location.size)
@@ -353,6 +344,7 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
                     field_name=field_name,
                     type_name=source_name,
                     bits=str(bits),
+                    byte_order=byte_order,
                     byte_offset=str(byte_offset),
                     byte_length=str(byte_length),
                 )

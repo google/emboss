@@ -51,6 +51,7 @@ filegroup(
         "condition.emb",
         "cpp_namespace.emb",
         "dynamic_size.emb",
+        "endian.emb",
         "enum.emb",
         "enum_case.emb",
         "explicit_sizes.emb",
@@ -104,6 +105,13 @@ emboss_cc_library(
     name = "condition_emboss",
     srcs = [
         "condition.emb",
+    ],
+)
+
+emboss_cc_library(
+    name = "endian_emboss",
+    srcs = [
+        "endian.emb",
     ],
 )
 

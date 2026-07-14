@@ -53,17 +53,48 @@ impl<T: Storage> Storage for Result<T, Error> {
     }
 }
 
-pub trait DecodeFromStorage: Sized {
+pub trait ByteOrder {
+    fn shift(i: usize, size_in_bytes: usize) -> usize;
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct LittleEndian;
+impl ByteOrder for LittleEndian {
+    #[inline(always)]
+    fn shift(i: usize, _size_in_bytes: usize) -> usize {
+        i * 8
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct BigEndian;
+impl ByteOrder for BigEndian {
+    #[inline(always)]
+    fn shift(i: usize, size_in_bytes: usize) -> usize {
+        (size_in_bytes - 1 - i) * 8
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Null;
+impl ByteOrder for Null {
+    #[inline(always)]
+    fn shift(_i: usize, _size_in_bytes: usize) -> usize {
+        0
+    }
+}
+
+pub trait DecodeFromStorage<E: ByteOrder>: Sized {
     fn decode<S: Storage>(storage: &S, size_in_bytes: usize) -> Result<Self, Error>;
 }
 
 macro_rules! impl_decode_uint {
     ($type:ty) => {
-        impl DecodeFromStorage for $type {
+        impl<E: ByteOrder> DecodeFromStorage<E> for $type {
             fn decode<S: Storage>(storage: &S, size_in_bytes: usize) -> Result<Self, Error> {
                 let mut val: $type = 0;
                 for i in 0..size_in_bytes {
-                    val |= (storage.try_read_byte(i)? as $type) << (i * 8);
+                    val |= (storage.try_read_byte(i)? as $type) << E::shift(i, size_in_bytes);
                 }
                 Ok(val)
             }
@@ -76,7 +107,7 @@ impl_decode_uint!(u32);
 impl_decode_uint!(u64);
 
 pub trait SmallestUInt {
-    type T: DecodeFromStorage;
+    type T;
 }
 pub struct SizeSelector<const BITS: usize>;
 
@@ -101,20 +132,28 @@ impl_smallest_uint!(
     u64, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64
 );
 
-pub struct UInt<const BITS: usize, S: Storage> {
+pub struct UInt<const BITS: usize, E: ByteOrder, S: Storage> {
     storage: S,
+    _marker: core::marker::PhantomData<E>,
 }
 
-impl<const BITS: usize, S: Storage> UInt<BITS, S>
+impl<const BITS: usize, E: ByteOrder, S: Storage> UInt<BITS, E, S>
 where
     SizeSelector<BITS>: SmallestUInt,
+    <SizeSelector<BITS> as SmallestUInt>::T: DecodeFromStorage<E>,
 {
     pub fn new(storage: S) -> Self {
-        Self { storage }
+        Self {
+            storage,
+            _marker: core::marker::PhantomData,
+        }
     }
 
     pub fn try_read(&self) -> Result<<SizeSelector<BITS> as SmallestUInt>::T, Error> {
         let size_in_bytes = (BITS + 7) / 8;
-        <<SizeSelector<BITS> as SmallestUInt>::T>::decode(&self.storage, size_in_bytes)
+        <<SizeSelector<BITS> as SmallestUInt>::T as DecodeFromStorage<E>>::decode(
+            &self.storage,
+            size_in_bytes,
+        )
     }
 }

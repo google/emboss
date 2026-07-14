@@ -42,3 +42,17 @@ rust_test(
         "//runtime/experimental/rust:emboss_runtime",
     ],
 )
+
+emboss_rust_library(
+    name = "endian_emb_rs",
+    deps = ["//testdata:endian_emboss_ir"],
+)
+
+rust_test(
+    name = "endian_test",
+    srcs = ["endian_test.rs"],
+    deps = [
+        ":endian_emb_rs",
+        "//runtime/experimental/rust:emboss_runtime",
+    ],
+)
