@@ -254,6 +254,20 @@ def _generate_enum(type_ir, ir, module, templates, diagnostics, enum_name) -> st
     )
 
 
+def _rust_type_for_expr_type(expr_type):
+    if expr_type.has_field("integer"):
+        if int(expr_type.integer.minimum_value) < 0:
+            return "i64"
+        return "u64"
+    if expr_type.has_field("boolean"):
+        return "bool"
+    if expr_type.has_field("enumeration"):
+        return "_".join(expr_type.enumeration.name.canonical_name.object_path)
+    return "u64"
+
+
+
+
 def _generate_expression(expr, ir, module, generated_fields, templates, self_ref="self"):
     if ir_util.is_constant(expr):
         return str(ir_util.constant_value(expr))
@@ -262,12 +276,12 @@ def _generate_expression(expr, ir, module, generated_fields, templates, self_ref
         return "true" if expr.boolean_constant.value else "false"
 
     if expr.has_field("field_reference"):
-        if len(expr.field_reference.path) > 1:
+        path_names = [part.canonical_name.object_path[-1] for part in expr.field_reference.path]
+        if path_names[0] not in generated_fields:
             return None
-        ref_name = expr.field_reference.path[0].canonical_name.object_path[-1]
-        if ref_name not in generated_fields:
-            return None
-        return code_template.format_template(templates.expr_field_reference, self_ref=self_ref, field_name=ref_name)
+        
+        path_expr = "".join([f".{name}()" for name in path_names])
+        return code_template.format_template(templates.expr_field_reference_no_cast, self_ref=self_ref, path_expr=path_expr)
 
     if expr.has_field("function"):
         func = expr.function.function
@@ -286,11 +300,13 @@ def _generate_expression(expr, ir, module, generated_fields, templates, self_ref
             return code_template.format_template(templates.expr_multiplication, left=args[0], right=args[1])
         if func == ir_data.FunctionMapping.MAXIMUM.value:
             return code_template.format_template(templates.expr_maximum, left=args[0], right=args[1])
-        if func == ir_data.FunctionMapping.MINIMUM.value:
-            return code_template.format_template(templates.expr_minimum, left=args[0], right=args[1])
         if func == ir_data.FunctionMapping.CHOICE.value:
-            return code_template.format_template(templates.expr_choice, cond=args[0], true_branch=args[1], false_branch=args[2])
-
+            return code_template.format_template(templates.expr_choice, condition=args[0], true_value=args[1], false_value=args[2])
+        if func == ir_data.FunctionMapping.EQUALITY.value:
+            return code_template.format_template(templates.expr_equality, left=args[0], right=args[1])
+        if func == ir_data.FunctionMapping.LESS.value:
+            return code_template.format_template(templates.expr_less, left=args[0], right=args[1])
+            
         return None
     return None
 
@@ -398,7 +414,7 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
         if field_name.startswith("$"):
             continue
 
-        if field.has_field("existence_condition"):
+        if field.has_field("existence_condition") and not field.has_field("read_transform"):
             cond = ir_util.constant_value(field.existence_condition)
             if cond is not True:
                 diagnostics.append(
@@ -411,6 +427,58 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
                     ]
                 )
                 continue
+
+        if not field.has_field("location"):
+            if not field.has_field("read_transform"):
+                diagnostics.append(
+                    [
+                        error.warn(
+                            module.source_file_name,
+                            (
+                                field.type.source_location
+                                if field.has_field("type")
+                                else field.source_location
+                            ),
+                            f"Virtual fields without read_transform are not supported. Field '{field_name}' will be omitted.",
+                        )
+                    ]
+                )
+                continue
+                
+            expr_str = _generate_expression(field.read_transform, ir, module, generated_fields, templates)
+            if expr_str is None:
+                diagnostics.append(
+                    [
+                        error.warn(
+                            module.source_file_name,
+                            field.read_transform.source_location,
+                            f"Virtual field '{field_name}' uses unsupported expression. It will be omitted.",
+                        )
+                    ]
+                )
+                continue
+                
+            return_type = _rust_type_for_expr_type(field.read_transform.type)
+            
+            if field.read_transform.has_field("field_reference") and field.read_transform.type.has_field("opaque"):
+                # opaque fields usually mean it's an alias to a struct/array view.
+                pass
+            else:
+                field_accessors.append(code_template.format_template(
+                    templates.virtual_field_accessor,
+                    field_name=field_name,
+                    return_type=return_type,
+                    expression=expr_str,
+                ))
+                mut_field_accessors.append(code_template.format_template(
+                    templates.mut_virtual_field_accessor,
+                    field_name=field_name,
+                    return_type=return_type,
+                    expression=expr_str,
+                ))
+                
+            generated_fields.add(field_name)
+            continue
 
         if not field.has_field("type") or not (field.type.has_field("atomic_type") or field.type.has_field("array_type")):
             loc = (
@@ -473,19 +541,6 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
             continue
 
         target_type = _resolve_type(base_type.atomic_type.reference, ir)
-
-
-        if not field.has_field("location"):
-            diagnostics.append(
-                [
-                    error.warn(
-                        module.source_file_name,
-                        field.source_location,
-                        f"Virtual fields are not yet supported in this backend. Field '{field_name}' will be omitted.",
-                    )
-                ]
-            )
-            continue
 
         byte_offset_expr = _generate_expression(field.location.start, ir, module, generated_fields, templates)
         byte_length_expr = _generate_expression(field.location.size, ir, module, generated_fields, templates)
@@ -573,7 +628,7 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
             )
         else:
             if referenced_type.has_field("external"):
-                bits = const_byte_length * 8
+                bits = const_byte_length * type_ir.addressable_unit
                 if field.type.has_field("size_in_bits"):
                     bits = ir_util.constant_value(field.type.size_in_bits)
 
@@ -581,7 +636,11 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
                 mut_accessor_template = templates.external_mut_field_accessor
                 
                 if type_ir.addressable_unit == 1:
-                    bit_offset_str = str(ir_util.constant_value(field.location.start))
+                    bit_offset_int = int(ir_util.constant_value(field.location.start))
+                    bits_int = int(bits)
+                    byte_len_int = ((bit_offset_int + bits_int - 1) // 8) + 1
+                    bit_offset_str = str(bit_offset_int)
+                    
                     field_accessors.append(
                         code_template.format_template(
                             templates.bit_external_field_accessor,
@@ -590,11 +649,20 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
                             bits=str(bits),
                             byte_order=byte_order,
                             bit_offset=bit_offset_str,
-                            byte_length=str(byte_length),
+                            byte_length=str(byte_len_int),
                         )
                     )
-                    # We don't have bit_external_mut_field_accessor implemented cleanly yet,
-                    # but in templates it is mapped to BitUIntMut which we can define identically.
+                    mut_field_accessors.append(
+                        code_template.format_template(
+                            templates.bit_external_mut_field_accessor,
+                            field_name=field_name,
+                            type_name=source_name,
+                            bits=str(bits),
+                            byte_order=byte_order,
+                            bit_offset=bit_offset_str,
+                            byte_length=str(byte_len_int),
+                        )
+                    )
                 else:
                     field_accessors.append(
                         code_template.format_template(

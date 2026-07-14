@@ -542,3 +542,27 @@ where
     }
 }
 
+#[derive(Clone, Copy, Debug)]
+pub struct VirtualField<T> {
+    pub value: core::result::Result<T, Error>,
+}
+
+impl<T> VirtualField<T> {
+    pub const fn new(value: core::result::Result<T, Error>) -> Self {
+        Self { value }
+    }
+}
+
+impl<T: Copy> VirtualField<T> {
+    pub fn try_read(&self) -> core::result::Result<T, Error> {
+        self.value
+    }
+}
+
+impl<T: Copy> TryRead for VirtualField<T> {
+    type ReadValue = T;
+    fn try_read(&self) -> core::result::Result<T, Error> {
+        self.value
+    }
+}
+
