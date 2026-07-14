@@ -531,11 +531,10 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
                     error.warn(
                         module.source_file_name,
                         unhandled_attr.source_location,
-                        f"Attribute '{unhandled_attr.name.text}' is not yet supported in this backend. Field '{field_name}' will be omitted.",
+                        f"Attribute '{unhandled_attr.name.text}' is not yet supported in this backend. It will be ignored for field '{field_name}'.",
                     )
                 ]
             )
-            continue
 
         byte_order_attr = ir_util.get_attribute(field.attribute, "byte_order")
         if byte_order_attr:
