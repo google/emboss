@@ -15,8 +15,18 @@
 pub mod prelude;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum Error {
+pub enum Error<T = ()> {
     OutOfBounds,
+    UnknownEnum(T),
+}
+
+impl<T> Error<T> {
+    pub fn map_type<U>(self) -> Error<U> {
+        match self {
+            Error::OutOfBounds => Error::OutOfBounds,
+            Error::UnknownEnum(_) => unreachable!("Cannot map UnknownEnum across unmodified types"),
+        }
+    }
 }
 
 pub trait Storage {
@@ -312,5 +322,125 @@ where
         let unsigned = <SizeSelector<BITS> as SmallestInt>::mask_to_unsigned(val, BITS);
         let mut uint_view = UInt::<BITS, E, S::SlicedMut<'_>>::new(self.storage.slice_mut(0, (BITS + 7) / 8));
         uint_view.try_write(unsigned)
+    }
+}
+
+pub trait TryFromRaw<T> {
+    fn try_from_raw(val: T) -> Result<Self, Error<T>>
+    where
+        Self: Sized;
+}
+
+pub struct EnumView<T, Inner> {
+    pub inner: Inner,
+    _phantom: core::marker::PhantomData<T>,
+}
+
+impl<T, Inner> EnumView<T, Inner> {
+    pub fn new(inner: Inner) -> Self {
+        Self {
+            inner,
+            _phantom: core::marker::PhantomData,
+        }
+    }
+}
+
+pub struct EnumViewMut<T, Inner> {
+    pub inner: Inner,
+    _phantom: core::marker::PhantomData<T>,
+}
+
+impl<T, Inner> EnumViewMut<T, Inner> {
+    pub fn new(inner: Inner) -> Self {
+        Self {
+            inner,
+            _phantom: core::marker::PhantomData,
+        }
+    }
+}
+
+pub trait TryRead {
+    type ReadValue;
+    fn try_read(&self) -> Result<Self::ReadValue, Error>;
+}
+
+pub trait TryWrite {
+    type WriteValue;
+    fn try_write(&mut self, val: Self::WriteValue) -> Result<(), Error>;
+}
+
+impl<const BITS: usize, E: ByteOrder, S: Storage> TryRead for UInt<BITS, E, S>
+where
+    SizeSelector<BITS>: SmallestUInt,
+    <SizeSelector<BITS> as SmallestUInt>::T: DecodeFromStorage<E>,
+{
+    type ReadValue = <SizeSelector<BITS> as SmallestUInt>::T;
+    fn try_read(&self) -> Result<Self::ReadValue, Error> {
+        self.try_read()
+    }
+}
+
+impl<const BITS: usize, E: ByteOrder, S: MutStorage> TryWrite for UInt<BITS, E, S>
+where
+    SizeSelector<BITS>: SmallestUInt,
+    <SizeSelector<BITS> as SmallestUInt>::T: EncodeToStorage<E>,
+{
+    type WriteValue = <SizeSelector<BITS> as SmallestUInt>::T;
+    fn try_write(&mut self, val: Self::WriteValue) -> Result<(), Error> {
+        self.try_write(val)
+    }
+}
+
+impl<const BITS: usize, E: ByteOrder, S: Storage> TryRead for Int<BITS, E, S>
+where
+    SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
+    <SizeSelector<BITS> as SmallestUInt>::T: DecodeFromStorage<E>,
+{
+    type ReadValue = <SizeSelector<BITS> as SmallestInt>::T;
+    fn try_read(&self) -> Result<Self::ReadValue, Error> {
+        self.try_read()
+    }
+}
+
+impl<const BITS: usize, E: ByteOrder, S: MutStorage> TryWrite for Int<BITS, E, S>
+where
+    SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
+    <SizeSelector<BITS> as SmallestUInt>::T: EncodeToStorage<E>,
+{
+    type WriteValue = <SizeSelector<BITS> as SmallestInt>::T;
+    fn try_write(&mut self, val: Self::WriteValue) -> Result<(), Error> {
+        self.try_write(val)
+    }
+}
+
+impl<T, Inner> EnumView<T, Inner>
+where
+    Inner: TryRead,
+    T: TryFromRaw<Inner::ReadValue>,
+{
+    pub fn try_read(&self) -> Result<T, Error<Inner::ReadValue>> {
+        let raw = self.inner.try_read().map_err(|e| e.map_type())?;
+        T::try_from_raw(raw)
+    }
+}
+
+impl<T, Inner> EnumViewMut<T, Inner>
+where
+    Inner: TryWrite,
+    Inner::WriteValue: From<T>,
+{
+    pub fn try_write(&mut self, val: T) -> Result<(), Error> {
+        self.inner.try_write(Inner::WriteValue::from(val))
+    }
+}
+
+impl<T, Inner> EnumViewMut<T, Inner>
+where
+    Inner: TryRead,
+    T: TryFromRaw<Inner::ReadValue>,
+{
+    pub fn try_read(&self) -> Result<T, Error<Inner::ReadValue>> {
+        let raw = self.inner.try_read().map_err(|e| e.map_type())?;
+        T::try_from_raw(raw)
     }
 }

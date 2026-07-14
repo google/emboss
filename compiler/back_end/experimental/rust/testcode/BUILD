@@ -69,3 +69,17 @@ rust_test(
         ":int_sizes_emb_rs",
     ],
 )
+
+emboss_rust_library(
+    name = "enum_emb_rs",
+    deps = ["//testdata:enum_emboss_ir"],
+)
+
+rust_test(
+    name = "enum_test",
+    srcs = ["enum_test.rs"],
+    deps = [
+        ":enum_emb_rs",
+        "//runtime/experimental/rust:emboss_runtime",
+    ],
+)

@@ -63,3 +63,53 @@ ${mut_field_accessors}
     pub fn ${field_name}(&mut self) -> ${type_name}Mut<S::SlicedMut<'_>> {
         ${type_name}Mut::new(self.storage.slice_mut(${byte_offset}, ${byte_length}))
     }
+
+// ** enum_definition ** //
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[repr(${underlying_type})]
+pub enum ${enum_name} {
+${enum_variants}
+}
+
+impl core::convert::From<${enum_name}> for u8 { fn from(val: ${enum_name}) -> Self { val as u8 } }
+impl core::convert::From<${enum_name}> for u16 { fn from(val: ${enum_name}) -> Self { val as u16 } }
+impl core::convert::From<${enum_name}> for u32 { fn from(val: ${enum_name}) -> Self { val as u32 } }
+impl core::convert::From<${enum_name}> for u64 { fn from(val: ${enum_name}) -> Self { val as u64 } }
+impl core::convert::From<${enum_name}> for i8 { fn from(val: ${enum_name}) -> Self { val as i8 } }
+impl core::convert::From<${enum_name}> for i16 { fn from(val: ${enum_name}) -> Self { val as i16 } }
+impl core::convert::From<${enum_name}> for i32 { fn from(val: ${enum_name}) -> Self { val as i32 } }
+impl core::convert::From<${enum_name}> for i64 { fn from(val: ${enum_name}) -> Self { val as i64 } }
+
+impl<V: core::convert::Into<${underlying_type}> + core::marker::Copy> emboss_runtime::TryFromRaw<V> for ${enum_name} {
+    fn try_from_raw(val: V) -> core::result::Result<Self, emboss_runtime::Error<V>> {
+        let v_raw: ${underlying_type} = val.into();
+        match v_raw {
+${enum_match_variants}
+            _ => Err(emboss_runtime::Error::UnknownEnum(val)),
+        }
+    }
+}
+
+impl ${enum_name} {
+${enum_aliases}
+}
+
+// ** enum_variant ** //
+    ${variant_name} = ${variant_value},
+
+// ** enum_alias ** //
+    pub const ${variant_name}: Self = Self::${original_variant_name};
+
+// ** enum_match_variant ** //
+            ${variant_value} => Ok(${enum_name}::${variant_name}),
+
+// ** enum_field_accessor ** //
+    pub fn ${field_name}(&self) -> emboss_runtime::EnumView<${enum_name}, emboss_runtime::UInt<${bits}, emboss_runtime::${byte_order}, S::Sliced<'_>>> {
+        emboss_runtime::EnumView::new(emboss_runtime::UInt::new(self.storage.slice(${byte_offset}, ${byte_length})))
+    }
+
+// ** enum_mut_field_accessor ** //
+    pub fn ${field_name}(&mut self) -> emboss_runtime::EnumViewMut<${enum_name}, emboss_runtime::UInt<${bits}, emboss_runtime::${byte_order}, S::SlicedMut<'_>>> {
+        emboss_runtime::EnumViewMut::new(emboss_runtime::UInt::new(self.storage.slice_mut(${byte_offset}, ${byte_length})))
+    }
+

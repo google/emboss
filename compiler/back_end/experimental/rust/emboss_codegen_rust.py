@@ -125,6 +125,9 @@ def _generate_type(type_ir, ir, module, templates, diagnostics) -> str:
     if type_ir.has_field("external"):
         return ""
 
+    if type_ir.has_field("enumeration"):
+        return _generate_enum(type_ir, ir, module, templates, diagnostics)
+
     if type_ir.runtime_parameter:
         diagnostics.append(
             [
@@ -190,6 +193,62 @@ def _generate_type(type_ir, ir, module, templates, diagnostics) -> str:
 
     definitions.append(_generate_struct(type_ir, ir, module, templates, diagnostics))
     return "".join(definitions)
+
+
+def _generate_enum(type_ir, ir, module, templates, diagnostics) -> str:
+    enum_name = type_ir.name.name.text
+    enum_variants = []
+    enum_match_variants = []
+    enum_aliases = []
+
+    seen_values = {}
+    is_signed = False
+
+    for opt in type_ir.enumeration.value:
+        variant_value = ir_util.constant_value(opt.value)
+        if variant_value < 0:
+            is_signed = True
+
+    underlying_type = "i64" if is_signed else "u64"
+
+    for val in type_ir.enumeration.value:
+        variant_name = val.name.name.text
+        variant_value = ir_util.constant_value(val.value)
+
+        if variant_value in seen_values:
+            enum_aliases.append(
+                code_template.format_template(
+                    templates.enum_alias,
+                    variant_name=variant_name,
+                    original_variant_name=seen_values[variant_value],
+                )
+            )
+        else:
+            seen_values[variant_value] = variant_name
+            enum_variants.append(
+                code_template.format_template(
+                    templates.enum_variant,
+                    variant_name=variant_name,
+                    variant_value=str(variant_value),
+                )
+            )
+            enum_match_variants.append(
+                code_template.format_template(
+                    templates.enum_match_variant,
+                    enum_name=enum_name,
+                    variant_name=variant_name,
+                    variant_value=str(variant_value),
+                )
+            )
+
+    return code_template.format_template(
+        templates.enum_definition,
+        enum_name=enum_name,
+        underlying_type=underlying_type,
+        enum_variants="".join(enum_variants),
+        enum_match_variants="".join(enum_match_variants),
+        enum_aliases="".join(enum_aliases),
+    )
 
 
 def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
@@ -376,6 +435,32 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
                     templates.struct_mut_field_accessor,
                     field_name=field_name,
                     type_name=source_name.replace(".", "::"),
+                    byte_offset=str(byte_offset),
+                    byte_length=str(byte_length),
+                )
+            )
+        elif referenced_type.has_field("enumeration"):
+            bits = byte_length * 8
+            if field.type.has_field("size_in_bits"):
+                bits = ir_util.constant_value(field.type.size_in_bits)
+            field_accessors.append(
+                code_template.format_template(
+                    templates.enum_field_accessor,
+                    field_name=field_name,
+                    enum_name=source_name.replace(".", "::"),
+                    bits=str(bits),
+                    byte_order=byte_order,
+                    byte_offset=str(byte_offset),
+                    byte_length=str(byte_length),
+                )
+            )
+            mut_field_accessors.append(
+                code_template.format_template(
+                    templates.enum_mut_field_accessor,
+                    field_name=field_name,
+                    enum_name=source_name.replace(".", "::"),
+                    bits=str(bits),
+                    byte_order=byte_order,
                     byte_offset=str(byte_offset),
                     byte_length=str(byte_length),
                 )
