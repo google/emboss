@@ -251,12 +251,61 @@ def _generate_enum(type_ir, ir, module, templates, diagnostics) -> str:
     )
 
 
+def _generate_expression(expr, ir, module, generated_fields, templates, self_ref="self"):
+    if ir_util.is_constant(expr):
+        return str(ir_util.constant_value(expr))
+        
+    if expr.has_field("boolean_constant"):
+        return "true" if expr.boolean_constant.value else "false"
+
+    if expr.has_field("field_reference"):
+        if len(expr.field_reference.path) > 1:
+            return None
+        ref_name = expr.field_reference.path[0].canonical_name.object_path[-1]
+        if ref_name not in generated_fields:
+            return None
+        return code_template.format_template(templates.expr_field_reference, self_ref=self_ref, field_name=ref_name)
+
+    if expr.has_field("function"):
+        func = expr.function.function
+        args = []
+        for a in expr.function.args:
+            arg_str = _generate_expression(a, ir, module, generated_fields, templates, self_ref)
+            if arg_str is None:
+                return None
+            args.append(arg_str)
+            
+        if func == ir_data.FunctionMapping.ADDITION.value:
+            return code_template.format_template(templates.expr_addition, left=args[0], right=args[1])
+        if func == ir_data.FunctionMapping.SUBTRACTION.value:
+            return code_template.format_template(templates.expr_subtraction, left=args[0], right=args[1])
+        if func == ir_data.FunctionMapping.MULTIPLICATION.value:
+            return code_template.format_template(templates.expr_multiplication, left=args[0], right=args[1])
+        if func == ir_data.FunctionMapping.MAXIMUM.value:
+            return code_template.format_template(templates.expr_maximum, left=args[0], right=args[1])
+        if func == ir_data.FunctionMapping.MINIMUM.value:
+            return code_template.format_template(templates.expr_minimum, left=args[0], right=args[1])
+        if func == ir_data.FunctionMapping.CHOICE.value:
+            return code_template.format_template(templates.expr_choice, cond=args[0], true_branch=args[1], false_branch=args[2])
+
+        return None
+    return None
+
+
 def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
     struct_name = type_ir.name.name.text
     field_accessors = []
     mut_field_accessors = []
+    generated_fields = set()
 
-    for field in type_ir.structure.field:
+    fields_to_process = []
+    if type_ir.structure.fields_in_dependency_order:
+        for idx in type_ir.structure.fields_in_dependency_order:
+            fields_to_process.append(type_ir.structure.field[idx])
+    else:
+        fields_to_process = type_ir.structure.field
+
+    for field in fields_to_process:
         field_name = field.name.name.text
 
         # Skip synthetic fields like $size_in_bytes for now
@@ -320,15 +369,17 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
             )
             continue
 
-        if not ir_util.is_constant(field.location.start) or not ir_util.is_constant(
-            field.location.size
-        ):
+        byte_offset_expr = _generate_expression(field.location.start, ir, module, generated_fields, templates)
+        byte_length_expr = _generate_expression(field.location.size, ir, module, generated_fields, templates)
+
+        if byte_offset_expr is None or byte_length_expr is None:
+            reason = "offset" if byte_offset_expr is None else "size"
             diagnostics.append(
                 [
                     error.warn(
                         module.source_file_name,
                         field.source_location,
-                        f"Non-constant size or offset is not yet supported in this backend. Field '{field_name}' will be omitted.",
+                        f"Non-constant {reason} relies on unsupported expression or omitted field. Field '{field_name}' will be omitted.",
                     )
                 ]
             )
@@ -374,8 +425,13 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
         else:
             byte_order = "Null"
 
-        byte_offset = ir_util.constant_value(field.location.start)
-        byte_length = ir_util.constant_value(field.location.size)
+        byte_offset = byte_offset_expr
+        byte_length = byte_length_expr
+        
+        if ir_util.is_constant(field.location.size):
+            const_byte_length = ir_util.constant_value(field.location.size)
+        else:
+            const_byte_length = 0
 
         referenced_type = ir_util.find_object(field.type.atomic_type.reference, ir)
 
@@ -394,7 +450,7 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
             continue
 
         if referenced_type.has_field("external"):
-            bits = byte_length * 8
+            bits = const_byte_length * 8
             if field.type.has_field("size_in_bits"):
                 bits = ir_util.constant_value(field.type.size_in_bits)
 
@@ -440,7 +496,7 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
                 )
             )
         elif referenced_type.has_field("enumeration"):
-            bits = byte_length * 8
+            bits = const_byte_length * 8
             if field.type.has_field("size_in_bits"):
                 bits = ir_util.constant_value(field.type.size_in_bits)
             field_accessors.append(
@@ -480,6 +536,8 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
                 ]
             )
             continue
+            
+        generated_fields.add(field_name)
 
     return code_template.format_template(
         templates.struct_view,

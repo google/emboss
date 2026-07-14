@@ -83,3 +83,17 @@ rust_test(
         "//runtime/experimental/rust:emboss_runtime",
     ],
 )
+
+emboss_rust_library(
+    name = "dynamic_size_emb_rs",
+    deps = ["//testdata:dynamic_size_emboss_ir"],
+)
+
+rust_test(
+    name = "dynamic_size_test",
+    srcs = ["dynamic_size_test.rs"],
+    deps = [
+        ":dynamic_size_emb_rs",
+        "//runtime/experimental/rust:emboss_runtime",
+    ],
+)

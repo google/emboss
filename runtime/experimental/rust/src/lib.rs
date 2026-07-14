@@ -31,21 +31,21 @@ impl<T> Error<T> {
 
 pub trait Storage {
     type Sliced<'a>: Storage where Self: 'a;
-    fn slice(&self, offset: usize, length: usize) -> Self::Sliced<'_>;
+    fn slice(&self, offset: usize, length: usize) -> Result<Self::Sliced<'_>, Error>;
     fn try_read_byte(&self, offset: usize) -> Result<u8, Error>;
 }
 
 pub trait MutStorage: Storage {
     type SlicedMut<'a>: MutStorage where Self: 'a;
-    fn slice_mut(&mut self, offset: usize, length: usize) -> Self::SlicedMut<'_>;
+    fn slice_mut(&mut self, offset: usize, length: usize) -> Result<Self::SlicedMut<'_>, Error>;
     fn try_write_byte(&mut self, offset: usize, val: u8) -> Result<(), Error>;
 }
 
 impl<'a, T: ?Sized + AsRef<[u8]>> Storage for &'a mut T {
     type Sliced<'b> = Result<&'b [u8], Error> where Self: 'b;
-    fn slice(&self, offset: usize, length: usize) -> Self::Sliced<'_> {
+    fn slice(&self, offset: usize, length: usize) -> Result<Self::Sliced<'_>, Error> {
         let bytes = self.as_ref();
-        bytes.get(offset..offset + length).ok_or(Error::OutOfBounds)
+        Ok(bytes.get(offset..offset + length).ok_or(Error::OutOfBounds))
     }
     fn try_read_byte(&self, offset: usize) -> Result<u8, Error> {
         let bytes = self.as_ref();
@@ -55,9 +55,9 @@ impl<'a, T: ?Sized + AsRef<[u8]>> Storage for &'a mut T {
 
 impl<'a, T: ?Sized + AsRef<[u8]>> Storage for &'a T {
     type Sliced<'b> = Result<&'b [u8], Error> where Self: 'b;
-    fn slice(&self, offset: usize, length: usize) -> Self::Sliced<'_> {
+    fn slice(&self, offset: usize, length: usize) -> Result<Self::Sliced<'_>, Error> {
         let bytes = (*self).as_ref();
-        bytes.get(offset..offset + length).ok_or(Error::OutOfBounds)
+        Ok(bytes.get(offset..offset + length).ok_or(Error::OutOfBounds))
     }
     fn try_read_byte(&self, offset: usize) -> Result<u8, Error> {
         let bytes = self.as_ref();
@@ -67,9 +67,9 @@ impl<'a, T: ?Sized + AsRef<[u8]>> Storage for &'a T {
 
 impl<'a, T: ?Sized + AsMut<[u8]> + AsRef<[u8]>> MutStorage for &'a mut T {
     type SlicedMut<'b> = Result<&'b mut [u8], Error> where Self: 'b;
-    fn slice_mut(&mut self, offset: usize, length: usize) -> Self::SlicedMut<'_> {
+    fn slice_mut(&mut self, offset: usize, length: usize) -> Result<Self::SlicedMut<'_>, Error> {
         let bytes = self.as_mut();
-        bytes.get_mut(offset..offset + length).ok_or(Error::OutOfBounds)
+        Ok(bytes.get_mut(offset..offset + length).ok_or(Error::OutOfBounds))
     }
     fn try_write_byte(&mut self, offset: usize, val: u8) -> Result<(), Error> {
         let bytes = self.as_mut();
@@ -81,9 +81,12 @@ impl<'a, T: ?Sized + AsMut<[u8]> + AsRef<[u8]>> MutStorage for &'a mut T {
 
 impl<T: Storage> Storage for Result<T, Error> {
     type Sliced<'a> = Result<T::Sliced<'a>, Error> where Self: 'a;
-    fn slice(&self, offset: usize, length: usize) -> Self::Sliced<'_> {
+    fn slice(&self, offset: usize, length: usize) -> Result<Self::Sliced<'_>, Error> {
         match self {
-            Ok(s) => Ok(s.slice(offset, length)),
+            Ok(s) => match s.slice(offset, length) {
+                Ok(sliced) => Ok(Ok(sliced)),
+                Err(e) => Err(e),
+            },
             Err(e) => Err(*e),
         }
     }
@@ -97,10 +100,13 @@ impl<T: Storage> Storage for Result<T, Error> {
 
 impl<T: MutStorage> MutStorage for Result<T, Error> {
     type SlicedMut<'a> = Result<T::SlicedMut<'a>, Error> where Self: 'a;
-    fn slice_mut(&mut self, offset: usize, length: usize) -> Self::SlicedMut<'_> {
+    fn slice_mut(&mut self, offset: usize, length: usize) -> Result<Self::SlicedMut<'_>, Error> {
         match self {
-            Ok(s) => Ok(s.slice_mut(offset, length)),
-            Err(e) => Err(*e), // Forwards the previous failure transparently
+            Ok(s) => match s.slice_mut(offset, length) {
+                Ok(sliced) => Ok(Ok(sliced)),
+                Err(e) => Err(e),
+            },
+            Err(e) => Err(*e),
         }
     }
     fn try_write_byte(&mut self, offset: usize, val: u8) -> Result<(), Error> {
@@ -307,7 +313,7 @@ where
 {
     pub fn try_read(&self) -> Result<<SizeSelector<BITS> as SmallestInt>::T, Error> {
         let size_in_bytes = (BITS + 7) / 8;
-        let slice = self.storage.slice(0, size_in_bytes);
+        let slice = self.storage.slice(0, size_in_bytes)?;
         let raw = UInt::<BITS, E, S::Sliced<'_>>::new(slice).try_read()?;
         Ok(<SizeSelector<BITS> as SmallestInt>::sign_extend(raw, BITS))
     }
@@ -320,7 +326,7 @@ where
 {
     pub fn try_write(&mut self, val: <SizeSelector<BITS> as SmallestInt>::T) -> Result<(), Error> {
         let unsigned = <SizeSelector<BITS> as SmallestInt>::mask_to_unsigned(val, BITS);
-        let mut uint_view = UInt::<BITS, E, S::SlicedMut<'_>>::new(self.storage.slice_mut(0, (BITS + 7) / 8));
+        let mut uint_view = UInt::<BITS, E, S::SlicedMut<'_>>::new(self.storage.slice_mut(0, (BITS + 7) / 8)?);
         uint_view.try_write(unsigned)
     }
 }

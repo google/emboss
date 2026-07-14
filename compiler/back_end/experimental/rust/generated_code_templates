@@ -45,23 +45,59 @@ ${mut_field_accessors}
 }
 
 // ** external_field_accessor ** //
-    pub fn ${field_name}(&self) -> ${type_name}<${bits}, emboss_runtime::${byte_order}, S::Sliced<'_>> {
-        ${type_name}::<${bits}, emboss_runtime::${byte_order}, S::Sliced<'_>>::new(self.storage.slice(${byte_offset}, ${byte_length}))
+    pub fn ${field_name}(&self) -> ${type_name}<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>> {
+        let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
+            let offset = ${byte_offset};
+            let len = ${byte_length};
+            core::result::Result::Ok((offset, len))
+        })();
+        let storage = match offset_res {
+            core::result::Result::Ok((offset, len)) => self.storage.slice(offset, len),
+            core::result::Result::Err(e) => core::result::Result::Err(e),
+        };
+        ${type_name}::<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>>::new(storage)
     }
 
 // ** external_mut_field_accessor ** //
-    pub fn ${field_name}(&mut self) -> ${type_name}<${bits}, emboss_runtime::${byte_order}, S::SlicedMut<'_>> {
-        ${type_name}::<${bits}, emboss_runtime::${byte_order}, S::SlicedMut<'_>>::new(self.storage.slice_mut(${byte_offset}, ${byte_length}))
+    pub fn ${field_name}(&mut self) -> ${type_name}<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>> {
+        let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
+            let offset = ${byte_offset};
+            let len = ${byte_length};
+            core::result::Result::Ok((offset, len))
+        })();
+        let storage = match offset_res {
+            core::result::Result::Ok((offset, len)) => self.storage.slice_mut(offset, len),
+            core::result::Result::Err(e) => core::result::Result::Err(e),
+        };
+        ${type_name}::<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>>::new(storage)
     }
 
 // ** struct_field_accessor ** //
-    pub fn ${field_name}(&self) -> ${type_name}<S::Sliced<'_>> {
-        ${type_name}::new(self.storage.slice(${byte_offset}, ${byte_length}))
+    pub fn ${field_name}(&self) -> ${type_name}<core::result::Result<S::Sliced<'_>, emboss_runtime::Error>> {
+        let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
+            let offset = ${byte_offset};
+            let len = ${byte_length};
+            core::result::Result::Ok((offset, len))
+        })();
+        let storage = match offset_res {
+            core::result::Result::Ok((offset, len)) => self.storage.slice(offset, len),
+            core::result::Result::Err(e) => core::result::Result::Err(e),
+        };
+        ${type_name}::new(storage)
     }
 
 // ** struct_mut_field_accessor ** //
-    pub fn ${field_name}(&mut self) -> ${type_name}Mut<S::SlicedMut<'_>> {
-        ${type_name}Mut::new(self.storage.slice_mut(${byte_offset}, ${byte_length}))
+    pub fn ${field_name}(&mut self) -> ${type_name}Mut<core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>> {
+        let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
+            let offset = ${byte_offset};
+            let len = ${byte_length};
+            core::result::Result::Ok((offset, len))
+        })();
+        let storage = match offset_res {
+            core::result::Result::Ok((offset, len)) => self.storage.slice_mut(offset, len),
+            core::result::Result::Err(e) => core::result::Result::Err(e),
+        };
+        ${type_name}Mut::new(storage)
     }
 
 // ** enum_definition ** //
@@ -103,13 +139,55 @@ ${enum_aliases}
 // ** enum_match_variant ** //
             ${variant_value} => Ok(${enum_name}::${variant_name}),
 
+// ** expr_addition ** //
+(${left} + ${right})
+
+// ** expr_subtraction ** //
+(${left} - ${right})
+
+// ** expr_multiplication ** //
+(${left} * ${right})
+
+// ** expr_constant ** //
+${constant_value}
+
+// ** expr_field_reference ** //
+({ let val = ${self_ref}.${field_name}().try_read()?; val as usize })
+
+// ** expr_maximum ** //
+core::cmp::max(${left}, ${right})
+
+// ** expr_minimum ** //
+core::cmp::min(${left}, ${right})
+
+// ** expr_choice ** //
+(if ${condition} { ${true_value} } else { ${false_value} })
+
+
 // ** enum_field_accessor ** //
-    pub fn ${field_name}(&self) -> emboss_runtime::EnumView<${enum_name}, emboss_runtime::UInt<${bits}, emboss_runtime::${byte_order}, S::Sliced<'_>>> {
-        emboss_runtime::EnumView::new(emboss_runtime::UInt::new(self.storage.slice(${byte_offset}, ${byte_length})))
+    pub fn ${field_name}(&self) -> emboss_runtime::EnumView<${enum_name}, emboss_runtime::UInt<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>>> {
+        let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
+            let offset = ${byte_offset};
+            let len = ${byte_length};
+            core::result::Result::Ok((offset, len))
+        })();
+        let storage = match offset_res {
+            core::result::Result::Ok((offset, len)) => self.storage.slice(offset, len),
+            core::result::Result::Err(e) => core::result::Result::Err(e),
+        };
+        emboss_runtime::EnumView::new(emboss_runtime::UInt::new(storage))
     }
 
 // ** enum_mut_field_accessor ** //
-    pub fn ${field_name}(&mut self) -> emboss_runtime::EnumViewMut<${enum_name}, emboss_runtime::UInt<${bits}, emboss_runtime::${byte_order}, S::SlicedMut<'_>>> {
-        emboss_runtime::EnumViewMut::new(emboss_runtime::UInt::new(self.storage.slice_mut(${byte_offset}, ${byte_length})))
+    pub fn ${field_name}(&mut self) -> emboss_runtime::EnumViewMut<${enum_name}, emboss_runtime::UInt<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>>> {
+        let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
+            let offset = ${byte_offset};
+            let len = ${byte_length};
+            core::result::Result::Ok((offset, len))
+        })();
+        let storage = match offset_res {
+            core::result::Result::Ok((offset, len)) => self.storage.slice_mut(offset, len),
+            core::result::Result::Err(e) => core::result::Result::Err(e),
+        };
+        emboss_runtime::EnumViewMut::new(emboss_runtime::UInt::new(storage))
     }
-
