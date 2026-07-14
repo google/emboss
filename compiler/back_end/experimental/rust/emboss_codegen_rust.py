@@ -357,6 +357,16 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
                     byte_length=str(byte_length),
                 )
             )
+        elif referenced_type.has_field("structure"):
+            field_accessors.append(
+                code_template.format_template(
+                    templates.struct_field_accessor,
+                    field_name=field_name,
+                    type_name=source_name.replace(".", "::"),
+                    byte_offset=str(byte_offset),
+                    byte_length=str(byte_length),
+                )
+            )
         else:
             diagnostics.append(
                 [

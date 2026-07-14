@@ -37,3 +37,8 @@ ${field_accessors}
     pub fn ${field_name}(&self) -> ${type_name}<${bits}, S::Sliced> {
         ${type_name}::<${bits}, S::Sliced>::new(self.storage.slice(${byte_offset}, ${byte_length}))
     }
+
+// ** struct_field_accessor ** //
+    pub fn ${field_name}(&self) -> ${type_name}<S::Sliced> {
+        ${type_name}::new(self.storage.slice(${byte_offset}, ${byte_length}))
+    }

@@ -28,3 +28,17 @@ rust_test(
         "//runtime/experimental/rust:emboss_runtime",
     ],
 )
+
+emboss_rust_library(
+    name = "nested_structure_emb_rs",
+    deps = ["//testdata:nested_structure_emboss_ir"],
+)
+
+rust_test(
+    name = "nested_structure_test",
+    srcs = ["nested_structure_test.rs"],
+    deps = [
+        ":nested_structure_emb_rs",
+        "//runtime/experimental/rust:emboss_runtime",
+    ],
+)
