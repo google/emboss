@@ -115,6 +115,32 @@ def generate_code(ir: ir_data.EmbossIr) -> tuple[Source, Diagnostics]:
     return rust_source, diagnostics
 
 
+def _is_type_omitted(type_ir) -> bool:
+    if type_ir.has_field("structure") and type_ir.addressable_unit != 8:
+        return True
+    return False
+
+def _resolve_type(reference, ir):
+    target_module_file = reference.canonical_name.module_file
+    target_object_path = reference.canonical_name.object_path
+    
+    for mod in ir.module:
+        if mod.source_file_name == target_module_file:
+            for type_def in mod.type:
+                if type_def.name.name.text == target_object_path[0]:
+                    current = type_def
+                    for path_element in target_object_path[1:]:
+                        found = False
+                        for nested in current.subtype:
+                            if nested.name.name.text == path_element:
+                                current = nested
+                                found = True
+                                break
+                        if not found:
+                            return None
+                    return current
+    return None
+
 def _generate_type(type_ir, ir, module, templates, diagnostics) -> str:
     definitions = []
 
@@ -452,6 +478,19 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
                         module.source_file_name,
                         field.source_location,
                         f"Type '{source_name}' is not yet supported in this backend. Field '{field_name}' will be omitted.",
+                    )
+                ]
+            )
+            continue
+
+        target_type = _resolve_type(base_type.atomic_type.reference, ir)
+        if target_type and _is_type_omitted(target_type):
+            diagnostics.append(
+                [
+                    error.warn(
+                        module.source_file_name,
+                        field.source_location,
+                        f"Target type '{target_type.name.name.text}' was omitted because it is a bit-level struct, which is unsupported. Field '{field_name}' will be omitted.",
                     )
                 ]
             )
