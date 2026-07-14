@@ -46,6 +46,34 @@ impl<S: MutStorage> ${struct_name}Mut<S> {
 ${mut_field_accessors}
 }
 
+// ** bit_external_field_accessor ** //
+    pub fn ${field_name}(&self) -> emboss_runtime::Bit${type_name}<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>> {
+        let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
+            let offset = 0;
+            let len = ${byte_length}; // Total struct size in bytes
+            core::result::Result::Ok((offset, len))
+        })();
+        let storage = match offset_res {
+            core::result::Result::Ok((offset, len)) => self.storage.slice(offset, len),
+            core::result::Result::Err(e) => core::result::Result::Err(e),
+        };
+        emboss_runtime::Bit${type_name}::<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>>::new(storage)
+    }
+
+// ** bit_external_mut_field_accessor ** //
+    pub fn ${field_name}(&mut self) -> emboss_runtime::Bit${type_name}<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>> {
+        let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
+            let offset = 0;
+            let len = ${byte_length};
+            core::result::Result::Ok((offset, len))
+        })();
+        let storage = match offset_res {
+            core::result::Result::Ok((offset, len)) => self.storage.slice_mut(offset, len),
+            core::result::Result::Err(e) => core::result::Result::Err(e),
+        };
+        emboss_runtime::Bit${type_name}::<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>>::new(storage)
+    }
+
 // ** external_field_accessor ** //
     pub fn ${field_name}(&self) -> ${type_name}<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>> {
         let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {

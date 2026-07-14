@@ -184,6 +184,7 @@ impl_decode_uint!(u64);
 
 pub trait SmallestUInt {
     type T;
+    fn from_u64(val: u64) -> Self::T;
 }
 pub struct SizeSelector<const BITS: usize>;
 
@@ -192,6 +193,8 @@ macro_rules! impl_smallest_uint {
         $(
             impl SmallestUInt for SizeSelector<$bits> {
                 type T = $type;
+                #[inline]
+                fn from_u64(val: u64) -> Self::T { val as $type }
             }
         )+
     };
@@ -450,3 +453,92 @@ where
         T::try_from_raw(raw)
     }
 }
+
+pub struct BitUInt<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> {
+    storage: S,
+    _marker: core::marker::PhantomData<E>,
+}
+
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> BitUInt<BITS, BIT_OFFSET, E, S> {
+    pub fn new(storage: S) -> Self {
+        Self {
+            storage,
+            _marker: core::marker::PhantomData,
+        }
+    }
+}
+
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> BitUInt<BITS, BIT_OFFSET, E, S>
+where
+    SizeSelector<BITS>: SmallestUInt,
+{
+    pub fn try_read(&self) -> Result<<SizeSelector<BITS> as SmallestUInt>::T, Error> {
+        let mut val: u64 = 0;
+        let first_byte = BIT_OFFSET / 8;
+        let last_byte = (BIT_OFFSET + BITS - 1) / 8;
+
+        for i in first_byte..=last_byte {
+            let byte_val = self.storage.try_read_byte(i)? as u64;
+            let bits_from_byte_offset = i * 8;
+
+            if bits_from_byte_offset >= BIT_OFFSET {
+                let shift = bits_from_byte_offset - BIT_OFFSET;
+                if shift < 64 {
+                    val |= byte_val << shift;
+                }
+            } else {
+                let shift = BIT_OFFSET - bits_from_byte_offset;
+                val |= byte_val >> shift;
+            }
+        }
+
+        let mask = if BITS == 64 { !0 } else { (1 << BITS) - 1 };
+        Ok(<SizeSelector<BITS> as SmallestUInt>::from_u64(val & mask))
+    }
+}
+
+pub struct BitInt<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> {
+    storage: S,
+    _marker: core::marker::PhantomData<E>,
+}
+
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> BitInt<BITS, BIT_OFFSET, E, S> {
+    pub fn new(storage: S) -> Self {
+        Self {
+            storage,
+            _marker: core::marker::PhantomData,
+        }
+    }
+}
+
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> BitInt<BITS, BIT_OFFSET, E, S>
+where
+    SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
+{
+    pub fn try_read(&self) -> Result<<SizeSelector<BITS> as SmallestInt>::T, Error> {
+        let uint_view = BitUInt::<BITS, BIT_OFFSET, E, S::Sliced<'_>>::new(self.storage.slice(0, (BIT_OFFSET + BITS + 7) / 8)?);
+        let raw = uint_view.try_read()?;
+        Ok(<SizeSelector<BITS> as SmallestInt>::sign_extend(raw, BITS))
+    }
+}
+
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> TryRead for BitUInt<BITS, BIT_OFFSET, E, S>
+where
+    SizeSelector<BITS>: SmallestUInt,
+{
+    type ReadValue = <SizeSelector<BITS> as SmallestUInt>::T;
+    fn try_read(&self) -> Result<Self::ReadValue, Error> {
+        self.try_read()
+    }
+}
+
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> TryRead for BitInt<BITS, BIT_OFFSET, E, S>
+where
+    SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
+{
+    type ReadValue = <SizeSelector<BITS> as SmallestInt>::T;
+    fn try_read(&self) -> Result<Self::ReadValue, Error> {
+        self.try_read()
+    }
+}
+
