@@ -32,7 +32,7 @@ Diagnostics = list[list[error._Message]]
 ErrorList = list[list[error._Message]]
 
 _TEMPLATE_FILE_NAME = "generated_code_templates"
-_UNSUPPORTED_PRELUDE_TYPES = {"Int", "Bcd", "Flag", "Float"}
+_UNSUPPORTED_PRELUDE_TYPES = {"Bcd", "Flag", "Float"}
 _SYNTHETIC_ATTRIBUTES = {"expected_back_ends", "fixed_size_in_bits"}
 
 

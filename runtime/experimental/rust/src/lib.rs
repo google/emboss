@@ -19,27 +19,27 @@ pub enum Error {
     OutOfBounds,
 }
 
-pub trait Storage: Clone {
-    type Sliced: Storage;
-    fn slice(&self, offset: usize, length: usize) -> Self::Sliced;
+pub trait Storage {
+    type Sliced<'a>: Storage where Self: 'a;
+    fn slice(&self, offset: usize, length: usize) -> Self::Sliced<'_>;
     fn try_read_byte(&self, offset: usize) -> Result<u8, Error>;
 }
 
 impl<'a, T: ?Sized + AsRef<[u8]>> Storage for &'a T {
-    type Sliced = Result<&'a [u8], Error>;
-    fn slice(&self, offset: usize, length: usize) -> Self::Sliced {
+    type Sliced<'b> = Result<&'b [u8], Error> where Self: 'b;
+    fn slice(&self, offset: usize, length: usize) -> Self::Sliced<'_> {
         let bytes = (*self).as_ref();
         bytes.get(offset..offset + length).ok_or(Error::OutOfBounds)
     }
     fn try_read_byte(&self, offset: usize) -> Result<u8, Error> {
-        let bytes = (*self).as_ref();
+        let bytes = self.as_ref();
         bytes.get(offset).copied().ok_or(Error::OutOfBounds)
     }
 }
 
 impl<T: Storage> Storage for Result<T, Error> {
-    type Sliced = Result<T::Sliced, Error>;
-    fn slice(&self, offset: usize, length: usize) -> Self::Sliced {
+    type Sliced<'a> = Result<T::Sliced<'a>, Error> where Self: 'a;
+    fn slice(&self, offset: usize, length: usize) -> Self::Sliced<'_> {
         match self {
             Ok(s) => Ok(s.slice(offset, length)),
             Err(e) => Err(*e),
@@ -137,23 +137,87 @@ pub struct UInt<const BITS: usize, E: ByteOrder, S: Storage> {
     _marker: core::marker::PhantomData<E>,
 }
 
-impl<const BITS: usize, E: ByteOrder, S: Storage> UInt<BITS, E, S>
-where
-    SizeSelector<BITS>: SmallestUInt,
-    <SizeSelector<BITS> as SmallestUInt>::T: DecodeFromStorage<E>,
-{
+impl<const BITS: usize, E: ByteOrder, S: Storage> UInt<BITS, E, S> {
     pub fn new(storage: S) -> Self {
         Self {
             storage,
             _marker: core::marker::PhantomData,
         }
     }
+}
 
+impl<const BITS: usize, E: ByteOrder, S: Storage> UInt<BITS, E, S>
+where
+    SizeSelector<BITS>: SmallestUInt,
+    <SizeSelector<BITS> as SmallestUInt>::T: DecodeFromStorage<E>,
+{
     pub fn try_read(&self) -> Result<<SizeSelector<BITS> as SmallestUInt>::T, Error> {
         let size_in_bytes = (BITS + 7) / 8;
         <<SizeSelector<BITS> as SmallestUInt>::T as DecodeFromStorage<E>>::decode(
             &self.storage,
             size_in_bytes,
         )
+    }
+}
+
+pub trait SmallestInt {
+    type T;
+    type U;
+    fn sign_extend(raw: Self::U, bits: usize) -> Self::T;
+}
+
+macro_rules! impl_smallest_int {
+    ($type:ty, $utype:ty, $($bits:expr),+) => {
+        $(
+            impl SmallestInt for SizeSelector<$bits> {
+                type T = $type;
+                type U = $utype;
+                #[inline]
+                fn sign_extend(raw: Self::U, bits: usize) -> Self::T {
+                    let shift_amount = (core::mem::size_of::<$type>() * 8) - bits;
+                    let sign_extended = (raw as $type) << shift_amount;
+                    sign_extended >> shift_amount
+                }
+            }
+        )+
+    };
+}
+
+impl_smallest_int!(i8, u8, 1, 2, 3, 4, 5, 6, 7, 8);
+impl_smallest_int!(i16, u16, 9, 10, 11, 12, 13, 14, 15, 16);
+impl_smallest_int!(
+    i32, u32, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
+);
+impl_smallest_int!(
+    i64, u64, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48
+);
+impl_smallest_int!(
+    i64, u64, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64
+);
+
+pub struct Int<const BITS: usize, E: ByteOrder, S: Storage> {
+    storage: S,
+    _marker: core::marker::PhantomData<E>,
+}
+
+impl<const BITS: usize, E: ByteOrder, S: Storage> Int<BITS, E, S> {
+    pub fn new(storage: S) -> Self {
+        Self {
+            storage,
+            _marker: core::marker::PhantomData,
+        }
+    }
+}
+
+impl<const BITS: usize, E: ByteOrder, S: Storage> Int<BITS, E, S>
+where
+    SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
+    <SizeSelector<BITS> as SmallestUInt>::T: DecodeFromStorage<E>,
+{
+    pub fn try_read(&self) -> Result<<SizeSelector<BITS> as SmallestInt>::T, Error> {
+        let size_in_bytes = (BITS + 7) / 8;
+        let slice = self.storage.slice(0, size_in_bytes);
+        let raw = UInt::<BITS, E, S::Sliced<'_>>::new(slice).try_read()?;
+        Ok(<SizeSelector<BITS> as SmallestInt>::sign_extend(raw, BITS))
     }
 }

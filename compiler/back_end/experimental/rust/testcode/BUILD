@@ -56,3 +56,16 @@ rust_test(
         "//runtime/experimental/rust:emboss_runtime",
     ],
 )
+
+emboss_rust_library(
+    name = "int_sizes_emb_rs",
+    deps = ["//testdata:int_sizes_emboss_ir"],
+)
+
+rust_test(
+    name = "int_sizes_test",
+    srcs = ["int_sizes_test.rs"],
+    deps = [
+        ":int_sizes_emb_rs",
+    ],
+)
