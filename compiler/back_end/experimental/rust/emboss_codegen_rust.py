@@ -292,10 +292,96 @@ def _generate_expression(expr, ir, module, generated_fields, templates, self_ref
     return None
 
 
+def _generate_array_field(
+    field,
+    field_name,
+    struct_name,
+    base_type,
+    ir,
+    byte_offset,
+    byte_length,
+    const_byte_length,
+    referenced_type,
+    source_name,
+    byte_order,
+    templates,
+    field_accessors,
+    mut_field_accessors,
+    generated_nested_types,
+):
+    camel_case_field = "".join(word.capitalize() for word in field_name.split("_"))
+    view_name = struct_name + "_" + camel_case_field + "_ArrayView"
+
+    element_size_in_bits = ir_util.fixed_size_of_type_in_bits(base_type, ir)
+    if element_size_in_bits is None or element_size_in_bits % 8 != 0:
+        return
+    element_size_bytes = element_size_in_bits // 8
+
+    bits = const_byte_length * 8
+    if base_type.has_field("size_in_bits"):
+        bits = ir_util.constant_value(base_type.size_in_bits)
+        
+    storage_type = "S::Sliced<'_>"
+    storage_type_mut = "S::SlicedMut<'_>"
+
+    if referenced_type.has_field("external"):
+        element_type = code_template.format_template(templates.array_element_type_external, source_name=source_name, bits=str(bits), byte_order=byte_order, storage_type=storage_type)
+        element_type_mut = code_template.format_template(templates.array_element_type_external, source_name=source_name, bits=str(bits), byte_order=byte_order, storage_type=storage_type_mut)
+        element_constructor = code_template.format_template(templates.array_element_constructor_external, source_name=source_name)
+        element_constructor_mut = code_template.format_template(templates.array_element_constructor_external, source_name=source_name)
+    elif referenced_type.has_field("structure"):
+        struct_clean_name = source_name.replace(".", "::")
+        element_type = code_template.format_template(templates.array_element_type_structure, struct_clean_name=struct_clean_name, storage_type=storage_type)
+        element_type_mut = code_template.format_template(templates.array_element_type_structure, struct_clean_name=struct_clean_name + "Mut", storage_type=storage_type_mut)
+        element_constructor = code_template.format_template(templates.array_element_constructor_structure, struct_clean_name=struct_clean_name)
+        element_constructor_mut = code_template.format_template(templates.array_element_constructor_structure, struct_clean_name=struct_clean_name + "Mut")
+    elif referenced_type.has_field("enumeration"):
+        enum_clean_name = source_name.replace(".", "::")
+        element_type = code_template.format_template(templates.array_element_type_enumeration, enum_clean_name=enum_clean_name, bits=str(bits), byte_order=byte_order, storage_type=storage_type)
+        element_type_mut = code_template.format_template(templates.array_element_type_mut_enumeration, enum_clean_name=enum_clean_name, bits=str(bits), byte_order=byte_order, storage_type=storage_type_mut)
+        element_constructor = code_template.format_template(templates.array_element_constructor_enumeration)
+        element_constructor_mut = code_template.format_template(templates.array_element_constructor_mut_enumeration)
+    else:
+        return
+
+    field_accessors.append(
+        code_template.format_template(
+            templates.array_field_accessor,
+            field_name=field_name,
+            view_name=view_name,
+            element_size=str(element_size_bytes),
+            byte_offset=str(byte_offset),
+            byte_length=str(byte_length),
+        )
+    )
+    mut_field_accessors.append(
+        code_template.format_template(
+            templates.array_mut_field_accessor,
+            field_name=field_name,
+            view_name=view_name,
+            element_size=str(element_size_bytes),
+            byte_offset=str(byte_offset),
+            byte_length=str(byte_length),
+        )
+    )
+    generated_nested_types.append(
+        code_template.format_template(
+            templates.array_view_struct,
+            view_name=view_name,
+            element_size=str(element_size_bytes),
+            element_type=element_type,
+            element_constructor=element_constructor,
+            element_type_mut=element_type_mut,
+            element_constructor_mut=element_constructor_mut,
+        )
+    )
+
+
 def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
     struct_name = type_ir.name.name.text
     field_accessors = []
     mut_field_accessors = []
+    generated_nested_types = []
     generated_fields = set()
 
     fields_to_process = []
@@ -326,7 +412,7 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
                 )
                 continue
 
-        if not field.has_field("type") or not field.type.has_field("atomic_type"):
+        if not field.has_field("type") or not (field.type.has_field("atomic_type") or field.type.has_field("array_type")):
             loc = (
                 field.type.source_location
                 if field.has_field("type")
@@ -337,13 +423,31 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
                     error.warn(
                         module.source_file_name,
                         loc,
-                        f"Non-atomic types are not yet supported in this backend. Field '{field_name}' will be omitted.",
+                        f"Non-atomic and non-array types are not yet supported in this backend. Field '{field_name}' will be omitted.",
                     )
                 ]
             )
             continue
 
-        source_name = field.type.atomic_type.reference.source_name[0].text
+        is_array = field.type.has_field("array_type")
+        if is_array:
+            base_type = field.type.array_type.base_type
+        else:
+            base_type = field.type
+
+        if not base_type.has_field("atomic_type"):
+            diagnostics.append(
+                [
+                    error.warn(
+                        module.source_file_name,
+                        field.source_location,
+                        f"Arrays of non-atomic types (e.g. multi-dimensional arrays) are not yet supported in this backend. Field '{field_name}' will be omitted.",
+                    )
+                ]
+            )
+            continue
+
+        source_name = base_type.atomic_type.reference.source_name[0].text
 
         if source_name in _UNSUPPORTED_PRELUDE_TYPES:
             diagnostics.append(
@@ -433,7 +537,7 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
         else:
             const_byte_length = 0
 
-        referenced_type = ir_util.find_object(field.type.atomic_type.reference, ir)
+        referenced_type = ir_util.find_object(base_type.atomic_type.reference, ir)
 
         if referenced_type not in module.type and not referenced_type.has_field(
             "external"
@@ -449,102 +553,123 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics) -> str:
             )
             continue
 
-        if referenced_type.has_field("external"):
-            bits = const_byte_length * 8
-            if field.type.has_field("size_in_bits"):
-                bits = ir_util.constant_value(field.type.size_in_bits)
-
-            field_accessors.append(
-                code_template.format_template(
-                    templates.external_field_accessor,
-                    field_name=field_name,
-                    type_name=source_name,
-                    bits=str(bits),
-                    byte_order=byte_order,
-                    byte_offset=str(byte_offset),
-                    byte_length=str(byte_length),
-                )
-            )
-            mut_field_accessors.append(
-                code_template.format_template(
-                    templates.external_mut_field_accessor,
-                    field_name=field_name,
-                    type_name=source_name,
-                    bits=str(bits),
-                    byte_order=byte_order,
-                    byte_offset=str(byte_offset),
-                    byte_length=str(byte_length),
-                )
-            )
-        elif referenced_type.has_field("structure"):
-            field_accessors.append(
-                code_template.format_template(
-                    templates.struct_field_accessor,
-                    field_name=field_name,
-                    type_name=source_name.replace(".", "::"),
-                    byte_offset=str(byte_offset),
-                    byte_length=str(byte_length),
-                )
-            )
-            mut_field_accessors.append(
-                code_template.format_template(
-                    templates.struct_mut_field_accessor,
-                    field_name=field_name,
-                    type_name=source_name.replace(".", "::"),
-                    byte_offset=str(byte_offset),
-                    byte_length=str(byte_length),
-                )
-            )
-        elif referenced_type.has_field("enumeration"):
-            bits = const_byte_length * 8
-            if field.type.has_field("size_in_bits"):
-                bits = ir_util.constant_value(field.type.size_in_bits)
-            field_accessors.append(
-                code_template.format_template(
-                    templates.enum_field_accessor,
-                    field_name=field_name,
-                    enum_name=source_name.replace(".", "::"),
-                    bits=str(bits),
-                    byte_order=byte_order,
-                    byte_offset=str(byte_offset),
-                    byte_length=str(byte_length),
-                )
-            )
-            mut_field_accessors.append(
-                code_template.format_template(
-                    templates.enum_mut_field_accessor,
-                    field_name=field_name,
-                    enum_name=source_name.replace(".", "::"),
-                    bits=str(bits),
-                    byte_order=byte_order,
-                    byte_offset=str(byte_offset),
-                    byte_length=str(byte_length),
-                )
+        if is_array:
+            # Generate a unique struct for each array field.
+            _generate_array_field(
+                field,
+                field_name,
+                struct_name,
+                base_type,
+                ir,
+                byte_offset,
+                byte_length,
+                const_byte_length,
+                referenced_type,
+                source_name,
+                byte_order,
+                templates,
+                field_accessors,
+                mut_field_accessors,
+                generated_nested_types,
             )
         else:
-            diagnostics.append(
-                [
-                    error.warn(
-                        module.source_file_name,
-                        (
-                            field.type.source_location
-                            if field.has_field("type")
-                            else field.source_location
-                        ),
-                        f"Target type variety is not yet supported in this backend. Field '{field_name}' will be omitted.",
+            if referenced_type.has_field("external"):
+                bits = const_byte_length * 8
+                if field.type.has_field("size_in_bits"):
+                    bits = ir_util.constant_value(field.type.size_in_bits)
+
+                field_accessors.append(
+                    code_template.format_template(
+                        templates.external_field_accessor,
+                        field_name=field_name,
+                        type_name=source_name,
+                        bits=str(bits),
+                        byte_order=byte_order,
+                        byte_offset=str(byte_offset),
+                        byte_length=str(byte_length),
                     )
-                ]
-            )
-            continue
+                )
+                mut_field_accessors.append(
+                    code_template.format_template(
+                        templates.external_mut_field_accessor,
+                        field_name=field_name,
+                        type_name=source_name,
+                        bits=str(bits),
+                        byte_order=byte_order,
+                        byte_offset=str(byte_offset),
+                        byte_length=str(byte_length),
+                    )
+                )
+            elif referenced_type.has_field("structure"):
+                field_accessors.append(
+                    code_template.format_template(
+                        templates.struct_field_accessor,
+                        field_name=field_name,
+                        type_name=source_name.replace(".", "::"),
+                        byte_offset=str(byte_offset),
+                        byte_length=str(byte_length),
+                    )
+                )
+                mut_field_accessors.append(
+                    code_template.format_template(
+                        templates.struct_mut_field_accessor,
+                        field_name=field_name,
+                        type_name=source_name.replace(".", "::"),
+                        byte_offset=str(byte_offset),
+                        byte_length=str(byte_length),
+                    )
+                )
+            elif referenced_type.has_field("enumeration"):
+                bits = const_byte_length * 8
+                if field.type.has_field("size_in_bits"):
+                    bits = ir_util.constant_value(field.type.size_in_bits)
+                field_accessors.append(
+                    code_template.format_template(
+                        templates.enum_field_accessor,
+                        field_name=field_name,
+                        enum_name=source_name.replace(".", "::"),
+                        bits=str(bits),
+                        byte_order=byte_order,
+                        byte_offset=str(byte_offset),
+                        byte_length=str(byte_length),
+                    )
+                )
+                mut_field_accessors.append(
+                    code_template.format_template(
+                        templates.enum_mut_field_accessor,
+                        field_name=field_name,
+                        enum_name=source_name.replace(".", "::"),
+                        bits=str(bits),
+                        byte_order=byte_order,
+                        byte_offset=str(byte_offset),
+                        byte_length=str(byte_length),
+                    )
+                )
+            else:
+                diagnostics.append(
+                    [
+                        error.warn(
+                            module.source_file_name,
+                            (
+                                field.type.source_location
+                                if field.has_field("type")
+                                else field.source_location
+                            ),
+                            f"Target type variety is not yet supported in this backend. Field '{field_name}' will be omitted.",
+                        )
+                    ]
+                )
+                continue
             
         generated_fields.add(field_name)
 
-    return code_template.format_template(
+    main_struct_def = code_template.format_template(
         templates.struct_view,
         struct_name=struct_name,
         field_accessors="".join(field_accessors),
         mut_field_accessors="".join(mut_field_accessors),
     )
+    return "".join(generated_nested_types) + main_struct_def
 
 
 def generate_code_and_log_errors(

@@ -97,3 +97,17 @@ rust_test(
         "//runtime/experimental/rust:emboss_runtime",
     ],
 )
+
+emboss_rust_library(
+    name = "auto_array_size_emb_rs",
+    deps = ["//testdata:auto_array_size_emboss_ir"],
+)
+
+rust_test(
+    name = "auto_array_size_test",
+    srcs = ["auto_array_size_test.rs"],
+    deps = [
+        ":auto_array_size_emb_rs",
+        "//runtime/experimental/rust:emboss_runtime",
+    ],
+)
