@@ -27,6 +27,7 @@ There is also a convenience macro, `emboss_cc_library()`, which creates an
 load("@rules_cc//cc:find_cc_toolchain.bzl", "find_cc_toolchain", "use_cc_toolchain")
 load("@rules_cc//cc/common:cc_common.bzl", "cc_common")
 load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
+load("@rules_rust//rust:defs.bzl", "rust_library")
 
 def emboss_cc_library(name, srcs, deps = [], import_dirs = [], enable_enum_traits = True, **kwargs):
     """Constructs a C++ library from an .emb file.
@@ -273,3 +274,67 @@ cc_emboss_library = rule(
     },
     provides = [CcInfo, EmbossInfo],
 )
+
+def _rust_emboss_codegen_impl(ctx):
+    if len(ctx.attr.deps) != 1:
+        fail("`deps` attribute must contain exactly one label.", attr = "deps")
+    dep = ctx.attr.deps[0]
+    emboss_info = dep[EmbossInfo]
+
+    src = emboss_info.direct_source
+    out_file = ctx.actions.declare_file(src.basename + ".rs")
+
+    args = ctx.actions.args()
+    args.add("--input-file")
+    args.add_all(emboss_info.direct_ir)
+    args.add("--output-file")
+    args.add(out_file)
+
+    ctx.actions.run(
+        inputs = emboss_info.direct_ir,
+        outputs = [out_file],
+        executable = ctx.executable._emboss_rust_compiler,
+        arguments = [args],
+        mnemonic = "EmbossRust",
+    )
+
+    return [DefaultInfo(files = depset([out_file]))]
+
+_rust_emboss_codegen = rule(
+    implementation = _rust_emboss_codegen_impl,
+    attrs = {
+        "deps": attr.label_list(
+            providers = [EmbossInfo],
+            allow_rules = ["emboss_library"],
+            allow_files = False,
+        ),
+        "_emboss_rust_compiler": attr.label(
+            executable = True,
+            cfg = "exec",
+            default = Label("//compiler/back_end/experimental/rust:emboss_codegen_rust"),
+        ),
+    },
+)
+
+def emboss_rust_library(name, deps, rust_deps = [], **kwargs):
+    """Constructs a Rust library from an emboss_library target.
+
+    Args:
+      name: The name of the resulting rust_library.
+      deps: A list containing exactly one emboss_library dependency.
+      rust_deps: Dependencies to forward to the rust_library.
+      **kwargs: Additional arguments to pass to rust_library.
+    """
+    codegen_name = name + "_srcs"
+
+    _rust_emboss_codegen(
+        name = codegen_name,
+        deps = deps,
+    )
+
+    rust_library(
+        name = name,
+        srcs = [":" + codegen_name],
+        deps = rust_deps + ["//runtime/experimental/rust:emboss_runtime"],
+        **kwargs
+    )
