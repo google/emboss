@@ -32,7 +32,7 @@ Diagnostics = list[list[error._Message]]
 ErrorList = list[list[error._Message]]
 
 _TEMPLATE_FILE_NAME = "generated_code_templates"
-_UNSUPPORTED_PRELUDE_TYPES = {"Bcd", "Flag", "Float"}
+_UNSUPPORTED_PRELUDE_TYPES = {"Bcd", "Float"}
 _SYNTHETIC_ATTRIBUTES = {"expected_back_ends", "fixed_size_in_bits"}
 
 
@@ -445,6 +445,20 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
                 )
                 continue
                 
+            if field.read_transform.has_field("type") and field.read_transform.type.has_field("atomic_type"):
+                orig = [p.text for p in field.read_transform.type.atomic_type.reference.source_name]
+                if "::".join(orig) in _UNSUPPORTED_PRELUDE_TYPES:
+                    diagnostics.append(
+                        [
+                            error.warn(
+                                module.source_file_name,
+                                field.source_location,
+                                f"Virtual field '{field_name}' resolves to unsupported type. It will be omitted.",
+                            )
+                        ]
+                    )
+                    continue
+
             expr_str = _generate_expression(field.read_transform, ir, module, generated_fields, templates)
             if expr_str is None:
                 diagnostics.append(
@@ -462,20 +476,41 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
             
             if field.read_transform.has_field("field_reference") and field.read_transform.type.has_field("opaque"):
                 # opaque fields usually mean it's an alias to a struct/array view.
-                pass
+                # Since we don't map complex return types for aliases yet, skip properly.
+                diagnostics.append(
+                    [
+                        error.warn(
+                            module.source_file_name,
+                            field.source_location,
+                            f"Virtual field '{field_name}' aliasing a complex type is not yet supported. It will be omitted.",
+                        )
+                    ]
+                )
+                continue
             else:
-                field_accessors.append(code_template.format_template(
-                    templates.virtual_field_accessor,
-                    field_name=field_name,
-                    return_type=return_type,
-                    expression=expr_str,
-                ))
-                mut_field_accessors.append(code_template.format_template(
-                    templates.mut_virtual_field_accessor,
-                    field_name=field_name,
-                    return_type=return_type,
-                    expression=expr_str,
-                ))
+                if return_type == "bool":
+                    accessor_template = templates.virtual_bool_field_accessor
+                    mut_accessor_template = templates.mut_virtual_bool_field_accessor
+                else:
+                    accessor_template = templates.virtual_field_accessor
+                    mut_accessor_template = templates.mut_virtual_field_accessor
+                
+                field_accessors.append(
+                    code_template.format_template(
+                        accessor_template,
+                        field_name=field_name,
+                        return_type=return_type,
+                        expression=expr_str,
+                    )
+                )
+                mut_field_accessors.append(
+                    code_template.format_template(
+                        mut_accessor_template,
+                        field_name=field_name,
+                        return_type=return_type,
+                        expression=expr_str,
+                    )
+                )
                 
             generated_fields.add(field_name)
             continue
@@ -527,7 +562,8 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
         else:
             source_name = "_".join(obj_path)
             source_name_for_prelude = "::".join(orig_source_name)
-
+        if source_name_for_prelude == "Flag":
+            source_name = "UInt"
         if source_name_for_prelude in _UNSUPPORTED_PRELUDE_TYPES:
             diagnostics.append(
                 [

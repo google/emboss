@@ -354,6 +354,22 @@ emboss_runtime::EnumViewMut::new(emboss_runtime::UInt::new(storage))
         emboss_runtime::VirtualField::new(value)
     }
 
+// ** virtual_bool_field_accessor ** //
+    pub fn ${field_name}(&self) -> emboss_runtime::VirtualField<bool> {
+        let value = (|| -> core::result::Result<bool, emboss_runtime::Error> {
+        core::result::Result::Ok( (${expression}) != 0 )
+    })();
+        emboss_runtime::VirtualField::new(value)
+    }
+
+// ** mut_virtual_bool_field_accessor ** //
+    pub fn ${field_name}(&mut self) -> emboss_runtime::VirtualField<bool> {
+        let value = (|| -> core::result::Result<bool, emboss_runtime::Error> {
+        core::result::Result::Ok( (${expression}) != 0 )
+    })();
+        emboss_runtime::VirtualField::new(value)
+    }
+
 // ** bit_enum_field_accessor ** //
     pub fn ${field_name}(&self) -> emboss_runtime::EnumView<${enum_name}, emboss_runtime::BitUInt<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>>> {
         let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
