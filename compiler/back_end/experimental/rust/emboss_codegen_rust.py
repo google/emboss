@@ -76,10 +76,8 @@ def generate_code(ir: ir_data.EmbossIr) -> tuple[Source, Diagnostics]:
     imports_list = []
     struct_definitions = []
     module = ir.module[0]
-    
-    real_imports = [
-        imp for imp in module.foreign_import if imp.file_name.text != ""
-    ]
+
+    real_imports = [imp for imp in module.foreign_import if imp.file_name.text != ""]
     for imp in real_imports:
         crate_name = imp.file_name.text.replace("/", "_").replace(".", "_")
         alias = imp.local_name.text
@@ -118,10 +116,11 @@ def generate_code(ir: ir_data.EmbossIr) -> tuple[Source, Diagnostics]:
 def _is_type_omitted(type_ir) -> bool:
     return False
 
+
 def _resolve_type(reference, ir):
     target_module_file = reference.canonical_name.module_file
     target_object_path = reference.canonical_name.object_path
-    
+
     for mod in ir.module:
         if mod.source_file_name == target_module_file:
             for type_def in mod.type:
@@ -138,6 +137,7 @@ def _resolve_type(reference, ir):
                             return None
                     return current
     return None
+
 
 def _generate_type(type_ir, ir, module, templates, diagnostics) -> str:
     definitions = []
@@ -177,14 +177,16 @@ def _generate_type(type_ir, ir, module, templates, diagnostics) -> str:
 
     if type_ir.subtype:
         for st in type_ir.subtype:
-            definitions.append(
-                _generate_type(st, ir, module, templates, diagnostics)
-            )
+            definitions.append(_generate_type(st, ir, module, templates, diagnostics))
 
     if type_ir.has_field("structure"):
-        definitions.append(_generate_struct(type_ir, ir, module, templates, diagnostics, type_name))
+        definitions.append(
+            _generate_struct(type_ir, ir, module, templates, diagnostics, type_name)
+        )
     elif type_ir.has_field("enumeration"):
-        definitions.append(_generate_enum(type_ir, ir, module, templates, diagnostics, type_name))
+        definitions.append(
+            _generate_enum(type_ir, ir, module, templates, diagnostics, type_name)
+        )
     else:
         diagnostics.append(
             [
@@ -266,47 +268,72 @@ def _rust_type_for_expr_type(expr_type):
     return "u64"
 
 
-
-
-def _generate_expression(expr, ir, module, generated_fields, templates, self_ref="self"):
+def _generate_expression(
+    expr, ir, module, generated_fields, templates, self_ref="self"
+):
     if ir_util.is_constant(expr):
         return str(ir_util.constant_value(expr))
-        
+
     if expr.has_field("boolean_constant"):
         return "true" if expr.boolean_constant.value else "false"
 
     if expr.has_field("field_reference"):
-        path_names = [part.canonical_name.object_path[-1] for part in expr.field_reference.path]
+        path_names = [
+            part.canonical_name.object_path[-1] for part in expr.field_reference.path
+        ]
         if path_names[0] not in generated_fields:
             return None
-        
+
         path_expr = "".join([f".{name}()" for name in path_names])
-        return code_template.format_template(templates.expr_field_reference_no_cast, self_ref=self_ref, path_expr=path_expr)
+        return code_template.format_template(
+            templates.expr_field_reference_no_cast,
+            self_ref=self_ref,
+            path_expr=path_expr,
+        )
 
     if expr.has_field("function"):
         func = expr.function.function
         args = []
         for a in expr.function.args:
-            arg_str = _generate_expression(a, ir, module, generated_fields, templates, self_ref)
+            arg_str = _generate_expression(
+                a, ir, module, generated_fields, templates, self_ref
+            )
             if arg_str is None:
                 return None
             args.append(arg_str)
-            
+
         if func == ir_data.FunctionMapping.ADDITION.value:
-            return code_template.format_template(templates.expr_addition, left=args[0], right=args[1])
+            return code_template.format_template(
+                templates.expr_addition, left=args[0], right=args[1]
+            )
         if func == ir_data.FunctionMapping.SUBTRACTION.value:
-            return code_template.format_template(templates.expr_subtraction, left=args[0], right=args[1])
+            return code_template.format_template(
+                templates.expr_subtraction, left=args[0], right=args[1]
+            )
         if func == ir_data.FunctionMapping.MULTIPLICATION.value:
-            return code_template.format_template(templates.expr_multiplication, left=args[0], right=args[1])
+            return code_template.format_template(
+                templates.expr_multiplication, left=args[0], right=args[1]
+            )
         if func == ir_data.FunctionMapping.MAXIMUM.value:
-            return code_template.format_template(templates.expr_maximum, left=args[0], right=args[1])
+            return code_template.format_template(
+                templates.expr_maximum, left=args[0], right=args[1]
+            )
         if func == ir_data.FunctionMapping.CHOICE.value:
-            return code_template.format_template(templates.expr_choice, condition=args[0], true_value=args[1], false_value=args[2])
+            return code_template.format_template(
+                templates.expr_choice,
+                condition=args[0],
+                true_value=args[1],
+                false_value=args[2],
+            )
         if func == ir_data.FunctionMapping.EQUALITY.value:
-            return code_template.format_template(templates.expr_equality, left=args[0], right=args[1])
+            return code_template.format_template(
+                templates.expr_equality, left=args[0], right=args[1]
+            )
         if func == ir_data.FunctionMapping.LESS.value:
-            return code_template.format_template(templates.expr_less, left=args[0], right=args[1])
-            
+            return code_template.format_template(
+                templates.expr_less, left=args[0], right=args[1]
+            )
+
         return None
     return None
 
@@ -339,25 +366,70 @@ def _generate_array_field(
     bits = const_byte_length * 8
     if base_type.has_field("size_in_bits"):
         bits = ir_util.constant_value(base_type.size_in_bits)
-        
+
     storage_type = "S::Sliced<'_>"
     storage_type_mut = "S::SlicedMut<'_>"
 
     if referenced_type.has_field("external"):
-        element_type = code_template.format_template(templates.array_element_type_external, source_name=source_name, bits=str(bits), byte_order=byte_order, storage_type=storage_type)
-        element_type_mut = code_template.format_template(templates.array_element_type_external, source_name=source_name, bits=str(bits), byte_order=byte_order, storage_type=storage_type_mut)
-        element_constructor = code_template.format_template(templates.array_element_constructor_external, source_name=source_name)
-        element_constructor_mut = code_template.format_template(templates.array_element_constructor_external, source_name=source_name)
+        element_type = code_template.format_template(
+            templates.array_element_type_external,
+            source_name=source_name,
+            bits=str(bits),
+            byte_order=byte_order,
+            storage_type=storage_type,
+        )
+        element_type_mut = code_template.format_template(
+            templates.array_element_type_external,
+            source_name=source_name,
+            bits=str(bits),
+            byte_order=byte_order,
+            storage_type=storage_type_mut,
+        )
+        element_constructor = code_template.format_template(
+            templates.array_element_constructor_external, source_name=source_name
+        )
+        element_constructor_mut = code_template.format_template(
+            templates.array_element_constructor_external, source_name=source_name
+        )
     elif referenced_type.has_field("structure"):
-        element_type = code_template.format_template(templates.array_element_type_structure, struct_clean_name=source_name, storage_type=storage_type)
-        element_type_mut = code_template.format_template(templates.array_element_type_structure, struct_clean_name=source_name + "Mut", storage_type=storage_type_mut)
-        element_constructor = code_template.format_template(templates.array_element_constructor_structure, struct_clean_name=source_name)
-        element_constructor_mut = code_template.format_template(templates.array_element_constructor_structure, struct_clean_name=source_name + "Mut")
+        element_type = code_template.format_template(
+            templates.array_element_type_structure,
+            struct_clean_name=source_name,
+            storage_type=storage_type,
+        )
+        element_type_mut = code_template.format_template(
+            templates.array_element_type_structure,
+            struct_clean_name=source_name + "Mut",
+            storage_type=storage_type_mut,
+        )
+        element_constructor = code_template.format_template(
+            templates.array_element_constructor_structure, struct_clean_name=source_name
+        )
+        element_constructor_mut = code_template.format_template(
+            templates.array_element_constructor_structure,
+            struct_clean_name=source_name + "Mut",
+        )
     elif referenced_type.has_field("enumeration"):
-        element_type = code_template.format_template(templates.array_element_type_enumeration, enum_clean_name=source_name, bits=str(bits), byte_order=byte_order, storage_type=storage_type)
-        element_type_mut = code_template.format_template(templates.array_element_type_mut_enumeration, enum_clean_name=source_name, bits=str(bits), byte_order=byte_order, storage_type=storage_type_mut)
-        element_constructor = code_template.format_template(templates.array_element_constructor_enumeration)
-        element_constructor_mut = code_template.format_template(templates.array_element_constructor_mut_enumeration)
+        element_type = code_template.format_template(
+            templates.array_element_type_enumeration,
+            enum_clean_name=source_name,
+            bits=str(bits),
+            byte_order=byte_order,
+            storage_type=storage_type,
+        )
+        element_type_mut = code_template.format_template(
+            templates.array_element_type_mut_enumeration,
+            enum_clean_name=source_name,
+            bits=str(bits),
+            byte_order=byte_order,
+            storage_type=storage_type_mut,
+        )
+        element_constructor = code_template.format_template(
+            templates.array_element_constructor_enumeration
+        )
+        element_constructor_mut = code_template.format_template(
+            templates.array_element_constructor_mut_enumeration
+        )
     else:
         return
 
@@ -414,7 +486,9 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
         if field_name.startswith("$"):
             continue
 
-        if field.has_field("existence_condition") and not field.has_field("read_transform"):
+        if field.has_field("existence_condition") and not field.has_field(
+            "read_transform"
+        ):
             cond = ir_util.constant_value(field.existence_condition)
             if cond is not True:
                 diagnostics.append(
@@ -444,9 +518,14 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
                     ]
                 )
                 continue
-                
-            if field.read_transform.has_field("type") and field.read_transform.type.has_field("atomic_type"):
-                orig = [p.text for p in field.read_transform.type.atomic_type.reference.source_name]
+
+            if field.read_transform.has_field(
+                "type"
+            ) and field.read_transform.type.has_field("atomic_type"):
+                orig = [
+                    p.text
+                    for p in field.read_transform.type.atomic_type.reference.source_name
+                ]
                 if "::".join(orig) in _UNSUPPORTED_PRELUDE_TYPES:
                     diagnostics.append(
                         [
@@ -459,7 +538,9 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
                     )
                     continue
 
-            expr_str = _generate_expression(field.read_transform, ir, module, generated_fields, templates)
+            expr_str = _generate_expression(
+                field.read_transform, ir, module, generated_fields, templates
+            )
             if expr_str is None:
                 diagnostics.append(
                     [
@@ -471,10 +552,12 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
                     ]
                 )
                 continue
-                
+
             return_type = _rust_type_for_expr_type(field.read_transform.type)
-            
-            if field.read_transform.has_field("field_reference") and field.read_transform.type.has_field("opaque"):
+
+            if field.read_transform.has_field(
+                "field_reference"
+            ) and field.read_transform.type.has_field("opaque"):
                 # opaque fields usually mean it's an alias to a struct/array view.
                 # Since we don't map complex return types for aliases yet, skip properly.
                 diagnostics.append(
@@ -494,7 +577,7 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
                 else:
                     accessor_template = templates.virtual_field_accessor
                     mut_accessor_template = templates.mut_virtual_field_accessor
-                
+
                 field_accessors.append(
                     code_template.format_template(
                         accessor_template,
@@ -511,11 +594,13 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
                         expression=expr_str,
                     )
                 )
-                
+
             generated_fields.add(field_name)
             continue
 
-        if not field.has_field("type") or not (field.type.has_field("atomic_type") or field.type.has_field("array_type")):
+        if not field.has_field("type") or not (
+            field.type.has_field("atomic_type") or field.type.has_field("array_type")
+        ):
             loc = (
                 field.type.source_location
                 if field.has_field("type")
@@ -550,15 +635,21 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
             )
             continue
 
-        orig_source_name = [part.text for part in base_type.atomic_type.reference.source_name]
-        obj_path = [part for part in base_type.atomic_type.reference.canonical_name.object_path]
+        orig_source_name = [
+            part.text for part in base_type.atomic_type.reference.source_name
+        ]
+        obj_path = [
+            part for part in base_type.atomic_type.reference.canonical_name.object_path
+        ]
 
         num_module_parts = len(orig_source_name) - len(obj_path)
         if num_module_parts > 0:
             module_prefix = "::".join(orig_source_name[:num_module_parts]) + "::"
             type_name = "_".join(obj_path)
             source_name = module_prefix + type_name
-            source_name_for_prelude = "::".join(orig_source_name) # original style for checking preludes
+            source_name_for_prelude = "::".join(
+                orig_source_name
+            )  # original style for checking preludes
         else:
             source_name = "_".join(obj_path)
             source_name_for_prelude = "::".join(orig_source_name)
@@ -578,8 +669,12 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
 
         target_type = _resolve_type(base_type.atomic_type.reference, ir)
 
-        byte_offset_expr = _generate_expression(field.location.start, ir, module, generated_fields, templates)
-        byte_length_expr = _generate_expression(field.location.size, ir, module, generated_fields, templates)
+        byte_offset_expr = _generate_expression(
+            field.location.start, ir, module, generated_fields, templates
+        )
+        byte_length_expr = _generate_expression(
+            field.location.size, ir, module, generated_fields, templates
+        )
 
         if byte_offset_expr is None or byte_length_expr is None:
             reason = "offset" if byte_offset_expr is None else "size"
@@ -635,7 +730,7 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
 
         byte_offset = byte_offset_expr
         byte_length = byte_length_expr
-        
+
         if ir_util.is_constant(field.location.size):
             const_byte_length = ir_util.constant_value(field.location.size)
         else:
@@ -670,13 +765,13 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
 
                 accessor_template = templates.external_field_accessor
                 mut_accessor_template = templates.external_mut_field_accessor
-                
+
                 if type_ir.addressable_unit == 1:
                     bit_offset_int = int(ir_util.constant_value(field.location.start))
                     bits_int = int(bits)
                     byte_len_int = ((bit_offset_int + bits_int - 1) // 8) + 1
                     bit_offset_str = str(bit_offset_int)
-                    
+
                     field_accessors.append(
                         code_template.format_template(
                             templates.bit_external_field_accessor,
@@ -809,7 +904,7 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
                     ]
                 )
                 continue
-            
+
         generated_fields.add(field_name)
 
     main_struct_def = code_template.format_template(
