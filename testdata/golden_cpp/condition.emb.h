@@ -4267,6 +4267,19 @@ class GenericCorrectNestedConditionalView final {
                    static_cast</**/ ::std::int32_t>(
                        emboss_reserved_local_ok_subexpr_1.UncheckedRead()))
              : ::emboss::support::Maybe</**/ ::std::int32_t>());
+    const auto emboss_reserved_local_ok_subexpr_3 = xc();
+    const auto emboss_reserved_local_ok_subexpr_4 =
+        (emboss_reserved_local_ok_subexpr_3.Ok()
+             ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                   static_cast</**/ ::std::int32_t>(
+                       emboss_reserved_local_ok_subexpr_3.UncheckedRead()))
+             : ::emboss::support::Maybe</**/ ::std::int32_t>());
+    const auto emboss_reserved_local_ok_subexpr_5 =
+        ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                 ::std::int32_t>(
+            emboss_reserved_local_ok_subexpr_4,
+            ::emboss::support::Maybe</**/ ::std::int32_t>(
+                static_cast</**/ ::std::int32_t>(0LL)));
 
     if (!has_x().Known()) return false;
     if (has_x().ValueOrDefault() && !x().Ok()) return false;
@@ -4290,8 +4303,10 @@ class GenericCorrectNestedConditionalView final {
       switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
         case static_cast</**/ ::std::int32_t>(0LL):
           if (!xc().Ok()) return false;
-          if (!has_xcc().Known()) return false;
-          if (has_xcc().ValueOrDefault() && !xcc().Ok()) return false;
+          if (!(emboss_reserved_local_ok_subexpr_5).Known()) return false;
+          if ((emboss_reserved_local_ok_subexpr_5).ValueOrDefault() &&
+              !xcc().Ok())
+            return false;
           break;
 
         default:
