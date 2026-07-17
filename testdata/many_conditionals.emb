@@ -319,3 +319,314 @@ struct DisjunctionConditionals:
     4 [+4]                                     UInt  shared_high
   if tag == 100 || tag == 200 || tag == 300:
     4 [+4]                                     UInt  shared_far
+
+# Exercises residual-read elimination (Lever A): a proper tag-discriminated
+# switch where every arm additionally carries a shared residual guard
+# (`outer == 1`). The discriminant `tag` is decoded once by the switch; the
+# residual is the only per-arm predicate, so the optimized Ok() gates each
+# field on the residual alone rather than re-deriving the full has_gN()
+# existence condition (which would redundantly re-read and re-compare tag).
+# The always-present `outer` field makes `tag` provably Known, so the switch
+# survives demotion. Contrast LargeConditionals (all bare arms), the control.
+struct OuterGuardedUnion:
+  0 [+4]  UInt  outer
+  4 [+4]  UInt  tag
+  if tag == 0 && outer == 1:
+    8 [+4]  UInt  g0
+
+  if tag == 1 && outer == 1:
+    8 [+4]  UInt  g1
+
+  if tag == 2 && outer == 1:
+    8 [+4]  UInt  g2
+
+  if tag == 3 && outer == 1:
+    8 [+4]  UInt  g3
+
+  if tag == 4 && outer == 1:
+    8 [+4]  UInt  g4
+
+  if tag == 5 && outer == 1:
+    8 [+4]  UInt  g5
+
+  if tag == 6 && outer == 1:
+    8 [+4]  UInt  g6
+
+  if tag == 7 && outer == 1:
+    8 [+4]  UInt  g7
+
+  if tag == 8 && outer == 1:
+    8 [+4]  UInt  g8
+
+  if tag == 9 && outer == 1:
+    8 [+4]  UInt  g9
+
+  if tag == 10 && outer == 1:
+    8 [+4]  UInt  g10
+
+  if tag == 11 && outer == 1:
+    8 [+4]  UInt  g11
+
+  if tag == 12 && outer == 1:
+    8 [+4]  UInt  g12
+
+  if tag == 13 && outer == 1:
+    8 [+4]  UInt  g13
+
+  if tag == 14 && outer == 1:
+    8 [+4]  UInt  g14
+
+  if tag == 15 && outer == 1:
+    8 [+4]  UInt  g15
+
+  if tag == 16 && outer == 1:
+    8 [+4]  UInt  g16
+
+  if tag == 17 && outer == 1:
+    8 [+4]  UInt  g17
+
+  if tag == 18 && outer == 1:
+    8 [+4]  UInt  g18
+
+  if tag == 19 && outer == 1:
+    8 [+4]  UInt  g19
+
+  if tag == 20 && outer == 1:
+    8 [+4]  UInt  g20
+
+  if tag == 21 && outer == 1:
+    8 [+4]  UInt  g21
+
+  if tag == 22 && outer == 1:
+    8 [+4]  UInt  g22
+
+  if tag == 23 && outer == 1:
+    8 [+4]  UInt  g23
+
+  if tag == 24 && outer == 1:
+    8 [+4]  UInt  g24
+
+  if tag == 25 && outer == 1:
+    8 [+4]  UInt  g25
+
+  if tag == 26 && outer == 1:
+    8 [+4]  UInt  g26
+
+  if tag == 27 && outer == 1:
+    8 [+4]  UInt  g27
+
+  if tag == 28 && outer == 1:
+    8 [+4]  UInt  g28
+
+  if tag == 29 && outer == 1:
+    8 [+4]  UInt  g29
+
+  if tag == 30 && outer == 1:
+    8 [+4]  UInt  g30
+
+  if tag == 31 && outer == 1:
+    8 [+4]  UInt  g31
+
+  if tag == 32 && outer == 1:
+    8 [+4]  UInt  g32
+
+  if tag == 33 && outer == 1:
+    8 [+4]  UInt  g33
+
+  if tag == 34 && outer == 1:
+    8 [+4]  UInt  g34
+
+  if tag == 35 && outer == 1:
+    8 [+4]  UInt  g35
+
+  if tag == 36 && outer == 1:
+    8 [+4]  UInt  g36
+
+  if tag == 37 && outer == 1:
+    8 [+4]  UInt  g37
+
+  if tag == 38 && outer == 1:
+    8 [+4]  UInt  g38
+
+  if tag == 39 && outer == 1:
+    8 [+4]  UInt  g39
+
+  if tag == 40 && outer == 1:
+    8 [+4]  UInt  g40
+
+  if tag == 41 && outer == 1:
+    8 [+4]  UInt  g41
+
+  if tag == 42 && outer == 1:
+    8 [+4]  UInt  g42
+
+  if tag == 43 && outer == 1:
+    8 [+4]  UInt  g43
+
+  if tag == 44 && outer == 1:
+    8 [+4]  UInt  g44
+
+  if tag == 45 && outer == 1:
+    8 [+4]  UInt  g45
+
+  if tag == 46 && outer == 1:
+    8 [+4]  UInt  g46
+
+  if tag == 47 && outer == 1:
+    8 [+4]  UInt  g47
+
+  if tag == 48 && outer == 1:
+    8 [+4]  UInt  g48
+
+  if tag == 49 && outer == 1:
+    8 [+4]  UInt  g49
+
+  if tag == 50 && outer == 1:
+    8 [+4]  UInt  g50
+
+  if tag == 51 && outer == 1:
+    8 [+4]  UInt  g51
+
+  if tag == 52 && outer == 1:
+    8 [+4]  UInt  g52
+
+  if tag == 53 && outer == 1:
+    8 [+4]  UInt  g53
+
+  if tag == 54 && outer == 1:
+    8 [+4]  UInt  g54
+
+  if tag == 55 && outer == 1:
+    8 [+4]  UInt  g55
+
+  if tag == 56 && outer == 1:
+    8 [+4]  UInt  g56
+
+  if tag == 57 && outer == 1:
+    8 [+4]  UInt  g57
+
+  if tag == 58 && outer == 1:
+    8 [+4]  UInt  g58
+
+  if tag == 59 && outer == 1:
+    8 [+4]  UInt  g59
+
+  if tag == 60 && outer == 1:
+    8 [+4]  UInt  g60
+
+  if tag == 61 && outer == 1:
+    8 [+4]  UInt  g61
+
+  if tag == 62 && outer == 1:
+    8 [+4]  UInt  g62
+
+  if tag == 63 && outer == 1:
+    8 [+4]  UInt  g63
+
+  if tag == 64 && outer == 1:
+    8 [+4]  UInt  g64
+
+  if tag == 65 && outer == 1:
+    8 [+4]  UInt  g65
+
+  if tag == 66 && outer == 1:
+    8 [+4]  UInt  g66
+
+  if tag == 67 && outer == 1:
+    8 [+4]  UInt  g67
+
+  if tag == 68 && outer == 1:
+    8 [+4]  UInt  g68
+
+  if tag == 69 && outer == 1:
+    8 [+4]  UInt  g69
+
+  if tag == 70 && outer == 1:
+    8 [+4]  UInt  g70
+
+  if tag == 71 && outer == 1:
+    8 [+4]  UInt  g71
+
+  if tag == 72 && outer == 1:
+    8 [+4]  UInt  g72
+
+  if tag == 73 && outer == 1:
+    8 [+4]  UInt  g73
+
+  if tag == 74 && outer == 1:
+    8 [+4]  UInt  g74
+
+  if tag == 75 && outer == 1:
+    8 [+4]  UInt  g75
+
+  if tag == 76 && outer == 1:
+    8 [+4]  UInt  g76
+
+  if tag == 77 && outer == 1:
+    8 [+4]  UInt  g77
+
+  if tag == 78 && outer == 1:
+    8 [+4]  UInt  g78
+
+  if tag == 79 && outer == 1:
+    8 [+4]  UInt  g79
+
+  if tag == 80 && outer == 1:
+    8 [+4]  UInt  g80
+
+  if tag == 81 && outer == 1:
+    8 [+4]  UInt  g81
+
+  if tag == 82 && outer == 1:
+    8 [+4]  UInt  g82
+
+  if tag == 83 && outer == 1:
+    8 [+4]  UInt  g83
+
+  if tag == 84 && outer == 1:
+    8 [+4]  UInt  g84
+
+  if tag == 85 && outer == 1:
+    8 [+4]  UInt  g85
+
+  if tag == 86 && outer == 1:
+    8 [+4]  UInt  g86
+
+  if tag == 87 && outer == 1:
+    8 [+4]  UInt  g87
+
+  if tag == 88 && outer == 1:
+    8 [+4]  UInt  g88
+
+  if tag == 89 && outer == 1:
+    8 [+4]  UInt  g89
+
+  if tag == 90 && outer == 1:
+    8 [+4]  UInt  g90
+
+  if tag == 91 && outer == 1:
+    8 [+4]  UInt  g91
+
+  if tag == 92 && outer == 1:
+    8 [+4]  UInt  g92
+
+  if tag == 93 && outer == 1:
+    8 [+4]  UInt  g93
+
+  if tag == 94 && outer == 1:
+    8 [+4]  UInt  g94
+
+  if tag == 95 && outer == 1:
+    8 [+4]  UInt  g95
+
+  if tag == 96 && outer == 1:
+    8 [+4]  UInt  g96
+
+  if tag == 97 && outer == 1:
+    8 [+4]  UInt  g97
+
+  if tag == 98 && outer == 1:
+    8 [+4]  UInt  g98
+
+  if tag == 99 && outer == 1:
+    8 [+4]  UInt  g99
