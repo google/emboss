@@ -1679,14 +1679,33 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
             groups[key]["fields"].append(field)
             field_group_key[id(field)] = key
 
-    # Demote switch groups that wouldn't actually benefit from a switch.
-    # A switch's overhead — the temporary discriminant variable, the
-    # Known() guard, the scope braces — is only worthwhile if the switch
-    # dedupes either at least two distinct case labels (sharing one
-    # subexpression read) or at least two distinct fields (sharing one
-    # discriminant evaluation). When a group has just one entry total
-    # (one field, one bare case), the unoptimized has_${field}()-based
-    # check is strictly smaller.
+    # Demote switch groups back to per-field checks in two cases.
+    #
+    # (1) Size: a switch's overhead — the temporary discriminant variable,
+    #     the Known() guard, the scope braces — is only worthwhile if the
+    #     switch dedupes either at least two distinct case labels (sharing
+    #     one subexpression read) or at least two distinct fields (sharing
+    #     one discriminant evaluation). When a group has just one entry
+    #     total (one field, one bare case), the unoptimized has_${field}()-
+    #     based check is strictly smaller.
+    #
+    # (2) Correctness: the switch reads its discriminant once and guards it
+    #     with `if (!discrim.Known()) return false;`. That guard is only
+    #     sound when the discriminant is provably present OR the group has
+    #     at least one *bare* arm (existence condition exactly `discrim ==
+    #     K`, no residual). With a bare arm, an Unknown (out-of-bounds)
+    #     discriminant leaves that field's has_X() Unknown, so the
+    #     unoptimized Ok() bails for the same reason the guard does. But
+    #     when the discriminant is itself a conditionally-present field and
+    #     *every* arm carries a residual, a valid message can have an
+    #     Unknown discriminant while every arm's residual is statically
+    #     false — making every has_X() Known-false (absent). The blanket
+    #     guard would wrongly reject it. Demote that shape to per-field
+    #     has_${field}() checks, which handle an Unknown discriminant
+    #     correctly (an Unknown discriminant can never make has_X()
+    #     Known-true, so a Known-false residual leaves the field simply
+    #     absent). This is latent on the current test corpus — no existing
+    #     schema produces the shape — so no existing golden changes.
     for key in ordered_keys:
         group = groups[key]
         if group["type"] != "switch":
@@ -1696,6 +1715,16 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
             for case_entry in group["cases_by_label"].values()
         )
         if total_entries < 2:
+            group["type"] = "demoted_to_if"
+            continue
+        has_bare_arm = any(
+            not has_residual
+            for case_entry in group["cases_by_label"].values()
+            for (_field, has_residual) in case_entry["entries"]
+        )
+        if not has_bare_arm and not _is_discriminant_provably_known(
+            group["discrim_expr"], fields
+        ):
             group["type"] = "demoted_to_if"
 
     blocks = []
