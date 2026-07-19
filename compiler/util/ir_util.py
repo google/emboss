@@ -85,6 +85,16 @@ def is_constant(expression, bindings=None):
 def is_constant_type(expression_type):
     """Returns True if expression_type is inhabited by a single value."""
     expression_type = ir_data_utils.reader(expression_type)
+    # A value that can be undefined is not a compile-time constant, even if its
+    # *defined* range collapses to a single value (e.g. `0 // d` for a byte `d`
+    # folds to {0} but is undefined when d == 0).  Treating it as constant would
+    # let codegen emit a bogus literal instead of the real (possibly Unknown)
+    # runtime computation.
+    if (
+        expression_type.integer.can_be_undefined
+        or expression_type.boolean.can_be_undefined
+    ):
+        return False
     return (
         expression_type.integer.modulus == "infinity"
         or expression_type.boolean.has_field("value")
@@ -104,9 +114,15 @@ def constant_value(expression, bindings=None):
         # constant_value is called, the actual values should have been propagated to
         # the type information.
         if expression.type.which_type == "integer":
+            # A value that can be undefined has no single constant value, even
+            # when its defined range collapses to one (modulus == "infinity").
+            if expression.type.integer.can_be_undefined:
+                return None
             assert expression.type.integer.modulus == "infinity"
             return int(expression.type.integer.modular_value)
         elif expression.type.which_type == "boolean":
+            if expression.type.boolean.can_be_undefined:
+                return None
             assert expression.type.boolean.has_field("value")
             return expression.type.boolean.value
         elif expression.type.which_type == "enumeration":
