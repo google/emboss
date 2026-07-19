@@ -94,6 +94,19 @@ struct LeastWidthInteger<8> final {
   using Signed = ::std::int8_t;
 };
 
+// MaxWidthUnsigned and MaxWidthSigned are the widest unsigned and signed
+// integer types that Emboss supports on the current platform.  They are used
+// when a value of unknown (but supported) width must be compared without
+// truncation -- for example, when range-checking a value before writing it to
+// an integer field.
+#if EMBOSS_HAS_INT128
+using MaxWidthUnsigned = EMBOSS_UINT128_T;
+using MaxWidthSigned = EMBOSS_INT128_T;
+#else
+using MaxWidthUnsigned = ::std::uint64_t;
+using MaxWidthSigned = ::std::int64_t;
+#endif  // EMBOSS_HAS_INT128
+
 // IsAliasSafe<T>::value is true if T is an alias safe type; i.e. const?
 // volatile? (unsigned)? char | std::byte.
 template <typename T>

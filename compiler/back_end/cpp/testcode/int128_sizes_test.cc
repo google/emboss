@@ -124,6 +124,44 @@ TEST(UInt128SizesView, CanReadMaxValues) {
             MakeUInt128SizesView(buffer, sizeof buffer).sixteen_byte().Read());
 }
 
+// A value that is out of range for a field wider than 64 bits (but narrower
+// than 128) must be rejected by TryToWrite/CouldWriteValue rather than being
+// silently truncated to the field width.  This exercises the range check on
+// the full 128-bit value.
+TEST(UInt128SizesWriter, RejectsOutOfRangeValues) {
+  ::std::uint8_t buffer[100] = {};
+  auto writer = UInt128SizesWriter(buffer, sizeof buffer);
+
+  // nine_byte is 72 bits.  2**72 and 2**80 are out of range; their low 64 bits
+  // are zero, so a 64-bit-truncating check would wrongly accept them.
+  EXPECT_FALSE(writer.nine_byte().CouldWriteValue(static_cast<__uint128_t>(1)
+                                                  << 72));
+  EXPECT_FALSE(writer.nine_byte().TryToWrite(static_cast<__uint128_t>(1) << 72));
+  EXPECT_FALSE(writer.nine_byte().TryToWrite(static_cast<__uint128_t>(1) << 80));
+
+  // The maximum in-range value still writes successfully.
+  __uint128_t max_72 = (static_cast<__uint128_t>(1) << 72) - 1;
+  EXPECT_TRUE(writer.nine_byte().TryToWrite(max_72));
+  EXPECT_EQ(max_72, writer.nine_byte().Read());
+}
+
+TEST(Int128SizesWriter, RejectsOutOfRangeValues) {
+  ::std::uint8_t buffer[100] = {};
+  auto writer = Int128SizesWriter(buffer, sizeof buffer);
+
+  // nine_byte is 72 bits; range is [-2**71, 2**71).
+  __int128_t max_72 = (static_cast<__int128_t>(1) << 71) - 1;
+  __int128_t min_72 = -(static_cast<__int128_t>(1) << 71);
+  EXPECT_FALSE(writer.nine_byte().TryToWrite(max_72 + 1));
+  EXPECT_FALSE(writer.nine_byte().TryToWrite(min_72 - 1));
+  // Far below range, low 64 bits zero: must still be rejected.
+  EXPECT_FALSE(
+      writer.nine_byte().TryToWrite(-(static_cast<__int128_t>(1) << 100)));
+
+  EXPECT_TRUE(writer.nine_byte().TryToWrite(min_72));
+  EXPECT_EQ(min_72, writer.nine_byte().Read());
+}
+
 // Int128 tests with negative values
 alignas(16) static const ::std::uint8_t kInt128SizesNegativeOne[100] = {
     // All bytes are 0xff, representing -1 in two's complement for all sizes
