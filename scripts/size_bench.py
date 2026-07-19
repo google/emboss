@@ -157,7 +157,7 @@ BENCHMARK_DRIVER = (
     '#include "testdata/benchmark.emb.h"\n\n'
     "namespace { volatile ::std::uint64_t g_sink; }\n\n"
     "#define BENCH(NAME, MAKER) \\\n"
-    '  extern "C" void bench_##NAME(char *a, char *b, ::std::size_t n) { \\\n'
+    '  extern "C" void bench_##NAME(unsigned char *a, unsigned char *b, ::std::size_t n) { \\\n'
     "    auto va = ::emboss::benchmark::MAKER(a, n); \\\n"
     "    auto vb = ::emboss::benchmark::MAKER(b, n); \\\n"
     "    g_sink ^= static_cast<::std::uint64_t>(va.Ok()); \\\n"
@@ -173,11 +173,11 @@ MANYCOND_DRIVER = (
     "#include <cstdint>\n\n"
     '#include "testdata/many_conditionals.emb.h"\n\n'
     "volatile bool emboss_result_sink;\n"
-    'extern "C" void large_ok(const char *buf) {\n'
+    'extern "C" void large_ok(const unsigned char *buf) {\n'
     "  auto v = ::emboss::test::MakeLargeConditionalsView(buf, 100);\n"
     "  emboss_result_sink = v.Ok();\n"
     "}\n"
-    'extern "C" void disjunction_ok(const char *buf) {\n'
+    'extern "C" void disjunction_ok(const unsigned char *buf) {\n'
     "  auto v = ::emboss::test::MakeDisjunctionConditionalsView(buf, 16);\n"
     "  emboss_result_sink = v.Ok();\n"
     "}\n"
@@ -201,12 +201,12 @@ _OK_HDR = (
     "volatile bool emboss_ok_sink;\n\n"
 )
 _LARGE_READER = (
-    'extern "C" void reader_ok(const char *buf) {\n'
+    'extern "C" void reader_ok(const unsigned char *buf) {\n'
     "  emboss_ok_sink = ::emboss::test::MakeLargeConditionalsView(buf, 100).Ok();\n"
     "}\n"
 )
 _LARGE_WRITER = (
-    'extern "C" void writer_ok(char *a, char *b) {\n'
+    'extern "C" void writer_ok(unsigned char *a, unsigned char *b) {\n'
     "  auto va = ::emboss::test::MakeLargeConditionalsView(a, 100);\n"
     "  emboss_ok_sink = va.Ok();\n"
     "  va.CopyFrom(::emboss::test::MakeLargeConditionalsView(b, 100));\n"
@@ -218,9 +218,9 @@ OK_DRIVERS = {
     "writer_only": _OK_HDR + _LARGE_WRITER,
     "residual_heavy": _OK_HDR
     + (
-        'extern "C" void residual_ok(const char *buf) {\n'
+        'extern "C" void residual_ok(const unsigned char *buf) {\n'
         "  emboss_ok_sink = "
-        "::emboss::test::MakeDisjunctionConditionalsView(buf, 16).Ok();\n"
+        "::emboss::test::MakeOuterGuardedUnionView(buf, 12).Ok();\n"
         "}\n"
     ),
 }
@@ -229,7 +229,7 @@ OK_DRIVER_STRUCT = {
     "reader_only": "LargeConditionals",
     "both": "LargeConditionals",
     "writer_only": "LargeConditionals",
-    "residual_heavy": "DisjunctionConditionals",
+    "residual_heavy": "OuterGuardedUnion",
 }
 
 # ---- execution speed (opt-in via --speed) --------------------------------------
@@ -275,10 +275,11 @@ SPEED_DRIVER = (
     '#include "testdata/many_conditionals.emb.h"\n\n'
     "#ifndef EMBOSS_SPEED_ITERS\n#define EMBOSS_SPEED_ITERS 5000\n#endif\n\n"
     "int main() {\n"
-    "  char buf[128] = {0};\n"
-    "  auto w = ::emboss::test::MakeLargeConditionalsView(buf, 100);\n"
-    "  const char *cbuf = buf;\n"
-    "  auto r = ::emboss::test::MakeLargeConditionalsView(cbuf, 100);\n"
+    "  unsigned char buf[128] = {0};\n"
+    "  auto w = ::emboss::test::MakeOuterGuardedUnionView(buf, 12);\n"
+    "  w.outer().Write(1);\n"
+    "  const unsigned char *cbuf = buf;\n"
+    "  auto r = ::emboss::test::MakeOuterGuardedUnionView(cbuf, 12);\n"
     "  volatile bool sink = false;\n"
     "  auto t0 = ::std::chrono::steady_clock::now();\n"
     "  for (int i = 0; i < EMBOSS_SPEED_ITERS; ++i)\n"
