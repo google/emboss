@@ -810,7 +810,8 @@ def _empty_list():
 @_formats("or-expression-right* -> ")
 @_formats("parameter-definition-list -> ")
 @_formats("parameter-definition-list-tail* -> ")
-@_formats("times-expression-right* -> ")
+@_formats("star-expression-right* -> ")
+@_formats("divmod-expression-right* -> ")
 @_formats("type-size-specifier? -> ")
 def _empty_string():
     return ""
@@ -870,7 +871,12 @@ def _empty_string():
 @_formats("logical-expression -> and-expression")
 @_formats("logical-expression -> comparison-expression")
 @_formats("logical-expression -> or-expression")
-@_formats('multiplicative-operator -> "*"')
+@_formats('star-operator -> "*"')
+@_formats('divmod-operator -> "//"')
+@_formats('divmod-operator -> "%"')
+@_formats("times-expression -> negation-expression")
+@_formats("times-expression -> star-expression")
+@_formats("times-expression -> divmod-expression")
 @_formats("negation-expression -> bottom-expression")
 @_formats("numeric-constant -> Number")
 @_formats('or-operator -> "||"')
@@ -904,7 +910,10 @@ def _identity(x):
 
 
 @_formats("argument-list -> expression comma-then-expression*")
-@_formats("times-expression -> negation-expression times-expression-right*")
+@_formats("star-expression -> negation-expression star-expression-right+")
+@_formats("divmod-expression -> negation-expression divmod-expression-right+")
+@_formats("star-expression-right -> star-operator negation-expression")
+@_formats("divmod-expression-right -> divmod-operator negation-expression")
 @_formats(
     "type -> type-reference delimited-argument-list? type-size-specifier?"
     "        array-length-specifier*"
@@ -945,12 +954,20 @@ def _identity(x):
     "                                   parameter-definition-list-tail*"
 )
 @_formats(
-    "times-expression-right -> multiplicative-operator"
-    "                          negation-expression"
+    "star-expression-right* -> star-expression-right"
+    "                          star-expression-right*"
 )
 @_formats(
-    "times-expression-right* -> times-expression-right"
-    "                           times-expression-right*"
+    "star-expression-right+ -> star-expression-right"
+    "                          star-expression-right*"
+)
+@_formats(
+    "divmod-expression-right* -> divmod-expression-right"
+    "                            divmod-expression-right*"
+)
+@_formats(
+    "divmod-expression-right+ -> divmod-expression-right"
+    "                            divmod-expression-right*"
 )
 @_formats('field-reference-tail -> "." snake-reference')
 @_formats("field-reference-tail* -> field-reference-tail field-reference-tail*")

@@ -24,6 +24,7 @@ GOLDENS = [
     ("complex_structure.emb", "complex_structure.emb.h"),
     ("condition.emb", "condition.emb.h"),
     ("cpp_namespace.emb", "cpp_namespace.emb.h"),
+    ("division_modulus.emb", "division_modulus.emb.h"),
     ("dynamic_size.emb", "dynamic_size.emb.h"),
     ("enum_case.emb", "enum_case.emb.h"),
     ("enum.emb", "enum.emb.h"),

@@ -19,7 +19,6 @@ import operator
 from compiler.util import ir_data
 from compiler.util import ir_data_utils
 
-
 _FIXED_SIZE_ATTRIBUTE = "fixed_size_in_bits"
 
 
@@ -193,6 +192,14 @@ def _constant_value_of_function(function, bindings):
         ir_data.FunctionMapping.ADDITION: operator.add,
         ir_data.FunctionMapping.SUBTRACTION: operator.sub,
         ir_data.FunctionMapping.MULTIPLICATION: operator.mul,
+        # `//` and `%` are flooring in both Emboss and Python.  A zero divisor
+        # has no constant value; return None rather than raising ZeroDivisionError
+        # so constant folding stays total (it runs before the constraints pass
+        # that reports division-by-zero).
+        ir_data.FunctionMapping.FLOOR_DIVISION: (
+            lambda l, r: None if r == 0 else l // r
+        ),
+        ir_data.FunctionMapping.MODULUS: (lambda l, r: None if r == 0 else l % r),
         ir_data.FunctionMapping.EQUALITY: operator.eq,
         ir_data.FunctionMapping.INEQUALITY: operator.ne,
         ir_data.FunctionMapping.LESS: operator.lt,

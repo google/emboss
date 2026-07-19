@@ -196,6 +196,8 @@ def _text_to_operator(text):
         "+": ir_data.FunctionMapping.ADDITION,
         "-": ir_data.FunctionMapping.SUBTRACTION,
         "*": ir_data.FunctionMapping.MULTIPLICATION,
+        "//": ir_data.FunctionMapping.FLOOR_DIVISION,
+        "%": ir_data.FunctionMapping.MODULUS,
         "==": ir_data.FunctionMapping.EQUALITY,
         "!=": ir_data.FunctionMapping.INEQUALITY,
         "&&": ir_data.FunctionMapping.AND,
@@ -439,6 +441,9 @@ def _string_constant(string):
 @_handles("logical-expression -> comparison-expression")
 @_handles("choice-expression -> logical-expression")
 @_handles("expression -> choice-expression")
+@_handles("times-expression -> negation-expression")
+@_handles("times-expression -> star-expression")
+@_handles("times-expression -> divmod-expression")
 def _expression(expression):
     return expression
 
@@ -495,7 +500,8 @@ def _comparative_expression(left, operator, right):
 
 
 @_handles("additive-expression -> times-expression additive-expression-right*")
-@_handles("times-expression -> negation-expression times-expression-right*")
+@_handles("star-expression -> negation-expression star-expression-right+")
+@_handles("divmod-expression -> negation-expression divmod-expression-right+")
 @_handles("and-expression -> comparison-expression and-expression-right+")
 @_handles("or-expression -> comparison-expression or-expression-right+")
 def _binary_operator_expression(expression, expression_right):
@@ -699,7 +705,8 @@ def _equality_or_less_or_greater(right):
 @_handles("equality-expression-right -> equality-operator additive-expression")
 @_handles("greater-expression-right -> greater-operator additive-expression")
 @_handles("less-expression-right -> less-operator additive-expression")
-@_handles("times-expression-right ->" "    multiplicative-operator negation-expression")
+@_handles("star-expression-right -> star-operator negation-expression")
+@_handles("divmod-expression-right -> divmod-operator negation-expression")
 def _expression_right_production(operator, expression):
     return _ExpressionTail(operator, expression)
 
@@ -1414,7 +1421,9 @@ def _name(word):
 @_handles('inequality-operator -> "!="')
 @_handles('additive-operator -> "+"')
 @_handles('additive-operator -> "-"')
-@_handles('multiplicative-operator -> "*"')
+@_handles('star-operator -> "*"')
+@_handles('divmod-operator -> "//"')
+@_handles('divmod-operator -> "%"')
 @_handles('function-name -> "$max"')
 @_handles('function-name -> "$present"')
 @_handles('function-name -> "$upper_bound"')
