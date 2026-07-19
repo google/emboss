@@ -286,6 +286,33 @@ TEST(UIntView, Int128CouldWriteValue) {
   // Test that negative values (which convert to large unsigned) fail
   EXPECT_FALSE(UIntView128::CouldWriteValue(static_cast<__int128_t>(-1)));
 }
+
+// Regression test: for a field wider than 64 bits but narrower than 128, the
+// upper bound must be enforced without truncating the (128-bit) value to 64
+// bits.  A value that is out of range but congruent to an in-range value mod
+// 2**64 must still be rejected.
+TEST(UIntView, Int128CouldWriteValueNonFullWidth) {
+  using UIntView72 = UIntView<ViewParameters<72>, BitBlockN<72>>;
+
+  const __uint128_t max_72 = (static_cast<__uint128_t>(1) << 72) - 1;
+  EXPECT_TRUE(UIntView72::CouldWriteValue(max_72));
+  EXPECT_TRUE(UIntView72::CouldWriteValue(static_cast<__uint128_t>(0)));
+
+  // 2**72 is one past the maximum; its low 64 bits are zero, so a 64-bit
+  // truncation would incorrectly accept it.
+  EXPECT_FALSE(UIntView72::CouldWriteValue(static_cast<__uint128_t>(1) << 72));
+  // 2**80 likewise truncates to zero in 64 bits.
+  EXPECT_FALSE(UIntView72::CouldWriteValue(static_cast<__uint128_t>(1) << 80));
+
+  // TryToWrite must fail gracefully (return false) rather than abort or
+  // silently truncate when the value is out of range.
+  ::std::vector</**/ ::std::uint8_t> bytes(9, 0);
+  auto view = UIntView72{BitBlockN<72>{ReadWriteContiguousBuffer{bytes.data(),
+                                                                 9}}};
+  EXPECT_FALSE(view.TryToWrite(static_cast<__uint128_t>(1) << 80));
+  EXPECT_TRUE(view.TryToWrite(max_72));
+  EXPECT_EQ(max_72, view.Read());
+}
 #endif  // EMBOSS_HAS_INT128
 
 TEST(UIntView, CouldWriteValueNarrowing) {
@@ -592,6 +619,36 @@ TEST(IntView, Int128CouldWriteValue) {
       static_cast<__int128_t>(0x7fffffffffffffffLL)));
   EXPECT_TRUE(IntView128::CouldWriteValue(
       static_cast<__int128_t>(-0x7fffffffffffffffLL)));
+}
+
+// Regression test: for a signed field wider than 64 bits but narrower than
+// 128, both bounds must be enforced on the full 128-bit value.  In particular
+// the lower (negative) bound must not be skipped -- ::std::is_signed is false
+// for __int128_t under a strict -std, so the signedness check must be made via
+// ::std::numeric_limits -- and it must not truncate the value to 64 bits.
+TEST(IntView, Int128CouldWriteValueNonFullWidth) {
+  using IntView72 = IntView<ViewParameters<72>, BitBlockN<72>>;
+
+  const __int128_t max_72 = (static_cast<__int128_t>(1) << 71) - 1;
+  const __int128_t min_72 = -(static_cast<__int128_t>(1) << 71);
+  EXPECT_TRUE(IntView72::CouldWriteValue(max_72));
+  EXPECT_TRUE(IntView72::CouldWriteValue(min_72));
+  EXPECT_TRUE(IntView72::CouldWriteValue(static_cast<__int128_t>(0)));
+
+  // One past each bound must be rejected.
+  EXPECT_FALSE(IntView72::CouldWriteValue(max_72 + 1));
+  EXPECT_FALSE(IntView72::CouldWriteValue(min_72 - 1));
+  // A value far below the range, whose low 64 bits are zero (so a 64-bit
+  // truncation would misjudge it), must also be rejected.
+  EXPECT_FALSE(IntView72::CouldWriteValue(-(static_cast<__int128_t>(1) << 100)));
+
+  // TryToWrite must fail gracefully rather than abort or silently truncate.
+  ::std::vector</**/ ::std::uint8_t> bytes(9, 0);
+  auto view = IntView72{BitBlockN<72>{ReadWriteContiguousBuffer{bytes.data(),
+                                                                9}}};
+  EXPECT_FALSE(view.TryToWrite(-(static_cast<__int128_t>(1) << 100)));
+  EXPECT_TRUE(view.TryToWrite(min_72));
+  EXPECT_EQ(min_72, view.Read());
 }
 #endif  // EMBOSS_HAS_INT128
 
