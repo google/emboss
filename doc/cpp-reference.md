@@ -159,6 +159,13 @@ store to fully contain the `struct`.  If `IsComplete()` returns `true` but
 `Ok()` returns `false`, then the structure is broken in some way that cannot be
 fixed by adding more bytes.
 
+If the `struct`'s intrinsic size is *undefined* -- it depends on a dynamic
+value that is divided by zero (or a modulus by zero), as reported by
+[`IntrinsicSizeInBytes().IsUndefined()`](#intrinsicsizeinbytes-method) -- then
+the `struct` can never be `Ok()`, no matter how many bytes are supplied.  In
+that case there is nothing more to wait for, so `IsComplete()` returns `true`
+(while `Ok()` returns `false`).
+
 
 ### `IntrinsicSizeInBytes` method
 
@@ -197,6 +204,22 @@ Or, if the size is a compile-time constant:
 constexpr std::uint64_t view_size = StructView::IntrinsicSizeInBytes().Read();
 constexpr std::uint64_t view_size2 = Struct::IntrinsicSizeInBytes();
 ```
+
+The result of `IntrinsicSizeInBytes()` (like any virtual [field
+method](#struct-field-methods)) also provides an `IsUndefined` method:
+
+```c++
+::emboss::support::Maybe<bool> IsUndefined() const;
+```
+
+`IsUndefined().ValueOr(false)` is `true` when the size cannot be read because
+the size expression is *undefined* -- currently, because it involves an integer
+division or modulus by zero.  This is distinct from a size that is merely
+*unreadable* (not enough bytes yet): a `Known()` `false` means the size is
+defined, a `Known()` `true` means it is undefined and can never be read, and an
+un-`Known()` result means the size cannot be read yet but more bytes might make
+it either defined or undefined.  `IsComplete()` uses this to report `true` for a
+`struct` whose size is undefined.
 
 
 ### `MaxSizeInBytes` method
