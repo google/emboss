@@ -100,10 +100,15 @@ TEST(PayloadSizedByDivision, NonzeroDivisor) {
   ASSERT_TRUE(view.Ok());
   EXPECT_EQ(5U, view.SizeInBytes());
   EXPECT_EQ(4U, view.payload().ElementCount());
+  // A defined size is complete and not undefined.
+  EXPECT_TRUE(view.IsComplete());
+  EXPECT_FALSE(view.IntrinsicSizeInBytes().IsUndefined().ValueOr(false));
 }
 
 // When the divisor is zero the payload size is undefined, so the structure's
-// size is unknown and Ok() is false -- with no division-by-zero UB.
+// size is unknown and Ok() is false -- with no division-by-zero UB.  Because an
+// undefined size can never be made Ok() by adding bytes, IsComplete() is true
+// and IntrinsicSizeInBytes().IsUndefined() reports true (Phase C).
 TEST(PayloadSizedByDivision, ZeroDivisorIsNotOk) {
   static constexpr ::std::array</**/ ::std::uint8_t, 5> kBuf = {{
       0x00,                          // divisor = 0 -> 16 // 0 undefined
@@ -113,6 +118,26 @@ TEST(PayloadSizedByDivision, ZeroDivisorIsNotOk) {
   EXPECT_FALSE(view.Ok());
   EXPECT_FALSE(view.SizeIsKnown());
   EXPECT_FALSE(view.IntrinsicSizeInBytes().Ok());
+  EXPECT_TRUE(view.IsComplete());
+  EXPECT_TRUE(view.IntrinsicSizeInBytes().IsUndefined().ValueOr(false));
+}
+
+// A nonzero divisor whose payload runs past the end of the buffer has a
+// *defined* but *unreadable* size: the structure is genuinely short, so
+// IsComplete() is false and the size is not undefined.  This is the crux of the
+// unreadable-vs-undefined distinction Phase C draws.
+TEST(PayloadSizedByDivision, NonzeroDivisorTruncatedIsIncomplete) {
+  static constexpr ::std::array</**/ ::std::uint8_t, 3> kBuf = {{
+      0x04,        // divisor = 4 -> needs 1 + 16 // 4 = 5 bytes...
+      0xaa, 0xbb,  // ...but only 3 bytes are present.
+  }};
+  auto view = MakePayloadSizedByDivisionView(&kBuf);
+  EXPECT_FALSE(view.Ok());
+  EXPECT_FALSE(view.IsComplete());
+  // The size (5) is defined but not readable from a 3-byte buffer; it is not
+  // undefined.
+  EXPECT_TRUE(view.IntrinsicSizeInBytes().Ok());
+  EXPECT_FALSE(view.IntrinsicSizeInBytes().IsUndefined().ValueOr(false));
 }
 
 // A field guarded by an existence condition that divides by a field: the
@@ -132,15 +157,19 @@ TEST(FieldGatedByDivision, ConditionTrueAndFalse) {
   EXPECT_FALSE(absent.has_gated().ValueOr(true));
 }
 
-// ...and is *undefined* for a zero divisor.  The existence condition is Unknown,
-// so the field's presence is unknown and Ok() must return false.  This is the
-// soundness guard for the Ok()/switch discriminant optimization: an undefined
-// existence condition must never be folded to a provably-known value.
+// ...and is *undefined* for a zero divisor.  The existence condition is
+// Unknown, so the field's presence is unknown and Ok() must return false.  This
+// is the soundness guard for the Ok()/switch discriminant optimization: an
+// undefined existence condition must never be folded to a provably-known value.
 TEST(FieldGatedByDivision, ZeroDivisorIsNotOk) {
   static constexpr ::std::array</**/ ::std::uint8_t, 2> kBuf = {{0x00, 0x77}};
   auto view = MakeFieldGatedByDivisionView(&kBuf);
   EXPECT_FALSE(view.Ok());
   EXPECT_FALSE(view.has_gated().Known());
+  // The undefined existence condition makes the structure's size undefined, so
+  // it can never be Ok() -- IsComplete() is true.
+  EXPECT_TRUE(view.IsComplete());
+  EXPECT_TRUE(view.IntrinsicSizeInBytes().IsUndefined().ValueOr(false));
 }
 
 // `0 // divisor` collapses to the single value {0}, but must not be folded to a
@@ -156,8 +185,12 @@ TEST(CollapsingQuotient, DefinedForNonzeroDivisor) {
 TEST(CollapsingQuotient, UndefinedForZeroDivisor) {
   static constexpr ::std::array</**/ ::std::uint8_t, 1> kBuf = {{0x00}};
   auto view = MakeCollapsingQuotientView(&kBuf);
-  // The accessor is Unknown -- not a bogus literal 0.
+  // The accessor is Unknown -- not a bogus literal 0 -- and specifically
+  // undefined (division by zero), not merely unreadable.
   EXPECT_FALSE(view.zero_or_undefined().Ok());
+  EXPECT_TRUE(view.zero_or_undefined().IsUndefined().ValueOr(false));
+  // The struct itself has a constant size (1 byte), so it is always complete.
+  EXPECT_TRUE(view.IsComplete());
 }
 
 }  // namespace

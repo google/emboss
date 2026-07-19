@@ -473,6 +473,191 @@ TEST(Maximum, Maximum) {
   EXPECT_EQ(Maybe<int>(), (Maximum<int, int, int>(Maybe<int>())));
 }
 
+// The tests below exercise the "why not" reason (Unknowability) that a
+// non-Known Maybe carries, and -- crucially -- how it MERGES across operators.
+// The precedence is operation-dependent (see emboss_arithmetic.h): arithmetic
+// lets kUndefined dominate, while short-circuiting And/Or let kUnreadable
+// dominate.
+//
+// The test-local operator==(Maybe, Maybe) above ignores the reason, so these
+// tests assert on Reason()/IsUndefined() directly.
+
+// Reason shorthands.  A Known() value, an unreadable Unknown, and an undefined
+// Unknown, for both int and bool.
+constexpr Maybe<int> kKnownInt = Maybe<int>(5);
+constexpr Maybe<int> kUnreadableInt = Maybe<int>();
+constexpr Maybe<int> kUndefinedInt = Maybe<int>(Unknowability::kUndefined);
+constexpr Maybe<bool> kTrue = Maybe<bool>(true);
+constexpr Maybe<bool> kFalse = Maybe<bool>(false);
+constexpr Maybe<bool> kUnreadableBool = Maybe<bool>();
+constexpr Maybe<bool> kUndefinedBool = Maybe<bool>(Unknowability::kUndefined);
+
+// Operator function templates cannot be aliased, so these helper wrappers give
+// the merge-matrix tests below a concise, fixed-type spelling of each operator.
+inline Maybe<int> SumII(Maybe<int> l, Maybe<int> r) {
+  return Sum<int, int, int, int>(l, r);
+}
+inline Maybe<int> MaxI5(Maybe<int> a, Maybe<int> b, Maybe<int> c, Maybe<int> d,
+                        Maybe<int> e) {
+  return Maximum<int, int, int, int, int, int>(a, b, c, d, e);
+}
+inline Maybe<bool> AndBB(Maybe<bool> l, Maybe<bool> r) {
+  return And<bool, bool, bool, bool>(l, r);
+}
+inline Maybe<bool> OrBB(Maybe<bool> l, Maybe<bool> r) {
+  return Or<bool, bool, bool, bool>(l, r);
+}
+inline Maybe<int> ChoiceI(Maybe<bool> c, Maybe<int> t, Maybe<int> f) {
+  return Choice<int, int, bool, int, int>(c, t, f);
+}
+inline Maybe<int> QuotII(Maybe<int> l, Maybe<int> r) {
+  return FlooringQuotient<int, int, int, int>(l, r);
+}
+inline Maybe<int> RemII(Maybe<int> l, Maybe<int> r) {
+  return FlooringRemainder<int, int, int, int>(l, r);
+}
+
+TEST(Unknowability, ArithmeticUndefinedDominates) {
+  // Any undefined operand makes an (un-Known) arithmetic result undefined;
+  // otherwise an un-Known result is merely unreadable.  A fully-Known result
+  // has no un-Known reason at all.
+  EXPECT_EQ(Unknowability::kKnown, SumII(kKnownInt, kKnownInt).Reason());
+  EXPECT_EQ(Unknowability::kUnreadable,
+            SumII(kKnownInt, kUnreadableInt).Reason());
+  EXPECT_EQ(Unknowability::kUndefined,
+            SumII(kKnownInt, kUndefinedInt).Reason());
+  EXPECT_EQ(Unknowability::kUndefined,
+            SumII(kUndefinedInt, kUnreadableInt).Reason());
+  EXPECT_EQ(Unknowability::kUnreadable,
+            SumII(kUnreadableInt, kUnreadableInt).Reason());
+  EXPECT_TRUE(SumII(kKnownInt, kUndefinedInt).IsUndefined());
+  EXPECT_FALSE(SumII(kKnownInt, kUnreadableInt).IsUndefined());
+
+  // Product and the comparisons route through the same MaybeDo path.
+  EXPECT_EQ(Unknowability::kUndefined,
+            (Product<int, int, int, int>(kUndefinedInt, kKnownInt)).Reason());
+  EXPECT_EQ(
+      Unknowability::kUndefined,
+      (Equal<bool, bool, int, int>(kUndefinedInt, kKnownInt)).Reason());
+  EXPECT_EQ(
+      Unknowability::kUnreadable,
+      (LessThan<bool, bool, int, int>(kUnreadableInt, kKnownInt)).Reason());
+}
+
+TEST(Unknowability, MaximumUndefinedDominatesAcrossManyArgs) {
+  // Maximum folds through MaybeDo variadically: a single undefined arg among
+  // many poisons the whole max as undefined.
+  EXPECT_EQ(
+      Unknowability::kUndefined,
+      MaxI5(kKnownInt, kKnownInt, kUndefinedInt, kKnownInt, kUnreadableInt)
+          .Reason());
+  EXPECT_EQ(
+      Unknowability::kUnreadable,
+      MaxI5(kKnownInt, kUnreadableInt, kKnownInt, kKnownInt, kKnownInt)
+          .Reason());
+  EXPECT_EQ(
+      Unknowability::kKnown,
+      MaxI5(kKnownInt, kKnownInt, kKnownInt, kKnownInt, kKnownInt).Reason());
+}
+
+TEST(Unknowability, AndUnreadableDominates) {
+  // In a short-circuiting And, an unreadable operand could still become a Known
+  // false with more bytes -- resolving the whole And -- so kUnreadable
+  // dominates kUndefined.  A Known false still short-circuits to Known false.
+  //
+  // unreadable + undefined -> unreadable (unreadable side might yet settle).
+  EXPECT_EQ(Unknowability::kUnreadable,
+            AndBB(kUndefinedBool, kUnreadableBool).Reason());
+  EXPECT_EQ(Unknowability::kUnreadable,
+            AndBB(kUnreadableBool, kUndefinedBool).Reason());
+  // Both undefined -> nothing can settle it -> undefined.
+  EXPECT_EQ(Unknowability::kUndefined,
+            AndBB(kUndefinedBool, kUndefinedBool).Reason());
+  // A settled (Known true) side plus an undefined side -> undefined.
+  EXPECT_EQ(Unknowability::kUndefined, AndBB(kTrue, kUndefinedBool).Reason());
+  EXPECT_EQ(Unknowability::kUnreadable, AndBB(kTrue, kUnreadableBool).Reason());
+  // A Known false short-circuits regardless of the other side's reason.
+  EXPECT_EQ(Unknowability::kKnown, AndBB(kFalse, kUndefinedBool).Reason());
+  EXPECT_TRUE(AndBB(kFalse, kUndefinedBool).Known());
+  EXPECT_FALSE(AndBB(kFalse, kUndefinedBool).ValueOrDefault());
+}
+
+TEST(Unknowability, OrUnreadableDominates) {
+  // Symmetric to And: an unreadable operand could still become a Known true,
+  // resolving the Or, so kUnreadable dominates.  A Known true short-circuits.
+  EXPECT_EQ(Unknowability::kUnreadable,
+            OrBB(kUndefinedBool, kUnreadableBool).Reason());
+  EXPECT_EQ(Unknowability::kUndefined,
+            OrBB(kUndefinedBool, kUndefinedBool).Reason());
+  // A settled (Known false) side plus an undefined side -> undefined.
+  EXPECT_EQ(Unknowability::kUndefined, OrBB(kFalse, kUndefinedBool).Reason());
+  EXPECT_EQ(Unknowability::kUnreadable, OrBB(kFalse, kUnreadableBool).Reason());
+  // A Known true short-circuits regardless of the other side's reason.
+  EXPECT_EQ(Unknowability::kKnown, OrBB(kTrue, kUndefinedBool).Reason());
+  EXPECT_TRUE(OrBB(kTrue, kUndefinedBool).ValueOrDefault());
+}
+
+TEST(Unknowability, ChoicePropagatesConditionThenTakenBranch) {
+  // Unknown condition -> propagate the condition's reason.
+  EXPECT_EQ(Unknowability::kUndefined,
+            ChoiceI(kUndefinedBool, kKnownInt, kKnownInt).Reason());
+  EXPECT_EQ(Unknowability::kUnreadable,
+            ChoiceI(kUnreadableBool, kKnownInt, kKnownInt).Reason());
+  // Known condition -> propagate ONLY the taken branch's reason; the untaken
+  // branch's undefined-ness is irrelevant.
+  EXPECT_EQ(Unknowability::kUndefined,
+            ChoiceI(kTrue, kUndefinedInt, kKnownInt).Reason());
+  EXPECT_EQ(Unknowability::kKnown,
+            ChoiceI(kTrue, kKnownInt, kUndefinedInt).Reason());
+  EXPECT_EQ(Unknowability::kKnown,
+            ChoiceI(kFalse, kUndefinedInt, kKnownInt).Reason());
+  EXPECT_EQ(Unknowability::kUndefined,
+            ChoiceI(kFalse, kKnownInt, kUndefinedInt).Reason());
+  EXPECT_EQ(Unknowability::kUnreadable,
+            ChoiceI(kTrue, kUnreadableInt, kKnownInt).Reason());
+}
+
+TEST(Unknowability, MaybeStaticCastPropagates) {
+  EXPECT_EQ(
+      Unknowability::kUndefined,
+      (MaybeStaticCast</**/ ::std::int64_t, int>(kUndefinedInt)).Reason());
+  EXPECT_EQ(
+      Unknowability::kUnreadable,
+      (MaybeStaticCast</**/ ::std::int64_t, int>(kUnreadableInt)).Reason());
+  EXPECT_EQ(Unknowability::kKnown,
+            (MaybeStaticCast</**/ ::std::int64_t, int>(kKnownInt)).Reason());
+}
+
+TEST(Unknowability, DivideOrModuloZeroDivisorIsUndefined) {
+  // A Known zero divisor is undefined -- even if the dividend is unreadable,
+  // the r==0 case dominates.
+  EXPECT_EQ(Unknowability::kUndefined,
+            QuotII(Maybe<int>(8), Maybe<int>(0)).Reason());
+  EXPECT_EQ(Unknowability::kUndefined,
+            RemII(Maybe<int>(8), Maybe<int>(0)).Reason());
+  EXPECT_EQ(Unknowability::kUndefined,
+            QuotII(kUnreadableInt, Maybe<int>(0)).Reason());
+  EXPECT_TRUE(QuotII(Maybe<int>(8), Maybe<int>(0)).IsUndefined());
+
+  // An unreadable operand with a nonzero (or unreadable) divisor is unreadable.
+  EXPECT_EQ(Unknowability::kUnreadable,
+            QuotII(Maybe<int>(8), kUnreadableInt).Reason());
+  EXPECT_EQ(Unknowability::kUnreadable,
+            QuotII(kUnreadableInt, Maybe<int>(2)).Reason());
+
+  // An already-undefined operand propagates as undefined.
+  EXPECT_EQ(Unknowability::kUndefined,
+            QuotII(kUndefinedInt, Maybe<int>(2)).Reason());
+  EXPECT_EQ(Unknowability::kUndefined,
+            QuotII(Maybe<int>(8), kUndefinedInt).Reason());
+  EXPECT_EQ(Unknowability::kUndefined,
+            QuotII(kUndefinedInt, kUnreadableInt).Reason());
+
+  // A defined division has a Known result and no reason.
+  EXPECT_EQ(Unknowability::kKnown,
+            QuotII(Maybe<int>(8), Maybe<int>(2)).Reason());
+}
+
 }  // namespace test
 }  // namespace support
 }  // namespace emboss

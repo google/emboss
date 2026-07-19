@@ -236,10 +236,11 @@ class GenericStructureWithConstantsView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
-           backing_.SizeInBytes() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+    return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            backing_.SizeInBytes() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBytes().UncheckedRead()));
   }
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
@@ -626,6 +627,9 @@ class GenericStructureWithConstantsView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -663,6 +667,9 @@ class GenericStructureWithConstantsView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -700,6 +707,9 @@ class GenericStructureWithConstantsView final {
     static constexpr ::std::uint32_t Read();
     static constexpr ::std::uint32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -737,6 +747,9 @@ class GenericStructureWithConstantsView final {
     static constexpr ::std::int64_t Read();
     static constexpr ::std::int64_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -774,6 +787,9 @@ class GenericStructureWithConstantsView final {
     static constexpr ::std::int64_t Read();
     static constexpr ::std::int64_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -839,6 +855,9 @@ class GenericStructureWithConstantsView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -876,6 +895,9 @@ class GenericStructureWithConstantsView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -914,6 +936,9 @@ class GenericStructureWithConstantsView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -952,6 +977,9 @@ class GenericStructureWithConstantsView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -990,6 +1018,9 @@ class GenericStructureWithConstantsView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -1153,10 +1184,11 @@ class GenericStructureWithComputedValuesView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
-           backing_.SizeInBytes() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+    return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            backing_.SizeInBytes() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBytes().UncheckedRead()));
   }
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
@@ -1554,6 +1586,14 @@ class GenericStructureWithComputedValuesView final {
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -1628,6 +1668,14 @@ class GenericStructureWithComputedValuesView final {
       auto emboss_reserved_local_value = MaybeRead();
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
+    }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
     }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
@@ -1765,6 +1813,14 @@ class GenericStructureWithComputedValuesView final {
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -1839,6 +1895,14 @@ class GenericStructureWithComputedValuesView final {
       auto emboss_reserved_local_value = MaybeRead();
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
+    }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
     }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
@@ -1964,6 +2028,14 @@ class GenericStructureWithComputedValuesView final {
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -2028,6 +2100,9 @@ class GenericStructureWithComputedValuesView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -2066,6 +2141,9 @@ class GenericStructureWithComputedValuesView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -2104,6 +2182,9 @@ class GenericStructureWithComputedValuesView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -2255,10 +2336,11 @@ class GenericStructureWithConditionalValueView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
-           backing_.SizeInBytes() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+    return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            backing_.SizeInBytes() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBytes().UncheckedRead()));
   }
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
@@ -2515,6 +2597,14 @@ class GenericStructureWithConditionalValueView final {
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -2589,6 +2679,14 @@ class GenericStructureWithConditionalValueView final {
       auto emboss_reserved_local_value = MaybeRead();
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
+    }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
     }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
@@ -2698,6 +2796,9 @@ class GenericStructureWithConditionalValueView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -2736,6 +2837,9 @@ class GenericStructureWithConditionalValueView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -2774,6 +2878,9 @@ class GenericStructureWithConditionalValueView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -2927,10 +3034,11 @@ class GenericStructureWithValueInConditionView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
-           backing_.SizeInBytes() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+    return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            backing_.SizeInBytes() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBytes().UncheckedRead()));
   }
   ::std::size_t SizeInBytes() const {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
@@ -3218,6 +3326,14 @@ class GenericStructureWithValueInConditionView final {
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -3305,6 +3421,14 @@ class GenericStructureWithValueInConditionView final {
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -3382,6 +3506,9 @@ class GenericStructureWithValueInConditionView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -3420,6 +3547,9 @@ class GenericStructureWithValueInConditionView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -3576,10 +3706,11 @@ class GenericStructureWithValuesInLocationView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
-           backing_.SizeInBytes() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+    return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            backing_.SizeInBytes() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBytes().UncheckedRead()));
   }
   ::std::size_t SizeInBytes() const {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
@@ -3929,6 +4060,14 @@ class GenericStructureWithValuesInLocationView final {
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -4028,6 +4167,14 @@ class GenericStructureWithValuesInLocationView final {
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -4117,6 +4264,9 @@ class GenericStructureWithValuesInLocationView final {
     static constexpr ::std::int64_t Read();
     static constexpr ::std::int64_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -4155,6 +4305,9 @@ class GenericStructureWithValuesInLocationView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -4300,10 +4453,11 @@ class GenericStructureWithBoolValueView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
-           backing_.SizeInBytes() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+    return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            backing_.SizeInBytes() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBytes().UncheckedRead()));
   }
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
@@ -4521,6 +4675,14 @@ class GenericStructureWithBoolValueView final {
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -4579,6 +4741,9 @@ class GenericStructureWithBoolValueView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -4617,6 +4782,9 @@ class GenericStructureWithBoolValueView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -4655,6 +4823,9 @@ class GenericStructureWithBoolValueView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -4894,10 +5065,11 @@ class GenericStructureWithEnumValueView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
-           backing_.SizeInBytes() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+    return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            backing_.SizeInBytes() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBytes().UncheckedRead()));
   }
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
@@ -5116,6 +5288,14 @@ class GenericStructureWithEnumValueView final {
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -5192,6 +5372,9 @@ class GenericStructureWithEnumValueView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -5230,6 +5413,9 @@ class GenericStructureWithEnumValueView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -5268,6 +5454,9 @@ class GenericStructureWithEnumValueView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -5417,10 +5606,11 @@ class GenericStructureWithBitsWithValueView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
-           backing_.SizeInBytes() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+    return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            backing_.SizeInBytes() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBytes().UncheckedRead()));
   }
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
@@ -5676,6 +5866,14 @@ class GenericStructureWithBitsWithValueView final {
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -5736,6 +5934,9 @@ class GenericStructureWithBitsWithValueView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -5774,6 +5975,9 @@ class GenericStructureWithBitsWithValueView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -5812,6 +6016,9 @@ class GenericStructureWithBitsWithValueView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -5956,9 +6163,11 @@ class GenericBitsWithValueView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBits().Ok() &&
-           backing_.SizeInBits() >= static_cast</**/ ::std::size_t>(
-                                        IntrinsicSizeInBits().UncheckedRead());
+    return IntrinsicSizeInBits().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBits().Ok() &&
+            backing_.SizeInBits() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBits().UncheckedRead()));
   }
   static constexpr ::std::size_t SizeInBits() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBits().Read());
@@ -6245,6 +6454,14 @@ class GenericBitsWithValueView final {
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -6309,6 +6526,9 @@ class GenericBitsWithValueView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -6347,6 +6567,9 @@ class GenericBitsWithValueView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -6385,6 +6608,9 @@ class GenericBitsWithValueView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -6532,10 +6758,11 @@ class GenericStructureUsingForeignConstantsView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
-           backing_.SizeInBytes() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+    return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            backing_.SizeInBytes() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBytes().UncheckedRead()));
   }
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
@@ -6740,6 +6967,9 @@ class GenericStructureUsingForeignConstantsView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -6777,6 +7007,9 @@ class GenericStructureUsingForeignConstantsView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -6815,6 +7048,9 @@ class GenericStructureUsingForeignConstantsView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -6853,6 +7089,9 @@ class GenericStructureUsingForeignConstantsView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -6997,10 +7236,11 @@ class GenericHeaderView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
-           backing_.SizeInBytes() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+    return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            backing_.SizeInBytes() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBytes().UncheckedRead()));
   }
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
@@ -7262,6 +7502,9 @@ class GenericHeaderView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -7300,6 +7543,9 @@ class GenericHeaderView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -7338,6 +7584,9 @@ class GenericHeaderView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -7479,10 +7728,11 @@ class GenericSubfieldOfAliasView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
-           backing_.SizeInBytes() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+    return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            backing_.SizeInBytes() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBytes().UncheckedRead()));
   }
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
@@ -7750,6 +8000,9 @@ class GenericSubfieldOfAliasView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -7788,6 +8041,9 @@ class GenericSubfieldOfAliasView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -7826,6 +8082,9 @@ class GenericSubfieldOfAliasView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -7971,10 +8230,11 @@ class GenericRestrictedAliasView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
-           backing_.SizeInBytes() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+    return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            backing_.SizeInBytes() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBytes().UncheckedRead()));
   }
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
@@ -8279,6 +8539,9 @@ class GenericRestrictedAliasView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -8317,6 +8580,9 @@ class GenericRestrictedAliasView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -8355,6 +8621,9 @@ class GenericRestrictedAliasView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -8496,10 +8765,11 @@ class GenericXView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
-           backing_.SizeInBytes() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+    return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            backing_.SizeInBytes() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBytes().UncheckedRead()));
   }
   ::std::size_t SizeInBytes() const {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
@@ -8774,6 +9044,14 @@ class GenericXView final {
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -8851,6 +9129,9 @@ class GenericXView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -8889,6 +9170,9 @@ class GenericXView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -9030,10 +9314,11 @@ class GenericHasFieldView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
-           backing_.SizeInBytes() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+    return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            backing_.SizeInBytes() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBytes().UncheckedRead()));
   }
   ::std::size_t SizeInBytes() const {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
@@ -9364,6 +9649,14 @@ class GenericHasFieldView final {
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -9424,6 +9717,14 @@ class GenericHasFieldView final {
       auto emboss_reserved_local_value = MaybeRead();
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
+    }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
     }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
@@ -9502,6 +9803,9 @@ class GenericHasFieldView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -9540,6 +9844,9 @@ class GenericHasFieldView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -9688,10 +9995,11 @@ class GenericVirtualUnconditionallyUsesConditionalView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
-           backing_.SizeInBytes() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+    return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            backing_.SizeInBytes() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBytes().UncheckedRead()));
   }
   ::std::size_t SizeInBytes() const {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
@@ -9989,6 +10297,14 @@ class GenericVirtualUnconditionallyUsesConditionalView final {
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -10079,6 +10395,14 @@ class GenericVirtualUnconditionallyUsesConditionalView final {
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -10156,6 +10480,9 @@ class GenericVirtualUnconditionallyUsesConditionalView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -10194,6 +10521,9 @@ class GenericVirtualUnconditionallyUsesConditionalView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -10339,9 +10669,11 @@ class GenericRView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBits().Ok() &&
-           backing_.SizeInBits() >= static_cast</**/ ::std::size_t>(
-                                        IntrinsicSizeInBits().UncheckedRead());
+    return IntrinsicSizeInBits().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBits().Ok() &&
+            backing_.SizeInBits() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBits().UncheckedRead()));
   }
   static constexpr ::std::size_t SizeInBits() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBits().Read());
@@ -10540,6 +10872,9 @@ class GenericRView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -10592,6 +10927,14 @@ class GenericRView final {
       auto emboss_reserved_local_value = MaybeRead();
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
+    }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
     }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
@@ -10652,6 +10995,9 @@ class GenericRView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -10690,6 +11036,9 @@ class GenericRView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -10826,10 +11175,11 @@ class GenericUsesSizeView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
-           backing_.SizeInBytes() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+    return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            backing_.SizeInBytes() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBytes().UncheckedRead()));
   }
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
@@ -11033,6 +11383,9 @@ class GenericUsesSizeView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -11085,6 +11438,14 @@ class GenericUsesSizeView final {
       auto emboss_reserved_local_value = MaybeRead();
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
+    }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
     }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
@@ -11145,6 +11506,9 @@ class GenericUsesSizeView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -11183,6 +11547,9 @@ class GenericUsesSizeView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -11322,10 +11689,11 @@ class GenericUsesExternalSizeView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
-           backing_.SizeInBytes() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+    return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            backing_.SizeInBytes() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBytes().UncheckedRead()));
   }
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
@@ -11577,6 +11945,9 @@ class GenericUsesExternalSizeView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -11615,6 +11986,9 @@ class GenericUsesExternalSizeView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -11653,6 +12027,9 @@ class GenericUsesExternalSizeView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -11808,10 +12185,11 @@ class GenericImplicitWriteBackView final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
-           backing_.SizeInBytes() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+    return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            backing_.SizeInBytes() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBytes().UncheckedRead()));
   }
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
@@ -12200,6 +12578,14 @@ class GenericImplicitWriteBackView final {
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -12322,6 +12708,14 @@ class GenericImplicitWriteBackView final {
       auto emboss_reserved_local_value = MaybeRead();
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
+    }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
     }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
@@ -12446,6 +12840,14 @@ class GenericImplicitWriteBackView final {
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
     }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -12564,6 +12966,14 @@ class GenericImplicitWriteBackView final {
       auto emboss_reserved_local_value = MaybeRead();
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
+    }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
     }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
@@ -12687,6 +13097,14 @@ class GenericImplicitWriteBackView final {
       auto emboss_reserved_local_value = MaybeRead();
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
+    }
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
     }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
@@ -12815,6 +13233,9 @@ class GenericImplicitWriteBackView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -12853,6 +13274,9 @@ class GenericImplicitWriteBackView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -12891,6 +13315,9 @@ class GenericImplicitWriteBackView final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&

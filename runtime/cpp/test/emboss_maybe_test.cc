@@ -58,6 +58,50 @@ TEST(Maybe, Unknown) {
   EXPECT_FALSE(y.Known());
 }
 
+TEST(Maybe, Unknowability) {
+  // A default-constructed Maybe is Unknown for the ordinary kUnreadable reason.
+  EXPECT_EQ(Unknowability::kUnreadable, Maybe<int>().Reason());
+  EXPECT_FALSE(Maybe<int>().IsUndefined());
+
+  // A value-carrying Maybe is kKnown and never undefined.
+  EXPECT_EQ(Unknowability::kKnown, Maybe<int>(10).Reason());
+  EXPECT_FALSE(Maybe<int>(10).IsUndefined());
+
+  // The reason constructor records why the value is missing.
+  EXPECT_EQ(Unknowability::kUndefined,
+            Maybe<int>(Unknowability::kUndefined).Reason());
+  EXPECT_TRUE(Maybe<int>(Unknowability::kUndefined).IsUndefined());
+  EXPECT_FALSE(Maybe<int>(Unknowability::kUndefined).Known());
+  EXPECT_EQ(Unknowability::kUnreadable,
+            Maybe<int>(Unknowability::kUnreadable).Reason());
+  EXPECT_FALSE(Maybe<int>(Unknowability::kUnreadable).IsUndefined());
+
+  // These are all constexpr.
+  static_assert(Maybe<int>().Reason() == Unknowability::kUnreadable, "");
+  static_assert(Maybe<int>(Unknowability::kUndefined).IsUndefined(), "");
+  static_assert(!Maybe<int>(5).IsUndefined(), "");
+}
+
+TEST(Maybe, CopyAndAssignPreserveReason) {
+  // Copy construction preserves the reason.
+  Maybe<int> undefined = Maybe<int>(Unknowability::kUndefined);
+  Maybe<int> copy = undefined;
+  EXPECT_TRUE(copy.IsUndefined());
+
+  // Copy assignment preserves the reason.
+  Maybe<int> assigned = Maybe<int>(7);
+  assigned = undefined;
+  EXPECT_TRUE(assigned.IsUndefined());
+  EXPECT_FALSE(assigned.Known());
+
+  // Assigning a Known Maybe overwrites the reason back to kKnown.
+  assigned = Maybe<int>(42);
+  EXPECT_TRUE(assigned.Known());
+  EXPECT_FALSE(assigned.IsUndefined());
+  EXPECT_EQ(Unknowability::kKnown, assigned.Reason());
+  EXPECT_EQ(42, assigned.Value());
+}
+
 }  // namespace test
 }  // namespace support
 }  // namespace emboss
