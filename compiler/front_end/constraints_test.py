@@ -68,6 +68,48 @@ class ConstraintsTest(unittest.TestCase):
         ir = _make_ir_from_emb("struct Foo:\n" "  0 [+1]  UInt:8[1][]  one_byte\n")
         self.assertEqual([], constraints.check_constraints(ir))
 
+    def test_no_error_on_division_by_positive_constant(self):
+        ir = _make_ir_from_emb(
+            "struct Foo:\n" "  0 [+1]  UInt  x\n" "  let half = x // 2\n"
+        )
+        self.assertEqual([], constraints.check_constraints(ir))
+
+    def test_no_error_on_modulus_by_positive_constant(self):
+        ir = _make_ir_from_emb(
+            "struct Foo:\n" "  0 [+1]  UInt  x\n" "  let r = x % 4\n"
+        )
+        self.assertEqual([], constraints.check_constraints(ir))
+
+    def test_error_on_division_with_divisor_range_including_zero(self):
+        ir = _make_ir_from_emb(
+            "struct Foo:\n"
+            "  0 [+1]  UInt  divisor\n"
+            "  1 [+1]  UInt  dividend\n"
+            "  let q = dividend // divisor\n"
+        )
+        errors = error.filter_errors(constraints.check_constraints(ir))
+        self.assertEqual(1, len(errors))
+        self.assertIn("Right argument of '//' cannot be zero.", errors[0][0].message)
+
+    def test_error_on_modulus_with_divisor_range_including_zero(self):
+        ir = _make_ir_from_emb(
+            "struct Foo:\n"
+            "  0 [+1]  UInt  divisor\n"
+            "  1 [+1]  UInt  dividend\n"
+            "  let r = dividend % divisor\n"
+        )
+        errors = error.filter_errors(constraints.check_constraints(ir))
+        self.assertEqual(1, len(errors))
+        self.assertIn("Right argument of '%' cannot be zero.", errors[0][0].message)
+
+    def test_error_on_division_by_zero_literal(self):
+        ir = _make_ir_from_emb(
+            "struct Foo:\n" "  0 [+1]  UInt  x\n" "  let q = x // 0\n"
+        )
+        errors = error.filter_errors(constraints.check_constraints(ir))
+        self.assertEqual(1, len(errors))
+        self.assertIn("Right argument of '//' cannot be zero.", errors[0][0].message)
+
     def test_no_error_on_dynamically_sized_struct_in_dynamically_sized_field(self):
         ir = _make_ir_from_emb(
             "struct Foo:\n"
