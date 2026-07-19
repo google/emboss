@@ -175,6 +175,10 @@ class FunctionMapping(int, enum.Enum):
     """`-`"""
     MULTIPLICATION = 3
     """`*`"""
+    FLOOR_DIVISION = 17
+    """`//`"""
+    MODULUS = 18
+    """`%`"""
     EQUALITY = 4
     """`==`"""
     INEQUALITY = 5

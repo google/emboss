@@ -576,6 +576,8 @@ def _builtin_function_name(function):
         ir_data.FunctionMapping.ADDITION: "Sum",
         ir_data.FunctionMapping.SUBTRACTION: "Difference",
         ir_data.FunctionMapping.MULTIPLICATION: "Product",
+        ir_data.FunctionMapping.FLOOR_DIVISION: "FlooringQuotient",
+        ir_data.FunctionMapping.MODULUS: "FlooringRemainder",
         ir_data.FunctionMapping.EQUALITY: "Equal",
         ir_data.FunctionMapping.INEQUALITY: "NotEqual",
         ir_data.FunctionMapping.AND: "And",

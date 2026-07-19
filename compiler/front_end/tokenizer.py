@@ -156,7 +156,7 @@ def tokenize(text, file_name):
 
 # Token patterns used by _tokenize_line.
 LITERAL_TOKEN_PATTERNS = (
-    "[ ] ( ) : = + - * . ? == != && || < > <= >= , "
+    "[ ] ( ) : = + - * // % . ? == != && || < > <= >= , "
     "$static_size_in_bits $is_statically_sized "
     "$max $present $upper_bound $lower_bound $next "
     "$size_in_bits $size_in_bytes "

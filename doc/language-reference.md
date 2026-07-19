@@ -1179,7 +1179,7 @@ binding):
 
 1.  `()` `$max()` `$present()` `$upper_bound()` `$lower_bound()`
 2.  unary `+` and `-` ([see note 1](#note-1-unary-plusminus-precedence))
-3.  `*`
+3.  `*` `//` `%` ([see note 5](#note-5-multiplicative-mixing))
 4.  `+` `-`
 5.  `<` `>` `==` `!=` `>=` `<=` ([see note 2](#note-2-chained-and-mixed-comparisons))
 6.  `&&` `||` ([see note 3](#note-3-logical-andor-precedence))
@@ -1275,6 +1275,34 @@ This is not:
 q ? x : r ? y : z  # Is this `(q?x:r)?y:z` or `q?x:(r?y:z)`?
 q ? r ? x : y : z  # Technically unambiguous, but visually confusing
 ```
+
+
+###### Note 5 (Multiplicative Mixing)
+
+`*` has the same precedence as `//` and `%`, but `*` may not be mixed with
+either `//` or `%` without parentheses.  The following are allowed:
+
+```
+a * b * c
+a // b // c
+a % b % c
+a // b % c
+(a * b) // c
+a * (b // c)
+```
+
+The following are not allowed:
+
+```
+a * b // c
+a // b * c
+a * b % c
+a % b * c
+```
+
+Note that this restriction is one-sided: `*` may not be mixed with `//` or `%`,
+but `//` and `%` may be mixed freely with each other (matching the convention in
+most programming languages).
 
 
 ##### `()`
@@ -1398,6 +1426,48 @@ Unary `+` and `-` require an integer argument, and return an integer result.
 ```
 
 The `*` operator requires two integer arguments, and returns an integer.
+
+
+##### `//`
+
+`//` is the flooring integer division operator.  The result is the mathematical
+quotient rounded toward negative infinity:
+
+```
+8 // 3 == 2
+8 // -3 == -3
+-8 // 3 == -3
+-8 // -3 == 2
+```
+
+This is Python 3's `//` operator, not C/C++'s truncating `/`.  The two agree
+when both operands are non-negative.
+
+The `//` operator requires two integer arguments, and returns an integer.
+
+The right argument may not be zero.  This is enforced at compile time: if the
+divisor's range includes zero, the compiler rejects the expression.  Most uses
+of `//` divide by a constant, or by a value whose range has been narrowed (for
+example by an enclosing `if divisor != 0:`).
+
+
+##### `%`
+
+`%` is the flooring modulus operator.  The result has the same sign as the
+divisor (or is zero), and satisfies `(l // r) * r + l % r == l`:
+
+```
+8 % 3 == 2
+8 % -3 == -1
+-8 % 3 == 1
+-8 % -3 == -2
+```
+
+This is Python 3's `%`, not C/C++'s `%` (which returns the truncating
+remainder).
+
+The `%` operator requires two integer arguments, and returns an integer.  As
+with `//`, the right argument may not be zero.
 
 
 ##### `+` and `-`

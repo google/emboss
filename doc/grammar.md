@@ -82,11 +82,13 @@ additive-expression                    -> times-expression
 additive-expression-right              -> additive-operator times-expression
 additive-operator                      -> "+"
                                         | "-"
-times-expression                       -> negation-expression
-                                          times-expression-right*
-times-expression-right                 -> multiplicative-operator
-                                          negation-expression
-multiplicative-operator                -> "*"
+times-expression                       -> divmod-expression
+                                        | negation-expression
+                                        | star-expression
+star-expression                        -> negation-expression
+                                          star-expression-right+
+star-expression-right                  -> star-operator negation-expression
+star-operator                          -> "*"
 negation-expression                    -> additive-operator bottom-expression
                                         | bottom-expression
 bottom-expression                      -> "(" expression ")"
@@ -128,6 +130,11 @@ builtin-word                           -> "$is_statically_sized"
                                         | "$next"
                                         | "$static_size_in_bits"
 boolean-constant                       -> BooleanConstant
+divmod-expression                      -> negation-expression
+                                          divmod-expression-right+
+divmod-expression-right                -> divmod-operator negation-expression
+divmod-operator                        -> "%"
+                                        | "//"
 and-expression                         -> comparison-expression
                                           and-expression-right+
 and-expression-right                   -> and-operator comparison-expression
@@ -261,6 +268,11 @@ delimited-argument-list?              -> <empty>
                                        | delimited-argument-list
 delimited-parameter-definition-list?  -> <empty>
                                        | delimited-parameter-definition-list
+divmod-expression-right*              -> <empty>
+                                       | divmod-expression-right
+                                         divmod-expression-right*
+divmod-expression-right+              -> divmod-expression-right
+                                         divmod-expression-right*
 doc-line*                             -> <empty>
                                        | doc-line doc-line*
 doc?                                  -> <empty>
@@ -294,9 +306,11 @@ or-expression-right+                  -> or-expression-right or-expression-right
 parameter-definition-list-tail*       -> <empty>
                                        | parameter-definition-list-tail
                                          parameter-definition-list-tail*
-times-expression-right*               -> <empty>
-                                       | times-expression-right
-                                         times-expression-right*
+star-expression-right*                -> <empty>
+                                       | star-expression-right
+                                         star-expression-right*
+star-expression-right+                -> star-expression-right
+                                         star-expression-right*
 type-definition*                      -> <empty>
                                        | type-definition type-definition*
 type-size-specifier?                  -> <empty>
@@ -333,6 +347,8 @@ Pattern                                    | Symbol
 `\+`                                       | `"+"`
 `\-`                                       | `"-"`
 `\*`                                       | `"*"`
+`\/\/`                                     | `"//"`
+`\%`                                       | `"%"`
 `\.`                                       | `"."`
 `\?`                                       | `"?"`
 `\=\=`                                     | `"=="`
