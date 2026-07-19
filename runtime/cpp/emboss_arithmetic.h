@@ -82,6 +82,27 @@ inline constexpr bool AllKnown() { return true; }
 // This reduces stack frames by ~64x.
 #include "emboss_arithmetic_all_known_generated.h"
 
+// AnyUndefined(...) returns true if any of its (Maybe<>) arguments
+// IsUndefined().  It is only ever evaluated on the un-Known() branch of an
+// operation (see MaybeDo), so its cost -- and its worst-case linear recursion,
+// mirroring the concern documented for AllKnown above -- never lands on the
+// hot, all-Known() Ok() path.  The base case is no arguments.
+inline constexpr bool AnyUndefined() { return false; }
+
+template <typename T, typename... RestT>
+inline constexpr bool AnyUndefined(Maybe<T> v, RestT... rest) {
+  return v.IsUndefined() || AnyUndefined(rest...);
+}
+
+// When an ordinary (total) arithmetic operation has an un-Known() result, the
+// reason is kUndefined if any operand was undefined -- an undefined input can
+// never be fixed by supplying more bytes -- and kUnreadable otherwise.
+template <typename... ArgsT>
+inline constexpr Unknowability ArithmeticUnknowability(Maybe<ArgsT>... args) {
+  return AnyUndefined(args...) ? Unknowability::kUndefined
+                               : Unknowability::kUnreadable;
+}
+
 // MaybeDo implements the logic of checking for known values, unwrapping the
 // known values, passing the unwrapped values to OperatorT, and then rewrapping
 // the result.
@@ -91,7 +112,7 @@ inline constexpr Maybe<ResultT> MaybeDo(Maybe<ArgsT>... args) {
   return AllKnown(args...)
              ? Maybe<ResultT>(static_cast<ResultT>(OperatorT::template Do<>(
                    static_cast<IntermediateT>(args.ValueOrDefault())...)))
-             : Maybe<ResultT>();
+             : Maybe<ResultT>(ArithmeticUnknowability(args...));
 }
 
 //// Operations intended to be passed to MaybeDo:
@@ -307,6 +328,20 @@ inline constexpr bool AssertBooleanOperationTypes() {
   return true;  // A literal return type is required for a constexpr function.
 }
 
+// When a short-circuiting boolean operation (And/Or) has an un-Known() result,
+// the reason merge is the *opposite* of arithmetic: kUnreadable dominates
+// kUndefined.  In `And(undefined, unreadable)`, supplying more bytes could
+// still resolve the unreadable operand to Known() false, which would make the
+// whole And a Known() false -- so the result is not yet doomed, and its reason
+// is kUnreadable.  Only when *no* operand can still be settled by more bytes
+// (i.e. no operand is kUnreadable) is the short-circuited result kUndefined.
+inline constexpr Unknowability BooleanUnknowability(Unknowability l,
+                                                    Unknowability r) {
+  return l == Unknowability::kUnreadable || r == Unknowability::kUnreadable
+             ? Unknowability::kUnreadable
+             : Unknowability::kUndefined;
+}
+
 template <typename IntermediateT, typename ResultT, typename LeftT,
           typename RightT>
 inline constexpr Maybe<ResultT> And(Maybe<LeftT> l, Maybe<RightT> r) {
@@ -316,8 +351,10 @@ inline constexpr Maybe<ResultT> And(Maybe<LeftT> l, Maybe<RightT> r) {
   return AssertBooleanOperationTypes<IntermediateT, ResultT, LeftT, RightT>(),
          !l.ValueOr(true) || !r.ValueOr(true)
              ? Maybe<ResultT>(false)
-             : (!l.Known() || !r.Known() ? Maybe<ResultT>()
-                                         : Maybe<ResultT>(true));
+             : (!l.Known() || !r.Known()
+                    ? Maybe<ResultT>(BooleanUnknowability(l.Reason(),
+                                                          r.Reason()))
+                    : Maybe<ResultT>(true));
 }
 
 template <typename IntermediateT, typename ResultT, typename LeftT,
@@ -329,15 +366,20 @@ inline constexpr Maybe<ResultT> Or(Maybe<LeftT> l, Maybe<RightT> r) {
   return AssertBooleanOperationTypes<IntermediateT, ResultT, LeftT, RightT>(),
          l.ValueOr(false) || r.ValueOr(false)
              ? Maybe<ResultT>(true)
-             : (!l.Known() || !r.Known() ? Maybe<ResultT>()
-                                         : Maybe<ResultT>(false));
+             : (!l.Known() || !r.Known()
+                    ? Maybe<ResultT>(BooleanUnknowability(l.Reason(),
+                                                          r.Reason()))
+                    : Maybe<ResultT>(false));
 }
 
 template <typename ResultT, typename ValueT>
 inline constexpr Maybe<ResultT> MaybeStaticCast(Maybe<ValueT> value) {
+  // A cast changes only the representation, never the readability, of a value,
+  // so an un-Known() result carries the operand's reason unchanged.  This is
+  // also how Choice() forwards the reason of whichever branch it takes.
   return value.Known()
              ? Maybe<ResultT>(static_cast<ResultT>(value.ValueOrDefault()))
-             : Maybe<ResultT>();
+             : Maybe<ResultT>(value.Reason());
 }
 
 template <typename IntermediateT, typename ResultT, typename ConditionT,
@@ -356,10 +398,31 @@ inline constexpr Maybe<ResultT> Choice(Maybe<ConditionT> condition,
   // integral types, ResultT may differ from TrueT or FalseT, so Known() results
   // must be unwrapped, cast to ResultT, and re-wrapped in Maybe<ResultT>.  For
   // non-integral TrueT/FalseT/ResultT, the cast is unnecessary, but safe.
+  // If the condition is un-Known(), the result carries the condition's reason.
+  // If the condition is Known(), MaybeStaticCast forwards the reason of the
+  // taken branch (kUndefined or kUnreadable), so an undefined-but-not-taken
+  // branch never poisons the result.
   return condition.Known() ? condition.ValueOrDefault()
                                  ? MaybeStaticCast<ResultT, TrueT>(if_true)
                                  : MaybeStaticCast<ResultT, FalseT>(if_false)
-                           : Maybe<ResultT>();
+                           : Maybe<ResultT>(condition.Reason());
+}
+
+// Computes the reason a `//` or `%` produced an un-Known() result.  A Known()
+// zero divisor is the one true source of kUndefined: `x // 0` is undefined and
+// no amount of additional bytes can change that.  Otherwise (some operand is
+// itself un-Known()) the reason propagates arithmetic-style: kUndefined if an
+// operand is already undefined, else kUnreadable.  Note IntermediateT{0} is
+// only compared when r.Known(), so an un-Known() r never spuriously reads as a
+// zero divisor.
+template <typename IntermediateT, typename LeftT, typename RightT>
+inline constexpr Unknowability DivideOrModuloUnknowability(Maybe<LeftT> l,
+                                                           Maybe<RightT> r) {
+  return (r.Known() &&
+          static_cast<IntermediateT>(r.ValueOrDefault()) == IntermediateT{0})
+             ? Unknowability::kUndefined
+         : (l.IsUndefined() || r.IsUndefined()) ? Unknowability::kUndefined
+                                                : Unknowability::kUnreadable;
 }
 
 // MaybeDivideOrModulo implements the shared logic for `//` and `%`: like
@@ -376,7 +439,8 @@ inline constexpr Maybe<ResultT> MaybeDivideOrModulo(Maybe<LeftT> l,
                                                     Maybe<RightT> r) {
   return (!l.Known() || !r.Known() ||
           static_cast<IntermediateT>(r.ValueOrDefault()) == IntermediateT{0})
-             ? Maybe<ResultT>()
+             ? Maybe<ResultT>(
+                   DivideOrModuloUnknowability<IntermediateT>(l, r))
              : Maybe<ResultT>(static_cast<ResultT>(OperatorT::template Do<>(
                    static_cast<IntermediateT>(l.ValueOrDefault()),
                    static_cast<IntermediateT>(r.ValueOrDefault()))));
