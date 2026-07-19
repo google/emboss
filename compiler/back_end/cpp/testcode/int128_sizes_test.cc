@@ -356,6 +356,52 @@ TEST(UInt128SizesView, TryToCopyFrom) {
   EXPECT_EQ(x.sixteen_byte().Read(), y.sixteen_byte().Read());
 }
 
+// Text format must round-trip values that do not fit in 64 bits, in both
+// directions.  Parsing a negative value into a >64-bit signed field in
+// particular exercises the signedness check in DecodeInteger.
+TEST(UInt128SizesView, TextFormatRoundTrip) {
+  ::std::uint8_t buffer[100] = {};
+  auto writer = UInt128SizesWriter(buffer, sizeof buffer);
+
+  // A 128-bit value that does not fit in 64 bits.
+  EXPECT_TRUE(::emboss::UpdateFromText(
+      writer, "{sixteen_byte: 0xfedcba98765432100123456789abcdef}"));
+  __uint128_t expected =
+      (static_cast<__uint128_t>(0xfedcba9876543210UL) << 64) |
+      static_cast<__uint128_t>(0x0123456789abcdefUL);
+  EXPECT_EQ(expected, writer.sixteen_byte().Read());
+
+  // Out-of-range text for a 72-bit field must be rejected, not crash.
+  EXPECT_FALSE(::emboss::UpdateFromText(
+      writer, "{nine_byte: 0x1000000000000000000}"));  // 2**72
+}
+
+TEST(Int128SizesView, TextFormatRoundTripNegative) {
+  ::std::uint8_t buffer[100] = {};
+  auto writer = Int128SizesWriter(buffer, sizeof buffer);
+
+  // Negative value into a 72-bit signed field: the '-' must be honored even
+  // though ::std::is_signed<__int128_t> is false under a strict -std.
+  EXPECT_TRUE(::emboss::UpdateFromText(writer, "{nine_byte: -12345}"));
+  EXPECT_EQ(static_cast<__int128_t>(-12345), writer.nine_byte().Read());
+
+  // A large negative 128-bit value (-2**120) does not fit in 64 bits; it must
+  // round-trip through the decimal text format.
+  EXPECT_TRUE(::emboss::UpdateFromText(
+      writer, "{sixteen_byte: -1329227995784915872903807060280344576}"));
+  EXPECT_EQ(-(static_cast<__int128_t>(1) << 120), writer.sixteen_byte().Read());
+
+  // Round-trip through WriteToString and back.
+  ::std::string text = ::emboss::WriteToString(
+      MakeInt128SizesView(buffer, sizeof buffer));
+  ::std::uint8_t buffer2[100] = {};
+  auto writer2 = Int128SizesWriter(buffer2, sizeof buffer2);
+  EXPECT_TRUE(::emboss::UpdateFromText(writer2, text));
+  EXPECT_EQ(-(static_cast<__int128_t>(1) << 120),
+            writer2.sixteen_byte().Read());
+  EXPECT_EQ(static_cast<__int128_t>(-12345), writer2.nine_byte().Read());
+}
+
 }  // namespace
 }  // namespace test
 }  // namespace emboss
