@@ -57,8 +57,8 @@ inline constexpr ::std::uint64_t ByteSwap(::std::uint64_t x) {
 }
 
 #if EMBOSS_HAS_INT128
-inline constexpr __uint128_t ByteSwap(__uint128_t x) {
-  return (static_cast<__uint128_t>(ByteSwap(static_cast<::std::uint64_t>(x)))
+inline constexpr EMBOSS_UINT128_T ByteSwap(EMBOSS_UINT128_T x) {
+  return (static_cast<EMBOSS_UINT128_T>(ByteSwap(static_cast<::std::uint64_t>(x)))
           << 64) |
          ByteSwap(static_cast<::std::uint64_t>(x >> 64));
 }
