@@ -362,6 +362,42 @@ inline constexpr Maybe<ResultT> Choice(Maybe<ConditionT> condition,
                            : Maybe<ResultT>();
 }
 
+// MaybeDivideOrModulo implements the shared logic for `//` and `%`: like
+// MaybeDo it unwraps Known() operands, casts to IntermediateT, applies
+// OperatorT, and rewraps -- but it is a *special op* (like And/Or/Choice)
+// because Known() operands do not guarantee a Known() result: a zero divisor
+// yields an Unknown result instead.  Returning Unknown (rather than dividing)
+// both avoids C++ undefined behavior on divide-by-zero and lets a runtime
+// `// 0` poison the enclosing expression (e.g. $size_in_bytes -> Ok()) with no
+// crash, matching the Emboss expression type system's `undefined` value.
+template <typename IntermediateT, typename ResultT, typename OperatorT,
+          typename LeftT, typename RightT>
+inline constexpr Maybe<ResultT> MaybeDivideOrModulo(Maybe<LeftT> l,
+                                                    Maybe<RightT> r) {
+  return (!l.Known() || !r.Known() ||
+          static_cast<IntermediateT>(r.ValueOrDefault()) == IntermediateT{0})
+             ? Maybe<ResultT>()
+             : Maybe<ResultT>(static_cast<ResultT>(OperatorT::template Do<>(
+                   static_cast<IntermediateT>(l.ValueOrDefault()),
+                   static_cast<IntermediateT>(r.ValueOrDefault()))));
+}
+
+template <typename IntermediateT, typename ResultT, typename LeftT,
+          typename RightT>
+inline constexpr Maybe<ResultT> FlooringQuotient(Maybe<LeftT> l,
+                                                 Maybe<RightT> r) {
+  return MaybeDivideOrModulo<IntermediateT, ResultT, FlooringQuotientOperation,
+                             LeftT, RightT>(l, r);
+}
+
+template <typename IntermediateT, typename ResultT, typename LeftT,
+          typename RightT>
+inline constexpr Maybe<ResultT> FlooringRemainder(Maybe<LeftT> l,
+                                                  Maybe<RightT> r) {
+  return MaybeDivideOrModulo<IntermediateT, ResultT, FlooringRemainderOperation,
+                             LeftT, RightT>(l, r);
+}
+
 //// From here down: boilerplate instantiations of the various operations, which
 //// only forward to MaybeDo:
 
@@ -382,22 +418,6 @@ template <typename IntermediateT, typename ResultT, typename LeftT,
           typename RightT>
 inline constexpr Maybe<ResultT> Product(Maybe<LeftT> l, Maybe<RightT> r) {
   return MaybeDo<IntermediateT, ResultT, ProductOperation, LeftT, RightT>(l, r);
-}
-
-template <typename IntermediateT, typename ResultT, typename LeftT,
-          typename RightT>
-inline constexpr Maybe<ResultT> FlooringQuotient(Maybe<LeftT> l,
-                                                 Maybe<RightT> r) {
-  return MaybeDo<IntermediateT, ResultT, FlooringQuotientOperation, LeftT,
-                 RightT>(l, r);
-}
-
-template <typename IntermediateT, typename ResultT, typename LeftT,
-          typename RightT>
-inline constexpr Maybe<ResultT> FlooringRemainder(Maybe<LeftT> l,
-                                                  Maybe<RightT> r) {
-  return MaybeDo<IntermediateT, ResultT, FlooringRemainderOperation, LeftT,
-                 RightT>(l, r);
 }
 
 template <typename IntermediateT, typename ResultT, typename LeftT,

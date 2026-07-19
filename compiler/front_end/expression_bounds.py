@@ -368,6 +368,34 @@ def _min(a):
     return min(int(n) for n in a if not _is_infinite(n))
 
 
+def _range_includes_zero(minimum_value, maximum_value):
+    """Returns True if the closed range [minimum_value, maximum_value] holds 0.
+
+    minimum_value and maximum_value are ints, stringified ints, "-infinity", or
+    "infinity".
+    """
+    min_le_zero = minimum_value == "-infinity" or int(minimum_value) <= 0
+    max_ge_zero = maximum_value == "infinity" or int(maximum_value) >= 0
+    return min_le_zero and max_ge_zero
+
+
+def _any_can_be_undefined(operands):
+    """Returns True if any of the given operand expressions can be undefined."""
+    for operand in operands:
+        operand_type = operand.type
+        if (
+            operand_type.which_type == "integer"
+            and operand_type.integer.can_be_undefined
+        ):
+            return True
+        if (
+            operand_type.which_type == "boolean"
+            and operand_type.boolean.can_be_undefined
+        ):
+            return True
+    return False
+
+
 def _compute_constraints_of_additive_operator(expression):
     """Computes the modular value of an additive expression."""
     funcs = {
@@ -402,6 +430,8 @@ def _compute_constraints_of_additive_operator(expression):
         rmin = right.type.integer.minimum_value
     expression.type.integer.minimum_value = str(func(lmin, rmin))
     expression.type.integer.maximum_value = str(func(lmax, rmax))
+    if _any_can_be_undefined(args):
+        expression.type.integer.can_be_undefined = True
 
 
 def _compute_constraints_of_multiplicative_operator(expression):
@@ -439,6 +469,8 @@ def _compute_constraints_of_multiplicative_operator(expression):
     ]
     expression.type.integer.minimum_value = str(_min(extrema))
     expression.type.integer.maximum_value = str(_max(extrema))
+    if _any_can_be_undefined(expression.function.args):
+        expression.type.integer.can_be_undefined = True
 
     if all(bound.modulus == "infinity" for bound in bounds):
         # If both sides are constant, the result is constant.
@@ -557,6 +589,15 @@ def _compute_constraints_of_division_operator(expression):
     """Computes the bounds of a `//` (flooring integer division) expression."""
     left, right = (arg.type.integer for arg in expression.function.args)
 
+    # `//` introduces undefined-ness: the result can be undefined if either
+    # operand can be undefined, or if the divisor's range includes zero (a
+    # runtime `// 0`).  The constraints pass rejects a *provably*-zero divisor;
+    # a merely *possibly*-zero divisor is allowed and carries this flag.
+    if _any_can_be_undefined(expression.function.args) or _range_includes_zero(
+        right.minimum_value, right.maximum_value
+    ):
+        expression.type.integer.can_be_undefined = True
+
     # Both sides constant: compute the exact result.
     if left.modulus == "infinity" and right.modulus == "infinity":
         r_val = int(right.modular_value)
@@ -609,6 +650,13 @@ def _compute_constraints_of_division_operator(expression):
 def _compute_constraints_of_modulus_operator(expression):
     """Computes the bounds of a `%` (flooring modulus) expression."""
     left, right = (arg.type.integer for arg in expression.function.args)
+
+    # As with `//`, `%` introduces undefined-ness when the divisor's range
+    # includes zero (or an operand is already undefined).
+    if _any_can_be_undefined(expression.function.args) or _range_includes_zero(
+        right.minimum_value, right.maximum_value
+    ):
+        expression.type.integer.can_be_undefined = True
 
     if left.modulus == "infinity" and right.modulus == "infinity":
         r_val = int(right.modular_value)
@@ -693,6 +741,12 @@ def _compute_constant_value_of_comparison_operator(expression):
         expression.type.boolean.value = func(
             *[ir_util.constant_value(arg) for arg in args]
         )
+    # An operand that can be undefined poisons the result.  Note that an operand
+    # that can be undefined is never a compile-time constant (see
+    # ir_util.constant_value), so the branch above never sets a boolean `value`
+    # in that case -- the two are mutually exclusive.
+    if _any_can_be_undefined(args):
+        expression.type.boolean.can_be_undefined = True
 
 
 def _compute_constraints_of_bound_function(expression):
@@ -723,6 +777,8 @@ def _compute_constraints_of_maximum_function(expression):
     expression.type.integer.maximum_value = str(
         _max([arg.type.integer.maximum_value for arg in args])
     )
+    if _any_can_be_undefined(args):
+        expression.type.integer.can_be_undefined = True
     # If the expression is dominated by a constant factor, then the result is
     # constant.  I (bolms@) believe this is the only case where
     # _compute_constraints_of_maximum_function might violate the assertions in
@@ -865,6 +921,17 @@ def _compute_constraints_of_choice_operator(expression):
             "boolean",
             "enumeration",
         ), "Unknown type {} for expression".format(if_true.type.which_type)
+    # The result can be undefined if the condition or the selected branch can be
+    # undefined.  Conservatively, if any of the three operands can be undefined,
+    # the result can be too.  (An `enumeration` result cannot carry the flag, but
+    # a non-constant choice is never treated as a constant enum, so it stays
+    # correctly un-foldable regardless.)
+    if _any_can_be_undefined((condition, if_true, if_false)):
+        # The choice's result type matches if_true's (and if_false's) type.
+        if if_true.type.which_type == "integer":
+            expression.type.integer.can_be_undefined = True
+        elif if_true.type.which_type == "boolean":
+            expression.type.boolean.can_be_undefined = True
 
 
 def _greatest_common_divisor(a, b):
