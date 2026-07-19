@@ -418,6 +418,84 @@ class ComputeConstantsTest(unittest.TestCase):
         self.assertEqual("-3", r.minimum_value)
         self.assertEqual("0", r.maximum_value)
 
+    def test_division_by_maybe_zero_divisor_can_be_undefined(self):
+        # A non-constant divisor whose range includes zero introduces an
+        # undefined value; it does NOT error here (constraints only rejects a
+        # provably-always-zero divisor).
+        ir = self._make_ir(
+            "struct Foo:\n"
+            "  0 [+1]  UInt  d\n"
+            "  1 [+1]  UInt  n\n"
+            "  let q = n // d\n"
+        )
+        self.assertEqual([], expression_bounds.compute_constants(ir))
+        self.assertTrue(self._virtual_fields(ir)["q"].can_be_undefined)
+
+    def test_modulus_by_maybe_zero_divisor_can_be_undefined(self):
+        ir = self._make_ir(
+            "struct Foo:\n"
+            "  0 [+1]  UInt  d\n"
+            "  1 [+1]  UInt  n\n"
+            "  let r = n % d\n"
+        )
+        self.assertEqual([], expression_bounds.compute_constants(ir))
+        self.assertTrue(self._virtual_fields(ir)["r"].can_be_undefined)
+
+    def test_division_by_nonzero_constant_is_not_undefined(self):
+        ir = self._make_ir(
+            "struct Foo:\n" "  0 [+1]  UInt  x\n" "  let half = x // 2\n"
+        )
+        self.assertEqual([], expression_bounds.compute_constants(ir))
+        # None (or False) -- not can_be_undefined.
+        self.assertFalse(self._virtual_fields(ir)["half"].can_be_undefined)
+
+    def test_undefined_propagates_through_arithmetic(self):
+        # `(n // d)` is undefined, so `(n // d) + 1` and `(n // d) * 2` are too.
+        ir = self._make_ir(
+            "struct Foo:\n"
+            "  0 [+1]  UInt  d\n"
+            "  1 [+1]  UInt  n\n"
+            "  let sum = (n // d) + 1\n"
+            "  let product = (n // d) * 2\n"
+        )
+        self.assertEqual([], expression_bounds.compute_constants(ir))
+        fields = self._virtual_fields(ir)
+        self.assertTrue(fields["sum"].can_be_undefined)
+        self.assertTrue(fields["product"].can_be_undefined)
+
+    def test_undefined_collapsing_quotient_stays_non_constant(self):
+        # `0 // d` collapses to the single value {0} (modulus == "infinity"),
+        # but can be undefined, so it must not be treated as a constant.
+        ir = self._make_ir("struct Foo:\n" "  0 [+1]  UInt  d\n" "  let z = 0 // d\n")
+        self.assertEqual([], expression_bounds.compute_constants(ir))
+        z = self._virtual_fields(ir)["z"]
+        self.assertEqual("infinity", z.modulus)
+        self.assertEqual("0", z.modular_value)
+        self.assertTrue(z.can_be_undefined)
+
+    def test_undefined_propagates_into_boolean_comparison(self):
+        # A comparison against an undefined operand yields an undefined boolean,
+        # and -- crucially -- is NOT folded to a constant boolean `value`, so the
+        # existence condition's Known() guard cannot be elided.
+        ir = self._make_ir(
+            "struct Foo:\n"
+            "  0 [+1]  UInt  d\n"
+            "  if 12 // d == 3:\n"
+            "    1 [+1]  UInt  gated\n"
+        )
+        self.assertEqual([], expression_bounds.compute_constants(ir))
+        condition = ir.module[0].type[0].structure.field[1].existence_condition
+        self.assertEqual("boolean", condition.type.which_type)
+        self.assertTrue(condition.type.boolean.can_be_undefined)
+        self.assertFalse(condition.type.boolean.has_field("value"))
+
+    def test_provably_zero_divisor_can_be_undefined(self):
+        # `x // 0` is provably undefined; bounds still computes (constraints
+        # reports the error), and the flag is set.
+        ir = self._make_ir("struct Foo:\n" "  0 [+1]  UInt  x\n" "  let q = x // 0\n")
+        self.assertEqual([], expression_bounds.compute_constants(ir))
+        self.assertTrue(self._virtual_fields(ir)["q"].can_be_undefined)
+
     def test_nested_constant_expression(self):
         ir = self._make_ir(
             "struct Foo:\n" "  if 7*(3+1) == 28:\n" "    0 [+1]  UInt  x\n"

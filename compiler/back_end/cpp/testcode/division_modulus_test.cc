@@ -89,6 +89,77 @@ TEST(ChunkedPayload, RoundsUpToMultipleOfFour) {
   EXPECT_EQ(8U, view.padded().ElementCount());
 }
 
+// A field whose size uses a `//` with a possibly-zero divisor works normally
+// when the divisor is nonzero.
+TEST(PayloadSizedByDivision, NonzeroDivisor) {
+  static constexpr ::std::array</**/ ::std::uint8_t, 5> kBuf = {{
+      0x04,                          // divisor = 4 -> 16 // 4 = 4 payload bytes
+      0xaa, 0xbb, 0xcc, 0xdd,        // payload
+  }};
+  auto view = MakePayloadSizedByDivisionView(&kBuf);
+  ASSERT_TRUE(view.Ok());
+  EXPECT_EQ(5U, view.SizeInBytes());
+  EXPECT_EQ(4U, view.payload().ElementCount());
+}
+
+// When the divisor is zero the payload size is undefined, so the structure's
+// size is unknown and Ok() is false -- with no division-by-zero UB.
+TEST(PayloadSizedByDivision, ZeroDivisorIsNotOk) {
+  static constexpr ::std::array</**/ ::std::uint8_t, 5> kBuf = {{
+      0x00,                          // divisor = 0 -> 16 // 0 undefined
+      0xaa, 0xbb, 0xcc, 0xdd,
+  }};
+  auto view = MakePayloadSizedByDivisionView(&kBuf);
+  EXPECT_FALSE(view.Ok());
+  EXPECT_FALSE(view.SizeIsKnown());
+  EXPECT_FALSE(view.IntrinsicSizeInBytes().Ok());
+}
+
+// A field guarded by an existence condition that divides by a field: the
+// condition (and therefore Ok()) is well-defined for nonzero divisors...
+TEST(FieldGatedByDivision, ConditionTrueAndFalse) {
+  // divisor = 4 -> 12 // 4 == 3 -> gated present.
+  static constexpr ::std::array</**/ ::std::uint8_t, 2> kPresent = {{0x04, 0x77}};
+  auto present = MakeFieldGatedByDivisionView(&kPresent);
+  ASSERT_TRUE(present.Ok());
+  EXPECT_TRUE(present.has_gated().ValueOr(false));
+  EXPECT_EQ(0x77U, present.gated().Read());
+
+  // divisor = 5 -> 12 // 5 == 2 != 3 -> gated absent (only 1 byte needed).
+  static constexpr ::std::array</**/ ::std::uint8_t, 1> kAbsent = {{0x05}};
+  auto absent = MakeFieldGatedByDivisionView(&kAbsent);
+  ASSERT_TRUE(absent.Ok());
+  EXPECT_FALSE(absent.has_gated().ValueOr(true));
+}
+
+// ...and is *undefined* for a zero divisor.  The existence condition is Unknown,
+// so the field's presence is unknown and Ok() must return false.  This is the
+// soundness guard for the Ok()/switch discriminant optimization: an undefined
+// existence condition must never be folded to a provably-known value.
+TEST(FieldGatedByDivision, ZeroDivisorIsNotOk) {
+  static constexpr ::std::array</**/ ::std::uint8_t, 2> kBuf = {{0x00, 0x77}};
+  auto view = MakeFieldGatedByDivisionView(&kBuf);
+  EXPECT_FALSE(view.Ok());
+  EXPECT_FALSE(view.has_gated().Known());
+}
+
+// `0 // divisor` collapses to the single value {0}, but must not be folded to a
+// literal: it is undefined when the divisor is zero.
+TEST(CollapsingQuotient, DefinedForNonzeroDivisor) {
+  static constexpr ::std::array</**/ ::std::uint8_t, 1> kBuf = {{0x07}};
+  auto view = MakeCollapsingQuotientView(&kBuf);
+  ASSERT_TRUE(view.Ok());
+  EXPECT_TRUE(view.zero_or_undefined().Ok());
+  EXPECT_EQ(0, view.zero_or_undefined().Read());
+}
+
+TEST(CollapsingQuotient, UndefinedForZeroDivisor) {
+  static constexpr ::std::array</**/ ::std::uint8_t, 1> kBuf = {{0x00}};
+  auto view = MakeCollapsingQuotientView(&kBuf);
+  // The accessor is Unknown -- not a bogus literal 0.
+  EXPECT_FALSE(view.zero_or_undefined().Ok());
+}
+
 }  // namespace
 }  // namespace test
 }  // namespace emboss

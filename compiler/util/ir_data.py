@@ -444,10 +444,23 @@ class IntegerType(Message):
     minimum_value: Optional[str] = None
     maximum_value: Optional[str] = None
 
+    # Whether the expression's value can be "undefined" -- that is, whether it
+    # can be the result of a division or modulus by zero.  This is tracked as a
+    # separate boolean flag (never an in-band "undefined" value for
+    # minimum_value/maximum_value/modulus/modular_value) so that the many places
+    # that parse those fields as integers do not have to special-case a sentinel
+    # string.  When can_be_undefined is true, minimum_value/maximum_value/modulus
+    # /modular_value describe the range of the *defined* results; the value may
+    # additionally be undefined at runtime (surfacing as an Unknown Maybe<>).
+    can_be_undefined: Optional[bool] = None
+
 
 @dataclasses.dataclass
 class BooleanType(Message):
     value: Optional[bool] = None
+    # See IntegerType.can_be_undefined.  A boolean expression can be undefined
+    # if it is derived (e.g. via a comparison) from an undefined integer.
+    can_be_undefined: Optional[bool] = None
 
 
 @dataclasses.dataclass

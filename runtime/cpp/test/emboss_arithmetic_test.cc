@@ -161,6 +161,18 @@ TEST(FlooringQuotient, FlooringQuotient) {
       (FlooringQuotient</**/ ::std::int32_t, ::std::int32_t, ::std::int32_t,
                         ::std::int32_t>(Maybe</**/ ::std::int32_t>(),
                                         Maybe</**/ ::std::int32_t>(3))));
+  // A zero divisor yields Unknown even when both operands are Known -- this is
+  // the "undefined" result of `// 0`, avoiding C++ undefined behavior.
+  EXPECT_EQ(
+      Maybe</**/ ::std::int32_t>(),
+      (FlooringQuotient</**/ ::std::int32_t, ::std::int32_t, ::std::int32_t,
+                        ::std::int32_t>(Maybe</**/ ::std::int32_t>(8),
+                                        Maybe</**/ ::std::int32_t>(0))));
+  EXPECT_EQ(Maybe</**/ ::std::uint32_t>(),
+            (FlooringQuotient</**/ ::std::uint32_t, ::std::uint32_t,
+                              ::std::uint32_t, ::std::uint32_t>(
+                Maybe</**/ ::std::uint32_t>(8),
+                Maybe</**/ ::std::uint32_t>(0))));
 }
 
 TEST(FlooringRemainder, FlooringRemainder) {
@@ -200,6 +212,17 @@ TEST(FlooringRemainder, FlooringRemainder) {
       (FlooringRemainder</**/ ::std::int32_t, ::std::int32_t, ::std::int32_t,
                          ::std::int32_t>(Maybe</**/ ::std::int32_t>(8),
                                          Maybe</**/ ::std::int32_t>())));
+  // A zero divisor yields Unknown even when both operands are Known.
+  EXPECT_EQ(
+      Maybe</**/ ::std::int32_t>(),
+      (FlooringRemainder</**/ ::std::int32_t, ::std::int32_t, ::std::int32_t,
+                         ::std::int32_t>(Maybe</**/ ::std::int32_t>(8),
+                                         Maybe</**/ ::std::int32_t>(0))));
+  EXPECT_EQ(Maybe</**/ ::std::uint32_t>(),
+            (FlooringRemainder</**/ ::std::uint32_t, ::std::uint32_t,
+                               ::std::uint32_t, ::std::uint32_t>(
+                Maybe</**/ ::std::uint32_t>(8),
+                Maybe</**/ ::std::uint32_t>(0))));
 }
 
 TEST(Equal, Equal) {

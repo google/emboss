@@ -43,3 +43,30 @@ struct Constants:
   let chained_div = 100 // 5 // 2
   let chained_mod = 17 % 7 % 4
   let mixed_divmod = 17 % 7 // 2
+
+
+# A field whose size depends on a runtime `//` with a *possibly*-zero divisor.
+# When divisor == 0 the payload size -- and therefore the whole structure's
+# size -- is undefined, so Ok() is false.  A nonzero divisor works normally.
+struct PayloadSizedByDivision:
+  0 [+1]              UInt      divisor
+  1 [+16 // divisor]  UInt:8[]  payload
+
+
+# A field guarded by an existence condition that involves a possibly-zero
+# divisor.  This exercises the interaction with the Ok()/switch discriminant
+# optimization: when divisor == 0 the condition `12 // divisor == 3` is
+# undefined, so `gated`'s presence is unknown and Ok() must be false.
+struct FieldGatedByDivision:
+  0 [+1]  UInt  divisor
+  if 12 // divisor == 3:
+    1 [+1]  UInt  gated
+
+
+# A virtual field whose `//` result *collapses* to a single defined value ({0})
+# yet can be undefined when the divisor is zero.  Without special handling,
+# codegen would fold it to a bogus literal 0; instead the accessor must return
+# an Unknown result when divisor == 0.
+struct CollapsingQuotient:
+  0 [+1]  UInt  divisor
+  let zero_or_undefined = 0 // divisor

@@ -33,6 +33,21 @@ namespace Constants {}  // namespace Constants
 template <class Storage>
 class GenericConstantsView;
 
+namespace PayloadSizedByDivision {}  // namespace PayloadSizedByDivision
+
+template <class Storage>
+class GenericPayloadSizedByDivisionView;
+
+namespace FieldGatedByDivision {}  // namespace FieldGatedByDivision
+
+template <class Storage>
+class GenericFieldGatedByDivisionView;
+
+namespace CollapsingQuotient {}  // namespace CollapsingQuotient
+
+template <class Storage>
+class GenericCollapsingQuotientView;
+
 namespace ArrayOfUint16BySizeInBytes {}  // namespace ArrayOfUint16BySizeInBytes
 
 template <class View>
@@ -2020,6 +2035,1602 @@ MakeAlignedConstantsView(T* emboss_reserved_local_data,
       emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
+namespace PayloadSizedByDivision {}  // namespace PayloadSizedByDivision
+
+template <class View>
+struct EmbossReservedInternalIsGenericPayloadSizedByDivisionView;
+
+template <class Storage>
+class GenericPayloadSizedByDivisionView final {
+ public:
+  GenericPayloadSizedByDivisionView() : backing_() {}
+  explicit GenericPayloadSizedByDivisionView(
+      Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
+
+  template <typename OtherStorage>
+  GenericPayloadSizedByDivisionView(
+      const GenericPayloadSizedByDivisionView<OtherStorage>&
+          emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
+
+  template <typename Arg,
+            typename = typename ::std::enable_if<
+                !EmbossReservedInternalIsGenericPayloadSizedByDivisionView<
+                    typename ::std::remove_cv<typename ::std::remove_reference<
+                        Arg>::type>::type>::value>::type>
+  explicit GenericPayloadSizedByDivisionView(Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
+  template <typename Arg0, typename Arg1, typename... Args>
+  explicit GenericPayloadSizedByDivisionView(
+      Arg0&& emboss_reserved_local_arg0, Arg1&& emboss_reserved_local_arg1,
+      Args&&... emboss_reserved_local_args)
+      : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
+                 ::std::forward<Arg1>(emboss_reserved_local_arg1),
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
+
+  template <typename OtherStorage>
+  GenericPayloadSizedByDivisionView<Storage>& operator=(
+      const GenericPayloadSizedByDivisionView<OtherStorage>&
+          emboss_reserved_local_other) {
+    backing_ = emboss_reserved_local_other.BackingStorage();
+    return *this;
+  }
+
+  bool Ok() const {
+    if (!IsComplete()) return false;
+
+    if (!has_divisor().Known()) return false;
+    if (has_divisor().ValueOrDefault() && !divisor().Ok()) return false;
+
+    if (!has_payload().Known()) return false;
+    if (has_payload().ValueOrDefault() && !payload().Ok()) return false;
+
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
+
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
+
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
+
+    return true;
+  }
+  Storage BackingStorage() const { return backing_; }
+  bool IsComplete() const {
+    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+           backing_.SizeInBytes() >=
+               static_cast</**/ ::std::size_t>(
+                   IntrinsicSizeInBytes().UncheckedRead());
+  }
+  ::std::size_t SizeInBytes() const {
+    return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
+  }
+  bool SizeIsKnown() const { return IntrinsicSizeInBytes().Ok(); }
+
+  template <typename OtherStorage>
+  bool Equals(GenericPayloadSizedByDivisionView<OtherStorage>
+                  emboss_reserved_local_other) const {
+    if (!has_divisor().Known()) return false;
+    if (!emboss_reserved_local_other.has_divisor().Known()) return false;
+
+    if (emboss_reserved_local_other.has_divisor().ValueOrDefault() &&
+        !has_divisor().ValueOrDefault())
+      return false;
+    if (has_divisor().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_divisor().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_divisor().ValueOrDefault() &&
+        has_divisor().ValueOrDefault() &&
+        !divisor().Equals(emboss_reserved_local_other.divisor()))
+      return false;
+
+    if (!has_payload().Known()) return false;
+    if (!emboss_reserved_local_other.has_payload().Known()) return false;
+
+    if (emboss_reserved_local_other.has_payload().ValueOrDefault() &&
+        !has_payload().ValueOrDefault())
+      return false;
+    if (has_payload().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_payload().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_payload().ValueOrDefault() &&
+        has_payload().ValueOrDefault() &&
+        !payload().Equals(emboss_reserved_local_other.payload()))
+      return false;
+
+    return true;
+  }
+  template <typename OtherStorage>
+  bool UncheckedEquals(GenericPayloadSizedByDivisionView<OtherStorage>
+                           emboss_reserved_local_other) const {
+    if (emboss_reserved_local_other.has_divisor().ValueOr(false) &&
+        !has_divisor().ValueOr(false))
+      return false;
+    if (has_divisor().ValueOr(false) &&
+        !emboss_reserved_local_other.has_divisor().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_divisor().ValueOr(false) &&
+        has_divisor().ValueOr(false) &&
+        !divisor().UncheckedEquals(emboss_reserved_local_other.divisor()))
+      return false;
+
+    if (emboss_reserved_local_other.has_payload().ValueOr(false) &&
+        !has_payload().ValueOr(false))
+      return false;
+    if (has_payload().ValueOr(false) &&
+        !emboss_reserved_local_other.has_payload().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_payload().ValueOr(false) &&
+        has_payload().ValueOr(false) &&
+        !payload().UncheckedEquals(emboss_reserved_local_other.payload()))
+      return false;
+
+    return true;
+  }
+  template <typename OtherStorage>
+  void UncheckedCopyFrom(GenericPayloadSizedByDivisionView<OtherStorage>
+                             emboss_reserved_local_other) const {
+    backing_.UncheckedCopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+  }
+
+  template <typename OtherStorage>
+  void CopyFrom(GenericPayloadSizedByDivisionView<OtherStorage>
+                    emboss_reserved_local_other) const {
+    backing_.CopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+  template <typename OtherStorage>
+  bool TryToCopyFrom(GenericPayloadSizedByDivisionView<OtherStorage>
+                         emboss_reserved_local_other) const {
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+
+  template <class Stream>
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
+    ::std::string emboss_reserved_local_brace;
+    if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                      &emboss_reserved_local_brace))
+      return false;
+    if (emboss_reserved_local_brace != "{") return false;
+    for (;;) {
+      ::std::string emboss_reserved_local_name;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_name))
+        return false;
+      if (emboss_reserved_local_name == ",")
+        if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                          &emboss_reserved_local_name))
+          return false;
+      if (emboss_reserved_local_name == "}") return true;
+      ::std::string emboss_reserved_local_colon;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_colon))
+        return false;
+      if (emboss_reserved_local_colon != ":") return false;
+      if (emboss_reserved_local_name == "divisor") {
+        if (!divisor().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "payload") {
+        if (!payload().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      return false;
+    }
+  }
+
+  template <class Stream>
+  void WriteToTextStream(
+      Stream* emboss_reserved_local_stream,
+      ::emboss::TextOutputOptions emboss_reserved_local_options) const {
+    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
+        emboss_reserved_local_options.PlusOneIndent();
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write("{\n");
+    } else {
+      emboss_reserved_local_stream->Write("{");
+    }
+    bool emboss_reserved_local_wrote_field = false;
+    if (has_divisor().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          divisor().IsAggregate() || divisor().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("divisor: ");
+        divisor().WriteToTextStream(emboss_reserved_local_stream,
+                                    emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !divisor().IsAggregate() && !divisor().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# divisor: UNREADABLE\n");
+      }
+    }
+
+    if (has_payload().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          payload().IsAggregate() || payload().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("payload: ");
+        payload().WriteToTextStream(emboss_reserved_local_stream,
+                                    emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !payload().IsAggregate() && !payload().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# payload: UNREADABLE\n");
+      }
+    }
+
+    (void)emboss_reserved_local_wrote_field;
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write(
+          emboss_reserved_local_options.current_indent());
+      emboss_reserved_local_stream->Write("}");
+    } else {
+      emboss_reserved_local_stream->Write(" }");
+    }
+  }
+
+  static constexpr bool IsAggregate() { return true; }
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
+
+  divisor() const;
+  ::emboss::support::Maybe<bool> has_divisor() const;
+
+ public:
+  typename ::emboss::support::GenericArrayView<
+      typename ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType<
+                      /**/ 0, 1>::template OffsetStorageType</**/ 1, 0>>,
+              8>>
+
+      ,
+      typename Storage::template OffsetStorageType</**/ 0, 1>, 1, 8>
+
+  payload() const;
+  ::emboss::support::Maybe<bool> has_payload() const;
+
+ public:
+  class EmbossReservedDollarVirtualIntrinsicSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    explicit EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const GenericPayloadSizedByDivisionView& emboss_reserved_local_view)
+        : view_(emboss_reserved_local_view) {}
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = delete;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
+
+    ::std::int32_t Read() const {
+      EMBOSS_CHECK(view_.has_IntrinsicSizeInBytes().ValueOr(false));
+      auto emboss_reserved_local_value = MaybeRead();
+      EMBOSS_CHECK(emboss_reserved_local_value.Known());
+      EMBOSS_CHECK(ValueIsOk(emboss_reserved_local_value.ValueOrDefault()));
+      return emboss_reserved_local_value.ValueOrDefault();
+    }
+    ::std::int32_t UncheckedRead() const {
+      return MaybeRead().ValueOrDefault();
+    }
+    bool Ok() const {
+      auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known() &&
+             ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
+    }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+
+   private:
+    ::emboss::support::Maybe</**/ ::std::int32_t> MaybeRead() const {
+      const auto emboss_reserved_local_subexpr_1 = view_.divisor();
+      const auto emboss_reserved_local_subexpr_2 =
+          (emboss_reserved_local_subexpr_1.Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(
+                         emboss_reserved_local_subexpr_1.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>());
+      const auto emboss_reserved_local_subexpr_3 =
+          ::emboss::support::FlooringQuotient</**/ ::std::int32_t,
+                                              ::std::int32_t, ::std::int32_t,
+                                              ::std::int32_t>(
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(16LL)),
+              emboss_reserved_local_subexpr_2);
+      const auto emboss_reserved_local_subexpr_4 =
+          ::emboss::support::Sum</**/ ::std::int32_t, ::std::int32_t,
+                                 ::std::int32_t, ::std::int32_t>(
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(1LL)),
+              emboss_reserved_local_subexpr_3);
+      const auto emboss_reserved_local_subexpr_5 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              ::emboss::support::Maybe</**/ bool>(true),
+              emboss_reserved_local_subexpr_4,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_6 =
+          ::emboss::support::Maximum</**/ ::std::int32_t, ::std::int32_t,
+                                     ::std::int32_t, ::std::int32_t,
+                                     ::std::int32_t>(
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(1LL)),
+              emboss_reserved_local_subexpr_5);
+
+      return emboss_reserved_local_subexpr_6;
+    }
+
+    static constexpr bool ValueIsOk(
+        ::std::int32_t emboss_reserved_local_value) {
+      return (void)emboss_reserved_local_value,  // Silence -Wunused-parameter
+             ::emboss::support::Maybe<bool>(true).ValueOr(false);
+    }
+
+    const GenericPayloadSizedByDivisionView view_;
+  };
+  EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes()
+      const;
+  ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() const;
+
+ public:
+  class EmbossReservedDollarVirtualMaxSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
+    return EmbossReservedDollarVirtualMaxSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ public:
+  class EmbossReservedDollarVirtualMinSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
+    return EmbossReservedDollarVirtualMinSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ private:
+  Storage backing_;
+
+  template <class OtherStorage>
+  friend class GenericPayloadSizedByDivisionView;
+};
+using PayloadSizedByDivisionView = GenericPayloadSizedByDivisionView<
+    /**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+using PayloadSizedByDivisionWriter = GenericPayloadSizedByDivisionView<
+    /**/ ::emboss::support::ReadWriteContiguousBuffer>;
+
+template <class View>
+struct EmbossReservedInternalIsGenericPayloadSizedByDivisionView {
+  static constexpr const bool value = false;
+};
+
+template <class Storage>
+struct EmbossReservedInternalIsGenericPayloadSizedByDivisionView<
+    GenericPayloadSizedByDivisionView<Storage>> {
+  static constexpr const bool value = true;
+};
+
+template <typename T>
+inline GenericPayloadSizedByDivisionView<
+    /**/ ::emboss::support::ContiguousBuffer<
+        typename ::std::remove_reference<
+            decltype(*::std::declval<T>()->data())>::type,
+        1, 0>>
+MakePayloadSizedByDivisionView(T&& emboss_reserved_local_arg) {
+  return GenericPayloadSizedByDivisionView<
+      /**/ ::emboss::support::ContiguousBuffer<
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
+}
+
+template <typename T>
+inline GenericPayloadSizedByDivisionView<
+    /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakePayloadSizedByDivisionView(T* emboss_reserved_local_data,
+                               ::std::size_t emboss_reserved_local_size) {
+  return GenericPayloadSizedByDivisionView<
+      /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
+}
+
+template <typename T, ::std::size_t kAlignment>
+inline GenericPayloadSizedByDivisionView<
+    /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
+MakeAlignedPayloadSizedByDivisionView(
+    T* emboss_reserved_local_data, ::std::size_t emboss_reserved_local_size) {
+  return GenericPayloadSizedByDivisionView<
+      /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
+}
+
+namespace FieldGatedByDivision {}  // namespace FieldGatedByDivision
+
+template <class View>
+struct EmbossReservedInternalIsGenericFieldGatedByDivisionView;
+
+template <class Storage>
+class GenericFieldGatedByDivisionView final {
+ public:
+  GenericFieldGatedByDivisionView() : backing_() {}
+  explicit GenericFieldGatedByDivisionView(Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
+
+  template <typename OtherStorage>
+  GenericFieldGatedByDivisionView(
+      const GenericFieldGatedByDivisionView<OtherStorage>&
+          emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
+
+  template <typename Arg,
+            typename = typename ::std::enable_if<
+                !EmbossReservedInternalIsGenericFieldGatedByDivisionView<
+                    typename ::std::remove_cv<typename ::std::remove_reference<
+                        Arg>::type>::type>::value>::type>
+  explicit GenericFieldGatedByDivisionView(Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
+  template <typename Arg0, typename Arg1, typename... Args>
+  explicit GenericFieldGatedByDivisionView(Arg0&& emboss_reserved_local_arg0,
+                                           Arg1&& emboss_reserved_local_arg1,
+                                           Args&&... emboss_reserved_local_args)
+      : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
+                 ::std::forward<Arg1>(emboss_reserved_local_arg1),
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
+
+  template <typename OtherStorage>
+  GenericFieldGatedByDivisionView<Storage>& operator=(
+      const GenericFieldGatedByDivisionView<OtherStorage>&
+          emboss_reserved_local_other) {
+    backing_ = emboss_reserved_local_other.BackingStorage();
+    return *this;
+  }
+
+  bool Ok() const {
+    if (!IsComplete()) return false;
+
+    if (!has_divisor().Known()) return false;
+    if (has_divisor().ValueOrDefault() && !divisor().Ok()) return false;
+
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
+
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
+
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
+
+    if (!has_gated().Known()) return false;
+    if (has_gated().ValueOrDefault() && !gated().Ok()) return false;
+
+    return true;
+  }
+  Storage BackingStorage() const { return backing_; }
+  bool IsComplete() const {
+    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+           backing_.SizeInBytes() >=
+               static_cast</**/ ::std::size_t>(
+                   IntrinsicSizeInBytes().UncheckedRead());
+  }
+  ::std::size_t SizeInBytes() const {
+    return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
+  }
+  bool SizeIsKnown() const { return IntrinsicSizeInBytes().Ok(); }
+
+  template <typename OtherStorage>
+  bool Equals(GenericFieldGatedByDivisionView<OtherStorage>
+                  emboss_reserved_local_other) const {
+    if (!has_divisor().Known()) return false;
+    if (!emboss_reserved_local_other.has_divisor().Known()) return false;
+
+    if (emboss_reserved_local_other.has_divisor().ValueOrDefault() &&
+        !has_divisor().ValueOrDefault())
+      return false;
+    if (has_divisor().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_divisor().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_divisor().ValueOrDefault() &&
+        has_divisor().ValueOrDefault() &&
+        !divisor().Equals(emboss_reserved_local_other.divisor()))
+      return false;
+
+    if (!has_gated().Known()) return false;
+    if (!emboss_reserved_local_other.has_gated().Known()) return false;
+
+    if (emboss_reserved_local_other.has_gated().ValueOrDefault() &&
+        !has_gated().ValueOrDefault())
+      return false;
+    if (has_gated().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_gated().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_gated().ValueOrDefault() &&
+        has_gated().ValueOrDefault() &&
+        !gated().Equals(emboss_reserved_local_other.gated()))
+      return false;
+
+    return true;
+  }
+  template <typename OtherStorage>
+  bool UncheckedEquals(GenericFieldGatedByDivisionView<OtherStorage>
+                           emboss_reserved_local_other) const {
+    if (emboss_reserved_local_other.has_divisor().ValueOr(false) &&
+        !has_divisor().ValueOr(false))
+      return false;
+    if (has_divisor().ValueOr(false) &&
+        !emboss_reserved_local_other.has_divisor().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_divisor().ValueOr(false) &&
+        has_divisor().ValueOr(false) &&
+        !divisor().UncheckedEquals(emboss_reserved_local_other.divisor()))
+      return false;
+
+    if (emboss_reserved_local_other.has_gated().ValueOr(false) &&
+        !has_gated().ValueOr(false))
+      return false;
+    if (has_gated().ValueOr(false) &&
+        !emboss_reserved_local_other.has_gated().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_gated().ValueOr(false) &&
+        has_gated().ValueOr(false) &&
+        !gated().UncheckedEquals(emboss_reserved_local_other.gated()))
+      return false;
+
+    return true;
+  }
+  template <typename OtherStorage>
+  void UncheckedCopyFrom(GenericFieldGatedByDivisionView<OtherStorage>
+                             emboss_reserved_local_other) const {
+    backing_.UncheckedCopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+  }
+
+  template <typename OtherStorage>
+  void CopyFrom(GenericFieldGatedByDivisionView<OtherStorage>
+                    emboss_reserved_local_other) const {
+    backing_.CopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+  template <typename OtherStorage>
+  bool TryToCopyFrom(GenericFieldGatedByDivisionView<OtherStorage>
+                         emboss_reserved_local_other) const {
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+
+  template <class Stream>
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
+    ::std::string emboss_reserved_local_brace;
+    if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                      &emboss_reserved_local_brace))
+      return false;
+    if (emboss_reserved_local_brace != "{") return false;
+    for (;;) {
+      ::std::string emboss_reserved_local_name;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_name))
+        return false;
+      if (emboss_reserved_local_name == ",")
+        if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                          &emboss_reserved_local_name))
+          return false;
+      if (emboss_reserved_local_name == "}") return true;
+      ::std::string emboss_reserved_local_colon;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_colon))
+        return false;
+      if (emboss_reserved_local_colon != ":") return false;
+      if (emboss_reserved_local_name == "divisor") {
+        if (!divisor().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "gated") {
+        if (!gated().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      return false;
+    }
+  }
+
+  template <class Stream>
+  void WriteToTextStream(
+      Stream* emboss_reserved_local_stream,
+      ::emboss::TextOutputOptions emboss_reserved_local_options) const {
+    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
+        emboss_reserved_local_options.PlusOneIndent();
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write("{\n");
+    } else {
+      emboss_reserved_local_stream->Write("{");
+    }
+    bool emboss_reserved_local_wrote_field = false;
+    if (has_divisor().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          divisor().IsAggregate() || divisor().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("divisor: ");
+        divisor().WriteToTextStream(emboss_reserved_local_stream,
+                                    emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !divisor().IsAggregate() && !divisor().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# divisor: UNREADABLE\n");
+      }
+    }
+
+    if (has_gated().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          gated().IsAggregate() || gated().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("gated: ");
+        gated().WriteToTextStream(emboss_reserved_local_stream,
+                                  emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !gated().IsAggregate() && !gated().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# gated: UNREADABLE\n");
+      }
+    }
+
+    (void)emboss_reserved_local_wrote_field;
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write(
+          emboss_reserved_local_options.current_indent());
+      emboss_reserved_local_stream->Write("}");
+    } else {
+      emboss_reserved_local_stream->Write(" }");
+    }
+  }
+
+  static constexpr bool IsAggregate() { return true; }
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
+
+  divisor() const;
+  ::emboss::support::Maybe<bool> has_divisor() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 1>>,
+          8>>
+
+  gated() const;
+  ::emboss::support::Maybe<bool> has_gated() const;
+
+ public:
+  class EmbossReservedDollarVirtualIntrinsicSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    explicit EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const GenericFieldGatedByDivisionView& emboss_reserved_local_view)
+        : view_(emboss_reserved_local_view) {}
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = delete;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
+
+    ::std::int32_t Read() const {
+      EMBOSS_CHECK(view_.has_IntrinsicSizeInBytes().ValueOr(false));
+      auto emboss_reserved_local_value = MaybeRead();
+      EMBOSS_CHECK(emboss_reserved_local_value.Known());
+      EMBOSS_CHECK(ValueIsOk(emboss_reserved_local_value.ValueOrDefault()));
+      return emboss_reserved_local_value.ValueOrDefault();
+    }
+    ::std::int32_t UncheckedRead() const {
+      return MaybeRead().ValueOrDefault();
+    }
+    bool Ok() const {
+      auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known() &&
+             ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
+    }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+
+   private:
+    ::emboss::support::Maybe</**/ ::std::int32_t> MaybeRead() const {
+      const auto emboss_reserved_local_subexpr_1 = view_.divisor();
+      const auto emboss_reserved_local_subexpr_2 =
+          (emboss_reserved_local_subexpr_1.Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(
+                         emboss_reserved_local_subexpr_1.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>());
+      const auto emboss_reserved_local_subexpr_3 =
+          ::emboss::support::FlooringQuotient</**/ ::std::int32_t,
+                                              ::std::int32_t, ::std::int32_t,
+                                              ::std::int32_t>(
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(12LL)),
+              emboss_reserved_local_subexpr_2);
+      const auto emboss_reserved_local_subexpr_4 =
+          ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_3,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(3LL)));
+      const auto emboss_reserved_local_subexpr_5 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_4,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(2LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_6 =
+          ::emboss::support::Maximum</**/ ::std::int32_t, ::std::int32_t,
+                                     ::std::int32_t, ::std::int32_t,
+                                     ::std::int32_t>(
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(1LL)),
+              emboss_reserved_local_subexpr_5);
+
+      return emboss_reserved_local_subexpr_6;
+    }
+
+    static constexpr bool ValueIsOk(
+        ::std::int32_t emboss_reserved_local_value) {
+      return (void)emboss_reserved_local_value,  // Silence -Wunused-parameter
+             ::emboss::support::Maybe<bool>(true).ValueOr(false);
+    }
+
+    const GenericFieldGatedByDivisionView view_;
+  };
+  EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes()
+      const;
+  ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() const;
+
+ public:
+  class EmbossReservedDollarVirtualMaxSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
+    return EmbossReservedDollarVirtualMaxSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ public:
+  class EmbossReservedDollarVirtualMinSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
+    return EmbossReservedDollarVirtualMinSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ private:
+  Storage backing_;
+
+  template <class OtherStorage>
+  friend class GenericFieldGatedByDivisionView;
+};
+using FieldGatedByDivisionView = GenericFieldGatedByDivisionView<
+    /**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+using FieldGatedByDivisionWriter = GenericFieldGatedByDivisionView<
+    /**/ ::emboss::support::ReadWriteContiguousBuffer>;
+
+template <class View>
+struct EmbossReservedInternalIsGenericFieldGatedByDivisionView {
+  static constexpr const bool value = false;
+};
+
+template <class Storage>
+struct EmbossReservedInternalIsGenericFieldGatedByDivisionView<
+    GenericFieldGatedByDivisionView<Storage>> {
+  static constexpr const bool value = true;
+};
+
+template <typename T>
+inline GenericFieldGatedByDivisionView<
+    /**/ ::emboss::support::ContiguousBuffer<
+        typename ::std::remove_reference<
+            decltype(*::std::declval<T>()->data())>::type,
+        1, 0>>
+MakeFieldGatedByDivisionView(T&& emboss_reserved_local_arg) {
+  return GenericFieldGatedByDivisionView<
+      /**/ ::emboss::support::ContiguousBuffer<
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
+}
+
+template <typename T>
+inline GenericFieldGatedByDivisionView<
+    /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeFieldGatedByDivisionView(T* emboss_reserved_local_data,
+                             ::std::size_t emboss_reserved_local_size) {
+  return GenericFieldGatedByDivisionView<
+      /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
+}
+
+template <typename T, ::std::size_t kAlignment>
+inline GenericFieldGatedByDivisionView<
+    /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
+MakeAlignedFieldGatedByDivisionView(T* emboss_reserved_local_data,
+                                    ::std::size_t emboss_reserved_local_size) {
+  return GenericFieldGatedByDivisionView<
+      /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
+}
+
+namespace CollapsingQuotient {}  // namespace CollapsingQuotient
+
+template <class View>
+struct EmbossReservedInternalIsGenericCollapsingQuotientView;
+
+template <class Storage>
+class GenericCollapsingQuotientView final {
+ public:
+  GenericCollapsingQuotientView() : backing_() {}
+  explicit GenericCollapsingQuotientView(Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
+
+  template <typename OtherStorage>
+  GenericCollapsingQuotientView(
+      const GenericCollapsingQuotientView<OtherStorage>&
+          emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
+
+  template <typename Arg,
+            typename = typename ::std::enable_if<
+                !EmbossReservedInternalIsGenericCollapsingQuotientView<
+                    typename ::std::remove_cv<typename ::std::remove_reference<
+                        Arg>::type>::type>::value>::type>
+  explicit GenericCollapsingQuotientView(Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
+  template <typename Arg0, typename Arg1, typename... Args>
+  explicit GenericCollapsingQuotientView(Arg0&& emboss_reserved_local_arg0,
+                                         Arg1&& emboss_reserved_local_arg1,
+                                         Args&&... emboss_reserved_local_args)
+      : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
+                 ::std::forward<Arg1>(emboss_reserved_local_arg1),
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
+
+  template <typename OtherStorage>
+  GenericCollapsingQuotientView<Storage>& operator=(
+      const GenericCollapsingQuotientView<OtherStorage>&
+          emboss_reserved_local_other) {
+    backing_ = emboss_reserved_local_other.BackingStorage();
+    return *this;
+  }
+
+  bool Ok() const {
+    if (!IsComplete()) return false;
+
+    if (!has_divisor().Known()) return false;
+    if (has_divisor().ValueOrDefault() && !divisor().Ok()) return false;
+
+    if (!has_zero_or_undefined().Known()) return false;
+    if (has_zero_or_undefined().ValueOrDefault() && !zero_or_undefined().Ok())
+      return false;
+
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
+
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
+
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
+
+    return true;
+  }
+  Storage BackingStorage() const { return backing_; }
+  bool IsComplete() const {
+    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+           backing_.SizeInBytes() >=
+               static_cast</**/ ::std::size_t>(
+                   IntrinsicSizeInBytes().UncheckedRead());
+  }
+  static constexpr ::std::size_t SizeInBytes() {
+    return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
+  }
+  static constexpr bool SizeIsKnown() { return IntrinsicSizeInBytes().Ok(); }
+
+  template <typename OtherStorage>
+  bool Equals(GenericCollapsingQuotientView<OtherStorage>
+                  emboss_reserved_local_other) const {
+    if (!has_divisor().Known()) return false;
+    if (!emboss_reserved_local_other.has_divisor().Known()) return false;
+
+    if (emboss_reserved_local_other.has_divisor().ValueOrDefault() &&
+        !has_divisor().ValueOrDefault())
+      return false;
+    if (has_divisor().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_divisor().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_divisor().ValueOrDefault() &&
+        has_divisor().ValueOrDefault() &&
+        !divisor().Equals(emboss_reserved_local_other.divisor()))
+      return false;
+
+    return true;
+  }
+  template <typename OtherStorage>
+  bool UncheckedEquals(GenericCollapsingQuotientView<OtherStorage>
+                           emboss_reserved_local_other) const {
+    if (emboss_reserved_local_other.has_divisor().ValueOr(false) &&
+        !has_divisor().ValueOr(false))
+      return false;
+    if (has_divisor().ValueOr(false) &&
+        !emboss_reserved_local_other.has_divisor().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_divisor().ValueOr(false) &&
+        has_divisor().ValueOr(false) &&
+        !divisor().UncheckedEquals(emboss_reserved_local_other.divisor()))
+      return false;
+
+    return true;
+  }
+  template <typename OtherStorage>
+  void UncheckedCopyFrom(GenericCollapsingQuotientView<OtherStorage>
+                             emboss_reserved_local_other) const {
+    backing_.UncheckedCopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+  }
+
+  template <typename OtherStorage>
+  void CopyFrom(GenericCollapsingQuotientView<OtherStorage>
+                    emboss_reserved_local_other) const {
+    backing_.CopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+  template <typename OtherStorage>
+  bool TryToCopyFrom(GenericCollapsingQuotientView<OtherStorage>
+                         emboss_reserved_local_other) const {
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+
+  template <class Stream>
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
+    ::std::string emboss_reserved_local_brace;
+    if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                      &emboss_reserved_local_brace))
+      return false;
+    if (emboss_reserved_local_brace != "{") return false;
+    for (;;) {
+      ::std::string emboss_reserved_local_name;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_name))
+        return false;
+      if (emboss_reserved_local_name == ",")
+        if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                          &emboss_reserved_local_name))
+          return false;
+      if (emboss_reserved_local_name == "}") return true;
+      ::std::string emboss_reserved_local_colon;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_colon))
+        return false;
+      if (emboss_reserved_local_colon != ":") return false;
+      if (emboss_reserved_local_name == "divisor") {
+        if (!divisor().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      return false;
+    }
+  }
+
+  template <class Stream>
+  void WriteToTextStream(
+      Stream* emboss_reserved_local_stream,
+      ::emboss::TextOutputOptions emboss_reserved_local_options) const {
+    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
+        emboss_reserved_local_options.PlusOneIndent();
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write("{\n");
+    } else {
+      emboss_reserved_local_stream->Write("{");
+    }
+    bool emboss_reserved_local_wrote_field = false;
+    if (has_divisor().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          divisor().IsAggregate() || divisor().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("divisor: ");
+        divisor().WriteToTextStream(emboss_reserved_local_stream,
+                                    emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !divisor().IsAggregate() && !divisor().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# divisor: UNREADABLE\n");
+      }
+    }
+
+    if (has_zero_or_undefined().ValueOr(false) &&
+        emboss_reserved_local_field_options.comments()) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          zero_or_undefined().IsAggregate() || zero_or_undefined().Ok()) {
+        emboss_reserved_local_stream->Write(
+            emboss_reserved_local_field_options.current_indent());
+        emboss_reserved_local_stream->Write("# zero_or_undefined: ");
+        zero_or_undefined().WriteToTextStream(
+            emboss_reserved_local_stream, emboss_reserved_local_field_options);
+        emboss_reserved_local_stream->Write("\n");
+      } else {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write(
+            "# zero_or_undefined: UNREADABLE\n");
+      }
+    }
+
+    (void)emboss_reserved_local_wrote_field;
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write(
+          emboss_reserved_local_options.current_indent());
+      emboss_reserved_local_stream->Write("}");
+    } else {
+      emboss_reserved_local_stream->Write(" }");
+    }
+  }
+
+  static constexpr bool IsAggregate() { return true; }
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
+
+  divisor() const;
+  ::emboss::support::Maybe<bool> has_divisor() const;
+
+ public:
+  class EmbossReservedVirtualZeroOrUndefinedView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    explicit EmbossReservedVirtualZeroOrUndefinedView(
+        const GenericCollapsingQuotientView& emboss_reserved_local_view)
+        : view_(emboss_reserved_local_view) {}
+    EmbossReservedVirtualZeroOrUndefinedView() = delete;
+    EmbossReservedVirtualZeroOrUndefinedView(
+        const EmbossReservedVirtualZeroOrUndefinedView&) = default;
+    EmbossReservedVirtualZeroOrUndefinedView(
+        EmbossReservedVirtualZeroOrUndefinedView&&) = default;
+    EmbossReservedVirtualZeroOrUndefinedView& operator=(
+        const EmbossReservedVirtualZeroOrUndefinedView&) = default;
+    EmbossReservedVirtualZeroOrUndefinedView& operator=(
+        EmbossReservedVirtualZeroOrUndefinedView&&) = default;
+    ~EmbossReservedVirtualZeroOrUndefinedView() = default;
+
+    ::std::int32_t Read() const {
+      EMBOSS_CHECK(view_.has_zero_or_undefined().ValueOr(false));
+      auto emboss_reserved_local_value = MaybeRead();
+      EMBOSS_CHECK(emboss_reserved_local_value.Known());
+      EMBOSS_CHECK(ValueIsOk(emboss_reserved_local_value.ValueOrDefault()));
+      return emboss_reserved_local_value.ValueOrDefault();
+    }
+    ::std::int32_t UncheckedRead() const {
+      return MaybeRead().ValueOrDefault();
+    }
+    bool Ok() const {
+      auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known() &&
+             ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
+    }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+
+   private:
+    ::emboss::support::Maybe</**/ ::std::int32_t> MaybeRead() const {
+      const auto emboss_reserved_local_subexpr_1 = view_.divisor();
+      const auto emboss_reserved_local_subexpr_2 =
+          (emboss_reserved_local_subexpr_1.Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(
+                         emboss_reserved_local_subexpr_1.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>());
+      const auto emboss_reserved_local_subexpr_3 =
+          ::emboss::support::FlooringQuotient</**/ ::std::int32_t,
+                                              ::std::int32_t, ::std::int32_t,
+                                              ::std::int32_t>(
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)),
+              emboss_reserved_local_subexpr_2);
+
+      return emboss_reserved_local_subexpr_3;
+    }
+
+    static constexpr bool ValueIsOk(
+        ::std::int32_t emboss_reserved_local_value) {
+      return (void)emboss_reserved_local_value,  // Silence -Wunused-parameter
+             ::emboss::support::Maybe<bool>(true).ValueOr(false);
+    }
+
+    const GenericCollapsingQuotientView view_;
+  };
+  EmbossReservedVirtualZeroOrUndefinedView zero_or_undefined() const;
+  ::emboss::support::Maybe<bool> has_zero_or_undefined() const;
+
+ public:
+  class EmbossReservedDollarVirtualIntrinsicSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView() {}
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+  IntrinsicSizeInBytes() {
+    return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ public:
+  class EmbossReservedDollarVirtualMaxSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
+    return EmbossReservedDollarVirtualMaxSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ public:
+  class EmbossReservedDollarVirtualMinSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
+    return EmbossReservedDollarVirtualMinSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ private:
+  Storage backing_;
+
+  template <class OtherStorage>
+  friend class GenericCollapsingQuotientView;
+};
+using CollapsingQuotientView = GenericCollapsingQuotientView<
+    /**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+using CollapsingQuotientWriter = GenericCollapsingQuotientView<
+    /**/ ::emboss::support::ReadWriteContiguousBuffer>;
+
+template <class View>
+struct EmbossReservedInternalIsGenericCollapsingQuotientView {
+  static constexpr const bool value = false;
+};
+
+template <class Storage>
+struct EmbossReservedInternalIsGenericCollapsingQuotientView<
+    GenericCollapsingQuotientView<Storage>> {
+  static constexpr const bool value = true;
+};
+
+template <typename T>
+inline GenericCollapsingQuotientView<
+    /**/ ::emboss::support::ContiguousBuffer<
+        typename ::std::remove_reference<
+            decltype(*::std::declval<T>()->data())>::type,
+        1, 0>>
+MakeCollapsingQuotientView(T&& emboss_reserved_local_arg) {
+  return GenericCollapsingQuotientView<
+      /**/ ::emboss::support::ContiguousBuffer<
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
+}
+
+template <typename T>
+inline GenericCollapsingQuotientView<
+    /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeCollapsingQuotientView(T* emboss_reserved_local_data,
+                           ::std::size_t emboss_reserved_local_size) {
+  return GenericCollapsingQuotientView<
+      /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
+}
+
+template <typename T, ::std::size_t kAlignment>
+inline GenericCollapsingQuotientView<
+    /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
+MakeAlignedCollapsingQuotientView(T* emboss_reserved_local_data,
+                                  ::std::size_t emboss_reserved_local_size) {
+  return GenericCollapsingQuotientView<
+      /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
+}
+
 namespace ArrayOfUint16BySizeInBytes {}  // namespace ArrayOfUint16BySizeInBytes
 
 template <class Storage>
@@ -2646,6 +4257,484 @@ template <class Storage>
 inline constexpr ::std::int32_t GenericConstantsView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return Constants::MinSizeInBytes();
+}
+namespace PayloadSizedByDivision {}  // namespace PayloadSizedByDivision
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        8>>
+
+GenericPayloadSizedByDivisionView<Storage>::divisor() const {
+  if (has_divisor().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericPayloadSizedByDivisionView<Storage>::has_divisor() const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
+
+template <class Storage>
+inline typename ::emboss::support::GenericArrayView<
+    typename ::emboss::prelude::UIntView<
+        /**/ ::emboss::support::FixedSizeViewParameters<
+            8, ::emboss::support::AllValuesAreOk>,
+        typename ::emboss::support::BitBlock<
+            /**/ ::emboss::support::LittleEndianByteOrderer<
+                typename Storage::template OffsetStorageType<
+                    /**/ 0, 1>::template OffsetStorageType</**/ 1, 0>>,
+            8>>
+
+    ,
+    typename Storage::template OffsetStorageType</**/ 0, 1>, 1, 8>
+
+GenericPayloadSizedByDivisionView<Storage>::payload() const {
+  if (has_payload().ValueOr(false)) {
+    const auto emboss_reserved_local_subexpr_1 = divisor();
+    const auto emboss_reserved_local_subexpr_2 =
+        (emboss_reserved_local_subexpr_1.Ok()
+             ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                   static_cast</**/ ::std::int32_t>(
+                       emboss_reserved_local_subexpr_1.UncheckedRead()))
+             : ::emboss::support::Maybe</**/ ::std::int32_t>());
+    const auto emboss_reserved_local_subexpr_3 =
+        ::emboss::support::FlooringQuotient</**/ ::std::int32_t, ::std::int32_t,
+                                            ::std::int32_t, ::std::int32_t>(
+            ::emboss::support::Maybe</**/ ::std::int32_t>(
+                static_cast</**/ ::std::int32_t>(16LL)),
+            emboss_reserved_local_subexpr_2);
+
+    auto emboss_reserved_local_size = emboss_reserved_local_subexpr_3;
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::support::GenericArrayView<
+          typename ::emboss::prelude::UIntView<
+              /**/ ::emboss::support::FixedSizeViewParameters<
+                  8, ::emboss::support::AllValuesAreOk>,
+              typename ::emboss::support::BitBlock<
+                  /**/ ::emboss::support::LittleEndianByteOrderer<
+                      typename Storage::template OffsetStorageType<
+                          /**/ 0, 1>::template OffsetStorageType</**/ 1, 0>>,
+                  8>>
+
+          ,
+          typename Storage::template OffsetStorageType</**/ 0, 1>, 1, 8>
+
+          (backing_.template GetOffsetStorage<0, 1>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::support::GenericArrayView<
+      typename ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType<
+                      /**/ 0, 1>::template OffsetStorageType</**/ 1, 0>>,
+              8>>
+
+      ,
+      typename Storage::template OffsetStorageType</**/ 0, 1>, 1, 8>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericPayloadSizedByDivisionView<Storage>::has_payload() const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
+
+template <class Storage>
+inline typename GenericPayloadSizedByDivisionView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+GenericPayloadSizedByDivisionView<Storage>::IntrinsicSizeInBytes() const {
+  return typename GenericPayloadSizedByDivisionView<
+      Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView(*this);
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericPayloadSizedByDivisionView<Storage>::has_IntrinsicSizeInBytes() const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
+
+namespace PayloadSizedByDivision {
+inline constexpr ::std::int32_t MaxSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(17LL))
+      .ValueOrDefault();
+}
+}  // namespace PayloadSizedByDivision
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericPayloadSizedByDivisionView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+  return PayloadSizedByDivision::MaxSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericPayloadSizedByDivisionView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
+  return PayloadSizedByDivision::MaxSizeInBytes();
+}
+
+namespace PayloadSizedByDivision {
+inline constexpr ::std::int32_t MinSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
+}
+}  // namespace PayloadSizedByDivision
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericPayloadSizedByDivisionView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+  return PayloadSizedByDivision::MinSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericPayloadSizedByDivisionView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
+  return PayloadSizedByDivision::MinSizeInBytes();
+}
+namespace FieldGatedByDivision {}  // namespace FieldGatedByDivision
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        8>>
+
+GenericFieldGatedByDivisionView<Storage>::divisor() const {
+  if (has_divisor().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericFieldGatedByDivisionView<Storage>::has_divisor() const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 1>>,
+        8>>
+
+GenericFieldGatedByDivisionView<Storage>::gated() const {
+  if (has_gated().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 1>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 1>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 1>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericFieldGatedByDivisionView<Storage>::has_gated() const {
+  return ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                  ::std::int32_t>(
+      ::emboss::support::FlooringQuotient</**/ ::std::int32_t, ::std::int32_t,
+                                          ::std::int32_t, ::std::int32_t>(
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(12LL)),
+          (divisor().Ok() ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                                static_cast</**/ ::std::int32_t>(
+                                    divisor().UncheckedRead()))
+                          : ::emboss::support::Maybe</**/ ::std::int32_t>())),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(3LL)));
+}
+
+template <class Storage>
+inline typename GenericFieldGatedByDivisionView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+GenericFieldGatedByDivisionView<Storage>::IntrinsicSizeInBytes() const {
+  return typename GenericFieldGatedByDivisionView<
+      Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView(*this);
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericFieldGatedByDivisionView<Storage>::has_IntrinsicSizeInBytes() const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
+
+namespace FieldGatedByDivision {
+inline constexpr ::std::int32_t MaxSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(2LL))
+      .ValueOrDefault();
+}
+}  // namespace FieldGatedByDivision
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericFieldGatedByDivisionView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+  return FieldGatedByDivision::MaxSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericFieldGatedByDivisionView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
+  return FieldGatedByDivision::MaxSizeInBytes();
+}
+
+namespace FieldGatedByDivision {
+inline constexpr ::std::int32_t MinSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
+}
+}  // namespace FieldGatedByDivision
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericFieldGatedByDivisionView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+  return FieldGatedByDivision::MinSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericFieldGatedByDivisionView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
+  return FieldGatedByDivision::MinSizeInBytes();
+}
+namespace CollapsingQuotient {}  // namespace CollapsingQuotient
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        8>>
+
+GenericCollapsingQuotientView<Storage>::divisor() const {
+  if (has_divisor().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericCollapsingQuotientView<Storage>::has_divisor() const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
+
+template <class Storage>
+inline typename GenericCollapsingQuotientView<
+    Storage>::EmbossReservedVirtualZeroOrUndefinedView
+GenericCollapsingQuotientView<Storage>::zero_or_undefined() const {
+  return typename GenericCollapsingQuotientView<
+      Storage>::EmbossReservedVirtualZeroOrUndefinedView(*this);
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericCollapsingQuotientView<Storage>::has_zero_or_undefined() const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
+
+namespace CollapsingQuotient {
+inline constexpr ::std::int32_t IntrinsicSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
+}
+}  // namespace CollapsingQuotient
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericCollapsingQuotientView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
+  return CollapsingQuotient::IntrinsicSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericCollapsingQuotientView<Storage>::
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
+  return CollapsingQuotient::IntrinsicSizeInBytes();
+}
+
+namespace CollapsingQuotient {
+inline constexpr ::std::int32_t MaxSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
+}
+}  // namespace CollapsingQuotient
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericCollapsingQuotientView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+  return CollapsingQuotient::MaxSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericCollapsingQuotientView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
+  return CollapsingQuotient::MaxSizeInBytes();
+}
+
+namespace CollapsingQuotient {
+inline constexpr ::std::int32_t MinSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
+}
+}  // namespace CollapsingQuotient
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericCollapsingQuotientView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+  return CollapsingQuotient::MinSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericCollapsingQuotientView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
+  return CollapsingQuotient::MinSizeInBytes();
 }
 
 }  // namespace test
