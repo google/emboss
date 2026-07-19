@@ -97,6 +97,52 @@ class IrUtilTest(unittest.TestCase):
             )
         )
 
+    def test_undefined_integer_type_is_not_constant(self):
+        # Even with modulus == "infinity" (a single defined value), a value that
+        # can be undefined is not a compile-time constant.
+        self.assertFalse(
+            ir_util.is_constant_type(
+                ir_data.ExpressionType(
+                    integer=ir_data.IntegerType(
+                        modulus="infinity",
+                        modular_value="0",
+                        minimum_value="0",
+                        maximum_value="0",
+                        can_be_undefined=True,
+                    )
+                )
+            )
+        )
+
+    def test_undefined_boolean_type_is_not_constant(self):
+        self.assertFalse(
+            ir_util.is_constant_type(
+                ir_data.ExpressionType(
+                    boolean=ir_data.BooleanType(value=True, can_be_undefined=True)
+                )
+            )
+        )
+
+    def test_constant_value_of_undefined_reference_is_none(self):
+        # A constant_reference to an integer value that can be undefined has no
+        # single constant value, even when its defined range collapses to one.
+        self.assertIsNone(
+            ir_util.constant_value(
+                ir_data.Expression(
+                    constant_reference=ir_data.Reference(),
+                    type=ir_data.ExpressionType(
+                        integer=ir_data.IntegerType(
+                            modulus="infinity",
+                            modular_value="0",
+                            minimum_value="0",
+                            maximum_value="0",
+                            can_be_undefined=True,
+                        )
+                    ),
+                )
+            )
+        )
+
     def test_is_constant_enumeration_type(self):
         self.assertFalse(
             ir_util.is_constant_type(
