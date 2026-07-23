@@ -53,6 +53,14 @@ struct FloatType<32> final {
 // LeastWidthInteger<n_bits>::Unsigned is the smallest uintNN_t type that can
 // hold n_bits or more.  LeastWidthInteger<n_bits>::Signed is the corresponding
 // signed type.
+//
+// The exact-width specializations below always take precedence, so the
+// unspecialized template is only ever instantiated for widths with no
+// exact-width integer type.  It recursively "rounds up" such widths to the
+// next supported width: for example, LeastWidthInteger<12>::Unsigned
+// instantiates LeastWidthInteger<13> through LeastWidthInteger<16>, yielding
+// ::std::uint16_t.  The static_assert bounds the recursion for widths above
+// the maximum supported width.
 #if EMBOSS_HAS_INT128
 template <int kBits>
 struct LeastWidthInteger final {
@@ -68,7 +76,9 @@ struct LeastWidthInteger<128> final {
 #else
 template <int kBits>
 struct LeastWidthInteger final {
-  static_assert(kBits <= 64, "Only bit sizes up to 64 are supported.");
+  static_assert(kBits <= 64,
+                "Bit widths over 64 require 128-bit integer support, which is "
+                "not available on this platform (EMBOSS_HAS_INT128 is 0).");
   using Unsigned = typename LeastWidthInteger<kBits + 1>::Unsigned;
   using Signed = typename LeastWidthInteger<kBits + 1>::Signed;
 };

@@ -235,7 +235,7 @@ class ConstraintsTest(unittest.TestCase):
         )
 
     def test_bits_field_too_big_for_type(self):
-        # UInt now supports up to 128 bits, so test with 129 bits (17 bytes)
+        # UInt supports up to 128 bits, so test with 129 bits (17 bytes)
         ir = _make_ir_from_emb(
             "struct Foo:\n"
             "  0 [+17]  UInt  uint136\n"
@@ -468,7 +468,7 @@ class ConstraintsTest(unittest.TestCase):
         )
 
     def test_explicit_size_too_big(self):
-        # UInt now supports up to 128 bits, so test with 256 bits (32 bytes)
+        # UInt supports up to 128 bits, so test with 256 bits (32 bytes)
         # to ensure we get the "Requirements of UInt not met" error
         ir = _make_ir_from_emb(
             "struct Foo:\n"
