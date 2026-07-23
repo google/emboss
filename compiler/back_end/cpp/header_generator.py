@@ -1679,7 +1679,7 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
             groups[key]["fields"].append(field)
             field_group_key[id(field)] = key
 
-    # Demote switch groups back to per-field checks in two cases.
+    # Demote switch groups to per-field checks in two cases.
     #
     # (1) Size: a switch's overhead — the temporary discriminant variable,
     #     the Known() guard, the scope braces — is only worthwhile if the
@@ -1704,8 +1704,8 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
     #     has_${field}() checks, which handle an Unknown discriminant
     #     correctly (an Unknown discriminant can never make has_X()
     #     Known-true, so a Known-false residual leaves the field simply
-    #     absent). This is latent on the current test corpus — no existing
-    #     schema produces the shape — so no existing golden changes.
+    #     absent). (`ResidualConditionalDiscriminant` in
+    #     testdata/condition.emb exercises this shape.)
     for key in ordered_keys:
         group = groups[key]
         if group["type"] != "switch":
@@ -1720,7 +1720,7 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
         has_bare_arm = any(
             not has_residual
             for case_entry in group["cases_by_label"].values()
-            for (_field, has_residual) in case_entry["entries"]
+            for (_, has_residual) in case_entry["entries"]
         )
         if not has_bare_arm and not _is_discriminant_provably_known(
             group["discrim_expr"], fields

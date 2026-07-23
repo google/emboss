@@ -300,11 +300,11 @@ TEST(Conditional, StructWithNestedConditionIsOkWhenOuterConditionExists) {
   EXPECT_EQ(2U, writer.SizeInBytes());
 }
 
-// Regression tests for the optimized Ok() switch when the discriminant (`tag`)
-// is itself a conditionally-present field.  In ResidualConditionalDiscriminant
-// every arm carries a residual (`outer == 1`), so when `outer != 1` the message
-// is valid even though `tag` is absent -- and the optimized Ok() must not
-// reject it just because the (out-of-bounds) discriminant reads as Unknown.
+// Regression tests for Ok() when the discriminant (`tag`) is itself a
+// conditionally-present field.  In ResidualConditionalDiscriminant every arm
+// carries a residual (`outer == 1`), so when `outer != 1` the message is valid
+// even though `tag` is absent -- and Ok() must not reject it just because the
+// (out-of-bounds) discriminant reads as Unknown.
 TEST(Conditional,
      ResidualConditionalDiscriminantOkWhenDiscriminantFieldIsAbsent) {
   // outer == 0, so `tag` is absent and `a`/`b` cannot exist.  The 1-byte
@@ -419,8 +419,9 @@ TEST(Conditional, DominatedBareDiscriminantOkWhenDiscriminantPresent) {
   EXPECT_EQ(9, writer.tail().Read());
 }
 
-// Disjunction arms (#256 matcher) on a conditional discriminant, all carrying a
-// residual -> the residual-only guarded switch with coalesced case labels.
+// Disjunction arms (`tag == 0 || tag == 1`) on a conditional discriminant, all
+// carrying a residual: the message must be Ok() when the discriminant is
+// absent, and each disjunct must select the field when it is present.
 TEST(Conditional, DisjunctionConditionalDiscriminantOkWhenDiscriminantAbsent) {
   ::std::uint8_t buffer[1] = {0};
   auto writer = DisjunctionConditionalDiscriminantWriter(buffer, sizeof buffer);
@@ -460,8 +461,8 @@ TEST(Conditional, DisjunctionConditionalDiscriminantSecondArmAndNoMatch) {
   EXPECT_FALSE(w9.has_b().Value());
 }
 
-// Single-entry group on a conditional discriminant: demoted to a has_X() check
-// (#256), so no discriminant guard is emitted and the bug cannot arise.
+// A single residual arm on a conditional discriminant: the message must be
+// Ok() when the discriminant is absent.
 TEST(Conditional, SingleEntryConditionalDiscriminantOkWhenDiscriminantAbsent) {
   ::std::uint8_t buffer[1] = {0};
   auto writer = SingleEntryConditionalDiscriminantWriter(buffer, sizeof buffer);
@@ -487,8 +488,8 @@ TEST(Conditional,
   EXPECT_FALSE(writer.Ok());
 }
 
-// Enum-typed conditional discriminant with residual arms (static_cast case
-// labels in the guarded switch).
+// Enum-typed conditional discriminant with residual arms: the message must be
+// Ok() when the discriminant is absent.
 TEST(Conditional, EnumConditionalDiscriminantOkWhenDiscriminantAbsent) {
   ::std::uint8_t buffer[1] = {0};  // outer == OFF
   auto writer = EnumConditionalDiscriminantWriter(buffer, sizeof buffer);

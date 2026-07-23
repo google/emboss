@@ -232,12 +232,11 @@ struct ConditionalOnFlag:
 
 
 struct ResidualConditionalDiscriminant:
-  # `tag` is itself conditional, and is the switch discriminant for `a`/`b`
-  # (it is the first conjunct of their existence conditions).  Every arm
-  # carries a residual (`outer == 1`), so when `outer != 1` the message is
-  # valid even though `tag` is absent -- and on a buffer too short to hold
-  # `tag`, reading the discriminant is Unknown.  The optimized Ok() must not
-  # reject such a message.
+  # `tag` is itself conditional, and is the discriminant for `a`/`b` (it is
+  # the first conjunct of their existence conditions).  Every arm carries a
+  # residual (`outer == 1`), so when `outer != 1` the message is valid even
+  # though `tag` is absent -- and on a buffer too short to hold `tag`, reading
+  # the discriminant is Unknown.  Ok() must not reject such a message.
   0 [+1]    UInt  outer
   if outer == 1:
     1 [+1]  UInt  tag
@@ -250,10 +249,10 @@ struct ResidualConditionalDiscriminant:
 
 
 struct BareConditionalDiscriminant:
-  # Like above, but `a`/`b` reference the conditional discriminant `tag`
-  # without re-guarding `outer == 1`, so the switch arms are bare.  Here the
-  # discriminant Known() guard is sound: an Unknown `tag` leaves has_a()/
-  # has_b() Unknown, so Ok() correctly reports the message as invalid.
+  # Like `ResidualConditionalDiscriminant`, but `a`/`b` reference the
+  # conditional discriminant `tag` without re-guarding `outer == 1`.  Here an
+  # out-of-bounds `tag` leaves has_a()/has_b() Unknown, so Ok() correctly
+  # reports the message as invalid.
   0 [+1]    UInt  outer
   if outer == 1:
     1 [+1]  UInt  tag
@@ -266,13 +265,11 @@ struct BareConditionalDiscriminant:
 
 
 struct DominatedBareDiscriminant:
-  # Bare arms on a conditional discriminant, plus an always-present `tail`
-  # field that dominates the structure size.  When `outer != 1`, `tag` is
-  # absent and has_a()/has_b() are Unknown, but `tail` keeps the size Known so
+  # Like `BareConditionalDiscriminant`, plus an always-present `tail` field
+  # that dominates the structure size.  When `outer != 1`, `tag` is absent and
+  # has_a()/has_b() are Unknown, but `tail` keeps the size Known so
   # IsComplete() is true.  Ok() must still be false: a/b's existence is
-  # indeterminate, and the discriminant Known() guard -- not IsComplete() --
-  # is what enforces that.  (A `if (has_tag().ValueOrDefault())` wrapper would
-  # wrongly accept this message.)
+  # indeterminate.
   0 [+1]    UInt  outer
   if outer == 1:
     1 [+1]  UInt  tag
@@ -288,8 +285,8 @@ struct DominatedBareDiscriminant:
 
 struct DisjunctionConditionalDiscriminant:
   # Disjunction arms (`tag == 0 || tag == 1`) on a conditional discriminant,
-  # each carrying a residual.  Exercises the disjunction matcher and case-label
-  # coalescing together with the residual-only guarded switch.
+  # each carrying a residual.  Like `ResidualConditionalDiscriminant`, a
+  # message with `outer != 1` is valid even though `tag` is absent.
   0 [+1]    UInt  outer
   if outer == 1:
     1 [+1]  UInt  tag
@@ -302,9 +299,8 @@ struct DisjunctionConditionalDiscriminant:
 
 
 struct SingleEntryConditionalDiscriminant:
-  # A single residual arm on a conditional discriminant.  The switch group has
-  # one entry, so it is demoted to a has_X() check instead of a switch; no
-  # discriminant guard is emitted, so the bug cannot arise here.
+  # A single residual arm on a conditional discriminant.  When `outer != 1`,
+  # `tag` is absent and the message must still be Ok().
   0 [+1]    UInt  outer
   if outer == 1:
     1 [+1]  UInt  tag
@@ -314,8 +310,8 @@ struct SingleEntryConditionalDiscriminant:
 
 
 struct EnumConditionalDiscriminant:
-  # Conditional discriminant of enum type, with residual arms.  Exercises the
-  # enum-typed case labels in the guarded switch.
+  # Conditional discriminant of enum type, with residual arms.  When
+  # `outer != OnOff.ON`, `tag` is absent and the message must still be Ok().
   0 [+1]    OnOff  outer
   if outer == OnOff.ON:
     1 [+1]  OnOff  tag
