@@ -21,6 +21,8 @@
 #include <cstdint>
 #include <type_traits>
 
+#include "runtime/cpp/emboss_defines.h"
+
 namespace emboss {
 namespace support {
 
@@ -51,12 +53,36 @@ struct FloatType<32> final {
 // LeastWidthInteger<n_bits>::Unsigned is the smallest uintNN_t type that can
 // hold n_bits or more.  LeastWidthInteger<n_bits>::Signed is the corresponding
 // signed type.
+//
+// The exact-width specializations below always take precedence, so the
+// unspecialized template is only ever instantiated for widths with no
+// exact-width integer type.  It recursively "rounds up" such widths to the
+// next supported width: for example, LeastWidthInteger<12>::Unsigned
+// instantiates LeastWidthInteger<13> through LeastWidthInteger<16>, yielding
+// ::std::uint16_t.  The static_assert bounds the recursion for widths above
+// the maximum supported width.
+#if EMBOSS_HAS_INT128
 template <int kBits>
 struct LeastWidthInteger final {
-  static_assert(kBits <= 64, "Only bit sizes up to 64 are supported.");
+  static_assert(kBits <= 128, "Only bit sizes up to 128 are supported.");
   using Unsigned = typename LeastWidthInteger<kBits + 1>::Unsigned;
   using Signed = typename LeastWidthInteger<kBits + 1>::Signed;
 };
+template <>
+struct LeastWidthInteger<128> final {
+  using Unsigned = EMBOSS_UINT128_T;
+  using Signed = EMBOSS_INT128_T;
+};
+#else
+template <int kBits>
+struct LeastWidthInteger final {
+  static_assert(kBits <= 64,
+                "Bit widths over 64 require 128-bit integer support, which is "
+                "not available on this platform (EMBOSS_HAS_INT128 is 0).");
+  using Unsigned = typename LeastWidthInteger<kBits + 1>::Unsigned;
+  using Signed = typename LeastWidthInteger<kBits + 1>::Signed;
+};
+#endif  // EMBOSS_HAS_INT128
 template <>
 struct LeastWidthInteger<64> final {
   using Unsigned = ::std::uint64_t;
@@ -77,6 +103,19 @@ struct LeastWidthInteger<8> final {
   using Unsigned = ::std::uint8_t;
   using Signed = ::std::int8_t;
 };
+
+// MaxWidthUnsigned and MaxWidthSigned are the widest unsigned and signed
+// integer types that Emboss supports on the current platform.  They are used
+// when a value of unknown (but supported) width must be compared without
+// truncation -- for example, when range-checking a value before writing it to
+// an integer field.
+#if EMBOSS_HAS_INT128
+using MaxWidthUnsigned = EMBOSS_UINT128_T;
+using MaxWidthSigned = EMBOSS_INT128_T;
+#else
+using MaxWidthUnsigned = ::std::uint64_t;
+using MaxWidthSigned = ::std::int64_t;
+#endif  // EMBOSS_HAS_INT128
 
 // IsAliasSafe<T>::value is true if T is an alias safe type; i.e. const?
 // volatile? (unsigned)? char | std::byte.

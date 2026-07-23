@@ -56,6 +56,14 @@ inline constexpr ::std::uint64_t ByteSwap(::std::uint64_t x) {
 #endif
 }
 
+#if EMBOSS_HAS_INT128
+inline constexpr EMBOSS_UINT128_T ByteSwap(EMBOSS_UINT128_T x) {
+  return (static_cast<EMBOSS_UINT128_T>(ByteSwap(static_cast<::std::uint64_t>(x)))
+          << 64) |
+         ByteSwap(static_cast<::std::uint64_t>(x >> 64));
+}
+#endif  // EMBOSS_HAS_INT128
+
 // Masks the given value to the given number of bits.
 template <typename T>
 inline constexpr T MaskToNBits(T value, unsigned bits) {
