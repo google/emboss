@@ -229,3 +229,95 @@ struct ConditionalOnFlag:
     0 [+1]  Flag  enabled
   if enabled:
     1 [+1]  UInt  value
+
+
+struct ResidualConditionalDiscriminant:
+  # `tag` is itself conditional, and is the discriminant for `a`/`b` (it is
+  # the first conjunct of their existence conditions).  Every arm carries a
+  # residual (`outer == 1`), so when `outer != 1` the message is valid even
+  # though `tag` is absent -- and on a buffer too short to hold `tag`, reading
+  # the discriminant is Unknown.  Ok() must not reject such a message.
+  0 [+1]    UInt  outer
+  if outer == 1:
+    1 [+1]  UInt  tag
+
+  if tag == 0 && outer == 1:
+    2 [+1]  UInt  a
+
+  if tag == 1 && outer == 1:
+    2 [+1]  UInt  b
+
+
+struct BareConditionalDiscriminant:
+  # Like `ResidualConditionalDiscriminant`, but `a`/`b` reference the
+  # conditional discriminant `tag` without re-guarding `outer == 1`.  Here an
+  # out-of-bounds `tag` leaves has_a()/has_b() Unknown, so Ok() correctly
+  # reports the message as invalid.
+  0 [+1]    UInt  outer
+  if outer == 1:
+    1 [+1]  UInt  tag
+
+  if tag == 0:
+    2 [+1]  UInt  a
+
+  if tag == 1:
+    2 [+1]  UInt  b
+
+
+struct DominatedBareDiscriminant:
+  # Like `BareConditionalDiscriminant`, plus an always-present `tail` field
+  # that dominates the structure size.  When `outer != 1`, `tag` is absent and
+  # has_a()/has_b() are Unknown, but `tail` keeps the size Known so
+  # IsComplete() is true.  Ok() must still be false: a/b's existence is
+  # indeterminate.
+  0 [+1]    UInt  outer
+  if outer == 1:
+    1 [+1]  UInt  tag
+
+  if tag == 0:
+    2 [+1]  UInt  a
+
+  if tag == 1:
+    2 [+1]  UInt  b
+
+  3 [+1]    UInt  tail
+
+
+struct DisjunctionConditionalDiscriminant:
+  # Disjunction arms (`tag == 0 || tag == 1`) on a conditional discriminant,
+  # each carrying a residual.  Like `ResidualConditionalDiscriminant`, a
+  # message with `outer != 1` is valid even though `tag` is absent.
+  0 [+1]    UInt  outer
+  if outer == 1:
+    1 [+1]  UInt  tag
+
+  if (tag == 0 || tag == 1) && outer == 1:
+    2 [+1]  UInt  a
+
+  if (tag == 2 || tag == 3) && outer == 1:
+    2 [+1]  UInt  b
+
+
+struct SingleEntryConditionalDiscriminant:
+  # A single residual arm on a conditional discriminant.  When `outer != 1`,
+  # `tag` is absent and the message must still be Ok().
+  0 [+1]    UInt  outer
+  if outer == 1:
+    1 [+1]  UInt  tag
+
+  if tag == 0 && outer == 1:
+    2 [+1]  UInt  a
+
+
+struct EnumConditionalDiscriminant:
+  # Conditional discriminant of enum type, with residual arms.  When
+  # `outer != OnOff.ON`, `tag` is absent and the message must still be Ok().
+  0 [+1]    OnOff  outer
+  if outer == OnOff.ON:
+    1 [+1]  OnOff  tag
+
+  if tag == OnOff.OFF && outer == OnOff.ON:
+    2 [+1]  UInt   a
+
+  if tag == OnOff.ON && outer == OnOff.ON:
+    2 [+1]  UInt   b
