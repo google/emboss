@@ -78,8 +78,3 @@ struct UInt128ArraySizes:
   110 [+28]  UInt:112[2]  fourteen_byte
   138 [+30]  UInt:120[2]  fifteen_byte
   168 [+32]  UInt:128[2]  sixteen_byte
-
-
-# Note: Anonymous `bits` types are still constrained to 64 bits maximum.
-# Supporting 128-bit `bits` types would require additional implementation
-# work in the OffsetBitBlock class and the constraints checker.

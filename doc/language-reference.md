@@ -873,6 +873,10 @@ structured view of bits.  Fields in a `bits` must have bit-oriented types (such
 as other `bits`, `UInt`, `Bcd`, `Flag`).  Byte-oriented types, such as
 `struct`s, may not be embedded in a `bits`.
 
+A `bits` must be fixed size, and may be no more than 64 bits in total size.
+Note that this limit is smaller than the 128-bit maximum size of a `UInt` or
+`Int` field in a `struct`.
+
 For example:
 
 ```
@@ -949,6 +953,11 @@ struct Message:
 
 In this case, the fields of the `bits` will be treated as though they are fields
 of the outer struct.
+
+Like any other `bits`, an anonymous `bits` is limited to 64 bits in total size,
+even though the enclosing `struct` may contain integer fields of up to 128
+bits.  Supporting larger `bits` would require additional implementation work in
+the compiler and runtime.
 
 
 #### Inline `bits`
@@ -1078,16 +1087,28 @@ the Prelude documentation from prelude.emb. -->
 
 ### `UInt`
 
-A `UInt` is an unsigned integer.  `UInt` can be anywhere from 1 to 64 bits in
+A `UInt` is an unsigned integer.  `UInt` can be anywhere from 1 to 128 bits in
 size, and may be used both in `struct`s and in `bits`.  `UInt` fields may be
+referenced in integer expressions.
+
+`UInt`s larger than 64 bits require 128-bit integer support from the target
+platform: for the C++ backend, a compiler that provides `__uint128_t` (detected
+via `EMBOSS_HAS_INT128`).  On platforms without 128-bit integer support,
+generated code for fields larger than 64 bits will fail to compile.  Since
+`bits` types are limited to 64 bits in total size, `UInt`s larger than 64 bits
+can only be used in `struct`s.  `UInt` fields larger than 64 bits cannot be
 referenced in integer expressions.
 
 
 ### `Int`
 
 An `Int` is a signed two's-complement integer.  `Int` can be anywhere from 1 to
-64 bits in size, and may be used both in `struct`s and in `bits`.  `Int` fields
+128 bits in size, and may be used both in `struct`s and in `bits`.  `Int` fields
 may be referenced in integer expressions.
+
+Like `UInt`, `Int`s larger than 64 bits require 128-bit integer support from
+the target platform (for the C++ backend, `__int128_t`), can only be used in
+`struct`s, and cannot be referenced in integer expressions.
 
 
 ### `Bcd`

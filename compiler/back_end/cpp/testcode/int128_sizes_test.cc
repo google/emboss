@@ -385,10 +385,11 @@ TEST(Int128SizesView, TextFormatRoundTripNegative) {
   EXPECT_TRUE(::emboss::UpdateFromText(writer, "{nine_byte: -12345}"));
   EXPECT_EQ(static_cast<__int128_t>(-12345), writer.nine_byte().Read());
 
-  // A large negative 128-bit value (-2**120) does not fit in 64 bits; it must
-  // round-trip through the decimal text format.
+  // A large negative 128-bit value, -(2**120), does not fit in 64 bits.  (The
+  // WriteToString round-trip below covers the equivalent decimal text,
+  // -1329227995784915872903807060280344576.)
   EXPECT_TRUE(::emboss::UpdateFromText(
-      writer, "{sixteen_byte: -1329227995784915872903807060280344576}"));
+      writer, "{sixteen_byte: -0x1000000000000000000000000000000}"));
   EXPECT_EQ(-(static_cast<__int128_t>(1) << 120), writer.sixteen_byte().Read());
 
   // Round-trip through WriteToString and back.
