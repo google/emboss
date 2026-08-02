@@ -24,30 +24,90 @@ ${imports_list}
 ${struct_definitions}
 
 // ** struct_view ** //
-pub struct ${struct_name}<S: Storage> {
+pub struct ${struct_name}<S: emboss_runtime::Storage, ST: emboss_runtime::State = emboss_runtime::UncheckedState> {
     storage: S,
+    _marker: core::marker::PhantomData<ST>,
 }
 
-impl<S: Storage> ${struct_name}<S> {
+impl<S: emboss_runtime::Storage> ${struct_name}<S, emboss_runtime::UncheckedState> {
     pub fn new(storage: S) -> Self {
-        Self { storage }
+        Self {
+            storage,
+            _marker: core::marker::PhantomData,
+        }
+    }
+}
+
+impl<S: emboss_runtime::Storage, ST: emboss_runtime::State> ${struct_name}<S, ST> {
+    /**
+     * Constructs a view in a specific typestate.
+     *
+     * # Safety
+     *
+     * The caller must ensure that `storage` satisfies the layout invariants for `ST`.
+     */
+    pub unsafe fn new_in_state(storage: S) -> Self {
+        Self {
+            storage,
+            _marker: core::marker::PhantomData,
+        }
     }
 ${field_accessors}
 }
 
-pub struct ${struct_name}Mut<S: MutStorage> {
+pub struct ${struct_name}Mut<S: emboss_runtime::MutStorage, ST: emboss_runtime::State = emboss_runtime::UncheckedState> {
     storage: S,
+    _marker: core::marker::PhantomData<ST>,
 }
 
-impl<S: MutStorage> ${struct_name}Mut<S> {
+impl<S: emboss_runtime::MutStorage> ${struct_name}Mut<S, emboss_runtime::UncheckedState> {
     pub fn new(storage: S) -> Self {
-        Self { storage }
+        Self {
+            storage,
+            _marker: core::marker::PhantomData,
+        }
+    }
+}
+
+impl<S: emboss_runtime::MutStorage, ST: emboss_runtime::State> ${struct_name}Mut<S, ST> {
+    /**
+     * Constructs a mutable view in a specific typestate.
+     *
+     * # Safety
+     *
+     * The caller must ensure that `storage` satisfies the layout invariants for `ST`.
+     */
+    pub unsafe fn new_in_state(storage: S) -> Self {
+        Self {
+            storage,
+            _marker: core::marker::PhantomData,
+        }
     }
 ${mut_field_accessors}
 }
 
+impl<S: emboss_runtime::Storage> emboss_runtime::CheckComplete for ${struct_name}<S, emboss_runtime::UncheckedState> {
+    type Completed = ${struct_name}<S, emboss_runtime::CompleteState>;
+    fn check_complete(self) -> core::result::Result<Self::Completed, emboss_runtime::Error> {
+        let size = (${size_in_bytes}) as usize;
+        let _ = self.storage.slice(0, size)?;
+        // SAFETY: self.storage has been validated to contain the complete byte length required by the struct layout.
+        core::result::Result::Ok(unsafe { ${struct_name}::new_in_state(self.storage) })
+    }
+}
+
+impl<S: emboss_runtime::MutStorage> emboss_runtime::CheckComplete for ${struct_name}Mut<S, emboss_runtime::UncheckedState> {
+    type Completed = ${struct_name}Mut<S, emboss_runtime::CompleteState>;
+    fn check_complete(mut self) -> core::result::Result<Self::Completed, emboss_runtime::Error> {
+        let size = (${size_in_bytes}) as usize;
+        let _ = self.storage.slice_mut(0, size)?;
+        // SAFETY: self.storage has been validated to contain the complete byte length required by the struct layout.
+        core::result::Result::Ok(unsafe { ${struct_name}Mut::new_in_state(self.storage) })
+    }
+}
+
 // ** bit_external_field_accessor ** //
-    pub fn ${field_name}(&self) -> emboss_runtime::Bit${type_name}<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>> {
+    pub fn ${field_name}(&self) -> emboss_runtime::Bit${type_name}<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>, ST> {
         let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
             let offset = 0;
             let len = (${byte_length}) as usize; // Total struct size in bytes
@@ -57,11 +117,11 @@ ${mut_field_accessors}
             core::result::Result::Ok((offset, len)) => self.storage.slice(offset, len),
             core::result::Result::Err(e) => core::result::Result::Err(e),
         };
-        emboss_runtime::Bit${type_name}::<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>>::new(storage)
+        emboss_runtime::Bit${type_name}::<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>, ST>::new(storage)
     }
 
 // ** bit_external_mut_field_accessor ** //
-    pub fn ${field_name}(&mut self) -> emboss_runtime::Bit${type_name}<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>> {
+    pub fn ${field_name}(&mut self) -> emboss_runtime::Bit${type_name}<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, ST> {
         let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
             let offset = 0;
             let len = (${byte_length}) as usize;
@@ -71,11 +131,11 @@ ${mut_field_accessors}
             core::result::Result::Ok((offset, len)) => self.storage.slice_mut(offset, len),
             core::result::Result::Err(e) => core::result::Result::Err(e),
         };
-        emboss_runtime::Bit${type_name}::<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>>::new(storage)
+        emboss_runtime::Bit${type_name}::<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, ST>::new(storage)
     }
 
 // ** external_field_accessor ** //
-    pub fn ${field_name}(&self) -> ${type_name}<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>> {
+    pub fn ${field_name}(&self) -> ${type_name}<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>, ST> {
         let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
             let offset = (${byte_offset}) as usize;
             let len = (${byte_length}) as usize;
@@ -85,11 +145,11 @@ ${mut_field_accessors}
             core::result::Result::Ok((offset, len)) => self.storage.slice(offset, len),
             core::result::Result::Err(e) => core::result::Result::Err(e),
         };
-        ${type_name}::<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>>::new(storage)
+        ${type_name}::<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>, ST>::new(storage)
     }
 
 // ** external_mut_field_accessor ** //
-    pub fn ${field_name}(&mut self) -> ${type_name}<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>> {
+    pub fn ${field_name}(&mut self) -> ${type_name}<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, ST> {
         let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
             let offset = (${byte_offset}) as usize;
             let len = (${byte_length}) as usize;
@@ -99,11 +159,11 @@ ${mut_field_accessors}
             core::result::Result::Ok((offset, len)) => self.storage.slice_mut(offset, len),
             core::result::Result::Err(e) => core::result::Result::Err(e),
         };
-        ${type_name}::<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>>::new(storage)
+        ${type_name}::<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, ST>::new(storage)
     }
 
 // ** struct_field_accessor ** //
-    pub fn ${field_name}(&self) -> ${type_name}<core::result::Result<S::Sliced<'_>, emboss_runtime::Error>> {
+    pub fn ${field_name}(&self) -> ${type_name}<core::result::Result<S::Sliced<'_>, emboss_runtime::Error>, emboss_runtime::UncheckedState> {
         let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
             let offset = (${byte_offset}) as usize;
             let len = (${byte_length}) as usize;
@@ -113,11 +173,12 @@ ${mut_field_accessors}
             core::result::Result::Ok((offset, len)) => self.storage.slice(offset, len),
             core::result::Result::Err(e) => core::result::Result::Err(e),
         };
-        ${type_name}::new(storage)
+        // SAFETY: The inner struct view is created in UncheckedState, which requires explicit verification before access.
+        unsafe { ${type_name}::<core::result::Result<S::Sliced<'_>, emboss_runtime::Error>, emboss_runtime::UncheckedState>::new_in_state(storage) }
     }
 
 // ** struct_mut_field_accessor ** //
-    pub fn ${field_name}(&mut self) -> ${type_name}Mut<core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>> {
+    pub fn ${field_name}(&mut self) -> ${type_name}Mut<core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, emboss_runtime::UncheckedState> {
         let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
             let offset = (${byte_offset}) as usize;
             let len = (${byte_length}) as usize;
@@ -127,7 +188,8 @@ ${mut_field_accessors}
             core::result::Result::Ok((offset, len)) => self.storage.slice_mut(offset, len),
             core::result::Result::Err(e) => core::result::Result::Err(e),
         };
-        ${type_name}Mut::new(storage)
+        // SAFETY: The inner struct view is created in UncheckedState, which requires explicit verification before access.
+        unsafe { ${type_name}Mut::<core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, emboss_runtime::UncheckedState>::new_in_state(storage) }
     }
 
 // ** enum_definition ** //
@@ -145,6 +207,41 @@ impl core::convert::From<${enum_name}> for i8 { fn from(val: ${enum_name}) -> Se
 impl core::convert::From<${enum_name}> for i16 { fn from(val: ${enum_name}) -> Self { val as i16 } }
 impl core::convert::From<${enum_name}> for i32 { fn from(val: ${enum_name}) -> Self { val as i32 } }
 impl core::convert::From<${enum_name}> for i64 { fn from(val: ${enum_name}) -> Self { val as i64 } }
+
+impl emboss_runtime::SafeCmp<${enum_name}> for ${enum_name} {
+    fn safe_eq(&self, other: Self) -> bool { *self == other }
+    fn safe_less(&self, other: Self) -> bool { (*self as ${underlying_type}) < (other as ${underlying_type}) }
+}
+
+impl emboss_runtime::SafeCmp<u64> for ${enum_name} {
+    fn safe_eq(&self, other: u64) -> bool { emboss_runtime::SafeCmp::safe_eq(&(*self as ${underlying_type}), other) }
+    fn safe_less(&self, other: u64) -> bool { emboss_runtime::SafeCmp::safe_less(&(*self as ${underlying_type}), other) }
+}
+
+impl emboss_runtime::SafeCmp<i64> for ${enum_name} {
+    fn safe_eq(&self, other: i64) -> bool { emboss_runtime::SafeCmp::safe_eq(&(*self as ${underlying_type}), other) }
+    fn safe_less(&self, other: i64) -> bool { emboss_runtime::SafeCmp::safe_less(&(*self as ${underlying_type}), other) }
+}
+
+impl emboss_runtime::SafeCmp<i32> for ${enum_name} {
+    fn safe_eq(&self, other: i32) -> bool { emboss_runtime::SafeCmp::safe_eq(&(*self as ${underlying_type}), other as i64) }
+    fn safe_less(&self, other: i32) -> bool { emboss_runtime::SafeCmp::safe_less(&(*self as ${underlying_type}), other as i64) }
+}
+
+impl emboss_runtime::SafeCmp<u32> for ${enum_name} {
+    fn safe_eq(&self, other: u32) -> bool { emboss_runtime::SafeCmp::safe_eq(&(*self as ${underlying_type}), other as u64) }
+    fn safe_less(&self, other: u32) -> bool { emboss_runtime::SafeCmp::safe_less(&(*self as ${underlying_type}), other as u64) }
+}
+
+impl emboss_runtime::SafeCmp<${enum_name}> for u64 {
+    fn safe_eq(&self, other: ${enum_name}) -> bool { emboss_runtime::SafeCmp::safe_eq(self, other as ${underlying_type}) }
+    fn safe_less(&self, other: ${enum_name}) -> bool { emboss_runtime::SafeCmp::safe_less(self, other as ${underlying_type}) }
+}
+
+impl emboss_runtime::SafeCmp<${enum_name}> for i64 {
+    fn safe_eq(&self, other: ${enum_name}) -> bool { emboss_runtime::SafeCmp::safe_eq(self, other as ${underlying_type}) }
+    fn safe_less(&self, other: ${enum_name}) -> bool { emboss_runtime::SafeCmp::safe_less(self, other as ${underlying_type}) }
+}
 
 impl<V: core::convert::Into<${underlying_type}> + core::marker::Copy> emboss_runtime::TryFromRaw<V> for ${enum_name} {
     fn try_from_raw(val: V) -> core::result::Result<Self, emboss_runtime::Error<V>> {
@@ -195,7 +292,7 @@ core::cmp::min((${left}) as i64, (${right}) as i64)
 
 
 // ** enum_field_accessor ** //
-    pub fn ${field_name}(&self) -> emboss_runtime::EnumView<${enum_name}, emboss_runtime::UInt<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>>> {
+    pub fn ${field_name}(&self) -> emboss_runtime::EnumView<${enum_name}, emboss_runtime::UInt<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>, ST>> {
         let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
             let offset = (${byte_offset}) as usize;
             let len = (${byte_length}) as usize;
@@ -209,7 +306,7 @@ core::cmp::min((${left}) as i64, (${right}) as i64)
     }
 
 // ** enum_mut_field_accessor ** //
-    pub fn ${field_name}(&mut self) -> emboss_runtime::EnumViewMut<${enum_name}, emboss_runtime::UInt<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>>> {
+    pub fn ${field_name}(&mut self) -> emboss_runtime::EnumViewMut<${enum_name}, emboss_runtime::UInt<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, ST>> {
         let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
             let offset = (${byte_offset}) as usize;
             let len = (${byte_length}) as usize;
@@ -333,10 +430,10 @@ emboss_runtime::EnumViewMut::new(emboss_runtime::UInt::new(storage))
 ({ let val = ${self_ref}${path_expr}.try_read().map_err(|e| match e { emboss_runtime::Error::OutOfBounds => emboss_runtime::Error::OutOfBounds, emboss_runtime::Error::UnknownEnum(_) => emboss_runtime::Error::UnknownEnum(()) })?; val })
 
 // ** expr_equality ** //
-(${left} == ${right})
+emboss_runtime::SafeCmp::safe_eq(&(${left}), ${right})
 
 // ** expr_less ** //
-(${left} < ${right})
+emboss_runtime::SafeCmp::safe_less(&(${left}), ${right})
 
 // ** virtual_field_accessor ** //
     pub fn ${field_name}(&self) -> emboss_runtime::VirtualField<${return_type}> {
@@ -371,7 +468,7 @@ emboss_runtime::EnumViewMut::new(emboss_runtime::UInt::new(storage))
     }
 
 // ** bit_enum_field_accessor ** //
-    pub fn ${field_name}(&self) -> emboss_runtime::EnumView<${enum_name}, emboss_runtime::BitUInt<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>>> {
+    pub fn ${field_name}(&self) -> emboss_runtime::EnumView<${enum_name}, emboss_runtime::BitUInt<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>, ST>> {
         let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
             let offset = 0;
             let len = (${byte_length}) as usize;
@@ -385,7 +482,7 @@ emboss_runtime::EnumViewMut::new(emboss_runtime::UInt::new(storage))
     }
 
 // ** bit_enum_mut_field_accessor ** //
-    pub fn ${field_name}(&mut self) -> emboss_runtime::EnumViewMut<${enum_name}, emboss_runtime::BitUInt<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>>> {
+    pub fn ${field_name}(&mut self) -> emboss_runtime::EnumViewMut<${enum_name}, emboss_runtime::BitUInt<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, ST>> {
         let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
             let offset = 0;
             let len = (${byte_length}) as usize;
@@ -397,4 +494,3 @@ emboss_runtime::EnumViewMut::new(emboss_runtime::UInt::new(storage))
         };
         emboss_runtime::EnumViewMut::new(emboss_runtime::BitUInt::new(storage))
     }
-
