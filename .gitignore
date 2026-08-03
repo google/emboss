@@ -9,3 +9,7 @@ __pycache__
 # IDEs
 .vscode
 
+
+# Rust / Cargo
+**/rust/Cargo.lock
+**/rust/target/
