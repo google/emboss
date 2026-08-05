@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use emboss_runtime::{IsComplete, TryRead, TryWrite};
+
 #[test]
 fn reads_int_sizes_correctly() {
     let container: &[u8] = &[
@@ -31,17 +33,35 @@ fn reads_int_sizes_correctly() {
 
     let view = testdata_int_sizes_emb::Sizes::new(container);
 
-    assert_eq!(view.one_byte().try_read().unwrap(), 2i8);
-    assert_eq!(view.two_byte().try_read().unwrap(), -260i16);
-    assert_eq!(view.three_byte().try_read().unwrap(), 0x445566i32);
-    assert_eq!(view.four_byte().try_read().unwrap(), -0x03040506i32);
-    assert_eq!(view.five_byte().try_read().unwrap(), 0x2987654321i64);
-    assert_eq!(view.six_byte().try_read().unwrap(), -0x123456789abci64);
-    assert_eq!(view.seven_byte().try_read().unwrap(), 0x71e2d3c4b5a697i64);
+    assert!(view.is_complete());
+    assert!(view.one_byte().is_complete());
+    assert_eq!(unsafe { view.one_byte().read_unchecked() }, 2i8);
+    assert_eq!(unsafe { view.two_byte().read_unchecked() }, -260i16);
+    assert_eq!(unsafe { view.three_byte().read_unchecked() }, 0x445566i32);
+    assert_eq!(unsafe { view.four_byte().read_unchecked() }, -0x03040506i32);
+    assert_eq!(unsafe { view.five_byte().read_unchecked() }, 0x2987654321i64);
+    assert_eq!(unsafe { view.six_byte().read_unchecked() }, -0x123456789abci64);
+    assert_eq!(unsafe { view.seven_byte().read_unchecked() }, 0x71e2d3c4b5a697i64);
     assert_eq!(
-        view.eight_byte().try_read().unwrap(),
+        unsafe { view.eight_byte().read_unchecked() },
         -0x7f00010203040506i64
     );
+
+    let incomplete_view = testdata_int_sizes_emb::Sizes::new(&container[..10]);
+    assert!(!incomplete_view.is_complete());
+}
+
+#[test]
+fn writes_int_sizes_infallibly() {
+    let mut container = vec![0u8; 36];
+    let mut view = testdata_int_sizes_emb::SizesMut::new(&mut container[..]);
+
+    assert!(view.is_complete());
+    unsafe { view.one_byte().write_unchecked(42i8) };
+    unsafe { view.two_byte().write_unchecked(-260i16) };
+
+    assert_eq!(unsafe { view.one_byte().read_unchecked() }, 42i8);
+    assert_eq!(unsafe { view.two_byte().read_unchecked() }, -260i16);
 }
 
 #[test]
@@ -49,12 +69,14 @@ fn reads_negative_ones_correctly() {
     let container: &[u8] = &[0xff; 36];
     let view = testdata_int_sizes_emb::Sizes::new(container);
 
-    assert_eq!(view.one_byte().try_read().unwrap(), -1i8);
-    assert_eq!(view.two_byte().try_read().unwrap(), -1i16);
-    assert_eq!(view.three_byte().try_read().unwrap(), -1i32);
-    assert_eq!(view.four_byte().try_read().unwrap(), -1i32);
-    assert_eq!(view.five_byte().try_read().unwrap(), -1i64);
-    assert_eq!(view.six_byte().try_read().unwrap(), -1i64);
-    assert_eq!(view.seven_byte().try_read().unwrap(), -1i64);
-    assert_eq!(view.eight_byte().try_read().unwrap(), -1i64);
+    assert!(view.is_complete());
+    assert_eq!(unsafe { view.one_byte().read_unchecked() }, -1i8);
+    assert_eq!(unsafe { view.two_byte().read_unchecked() }, -1i16);
+    assert_eq!(unsafe { view.three_byte().read_unchecked() }, -1i32);
+    assert_eq!(unsafe { view.four_byte().read_unchecked() }, -1i32);
+    assert_eq!(unsafe { view.five_byte().read_unchecked() }, -1i64);
+    assert_eq!(unsafe { view.six_byte().read_unchecked() }, -1i64);
+    assert_eq!(unsafe { view.seven_byte().read_unchecked() }, -1i64);
+    assert_eq!(unsafe { view.eight_byte().read_unchecked() }, -1i64);
 }
+

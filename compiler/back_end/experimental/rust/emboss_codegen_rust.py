@@ -271,11 +271,14 @@ def _rust_type_for_expr_type(expr_type):
 def _generate_expression(
     expr, ir, module, generated_fields, templates, self_ref="self"
 ):
-    if ir_util.is_constant(expr):
-        return str(ir_util.constant_value(expr))
-
     if expr.has_field("boolean_constant"):
         return "true" if expr.boolean_constant.value else "false"
+
+    if ir_util.is_constant(expr):
+        val = ir_util.constant_value(expr)
+        if isinstance(val, bool):
+            return "true" if val else "false"
+        return str(val)
 
     if expr.has_field("field_reference"):
         path_names = [
@@ -907,9 +910,38 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
 
         generated_fields.add(field_name)
 
+    size_field = None
+    for field in type_ir.structure.field:
+        if field.name.name.text == "$size_in_bytes":
+            size_field = field
+            break
+        elif field.name.name.text == "$size_in_bits" and size_field is None:
+            size_field = field
+
+    size_expr_str = None
+    if size_field and size_field.has_field("read_transform"):
+        size_expr_str = _generate_expression(
+            size_field.read_transform, ir, module, generated_fields, templates
+        )
+
+    if size_expr_str is not None:
+        if size_field.name.name.text == "$size_in_bits" and type_ir.addressable_unit == 1:
+            size_in_bytes_expr = code_template.format_template(
+                templates.struct_size_in_bytes_from_bits,
+                size_expression=size_expr_str,
+            )
+        else:
+            size_in_bytes_expr = code_template.format_template(
+                templates.struct_size_in_bytes_from_bytes,
+                size_expression=size_expr_str,
+            )
+    else:
+        size_in_bytes_expr = "0"
+
     main_struct_def = code_template.format_template(
         templates.struct_view,
         struct_name=struct_name,
+        size_in_bytes=size_in_bytes_expr,
         field_accessors="".join(field_accessors),
         mut_field_accessors="".join(mut_field_accessors),
     )

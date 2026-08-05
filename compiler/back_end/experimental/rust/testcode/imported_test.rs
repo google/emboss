@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use emboss_runtime::{prelude::*, Error};
+use emboss_runtime::Error;
 use testdata_imported_emb::*;
 
 #[cfg(test)]

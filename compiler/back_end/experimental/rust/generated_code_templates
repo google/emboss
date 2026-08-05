@@ -35,6 +35,18 @@ impl<S: Storage> ${struct_name}<S> {
 ${field_accessors}
 }
 
+impl<S: Storage> emboss_runtime::IsComplete for ${struct_name}<S> {
+    fn is_complete(&self) -> bool {
+        let size_res = (|| -> core::result::Result<usize, emboss_runtime::Error> {
+            core::result::Result::Ok(${size_in_bytes})
+        })();
+        match size_res {
+            core::result::Result::Ok(size) => <S as emboss_runtime::Storage>::len(&self.storage) >= size,
+            core::result::Result::Err(_) => false,
+        }
+    }
+}
+
 pub struct ${struct_name}Mut<S: MutStorage> {
     storage: S,
 }
@@ -46,11 +58,19 @@ impl<S: MutStorage> ${struct_name}Mut<S> {
 ${mut_field_accessors}
 }
 
+impl<S: MutStorage> emboss_runtime::IsComplete for ${struct_name}Mut<S> {
+    fn is_complete(&self) -> bool {
+        let len = <S as emboss_runtime::Storage>::len(&self.storage);
+        ${struct_name}::new(self.storage.slice(0, len)).is_complete()
+    }
+}
+
+
 // ** bit_external_field_accessor ** //
     pub fn ${field_name}(&self) -> emboss_runtime::Bit${type_name}<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::Sliced<'_>, emboss_runtime::Error>> {
         let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
             let offset = 0;
-            let len = (${byte_length}) as usize; // Total struct size in bytes
+            let len = (${byte_length}) as usize;
             core::result::Result::Ok((offset, len))
         })();
         let storage = match offset_res {
@@ -240,7 +260,7 @@ core::cmp::min((${left}) as i64, (${right}) as i64)
     }
 
 // ** array_mut_field_accessor ** //
-    pub fn ${field_name}_mut(&mut self) -> core::result::Result<${view_name}Mut<S::SlicedMut<'_>>, emboss_runtime::Error> {
+    pub fn ${field_name}(&mut self) -> core::result::Result<${view_name}Mut<S::SlicedMut<'_>>, emboss_runtime::Error> {
         let offset_res = (|| -> core::result::Result<(usize, usize, usize), emboss_runtime::Error> {
             let offset = (${byte_offset}) as usize;
             let len = (${byte_length}) as usize;
@@ -280,6 +300,12 @@ impl<S: emboss_runtime::Storage> ${view_name}<S> {
     }
 }
 
+impl<S: emboss_runtime::Storage> emboss_runtime::IsComplete for ${view_name}<S> {
+    fn is_complete(&self) -> bool {
+        <S as emboss_runtime::Storage>::len(&self.storage) >= self.element_count * Self::ELEMENT_SIZE_BYTES
+    }
+}
+
 pub struct ${view_name}Mut<S: emboss_runtime::MutStorage> {
     storage: S,
     element_count: usize,
@@ -293,6 +319,14 @@ impl<S: emboss_runtime::MutStorage> ${view_name}Mut<S> {
     pub fn element_count(&self) -> usize {
         self.element_count
     }
+    pub fn get(&self, index: usize) -> core::result::Result<${element_type}, emboss_runtime::Error> {
+        if index >= self.element_count {
+            return core::result::Result::Err(emboss_runtime::Error::OutOfBounds);
+        }
+        let offset = index * Self::ELEMENT_SIZE_BYTES;
+        let storage = self.storage.slice(offset, Self::ELEMENT_SIZE_BYTES)?;
+        core::result::Result::Ok(${element_constructor})
+    }
     pub fn get_mut(&mut self, index: usize) -> core::result::Result<${element_type_mut}, emboss_runtime::Error> {
         if index >= self.element_count {
             return core::result::Result::Err(emboss_runtime::Error::OutOfBounds);
@@ -302,6 +336,13 @@ impl<S: emboss_runtime::MutStorage> ${view_name}Mut<S> {
         core::result::Result::Ok(${element_constructor_mut})
     }
 }
+
+impl<S: emboss_runtime::MutStorage> emboss_runtime::IsComplete for ${view_name}Mut<S> {
+    fn is_complete(&self) -> bool {
+        <S as emboss_runtime::Storage>::len(&self.storage) >= self.element_count * Self::ELEMENT_SIZE_BYTES
+    }
+}
+
 
 // ** array_element_type_external ** //
 emboss_runtime::${source_name}<${bits}, emboss_runtime::${byte_order}, ${storage_type}>
@@ -397,4 +438,12 @@ emboss_runtime::EnumViewMut::new(emboss_runtime::UInt::new(storage))
         };
         emboss_runtime::EnumViewMut::new(emboss_runtime::BitUInt::new(storage))
     }
+
+// ** struct_size_in_bytes_from_bytes ** //
+(${size_expression}) as usize
+
+// ** struct_size_in_bytes_from_bits ** //
+((${size_expression}) as usize).div_ceil(8)
+
+
 

@@ -33,6 +33,10 @@ pub trait Storage {
     type Sliced<'a>: Storage where Self: 'a;
     fn slice(&self, offset: usize, length: usize) -> Result<Self::Sliced<'_>, Error>;
     fn try_read_byte(&self, offset: usize) -> Result<u8, Error>;
+    fn len(&self) -> usize;
+    fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
 }
 
 pub trait MutStorage: Storage {
@@ -41,35 +45,41 @@ pub trait MutStorage: Storage {
     fn try_write_byte(&mut self, offset: usize, val: u8) -> Result<(), Error>;
 }
 
-impl<'a, T: ?Sized + AsRef<[u8]>> Storage for &'a mut T {
-    type Sliced<'b> = Result<&'b [u8], Error> where Self: 'b;
+impl<'a, T: ?Sized + AsRef<[u8]>> Storage for &'a T {
+    type Sliced<'b> = &'b [u8] where Self: 'b;
     fn slice(&self, offset: usize, length: usize) -> Result<Self::Sliced<'_>, Error> {
-        let bytes = self.as_ref();
-        Ok(bytes.get(offset..offset + length).ok_or(Error::OutOfBounds))
+        let bytes = (*self).as_ref();
+        bytes.get(offset..offset + length).ok_or(Error::OutOfBounds)
     }
     fn try_read_byte(&self, offset: usize) -> Result<u8, Error> {
         let bytes = self.as_ref();
         bytes.get(offset).copied().ok_or(Error::OutOfBounds)
+    }
+    fn len(&self) -> usize {
+        (*self).as_ref().len()
     }
 }
 
-impl<'a, T: ?Sized + AsRef<[u8]>> Storage for &'a T {
-    type Sliced<'b> = Result<&'b [u8], Error> where Self: 'b;
+impl<'a, T: ?Sized + AsRef<[u8]>> Storage for &'a mut T {
+    type Sliced<'b> = &'b [u8] where Self: 'b;
     fn slice(&self, offset: usize, length: usize) -> Result<Self::Sliced<'_>, Error> {
         let bytes = (*self).as_ref();
-        Ok(bytes.get(offset..offset + length).ok_or(Error::OutOfBounds))
+        bytes.get(offset..offset + length).ok_or(Error::OutOfBounds)
     }
     fn try_read_byte(&self, offset: usize) -> Result<u8, Error> {
         let bytes = self.as_ref();
         bytes.get(offset).copied().ok_or(Error::OutOfBounds)
+    }
+    fn len(&self) -> usize {
+        (*self).as_ref().len()
     }
 }
 
 impl<'a, T: ?Sized + AsMut<[u8]> + AsRef<[u8]>> MutStorage for &'a mut T {
-    type SlicedMut<'b> = Result<&'b mut [u8], Error> where Self: 'b;
+    type SlicedMut<'b> = &'b mut [u8] where Self: 'b;
     fn slice_mut(&mut self, offset: usize, length: usize) -> Result<Self::SlicedMut<'_>, Error> {
         let bytes = self.as_mut();
-        Ok(bytes.get_mut(offset..offset + length).ok_or(Error::OutOfBounds))
+        bytes.get_mut(offset..offset + length).ok_or(Error::OutOfBounds)
     }
     fn try_write_byte(&mut self, offset: usize, val: u8) -> Result<(), Error> {
         let bytes = self.as_mut();
@@ -80,13 +90,10 @@ impl<'a, T: ?Sized + AsMut<[u8]> + AsRef<[u8]>> MutStorage for &'a mut T {
 }
 
 impl<T: Storage> Storage for Result<T, Error> {
-    type Sliced<'a> = Result<T::Sliced<'a>, Error> where Self: 'a;
+    type Sliced<'a> = T::Sliced<'a> where Self: 'a;
     fn slice(&self, offset: usize, length: usize) -> Result<Self::Sliced<'_>, Error> {
         match self {
-            Ok(s) => match s.slice(offset, length) {
-                Ok(sliced) => Ok(Ok(sliced)),
-                Err(e) => Err(e),
-            },
+            Ok(s) => s.slice(offset, length),
             Err(e) => Err(*e),
         }
     }
@@ -96,16 +103,19 @@ impl<T: Storage> Storage for Result<T, Error> {
             Err(e) => Err(*e),
         }
     }
+    fn len(&self) -> usize {
+        match self {
+            Ok(s) => s.len(),
+            Err(_) => 0,
+        }
+    }
 }
 
 impl<T: MutStorage> MutStorage for Result<T, Error> {
-    type SlicedMut<'a> = Result<T::SlicedMut<'a>, Error> where Self: 'a;
+    type SlicedMut<'a> = T::SlicedMut<'a> where Self: 'a;
     fn slice_mut(&mut self, offset: usize, length: usize) -> Result<Self::SlicedMut<'_>, Error> {
         match self {
-            Ok(s) => match s.slice_mut(offset, length) {
-                Ok(sliced) => Ok(Ok(sliced)),
-                Err(e) => Err(e),
-            },
+            Ok(s) => s.slice_mut(offset, length),
             Err(e) => Err(*e),
         }
     }
@@ -115,6 +125,10 @@ impl<T: MutStorage> MutStorage for Result<T, Error> {
             Err(e) => Err(*e),
         }
     }
+}
+
+pub trait IsComplete {
+    fn is_complete(&self) -> bool;
 }
 
 pub trait ByteOrder {
@@ -223,6 +237,15 @@ impl<const BITS: usize, E: ByteOrder, S: Storage> UInt<BITS, E, S> {
             _marker: core::marker::PhantomData,
         }
     }
+    pub fn is_complete(&self) -> bool {
+        self.storage.len() >= BITS.div_ceil(8)
+    }
+}
+
+impl<const BITS: usize, E: ByteOrder, S: Storage> IsComplete for UInt<BITS, E, S> {
+    fn is_complete(&self) -> bool {
+        self.is_complete()
+    }
 }
 
 impl<const BITS: usize, E: ByteOrder, S: Storage> UInt<BITS, E, S>
@@ -231,11 +254,16 @@ where
     <SizeSelector<BITS> as SmallestUInt>::T: DecodeFromStorage<E>,
 {
     pub fn try_read(&self) -> Result<<SizeSelector<BITS> as SmallestUInt>::T, Error> {
-        let size_in_bytes = (BITS + 7) / 8;
+        let size_in_bytes = BITS.div_ceil(8);
         <<SizeSelector<BITS> as SmallestUInt>::T as DecodeFromStorage<E>>::decode(
             &self.storage,
             size_in_bytes,
         )
+    }
+    /// # Safety
+    /// Calling this function requires that the view is complete.
+    pub unsafe fn read_unchecked(&self) -> <SizeSelector<BITS> as SmallestUInt>::T {
+        self.try_read().unwrap()
     }
 }
 
@@ -245,8 +273,13 @@ where
     <SizeSelector<BITS> as SmallestUInt>::T: EncodeToStorage<E>,
 {
     pub fn try_write(&mut self, val: <SizeSelector<BITS> as SmallestUInt>::T) -> Result<(), Error> {
-        let size_in_bytes = (BITS + 7) / 8;
+        let size_in_bytes = BITS.div_ceil(8);
         val.encode(&mut self.storage, size_in_bytes)
+    }
+    /// # Safety
+    /// Calling this function requires that the view is complete.
+    pub unsafe fn write_unchecked(&mut self, val: <SizeSelector<BITS> as SmallestUInt>::T) {
+        self.try_write(val).unwrap();
     }
 }
 
@@ -307,6 +340,15 @@ impl<const BITS: usize, E: ByteOrder, S: Storage> Int<BITS, E, S> {
             _marker: core::marker::PhantomData,
         }
     }
+    pub fn is_complete(&self) -> bool {
+        self.storage.len() >= BITS.div_ceil(8)
+    }
+}
+
+impl<const BITS: usize, E: ByteOrder, S: Storage> IsComplete for Int<BITS, E, S> {
+    fn is_complete(&self) -> bool {
+        self.is_complete()
+    }
 }
 
 impl<const BITS: usize, E: ByteOrder, S: Storage> Int<BITS, E, S>
@@ -315,10 +357,15 @@ where
     <SizeSelector<BITS> as SmallestUInt>::T: DecodeFromStorage<E>,
 {
     pub fn try_read(&self) -> Result<<SizeSelector<BITS> as SmallestInt>::T, Error> {
-        let size_in_bytes = (BITS + 7) / 8;
+        let size_in_bytes = BITS.div_ceil(8);
         let slice = self.storage.slice(0, size_in_bytes)?;
         let raw = UInt::<BITS, E, S::Sliced<'_>>::new(slice).try_read()?;
         Ok(<SizeSelector<BITS> as SmallestInt>::sign_extend(raw, BITS))
+    }
+    /// # Safety
+    /// Calling this function requires that the view is complete.
+    pub unsafe fn read_unchecked(&self) -> <SizeSelector<BITS> as SmallestInt>::T {
+        self.try_read().unwrap()
     }
 }
 
@@ -329,8 +376,13 @@ where
 {
     pub fn try_write(&mut self, val: <SizeSelector<BITS> as SmallestInt>::T) -> Result<(), Error> {
         let unsigned = <SizeSelector<BITS> as SmallestInt>::mask_to_unsigned(val, BITS);
-        let mut uint_view = UInt::<BITS, E, S::SlicedMut<'_>>::new(self.storage.slice_mut(0, (BITS + 7) / 8)?);
+        let mut uint_view = UInt::<BITS, E, S::SlicedMut<'_>>::new(self.storage.slice_mut(0, BITS.div_ceil(8))?);
         uint_view.try_write(unsigned)
+    }
+    /// # Safety
+    /// Calling this function requires that the view is complete.
+    pub unsafe fn write_unchecked(&mut self, val: <SizeSelector<BITS> as SmallestInt>::T) {
+        self.try_write(val).unwrap();
     }
 }
 
@@ -354,6 +406,18 @@ impl<T, Inner> EnumView<T, Inner> {
     }
 }
 
+impl<T, Inner: IsComplete> EnumView<T, Inner> {
+    pub fn is_complete(&self) -> bool {
+        self.inner.is_complete()
+    }
+}
+
+impl<T, Inner: IsComplete> IsComplete for EnumView<T, Inner> {
+    fn is_complete(&self) -> bool {
+        self.inner.is_complete()
+    }
+}
+
 pub struct EnumViewMut<T, Inner> {
     pub inner: Inner,
     _phantom: core::marker::PhantomData<T>,
@@ -368,14 +432,41 @@ impl<T, Inner> EnumViewMut<T, Inner> {
     }
 }
 
+impl<T, Inner: IsComplete> EnumViewMut<T, Inner> {
+    pub fn is_complete(&self) -> bool {
+        self.inner.is_complete()
+    }
+}
+
+impl<T, Inner: IsComplete> IsComplete for EnumViewMut<T, Inner> {
+    fn is_complete(&self) -> bool {
+        self.inner.is_complete()
+    }
+}
+
 pub trait TryRead {
     type ReadValue;
     fn try_read(&self) -> Result<Self::ReadValue, Error>;
+    /// # Safety
+    /// Calling this function requires that the view is complete.
+    unsafe fn read_unchecked(&self) -> Self::ReadValue {
+        match self.try_read() {
+            Ok(val) => val,
+            Err(_) => panic!("read_unchecked called on incomplete view"),
+        }
+    }
 }
 
 pub trait TryWrite {
     type WriteValue;
     fn try_write(&mut self, val: Self::WriteValue) -> Result<(), Error>;
+    /// # Safety
+    /// Calling this function requires that the view is complete.
+    unsafe fn write_unchecked(&mut self, val: Self::WriteValue) {
+        if self.try_write(val).is_err() {
+            panic!("write_unchecked called on incomplete view");
+        }
+    }
 }
 
 impl<const BITS: usize, E: ByteOrder, S: Storage> TryRead for UInt<BITS, E, S>
@@ -431,6 +522,14 @@ where
         let raw = self.inner.try_read().map_err(|e| e.map_type())?;
         T::try_from_raw(raw)
     }
+    /// # Safety
+    /// Calling this function requires that the view is complete.
+    pub unsafe fn read_unchecked(&self) -> T {
+        match self.try_read() {
+            Ok(val) => val,
+            Err(_) => panic!("read_unchecked called on incomplete view"),
+        }
+    }
 }
 
 impl<T, Inner> EnumViewMut<T, Inner>
@@ -440,6 +539,13 @@ where
 {
     pub fn try_write(&mut self, val: T) -> Result<(), Error> {
         self.inner.try_write(Inner::WriteValue::from(val))
+    }
+    /// # Safety
+    /// Calling this function requires that the view is complete.
+    pub unsafe fn write_unchecked(&mut self, val: T) {
+        if self.try_write(val).is_err() {
+            panic!("write_unchecked called on incomplete view");
+        }
     }
 }
 
@@ -451,6 +557,14 @@ where
     pub fn try_read(&self) -> Result<T, Error<Inner::ReadValue>> {
         let raw = self.inner.try_read().map_err(|e| e.map_type())?;
         T::try_from_raw(raw)
+    }
+    /// # Safety
+    /// Calling this function requires that the view is complete.
+    pub unsafe fn read_unchecked(&self) -> T {
+        match self.try_read() {
+            Ok(val) => val,
+            Err(_) => panic!("read_unchecked called on incomplete view"),
+        }
     }
 }
 
@@ -465,6 +579,15 @@ impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> BitUI
             storage,
             _marker: core::marker::PhantomData,
         }
+    }
+    pub fn is_complete(&self) -> bool {
+        self.storage.len() >= (BIT_OFFSET + BITS).div_ceil(8)
+    }
+}
+
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> IsComplete for BitUInt<BITS, BIT_OFFSET, E, S> {
+    fn is_complete(&self) -> bool {
+        self.is_complete()
     }
 }
 
@@ -495,6 +618,14 @@ where
         let mask = if BITS == 64 { !0 } else { (1 << BITS) - 1 };
         Ok(<SizeSelector<BITS> as SmallestUInt>::from_u64(val & mask))
     }
+    /// # Safety
+    /// Calling this function requires that the view is complete.
+    pub unsafe fn read_unchecked(&self) -> <SizeSelector<BITS> as SmallestUInt>::T {
+        match self.try_read() {
+            Ok(val) => val,
+            Err(_) => panic!("read_unchecked called on incomplete view"),
+        }
+    }
 }
 
 pub struct BitInt<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> {
@@ -509,6 +640,15 @@ impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> BitIn
             _marker: core::marker::PhantomData,
         }
     }
+    pub fn is_complete(&self) -> bool {
+        self.storage.len() >= (BIT_OFFSET + BITS).div_ceil(8)
+    }
+}
+
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> IsComplete for BitInt<BITS, BIT_OFFSET, E, S> {
+    fn is_complete(&self) -> bool {
+        self.is_complete()
+    }
 }
 
 impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> BitInt<BITS, BIT_OFFSET, E, S>
@@ -516,9 +656,17 @@ where
     SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
 {
     pub fn try_read(&self) -> Result<<SizeSelector<BITS> as SmallestInt>::T, Error> {
-        let uint_view = BitUInt::<BITS, BIT_OFFSET, E, S::Sliced<'_>>::new(self.storage.slice(0, (BIT_OFFSET + BITS + 7) / 8)?);
+        let uint_view = BitUInt::<BITS, BIT_OFFSET, E, S::Sliced<'_>>::new(self.storage.slice(0, (BIT_OFFSET + BITS).div_ceil(8))?);
         let raw = uint_view.try_read()?;
         Ok(<SizeSelector<BITS> as SmallestInt>::sign_extend(raw, BITS))
+    }
+    /// # Safety
+    /// Calling this function requires that the view is complete.
+    pub unsafe fn read_unchecked(&self) -> <SizeSelector<BITS> as SmallestInt>::T {
+        match self.try_read() {
+            Ok(val) => val,
+            Err(_) => panic!("read_unchecked called on incomplete view"),
+        }
     }
 }
 
@@ -551,11 +699,28 @@ impl<T> VirtualField<T> {
     pub const fn new(value: core::result::Result<T, Error>) -> Self {
         Self { value }
     }
+    pub fn is_complete(&self) -> bool {
+        self.value.is_ok()
+    }
+}
+
+impl<T> IsComplete for VirtualField<T> {
+    fn is_complete(&self) -> bool {
+        self.is_complete()
+    }
 }
 
 impl<T: Copy> VirtualField<T> {
     pub fn try_read(&self) -> core::result::Result<T, Error> {
         self.value
+    }
+    /// # Safety
+    /// Calling this function requires that the view is complete.
+    pub unsafe fn read_unchecked(&self) -> T {
+        match self.try_read() {
+            Ok(val) => val,
+            Err(_) => panic!("read_unchecked called on incomplete view"),
+        }
     }
 }
 
@@ -565,4 +730,63 @@ impl<T: Copy> TryRead for VirtualField<T> {
         self.value
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_uint_is_complete_and_read_write() {
+        let mut buffer = [0x12, 0x34];
+        let uint_view = UInt::<16, LittleEndian, _>::new(&buffer[..]);
+        assert!(uint_view.is_complete());
+        assert_eq!(unsafe { uint_view.read_unchecked() }, 0x3412);
+
+        let incomplete_view = UInt::<16, LittleEndian, _>::new(&buffer[..1]);
+        assert!(!incomplete_view.is_complete());
+
+        let mut uint_mut = UInt::<16, LittleEndian, _>::new(&mut buffer[..]);
+        unsafe { uint_mut.write_unchecked(0x5678) };
+        assert_eq!(buffer, [0x78, 0x56]);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_uint_read_panic_on_error() {
+        let buffer = [0x12];
+        let incomplete_view = UInt::<16, LittleEndian, _>::new(&buffer[..]);
+        let _ = unsafe { incomplete_view.read_unchecked() };
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_uint_write_panic_on_error() {
+        let mut buffer = [0x12];
+        let mut incomplete_view = UInt::<16, LittleEndian, _>::new(&mut buffer[..]);
+        unsafe { incomplete_view.write_unchecked(0x1234) };
+    }
+
+    #[test]
+    fn test_int_is_complete_and_read_write() {
+        let mut buffer = [0xfe, 0xff]; // -2 in i16 LE
+        let int_view = Int::<16, LittleEndian, _>::new(&buffer[..]);
+        assert!(int_view.is_complete());
+        assert_eq!(unsafe { int_view.read_unchecked() }, -2i16);
+
+        let mut int_mut = Int::<16, LittleEndian, _>::new(&mut buffer[..]);
+        unsafe { int_mut.write_unchecked(-5i16) };
+        assert_eq!(unsafe { int_mut.read_unchecked() }, -5i16);
+    }
+
+    #[test]
+    fn test_virtual_field_is_complete_and_read() {
+        let vf_ok = VirtualField::new(Ok(42u32));
+        assert!(vf_ok.is_complete());
+        assert_eq!(unsafe { vf_ok.read_unchecked() }, 42);
+
+        let vf_err: VirtualField<u32> = VirtualField::new(Err(Error::OutOfBounds));
+        assert!(!vf_err.is_complete());
+    }
+}
+
 

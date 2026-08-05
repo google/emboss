@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use emboss_runtime::{prelude::*, Error};
+use emboss_runtime::{Error, IsComplete, TryRead, TryWrite};
 
 #[test]
 fn container_field_values_are_correct() {
@@ -25,18 +25,21 @@ fn container_field_values_are_correct() {
     ];
 
     let view = testdata_nested_structure_emb::Container::new(container);
+    assert!(IsComplete::is_complete(&view));
 
     // Static explicit typing assertions
     let weight: u32 = view.weight().try_read().unwrap();
     assert_eq!(weight, 40);
 
     let important_box = view.important_box();
+    assert!(IsComplete::is_complete(&important_box));
     let important_box_id: u32 = important_box.id().try_read().unwrap();
     assert_eq!(important_box_id, 0x12345678);
     let important_box_count: u32 = important_box.count().try_read().unwrap();
     assert_eq!(important_box_count, 0x010203);
 
     let other_box = view.other_box();
+    assert!(IsComplete::is_complete(&other_box));
     let other_box_id: u32 = other_box.id().try_read().unwrap();
     assert_eq!(other_box_id, 0x87654321);
     let other_box_count: u32 = other_box.count().try_read().unwrap();
@@ -52,15 +55,32 @@ fn nested_out_of_bounds_handles_cascading_reads_dynamically() {
     ]; // TRUNCATED struct! Missing the entire 8 bytes of other_box!
 
     let view = testdata_nested_structure_emb::Container::new(container);
+    assert!(!IsComplete::is_complete(&view));
 
-    // weight and important_box can still be read successfully cleanly over the bounds organically
     assert_eq!(view.weight().try_read().unwrap(), 40);
     let important_box = view.important_box();
+    assert!(IsComplete::is_complete(&important_box));
     assert_eq!(important_box.id().try_read().unwrap(), 0x12345678);
     assert_eq!(important_box.count().try_read().unwrap(), 0x010203);
 
-    // structurally other_box cleanly passes the Slice but natively aborts safely during Read because of OutOfBounds bounds over exactly its byte size safely propagating Error organically natively
     let other_box = view.other_box();
+    assert!(!other_box.is_complete());
     assert_eq!(other_box.id().try_read(), Err(Error::OutOfBounds));
     assert_eq!(other_box.count().try_read(), Err(Error::OutOfBounds));
 }
+
+#[test]
+fn method_syntax_and_mutation() {
+    let mut container = vec![0u8; 20];
+    let mut view = testdata_nested_structure_emb::ContainerMut::new(&mut container[..]);
+
+    assert!(view.is_complete());
+
+    let mut important_box = view.important_box();
+    assert!(important_box.is_complete());
+    unsafe { important_box.id().write_unchecked(0x12345678) };
+
+    assert_eq!(unsafe { view.important_box().id().read_unchecked() }, 0x12345678);
+}
+
+
