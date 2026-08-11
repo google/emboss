@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use emboss_runtime::Error;
+use emboss_runtime::{CheckComplete, Error};
 
 #[test]
 fn reads_endian_values_correctly() {
@@ -75,4 +75,25 @@ fn handles_endian_write_out_of_bounds() {
     assert!(view.little_uint32().try_write(0x12345678).is_ok());
     assert_eq!(view.big_uint32().try_write(0x12345678), Err(Error::OutOfBounds));
     assert_eq!(view.single_byte().try_write(0xAB), Err(Error::OutOfBounds));
+}
+
+#[test]
+fn writes_endian_values_with_writer() {
+    let mut container = [0u8; 9];
+    let writer = testdata_endian_emb::MessageMut::new(&mut container[..])
+        .into_writer()
+        .check_complete()
+        .expect("complete message writer");
+
+    let _ = writer
+        .write_little_uint32(0x12345678)
+        .write_big_uint32(0x12345678)
+        .write_single_byte(0xAB);
+
+    let expected: &[u8] = &[
+        0x78, 0x56, 0x34, 0x12, // 0:4 little_uint32 == 0x12345678 (Little Endian)
+        0x12, 0x34, 0x56, 0x78, // 4:8 big_uint32 == 0x12345678 (Big Endian)
+        0xAB, // 8:9 single_byte == 0xAB
+    ];
+    assert_eq!(&container[..], expected);
 }

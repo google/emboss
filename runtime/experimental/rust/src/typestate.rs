@@ -61,6 +61,12 @@ pub trait CheckComplete {
     fn check_complete(self) -> Result<Self::Completed, crate::Error>;
 }
 
+/// Trait for converting a mutable view or storage into a self-consuming typestate Writer.
+pub trait IntoWriter {
+    type Writer;
+    fn into_writer(self) -> Self::Writer;
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -102,5 +108,30 @@ mod tests {
         let _ = uint_view.write(TEST_VALUE);
         let read_view = UInt::<32, LittleEndian, &[u8; 4], CompleteState>::new(&buf);
         assert_eq!(read_view.read(), TEST_VALUE);
+    }
+
+    #[test]
+    fn test_into_writer_conversion() {
+        struct MockMut<S>(S);
+        struct MockWriter<S, ST: State>(S, core::marker::PhantomData<ST>);
+
+        impl<S> IntoWriter for MockMut<S> {
+            type Writer = MockWriter<S, UncheckedState>;
+            fn into_writer(self) -> Self::Writer {
+                MockWriter(self.0, core::marker::PhantomData)
+            }
+        }
+
+        impl<S> CheckComplete for MockWriter<S, UncheckedState> {
+            type Completed = MockWriter<S, CompleteState>;
+            fn check_complete(self) -> Result<Self::Completed, crate::Error> {
+                Ok(MockWriter(self.0, core::marker::PhantomData))
+            }
+        }
+
+        let mut buf = [0u8; 4];
+        let mock_mut = MockMut(&mut buf);
+        let _writer: MockWriter<&mut [u8; 4], CompleteState> =
+            mock_mut.into_writer().check_complete().expect("complete writer");
     }
 }

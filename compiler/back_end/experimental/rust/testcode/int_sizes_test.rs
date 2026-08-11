@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use emboss_runtime::CheckComplete;
+
 #[test]
 fn reads_int_sizes_correctly() {
     let container: &[u8] = &[
@@ -57,4 +59,33 @@ fn reads_negative_ones_correctly() {
     assert_eq!(view.six_byte().try_read().unwrap(), -1i64);
     assert_eq!(view.seven_byte().try_read().unwrap(), -1i64);
     assert_eq!(view.eight_byte().try_read().unwrap(), -1i64);
+}
+
+#[test]
+fn writes_int_sizes_with_writer() {
+    let mut container = [0u8; 36];
+    let writer = testdata_int_sizes_emb::SizesMut::new(&mut container[..])
+        .into_writer()
+        .check_complete()
+        .expect("complete sizes writer");
+
+    let _writer = writer
+        .write_one_byte(2)
+        .write_two_byte(-260)
+        .write_three_byte(0x445566)
+        .write_four_byte(-0x03040506)
+        .write_five_byte(0x2987654321)
+        .write_six_byte(-0x123456789abc)
+        .write_seven_byte(0x71e2d3c4b5a697)
+        .write_eight_byte(-0x7f00010203040506);
+
+    let view = testdata_int_sizes_emb::Sizes::new(&container[..]);
+    assert_eq!(view.one_byte().try_read().unwrap(), 2i8);
+    assert_eq!(view.two_byte().try_read().unwrap(), -260i16);
+    assert_eq!(view.three_byte().try_read().unwrap(), 0x445566i32);
+    assert_eq!(view.four_byte().try_read().unwrap(), -0x03040506i32);
+    assert_eq!(view.five_byte().try_read().unwrap(), 0x2987654321i64);
+    assert_eq!(view.six_byte().try_read().unwrap(), -0x123456789abci64);
+    assert_eq!(view.seven_byte().try_read().unwrap(), 0x71e2d3c4b5a697i64);
+    assert_eq!(view.eight_byte().try_read().unwrap(), -0x7f00010203040506i64);
 }

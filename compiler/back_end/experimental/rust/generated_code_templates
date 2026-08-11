@@ -52,15 +52,41 @@ impl<S: emboss_runtime::Storage, ST: emboss_runtime::State> ${struct_name}<S, ST
             _marker: core::marker::PhantomData,
         }
     }
+    pub fn into_storage(self) -> S {
+        self.storage
+    }
 ${field_accessors}
 }
 
-pub struct ${struct_name}Mut<S: emboss_runtime::MutStorage, ST: emboss_runtime::State = emboss_runtime::UncheckedState> {
+pub struct ${struct_name}Mut<S: emboss_runtime::MutStorage> {
+    storage: S,
+}
+
+impl<S: emboss_runtime::MutStorage> ${struct_name}Mut<S> {
+    pub fn new(storage: S) -> Self {
+        Self {
+            storage,
+        }
+    }
+    pub fn into_writer(self) -> ${struct_name}Writer<S, emboss_runtime::UncheckedState> {
+        ${struct_name}Writer::new(self.storage)
+    }
+${mut_field_accessors}
+}
+
+impl<S: emboss_runtime::MutStorage> emboss_runtime::IntoWriter for ${struct_name}Mut<S> {
+    type Writer = ${struct_name}Writer<S, emboss_runtime::UncheckedState>;
+    fn into_writer(self) -> Self::Writer {
+        ${struct_name}Writer::new(self.storage)
+    }
+}
+
+pub struct ${struct_name}Writer<S: emboss_runtime::MutStorage, ST: emboss_runtime::State = emboss_runtime::UncheckedState> {
     storage: S,
     _marker: core::marker::PhantomData<ST>,
 }
 
-impl<S: emboss_runtime::MutStorage> ${struct_name}Mut<S, emboss_runtime::UncheckedState> {
+impl<S: emboss_runtime::MutStorage> ${struct_name}Writer<S, emboss_runtime::UncheckedState> {
     pub fn new(storage: S) -> Self {
         Self {
             storage,
@@ -69,9 +95,9 @@ impl<S: emboss_runtime::MutStorage> ${struct_name}Mut<S, emboss_runtime::Uncheck
     }
 }
 
-impl<S: emboss_runtime::MutStorage, ST: emboss_runtime::State> ${struct_name}Mut<S, ST> {
+impl<S: emboss_runtime::MutStorage, ST: emboss_runtime::State> ${struct_name}Writer<S, ST> {
     /**
-     * Constructs a mutable view in a specific typestate.
+     * Constructs a writer in a specific typestate.
      *
      * # Safety
      *
@@ -83,12 +109,21 @@ impl<S: emboss_runtime::MutStorage, ST: emboss_runtime::State> ${struct_name}Mut
             _marker: core::marker::PhantomData,
         }
     }
-${mut_field_accessors}
+    pub fn into_storage(self) -> S {
+        self.storage
+    }
+    /** Converts the writer into an immutable view in the same typestate. */
+    pub fn into_view(self) -> ${struct_name}<S, ST> {
+        // SAFETY: Storage and typestate layout invariants have already been established.
+        unsafe { ${struct_name}::new_in_state(self.storage) }
+    }
+${writer_field_accessors}
 }
 
 impl<S: emboss_runtime::Storage> emboss_runtime::CheckComplete for ${struct_name}<S, emboss_runtime::UncheckedState> {
     type Completed = ${struct_name}<S, emboss_runtime::CompleteState>;
     fn check_complete(self) -> core::result::Result<Self::Completed, emboss_runtime::Error> {
+        let view = &self;
         let size = (${size_in_bytes}) as usize;
         let _ = self.storage.slice(0, size)?;
         // SAFETY: self.storage has been validated to contain the complete byte length required by the struct layout.
@@ -96,13 +131,15 @@ impl<S: emboss_runtime::Storage> emboss_runtime::CheckComplete for ${struct_name
     }
 }
 
-impl<S: emboss_runtime::MutStorage> emboss_runtime::CheckComplete for ${struct_name}Mut<S, emboss_runtime::UncheckedState> {
-    type Completed = ${struct_name}Mut<S, emboss_runtime::CompleteState>;
-    fn check_complete(mut self) -> core::result::Result<Self::Completed, emboss_runtime::Error> {
+impl<S: emboss_runtime::MutStorage> emboss_runtime::CheckComplete for ${struct_name}Writer<S, emboss_runtime::UncheckedState> {
+    type Completed = ${struct_name}Writer<S, emboss_runtime::CompleteState>;
+    fn check_complete(self) -> core::result::Result<Self::Completed, emboss_runtime::Error> {
+        let view = self.into_view();
         let size = (${size_in_bytes}) as usize;
-        let _ = self.storage.slice_mut(0, size)?;
+        let mut storage = view.into_storage();
+        let _ = storage.slice_mut(0, size)?;
         // SAFETY: self.storage has been validated to contain the complete byte length required by the struct layout.
-        core::result::Result::Ok(unsafe { ${struct_name}Mut::new_in_state(self.storage) })
+        core::result::Result::Ok(unsafe { ${struct_name}Writer::new_in_state(storage) })
     }
 }
 
@@ -121,7 +158,7 @@ impl<S: emboss_runtime::MutStorage> emboss_runtime::CheckComplete for ${struct_n
     }
 
 // ** bit_external_mut_field_accessor ** //
-    pub fn ${field_name}(&mut self) -> emboss_runtime::Bit${type_name}<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, ST> {
+    pub fn ${field_name}(&mut self) -> emboss_runtime::Bit${type_name}<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, emboss_runtime::UncheckedState> {
         let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
             let offset = 0;
             let len = (${byte_length}) as usize;
@@ -131,7 +168,7 @@ impl<S: emboss_runtime::MutStorage> emboss_runtime::CheckComplete for ${struct_n
             core::result::Result::Ok((offset, len)) => self.storage.slice_mut(offset, len),
             core::result::Result::Err(e) => core::result::Result::Err(e),
         };
-        emboss_runtime::Bit${type_name}::<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, ST>::new(storage)
+        emboss_runtime::Bit${type_name}::<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, emboss_runtime::UncheckedState>::new(storage)
     }
 
 // ** external_field_accessor ** //
@@ -149,7 +186,7 @@ impl<S: emboss_runtime::MutStorage> emboss_runtime::CheckComplete for ${struct_n
     }
 
 // ** external_mut_field_accessor ** //
-    pub fn ${field_name}(&mut self) -> ${type_name}<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, ST> {
+    pub fn ${field_name}(&mut self) -> ${type_name}<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, emboss_runtime::UncheckedState> {
         let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
             let offset = (${byte_offset}) as usize;
             let len = (${byte_length}) as usize;
@@ -159,7 +196,43 @@ impl<S: emboss_runtime::MutStorage> emboss_runtime::CheckComplete for ${struct_n
             core::result::Result::Ok((offset, len)) => self.storage.slice_mut(offset, len),
             core::result::Result::Err(e) => core::result::Result::Err(e),
         };
-        ${type_name}::<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, ST>::new(storage)
+        ${type_name}::<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, emboss_runtime::UncheckedState>::new(storage)
+    }
+
+// ** writer_field_setter ** //
+    pub fn write_${field_name}(self, val: <emboss_runtime::SizeSelector<${bits}> as emboss_runtime::Smallest${type_name}>::T) -> ${struct_name}Writer<S, ST::OnValidMutation> {
+        let view = self.into_view();
+        let (offset, len) = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
+            let offset = (${byte_offset}) as usize;
+            let len = (${byte_length}) as usize;
+            core::result::Result::Ok((offset, len))
+        })().expect("valid layout in complete state");
+        let mut storage = view.into_storage();
+        {
+            let slice = storage.slice_mut(offset, len).expect("valid slice in complete state");
+            let mut field_view = emboss_runtime::${type_name}::<${bits}, emboss_runtime::${byte_order}, _>::new(slice);
+            field_view.try_write(val).expect("valid write in complete state");
+        }
+        // SAFETY: Re-instantiating the writer in the appropriate post-mutation state.
+        unsafe { ${struct_name}Writer::new_in_state(storage) }
+    }
+
+// ** writer_field_setter_layout ** //
+    pub fn write_${field_name}(self, val: <emboss_runtime::SizeSelector<${bits}> as emboss_runtime::Smallest${type_name}>::T) -> ${struct_name}Writer<S, ST::OnLayoutMutation> {
+        let view = self.into_view();
+        let (offset, len) = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
+            let offset = (${byte_offset}) as usize;
+            let len = (${byte_length}) as usize;
+            core::result::Result::Ok((offset, len))
+        })().expect("valid layout in complete state");
+        let mut storage = view.into_storage();
+        {
+            let slice = storage.slice_mut(offset, len).expect("valid slice in complete state");
+            let mut field_view = emboss_runtime::${type_name}::<${bits}, emboss_runtime::${byte_order}, _>::new(slice);
+            field_view.try_write(val).expect("valid write in complete state");
+        }
+        // SAFETY: Re-instantiating the writer in the appropriate post-mutation state.
+        unsafe { ${struct_name}Writer::new_in_state(storage) }
     }
 
 // ** struct_field_accessor ** //
@@ -178,7 +251,7 @@ impl<S: emboss_runtime::MutStorage> emboss_runtime::CheckComplete for ${struct_n
     }
 
 // ** struct_mut_field_accessor ** //
-    pub fn ${field_name}(&mut self) -> ${type_name}Mut<core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, emboss_runtime::UncheckedState> {
+    pub fn ${field_name}(&mut self) -> ${type_name}Mut<core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>> {
         let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
             let offset = (${byte_offset}) as usize;
             let len = (${byte_length}) as usize;
@@ -188,8 +261,7 @@ impl<S: emboss_runtime::MutStorage> emboss_runtime::CheckComplete for ${struct_n
             core::result::Result::Ok((offset, len)) => self.storage.slice_mut(offset, len),
             core::result::Result::Err(e) => core::result::Result::Err(e),
         };
-        // SAFETY: The inner struct view is created in UncheckedState, which requires explicit verification before access.
-        unsafe { ${type_name}Mut::<core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, emboss_runtime::UncheckedState>::new_in_state(storage) }
+        ${type_name}Mut::<core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>>::new(storage)
     }
 
 // ** enum_definition ** //
@@ -306,7 +378,7 @@ core::cmp::min((${left}) as i64, (${right}) as i64)
     }
 
 // ** enum_mut_field_accessor ** //
-    pub fn ${field_name}(&mut self) -> emboss_runtime::EnumViewMut<${enum_name}, emboss_runtime::UInt<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, ST>> {
+    pub fn ${field_name}(&mut self) -> emboss_runtime::EnumViewMut<${enum_name}, emboss_runtime::UInt<${bits}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, emboss_runtime::UncheckedState>> {
         let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
             let offset = (${byte_offset}) as usize;
             let len = (${byte_length}) as usize;
@@ -317,6 +389,42 @@ core::cmp::min((${left}) as i64, (${right}) as i64)
             core::result::Result::Err(e) => core::result::Result::Err(e),
         };
         emboss_runtime::EnumViewMut::new(emboss_runtime::UInt::new(storage))
+    }
+
+// ** enum_writer_field_setter ** //
+    pub fn write_${field_name}(self, val: ${enum_name}) -> ${struct_name}Writer<S, ST::OnValidMutation> {
+        let view = self.into_view();
+        let (offset, len) = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
+            let offset = (${byte_offset}) as usize;
+            let len = (${byte_length}) as usize;
+            core::result::Result::Ok((offset, len))
+        })().expect("valid layout in complete state");
+        let mut storage = view.into_storage();
+        {
+            let slice = storage.slice_mut(offset, len).expect("valid slice in complete state");
+            let mut field_view = emboss_runtime::EnumViewMut::<${enum_name}, emboss_runtime::UInt<${bits}, emboss_runtime::${byte_order}, _>>::new(emboss_runtime::UInt::new(slice));
+            field_view.try_write(val).expect("valid write in complete state");
+        }
+        // SAFETY: Re-instantiating the writer in the appropriate post-mutation state.
+        unsafe { ${struct_name}Writer::new_in_state(storage) }
+    }
+
+// ** enum_writer_field_setter_layout ** //
+    pub fn write_${field_name}(self, val: ${enum_name}) -> ${struct_name}Writer<S, ST::OnLayoutMutation> {
+        let view = self.into_view();
+        let (offset, len) = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
+            let offset = (${byte_offset}) as usize;
+            let len = (${byte_length}) as usize;
+            core::result::Result::Ok((offset, len))
+        })().expect("valid layout in complete state");
+        let mut storage = view.into_storage();
+        {
+            let slice = storage.slice_mut(offset, len).expect("valid slice in complete state");
+            let mut field_view = emboss_runtime::EnumViewMut::<${enum_name}, emboss_runtime::UInt<${bits}, emboss_runtime::${byte_order}, _>>::new(emboss_runtime::UInt::new(slice));
+            field_view.try_write(val).expect("valid write in complete state");
+        }
+        // SAFETY: Re-instantiating the writer in the appropriate post-mutation state.
+        unsafe { ${struct_name}Writer::new_in_state(storage) }
     }
 
 // ** array_field_accessor ** //
@@ -482,7 +590,7 @@ emboss_runtime::SafeCmp::safe_less(&(${left}), ${right})
     }
 
 // ** bit_enum_mut_field_accessor ** //
-    pub fn ${field_name}(&mut self) -> emboss_runtime::EnumViewMut<${enum_name}, emboss_runtime::BitUInt<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, ST>> {
+    pub fn ${field_name}(&mut self) -> emboss_runtime::EnumViewMut<${enum_name}, emboss_runtime::BitUInt<${bits}, ${bit_offset}, emboss_runtime::${byte_order}, core::result::Result<S::SlicedMut<'_>, emboss_runtime::Error>, emboss_runtime::UncheckedState>> {
         let offset_res = (|| -> core::result::Result<(usize, usize), emboss_runtime::Error> {
             let offset = 0;
             let len = (${byte_length}) as usize;

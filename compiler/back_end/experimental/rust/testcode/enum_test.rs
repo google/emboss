@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use emboss_runtime::CheckComplete;
 pub use testdata_enum_emb::*;
 
 #[test]
@@ -74,4 +75,21 @@ fn can_write_kind() {
         0x00, 0x00, 0x00, 0x00, 0x00,  // wide_kind_in_bits unwritten
     ];
     assert_eq!(&buffer[..], &k_manifest_entry[..]);
+}
+
+#[test]
+fn writes_enum_values_with_writer() {
+    let mut buffer = [0u8; 14];
+    let writer = ManifestEntryMut::new(&mut buffer)
+        .into_writer()
+        .check_complete()
+        .expect("complete manifest writer");
+
+    let _ = writer
+        .write_kind(Kind::SPROCKET)
+        .write_count(4)
+        .write_wide_kind(Kind::GEEGAW);
+
+    let expected: [u8; 9] = [0x01, 0x04, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00];
+    assert_eq!(&buffer[..9], &expected);
 }

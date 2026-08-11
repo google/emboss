@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use emboss_runtime::Error;
+use emboss_runtime::{CheckComplete, Error};
 use testdata_next_keyword_emb::*;
 
 #[cfg(test)]
@@ -44,5 +44,26 @@ mod tests {
         let values: [u8; 2] = [1, 0]; // Too short
         let view = NextKeyword::new(&values[..]);
         assert_eq!(view.value32().try_read(), Err(Error::OutOfBounds));
+    }
+
+    #[test]
+    fn test_next_keyword_writer() {
+        let mut values = [0u8; 11];
+        let writer = NextKeywordMut::new(&mut values[..])
+            .into_writer()
+            .check_complete()
+            .expect("complete next keyword writer");
+
+        let _ = writer
+            .write_value32(1)
+            .write_value16(2)
+            .write_value8(3)
+            .write_value8_offset(4);
+
+        let view = NextKeyword::new(&values[..]);
+        assert_eq!(view.value32().try_read().unwrap(), 1);
+        assert_eq!(view.value16().try_read().unwrap(), 2);
+        assert_eq!(view.value8().try_read().unwrap(), 3);
+        assert_eq!(view.value8_offset().try_read().unwrap(), 4);
     }
 }

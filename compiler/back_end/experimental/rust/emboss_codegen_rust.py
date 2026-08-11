@@ -486,11 +486,39 @@ def _generate_array_field(
     )
 
 
+def _find_layout_dependencies(type_ir) -> set[str]:
+    deps = set()
+
+    def scan_expr(expr):
+        if expr is None:
+            return
+        if expr.has_field("field_reference"):
+            deps.add(expr.field_reference.path[0].canonical_name.object_path[-1])
+        if expr.has_field("function"):
+            for a in expr.function.args:
+                scan_expr(a)
+
+    for field in type_ir.structure.field:
+        if field.has_field("location"):
+            if field.location.has_field("start"):
+                scan_expr(field.location.start)
+            if field.location.has_field("size"):
+                scan_expr(field.location.size)
+        if field.has_field("read_transform"):
+            scan_expr(field.read_transform)
+        if field.has_field("existence_condition"):
+            scan_expr(field.existence_condition)
+
+    return deps
+
+
 def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -> str:
     field_accessors = []
     mut_field_accessors = []
+    writer_field_accessors = []
     generated_nested_types = []
     generated_fields = set()
+    layout_dependencies = _find_layout_dependencies(type_ir)
 
     fields_to_process = []
     if type_ir.structure.fields_in_dependency_order:
@@ -695,6 +723,22 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
         byte_length_expr = _generate_expression(
             field.location.size, ir, module, generated_fields, templates
         )
+        writer_byte_offset_expr = _generate_expression(
+            field.location.start,
+            ir,
+            module,
+            generated_fields,
+            templates,
+            self_ref="view",
+        )
+        writer_byte_length_expr = _generate_expression(
+            field.location.size,
+            ir,
+            module,
+            generated_fields,
+            templates,
+            self_ref="view",
+        )
 
         if byte_offset_expr is None or byte_length_expr is None:
             reason = "offset" if byte_offset_expr is None else "size"
@@ -837,6 +881,23 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
                             byte_length=str(byte_length),
                         )
                     )
+                    template = (
+                        templates.writer_field_setter_layout
+                        if field_name in layout_dependencies
+                        else templates.writer_field_setter
+                    )
+                    writer_field_accessors.append(
+                        code_template.format_template(
+                            template,
+                            struct_name=struct_name,
+                            field_name=field_name,
+                            type_name=source_name,
+                            bits=str(bits),
+                            byte_order=byte_order,
+                            byte_offset=str(writer_byte_offset_expr),
+                            byte_length=str(writer_byte_length_expr),
+                        )
+                    )
             elif referenced_type.has_field("structure"):
                 field_accessors.append(
                     code_template.format_template(
@@ -909,6 +970,23 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
                             byte_length=str(byte_length),
                         )
                     )
+                    template = (
+                        templates.enum_writer_field_setter_layout
+                        if field_name in layout_dependencies
+                        else templates.enum_writer_field_setter
+                    )
+                    writer_field_accessors.append(
+                        code_template.format_template(
+                            template,
+                            struct_name=struct_name,
+                            field_name=field_name,
+                            enum_name=source_name,
+                            bits=str(bits),
+                            byte_order=byte_order,
+                            byte_offset=str(writer_byte_offset_expr),
+                            byte_length=str(writer_byte_length_expr),
+                        )
+                    )
             else:
                 diagnostics.append(
                     [
@@ -934,7 +1012,12 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
         if field.name.name.text == "$size_in_bytes":
             size_in_bytes = (
                 _generate_expression(
-                    field.read_transform, ir, module, generated_fields, templates
+                    field.read_transform,
+                    ir,
+                    module,
+                    generated_fields,
+                    templates,
+                    self_ref="view",
                 )
                 or "0"
             )
@@ -945,6 +1028,7 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
         struct_name=struct_name,
         field_accessors="".join(field_accessors),
         mut_field_accessors="".join(mut_field_accessors),
+        writer_field_accessors="".join(writer_field_accessors),
         size_in_bytes=size_in_bytes,
     )
     return "".join(generated_nested_types) + main_struct_def

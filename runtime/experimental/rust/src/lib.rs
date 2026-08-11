@@ -15,7 +15,7 @@
 pub mod prelude;
 pub mod typestate;
 pub use crate::typestate::{
-    CheckComplete, CompleteState, InfallibleRead, InfallibleWrite, IsComplete, State,
+    CheckComplete, CompleteState, InfallibleRead, InfallibleWrite, IntoWriter, IsComplete, State,
     UncheckedState,
 };
 
