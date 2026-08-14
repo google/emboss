@@ -62,6 +62,11 @@ def _parse_args(argv):
         default=True,
         help="Controls generation of EnumTraits by the C++ backend",
     )
+    parser.add_argument(
+        "--no-experimental-warning",
+        action="store_true",
+        help="Suppress experimental warnings",
+    )
     parser.add_argument("input_file", type=str, nargs=1, help=".emb file to compile.")
     return parser.parse_args(argv[1:])
 
@@ -74,7 +79,7 @@ def _generate_code_and_log_errors(ir, flags):
             )  # pylint:disable=import-outside-toplevel
 
             return emboss_codegen_rust.generate_code_and_log_errors(
-                ir, flags.color_output
+                ir, flags.color_output, not flags.no_experimental_warning
             )
         case "cc":
             from compiler.back_end.cpp import (

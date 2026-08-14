@@ -1035,10 +1035,17 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
 
 
 def generate_code_and_log_errors(
-    ir: ir_data.EmbossIr, color_output: ColorOutput
+    ir: ir_data.EmbossIr, color_output: ColorOutput, show_warnings: bool = True
 ) -> tuple[Source, ErrorList]:
     """Generates Rust source code and logs any resulting errors or warnings."""
     rust_source, diagnostics = generate_code(ir)
+
+    if not show_warnings:
+        diagnostics = [
+            msg_list
+            for msg_list in diagnostics
+            if any(msg.severity == error.ERROR for msg in msg_list)
+        ]
 
     if diagnostics:
         _show_errors(diagnostics, ir, color_output)
@@ -1061,6 +1068,11 @@ def _parse_command_line(argv):
         "--output-file", type=str, help="Path to output rust file", required=True
     )
     parser.add_argument("--color-output", type=str, default="auto")
+    parser.add_argument(
+        "--no-experimental-warning",
+        action="store_true",
+        help="Suppress experimental warnings.",
+    )
     return parser.parse_args(argv[1:])
 
 
@@ -1068,7 +1080,9 @@ def main(flags):
     with open(flags.input_file) as f:
         ir = ir_data_utils.IrDataSerializer.from_json(ir_data.EmbossIr, f.read())
 
-    rust_source, errors = generate_code_and_log_errors(ir, flags.color_output)
+    rust_source, errors = generate_code_and_log_errors(
+        ir, flags.color_output, not flags.no_experimental_warning
+    )
     if errors:
         return 1
 
