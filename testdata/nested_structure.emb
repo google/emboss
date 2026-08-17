@@ -30,3 +30,4 @@ struct Box:
 struct Truck:
   0 [+4]   UInt          id
   4 [+40]  Container[2]  cargo
+

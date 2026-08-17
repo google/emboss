@@ -24,5 +24,6 @@ rust_library(
     srcs = [
         "src/lib.rs",
         "src/prelude.rs",
+        "src/typestate.rs",
     ],
 )

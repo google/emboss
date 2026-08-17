@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use emboss_runtime::CheckComplete;
 use testdata_auto_array_size_emb::*;
 
 #[test]
@@ -39,4 +40,35 @@ fn test_array_access() {
     // get index 3 which is OutOfBounds because count is 3 (valid indices are 0, 1, 2)
     let res = dyn_struct_array.get(3);
     assert!(res.is_err());
+}
+/// ```compile_fail
+/// use emboss_runtime::CheckComplete;
+/// use testdata_auto_array_size_emb::*;
+///
+/// let mut storage = [0u8; 22];
+/// let writer = AutoSizeMut::new(&mut storage[..])
+///     .into_writer()
+///     .check_complete()
+///     .unwrap();
+///
+/// let writer = writer.write_array_size(3);
+/// // Fails at compile-time: write methods are not available on UncheckedState.
+/// writer.write_array_size(3);
+/// ```
+#[test]
+fn test_auto_size_writer_degrades_on_dynamic_field() {
+    let mut storage = vec![0u8; 22];
+    let writer = AutoSizeMut::new(&mut storage[..])
+        .into_writer()
+        .check_complete()
+        .expect("complete auto size writer");
+
+    // Writing array_size (layout dependency) degrades writer to UncheckedState
+    let unchecked_writer = writer.write_array_size(3);
+    let _complete_writer = unchecked_writer.check_complete().expect("re-checked complete");
+
+    let view = AutoSize::new(&storage[..]);
+    assert_eq!(view.array_size().try_read().unwrap(), 3);
+    let dyn_struct_array = view.dynamic_struct_array().unwrap();
+    assert_eq!(dyn_struct_array.element_count(), 3);
 }

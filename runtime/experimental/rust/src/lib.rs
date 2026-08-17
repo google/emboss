@@ -13,6 +13,62 @@
 // limitations under the License.
 
 pub mod prelude;
+pub mod typestate;
+pub use crate::typestate::{
+    CheckComplete, CompleteState, InfallibleRead, InfallibleWrite, IntoWriter, IsComplete, State,
+    UncheckedState,
+};
+
+/// Trait for safe signed-to-unsigned and mixed-integer comparisons.
+pub trait SafeCmp<Rhs> {
+    fn safe_eq(&self, other: Rhs) -> bool;
+    fn safe_less(&self, other: Rhs) -> bool;
+}
+
+impl SafeCmp<u64> for u64 {
+    fn safe_eq(&self, other: u64) -> bool {
+        *self == other
+    }
+    fn safe_less(&self, other: u64) -> bool {
+        *self < other
+    }
+}
+
+impl SafeCmp<i64> for i64 {
+    fn safe_eq(&self, other: i64) -> bool {
+        *self == other
+    }
+    fn safe_less(&self, other: i64) -> bool {
+        *self < other
+    }
+}
+
+impl SafeCmp<u64> for i64 {
+    fn safe_eq(&self, other: u64) -> bool {
+        *self >= 0 && (*self as u64) == other
+    }
+    fn safe_less(&self, other: u64) -> bool {
+        *self < 0 || (*self as u64) < other
+    }
+}
+
+impl SafeCmp<i64> for u64 {
+    fn safe_eq(&self, other: i64) -> bool {
+        other >= 0 && *self == (other as u64)
+    }
+    fn safe_less(&self, other: i64) -> bool {
+        other >= 0 && *self < (other as u64)
+    }
+}
+
+impl SafeCmp<bool> for bool {
+    fn safe_eq(&self, other: bool) -> bool {
+        *self == other
+    }
+    fn safe_less(&self, other: bool) -> bool {
+        !*self && other
+    }
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Error<T = ()> {
@@ -42,10 +98,10 @@ pub trait MutStorage: Storage {
 }
 
 impl<'a, T: ?Sized + AsRef<[u8]>> Storage for &'a mut T {
-    type Sliced<'b> = Result<&'b [u8], Error> where Self: 'b;
+    type Sliced<'b> = &'b [u8] where Self: 'b;
     fn slice(&self, offset: usize, length: usize) -> Result<Self::Sliced<'_>, Error> {
         let bytes = self.as_ref();
-        Ok(bytes.get(offset..offset + length).ok_or(Error::OutOfBounds))
+        bytes.get(offset..offset + length).ok_or(Error::OutOfBounds)
     }
     fn try_read_byte(&self, offset: usize) -> Result<u8, Error> {
         let bytes = self.as_ref();
@@ -54,10 +110,10 @@ impl<'a, T: ?Sized + AsRef<[u8]>> Storage for &'a mut T {
 }
 
 impl<'a, T: ?Sized + AsRef<[u8]>> Storage for &'a T {
-    type Sliced<'b> = Result<&'b [u8], Error> where Self: 'b;
+    type Sliced<'b> = &'b [u8] where Self: 'b;
     fn slice(&self, offset: usize, length: usize) -> Result<Self::Sliced<'_>, Error> {
         let bytes = (*self).as_ref();
-        Ok(bytes.get(offset..offset + length).ok_or(Error::OutOfBounds))
+        bytes.get(offset..offset + length).ok_or(Error::OutOfBounds)
     }
     fn try_read_byte(&self, offset: usize) -> Result<u8, Error> {
         let bytes = self.as_ref();
@@ -66,10 +122,10 @@ impl<'a, T: ?Sized + AsRef<[u8]>> Storage for &'a T {
 }
 
 impl<'a, T: ?Sized + AsMut<[u8]> + AsRef<[u8]>> MutStorage for &'a mut T {
-    type SlicedMut<'b> = Result<&'b mut [u8], Error> where Self: 'b;
+    type SlicedMut<'b> = &'b mut [u8] where Self: 'b;
     fn slice_mut(&mut self, offset: usize, length: usize) -> Result<Self::SlicedMut<'_>, Error> {
         let bytes = self.as_mut();
-        Ok(bytes.get_mut(offset..offset + length).ok_or(Error::OutOfBounds))
+        bytes.get_mut(offset..offset + length).ok_or(Error::OutOfBounds)
     }
     fn try_write_byte(&mut self, offset: usize, val: u8) -> Result<(), Error> {
         let bytes = self.as_mut();
@@ -211,12 +267,12 @@ impl_smallest_uint!(
     u64, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64
 );
 
-pub struct UInt<const BITS: usize, E: ByteOrder, S: Storage> {
+pub struct UInt<const BITS: usize, E: ByteOrder, S: Storage, ST: State = UncheckedState> {
     storage: S,
-    _marker: core::marker::PhantomData<E>,
+    _marker: core::marker::PhantomData<(E, ST)>,
 }
 
-impl<const BITS: usize, E: ByteOrder, S: Storage> UInt<BITS, E, S> {
+impl<const BITS: usize, E: ByteOrder, S: Storage, ST: State> UInt<BITS, E, S, ST> {
     pub fn new(storage: S) -> Self {
         Self {
             storage,
@@ -225,7 +281,7 @@ impl<const BITS: usize, E: ByteOrder, S: Storage> UInt<BITS, E, S> {
     }
 }
 
-impl<const BITS: usize, E: ByteOrder, S: Storage> UInt<BITS, E, S>
+impl<const BITS: usize, E: ByteOrder, S: Storage, ST: State> UInt<BITS, E, S, ST>
 where
     SizeSelector<BITS>: SmallestUInt,
     <SizeSelector<BITS> as SmallestUInt>::T: DecodeFromStorage<E>,
@@ -239,7 +295,7 @@ where
     }
 }
 
-impl<const BITS: usize, E: ByteOrder, S: MutStorage> UInt<BITS, E, S>
+impl<const BITS: usize, E: ByteOrder, S: MutStorage, ST: State> UInt<BITS, E, S, ST>
 where
     SizeSelector<BITS>: SmallestUInt,
     <SizeSelector<BITS> as SmallestUInt>::T: EncodeToStorage<E>,
@@ -247,6 +303,35 @@ where
     pub fn try_write(&mut self, val: <SizeSelector<BITS> as SmallestUInt>::T) -> Result<(), Error> {
         let size_in_bytes = (BITS + 7) / 8;
         val.encode(&mut self.storage, size_in_bytes)
+    }
+}
+
+impl<const BITS: usize, E: ByteOrder, S: Storage, ST: IsComplete> InfallibleRead
+    for UInt<BITS, E, S, ST>
+where
+    SizeSelector<BITS>: SmallestUInt,
+    <SizeSelector<BITS> as SmallestUInt>::T: DecodeFromStorage<E>,
+{
+    type ReadValue = <SizeSelector<BITS> as SmallestUInt>::T;
+    fn read(&self) -> <SizeSelector<BITS> as SmallestUInt>::T {
+        self.try_read().expect("infallible read in complete state")
+    }
+}
+
+impl<const BITS: usize, E: ByteOrder, S: MutStorage, ST: IsComplete> InfallibleWrite
+    for UInt<BITS, E, S, ST>
+where
+    SizeSelector<BITS>: SmallestUInt,
+    <SizeSelector<BITS> as SmallestUInt>::T: EncodeToStorage<E>,
+{
+    type WriteValue = <SizeSelector<BITS> as SmallestUInt>::T;
+    type Output = UInt<BITS, E, S, ST::OnLayoutMutation>;
+    fn write(mut self, val: <SizeSelector<BITS> as SmallestUInt>::T) -> Self::Output {
+        self.try_write(val).expect("infallible write in complete state");
+        UInt {
+            storage: self.storage,
+            _marker: core::marker::PhantomData,
+        }
     }
 }
 
@@ -295,12 +380,12 @@ impl_smallest_int!(
     i64, u64, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64
 );
 
-pub struct Int<const BITS: usize, E: ByteOrder, S: Storage> {
+pub struct Int<const BITS: usize, E: ByteOrder, S: Storage, ST: State = UncheckedState> {
     storage: S,
-    _marker: core::marker::PhantomData<E>,
+    _marker: core::marker::PhantomData<(E, ST)>,
 }
 
-impl<const BITS: usize, E: ByteOrder, S: Storage> Int<BITS, E, S> {
+impl<const BITS: usize, E: ByteOrder, S: Storage, ST: State> Int<BITS, E, S, ST> {
     pub fn new(storage: S) -> Self {
         Self {
             storage,
@@ -309,7 +394,7 @@ impl<const BITS: usize, E: ByteOrder, S: Storage> Int<BITS, E, S> {
     }
 }
 
-impl<const BITS: usize, E: ByteOrder, S: Storage> Int<BITS, E, S>
+impl<const BITS: usize, E: ByteOrder, S: Storage, ST: State> Int<BITS, E, S, ST>
 where
     SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
     <SizeSelector<BITS> as SmallestUInt>::T: DecodeFromStorage<E>,
@@ -322,7 +407,7 @@ where
     }
 }
 
-impl<const BITS: usize, E: ByteOrder, S: MutStorage> Int<BITS, E, S>
+impl<const BITS: usize, E: ByteOrder, S: MutStorage, ST: State> Int<BITS, E, S, ST>
 where
     SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
     <SizeSelector<BITS> as SmallestUInt>::T: EncodeToStorage<E>,
@@ -331,6 +416,35 @@ where
         let unsigned = <SizeSelector<BITS> as SmallestInt>::mask_to_unsigned(val, BITS);
         let mut uint_view = UInt::<BITS, E, S::SlicedMut<'_>>::new(self.storage.slice_mut(0, (BITS + 7) / 8)?);
         uint_view.try_write(unsigned)
+    }
+}
+
+impl<const BITS: usize, E: ByteOrder, S: Storage, ST: IsComplete> InfallibleRead
+    for Int<BITS, E, S, ST>
+where
+    SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
+    <SizeSelector<BITS> as SmallestUInt>::T: DecodeFromStorage<E>,
+{
+    type ReadValue = <SizeSelector<BITS> as SmallestInt>::T;
+    fn read(&self) -> <SizeSelector<BITS> as SmallestInt>::T {
+        self.try_read().expect("infallible read in complete state")
+    }
+}
+
+impl<const BITS: usize, E: ByteOrder, S: MutStorage, ST: IsComplete> InfallibleWrite
+    for Int<BITS, E, S, ST>
+where
+    SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
+    <SizeSelector<BITS> as SmallestUInt>::T: EncodeToStorage<E>,
+{
+    type WriteValue = <SizeSelector<BITS> as SmallestInt>::T;
+    type Output = Int<BITS, E, S, ST::OnLayoutMutation>;
+    fn write(mut self, val: <SizeSelector<BITS> as SmallestInt>::T) -> Self::Output {
+        self.try_write(val).expect("infallible write in complete state");
+        Int {
+            storage: self.storage,
+            _marker: core::marker::PhantomData,
+        }
     }
 }
 
@@ -378,7 +492,7 @@ pub trait TryWrite {
     fn try_write(&mut self, val: Self::WriteValue) -> Result<(), Error>;
 }
 
-impl<const BITS: usize, E: ByteOrder, S: Storage> TryRead for UInt<BITS, E, S>
+impl<const BITS: usize, E: ByteOrder, S: Storage, ST: State> TryRead for UInt<BITS, E, S, ST>
 where
     SizeSelector<BITS>: SmallestUInt,
     <SizeSelector<BITS> as SmallestUInt>::T: DecodeFromStorage<E>,
@@ -389,7 +503,7 @@ where
     }
 }
 
-impl<const BITS: usize, E: ByteOrder, S: MutStorage> TryWrite for UInt<BITS, E, S>
+impl<const BITS: usize, E: ByteOrder, S: MutStorage, ST: State> TryWrite for UInt<BITS, E, S, ST>
 where
     SizeSelector<BITS>: SmallestUInt,
     <SizeSelector<BITS> as SmallestUInt>::T: EncodeToStorage<E>,
@@ -400,7 +514,7 @@ where
     }
 }
 
-impl<const BITS: usize, E: ByteOrder, S: Storage> TryRead for Int<BITS, E, S>
+impl<const BITS: usize, E: ByteOrder, S: Storage, ST: State> TryRead for Int<BITS, E, S, ST>
 where
     SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
     <SizeSelector<BITS> as SmallestUInt>::T: DecodeFromStorage<E>,
@@ -411,7 +525,7 @@ where
     }
 }
 
-impl<const BITS: usize, E: ByteOrder, S: MutStorage> TryWrite for Int<BITS, E, S>
+impl<const BITS: usize, E: ByteOrder, S: MutStorage, ST: State> TryWrite for Int<BITS, E, S, ST>
 where
     SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
     <SizeSelector<BITS> as SmallestUInt>::T: EncodeToStorage<E>,
@@ -433,6 +547,17 @@ where
     }
 }
 
+impl<T, Inner> InfallibleRead for EnumView<T, Inner>
+where
+    Inner: InfallibleRead,
+    T: TryFromRaw<Inner::ReadValue>,
+{
+    type ReadValue = Result<T, Error<Inner::ReadValue>>;
+    fn read(&self) -> Self::ReadValue {
+        T::try_from_raw(self.inner.read())
+    }
+}
+
 impl<T, Inner> EnumViewMut<T, Inner>
 where
     Inner: TryWrite,
@@ -440,6 +565,21 @@ where
 {
     pub fn try_write(&mut self, val: T) -> Result<(), Error> {
         self.inner.try_write(Inner::WriteValue::from(val))
+    }
+}
+
+impl<T, Inner> InfallibleWrite for EnumViewMut<T, Inner>
+where
+    Inner: InfallibleWrite,
+    Inner::WriteValue: From<T>,
+{
+    type WriteValue = T;
+    type Output = EnumViewMut<T, Inner::Output>;
+    fn write(self, val: T) -> Self::Output {
+        EnumViewMut {
+            inner: self.inner.write(Inner::WriteValue::from(val)),
+            _phantom: core::marker::PhantomData,
+        }
     }
 }
 
@@ -454,12 +594,23 @@ where
     }
 }
 
-pub struct BitUInt<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> {
-    storage: S,
-    _marker: core::marker::PhantomData<E>,
+impl<T, Inner> InfallibleRead for EnumViewMut<T, Inner>
+where
+    Inner: InfallibleRead,
+    T: TryFromRaw<Inner::ReadValue>,
+{
+    type ReadValue = Result<T, Error<Inner::ReadValue>>;
+    fn read(&self) -> Self::ReadValue {
+        T::try_from_raw(self.inner.read())
+    }
 }
 
-impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> BitUInt<BITS, BIT_OFFSET, E, S> {
+pub struct BitUInt<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: State = UncheckedState> {
+    storage: S,
+    _marker: core::marker::PhantomData<(E, ST)>,
+}
+
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: State> BitUInt<BITS, BIT_OFFSET, E, S, ST> {
     pub fn new(storage: S) -> Self {
         Self {
             storage,
@@ -468,7 +619,7 @@ impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> BitUI
     }
 }
 
-impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> BitUInt<BITS, BIT_OFFSET, E, S>
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: State> BitUInt<BITS, BIT_OFFSET, E, S, ST>
 where
     SizeSelector<BITS>: SmallestUInt,
 {
@@ -497,12 +648,22 @@ where
     }
 }
 
-pub struct BitInt<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> {
-    storage: S,
-    _marker: core::marker::PhantomData<E>,
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: IsComplete> InfallibleRead for BitUInt<BITS, BIT_OFFSET, E, S, ST>
+where
+    SizeSelector<BITS>: SmallestUInt,
+{
+    type ReadValue = <SizeSelector<BITS> as SmallestUInt>::T;
+    fn read(&self) -> <SizeSelector<BITS> as SmallestUInt>::T {
+        self.try_read().expect("infallible read in complete state")
+    }
 }
 
-impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> BitInt<BITS, BIT_OFFSET, E, S> {
+pub struct BitInt<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: State = UncheckedState> {
+    storage: S,
+    _marker: core::marker::PhantomData<(E, ST)>,
+}
+
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: State> BitInt<BITS, BIT_OFFSET, E, S, ST> {
     pub fn new(storage: S) -> Self {
         Self {
             storage,
@@ -511,7 +672,7 @@ impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> BitIn
     }
 }
 
-impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> BitInt<BITS, BIT_OFFSET, E, S>
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: State> BitInt<BITS, BIT_OFFSET, E, S, ST>
 where
     SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
 {
@@ -522,7 +683,17 @@ where
     }
 }
 
-impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> TryRead for BitUInt<BITS, BIT_OFFSET, E, S>
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: IsComplete> InfallibleRead for BitInt<BITS, BIT_OFFSET, E, S, ST>
+where
+    SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
+{
+    type ReadValue = <SizeSelector<BITS> as SmallestInt>::T;
+    fn read(&self) -> <SizeSelector<BITS> as SmallestInt>::T {
+        self.try_read().expect("infallible read in complete state")
+    }
+}
+
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: State> TryRead for BitUInt<BITS, BIT_OFFSET, E, S, ST>
 where
     SizeSelector<BITS>: SmallestUInt,
 {
@@ -532,7 +703,7 @@ where
     }
 }
 
-impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage> TryRead for BitInt<BITS, BIT_OFFSET, E, S>
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: State> TryRead for BitInt<BITS, BIT_OFFSET, E, S, ST>
 where
     SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
 {
@@ -557,12 +728,23 @@ impl<T: Copy> VirtualField<T> {
     pub fn try_read(&self) -> core::result::Result<T, Error> {
         self.value
     }
+
+    pub fn read(&self) -> T {
+        self.try_read().expect("infallible virtual field read in minimally complete state")
+    }
 }
 
 impl<T: Copy> TryRead for VirtualField<T> {
     type ReadValue = T;
     fn try_read(&self) -> core::result::Result<T, Error> {
         self.value
+    }
+}
+
+impl<T: Copy> InfallibleRead for VirtualField<T> {
+    type ReadValue = T;
+    fn read(&self) -> T {
+        self.try_read().expect("infallible virtual field read in complete state")
     }
 }
 

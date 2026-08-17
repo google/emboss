@@ -62,6 +62,7 @@ rust_test(
     name = "int_sizes_test",
     srcs = ["int_sizes_test.rs"],
     deps = [
+        "//runtime/experimental/rust:emboss_runtime",
         "//testdata:int_sizes_emb_rs",
     ],
 )

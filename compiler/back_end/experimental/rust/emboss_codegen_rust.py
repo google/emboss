@@ -268,11 +268,24 @@ def _rust_type_for_expr_type(expr_type):
     return "u64"
 
 
+def _format_cmp_operand(arg_str, arg_expr):
+    if arg_expr.type.has_field("integer"):
+        return f"({arg_str}) as {_rust_type_for_expr_type(arg_expr.type)}"
+    if arg_expr.type.has_field("enumeration") and ir_util.is_constant(arg_expr):
+        val = ir_util.constant_value(arg_expr)
+        cast_type = "i64" if val < 0 else "u64"
+        return f"({arg_str}) as {cast_type}"
+    return arg_str
+
+
 def _generate_expression(
     expr, ir, module, generated_fields, templates, self_ref="self"
 ):
     if ir_util.is_constant(expr):
-        return str(ir_util.constant_value(expr))
+        val = ir_util.constant_value(expr)
+        if isinstance(val, bool):
+            return "true" if val else "false"
+        return str(val)
 
     if expr.has_field("boolean_constant"):
         return "true" if expr.boolean_constant.value else "false"
@@ -315,9 +328,12 @@ def _generate_expression(
                 templates.expr_multiplication, left=args[0], right=args[1]
             )
         if func == ir_data.FunctionMapping.MAXIMUM.value:
-            return code_template.format_template(
-                templates.expr_maximum, left=args[0], right=args[1]
-            )
+            res = args[0]
+            for a in args[1:]:
+                res = code_template.format_template(
+                    templates.expr_maximum, left=res, right=a
+                )
+            return res
         if func == ir_data.FunctionMapping.CHOICE.value:
             return code_template.format_template(
                 templates.expr_choice,
@@ -326,12 +342,16 @@ def _generate_expression(
                 false_value=args[2],
             )
         if func == ir_data.FunctionMapping.EQUALITY.value:
+            left = _format_cmp_operand(args[0], expr.function.args[0])
+            right = _format_cmp_operand(args[1], expr.function.args[1])
             return code_template.format_template(
-                templates.expr_equality, left=args[0], right=args[1]
+                templates.expr_equality, left=left, right=right
             )
         if func == ir_data.FunctionMapping.LESS.value:
+            left = _format_cmp_operand(args[0], expr.function.args[0])
+            right = _format_cmp_operand(args[1], expr.function.args[1])
             return code_template.format_template(
-                templates.expr_less, left=args[0], right=args[1]
+                templates.expr_less, left=left, right=right
             )
 
         return None
@@ -466,11 +486,39 @@ def _generate_array_field(
     )
 
 
+def _find_layout_dependencies(type_ir) -> set[str]:
+    deps = set()
+
+    def scan_expr(expr):
+        if expr is None:
+            return
+        if expr.has_field("field_reference"):
+            deps.add(expr.field_reference.path[0].canonical_name.object_path[-1])
+        if expr.has_field("function"):
+            for a in expr.function.args:
+                scan_expr(a)
+
+    for field in type_ir.structure.field:
+        if field.has_field("location"):
+            if field.location.has_field("start"):
+                scan_expr(field.location.start)
+            if field.location.has_field("size"):
+                scan_expr(field.location.size)
+        if field.has_field("read_transform"):
+            scan_expr(field.read_transform)
+        if field.has_field("existence_condition"):
+            scan_expr(field.existence_condition)
+
+    return deps
+
+
 def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -> str:
     field_accessors = []
     mut_field_accessors = []
+    writer_field_accessors = []
     generated_nested_types = []
     generated_fields = set()
+    layout_dependencies = _find_layout_dependencies(type_ir)
 
     fields_to_process = []
     if type_ir.structure.fields_in_dependency_order:
@@ -675,6 +723,22 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
         byte_length_expr = _generate_expression(
             field.location.size, ir, module, generated_fields, templates
         )
+        writer_byte_offset_expr = _generate_expression(
+            field.location.start,
+            ir,
+            module,
+            generated_fields,
+            templates,
+            self_ref="view",
+        )
+        writer_byte_length_expr = _generate_expression(
+            field.location.size,
+            ir,
+            module,
+            generated_fields,
+            templates,
+            self_ref="view",
+        )
 
         if byte_offset_expr is None or byte_length_expr is None:
             reason = "offset" if byte_offset_expr is None else "size"
@@ -817,6 +881,23 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
                             byte_length=str(byte_length),
                         )
                     )
+                    template = (
+                        templates.writer_field_setter_layout
+                        if field_name in layout_dependencies
+                        else templates.writer_field_setter
+                    )
+                    writer_field_accessors.append(
+                        code_template.format_template(
+                            template,
+                            struct_name=struct_name,
+                            field_name=field_name,
+                            type_name=source_name,
+                            bits=str(bits),
+                            byte_order=byte_order,
+                            byte_offset=str(writer_byte_offset_expr),
+                            byte_length=str(writer_byte_length_expr),
+                        )
+                    )
             elif referenced_type.has_field("structure"):
                 field_accessors.append(
                     code_template.format_template(
@@ -889,6 +970,23 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
                             byte_length=str(byte_length),
                         )
                     )
+                    template = (
+                        templates.enum_writer_field_setter_layout
+                        if field_name in layout_dependencies
+                        else templates.enum_writer_field_setter
+                    )
+                    writer_field_accessors.append(
+                        code_template.format_template(
+                            template,
+                            struct_name=struct_name,
+                            field_name=field_name,
+                            enum_name=source_name,
+                            bits=str(bits),
+                            byte_order=byte_order,
+                            byte_offset=str(writer_byte_offset_expr),
+                            byte_length=str(writer_byte_length_expr),
+                        )
+                    )
             else:
                 diagnostics.append(
                     [
@@ -907,11 +1005,31 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
 
         generated_fields.add(field_name)
 
+    # Extract the frontend-synthesized $size_in_bytes expression tree to compute the
+    # dynamic layout completeness of the structure in CheckComplete::check_complete().
+    size_in_bytes = "0"
+    for field in type_ir.structure.field:
+        if field.name.name.text == "$size_in_bytes":
+            size_in_bytes = (
+                _generate_expression(
+                    field.read_transform,
+                    ir,
+                    module,
+                    generated_fields,
+                    templates,
+                    self_ref="view",
+                )
+                or "0"
+            )
+            break
+
     main_struct_def = code_template.format_template(
         templates.struct_view,
         struct_name=struct_name,
         field_accessors="".join(field_accessors),
         mut_field_accessors="".join(mut_field_accessors),
+        writer_field_accessors="".join(writer_field_accessors),
+        size_in_bytes=size_in_bytes,
     )
     return "".join(generated_nested_types) + main_struct_def
 

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 pub use testdata_dynamic_size_emb::*;
-use emboss_runtime::{prelude::*, Error};
+use emboss_runtime::{CheckComplete, InfallibleRead};
 
 #[test]
 fn test_chained_size_in_order() {
@@ -64,4 +64,27 @@ fn test_dynamic_overlap() {
     assert_eq!(view.a().try_read(), Ok(4));
     assert_eq!(view.b().try_read(), Ok(2));
     assert_eq!(view.d().try_read(), Ok(8));
+}
+
+#[test]
+fn test_chained_size_writer_typestates() {
+    let mut bytes = [0x01, 0x02, 0x03, 0x04];
+    let writer = ChainedSizeMut::new(&mut bytes[..])
+        .into_writer()
+        .check_complete()
+        .expect("complete writer");
+
+    // Mutating `d` (non-layout dependency) preserves CompleteState
+    let writer = writer.write_d(42);
+    assert_eq!(writer.into_view().d().read(), 42);
+
+    let writer = ChainedSizeMut::new(&mut bytes[..])
+        .into_writer()
+        .check_complete()
+        .expect("complete writer");
+
+    // Mutating `a` (layout dependency) degrades state to UncheckedState
+    let unchecked_writer = writer.write_a(1);
+    let complete_writer = unchecked_writer.check_complete().expect("re-checked complete");
+    assert_eq!(complete_writer.into_view().a().read(), 1);
 }

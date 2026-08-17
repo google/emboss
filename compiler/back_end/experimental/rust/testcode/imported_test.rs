@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use emboss_runtime::{prelude::*, Error};
+use emboss_runtime::{CheckComplete, Error};
 use testdata_imported_emb::*;
 
 #[cfg(test)]
@@ -34,5 +34,18 @@ mod tests {
         let values: [u8; 1] = [42]; // Too short
         let view = Inner::new(&values[..]);
         assert_eq!(view.value().try_read(), Err(Error::OutOfBounds));
+    }
+
+    #[test]
+    fn test_imported_inner_field_write_with_writer() {
+        let mut values = [0u8; 8];
+        let writer = InnerMut::new(&mut values[..])
+            .into_writer()
+            .check_complete()
+            .expect("complete inner writer");
+        let _ = writer.write_value(42);
+
+        let view = Inner::new(&values[..]);
+        assert_eq!(view.value().try_read().unwrap(), 42);
     }
 }

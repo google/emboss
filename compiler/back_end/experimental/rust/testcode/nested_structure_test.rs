@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use emboss_runtime::{prelude::*, Error};
+use emboss_runtime::{CheckComplete, Error};
 
 #[test]
 fn container_field_values_are_correct() {
@@ -63,4 +63,25 @@ fn nested_out_of_bounds_handles_cascading_reads_dynamically() {
     let other_box = view.other_box();
     assert_eq!(other_box.id().try_read(), Err(Error::OutOfBounds));
     assert_eq!(other_box.count().try_read(), Err(Error::OutOfBounds));
+}
+
+#[test]
+fn writes_container_and_box_with_writer() {
+    let mut container = [0u8; 20];
+    let writer = testdata_nested_structure_emb::ContainerMut::new(&mut container[..])
+        .into_writer()
+        .check_complete()
+        .expect("complete container writer");
+    let _ = writer.write_weight(40);
+
+    let box_writer = testdata_nested_structure_emb::BoxMut::new(&mut container[4..12])
+        .into_writer()
+        .check_complete()
+        .expect("complete box writer");
+    let _ = box_writer.write_id(0x12345678).write_count(0x010203);
+
+    let view = testdata_nested_structure_emb::Container::new(&container[..]);
+    assert_eq!(view.weight().try_read().unwrap(), 40);
+    assert_eq!(view.important_box().id().try_read().unwrap(), 0x12345678);
+    assert_eq!(view.important_box().count().try_read().unwrap(), 0x010203);
 }

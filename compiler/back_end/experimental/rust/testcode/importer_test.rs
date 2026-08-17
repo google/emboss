@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use emboss_runtime::CheckComplete;
 use testdata_importer_emb::{Outer, OuterMut};
 
 #[test]
@@ -24,6 +25,19 @@ fn test_importer() {
     let mut value = inner.value();
     value.try_write(1234).unwrap();
     
+    let importer_ro = Outer::new(&buf[..]);
+    assert_eq!(importer_ro.inner().value().try_read().unwrap(), 1234);
+}
+
+#[test]
+fn test_importer_nested_writer() {
+    let mut buf = [0u8; 16];
+    let inner_writer = testdata_imported_emb::InnerMut::new(&mut buf[..8])
+        .into_writer()
+        .check_complete()
+        .expect("complete inner writer");
+    let _ = inner_writer.write_value(1234);
+
     let importer_ro = Outer::new(&buf[..]);
     assert_eq!(importer_ro.inner().value().try_read().unwrap(), 1234);
 }
