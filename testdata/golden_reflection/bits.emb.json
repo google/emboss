@@ -1,0 +1,637 @@
+{
+  "modules": [
+    {
+      "source_file_name": "testdata/bits.emb",
+      "documentation": "Test `.emb` for the `bits` construct.",
+      "types": [
+        {
+          "name": "OneByte",
+          "canonical_name": {
+            "module_file": "testdata/bits.emb",
+            "object_path": [
+              "OneByte"
+            ]
+          },
+          "kind": "bits",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 8,
+          "byte_order": null,
+          "parameters": [],
+          "fields": [
+            {
+              "name": "high_bit",
+              "abbreviation": null,
+              "bit_offset": 7,
+              "bit_size": 1,
+              "offset_expression": "7",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "less_high_bit",
+              "abbreviation": null,
+              "bit_offset": 6,
+              "bit_size": 1,
+              "offset_expression": "6",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "mid_nibble",
+              "abbreviation": null,
+              "bit_offset": 2,
+              "bit_size": 4,
+              "offset_expression": "2",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "less_low_bit",
+              "abbreviation": null,
+              "bit_offset": 1,
+              "bit_size": 1,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "low_bit",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 1,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "FourByte",
+          "canonical_name": {
+            "module_file": "testdata/bits.emb",
+            "object_path": [
+              "FourByte"
+            ]
+          },
+          "kind": "bits",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 32,
+          "byte_order": null,
+          "parameters": [],
+          "fields": [
+            {
+              "name": "high_nibble",
+              "abbreviation": null,
+              "bit_offset": 28,
+              "bit_size": 4,
+              "offset_expression": "28",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "one_byte",
+              "abbreviation": null,
+              "bit_offset": 20,
+              "bit_size": 8,
+              "offset_expression": "20",
+              "size_expression": "8",
+              "alignment": null,
+              "type_name": "OneByte",
+              "type": {
+                "module_file": "testdata/bits.emb",
+                "object_path": [
+                  "OneByte"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "two_byte",
+              "abbreviation": null,
+              "bit_offset": 4,
+              "bit_size": 16,
+              "offset_expression": "4",
+              "size_expression": "16",
+              "alignment": null,
+              "type_name": "TwoByteWithGaps",
+              "type": {
+                "module_file": "testdata/bits.emb",
+                "object_path": [
+                  "FourByte",
+                  "TwoByteWithGaps"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "raw_low_nibble",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 4,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": [
+                "1 <= this && this <= 15"
+              ]
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "low_nibble",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "raw_low_nibble + 100",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": false,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "TwoByteWithGaps",
+          "canonical_name": {
+            "module_file": "testdata/bits.emb",
+            "object_path": [
+              "FourByte",
+              "TwoByteWithGaps"
+            ]
+          },
+          "kind": "bits",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 16,
+          "byte_order": null,
+          "parameters": [],
+          "fields": [
+            {
+              "name": "high_bit",
+              "abbreviation": null,
+              "bit_offset": 15,
+              "bit_size": 1,
+              "offset_expression": "15",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "mid_nibble",
+              "abbreviation": null,
+              "bit_offset": 6,
+              "bit_size": 4,
+              "offset_expression": "6",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "low_bit",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 1,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "ArrayInBits",
+          "canonical_name": {
+            "module_file": "testdata/bits.emb",
+            "object_path": [
+              "ArrayInBits"
+            ]
+          },
+          "kind": "bits",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 16,
+          "byte_order": null,
+          "parameters": [],
+          "fields": [
+            {
+              "name": "lone_flag",
+              "abbreviation": null,
+              "bit_offset": 15,
+              "bit_size": 1,
+              "offset_expression": "15",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "flags",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 12,
+              "offset_expression": "0",
+              "size_expression": "12",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": true,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "ArrayInBitsInStruct",
+          "canonical_name": {
+            "module_file": "testdata/bits.emb",
+            "object_path": [
+              "ArrayInBitsInStruct"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 16,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "array_in_bits",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 16,
+              "offset_expression": "0",
+              "size_expression": "2",
+              "alignment": null,
+              "type_name": "ArrayInBits",
+              "type": {
+                "module_file": "testdata/bits.emb",
+                "object_path": [
+                  "ArrayInBits"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "StructOfBits",
+          "canonical_name": {
+            "module_file": "testdata/bits.emb",
+            "object_path": [
+              "StructOfBits"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "one_byte",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "OneByte",
+              "type": {
+                "module_file": "testdata/bits.emb",
+                "object_path": [
+                  "OneByte"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "two_byte",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 16,
+              "offset_expression": "1",
+              "size_expression": "2",
+              "alignment": null,
+              "type_name": "TwoByteWithGaps",
+              "type": {
+                "module_file": "testdata/bits.emb",
+                "object_path": [
+                  "FourByte",
+                  "TwoByteWithGaps"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "four_byte",
+              "abbreviation": null,
+              "bit_offset": 24,
+              "bit_size": 32,
+              "offset_expression": "3",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "FourByte",
+              "type": {
+                "module_file": "testdata/bits.emb",
+                "object_path": [
+                  "FourByte"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "located_byte",
+              "abbreviation": null,
+              "bit_offset": null,
+              "bit_size": 8,
+              "offset_expression": "one_byte.mid_nibble",
+              "size_expression": "1",
+              "alignment": {
+                "modulus": 8,
+                "remainder": 0
+              },
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "BitArray",
+          "canonical_name": {
+            "module_file": "testdata/bits.emb",
+            "object_path": [
+              "BitArray"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 64,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "one_byte",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 64,
+              "offset_expression": "0",
+              "size_expression": "8",
+              "alignment": null,
+              "type_name": "OneByte",
+              "type": {
+                "module_file": "testdata/bits.emb",
+                "object_path": [
+                  "OneByte"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": true,
+              "array_element_count": 8,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        }
+      ]
+    }
+  ]
+}

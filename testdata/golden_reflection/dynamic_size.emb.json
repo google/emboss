@@ -1,0 +1,1276 @@
+{
+  "modules": [
+    {
+      "source_file_name": "testdata/dynamic_size.emb",
+      "documentation": "",
+      "types": [
+        {
+          "name": "Message",
+          "canonical_name": {
+            "module_file": "testdata/dynamic_size.emb",
+            "object_path": [
+              "Message"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "header_length",
+              "abbreviation": "h",
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "message_length",
+              "abbreviation": "m",
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "padding",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": null,
+              "offset_expression": "2",
+              "size_expression": "h - 2",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": true,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "message",
+              "abbreviation": null,
+              "bit_offset": null,
+              "bit_size": null,
+              "offset_expression": "h",
+              "size_expression": "m",
+              "alignment": {
+                "modulus": 8,
+                "remainder": 0
+              },
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": true,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "crc32",
+              "abbreviation": null,
+              "bit_offset": null,
+              "bit_size": 32,
+              "offset_expression": "h + m",
+              "size_expression": "4",
+              "alignment": {
+                "modulus": 8,
+                "remainder": 0
+              },
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "Image",
+          "canonical_name": {
+            "module_file": "testdata/dynamic_size.emb",
+            "object_path": [
+              "Image"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "size",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "pixels",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": null,
+              "offset_expression": "1",
+              "size_expression": "3 * 5 * size",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": true,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "TwoRegions",
+          "canonical_name": {
+            "module_file": "testdata/dynamic_size.emb",
+            "object_path": [
+              "TwoRegions"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "b_end",
+              "abbreviation": null,
+              "bit_offset": 24,
+              "bit_size": 8,
+              "offset_expression": "3",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "b_start",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": 8,
+              "offset_expression": "2",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "a_size",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "a_start",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "region_a",
+              "abbreviation": null,
+              "bit_offset": null,
+              "bit_size": null,
+              "offset_expression": "a_start",
+              "size_expression": "a_size",
+              "alignment": {
+                "modulus": 8,
+                "remainder": 0
+              },
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": true,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "region_b",
+              "abbreviation": null,
+              "bit_offset": null,
+              "bit_size": null,
+              "offset_expression": "b_start",
+              "size_expression": "b_end - b_start",
+              "alignment": {
+                "modulus": 8,
+                "remainder": 0
+              },
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": true,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "MultipliedSize",
+          "canonical_name": {
+            "module_file": "testdata/dynamic_size.emb",
+            "object_path": [
+              "MultipliedSize"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "width",
+              "abbreviation": "w",
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "height",
+              "abbreviation": "h",
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "data",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": null,
+              "offset_expression": "2",
+              "size_expression": "w * h",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": true,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "NegativeTermsInSizes",
+          "canonical_name": {
+            "module_file": "testdata/dynamic_size.emb",
+            "object_path": [
+              "NegativeTermsInSizes"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "a",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "b",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "c",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": 8,
+              "offset_expression": "2",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "a_minus_b",
+              "abbreviation": null,
+              "bit_offset": 24,
+              "bit_size": null,
+              "offset_expression": "3",
+              "size_expression": "a - b - 3",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": true,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "a_minus_2b",
+              "abbreviation": null,
+              "bit_offset": 24,
+              "bit_size": null,
+              "offset_expression": "3",
+              "size_expression": "a - 2 * b - 3",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": true,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "a_minus_b_minus_c",
+              "abbreviation": null,
+              "bit_offset": 24,
+              "bit_size": null,
+              "offset_expression": "3",
+              "size_expression": "a - b - c - 3",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": true,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "ten_minus_a",
+              "abbreviation": null,
+              "bit_offset": 24,
+              "bit_size": null,
+              "offset_expression": "3",
+              "size_expression": "7 - a",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": true,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "a_minus_2c",
+              "abbreviation": null,
+              "bit_offset": 24,
+              "bit_size": null,
+              "offset_expression": "3",
+              "size_expression": "a - 2 * c - 3",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": true,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "a_minus_c",
+              "abbreviation": null,
+              "bit_offset": 24,
+              "bit_size": null,
+              "offset_expression": "3",
+              "size_expression": "a - c - 3",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": true,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "NegativeTermInLocation",
+          "canonical_name": {
+            "module_file": "testdata/dynamic_size.emb",
+            "object_path": [
+              "NegativeTermInLocation"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "a",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "b",
+              "abbreviation": null,
+              "bit_offset": null,
+              "bit_size": 8,
+              "offset_expression": "10 - a",
+              "size_expression": "1",
+              "alignment": {
+                "modulus": 8,
+                "remainder": 0
+              },
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "ChainedSize",
+          "canonical_name": {
+            "module_file": "testdata/dynamic_size.emb",
+            "object_path": [
+              "ChainedSize"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "a",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "b",
+              "abbreviation": null,
+              "bit_offset": null,
+              "bit_size": 8,
+              "offset_expression": "a",
+              "size_expression": "1",
+              "alignment": {
+                "modulus": 8,
+                "remainder": 0
+              },
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "c",
+              "abbreviation": null,
+              "bit_offset": null,
+              "bit_size": 8,
+              "offset_expression": "b",
+              "size_expression": "1",
+              "alignment": {
+                "modulus": 8,
+                "remainder": 0
+              },
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "d",
+              "abbreviation": null,
+              "bit_offset": null,
+              "bit_size": 8,
+              "offset_expression": "c",
+              "size_expression": "1",
+              "alignment": {
+                "modulus": 8,
+                "remainder": 0
+              },
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "FinalFieldOverlaps",
+          "canonical_name": {
+            "module_file": "testdata/dynamic_size.emb",
+            "object_path": [
+              "FinalFieldOverlaps"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 40,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "a",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "b",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 32,
+              "offset_expression": "1",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "c",
+              "abbreviation": null,
+              "bit_offset": 24,
+              "bit_size": 16,
+              "offset_expression": "3",
+              "size_expression": "2",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "DynamicFinalFieldOverlaps",
+          "canonical_name": {
+            "module_file": "testdata/dynamic_size.emb",
+            "object_path": [
+              "DynamicFinalFieldOverlaps"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "a",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "b",
+              "abbreviation": null,
+              "bit_offset": 72,
+              "bit_size": 8,
+              "offset_expression": "9",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "c",
+              "abbreviation": null,
+              "bit_offset": null,
+              "bit_size": 16,
+              "offset_expression": "a",
+              "size_expression": "2",
+              "alignment": {
+                "modulus": 8,
+                "remainder": 0
+              },
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "d",
+              "abbreviation": null,
+              "bit_offset": null,
+              "bit_size": 8,
+              "offset_expression": "a + 1",
+              "size_expression": "1",
+              "alignment": {
+                "modulus": 8,
+                "remainder": 0
+              },
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "DynamicFieldDependsOnLaterField",
+          "canonical_name": {
+            "module_file": "testdata/dynamic_size.emb",
+            "object_path": [
+              "DynamicFieldDependsOnLaterField"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "b",
+              "abbreviation": null,
+              "bit_offset": null,
+              "bit_size": 8,
+              "offset_expression": "a + 1",
+              "size_expression": "1",
+              "alignment": {
+                "modulus": 8,
+                "remainder": 0
+              },
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "a",
+              "abbreviation": null,
+              "bit_offset": 32,
+              "bit_size": 8,
+              "offset_expression": "4",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "DynamicFieldDoesNotAffectSize",
+          "canonical_name": {
+            "module_file": "testdata/dynamic_size.emb",
+            "object_path": [
+              "DynamicFieldDoesNotAffectSize"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "a",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "b",
+              "abbreviation": null,
+              "bit_offset": null,
+              "bit_size": 8,
+              "offset_expression": "a",
+              "size_expression": "1",
+              "alignment": {
+                "modulus": 8,
+                "remainder": 0
+              },
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "c",
+              "abbreviation": null,
+              "bit_offset": 2040,
+              "bit_size": 8,
+              "offset_expression": "255",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        }
+      ]
+    }
+  ]
+}

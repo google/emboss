@@ -1,0 +1,2479 @@
+{
+  "modules": [
+    {
+      "source_file_name": "testdata/condition.emb",
+      "documentation": "",
+      "types": [
+        {
+          "name": "BasicConditional",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "BasicConditional"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x == 0",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "NegativeConditional",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "NegativeConditional"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x != 0",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "ConditionalAndUnconditionalOverlappingFinalField",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "ConditionalAndUnconditionalOverlappingFinalField"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x == 0",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "z",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "ConditionalBasicConditionalFieldFirst",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "ConditionalBasicConditionalFieldFirst"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x == 0",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "ConditionalAndDynamicLocation",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "ConditionalAndDynamicLocation"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "y",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": 8,
+              "offset_expression": "2",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": null,
+              "bit_size": 8,
+              "offset_expression": "y",
+              "size_expression": "1",
+              "alignment": {
+                "modulus": 8,
+                "remainder": 0
+              },
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x == 0",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "ConditionUsesMinInt",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "ConditionUsesMinInt"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Int",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Int"
+                ]
+              },
+              "is_signed": true,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x - 9223372036854775680 == -9223372036854775808",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "NestedConditional",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "NestedConditional"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x == 0",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xcc",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": 8,
+              "offset_expression": "2",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "xc == 0",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "CorrectNestedConditional",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "CorrectNestedConditional"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x == 0",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xcc",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": 8,
+              "offset_expression": "2",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x == 0 && xc == 0",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "AlwaysFalseCondition",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "AlwaysFalseCondition"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 8,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "false",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "OnlyAlwaysFalseCondition",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "OnlyAlwaysFalseCondition"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 0,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "false",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "EmptyStruct",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "EmptyStruct"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "Empty structure.",
+          "requires": [],
+          "bit_size": 0,
+          "byte_order": null,
+          "parameters": [],
+          "fields": [],
+          "virtuals": []
+        },
+        {
+          "name": "AlwaysFalseConditionDynamicSize",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "AlwaysFalseConditionDynamicSize"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "y",
+              "abbreviation": null,
+              "bit_offset": null,
+              "bit_size": 8,
+              "offset_expression": "x",
+              "size_expression": "1",
+              "alignment": {
+                "modulus": 8,
+                "remainder": 0
+              },
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "false",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "ConditionDoesNotContributeToSize",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "ConditionDoesNotContributeToSize"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x == 0",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "y",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": 8,
+              "offset_expression": "2",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "OnOff",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "OnOff"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": false,
+          "maximum_bits": 64,
+          "members": [
+            {
+              "name": "OFF",
+              "value": 0,
+              "documentation": ""
+            },
+            {
+              "name": "ON",
+              "value": 1,
+              "documentation": ""
+            }
+          ]
+        },
+        {
+          "name": "EnumCondition",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "EnumCondition"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "OnOff",
+              "type": {
+                "module_file": "testdata/condition.emb",
+                "object_path": [
+                  "OnOff"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": "OnOff",
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x == OnOff.ON",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc2",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x > OnOff.OFF",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "NegativeEnumCondition",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "NegativeEnumCondition"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "OnOff",
+              "type": {
+                "module_file": "testdata/condition.emb",
+                "object_path": [
+                  "OnOff"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": "OnOff",
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x != OnOff.ON",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "LessThanCondition",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "LessThanCondition"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x < 5",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "LessThanOrEqualCondition",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "LessThanOrEqualCondition"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x <= 5",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "GreaterThanOrEqualCondition",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "GreaterThanOrEqualCondition"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x >= 5",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "GreaterThanCondition",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "GreaterThanCondition"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x > 5",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "RangeCondition",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "RangeCondition"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "y",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": 8,
+              "offset_expression": "2",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "5 < x && x <= y && y < 10",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "ReverseRangeCondition",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "ReverseRangeCondition"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "y",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": 8,
+              "offset_expression": "2",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "10 > y && y >= x && x > 5",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "AndCondition",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "AndCondition"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "y",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": 8,
+              "offset_expression": "2",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x == 5 && y == 5",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "OrCondition",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "OrCondition"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "y",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": 8,
+              "offset_expression": "2",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x == 5 || y == 5",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "ChoiceCondition",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "ChoiceCondition"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "field",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Field",
+              "type": {
+                "module_file": "testdata/condition.emb",
+                "object_path": [
+                  "ChoiceCondition",
+                  "Field"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": "Field",
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "y",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": 8,
+              "offset_expression": "2",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xyc",
+              "abbreviation": null,
+              "bit_offset": 24,
+              "bit_size": 8,
+              "offset_expression": "3",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "(field == Field.USE_X ? x : y) == 5",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "Field",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "ChoiceCondition",
+              "Field"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": false,
+          "maximum_bits": 64,
+          "members": [
+            {
+              "name": "USE_X",
+              "value": 1,
+              "documentation": ""
+            },
+            {
+              "name": "USE_Y",
+              "value": 2,
+              "documentation": ""
+            }
+          ]
+        },
+        {
+          "name": "ContainsBits",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "ContainsBits"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 8,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "has_top",
+              "abbreviation": null,
+              "bit_offset": 7,
+              "bit_size": 1,
+              "offset_expression": "7",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "has_bottom",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 1,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "ContainsContainsBits",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "ContainsContainsBits"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "condition",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "ContainsBits",
+              "type": {
+                "module_file": "testdata/condition.emb",
+                "object_path": [
+                  "ContainsBits"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "top",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "condition.has_top == 1",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "ConditionalInline",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "ConditionalInline"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "payload_id",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "type_0",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 24,
+              "offset_expression": "1",
+              "size_expression": "3",
+              "alignment": null,
+              "type_name": "Type0",
+              "type": {
+                "module_file": "testdata/condition.emb",
+                "object_path": [
+                  "ConditionalInline",
+                  "Type0"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "payload_id == 0",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "type_1",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 24,
+              "offset_expression": "1",
+              "size_expression": "3",
+              "alignment": null,
+              "type_name": "Type1",
+              "type": {
+                "module_file": "testdata/condition.emb",
+                "object_path": [
+                  "ConditionalInline",
+                  "Type1"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "payload_id == 1",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "Type0",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "ConditionalInline",
+              "Type0"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 24,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "a",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "b",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "c",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": 8,
+              "offset_expression": "2",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "Type1",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "ConditionalInline",
+              "Type1"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 24,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "a",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "b",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "c",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": 8,
+              "offset_expression": "2",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "ConditionalAnonymous",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "ConditionalAnonymous"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "low",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 1,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "x > 10",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "mid",
+              "abbreviation": null,
+              "bit_offset": 11,
+              "bit_size": 2,
+              "offset_expression": "3",
+              "size_expression": "2",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "x > 10 && low == 1",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "high",
+              "abbreviation": null,
+              "bit_offset": 15,
+              "bit_size": 1,
+              "offset_expression": "7",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "x > 10",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "ConditionalOnFlag",
+          "canonical_name": {
+            "module_file": "testdata/condition.emb",
+            "object_path": [
+              "ConditionalOnFlag"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "enabled",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 1,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "value",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "enabled",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        }
+      ]
+    }
+  ]
+}
