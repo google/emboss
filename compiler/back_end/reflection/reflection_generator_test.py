@@ -111,6 +111,31 @@ class TypeTest(unittest.TestCase):
         self.assertEqual(32, types["Foo"]["bit_size"])
         self.assertEqual(3, types["Bar"]["bit_size"])
 
+    def test_reports_size_bounds_of_a_dynamically_sized_structure(self):
+        # A dynamically-sized structure has no one size, but the compiler knows
+        # the range, and that is what a consumer can use instead.
+        types = _types(
+            _reflect(
+                "struct Foo:\n"
+                "  0 [+1]     UInt      size\n"
+                "  1 [+size]  UInt:8[]  payload\n"
+            )
+        )
+        self.assertIsNone(types["Foo"]["bit_size"])
+        self.assertEqual(8, types["Foo"]["min_bit_size"])
+        self.assertEqual(2048, types["Foo"]["max_bit_size"])
+
+    def test_reports_equal_size_bounds_for_a_fixed_size_structure(self):
+        types = _types(_reflect("struct Foo:\n  0 [+4]  UInt  x\n"))
+        self.assertEqual(
+            (32, 32, 32),
+            (
+                types["Foo"]["bit_size"],
+                types["Foo"]["min_bit_size"],
+                types["Foo"]["max_bit_size"],
+            ),
+        )
+
     def test_reports_no_bit_size_for_a_dynamically_sized_structure(self):
         types = _types(
             _reflect(

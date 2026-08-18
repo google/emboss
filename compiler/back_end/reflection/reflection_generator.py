@@ -146,8 +146,11 @@ def _enum_reflection(type_definition):
 def _structure_reflection(type_definition, ir):
     fields = []
     _add_physical_fields(type_definition, 0, None, ir, fields)
+    bit_size, min_bit_size, max_bit_size = _sizes_of_structure(type_definition)
     return {
-        "bit_size": _bit_size_of_structure(type_definition),
+        "bit_size": bit_size,
+        "min_bit_size": min_bit_size,
+        "max_bit_size": max_bit_size,
         "byte_order": _byte_order_of_structure(type_definition),
         "parameters": [
             _parameter_reflection(parameter)
@@ -169,12 +172,15 @@ def _parameter_reflection(parameter):
     }
 
 
-def _bit_size_of_structure(type_definition):
-    """The structure's fixed size in bits, or None if it is not fixed.
+def _sizes_of_structure(type_definition):
+    """A structure's exact, minimum, and maximum sizes, in bits.
 
-    The compiler already computed this: it synthesizes a `$size_in_bytes` (or
-    `$size_in_bits`, in a `bits`) virtual field whose value folds to a constant
-    exactly when the structure has a fixed size.
+    The compiler already computed all three: it synthesizes a `$size_in_bytes`
+    (or `$size_in_bits`, in a `bits`) virtual field, whose value folds to a
+    constant exactly when the structure is fixed-size, and whose computed bounds
+    hold either way.  A dynamically-sized structure has a null exact size and
+    the bounds to offer instead; a bound the compiler could not establish is
+    itself null.
     """
     unit = int(type_definition.addressable_unit)
     names = {
@@ -182,10 +188,23 @@ def _bit_size_of_structure(type_definition):
         ir_data.AddressableUnit.BYTE: "$size_in_bytes",
     }
     for field in type_definition.structure.field:
-        if field.name.name.text == names[type_definition.addressable_unit]:
-            size = ir_util.constant_value(field.read_transform)
-            return None if size is None else size * unit
-    return None
+        if field.name.name.text != names[type_definition.addressable_unit]:
+            continue
+        size = ir_util.constant_value(field.read_transform)
+        bounds = field.read_transform.type.integer
+        return (
+            None if size is None else size * unit,
+            _scale_bound(bounds.minimum_value, unit),
+            _scale_bound(bounds.maximum_value, unit),
+        )
+    return None, None, None
+
+
+def _scale_bound(bound, unit):
+    """One end of an integer expression's range, in bits, or None if unbounded."""
+    if bound is None or bound.endswith("infinity"):
+        return None
+    return int(bound) * unit
 
 
 def _byte_order_of_structure(type_definition):
