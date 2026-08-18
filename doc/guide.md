@@ -343,7 +343,13 @@ The `-I` option adds a directory to the *include path*.  The input file -- in
 this case, `bogonel.emb` -- must be found somewhere on the include path.
 
 The `--generate` option specifies which back end to use; `cc` is the C++ back
-end.
+end.  Passing `ir` instead writes out the compiler's own intermediate
+representation as JSON, which is the input format that back ends consume:
+
+```
+embossc -I src --generate ir --output-path generated bogonel.emb
+```
+
 
 The `--output-path` option specifies where the generated file should be placed.
 Note that the output path will include all of the path components of the input
