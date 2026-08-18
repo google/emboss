@@ -1,0 +1,232 @@
+{
+  "modules": [
+    {
+      "source_file_name": "testdata/nested_structure.emb",
+      "documentation": "",
+      "types": [
+        {
+          "name": "Container",
+          "canonical_name": {
+            "module_file": "testdata/nested_structure.emb",
+            "object_path": [
+              "Container"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 160,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "weight",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "important_box",
+              "abbreviation": null,
+              "bit_offset": 32,
+              "bit_size": 64,
+              "offset_expression": "4",
+              "size_expression": "8",
+              "alignment": null,
+              "type_name": "Box",
+              "type": {
+                "module_file": "testdata/nested_structure.emb",
+                "object_path": [
+                  "Box"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "other_box",
+              "abbreviation": null,
+              "bit_offset": 96,
+              "bit_size": 64,
+              "offset_expression": "12",
+              "size_expression": "8",
+              "alignment": null,
+              "type_name": "Box",
+              "type": {
+                "module_file": "testdata/nested_structure.emb",
+                "object_path": [
+                  "Box"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "Box",
+          "canonical_name": {
+            "module_file": "testdata/nested_structure.emb",
+            "object_path": [
+              "Box"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 64,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "id",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "count",
+              "abbreviation": null,
+              "bit_offset": 32,
+              "bit_size": 32,
+              "offset_expression": "4",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "Truck",
+          "canonical_name": {
+            "module_file": "testdata/nested_structure.emb",
+            "object_path": [
+              "Truck"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 352,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "id",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "cargo",
+              "abbreviation": null,
+              "bit_offset": 32,
+              "bit_size": 320,
+              "offset_expression": "4",
+              "size_expression": "40",
+              "alignment": null,
+              "type_name": "Container",
+              "type": {
+                "module_file": "testdata/nested_structure.emb",
+                "object_path": [
+                  "Container"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": true,
+              "array_element_count": 2,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        }
+      ]
+    }
+  ]
+}

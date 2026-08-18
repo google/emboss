@@ -1,0 +1,1152 @@
+{
+  "modules": [
+    {
+      "source_file_name": "testdata/parameters.emb",
+      "documentation": "",
+      "types": [
+        {
+          "name": "Product",
+          "canonical_name": {
+            "module_file": "testdata/parameters.emb",
+            "object_path": [
+              "Product"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": false,
+          "maximum_bits": 64,
+          "members": [
+            {
+              "name": "VERSION_1",
+              "value": 0,
+              "documentation": ""
+            },
+            {
+              "name": "VERSION_2",
+              "value": 10,
+              "documentation": ""
+            },
+            {
+              "name": "VERSION_X",
+              "value": 23,
+              "documentation": ""
+            }
+          ]
+        },
+        {
+          "name": "MessageId",
+          "canonical_name": {
+            "module_file": "testdata/parameters.emb",
+            "object_path": [
+              "MessageId"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": false,
+          "maximum_bits": 64,
+          "members": [
+            {
+              "name": "AXIS",
+              "value": 0,
+              "documentation": ""
+            },
+            {
+              "name": "CONFIG",
+              "value": 1,
+              "documentation": ""
+            }
+          ]
+        },
+        {
+          "name": "MultiVersion",
+          "canonical_name": {
+            "module_file": "testdata/parameters.emb",
+            "object_path": [
+              "MultiVersion"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [
+            {
+              "name": "product",
+              "type": "enumeration",
+              "physical_type_name": "Product"
+            }
+          ],
+          "fields": [
+            {
+              "name": "message_id",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "MessageId",
+              "type": {
+                "module_file": "testdata/parameters.emb",
+                "object_path": [
+                  "MessageId"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": "MessageId",
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "axes",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 96,
+              "offset_expression": "1",
+              "size_expression": "12",
+              "alignment": null,
+              "type_name": "Axes",
+              "type": {
+                "module_file": "testdata/parameters.emb",
+                "object_path": [
+                  "Axes"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "message_id == MessageId.AXIS",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "config",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 32,
+              "offset_expression": "1",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "Config",
+              "type": {
+                "module_file": "testdata/parameters.emb",
+                "object_path": [
+                  "Config"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "message_id == MessageId.CONFIG",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "config_vx",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 64,
+              "offset_expression": "1",
+              "size_expression": "8",
+              "alignment": null,
+              "type_name": "ConfigVX",
+              "type": {
+                "module_file": "testdata/parameters.emb",
+                "object_path": [
+                  "ConfigVX"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "product == Product.VERSION_X && message_id == MessageId.CONFIG",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "Axes",
+          "canonical_name": {
+            "module_file": "testdata/parameters.emb",
+            "object_path": [
+              "Axes"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": null,
+          "parameters": [
+            {
+              "name": "axes",
+              "type": "integer",
+              "physical_type_name": "UInt"
+            }
+          ],
+          "fields": [
+            {
+              "name": "values",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": null,
+              "offset_expression": "0",
+              "size_expression": "axes * 4",
+              "alignment": null,
+              "type_name": "Axis",
+              "type": {
+                "module_file": "testdata/parameters.emb",
+                "object_path": [
+                  "Axis"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": true,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "Axis",
+              "type": {
+                "module_file": "testdata/parameters.emb",
+                "object_path": [
+                  "Axis"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "axes > 0",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "y",
+              "abbreviation": null,
+              "bit_offset": 32,
+              "bit_size": 32,
+              "offset_expression": "4",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "Axis",
+              "type": {
+                "module_file": "testdata/parameters.emb",
+                "object_path": [
+                  "Axis"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "axes > 1",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "z",
+              "abbreviation": null,
+              "bit_offset": 64,
+              "bit_size": 32,
+              "offset_expression": "8",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "Axis",
+              "type": {
+                "module_file": "testdata/parameters.emb",
+                "object_path": [
+                  "Axis"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "axes > 2",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "axis_count_plus_one",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "axes + 1",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "AxisPair",
+          "canonical_name": {
+            "module_file": "testdata/parameters.emb",
+            "object_path": [
+              "AxisPair"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 64,
+          "byte_order": null,
+          "parameters": [
+            {
+              "name": "axis_type_a_parameter",
+              "type": "enumeration",
+              "physical_type_name": "AxisType"
+            },
+            {
+              "name": "axis_type_b_parameter",
+              "type": "enumeration",
+              "physical_type_name": "AxisType"
+            }
+          ],
+          "fields": [
+            {
+              "name": "axis_a",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "Axis",
+              "type": {
+                "module_file": "testdata/parameters.emb",
+                "object_path": [
+                  "Axis"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "axis_b",
+              "abbreviation": null,
+              "bit_offset": 32,
+              "bit_size": 32,
+              "offset_expression": "4",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "Axis",
+              "type": {
+                "module_file": "testdata/parameters.emb",
+                "object_path": [
+                  "Axis"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "axis_type_a",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "axis_type_a_parameter",
+              "type": "enumeration",
+              "is_signed": true,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "axis_type_b",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "axis_type_b_parameter",
+              "type": "enumeration",
+              "is_signed": true,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "AxesEnvelope",
+          "canonical_name": {
+            "module_file": "testdata/parameters.emb",
+            "object_path": [
+              "AxesEnvelope"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "axis_count",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "axes",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": null,
+              "offset_expression": "1",
+              "size_expression": "axis_count * 4",
+              "alignment": null,
+              "type_name": "Axes",
+              "type": {
+                "module_file": "testdata/parameters.emb",
+                "object_path": [
+                  "Axes"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "AxisType",
+          "canonical_name": {
+            "module_file": "testdata/parameters.emb",
+            "object_path": [
+              "AxisType"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": true,
+          "maximum_bits": 64,
+          "members": [
+            {
+              "name": "GENERIC",
+              "value": -1,
+              "documentation": ""
+            },
+            {
+              "name": "X_AXIS",
+              "value": 1,
+              "documentation": ""
+            },
+            {
+              "name": "Y_AXIS",
+              "value": 2,
+              "documentation": ""
+            },
+            {
+              "name": "Z_AXIS",
+              "value": 3,
+              "documentation": ""
+            }
+          ]
+        },
+        {
+          "name": "Axis",
+          "canonical_name": {
+            "module_file": "testdata/parameters.emb",
+            "object_path": [
+              "Axis"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [
+            {
+              "name": "axis_type_parameter",
+              "type": "enumeration",
+              "physical_type_name": "AxisType"
+            }
+          ],
+          "fields": [
+            {
+              "name": "value",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "axis_type == AxisType.X_AXIS",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "y",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "axis_type == AxisType.Y_AXIS",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "z",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "axis_type == AxisType.Z_AXIS",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "axis_type",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "axis_type_parameter",
+              "type": "enumeration",
+              "is_signed": true,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "Config",
+          "canonical_name": {
+            "module_file": "testdata/parameters.emb",
+            "object_path": [
+              "Config"
+            ]
+          },
+          "kind": "bits",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 32,
+          "byte_order": null,
+          "parameters": [],
+          "fields": [
+            {
+              "name": "power",
+              "abbreviation": null,
+              "bit_offset": 31,
+              "bit_size": 1,
+              "offset_expression": "31",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "ConfigVX",
+          "canonical_name": {
+            "module_file": "testdata/parameters.emb",
+            "object_path": [
+              "ConfigVX"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 64,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "power",
+              "abbreviation": null,
+              "bit_offset": 31,
+              "bit_size": 1,
+              "offset_expression": "31",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "gain",
+              "abbreviation": null,
+              "bit_offset": 32,
+              "bit_size": 32,
+              "offset_expression": "4",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "StructWithUnusedParameter",
+          "canonical_name": {
+            "module_file": "testdata/parameters.emb",
+            "object_path": [
+              "StructWithUnusedParameter"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 8,
+          "byte_order": "LittleEndian",
+          "parameters": [
+            {
+              "name": "x",
+              "type": "integer",
+              "physical_type_name": "UInt"
+            }
+          ],
+          "fields": [
+            {
+              "name": "y",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "StructContainingStructWithUnusedParameter",
+          "canonical_name": {
+            "module_file": "testdata/parameters.emb",
+            "object_path": [
+              "StructContainingStructWithUnusedParameter"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 16,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "swup",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "StructWithUnusedParameter",
+              "type": {
+                "module_file": "testdata/parameters.emb",
+                "object_path": [
+                  "StructWithUnusedParameter"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "BiasedValue",
+          "canonical_name": {
+            "module_file": "testdata/parameters.emb",
+            "object_path": [
+              "BiasedValue"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 8,
+          "byte_order": "LittleEndian",
+          "parameters": [
+            {
+              "name": "bias",
+              "type": "integer",
+              "physical_type_name": "UInt"
+            }
+          ],
+          "fields": [
+            {
+              "name": "raw_value",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "value",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "raw_value + bias",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "VirtualFirstFieldWithParam",
+          "canonical_name": {
+            "module_file": "testdata/parameters.emb",
+            "object_path": [
+              "VirtualFirstFieldWithParam"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 8,
+          "byte_order": "LittleEndian",
+          "parameters": [
+            {
+              "name": "param",
+              "type": "integer",
+              "physical_type_name": "UInt"
+            }
+          ],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "value",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "x",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": false,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "ConstVirtualFirstFieldWithParam",
+          "canonical_name": {
+            "module_file": "testdata/parameters.emb",
+            "object_path": [
+              "ConstVirtualFirstFieldWithParam"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 8,
+          "byte_order": "LittleEndian",
+          "parameters": [
+            {
+              "name": "param",
+              "type": "integer",
+              "physical_type_name": "UInt"
+            }
+          ],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "value",
+              "abbreviation": null,
+              "value": 10,
+              "value_expression": "10",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "SizedArrayOfBiasedValues",
+          "canonical_name": {
+            "module_file": "testdata/parameters.emb",
+            "object_path": [
+              "SizedArrayOfBiasedValues"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "element_count",
+              "abbreviation": "ec",
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "bias",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "values",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": null,
+              "offset_expression": "2",
+              "size_expression": "ec",
+              "alignment": null,
+              "type_name": "BiasedValue",
+              "type": {
+                "module_file": "testdata/parameters.emb",
+                "object_path": [
+                  "BiasedValue"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": true,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        }
+      ]
+    }
+  ]
+}

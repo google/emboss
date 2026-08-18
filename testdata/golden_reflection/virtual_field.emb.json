@@ -1,0 +1,1611 @@
+{
+  "modules": [
+    {
+      "source_file_name": "testdata/virtual_field.emb",
+      "documentation": "Tests for virtual fields:\n\n*   `let` constructs\n*   TODO(bolms@): `transform` annotations\n*   TODO(bolms@): `read` and `write` annotations",
+      "types": [
+        {
+          "name": "StructureWithConstants",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "StructureWithConstants"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 32,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "value",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "ten",
+              "abbreviation": null,
+              "value": 10,
+              "value_expression": "10",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "twenty",
+              "abbreviation": null,
+              "value": 20,
+              "value_expression": "20",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "four_billion",
+              "abbreviation": null,
+              "value": 4000000000,
+              "value_expression": "4000000000",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "ten_billion",
+              "abbreviation": null,
+              "value": 10000000000,
+              "value_expression": "10000000000",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "minus_ten_billion",
+              "abbreviation": null,
+              "value": -10000000000,
+              "value_expression": "-10000000000",
+              "type": "integer",
+              "is_signed": true,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "alias_of_value",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "value",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": false,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "alias_of_alias_of_value",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "alias_of_value",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": false,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "alias_of_ten",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "ten",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "alias_of_alias_of_ten",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "alias_of_ten",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "StructureWithComputedValues",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "StructureWithComputedValues"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 64,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "value",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "value2",
+              "abbreviation": null,
+              "bit_offset": 32,
+              "bit_size": 32,
+              "offset_expression": "4",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "Int",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Int"
+                ]
+              },
+              "is_signed": true,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "doubled",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "value * 2",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "plus_ten",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "value + 10",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": false,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "signed_doubled",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "value2 * 2",
+              "type": "integer",
+              "is_signed": true,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "signed_plus_ten",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "value2 + 10",
+              "type": "integer",
+              "is_signed": true,
+              "is_read_only": false,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "product",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "value * value2",
+              "type": "integer",
+              "is_signed": true,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "StructureWithConditionalValue",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "StructureWithConditionalValue"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 32,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "two_x",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "x * 2",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "x < 2147483648",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "x_plus_one",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "x + 1",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": false,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "StructureWithValueInCondition",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "StructureWithValueInCondition"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "if_two_x_lt_100",
+              "abbreviation": null,
+              "bit_offset": 32,
+              "bit_size": 32,
+              "offset_expression": "4",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "two_x < 100",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "two_x",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "x * 2",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "StructureWithValuesInLocation",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "StructureWithValuesInLocation"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "offset_two_x",
+              "abbreviation": null,
+              "bit_offset": null,
+              "bit_size": 32,
+              "offset_expression": "two_x",
+              "size_expression": "4",
+              "alignment": {
+                "modulus": 16,
+                "remainder": 0
+              },
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "size_two_x",
+              "abbreviation": null,
+              "bit_offset": 32,
+              "bit_size": 32,
+              "offset_expression": "4",
+              "size_expression": "two_x",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "two_x",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "x * 2",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "StructureWithBoolValue",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "StructureWithBoolValue"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 32,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "x_is_ten",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "x == 10",
+              "type": "boolean",
+              "is_signed": null,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "StructureWithEnumValue",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "StructureWithEnumValue"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 32,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "x_size",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "x < 100 ? Category.SMALL : Category.LARGE",
+              "type": "enumeration",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "Category",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "StructureWithEnumValue",
+              "Category"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": false,
+          "maximum_bits": 64,
+          "members": [
+            {
+              "name": "SMALL",
+              "value": 1,
+              "documentation": ""
+            },
+            {
+              "name": "LARGE",
+              "value": 2,
+              "documentation": ""
+            }
+          ]
+        },
+        {
+          "name": "StructureWithBitsWithValue",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "StructureWithBitsWithValue"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 32,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "b",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "BitsWithValue",
+              "type": {
+                "module_file": "testdata/virtual_field.emb",
+                "object_path": [
+                  "BitsWithValue"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "alias_of_b_sum",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "b.sum",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "alias_of_b_a",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "b.a",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": false,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "BitsWithValue",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "BitsWithValue"
+            ]
+          },
+          "kind": "bits",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 32,
+          "byte_order": null,
+          "parameters": [],
+          "fields": [
+            {
+              "name": "a",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 16,
+              "offset_expression": "0",
+              "size_expression": "16",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "b",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": 16,
+              "offset_expression": "16",
+              "size_expression": "16",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "sum",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "a + b",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "StructureUsingForeignConstants",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "StructureUsingForeignConstants"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 112,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 80,
+              "bit_size": 32,
+              "offset_expression": "StructureWithConstants.ten",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "one_hundred",
+              "abbreviation": null,
+              "value": 100,
+              "value_expression": "StructureWithConstants.twenty * 5",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "SubfieldOfAlias",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "SubfieldOfAlias"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 32,
+          "byte_order": null,
+          "parameters": [],
+          "fields": [
+            {
+              "name": "header",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "Header",
+              "type": {
+                "module_file": "testdata/virtual_field.emb",
+                "object_path": [
+                  "SubfieldOfAlias",
+                  "Header"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "h",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "header",
+              "type": "opaque",
+              "is_signed": null,
+              "is_read_only": false,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "size",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "h.size",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": false,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "Header",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "SubfieldOfAlias",
+              "Header"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 32,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "size",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 16,
+              "offset_expression": "0",
+              "size_expression": "2",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "message_id",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": 16,
+              "offset_expression": "2",
+              "size_expression": "2",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "RestrictedAlias",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "RestrictedAlias"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 40,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "a_b",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "BitsWithValue",
+              "type": {
+                "module_file": "testdata/virtual_field.emb",
+                "object_path": [
+                  "BitsWithValue"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "alias_switch",
+              "abbreviation": null,
+              "bit_offset": 32,
+              "bit_size": 8,
+              "offset_expression": "4",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "a_b_alias",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "a_b",
+              "type": "opaque",
+              "is_signed": null,
+              "is_read_only": false,
+              "existence_condition": "alias_switch > 10",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "HasField",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "HasField"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "z",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 16,
+              "offset_expression": "1",
+              "size_expression": "2",
+              "alignment": null,
+              "type_name": "X",
+              "type": {
+                "module_file": "testdata/virtual_field.emb",
+                "object_path": [
+                  "HasField",
+                  "X"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "z > 10",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "y",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "x.y",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": false,
+              "existence_condition": "$present(x.y)",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "x_has_y",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "$present(x.y)",
+              "type": "boolean",
+              "is_signed": null,
+              "is_read_only": true,
+              "existence_condition": "$present(x)",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "X",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "HasField",
+              "X"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "v",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "y",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "v > 10",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "VirtualUnconditionallyUsesConditional",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "VirtualUnconditionallyUsesConditional"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "xc",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "x == 0",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "x_nor_xc",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "x == 0 && xc == 0",
+              "type": "boolean",
+              "is_signed": null,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "UsesSize",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "UsesSize"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 8,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "r",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "R",
+              "type": {
+                "module_file": "testdata/virtual_field.emb",
+                "object_path": [
+                  "UsesSize",
+                  "R"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "r_q_plus_byte_size",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "r.q + $size_in_bytes",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "R",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "UsesSize",
+              "R"
+            ]
+          },
+          "kind": "bits",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 8,
+          "byte_order": null,
+          "parameters": [],
+          "fields": [
+            {
+              "name": "q",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "8",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "q_plus_bit_size",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "q + $size_in_bits",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "UsesExternalSize",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "UsesExternalSize"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": null,
+          "byte_order": null,
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "StructureWithConstants",
+              "type": {
+                "module_file": "testdata/virtual_field.emb",
+                "object_path": [
+                  "StructureWithConstants"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "y",
+              "abbreviation": null,
+              "bit_offset": null,
+              "bit_size": 32,
+              "offset_expression": "x.$size_in_bytes",
+              "size_expression": "StructureWithConstants.$size_in_bytes",
+              "alignment": null,
+              "type_name": "StructureWithConstants",
+              "type": {
+                "module_file": "testdata/virtual_field.emb",
+                "object_path": [
+                  "StructureWithConstants"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "ImplicitWriteBack",
+          "canonical_name": {
+            "module_file": "testdata/virtual_field.emb",
+            "object_path": [
+              "ImplicitWriteBack"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 8,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "x_plus_ten",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "x + 10",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": false,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "ten_plus_x",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "10 + x",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": false,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "x_minus_ten",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "x - 10",
+              "type": "integer",
+              "is_signed": true,
+              "is_read_only": false,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "ten_minus_x",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "10 - x",
+              "type": "integer",
+              "is_signed": true,
+              "is_read_only": false,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "ten_minus_x_plus_ten",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "10 - x + 10",
+              "type": "integer",
+              "is_signed": true,
+              "is_read_only": false,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

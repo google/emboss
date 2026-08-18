@@ -40,10 +40,11 @@ def _parse_args(argv):
     )
     parser.add_argument(
         "--generate",
-        choices=["cc", "ir"],
+        choices=["cc", "ir", "reflection"],
         default="cc",
-        help="""Which back end to use: 'cc' (C++ header) or 'ir' (the compiler's
-                own serialized intermediate representation, as JSON).""",
+        help="""Which back end to use: 'cc' (C++ header), 'reflection' (a JSON
+                description of the module's types), or 'ir' (the compiler's own
+                serialized intermediate representation, as JSON).""",
     )
     parser.add_argument(
         "--output-path",
@@ -53,7 +54,8 @@ def _parse_args(argv):
     parser.add_argument(
         "--output-file",
         help="""File name to be used for the generated output file.  Defaults to
-                input_file suffixed by '.h' (cc) or '.ir' (ir)""",
+                input_file suffixed by '.h' (cc), '.json' (reflection), or
+                '.ir' (ir)""",
     )
     parser.add_argument(
         "--cc-enum-traits",
@@ -84,6 +86,12 @@ def _generate_code_and_log_errors(ir, flags):
             return emboss_codegen_cpp.generate_headers_and_log_errors(
                 ir, flags.color_output, config
             )
+        case "reflection":
+            from compiler.back_end.reflection import (  # pylint:disable=import-outside-toplevel
+                reflection_generator,
+            )
+
+            return reflection_generator.generate_reflection(ir)
         case "ir":
             from compiler.util import (  # pylint:disable=import-outside-toplevel
                 ir_data_utils,
@@ -98,6 +106,8 @@ def _default_file_suffix(generate):
     match generate:
         case "cc":
             return ".h"
+        case "reflection":
+            return ".json"
         case "ir":
             return ".ir"
         case _:
@@ -112,7 +122,7 @@ def _format_code(code, generate):
             )
 
             return emboss_codegen_cpp.format_header(code)
-        case "ir":
+        case "reflection" | "ir":
             return code
         case _:
             raise ValueError(f"Unknown back end: {generate}")

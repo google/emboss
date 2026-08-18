@@ -297,7 +297,9 @@ graph TD
 
 The Emboss compiler is divided into a front end, which does most of the work,
 and back ends, which do language-specific validations and translate the final
-IR to the final output format.  Currently, only a C++ back end exists.
+IR to the final output format.  Currently there is a C++ back end and a
+reflection back end, the latter of which emits a JSON description of the
+module's types rather than code.
 
 The compiler is structured so that the front end and back end can run as
 separate programs, and when building with [Bazel][bazel] they do run
