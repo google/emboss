@@ -40,22 +40,20 @@ def _parse_args(argv):
     )
     parser.add_argument(
         "--generate",
-        nargs=1,
-        choices=["cc"],
+        choices=["cc", "ir"],
         default="cc",
-        help="Which back end to use.  Currently only C++ is supported.",
+        help="""Which back end to use: 'cc' (C++ header) or 'ir' (the compiler's
+                own serialized intermediate representation, as JSON).""",
     )
     parser.add_argument(
         "--output-path",
-        nargs=1,
         default=".",
         help="Prefix path to use for the generated output file.  Defaults to '.'",
     )
     parser.add_argument(
         "--output-file",
-        nargs=1,
         help="""File name to be used for the generated output file.  Defaults to
-                input_file suffixed by '.h'""",
+                input_file suffixed by '.h' (cc) or '.ir' (ir)""",
     )
     parser.add_argument(
         "--cc-enum-traits",
@@ -67,16 +65,66 @@ def _parse_args(argv):
     return parser.parse_args(argv[1:])
 
 
+def _generate_code_and_log_errors(ir, flags):
+    """Runs the back end selected by `--generate`.
+
+    Returns:
+      A tuple of (code, errors), where `code` is the generated text or None, and
+      `errors` is a possibly-empty list of error messages that have already been
+      logged to stderr.
+    """
+    match flags.generate:
+        case "cc":
+            from compiler.back_end.cpp import (  # pylint:disable=import-outside-toplevel
+                emboss_codegen_cpp,
+                header_generator,
+            )
+
+            config = header_generator.Config(include_enum_traits=flags.cc_enum_traits)
+            return emboss_codegen_cpp.generate_headers_and_log_errors(
+                ir, flags.color_output, config
+            )
+        case "ir":
+            from compiler.util import (  # pylint:disable=import-outside-toplevel
+                ir_data_utils,
+            )
+
+            return ir_data_utils.IrDataSerializer(ir).to_json(), []
+        case _:
+            raise ValueError(f"Unknown back end: {flags.generate}")
+
+
+def _default_file_suffix(generate):
+    match generate:
+        case "cc":
+            return ".h"
+        case "ir":
+            return ".ir"
+        case _:
+            raise ValueError(f"Unknown back end: {generate}")
+
+
+def _format_code(code, generate):
+    match generate:
+        case "cc":
+            from compiler.back_end.cpp import (  # pylint:disable=import-outside-toplevel
+                emboss_codegen_cpp,
+            )
+
+            return emboss_codegen_cpp.format_header(code)
+        case "ir":
+            return code
+        case _:
+            raise ValueError(f"Unknown back end: {generate}")
+
+
 def main(argv):
     flags = _parse_args(argv)
     base_path = os.path.dirname(__file__) or "."
     sys.path.append(base_path)
 
-    from compiler.back_end.cpp import ( # pylint:disable=import-outside-toplevel
-    emboss_codegen_cpp, header_generator
-    )
-    from compiler.front_end import ( # pylint:disable=import-outside-toplevel
-    emboss_front_end
+    from compiler.front_end import (  # pylint:disable=import-outside-toplevel
+        emboss_front_end,
     )
 
     ir, _, errors = emboss_front_end.parse_and_log_errors(
@@ -86,24 +134,23 @@ def main(argv):
     if errors:
         return 1
 
-    config = header_generator.Config(include_enum_traits=flags.cc_enum_traits)
-    header, errors = emboss_codegen_cpp.generate_headers_and_log_errors(
-        ir, flags.color_output, config
-    )
+    code, errors = _generate_code_and_log_errors(ir, flags)
 
     if errors:
         return 1
 
     if flags.output_file:
-        output_file = flags.output_file[0]
+        output_file = flags.output_file
     else:
-        output_file = flags.input_file[0] + ".h"
+        output_file = flags.input_file[0] + _default_file_suffix(flags.generate)
 
-    output_filepath = os.path.join(flags.output_path[0], output_file)
-    os.makedirs(os.path.dirname(output_filepath), exist_ok=True)
+    output_filepath = os.path.join(flags.output_path, output_file)
+    output_dir = os.path.dirname(output_filepath)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
 
     with open(output_filepath, "w") as output:
-        output.write(emboss_codegen_cpp.format_header(header))
+        output.write(_format_code(code, flags.generate))
     return 0
 
 
