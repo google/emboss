@@ -16,6 +16,8 @@
           "documentation": "",
           "requires": [],
           "bit_size": 64,
+          "min_bit_size": 64,
+          "max_bit_size": 64,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [

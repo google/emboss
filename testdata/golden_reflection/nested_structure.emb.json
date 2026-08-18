@@ -16,6 +16,8 @@
           "documentation": "",
           "requires": [],
           "bit_size": 160,
+          "min_bit_size": 160,
+          "max_bit_size": 160,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [
@@ -106,6 +108,8 @@
           "documentation": "",
           "requires": [],
           "bit_size": 64,
+          "min_bit_size": 64,
+          "max_bit_size": 64,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [
@@ -172,6 +176,8 @@
           "documentation": "",
           "requires": [],
           "bit_size": 352,
+          "min_bit_size": 352,
+          "max_bit_size": 352,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [

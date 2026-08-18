@@ -16,6 +16,8 @@
           "documentation": "",
           "requires": [],
           "bit_size": null,
+          "min_bit_size": 32,
+          "max_bit_size": 4112,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [
@@ -160,6 +162,8 @@
           "documentation": "",
           "requires": [],
           "bit_size": null,
+          "min_bit_size": 8,
+          "max_bit_size": 30608,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [
@@ -226,6 +230,8 @@
           "documentation": "",
           "requires": [],
           "bit_size": null,
+          "min_bit_size": 32,
+          "max_bit_size": 4080,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [
@@ -394,6 +400,8 @@
           "documentation": "",
           "requires": [],
           "bit_size": null,
+          "min_bit_size": 16,
+          "max_bit_size": 520216,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [
@@ -484,6 +492,8 @@
           "documentation": "",
           "requires": [],
           "bit_size": null,
+          "min_bit_size": 24,
+          "max_bit_size": 2040,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [
@@ -718,6 +728,8 @@
           "documentation": "",
           "requires": [],
           "bit_size": null,
+          "min_bit_size": 8,
+          "max_bit_size": 88,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [
@@ -787,6 +799,8 @@
           "documentation": "",
           "requires": [],
           "bit_size": null,
+          "min_bit_size": 8,
+          "max_bit_size": 2048,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [
@@ -910,6 +924,8 @@
           "documentation": "",
           "requires": [],
           "bit_size": 40,
+          "min_bit_size": 40,
+          "max_bit_size": 40,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [
@@ -1000,6 +1016,8 @@
           "documentation": "",
           "requires": [],
           "bit_size": null,
+          "min_bit_size": 80,
+          "max_bit_size": 2056,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [
@@ -1120,6 +1138,8 @@
           "documentation": "",
           "requires": [],
           "bit_size": null,
+          "min_bit_size": 40,
+          "max_bit_size": 2056,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [
@@ -1189,6 +1209,8 @@
           "documentation": "",
           "requires": [],
           "bit_size": null,
+          "min_bit_size": 2048,
+          "max_bit_size": 2048,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [

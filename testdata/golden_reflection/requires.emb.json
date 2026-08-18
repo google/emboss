@@ -18,6 +18,8 @@
             "zero_through_nine <= ten_through_twenty - 10"
           ],
           "bit_size": 24,
+          "min_bit_size": 24,
+          "max_bit_size": 24,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [
@@ -159,6 +161,8 @@
             "a || b"
           ],
           "bit_size": 8,
+          "min_bit_size": 8,
+          "max_bit_size": 8,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [
@@ -308,6 +312,8 @@
             "a == Enum.EN0 || b == Enum.EN0"
           ],
           "bit_size": 24,
+          "min_bit_size": 24,
+          "max_bit_size": 24,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [
@@ -471,6 +477,8 @@
             "a || b"
           ],
           "bit_size": 8,
+          "min_bit_size": 8,
+          "max_bit_size": 8,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [
@@ -587,6 +595,8 @@
           "documentation": "",
           "requires": [],
           "bit_size": 32,
+          "min_bit_size": 32,
+          "max_bit_size": 32,
           "byte_order": null,
           "parameters": [],
           "fields": [
@@ -631,6 +641,8 @@
           "documentation": "",
           "requires": [],
           "bit_size": 8,
+          "min_bit_size": 8,
+          "max_bit_size": 8,
           "byte_order": "LittleEndian",
           "parameters": [],
           "fields": [
