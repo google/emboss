@@ -1,0 +1,681 @@
+{
+  "modules": [
+    {
+      "source_file_name": "testdata/requires.emb",
+      "documentation": "",
+      "types": [
+        {
+          "name": "RequiresIntegers",
+          "canonical_name": {
+            "module_file": "testdata/requires.emb",
+            "object_path": [
+              "RequiresIntegers"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [
+            "zero_through_nine <= ten_through_twenty - 10"
+          ],
+          "bit_size": 24,
+          "min_bit_size": 24,
+          "max_bit_size": 24,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "zero_through_nine",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": [
+                "0 <= this && this <= 9"
+              ]
+            },
+            {
+              "name": "ten_through_twenty",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Int",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Int"
+                ]
+              },
+              "is_signed": true,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": [
+                "10 <= this && this <= 20"
+              ]
+            },
+            {
+              "name": "disjoint",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": 8,
+              "offset_expression": "2",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": [
+                "(0 <= this && this <= 5) || (15 <= this && this <= 20)"
+              ]
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "ztn_plus_ttt",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "zero_through_nine + ten_through_twenty",
+              "type": "integer",
+              "is_signed": true,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": [
+                "10 <= this && this <= 19"
+              ]
+            },
+            {
+              "name": "alias_of_zero_through_nine",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "zero_through_nine",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": false,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": [
+                "2 <= this && this <= 7"
+              ]
+            },
+            {
+              "name": "zero_through_nine_plus_five",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "zero_through_nine + 5",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": false,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": [
+                "5 <= this && this <= 10"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "RequiresBools",
+          "canonical_name": {
+            "module_file": "testdata/requires.emb",
+            "object_path": [
+              "RequiresBools"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [
+            "a || b"
+          ],
+          "bit_size": 8,
+          "min_bit_size": 8,
+          "max_bit_size": 8,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "a",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 1,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "b",
+              "abbreviation": null,
+              "bit_offset": 1,
+              "bit_size": 1,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "must_be_true",
+              "abbreviation": null,
+              "bit_offset": 2,
+              "bit_size": 1,
+              "offset_expression": "2",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": [
+                "this"
+              ]
+            },
+            {
+              "name": "must_be_false",
+              "abbreviation": null,
+              "bit_offset": 3,
+              "bit_size": 1,
+              "offset_expression": "3",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": [
+                "this == false"
+              ]
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "b_must_be_false",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "b == false",
+              "type": "boolean",
+              "is_signed": null,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": [
+                "this"
+              ]
+            },
+            {
+              "name": "alias_of_a_must_be_true",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "a",
+              "type": "boolean",
+              "is_signed": null,
+              "is_read_only": false,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": [
+                "this"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "RequiresEnums",
+          "canonical_name": {
+            "module_file": "testdata/requires.emb",
+            "object_path": [
+              "RequiresEnums"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [
+            "a == Enum.EN0 || b == Enum.EN0"
+          ],
+          "bit_size": 24,
+          "min_bit_size": 24,
+          "max_bit_size": 24,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "a",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Enum",
+              "type": {
+                "module_file": "testdata/requires.emb",
+                "object_path": [
+                  "RequiresEnums",
+                  "Enum"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": "Enum",
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "b",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 8,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Enum",
+              "type": {
+                "module_file": "testdata/requires.emb",
+                "object_path": [
+                  "RequiresEnums",
+                  "Enum"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": "Enum",
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "c",
+              "abbreviation": null,
+              "bit_offset": 16,
+              "bit_size": 8,
+              "offset_expression": "2",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Enum",
+              "type": {
+                "module_file": "testdata/requires.emb",
+                "object_path": [
+                  "RequiresEnums",
+                  "Enum"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": "Enum",
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": [
+                "this == Enum.EN0 || this == Enum.EN1"
+              ]
+            }
+          ],
+          "virtuals": [
+            {
+              "name": "filtered_a",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "a == Enum.EN0 ? Enum.EN1 : a",
+              "type": "enumeration",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": [
+                "this == Enum.EN1"
+              ]
+            },
+            {
+              "name": "alias_of_a",
+              "abbreviation": null,
+              "value": null,
+              "value_expression": "a",
+              "type": "enumeration",
+              "is_signed": false,
+              "is_read_only": false,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": [
+                "this == Enum.EN1"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Enum",
+          "canonical_name": {
+            "module_file": "testdata/requires.emb",
+            "object_path": [
+              "RequiresEnums",
+              "Enum"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": false,
+          "maximum_bits": 64,
+          "members": [
+            {
+              "name": "EN0",
+              "value": 0,
+              "documentation": ""
+            },
+            {
+              "name": "EN1",
+              "value": 1,
+              "documentation": ""
+            },
+            {
+              "name": "EN2",
+              "value": 2,
+              "documentation": ""
+            },
+            {
+              "name": "EN3",
+              "value": 3,
+              "documentation": ""
+            }
+          ]
+        },
+        {
+          "name": "RequiresWithOptionalFields",
+          "canonical_name": {
+            "module_file": "testdata/requires.emb",
+            "object_path": [
+              "RequiresWithOptionalFields"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [
+            "a || b"
+          ],
+          "bit_size": 8,
+          "min_bit_size": 8,
+          "max_bit_size": 8,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "a",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 1,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "b_exists",
+              "abbreviation": null,
+              "bit_offset": 1,
+              "bit_size": 1,
+              "offset_expression": "1",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "b",
+              "abbreviation": null,
+              "bit_offset": 2,
+              "bit_size": 1,
+              "offset_expression": "2",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "b_exists",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "b_true",
+              "abbreviation": null,
+              "bit_offset": 2,
+              "bit_size": 1,
+              "offset_expression": "2",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "b_exists",
+              "documentation": "",
+              "requires": [
+                "this"
+              ]
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "RequiresInArrayElements",
+          "canonical_name": {
+            "module_file": "testdata/requires.emb",
+            "object_path": [
+              "RequiresInArrayElements"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 32,
+          "min_bit_size": 32,
+          "max_bit_size": 32,
+          "byte_order": null,
+          "parameters": [],
+          "fields": [
+            {
+              "name": "xs",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 32,
+              "offset_expression": "0",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "Element",
+              "type": {
+                "module_file": "testdata/requires.emb",
+                "object_path": [
+                  "RequiresInArrayElements",
+                  "Element"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": true,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "Element",
+          "canonical_name": {
+            "module_file": "testdata/requires.emb",
+            "object_path": [
+              "RequiresInArrayElements",
+              "Element"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 8,
+          "min_bit_size": 8,
+          "max_bit_size": 8,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "x",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": [
+                "0 <= this && this <= 10"
+              ]
+            }
+          ],
+          "virtuals": []
+        }
+      ]
+    }
+  ]
+}

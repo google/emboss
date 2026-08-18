@@ -63,6 +63,22 @@ py_library(
 )
 
 py_library(
+    name = "expression_printer",
+    srcs = ["expression_printer.py"],
+    deps = [":ir_data"],
+)
+
+py_test(
+    name = "expression_printer_test",
+    srcs = ["expression_printer_test.py"],
+    deps = [
+        ":expression_parser",
+        ":expression_printer",
+        ":ir_data",
+    ],
+)
+
+py_library(
     name = "ir_util",
     srcs = ["ir_util.py"],
     deps = [":ir_data"],

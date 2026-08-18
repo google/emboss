@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Regenerates testdata/golden_cpp/*.h files.
+"""Regenerates testdata/golden_cpp/*.h and testdata/golden_reflection/*.json.
 
 Run from the repo root. Mirrors the cpp_golden_test list in
-compiler/back_end/cpp/BUILD.
+compiler/back_end/cpp/BUILD and the reflection_golden_test list in
+compiler/back_end/reflection/BUILD.
 """
 
 import os
@@ -49,6 +50,19 @@ GOLDENS = [
     ("many_conditionals.emb", "many_conditionals.emb.h"),
 ]
 
+# All reflection_golden_test entries from compiler/back_end/reflection/BUILD.
+REFLECTION_GOLDENS = [
+    ("anonymous_bits.emb", "anonymous_bits.emb.json"),
+    ("bits.emb", "bits.emb.json"),
+    ("condition.emb", "condition.emb.json"),
+    ("dynamic_size.emb", "dynamic_size.emb.json"),
+    ("enum.emb", "enum.emb.json"),
+    ("nested_structure.emb", "nested_structure.emb.json"),
+    ("parameters.emb", "parameters.emb.json"),
+    ("requires.emb", "requires.emb.json"),
+    ("virtual_field.emb", "virtual_field.emb.json"),
+]
+
 
 # imported_genfiles.emb is produced by a genrule from imported.emb.
 # Reproduce that sed transformation so the golden stays in sync.
@@ -69,33 +83,46 @@ def _no_enum_traits_args(emb_file):
     return []
 
 
+def _regenerate(generate, goldens, out_dir):
+    """Runs embossc over `goldens`, returning the list of failures."""
+    embossc = os.path.join(REPO, "embossc")
+    failures = []
+    for emb, golden in goldens:
+        emb_path = os.path.join("testdata", emb)
+        cmd = (
+            [
+                embossc,
+                "--generate=" + generate,
+                "--import-dir=.",
+                "--import-dir=testdata",
+                "--output-file=" + golden,
+                "--output-path=" + out_dir,
+            ]
+            + _no_enum_traits_args(emb)
+            + [emb_path]
+        )
+        result = subprocess.run(cmd, cwd=REPO, capture_output=True, text=True)
+        if result.returncode != 0:
+            failures.append((emb, result.stderr))
+            print(f"FAIL {generate} {emb}\n{result.stderr}", file=sys.stderr)
+        else:
+            print(f"OK   {generate} {emb}")
+    return failures
+
+
 def main():
     _ensure_imported_genfiles()
     try:
-        embossc = os.path.join(REPO, "embossc")
-        out_dir = os.path.join(REPO, "testdata", "golden_cpp")
-        failures = []
-        for emb, golden in GOLDENS + [
-            ("imported_genfiles.emb", "imported_genfiles.emb.h")
-        ]:
-            emb_path = os.path.join("testdata", emb)
-            cmd = (
-                [
-                    embossc,
-                    "--import-dir=.",
-                    "--import-dir=testdata",
-                    "--output-file=" + golden,
-                    "--output-path=" + out_dir,
-                ]
-                + _no_enum_traits_args(emb)
-                + [emb_path]
-            )
-            result = subprocess.run(cmd, cwd=REPO, capture_output=True, text=True)
-            if result.returncode != 0:
-                failures.append((emb, result.stderr))
-                print(f"FAIL {emb}\n{result.stderr}", file=sys.stderr)
-            else:
-                print(f"OK   {emb}")
+        failures = _regenerate(
+            "cc",
+            GOLDENS + [("imported_genfiles.emb", "imported_genfiles.emb.h")],
+            os.path.join(REPO, "testdata", "golden_cpp"),
+        )
+        failures += _regenerate(
+            "reflection",
+            REFLECTION_GOLDENS,
+            os.path.join(REPO, "testdata", "golden_reflection"),
+        )
         if failures:
             sys.exit(1)
     finally:
