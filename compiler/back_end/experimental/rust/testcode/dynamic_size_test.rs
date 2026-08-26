@@ -13,7 +13,7 @@
 // limitations under the License.
 
 pub use testdata_dynamic_size_emb::*;
-use emboss_runtime::{CheckComplete, InfallibleRead};
+use emboss_runtime::{CheckComplete, CheckOk, InfallibleRead};
 
 #[test]
 fn test_chained_size_in_order() {
@@ -71,20 +71,77 @@ fn test_chained_size_writer_typestates() {
     let mut bytes = [0x01, 0x02, 0x03, 0x04];
     let writer = ChainedSizeMut::new(&mut bytes[..])
         .into_writer()
-        .check_complete()
-        .expect("complete writer");
+        .check_ok()
+        .expect("ok writer");
 
-    // Mutating `d` (non-layout dependency) preserves CompleteState
-    let writer = writer.write_d(42);
-    assert_eq!(writer.into_view().d().read(), 42);
+    // Mutating `d` (non-layout dependency) invalidates OkState to CompleteState
+    let complete_writer = writer.write_d(42);
+    assert_eq!(complete_writer.as_view().d().try_read(), Ok(42));
+
+    // Re-checking ok upgrades CompleteState back to OkState, re-enabling infallible read
+    let ok_writer = complete_writer.check_ok().expect("re-checked ok");
+    assert_eq!(ok_writer.into_view().d().read(), 42);
 
     let writer = ChainedSizeMut::new(&mut bytes[..])
         .into_writer()
-        .check_complete()
-        .expect("complete writer");
+        .check_ok()
+        .expect("ok writer");
 
     // Mutating `a` (layout dependency) degrades state to UncheckedState
     let unchecked_writer = writer.write_a(1);
-    let complete_writer = unchecked_writer.check_complete().expect("re-checked complete");
-    assert_eq!(complete_writer.into_view().a().read(), 1);
+    let ok_writer = unchecked_writer.check_ok().expect("re-checked ok");
+    assert_eq!(ok_writer.into_view().a().read(), 1);
+}
+
+#[test]
+fn test_ok_state_infallible_read() {
+    let mut bytes = vec![0u8; 14];
+    bytes[0] = 4; // h = 4
+    bytes[1] = 6; // m = 6
+
+    let view = message::View::new(&bytes[..]);
+    // CompleteState: complete layout, but not Ok, so infallible read is not exposed; try_read works
+    let complete_view = view.check_complete().expect("should be complete");
+    assert_eq!(complete_view.header_length().try_read().unwrap(), 4);
+
+    // OkState: check_ok produces an Ok view with infallible read exposed!
+    let ok_view = complete_view.check_ok().expect("should be ok");
+    assert_eq!(ok_view.header_length().read(), 4);
+    assert_eq!(ok_view.message_length().read(), 6);
+
+    // Can also check_ok directly from unchecked view:
+    let ok_view_direct = message::View::new(&bytes[..]).check_ok().expect("should be ok");
+    assert_eq!(ok_view_direct.header_length().read(), 4);
+}
+
+#[test]
+fn test_dynamic_size_bounds_and_view() {
+    use testdata_dynamic_size_emb::message;
+    use emboss_runtime::View;
+
+    assert_eq!(message::MIN_SIZE_IN_BYTES, 4);
+    assert_eq!(message::MAX_SIZE_IN_BYTES, 514);
+
+    // Message layout:
+    // 0: header_length (h)
+    // 1: message_length (m)
+    // 2..h: padding (h - 2)
+    // h..h+m: message (m)
+    // h+m..h+m+4: crc32 (4)
+    // Total size = h + m + 4
+    let mut bytes = vec![0u8; 14];
+    bytes[0] = 4; // h = 4
+    bytes[1] = 6; // m = 6
+
+    let view = message::View::new(&bytes[..]);
+    assert_eq!(view.size_in_bytes().unwrap(), 14);
+
+    // check_complete succeeds when buffer length >= 14
+    let complete = view.check_complete().expect("should be complete");
+    assert_eq!(complete.size_in_bytes().unwrap(), 14);
+
+    // Truncated buffer: only 10 bytes available
+    let truncated_view = message::View::new(&bytes[..10]);
+    assert_eq!(truncated_view.size_in_bytes().unwrap(), 14);
+    assert!(truncated_view.check_complete().is_err());
 }

@@ -32,6 +32,7 @@ py_binary(
         "//compiler/util:error",
         "//compiler/util:ir_data",
         "//compiler/util:ir_util",
+        "//compiler/util:name_conversion",
         "//compiler/util:resources",
     ],
 )

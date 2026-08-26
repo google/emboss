@@ -440,3 +440,8 @@ emboss_rust_library(
     name = "auto_array_size_emb_rs",
     srcs = ["auto_array_size.emb"],
 )
+
+emboss_rust_library(
+    name = "condition_emb_rs",
+    srcs = ["condition.emb"],
+)

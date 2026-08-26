@@ -18,9 +18,16 @@
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Default)]
 pub struct UncheckedState;
 
-/// Complete view state. All fields in the current layout are infallible.
+/// Complete view state. All fields in the current layout fit within storage.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Default)]
 pub struct CompleteState;
+
+/// Ok view state. All fields in the current layout fit within storage and are valid.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Default)]
+pub struct OkState;
+
+/// Alias for `OkState`.
+pub type Ok = OkState;
 
 /// Typestate transition trait for layout and validation mutations.
 pub trait State {
@@ -38,11 +45,21 @@ impl State for CompleteState {
     type OnValidMutation = CompleteState;
 }
 
+impl State for OkState {
+    type OnLayoutMutation = UncheckedState;
+    type OnValidMutation = CompleteState;
+}
+
 /// Marker trait for states that guarantee full layout completeness.
 pub trait IsComplete: State {}
 impl IsComplete for CompleteState {}
+impl IsComplete for OkState {}
 
-/// Infallible read operation for views in a verified typestate (`IsComplete`).
+/// Marker trait for states that guarantee layout completeness and validity.
+pub trait IsOk: IsComplete {}
+impl IsOk for OkState {}
+
+/// Infallible read operation for views in a verified typestate (`IsOk`).
 pub trait InfallibleRead {
     type ReadValue;
     fn read(&self) -> Self::ReadValue;
@@ -61,6 +78,12 @@ pub trait CheckComplete {
     fn check_complete(self) -> Result<Self::Completed, crate::Error>;
 }
 
+/// Trait for verifying validity at runtime, upgrading the typestate to `OkState`.
+pub trait CheckOk {
+    type Ok;
+    fn check_ok(self) -> Result<Self::Ok, crate::Error>;
+}
+
 /// Trait for converting a mutable view or storage into a self-consuming typestate Writer.
 pub trait IntoWriter {
     type Writer;
@@ -76,12 +99,18 @@ mod tests {
 
     fn assert_state<S: State>() {}
     fn assert_complete<S: IsComplete>() {}
+    fn assert_ok<S: IsOk>() {}
+
     #[test]
     fn test_state_marker_traits() {
         assert_state::<UncheckedState>();
         assert_state::<CompleteState>();
+        assert_state::<OkState>();
 
         assert_complete::<CompleteState>();
+        assert_complete::<OkState>();
+
+        assert_ok::<OkState>();
     }
 
     #[test]
@@ -89,12 +118,12 @@ mod tests {
         fn assert_is_unchecked<S: Storage>(_view: &UInt<32, LittleEndian, S, UncheckedState>) {}
 
         let mut buf = [0u8; 4];
-        let complete_view =
-            UInt::<32, LittleEndian, &mut [u8; 4], CompleteState>::new(&mut buf);
-        assert_eq!(complete_view.read(), 0);
+        let ok_view =
+            UInt::<32, LittleEndian, &mut [u8; 4], OkState>::new(&mut buf);
+        assert_eq!(ok_view.read(), 0);
 
-        // Performing a write consumes the CompleteState view and degrades its state to UncheckedState.
-        let mutated_view = complete_view.write(TEST_VALUE);
+        // Performing a write consumes the OkState view and degrades its state to UncheckedState.
+        let mutated_view = ok_view.write(TEST_VALUE);
         assert_is_unchecked(&mutated_view);
 
         // The degraded view in UncheckedState must use checked reading.
@@ -104,9 +133,9 @@ mod tests {
     #[test]
     fn test_infallible_uint_read_write() {
         let mut buf = [0u8; 4];
-        let uint_view = UInt::<32, LittleEndian, &mut [u8; 4], CompleteState>::new(&mut buf);
+        let uint_view = UInt::<32, LittleEndian, &mut [u8; 4], OkState>::new(&mut buf);
         let _ = uint_view.write(TEST_VALUE);
-        let read_view = UInt::<32, LittleEndian, &[u8; 4], CompleteState>::new(&buf);
+        let read_view = UInt::<32, LittleEndian, &[u8; 4], OkState>::new(&buf);
         assert_eq!(read_view.read(), TEST_VALUE);
     }
 
@@ -129,9 +158,20 @@ mod tests {
             }
         }
 
+        impl<S> CheckOk for MockWriter<S, UncheckedState> {
+            type Ok = MockWriter<S, OkState>;
+            fn check_ok(self) -> Result<Self::Ok, crate::Error> {
+                Ok(MockWriter(self.0, core::marker::PhantomData))
+            }
+        }
+
         let mut buf = [0u8; 4];
         let mock_mut = MockMut(&mut buf);
-        let _writer: MockWriter<&mut [u8; 4], CompleteState> =
+        let _complete_writer: MockWriter<&mut [u8; 4], CompleteState> =
             mock_mut.into_writer().check_complete().expect("complete writer");
+
+        let mock_mut2 = MockMut(&mut buf);
+        let _ok_writer: MockWriter<&mut [u8; 4], OkState> =
+            mock_mut2.into_writer().check_ok().expect("ok writer");
     }
 }

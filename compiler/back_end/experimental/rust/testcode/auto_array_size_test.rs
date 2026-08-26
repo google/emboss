@@ -32,10 +32,14 @@ fn test_array_access() {
     
     let dyn_struct_array = view.dynamic_struct_array().unwrap();
     assert_eq!(dyn_struct_array.element_count(), 3); // 6 bytes / 2 bytes per struct = 3 structs!
+    let cloned_array = dyn_struct_array.clone();
+    assert_eq!(cloned_array.element_count(), 3);
     
     // let's try getting index 0
     let element0 = dyn_struct_array.get(0).unwrap();
     assert_eq!(element0.a().try_read().unwrap(), 0);
+    let element0_cloned = cloned_array.get(0).unwrap();
+    assert_eq!(element0_cloned.a().try_read().unwrap(), 0);
     
     // get index 3 which is OutOfBounds because count is 3 (valid indices are 0, 1, 2)
     let res = dyn_struct_array.get(3);

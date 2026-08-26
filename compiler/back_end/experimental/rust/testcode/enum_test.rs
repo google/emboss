@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use emboss_runtime::CheckComplete;
+use emboss_runtime::{CheckComplete, CheckOk};
 pub use testdata_enum_emb::*;
 
 #[test]
@@ -42,6 +42,11 @@ fn can_read_kind() {
     assert_eq!(view.kind().try_read().unwrap(), Kind::SPROCKET);
     assert_eq!(view.count().try_read().unwrap(), 4);
     assert_eq!(view.wide_kind().try_read().unwrap(), Kind::GEEGAW);
+
+    let ok_view = view.check_ok().expect("ok view");
+    assert_eq!(ok_view.kind().read().unwrap(), Kind::SPROCKET);
+    assert_eq!(ok_view.count().read(), 4);
+    assert_eq!(ok_view.wide_kind().read().unwrap(), Kind::GEEGAW);
 }
 
 #[test]
@@ -57,6 +62,11 @@ fn edge_cases_unknown_enum() {
     assert_eq!(view.kind().try_read().unwrap_err(), emboss_runtime::Error::UnknownEnum(255));
     assert_eq!(view.count().try_read().unwrap(), 4);
     assert_eq!(view.wide_kind().try_read().unwrap(), Kind::MAX32BIT);
+
+    let ok_view = view.check_ok().expect("ok view");
+    assert_eq!(ok_view.kind().read(), Err(emboss_runtime::Error::UnknownEnum(255)));
+    assert_eq!(ok_view.count().read(), 4);
+    assert_eq!(ok_view.wide_kind().read().unwrap(), Kind::MAX32BIT);
 }
 
 #[test]

@@ -90,3 +90,12 @@ rust_test(
         "//testdata:auto_array_size_emb_rs",
     ],
 )
+
+rust_test(
+    name = "condition_test",
+    srcs = ["condition_test.rs"],
+    deps = [
+        "//runtime/experimental/rust:emboss_runtime",
+        "//testdata:condition_emb_rs",
+    ],
+)

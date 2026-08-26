@@ -90,6 +90,73 @@ class NameConversionTest(unittest.TestCase):
             "AbcDef",
             name_conversion.convert_case("SHOUTY_CASE", "CamelCase", "ABC_DEF"),
         )
+        self.assertEqual(
+            "abc_def",
+            name_conversion.convert_case("CamelCase", "snake_case", "AbcDef"),
+        )
+        self.assertEqual(
+            "l2cap_header",
+            name_conversion.convert_case("CamelCase", "snake_case", "L2capHeader"),
+        )
+        self.assertEqual(
+            "bson_payload",
+            name_conversion.convert_case("CamelCase", "snake_case", "BsonPayload"),
+        )
+        self.assertEqual(
+            "b_s_o_n_payload",
+            name_conversion.convert_case("CamelCase", "snake_case", "BSONPayload"),
+        )
+        self.assertEqual(
+            "sizes",
+            name_conversion.convert_case("CamelCase", "snake_case", "Sizes"),
+        )
+        self.assertEqual(
+            "auto_size",
+            name_conversion.convert_case("CamelCase", "snake_case", "AutoSize"),
+        )
+        self.assertEqual(
+            "outer_inner",
+            name_conversion.convert_case("CamelCase", "snake_case", "Outer_Inner"),
+        )
+        self.assertEqual(
+            "abc_def89",
+            name_conversion.convert_case("CamelCase", "snake_case", "AbcDef89"),
+        )
+        self.assertEqual(
+            "abc89_def",
+            name_conversion.convert_case("CamelCase", "snake_case", "Abc89Def"),
+        )
+        self.assertEqual(
+            "abc89def",
+            name_conversion.convert_case("CamelCase", "snake_case", "Abc89def"),
+        )
+        self.assertEqual(
+            "foo_bar_123",
+            name_conversion.convert_case("SHOUTY_CASE", "snake_case", "FOO_BAR_123"),
+        )
+        self.assertEqual(
+            "abc_def",
+            name_conversion.convert_case("SHOUTY_CASE", "snake_case", "ABC_DEF"),
+        )
+        self.assertEqual(
+            "foo_bar",
+            name_conversion.convert_case("kCamelCase", "snake_case", "kFooBar"),
+        )
+
+    def test_reversibility(self):
+        for name in [
+            "L2capHeader",
+            "BsonPayload",
+            "BSONPayload",
+            "Sizes",
+            "AutoSize",
+            "AbcDef89",
+            "Abc89Def",
+            "Abc89def",
+        ]:
+            snake = name_conversion.convert_case("CamelCase", "snake_case", name)
+            camel = name_conversion.convert_case("snake_case", "CamelCase", snake)
+            self.assertEqual(name, camel)
 
 
 if __name__ == "__main__":

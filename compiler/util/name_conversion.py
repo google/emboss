@@ -15,6 +15,7 @@
 """Conversions between snake-, camel-, and shouty-case names."""
 
 import enum
+import re
 
 
 class Case(str, enum.Enum):
@@ -58,6 +59,32 @@ def camel_to_k_camel(name):
 def snake_to_k_camel(name):
     """Converts from snake_case to kCamelCase. Also works from SHOUTY_CASE."""
     return camel_to_k_camel(snake_to_camel(name))
+
+
+@_case_conversion(Case.CAMEL, Case.SNAKE)
+def camel_to_snake(name):
+    """Converts from CamelCase to snake_case."""
+    parts = name.split("_")
+    snake_parts = []
+    for part in parts:
+        if not part:
+            continue
+        snake_parts.append(re.sub(r"(?<!^)(?=[A-Z])", "_", part).lower())
+    return "_".join(snake_parts)
+
+
+@_case_conversion(Case.SHOUTY, Case.SNAKE)
+def shouty_to_snake(name):
+    """Converts from SHOUTY_CASE to snake_case."""
+    return name.lower()
+
+
+@_case_conversion(Case.K_CAMEL, Case.SNAKE)
+def k_camel_to_snake(name):
+    """Converts from kCamelCase to snake_case."""
+    if name.startswith("k") and len(name) > 1 and name[1].isupper():
+        return camel_to_snake(name[1:])
+    return camel_to_snake(name)
 
 
 def convert_case(case_from, case_to, value):

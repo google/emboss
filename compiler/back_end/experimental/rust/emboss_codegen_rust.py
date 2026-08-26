@@ -23,6 +23,7 @@ from compiler.util import error
 from compiler.util import ir_data
 from compiler.util import ir_data_utils
 from compiler.util import ir_util
+from compiler.util import name_conversion
 from compiler.util import resources
 import argparse
 
@@ -34,6 +35,21 @@ ErrorList = list[list[error._Message]]
 _TEMPLATE_FILE_NAME = "generated_code_templates"
 _UNSUPPORTED_PRELUDE_TYPES = {"Bcd", "Float"}
 _SYNTHETIC_ATTRIBUTES = {"expected_back_ends", "fixed_size_in_bits"}
+
+_RUST_KEYWORDS = {
+    "as", "break", "const", "continue", "crate", "else", "enum", "extern",
+    "false", "fn", "for", "if", "impl", "in", "let", "loop", "match", "mod",
+    "move", "mut", "pub", "ref", "return", "self", "Self", "static", "struct",
+    "super", "trait", "true", "type", "unsafe", "use", "where", "while",
+    "async", "await", "dyn", "abstract", "become", "box", "do", "final",
+    "macro", "override", "priv", "typeof", "unsized", "virtual", "yield", "try",
+}
+
+
+def _escape_identifier(name: str) -> str:
+    if name in _RUST_KEYWORDS:
+        return f"r#{name}"
+    return name
 
 
 def _show_errors(
@@ -701,8 +717,6 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
         else:
             source_name = "_".join(obj_path)
             source_name_for_prelude = "::".join(orig_source_name)
-        if source_name_for_prelude == "Flag":
-            source_name = "UInt"
         if source_name_for_prelude in _UNSUPPORTED_PRELUDE_TYPES:
             diagnostics.append(
                 [
@@ -1005,12 +1019,27 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
 
         generated_fields.add(field_name)
 
-    # Extract the frontend-synthesized $size_in_bytes expression tree to compute the
-    # dynamic layout completeness of the structure in CheckComplete::check_complete().
+    # Extract the frontend-synthesized $size_in_bytes, $min_size_in_bytes, $max_size_in_bytes
+    # (or bit equivalents) to compute layout size and module metadata.
+    min_size_in_bytes = 0
+    max_size_in_bytes = None
     size_in_bytes = "0"
+    unit = type_ir.addressable_unit
+    min_field_name = "$min_size_in_bits" if unit == 1 else "$min_size_in_bytes"
+    max_field_name = "$max_size_in_bits" if unit == 1 else "$max_size_in_bytes"
+    size_field_name = "$size_in_bits" if unit == 1 else "$size_in_bytes"
+
     for field in type_ir.structure.field:
-        if field.name.name.text == "$size_in_bytes":
-            size_in_bytes = (
+        name = field.name.name.text
+        if name == min_field_name:
+            val = int(field.read_transform.type.integer.modular_value)
+            min_size_in_bytes = (val + 7) // 8 if unit == 1 else val
+        elif name == max_field_name:
+            if field.read_transform.type.integer.modulus == "infinity":
+                val = int(field.read_transform.type.integer.modular_value)
+                max_size_in_bytes = (val + 7) // 8 if unit == 1 else val
+        elif name == size_field_name:
+            expr = (
                 _generate_expression(
                     field.read_transform,
                     ir,
@@ -1021,7 +1050,10 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
                 )
                 or "0"
             )
-            break
+            if unit == 1:
+                size_in_bytes = f"(({expr}) + 7) / 8"
+            else:
+                size_in_bytes = expr
 
     main_struct_def = code_template.format_template(
         templates.struct_view,
@@ -1031,7 +1063,26 @@ def _generate_struct(type_ir, ir, module, templates, diagnostics, struct_name) -
         writer_field_accessors="".join(writer_field_accessors),
         size_in_bytes=size_in_bytes,
     )
-    return "".join(generated_nested_types) + main_struct_def
+
+    raw_mod_name = name_conversion.convert_case("CamelCase", "snake_case", struct_name)
+    mod_name = _escape_identifier(raw_mod_name)
+    max_size_in_bytes_def = ""
+    if max_size_in_bytes is not None:
+        max_size_in_bytes_def = f"    pub const MAX_SIZE_IN_BYTES: usize = {max_size_in_bytes};\n"
+    size_in_bytes_def = ""
+    if max_size_in_bytes is not None and min_size_in_bytes == max_size_in_bytes:
+        size_in_bytes_def = f"    pub const SIZE_IN_BYTES: usize = {min_size_in_bytes};\n"
+
+    struct_mod_def = code_template.format_template(
+        templates.struct_module,
+        mod_name=mod_name,
+        struct_name=struct_name,
+        min_size_in_bytes=str(min_size_in_bytes),
+        max_size_in_bytes_def=max_size_in_bytes_def,
+        size_in_bytes_def=size_in_bytes_def,
+    )
+
+    return "".join(generated_nested_types) + main_struct_def + "\n" + struct_mod_def
 
 
 def generate_code_and_log_errors(

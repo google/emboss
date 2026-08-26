@@ -15,8 +15,8 @@
 pub mod prelude;
 pub mod typestate;
 pub use crate::typestate::{
-    CheckComplete, CompleteState, InfallibleRead, InfallibleWrite, IntoWriter, IsComplete, State,
-    UncheckedState,
+    CheckComplete, CheckOk, CompleteState, InfallibleRead, InfallibleWrite, IntoWriter,
+    IsComplete, IsOk, Ok, OkState, State, UncheckedState,
 };
 
 /// Trait for safe signed-to-unsigned and mixed-integer comparisons.
@@ -87,89 +87,54 @@ impl<T> Error<T> {
 
 pub trait Storage {
     type Sliced<'a>: Storage where Self: 'a;
-    fn slice(&self, offset: usize, length: usize) -> Result<Self::Sliced<'_>, Error>;
+    fn slice(&self, offset: usize, length: usize) -> Self::Sliced<'_>;
     fn try_read_byte(&self, offset: usize) -> Result<u8, Error>;
+    fn len(&self) -> usize;
+    fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
 }
 
 pub trait MutStorage: Storage {
     type SlicedMut<'a>: MutStorage where Self: 'a;
-    fn slice_mut(&mut self, offset: usize, length: usize) -> Result<Self::SlicedMut<'_>, Error>;
+    fn slice_mut(&mut self, offset: usize, length: usize) -> Self::SlicedMut<'_>;
     fn try_write_byte(&mut self, offset: usize, val: u8) -> Result<(), Error>;
 }
 
-impl<'a, T: ?Sized + AsRef<[u8]>> Storage for &'a mut T {
+impl<T: ?Sized + AsRef<[u8]>> Storage for T {
     type Sliced<'b> = &'b [u8] where Self: 'b;
-    fn slice(&self, offset: usize, length: usize) -> Result<Self::Sliced<'_>, Error> {
+    fn slice(&self, offset: usize, length: usize) -> &[u8] {
         let bytes = self.as_ref();
-        bytes.get(offset..offset + length).ok_or(Error::OutOfBounds)
+        if offset >= bytes.len() {
+            &[]
+        } else {
+            let end = offset.saturating_add(length).min(bytes.len());
+            &bytes[offset..end]
+        }
     }
     fn try_read_byte(&self, offset: usize) -> Result<u8, Error> {
-        let bytes = self.as_ref();
-        bytes.get(offset).copied().ok_or(Error::OutOfBounds)
+        self.as_ref().get(offset).copied().ok_or(Error::OutOfBounds)
+    }
+    fn len(&self) -> usize {
+        self.as_ref().len()
     }
 }
 
-impl<'a, T: ?Sized + AsRef<[u8]>> Storage for &'a T {
-    type Sliced<'b> = &'b [u8] where Self: 'b;
-    fn slice(&self, offset: usize, length: usize) -> Result<Self::Sliced<'_>, Error> {
-        let bytes = (*self).as_ref();
-        bytes.get(offset..offset + length).ok_or(Error::OutOfBounds)
-    }
-    fn try_read_byte(&self, offset: usize) -> Result<u8, Error> {
-        let bytes = self.as_ref();
-        bytes.get(offset).copied().ok_or(Error::OutOfBounds)
-    }
-}
-
-impl<'a, T: ?Sized + AsMut<[u8]> + AsRef<[u8]>> MutStorage for &'a mut T {
+impl<T: ?Sized + AsMut<[u8]> + AsRef<[u8]>> MutStorage for T {
     type SlicedMut<'b> = &'b mut [u8] where Self: 'b;
-    fn slice_mut(&mut self, offset: usize, length: usize) -> Result<Self::SlicedMut<'_>, Error> {
+    fn slice_mut(&mut self, offset: usize, length: usize) -> &mut [u8] {
         let bytes = self.as_mut();
-        bytes.get_mut(offset..offset + length).ok_or(Error::OutOfBounds)
+        if offset >= bytes.len() {
+            &mut []
+        } else {
+            let end = offset.saturating_add(length).min(bytes.len());
+            &mut bytes[offset..end]
+        }
     }
     fn try_write_byte(&mut self, offset: usize, val: u8) -> Result<(), Error> {
-        let bytes = self.as_mut();
-        let b = bytes.get_mut(offset).ok_or(Error::OutOfBounds)?;
+        let b = self.as_mut().get_mut(offset).ok_or(Error::OutOfBounds)?;
         *b = val;
         Ok(())
-    }
-}
-
-impl<T: Storage> Storage for Result<T, Error> {
-    type Sliced<'a> = Result<T::Sliced<'a>, Error> where Self: 'a;
-    fn slice(&self, offset: usize, length: usize) -> Result<Self::Sliced<'_>, Error> {
-        match self {
-            Ok(s) => match s.slice(offset, length) {
-                Ok(sliced) => Ok(Ok(sliced)),
-                Err(e) => Err(e),
-            },
-            Err(e) => Err(*e),
-        }
-    }
-    fn try_read_byte(&self, offset: usize) -> Result<u8, Error> {
-        match self {
-            Ok(s) => s.try_read_byte(offset),
-            Err(e) => Err(*e),
-        }
-    }
-}
-
-impl<T: MutStorage> MutStorage for Result<T, Error> {
-    type SlicedMut<'a> = Result<T::SlicedMut<'a>, Error> where Self: 'a;
-    fn slice_mut(&mut self, offset: usize, length: usize) -> Result<Self::SlicedMut<'_>, Error> {
-        match self {
-            Ok(s) => match s.slice_mut(offset, length) {
-                Ok(sliced) => Ok(Ok(sliced)),
-                Err(e) => Err(e),
-            },
-            Err(e) => Err(*e),
-        }
-    }
-    fn try_write_byte(&mut self, offset: usize, val: u8) -> Result<(), Error> {
-        match self {
-            Ok(s) => s.try_write_byte(offset, val),
-            Err(e) => Err(*e),
-        }
     }
 }
 
@@ -267,6 +232,14 @@ impl_smallest_uint!(
     u64, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64
 );
 
+pub trait SmallestFlag {
+    type T;
+}
+
+impl<const BITS: usize> SmallestFlag for SizeSelector<BITS> {
+    type T = bool;
+}
+
 pub struct UInt<const BITS: usize, E: ByteOrder, S: Storage, ST: State = UncheckedState> {
     storage: S,
     _marker: core::marker::PhantomData<(E, ST)>,
@@ -276,6 +249,15 @@ impl<const BITS: usize, E: ByteOrder, S: Storage, ST: State> UInt<BITS, E, S, ST
     pub fn new(storage: S) -> Self {
         Self {
             storage,
+            _marker: core::marker::PhantomData,
+        }
+    }
+}
+
+impl<const BITS: usize, E: ByteOrder, S: Storage + Clone, ST: State> Clone for UInt<BITS, E, S, ST> {
+    fn clone(&self) -> Self {
+        Self {
+            storage: self.storage.clone(),
             _marker: core::marker::PhantomData,
         }
     }
@@ -306,7 +288,7 @@ where
     }
 }
 
-impl<const BITS: usize, E: ByteOrder, S: Storage, ST: IsComplete> InfallibleRead
+impl<const BITS: usize, E: ByteOrder, S: Storage, ST: IsOk> InfallibleRead
     for UInt<BITS, E, S, ST>
 where
     SizeSelector<BITS>: SmallestUInt,
@@ -314,7 +296,7 @@ where
 {
     type ReadValue = <SizeSelector<BITS> as SmallestUInt>::T;
     fn read(&self) -> <SizeSelector<BITS> as SmallestUInt>::T {
-        self.try_read().expect("infallible read in complete state")
+        self.try_read().expect("infallible read in ok state")
     }
 }
 
@@ -394,6 +376,15 @@ impl<const BITS: usize, E: ByteOrder, S: Storage, ST: State> Int<BITS, E, S, ST>
     }
 }
 
+impl<const BITS: usize, E: ByteOrder, S: Storage + Clone, ST: State> Clone for Int<BITS, E, S, ST> {
+    fn clone(&self) -> Self {
+        Self {
+            storage: self.storage.clone(),
+            _marker: core::marker::PhantomData,
+        }
+    }
+}
+
 impl<const BITS: usize, E: ByteOrder, S: Storage, ST: State> Int<BITS, E, S, ST>
 where
     SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
@@ -401,7 +392,7 @@ where
 {
     pub fn try_read(&self) -> Result<<SizeSelector<BITS> as SmallestInt>::T, Error> {
         let size_in_bytes = (BITS + 7) / 8;
-        let slice = self.storage.slice(0, size_in_bytes)?;
+        let slice = self.storage.slice(0, size_in_bytes);
         let raw = UInt::<BITS, E, S::Sliced<'_>>::new(slice).try_read()?;
         Ok(<SizeSelector<BITS> as SmallestInt>::sign_extend(raw, BITS))
     }
@@ -414,12 +405,12 @@ where
 {
     pub fn try_write(&mut self, val: <SizeSelector<BITS> as SmallestInt>::T) -> Result<(), Error> {
         let unsigned = <SizeSelector<BITS> as SmallestInt>::mask_to_unsigned(val, BITS);
-        let mut uint_view = UInt::<BITS, E, S::SlicedMut<'_>>::new(self.storage.slice_mut(0, (BITS + 7) / 8)?);
+        let mut uint_view = UInt::<BITS, E, S::SlicedMut<'_>>::new(self.storage.slice_mut(0, (BITS + 7) / 8));
         uint_view.try_write(unsigned)
     }
 }
 
-impl<const BITS: usize, E: ByteOrder, S: Storage, ST: IsComplete> InfallibleRead
+impl<const BITS: usize, E: ByteOrder, S: Storage, ST: IsOk> InfallibleRead
     for Int<BITS, E, S, ST>
 where
     SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
@@ -427,7 +418,7 @@ where
 {
     type ReadValue = <SizeSelector<BITS> as SmallestInt>::T;
     fn read(&self) -> <SizeSelector<BITS> as SmallestInt>::T {
-        self.try_read().expect("infallible read in complete state")
+        self.try_read().expect("infallible read in ok state")
     }
 }
 
@@ -480,6 +471,30 @@ impl<T, Inner> EnumViewMut<T, Inner> {
             _phantom: core::marker::PhantomData,
         }
     }
+}
+
+impl<T, Inner: Clone> Clone for EnumView<T, Inner> {
+    fn clone(&self) -> Self {
+        Self {
+            inner: self.inner.clone(),
+            _phantom: core::marker::PhantomData,
+        }
+    }
+}
+
+impl<T, Inner: Clone> Clone for EnumViewMut<T, Inner> {
+    fn clone(&self) -> Self {
+        Self {
+            inner: self.inner.clone(),
+            _phantom: core::marker::PhantomData,
+        }
+    }
+}
+
+/// Trait implemented by Emboss struct and bitfield views.
+pub trait View {
+    /// Returns the intrinsic layout size of the structure in bytes.
+    fn size_in_bytes(&self) -> Result<usize, Error>;
 }
 
 pub trait TryRead {
@@ -619,6 +634,15 @@ impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: S
     }
 }
 
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage + Clone, ST: State> Clone for BitUInt<BITS, BIT_OFFSET, E, S, ST> {
+    fn clone(&self) -> Self {
+        Self {
+            storage: self.storage.clone(),
+            _marker: core::marker::PhantomData,
+        }
+    }
+}
+
 impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: State> BitUInt<BITS, BIT_OFFSET, E, S, ST>
 where
     SizeSelector<BITS>: SmallestUInt,
@@ -648,13 +672,13 @@ where
     }
 }
 
-impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: IsComplete> InfallibleRead for BitUInt<BITS, BIT_OFFSET, E, S, ST>
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: IsOk> InfallibleRead for BitUInt<BITS, BIT_OFFSET, E, S, ST>
 where
     SizeSelector<BITS>: SmallestUInt,
 {
     type ReadValue = <SizeSelector<BITS> as SmallestUInt>::T;
     fn read(&self) -> <SizeSelector<BITS> as SmallestUInt>::T {
-        self.try_read().expect("infallible read in complete state")
+        self.try_read().expect("infallible read in ok state")
     }
 }
 
@@ -672,24 +696,33 @@ impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: S
     }
 }
 
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage + Clone, ST: State> Clone for BitInt<BITS, BIT_OFFSET, E, S, ST> {
+    fn clone(&self) -> Self {
+        Self {
+            storage: self.storage.clone(),
+            _marker: core::marker::PhantomData,
+        }
+    }
+}
+
 impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: State> BitInt<BITS, BIT_OFFSET, E, S, ST>
 where
     SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
 {
     pub fn try_read(&self) -> Result<<SizeSelector<BITS> as SmallestInt>::T, Error> {
-        let uint_view = BitUInt::<BITS, BIT_OFFSET, E, S::Sliced<'_>>::new(self.storage.slice(0, (BIT_OFFSET + BITS + 7) / 8)?);
+        let uint_view = BitUInt::<BITS, BIT_OFFSET, E, S::Sliced<'_>>::new(self.storage.slice(0, (BIT_OFFSET + BITS + 7) / 8));
         let raw = uint_view.try_read()?;
         Ok(<SizeSelector<BITS> as SmallestInt>::sign_extend(raw, BITS))
     }
 }
 
-impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: IsComplete> InfallibleRead for BitInt<BITS, BIT_OFFSET, E, S, ST>
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: IsOk> InfallibleRead for BitInt<BITS, BIT_OFFSET, E, S, ST>
 where
     SizeSelector<BITS>: SmallestUInt + SmallestInt<U = <SizeSelector<BITS> as SmallestUInt>::T>,
 {
     type ReadValue = <SizeSelector<BITS> as SmallestInt>::T;
     fn read(&self) -> <SizeSelector<BITS> as SmallestInt>::T {
-        self.try_read().expect("infallible read in complete state")
+        self.try_read().expect("infallible read in ok state")
     }
 }
 
@@ -710,6 +743,170 @@ where
     type ReadValue = <SizeSelector<BITS> as SmallestInt>::T;
     fn try_read(&self) -> Result<Self::ReadValue, Error> {
         self.try_read()
+    }
+}
+
+pub struct Flag<const BITS: usize, E: ByteOrder, S: Storage, ST: State = UncheckedState> {
+    storage: S,
+    _marker: core::marker::PhantomData<(E, ST)>,
+}
+
+impl<const BITS: usize, E: ByteOrder, S: Storage, ST: State> Flag<BITS, E, S, ST> {
+    pub fn new(storage: S) -> Self {
+        Self {
+            storage,
+            _marker: core::marker::PhantomData,
+        }
+    }
+}
+
+impl<const BITS: usize, E: ByteOrder, S: Storage + Clone, ST: State> Clone for Flag<BITS, E, S, ST> {
+    fn clone(&self) -> Self {
+        Self {
+            storage: self.storage.clone(),
+            _marker: core::marker::PhantomData,
+        }
+    }
+}
+
+impl<const BITS: usize, E: ByteOrder, S: Storage, ST: State> Flag<BITS, E, S, ST> {
+    pub fn try_read(&self) -> Result<bool, Error> {
+        let byte_val = self.storage.try_read_byte(0)?;
+        Ok((byte_val & 1) != 0)
+    }
+}
+
+impl<const BITS: usize, E: ByteOrder, S: Storage, ST: IsOk> InfallibleRead for Flag<BITS, E, S, ST> {
+    type ReadValue = bool;
+    fn read(&self) -> bool {
+        self.try_read().expect("infallible read in ok state")
+    }
+}
+
+impl<const BITS: usize, E: ByteOrder, S: Storage, ST: State> TryRead for Flag<BITS, E, S, ST> {
+    type ReadValue = bool;
+    fn try_read(&self) -> Result<Self::ReadValue, Error> {
+        self.try_read()
+    }
+}
+
+impl<const BITS: usize, E: ByteOrder, S: MutStorage, ST: State> Flag<BITS, E, S, ST> {
+    pub fn try_write(&mut self, val: bool) -> Result<(), Error> {
+        let mut byte_val = self.storage.try_read_byte(0).unwrap_or(0);
+        if val {
+            byte_val |= 1;
+        } else {
+            byte_val &= !1;
+        }
+        self.storage.try_write_byte(0, byte_val)
+    }
+}
+
+impl<const BITS: usize, E: ByteOrder, S: MutStorage, ST: State> TryWrite for Flag<BITS, E, S, ST> {
+    type WriteValue = bool;
+    fn try_write(&mut self, val: bool) -> Result<(), Error> {
+        self.try_write(val)
+    }
+}
+
+impl<const BITS: usize, E: ByteOrder, S: MutStorage, ST: IsComplete> InfallibleWrite
+    for Flag<BITS, E, S, ST>
+{
+    type WriteValue = bool;
+    type Output = Flag<BITS, E, S, ST::OnLayoutMutation>;
+    fn write(mut self, val: bool) -> Self::Output {
+        self.try_write(val).expect("infallible write in complete state");
+        Flag {
+            storage: self.storage,
+            _marker: core::marker::PhantomData,
+        }
+    }
+}
+
+pub struct BitFlag<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: State = UncheckedState> {
+    storage: S,
+    _marker: core::marker::PhantomData<(E, ST)>,
+}
+
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: State> BitFlag<BITS, BIT_OFFSET, E, S, ST> {
+    pub fn new(storage: S) -> Self {
+        Self {
+            storage,
+            _marker: core::marker::PhantomData,
+        }
+    }
+}
+
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage + Clone, ST: State> Clone
+    for BitFlag<BITS, BIT_OFFSET, E, S, ST>
+{
+    fn clone(&self) -> Self {
+        Self {
+            storage: self.storage.clone(),
+            _marker: core::marker::PhantomData,
+        }
+    }
+}
+
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: State> BitFlag<BITS, BIT_OFFSET, E, S, ST> {
+    pub fn try_read(&self) -> Result<bool, Error> {
+        let byte_val = self.storage.try_read_byte(BIT_OFFSET / 8)?;
+        Ok((byte_val & (1 << (BIT_OFFSET % 8))) != 0)
+    }
+}
+
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: IsOk> InfallibleRead
+    for BitFlag<BITS, BIT_OFFSET, E, S, ST>
+{
+    type ReadValue = bool;
+    fn read(&self) -> bool {
+        self.try_read().expect("infallible read in ok state")
+    }
+}
+
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: Storage, ST: State> TryRead
+    for BitFlag<BITS, BIT_OFFSET, E, S, ST>
+{
+    type ReadValue = bool;
+    fn try_read(&self) -> Result<Self::ReadValue, Error> {
+        self.try_read()
+    }
+}
+
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: MutStorage, ST: State> BitFlag<BITS, BIT_OFFSET, E, S, ST> {
+    pub fn try_write(&mut self, val: bool) -> Result<(), Error> {
+        let byte_idx = BIT_OFFSET / 8;
+        let bit_in_byte = BIT_OFFSET % 8;
+        let mut byte_val = self.storage.try_read_byte(byte_idx)?;
+        if val {
+            byte_val |= 1 << bit_in_byte;
+        } else {
+            byte_val &= !(1 << bit_in_byte);
+        }
+        self.storage.try_write_byte(byte_idx, byte_val)
+    }
+}
+
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: MutStorage, ST: State> TryWrite
+    for BitFlag<BITS, BIT_OFFSET, E, S, ST>
+{
+    type WriteValue = bool;
+    fn try_write(&mut self, val: bool) -> Result<(), Error> {
+        self.try_write(val)
+    }
+}
+
+impl<const BITS: usize, const BIT_OFFSET: usize, E: ByteOrder, S: MutStorage, ST: IsComplete> InfallibleWrite
+    for BitFlag<BITS, BIT_OFFSET, E, S, ST>
+{
+    type WriteValue = bool;
+    type Output = BitFlag<BITS, BIT_OFFSET, E, S, ST::OnLayoutMutation>;
+    fn write(mut self, val: bool) -> Self::Output {
+        self.try_write(val).expect("infallible write in complete state");
+        BitFlag {
+            storage: self.storage,
+            _marker: core::marker::PhantomData,
+        }
     }
 }
 

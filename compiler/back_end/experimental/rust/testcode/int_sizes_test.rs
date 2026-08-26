@@ -62,6 +62,23 @@ fn reads_negative_ones_correctly() {
 }
 
 #[test]
+fn owned_storage_and_clone() {
+    let container = [0xffu8; 36];
+    let view = testdata_int_sizes_emb::Sizes::new(container);
+    let cloned_view = view.clone();
+
+    assert_eq!(view.one_byte().try_read().unwrap(), -1i8);
+    assert_eq!(cloned_view.one_byte().try_read().unwrap(), -1i8);
+
+    let vec_container = vec![0xffu8; 36];
+    let vec_view = testdata_int_sizes_emb::Sizes::new(vec_container);
+    let cloned_vec_view = vec_view.clone();
+
+    assert_eq!(vec_view.two_byte().try_read().unwrap(), -1i16);
+    assert_eq!(cloned_vec_view.two_byte().try_read().unwrap(), -1i16);
+}
+
+#[test]
 fn writes_int_sizes_with_writer() {
     let mut container = [0u8; 36];
     let writer = testdata_int_sizes_emb::SizesMut::new(&mut container[..])
@@ -88,4 +105,28 @@ fn writes_int_sizes_with_writer() {
     assert_eq!(view.six_byte().try_read().unwrap(), -0x123456789abci64);
     assert_eq!(view.seven_byte().try_read().unwrap(), 0x71e2d3c4b5a697i64);
     assert_eq!(view.eight_byte().try_read().unwrap(), -0x7f00010203040506i64);
+}
+
+#[test]
+fn test_sizes_metadata_and_view_trait() {
+    use testdata_int_sizes_emb::sizes;
+    use emboss_runtime::View;
+
+    // Module constants
+    assert_eq!(sizes::MIN_SIZE_IN_BYTES, 36);
+    assert_eq!(sizes::MAX_SIZE_IN_BYTES, 36);
+    assert_eq!(sizes::SIZE_IN_BYTES, 36);
+
+    // Static buffer allocation with module constants
+    let mut buf = [0u8; sizes::SIZE_IN_BYTES];
+
+    // Aliased types in the module
+    let view = sizes::View::new(&buf[..]);
+    assert_eq!(view.size_in_bytes().unwrap(), 36);
+
+    let view_mut = sizes::ViewMut::new(&mut buf[..]);
+    assert_eq!(view_mut.size_in_bytes().unwrap(), 36);
+
+    let writer = sizes::Writer::new(&mut buf[..]);
+    assert_eq!(writer.size_in_bytes().unwrap(), 36);
 }
