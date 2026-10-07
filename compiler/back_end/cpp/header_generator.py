@@ -1663,7 +1663,7 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
                 # case label twice (`tag == 0 || tag == 0`); after #9 the
                 # simplifier should normally prevent this from reaching us.
                 if not any(e[0] is field for e in case_entry["entries"]):
-                    case_entry["entries"].append((field, bool(residual)))
+                    case_entry["entries"].append((field, residual))
             field_group_key[id(field)] = key
         else:
             cond_res = _render_expression(
@@ -1718,9 +1718,9 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
             group["type"] = "demoted_to_if"
             continue
         has_bare_arm = any(
-            not has_residual
+            not residual
             for case_entry in group["cases_by_label"].values()
-            for (_, has_residual) in case_entry["entries"]
+            for (_, residual) in case_entry["entries"]
         )
         if not has_bare_arm and not _is_discriminant_provably_known(
             group["discrim_expr"], fields
@@ -1740,7 +1740,7 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
             group["known_check_required"] = not _is_discriminant_provably_known(
                 group["discrim_expr"], fields
             )
-            blocks.append(_emit_switch_block(group))
+            blocks.append(_emit_switch_block(group, ir, subexpressions))
         elif group["type"] == "demoted_to_if":
             for field in group["encounter_order"]:
                 blocks.append(
@@ -1761,37 +1761,51 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
     return "".join(blocks)
 
 
-def _render_case_body(entries):
+def _render_case_body(entries, ir, subexpressions):
     """Renders the body of a single switch arm.
 
-    Each entry is `(field, has_residual)` where `has_residual` indicates
-    whether the field's existence condition has predicate conjuncts beyond
-    the discriminant equality. When there is no residual the case body is
-    a single direct Ok() check; when there is a residual the body falls
-    back to the has_${field}() accessor, which encapsulates the full
-    existence check including the residual conjuncts. The C++ compiler is
-    then trusted to fold the now-trivially-true discriminant comparison
-    inside the has_${field}() call (it's inlined and the case label has
-    pinned the discriminant value).
+    Each entry is `(field, residuals)` where `residuals` is the list of
+    predicate conjuncts in the field's existence condition beyond the
+    discriminant equality that routed it to this case. When the list is
+    empty the case body is a single direct Ok() check.
+
+    When the list of residuals is not empty, the Ok() check is gated on the
+    residuals alone: inside `case K:` the discriminant is already Known and
+    equal to K, so the residuals are all that remains of `has_${field}()`.
+    The gate is required for correctness, since `${field}()` returns a null
+    view when the field is absent; the arm also fails if the residuals are
+    not Known.
     """
     parts = []
-    for field, has_residual in entries:
+    for field, residuals in entries:
         name = _cpp_field_name(field.name.name.text)
-        if has_residual:
-            parts.append(
-                "          if (!has_{0}().Known()) return false;\n".format(name)
-            )
-            parts.append(
-                "          if (has_{0}().ValueOrDefault() && !{0}().Ok()) return false;\n".format(
-                    name
-                )
-            )
-        else:
+        if not residuals:
             parts.append("          if (!{}().Ok()) return false;\n".format(name))
+            continue
+        if len(residuals) == 1:
+            residual = residuals[0]
+        else:
+            # Fold the conjuncts into one AND so the residual renders once.
+            residual = ir_data.Expression(
+                function=ir_data.Function(
+                    function=ir_data.FunctionMapping.AND,
+                    args=residuals,
+                ),
+                type=ir_data.ExpressionType(boolean=ir_data.BooleanType()),
+            )
+        rendered = _render_expression(
+            residual, ir, subexpressions=subexpressions
+        ).rendered
+        parts.append(
+            "          if (!({0}).Known()) return false;\n"
+            "          if (({0}).ValueOrDefault() && !{1}().Ok()) return false;\n".format(
+                rendered, name
+            )
+        )
     return "".join(parts)
 
 
-def _emit_switch_block(group):
+def _emit_switch_block(group, ir, subexpressions):
     """Emits a complete switch block from a collected switch group.
 
     Performs case-label sorting and identical-body coalescing:
@@ -1808,7 +1822,7 @@ def _emit_switch_block(group):
     body_to_labels = {}
     body_first_seen = {}
     for case_str, case_entry in group["cases_by_label"].items():
-        body = _render_case_body(case_entry["entries"])
+        body = _render_case_body(case_entry["entries"], ir, subexpressions)
         body_to_labels.setdefault(body, []).append((case_entry["sort_key"], case_str))
         if body not in body_first_seen:
             body_first_seen[body] = case_entry["sort_key"]
