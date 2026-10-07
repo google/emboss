@@ -1663,9 +1663,6 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
                 # case label twice (`tag == 0 || tag == 0`); after #9 the
                 # simplifier should normally prevent this from reaching us.
                 if not any(e[0] is field for e in case_entry["entries"]):
-                    # Keep the residual conjunct list itself (not just a bool):
-                    # a residual arm gates its Ok() check on the residual alone
-                    # at emit time (Lever A), so the concrete IR must survive.
                     case_entry["entries"].append((field, residual))
             field_group_key[id(field)] = key
         else:
@@ -1767,56 +1764,44 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
 def _render_case_body(entries, ir, subexpressions):
     """Renders the body of a single switch arm.
 
-    Each entry is `(field, residual)` where `residual` is the list of
-    predicate conjuncts (IR sub-expressions) that the field's existence
-    condition carries *beyond* the discriminant equality that routed it to
-    this case. When the list is empty the arm is bare and the case body is
-    a single direct Ok() check.
+    Each entry is `(field, residuals)` where `residuals` is the list of
+    predicate conjuncts in the field's existence condition beyond the
+    discriminant equality that routed it to this case. When the list is
+    empty the case body is a single direct Ok() check.
 
-    When there is a residual, we gate the Ok() check on the residual *alone*
-    (Lever A). This is sound because every switch reaching this point has its
-    discriminant Known inside the `case K:` label (provably, or via the
-    emitted `if (!discrim.Known()) return false;` guard), so within the arm
-    the discriminant equality is already established and `has_${field}() <=>
-    residual`. Gating on the residual therefore avoids re-reading and
-    re-comparing the discriminant that `has_${field}()` would recompute.
-
-    The gate is required, not just an optimization: `${field}()` re-checks
-    `has_${field}()` internally and returns a null view (whose Ok() is false)
-    when the field is absent, so an unguarded `${field}().Ok()` would wrongly
-    fail whenever the residual is false. We first bail if the residual is not
-    Known (e.g. an out-of-bounds read), matching the has_${field}()-based
-    check it replaces.
+    When the list of residuals is not empty, the Ok() check is gated on the
+    residuals alone: inside `case K:` the discriminant is already Known and
+    equal to K, so the residuals are all that remains of `has_${field}()`.
+    The gate is required for correctness, since `${field}()` returns a null
+    view when the field is absent; the arm also fails if the residuals are
+    not Known.
     """
     parts = []
-    for field, residual in entries:
+    for field, residuals in entries:
         name = _cpp_field_name(field.name.name.text)
-        if residual:
-            if len(residual) == 1:
-                residual_expr = residual[0]
-            else:
-                # Fold multiple conjuncts into a single boolean AND so we
-                # render (and share subexpressions for) the residual once.
-                residual_expr = ir_data.Expression(
-                    function=ir_data.Function(
-                        function=ir_data.FunctionMapping.AND,
-                        args=residual,
-                    ),
-                    type=ir_data.ExpressionType(boolean=ir_data.BooleanType()),
-                )
-            rendered = _render_expression(
-                residual_expr, ir, subexpressions=subexpressions
-            ).rendered
-            parts.append(
-                "          if (!({0}).Known()) return false;\n".format(rendered)
-            )
-            parts.append(
-                "          if (({0}).ValueOrDefault() && !{1}().Ok()) return false;\n".format(
-                    rendered, name
-                )
-            )
-        else:
+        if not residuals:
             parts.append("          if (!{}().Ok()) return false;\n".format(name))
+            continue
+        if len(residuals) == 1:
+            residual = residuals[0]
+        else:
+            # Fold the conjuncts into one AND so the residual renders once.
+            residual = ir_data.Expression(
+                function=ir_data.Function(
+                    function=ir_data.FunctionMapping.AND,
+                    args=residuals,
+                ),
+                type=ir_data.ExpressionType(boolean=ir_data.BooleanType()),
+            )
+        rendered = _render_expression(
+            residual, ir, subexpressions=subexpressions
+        ).rendered
+        parts.append(
+            "          if (!({0}).Known()) return false;\n"
+            "          if (({0}).ValueOrDefault() && !{1}().Ok()) return false;\n".format(
+                rendered, name
+            )
+        )
     return "".join(parts)
 
 
