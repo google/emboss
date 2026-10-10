@@ -321,3 +321,43 @@ struct EnumConditionalDiscriminant:
 
   if tag == OnOff.ON && outer == OnOff.ON:
     2 [+1]  UInt   b
+
+
+struct NestedUnionWithEarlyKind:
+  # `kind` is a second discriminant which precedes `inner_tag` in the buffer,
+  # so once `inner_tag` has been read, `kind` is known to be in bounds.  The
+  # intrinsic size of a truncated buffer must still be exactly as un-Known as
+  # `$max(0, ..., cond ? end : 0, ...)` says.
+  0 [+1]    UInt  outer_tag
+  if outer_tag == 1:
+    1 [+1]  UInt  kind
+  if outer_tag == 1:
+    2 [+1]  UInt  inner_tag
+
+  if outer_tag == 1 && inner_tag == 2:
+    3 [+1]  UInt  bare_payload
+
+  if outer_tag == 1 && inner_tag == 2 && kind == 7:
+    4 [+4]  UInt  payload_a
+
+  if outer_tag == 1 && inner_tag == 2 && kind == 8:
+    4 [+8]  UInt  payload_b
+
+
+struct NestedUnionWithLateKind:
+  # As NestedUnionWithEarlyKind, but `kind` follows `inner_tag` in the buffer,
+  # so reading `inner_tag` proves nothing about `kind`.
+  0 [+1]    UInt  outer_tag
+  if outer_tag == 1:
+    1 [+1]  UInt  inner_tag
+  if outer_tag == 1:
+    3 [+1]  UInt  kind
+
+  if outer_tag == 1 && inner_tag == 2:
+    2 [+1]  UInt  bare_payload
+
+  if outer_tag == 1 && inner_tag == 2 && kind == 7:
+    4 [+4]  UInt  payload_a
+
+  if outer_tag == 1 && inner_tag == 2 && kind == 8:
+    4 [+8]  UInt  payload_b

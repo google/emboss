@@ -230,6 +230,110 @@ TEST(CollapsingQuotient, UndefinedForZeroDivisor) {
   EXPECT_TRUE(view.IsComplete());
 }
 
+// `(0 // divisor) + 1` collapses to the single value {1}, but must not be folded
+// to a constant size: it is undefined when the divisor is zero.
+TEST(CollapsingFieldSize, NonzeroDivisor) {
+  static constexpr ::std::array</**/ ::std::uint8_t, 2> kBuf = {{0x07, 0x77}};
+  auto view = MakeCollapsingFieldSizeView(&kBuf);
+  ASSERT_TRUE(view.Ok());
+  EXPECT_EQ(2U, view.SizeInBytes());
+  EXPECT_EQ(1U, view.payload().ElementCount());
+}
+
+TEST(CollapsingFieldSize, ZeroDivisorIsNotOk) {
+  static constexpr ::std::array</**/ ::std::uint8_t, 2> kBuf = {{0x00, 0x77}};
+  auto view = MakeCollapsingFieldSizeView(&kBuf);
+  EXPECT_FALSE(view.Ok());
+  EXPECT_FALSE(view.SizeIsKnown());
+  EXPECT_TRUE(view.IntrinsicSizeInBytes().IsUndefined().ValueOr(false));
+  EXPECT_TRUE(view.IsComplete());
+}
+
+TEST(GatedByTwoDivisions, DefinedConjuncts) {
+  // 12 // 4 == 3 and 12 // 4 == 3: present.
+  static constexpr ::std::array</**/ ::std::uint8_t, 3> kPresent = {
+      {0x04, 0x04, 0x77}};
+  auto present = MakeGatedByTwoDivisionsView(&kPresent);
+  ASSERT_TRUE(present.Ok());
+  EXPECT_TRUE(present.has_gated().ValueOr(false));
+  // 12 // 5 != 3: absent, even though 12 // 4 == 3.
+  static constexpr ::std::array</**/ ::std::uint8_t, 2> kAbsent = {{0x04, 0x05}};
+  auto absent = MakeGatedByTwoDivisionsView(&kAbsent);
+  ASSERT_TRUE(absent.Ok());
+  EXPECT_FALSE(absent.has_gated().ValueOr(true));
+}
+
+TEST(GatedByTwoDivisions, KnownFalseConjunctBeatsUndefinedConjunct) {
+  // b == 0 makes the second conjunct undefined, but a == 5 makes the first
+  // Known-false (12 // 5 == 2 != 3), which decides the `&&`.
+  static constexpr ::std::array</**/ ::std::uint8_t, 2> kBuf = {{0x00, 0x05}};
+  auto view = MakeGatedByTwoDivisionsView(&kBuf);
+  EXPECT_TRUE(view.has_gated().Known());
+  EXPECT_FALSE(view.has_gated().ValueOr(true));
+}
+
+TEST(GatedByTwoDivisions, AllUnknownConjunctsUndefined) {
+  static constexpr ::std::array</**/ ::std::uint8_t, 2> kBoth = {{0x00, 0x00}};
+  auto both = MakeGatedByTwoDivisionsView(&kBoth);
+  EXPECT_FALSE(both.has_gated().Known());
+  EXPECT_TRUE(both.has_gated().IsUndefined());
+  EXPECT_FALSE(both.Ok());
+  EXPECT_TRUE(both.IsComplete());
+
+  // One undefined conjunct and one Known-true conjunct is still undefined.
+  static constexpr ::std::array</**/ ::std::uint8_t, 2> kOne = {{0x04, 0x00}};
+  auto one = MakeGatedByTwoDivisionsView(&kOne);
+  EXPECT_FALSE(one.has_gated().Known());
+  EXPECT_TRUE(one.has_gated().IsUndefined());
+}
+
+TEST(GatedByTwoDivisions, UnreadableConjunctDominatesUndefinedConjunct) {
+  // b is zero, so the second conjunct is undefined, but `a` is not in the
+  // buffer, so the first conjunct is unreadable: once `a` is supplied it might
+  // make the first conjunct Known-false and so the whole condition false.  The
+  // condition is unreadable, not undefined, and the structure is not complete.
+  static constexpr ::std::array</**/ ::std::uint8_t, 1> kBuf = {{0x00}};
+  auto view = MakeGatedByTwoDivisionsView(&kBuf);
+  EXPECT_FALSE(view.has_gated().Known());
+  EXPECT_FALSE(view.has_gated().IsUndefined());
+  EXPECT_FALSE(view.IsComplete());
+}
+
+TEST(UnreadableThenUndefinedSize, DefinedSize) {
+  // divisor = 4 -> `tail` is 16 // 4 = 4 bytes; length = 2 -> `payload` is 2
+  // bytes.  Both start at 2, so the size is 2 + 4 = 6.
+  static constexpr ::std::array</**/ ::std::uint8_t, 6> kBuf = {
+      {0x04, 0x02, 0xaa, 0xbb, 0xcc, 0xdd}};
+  auto view = MakeUnreadableThenUndefinedSizeView(&kBuf);
+  ASSERT_TRUE(view.Ok());
+  EXPECT_EQ(6U, view.SizeInBytes());
+  EXPECT_TRUE(view.IsComplete());
+}
+
+// `payload`'s end is unreadable (`length` is past the end of the buffer) and
+// `tail`'s end is undefined (`divisor` is zero).  An undefined operand makes
+// `$max()` undefined wherever it comes, so the size is undefined and the
+// structure is complete, even though the unreadable end is folded in first.
+TEST(UnreadableThenUndefinedSize, UndefinedEndBeatsEarlierUnreadableEnd) {
+  static constexpr ::std::array</**/ ::std::uint8_t, 1> kBuf = {{0x00}};
+  auto view = MakeUnreadableThenUndefinedSizeView(&kBuf);
+  EXPECT_FALSE(view.Ok());
+  EXPECT_FALSE(view.SizeIsKnown());
+  EXPECT_TRUE(view.IntrinsicSizeInBytes().IsUndefined().ValueOr(false));
+  EXPECT_TRUE(view.IsComplete());
+}
+
+// With a nonzero divisor, only the unreadable end is un-Known: the structure is
+// short, not undefined, so it is not complete.
+TEST(UnreadableThenUndefinedSize, UnreadableEndAloneIsIncomplete) {
+  static constexpr ::std::array</**/ ::std::uint8_t, 1> kBuf = {{0x04}};
+  auto view = MakeUnreadableThenUndefinedSizeView(&kBuf);
+  EXPECT_FALSE(view.Ok());
+  EXPECT_FALSE(view.SizeIsKnown());
+  EXPECT_FALSE(view.IntrinsicSizeInBytes().IsUndefined().Known());
+  EXPECT_FALSE(view.IsComplete());
+}
+
 }  // namespace
 }  // namespace test
 }  // namespace emboss
