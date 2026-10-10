@@ -983,6 +983,20 @@ In the future, Emboss may add a "known values only" annotation to enum fields,
 in which case `Ok` would also check that the given field contains a known value.
 
 
+### `OkAndUncheckedRead` method
+
+```c++
+::emboss::support::Maybe<EnumType> OkAndUncheckedRead() const;
+```
+
+`OkAndUncheckedRead` combines `Ok` and `UncheckedRead` into a single operation:
+if the enum field is `Ok`, the result is `Known` and holds the value of the
+field; otherwise, the result is not `Known`.  Unlike `Read`, it never asserts:
+a field which is not `Ok` yields a result which is not `Known`, instead of a
+failed assertion.  It reads the backing store at most once, and is what
+generated code uses to evaluate expressions which refer to the field.
+
+
 ### `IsComplete` method
 
 ```c++
@@ -1273,6 +1287,20 @@ The `Ok` method returns `true` if there are enough bytes in the backing store to
 hold the given `UInt` field.
 
 
+### `OkAndUncheckedRead` method
+
+```c++
+::emboss::support::Maybe<ValueType> OkAndUncheckedRead() const;
+```
+
+`OkAndUncheckedRead` combines `Ok` and `UncheckedRead` into a single operation:
+if the `UInt` field is `Ok`, the result is `Known` and holds the value of the
+field; otherwise, the result is not `Known`.  Unlike `Read`, it never asserts:
+a field which is not `Ok` yields a result which is not `Known`, instead of a
+failed assertion.  It reads the backing store at most once, and is what
+generated code uses to evaluate expressions which refer to the field.
+
+
 ### `IsComplete` method
 
 ```c++
@@ -1424,6 +1452,20 @@ bool Ok() const;
 
 The `Ok` method returns `true` if there are enough bytes in the backing store to
 hold the given `Int` field.
+
+
+### `OkAndUncheckedRead` method
+
+```c++
+::emboss::support::Maybe<ValueType> OkAndUncheckedRead() const;
+```
+
+`OkAndUncheckedRead` combines `Ok` and `UncheckedRead` into a single operation:
+if the `Int` field is `Ok`, the result is `Known` and holds the value of the
+field; otherwise, the result is not `Known`.  Unlike `Read`, it never asserts:
+a field which is not `Ok` yields a result which is not `Known`, instead of a
+failed assertion.  It reads the backing store at most once, and is what
+generated code uses to evaluate expressions which refer to the field.
 
 
 ### `IsComplete` method
@@ -1584,6 +1626,20 @@ that every nibble in the backing store contains a value between 0 and 9,
 inclusive.
 
 
+### `OkAndUncheckedRead` method
+
+```c++
+::emboss::support::Maybe<ValueType> OkAndUncheckedRead() const;
+```
+
+`OkAndUncheckedRead` combines `Ok` and `UncheckedRead` into a single operation:
+if the `Bcd` field is `Ok`, the result is `Known` and holds the value of the
+field; otherwise, the result is not `Known`.  Unlike `Read`, it never asserts:
+a field which is not `Ok` yields a result which is not `Known`, instead of a
+failed assertion.  It reads the backing store at most once, and is what
+generated code uses to evaluate expressions which refer to the field.
+
+
 ### `IsComplete` method
 
 ```c++
@@ -1710,6 +1766,20 @@ bool Ok() const;
 ```
 
 The `Ok` method returns `true` if the backing store contains the `Flag`'s bit.
+
+
+### `OkAndUncheckedRead` method
+
+```c++
+::emboss::support::Maybe<bool> OkAndUncheckedRead() const;
+```
+
+`OkAndUncheckedRead` combines `Ok` and `UncheckedRead` into a single operation:
+if the `Flag` field is `Ok`, the result is `Known` and holds the value of the
+field; otherwise, the result is not `Known`.  Unlike `Read`, it never asserts:
+a field which is not `Ok` yields a result which is not `Known`, instead of a
+failed assertion.  It reads the backing store at most once, and is what
+generated code uses to evaluate expressions which refer to the field.
 
 
 ### `IsComplete` method
@@ -1843,6 +1913,20 @@ bool Ok() const;
 
 The `Ok` method returns `true` if there are enough bytes in the backing store to
 hold the given `Float` field.
+
+
+### `OkAndUncheckedRead` method
+
+```c++
+::emboss::support::Maybe<ValueType> OkAndUncheckedRead() const;
+```
+
+`OkAndUncheckedRead` combines `Ok` and `UncheckedRead` into a single operation:
+if the `Float` field is `Ok`, the result is `Known` and holds the value of the
+field; otherwise, the result is not `Known`.  Unlike `Read`, it never asserts:
+a field which is not `Ok` yields a result which is not `Known`, instead of a
+failed assertion.  It reads the backing store at most once, and is what
+generated code uses to evaluate expressions which refer to the field.
 
 
 ### `IsComplete` method

@@ -418,6 +418,17 @@ TEST(ReadOnlyContiguousBuffer, Methods) {
   EXPECT_EQ(4U, (buffer.GetOffsetStorage<1, 0>(0, 4).SizeInBytes()));
   EXPECT_EQ(0U, (buffer.GetOffsetStorage<1, 0>(bytes.size(), 4).SizeInBytes()));
   EXPECT_FALSE((ReadOnlyContiguousBuffer().GetOffsetStorage<1, 0>(0, 0).Ok()));
+  EXPECT_FALSE((ReadOnlyContiguousBuffer().GetOffsetStorage<1, 0>(4, 4).Ok()));
+  EXPECT_EQ(
+      0U,
+      (ReadOnlyContiguousBuffer().GetOffsetStorage<1, 0>(4, 4).SizeInBytes()));
+
+  // A buffer over an empty container should have size 0 whether or not the
+  // container's data() is null.
+  const ::std::vector</**/ ::std::uint8_t> empty_vector;
+  EXPECT_EQ(0U, ReadOnlyContiguousBuffer(&empty_vector).SizeInBytes());
+  const ::std::string empty_string;
+  EXPECT_EQ(0U, ReadOnlyContiguousBuffer(&empty_string).SizeInBytes());
 }
 
 TEST(ReadWriteContiguousBuffer, Methods) {
@@ -655,6 +666,11 @@ TEST(BitBlock, LittleEndianMethods) {
   EXPECT_EQ(64U, LittleEndianBitBlockN<64>().SizeInBits());
   EXPECT_FALSE(
       (LittleEndianBitBlockN<64>{ReadWriteContiguousBuffer{bytes, 0}}.Ok()));
+  // A buffer of the wrong size is not Ok(), whether too small or too large.
+  EXPECT_FALSE(
+      (LittleEndianBitBlockN<64>{ReadWriteContiguousBuffer{bytes, 4}}.Ok()));
+  EXPECT_FALSE(
+      (LittleEndianBitBlockN<64>{ReadWriteContiguousBuffer{bytes, 16}}.Ok()));
 }
 
 TEST(BitBlock, GetOffsetStorage) {

@@ -29,17 +29,26 @@ namespace support {
 template <typename ValueT>
 class MaybeConstantView {
  public:
-  MaybeConstantView() : value_() {}
-  constexpr explicit MaybeConstantView(ValueT value) : value_(value) {}
-  MaybeConstantView(const MaybeConstantView &) = default;
-  MaybeConstantView(MaybeConstantView &&) = default;
-  MaybeConstantView &operator=(const MaybeConstantView &) = default;
-  MaybeConstantView &operator=(MaybeConstantView &&) = default;
+  EMBOSS_ALWAYS_INLINE MaybeConstantView() : value_() {}
+  EMBOSS_ALWAYS_INLINE constexpr explicit MaybeConstantView(ValueT value)
+      : value_(value) {}
+  EMBOSS_ALWAYS_INLINE MaybeConstantView(const MaybeConstantView &) = default;
+  EMBOSS_ALWAYS_INLINE MaybeConstantView(MaybeConstantView &&) = default;
+  EMBOSS_ALWAYS_INLINE MaybeConstantView &operator=(const MaybeConstantView &) =
+      default;
+  EMBOSS_ALWAYS_INLINE MaybeConstantView &operator=(MaybeConstantView &&) =
+      default;
   ~MaybeConstantView() = default;
 
-  constexpr ValueT Read() const { return value_.Value(); }
-  constexpr ValueT UncheckedRead() const { return value_.ValueOrDefault(); }
-  constexpr bool Ok() const { return value_.Known(); }
+  EMBOSS_ALWAYS_INLINE constexpr ValueT Read() const { return value_.Value(); }
+  EMBOSS_ALWAYS_INLINE constexpr ValueT UncheckedRead() const {
+    return value_.ValueOrDefault();
+  }
+  EMBOSS_ALWAYS_INLINE constexpr bool Ok() const { return value_.Known(); }
+  EMBOSS_ALWAYS_INLINE constexpr ::emboss::support::Maybe<ValueT>
+  OkAndUncheckedRead() const {
+    return value_;
+  }
 
  private:
   ::emboss::support::Maybe<ValueT> value_;
