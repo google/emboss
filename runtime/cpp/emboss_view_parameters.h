@@ -18,24 +18,29 @@
 #ifndef EMBOSS_RUNTIME_CPP_EMBOSS_VIEW_PARAMETERS_H_
 #define EMBOSS_RUNTIME_CPP_EMBOSS_VIEW_PARAMETERS_H_
 
+#include <type_traits>
+
+#include "runtime/cpp/emboss_defines.h"
+
 namespace emboss {
 namespace support {
+
+struct AllValuesAreOk {
+  template <typename ValueType>
+  static EMBOSS_ALWAYS_INLINE constexpr bool ValueIsOk(ValueType) {
+    return true;
+  }
+};
 
 template <int kBitsParam, typename Verifier>
 struct FixedSizeViewParameters {
   static constexpr int kBits = kBitsParam;
-  template <typename ValueType>
-  static constexpr bool ValueIsOk(ValueType value) {
-    return Verifier::ValueIsOk(value);
+  static EMBOSS_ALWAYS_INLINE constexpr bool AllValuesAreOk() {
+    return ::std::is_same<Verifier, ::emboss::support::AllValuesAreOk>::value;
   }
-  // TODO(bolms): add AllValuesAreOk(), and use it to shortcut Ok() processing
-  // for arrays and other compound objects.
-};
-
-struct AllValuesAreOk {
   template <typename ValueType>
-  static constexpr bool ValueIsOk(ValueType) {
-    return true;
+  static EMBOSS_ALWAYS_INLINE constexpr bool ValueIsOk(ValueType value) {
+    return Verifier::ValueIsOk(value);
   }
 };
 

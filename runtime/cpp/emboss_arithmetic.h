@@ -49,10 +49,9 @@ namespace support {
 // can be used directly for each operation, but casting may be required in
 // between operations.
 
-
 // AllKnown(...) returns true if all of its arguments are Known().  The base
 // case is no arguments.
-inline constexpr bool AllKnown() { return true; }
+EMBOSS_ALWAYS_INLINE constexpr bool AllKnown() { return true; }
 
 // The rest of AllKnown() could be:
 //
@@ -87,7 +86,7 @@ inline constexpr bool AllKnown() { return true; }
 // the result.
 template <typename IntermediateT, typename ResultT, typename OperatorT,
           typename... ArgsT>
-inline constexpr Maybe<ResultT> MaybeDo(Maybe<ArgsT>... args) {
+EMBOSS_ALWAYS_INLINE constexpr Maybe<ResultT> MaybeDo(Maybe<ArgsT>... args) {
   return AllKnown(args...)
              ? Maybe<ResultT>(static_cast<ResultT>(OperatorT::template Do<>(
                    static_cast<IntermediateT>(args.ValueOrDefault())...)))
@@ -98,28 +97,28 @@ inline constexpr Maybe<ResultT> MaybeDo(Maybe<ArgsT>... args) {
 
 struct SumOperation {
   template <typename T>
-  static inline constexpr T Do(T l, T r) {
+  static EMBOSS_ALWAYS_INLINE constexpr T Do(T l, T r) {
     return l + r;
   }
 };
 
 struct DifferenceOperation {
   template <typename T>
-  static inline constexpr T Do(T l, T r) {
+  static EMBOSS_ALWAYS_INLINE constexpr T Do(T l, T r) {
     return l - r;
   }
 };
 
 struct ProductOperation {
   template <typename T>
-  static inline constexpr T Do(T l, T r) {
+  static EMBOSS_ALWAYS_INLINE constexpr T Do(T l, T r) {
     return l * r;
   }
 };
 
 // Assertions for the template types of comparisons.
 template <typename ResultT, typename LeftT, typename RightT>
-inline constexpr bool AssertComparisonInPartsTypes() {
+EMBOSS_ALWAYS_INLINE constexpr bool AssertComparisonInPartsTypes() {
   static_assert(::std::is_same<ResultT, bool>::value,
                 "EMBOSS BUG: Comparisons must return bool.");
   static_assert(
@@ -133,42 +132,42 @@ inline constexpr bool AssertComparisonInPartsTypes() {
 
 struct EqualOperation {
   template <typename T>
-  static inline constexpr bool Do(T l, T r) {
+  static EMBOSS_ALWAYS_INLINE constexpr bool Do(T l, T r) {
     return l == r;
   }
 };
 
 struct NotEqualOperation {
   template <typename T>
-  static inline constexpr bool Do(T l, T r) {
+  static EMBOSS_ALWAYS_INLINE constexpr bool Do(T l, T r) {
     return l != r;
   }
 };
 
 struct LessThanOperation {
   template <typename T>
-  static inline constexpr bool Do(T l, T r) {
+  static EMBOSS_ALWAYS_INLINE constexpr bool Do(T l, T r) {
     return l < r;
   }
 };
 
 struct LessThanOrEqualOperation {
   template <typename T>
-  static inline constexpr bool Do(T l, T r) {
+  static EMBOSS_ALWAYS_INLINE constexpr bool Do(T l, T r) {
     return l <= r;
   }
 };
 
 struct GreaterThanOperation {
   template <typename T>
-  static inline constexpr bool Do(T l, T r) {
+  static EMBOSS_ALWAYS_INLINE constexpr bool Do(T l, T r) {
     return l > r;
   }
 };
 
 struct GreaterThanOrEqualOperation {
   template <typename T>
-  static inline constexpr bool Do(T l, T r) {
+  static EMBOSS_ALWAYS_INLINE constexpr bool Do(T l, T r) {
     return l >= r;
   }
 };
@@ -178,7 +177,7 @@ struct GreaterThanOrEqualOperation {
 struct MaximumOperation {
   // Maximum of 1 element is just itself.
   template <typename T>
-  static inline constexpr T Do(T arg) {
+  static EMBOSS_ALWAYS_INLINE constexpr T Do(T arg) {
     return arg;
   }
 
@@ -208,18 +207,18 @@ struct MaximumOperation {
 
   // Maximum of 2-4 elements are special-cased.
   template <typename T>
-  static inline constexpr T Do(T v0, T v1) {
+  static EMBOSS_ALWAYS_INLINE constexpr T Do(T v0, T v1) {
     // C++11 std::max is not constexpr, so we can't just call it.
     return v0 < v1 ? v1 : v0;
   }
 
   template <typename T>
-  static inline constexpr T Do(T v0, T v1, T v2) {
+  static EMBOSS_ALWAYS_INLINE constexpr T Do(T v0, T v1, T v2) {
     return Do(v0 < v1 ? v1 : v0, v2);
   }
 
   template <typename T>
-  static inline constexpr T Do(T v0, T v1, T v2, T v3) {
+  static EMBOSS_ALWAYS_INLINE constexpr T Do(T v0, T v1, T v2, T v3) {
     return Do(v0 < v1 ? v1 : v0, v2 < v3 ? v3 : v2);
   }
 
@@ -248,7 +247,7 @@ struct MaximumOperation {
 // Assertions for And and Or.
 template <typename IntermediateT, typename ResultT, typename LeftT,
           typename RightT>
-inline constexpr bool AssertBooleanOperationTypes() {
+EMBOSS_ALWAYS_INLINE constexpr bool AssertBooleanOperationTypes() {
   // And and Or are templates so that the Emboss code generator
   // doesn't have to special case AND, but they should only be instantiated with
   // <bool, bool, bool>.  This pushes a bit of extra work onto the C++ compiler.
@@ -265,7 +264,8 @@ inline constexpr bool AssertBooleanOperationTypes() {
 
 template <typename IntermediateT, typename ResultT, typename LeftT,
           typename RightT>
-inline constexpr Maybe<ResultT> And(Maybe<LeftT> l, Maybe<RightT> r) {
+EMBOSS_ALWAYS_INLINE constexpr Maybe<ResultT> And(Maybe<LeftT> l,
+                                                  Maybe<RightT> r) {
   // If either value is false, the result is false, even if the other value is
   // unknown.  Otherwise, if either value is unknown, the result is unknown.
   // Otherwise, both values are true, and the result is true.
@@ -278,7 +278,8 @@ inline constexpr Maybe<ResultT> And(Maybe<LeftT> l, Maybe<RightT> r) {
 
 template <typename IntermediateT, typename ResultT, typename LeftT,
           typename RightT>
-inline constexpr Maybe<ResultT> Or(Maybe<LeftT> l, Maybe<RightT> r) {
+EMBOSS_ALWAYS_INLINE constexpr Maybe<ResultT> Or(Maybe<LeftT> l,
+                                                 Maybe<RightT> r) {
   // If either value is true, the result is true, even if the other value is
   // unknown.  Otherwise, if either value is unknown, the result is unknown.
   // Otherwise, both values are false, and the result is false.
@@ -290,7 +291,8 @@ inline constexpr Maybe<ResultT> Or(Maybe<LeftT> l, Maybe<RightT> r) {
 }
 
 template <typename ResultT, typename ValueT>
-inline constexpr Maybe<ResultT> MaybeStaticCast(Maybe<ValueT> value) {
+EMBOSS_ALWAYS_INLINE constexpr Maybe<ResultT> MaybeStaticCast(
+    Maybe<ValueT> value) {
   return value.Known()
              ? Maybe<ResultT>(static_cast<ResultT>(value.ValueOrDefault()))
              : Maybe<ResultT>();
@@ -298,9 +300,8 @@ inline constexpr Maybe<ResultT> MaybeStaticCast(Maybe<ValueT> value) {
 
 template <typename IntermediateT, typename ResultT, typename ConditionT,
           typename TrueT, typename FalseT>
-inline constexpr Maybe<ResultT> Choice(Maybe<ConditionT> condition,
-                                       Maybe<TrueT> if_true,
-                                       Maybe<FalseT> if_false) {
+EMBOSS_ALWAYS_INLINE constexpr Maybe<ResultT> Choice(
+    Maybe<ConditionT> condition, Maybe<TrueT> if_true, Maybe<FalseT> if_false) {
   // Since the result of a condition could be any value from either if_true or
   // if_false, it should be the same type as IntermediateT.
   static_assert(::std::is_same<IntermediateT, ResultT>::value,
@@ -323,68 +324,75 @@ inline constexpr Maybe<ResultT> Choice(Maybe<ConditionT> condition,
 
 template <typename IntermediateT, typename ResultT, typename LeftT,
           typename RightT>
-inline constexpr Maybe<ResultT> Sum(Maybe<LeftT> l, Maybe<RightT> r) {
+EMBOSS_ALWAYS_INLINE constexpr Maybe<ResultT> Sum(Maybe<LeftT> l,
+                                                  Maybe<RightT> r) {
   return MaybeDo<IntermediateT, ResultT, SumOperation, LeftT, RightT>(l, r);
 }
 
 template <typename IntermediateT, typename ResultT, typename LeftT,
           typename RightT>
-inline constexpr Maybe<ResultT> Difference(Maybe<LeftT> l, Maybe<RightT> r) {
+EMBOSS_ALWAYS_INLINE constexpr Maybe<ResultT> Difference(Maybe<LeftT> l,
+                                                         Maybe<RightT> r) {
   return MaybeDo<IntermediateT, ResultT, DifferenceOperation, LeftT, RightT>(l,
                                                                              r);
 }
 
 template <typename IntermediateT, typename ResultT, typename LeftT,
           typename RightT>
-inline constexpr Maybe<ResultT> Product(Maybe<LeftT> l, Maybe<RightT> r) {
+EMBOSS_ALWAYS_INLINE constexpr Maybe<ResultT> Product(Maybe<LeftT> l,
+                                                      Maybe<RightT> r) {
   return MaybeDo<IntermediateT, ResultT, ProductOperation, LeftT, RightT>(l, r);
 }
 
 template <typename IntermediateT, typename ResultT, typename LeftT,
           typename RightT>
-inline constexpr Maybe<ResultT> Equal(Maybe<LeftT> l, Maybe<RightT> r) {
+EMBOSS_ALWAYS_INLINE constexpr Maybe<ResultT> Equal(Maybe<LeftT> l,
+                                                    Maybe<RightT> r) {
   return MaybeDo<IntermediateT, ResultT, EqualOperation, LeftT, RightT>(l, r);
 }
 
 template <typename IntermediateT, typename ResultT, typename LeftT,
           typename RightT>
-inline constexpr Maybe<ResultT> NotEqual(Maybe<LeftT> l, Maybe<RightT> r) {
+EMBOSS_ALWAYS_INLINE constexpr Maybe<ResultT> NotEqual(Maybe<LeftT> l,
+                                                       Maybe<RightT> r) {
   return MaybeDo<IntermediateT, ResultT, NotEqualOperation, LeftT, RightT>(l,
                                                                            r);
 }
 
 template <typename IntermediateT, typename ResultT, typename LeftT,
           typename RightT>
-inline constexpr Maybe<ResultT> LessThan(Maybe<LeftT> l, Maybe<RightT> r) {
+EMBOSS_ALWAYS_INLINE constexpr Maybe<ResultT> LessThan(Maybe<LeftT> l,
+                                                       Maybe<RightT> r) {
   return MaybeDo<IntermediateT, ResultT, LessThanOperation, LeftT, RightT>(l,
                                                                            r);
 }
 
 template <typename IntermediateT, typename ResultT, typename LeftT,
           typename RightT>
-inline constexpr Maybe<ResultT> LessThanOrEqual(Maybe<LeftT> l,
-                                                Maybe<RightT> r) {
+EMBOSS_ALWAYS_INLINE constexpr Maybe<ResultT> LessThanOrEqual(Maybe<LeftT> l,
+                                                              Maybe<RightT> r) {
   return MaybeDo<IntermediateT, ResultT, LessThanOrEqualOperation, LeftT,
                  RightT>(l, r);
 }
 
 template <typename IntermediateT, typename ResultT, typename LeftT,
           typename RightT>
-inline constexpr Maybe<ResultT> GreaterThan(Maybe<LeftT> l, Maybe<RightT> r) {
+EMBOSS_ALWAYS_INLINE constexpr Maybe<ResultT> GreaterThan(Maybe<LeftT> l,
+                                                          Maybe<RightT> r) {
   return MaybeDo<IntermediateT, ResultT, GreaterThanOperation, LeftT, RightT>(
       l, r);
 }
 
 template <typename IntermediateT, typename ResultT, typename LeftT,
           typename RightT>
-inline constexpr Maybe<ResultT> GreaterThanOrEqual(Maybe<LeftT> l,
-                                                   Maybe<RightT> r) {
+EMBOSS_ALWAYS_INLINE constexpr Maybe<ResultT> GreaterThanOrEqual(
+    Maybe<LeftT> l, Maybe<RightT> r) {
   return MaybeDo<IntermediateT, ResultT, GreaterThanOrEqualOperation, LeftT,
                  RightT>(l, r);
 }
 
 template <typename IntermediateT, typename ResultT, typename... ArgsT>
-inline constexpr Maybe<ResultT> Maximum(Maybe<ArgsT>... args) {
+EMBOSS_ALWAYS_INLINE constexpr Maybe<ResultT> Maximum(Maybe<ArgsT>... args) {
   return MaybeDo<IntermediateT, ResultT, MaximumOperation, ArgsT...>(args...);
 }
 
