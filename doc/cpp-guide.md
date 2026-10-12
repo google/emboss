@@ -145,6 +145,13 @@ class GenericMyStructView final {
   // MyStruct, at least 12 bytes), and all fields are Ok().  For this struct,
   // the Int and UInt fields are always Ok(), and the Bcd field is Ok() if none
   // of its nibbles has a value greater than 9.
+  //
+  // For structs with conditional (`if`) fields: a conditional field that is
+  // simply absent -- its condition is known to be false -- does not make Ok()
+  // false.  However, if a field's existence cannot be determined -- for
+  // example, its `if` condition reads another field that is itself absent or
+  // outside the bounds of the Storage -- then Ok() returns false, even when
+  // IsComplete() returns true.
   bool Ok() const;
 
   // IsComplete() returns true if the Storage is big enough for the struct.

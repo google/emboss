@@ -215,6 +215,46 @@ class GenericEmbossReservedAnonymousField1View;
 template <class Storage>
 class GenericConditionalOnFlagView;
 
+namespace ResidualConditionalDiscriminant {
+
+}  // namespace ResidualConditionalDiscriminant
+
+template <class Storage>
+class GenericResidualConditionalDiscriminantView;
+
+namespace BareConditionalDiscriminant {
+
+}  // namespace BareConditionalDiscriminant
+
+template <class Storage>
+class GenericBareConditionalDiscriminantView;
+
+namespace DominatedBareDiscriminant {}  // namespace DominatedBareDiscriminant
+
+template <class Storage>
+class GenericDominatedBareDiscriminantView;
+
+namespace DisjunctionConditionalDiscriminant {
+
+}  // namespace DisjunctionConditionalDiscriminant
+
+template <class Storage>
+class GenericDisjunctionConditionalDiscriminantView;
+
+namespace SingleEntryConditionalDiscriminant {
+
+}  // namespace SingleEntryConditionalDiscriminant
+
+template <class Storage>
+class GenericSingleEntryConditionalDiscriminantView;
+
+namespace EnumConditionalDiscriminant {
+
+}  // namespace EnumConditionalDiscriminant
+
+template <class Storage>
+class GenericEnumConditionalDiscriminantView;
+
 namespace BasicConditional {}  // namespace BasicConditional
 
 template <class View>
@@ -19445,6 +19485,4413 @@ MakeAlignedConditionalOnFlagView(T* emboss_reserved_local_data,
       emboss_reserved_local_data, emboss_reserved_local_size);
 }
 
+namespace ResidualConditionalDiscriminant {
+
+}  // namespace ResidualConditionalDiscriminant
+
+template <class View>
+struct EmbossReservedInternalIsGenericResidualConditionalDiscriminantView;
+
+template <class Storage>
+class GenericResidualConditionalDiscriminantView final {
+ public:
+  GenericResidualConditionalDiscriminantView() : backing_() {}
+  explicit GenericResidualConditionalDiscriminantView(
+      Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
+
+  template <typename OtherStorage>
+  GenericResidualConditionalDiscriminantView(
+      const GenericResidualConditionalDiscriminantView<OtherStorage>&
+          emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
+
+  template <
+      typename Arg,
+      typename = typename ::std::enable_if<
+          !EmbossReservedInternalIsGenericResidualConditionalDiscriminantView<
+              typename ::std::remove_cv<typename ::std::remove_reference<
+                  Arg>::type>::type>::value>::type>
+  explicit GenericResidualConditionalDiscriminantView(
+      Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
+  template <typename Arg0, typename Arg1, typename... Args>
+  explicit GenericResidualConditionalDiscriminantView(
+      Arg0&& emboss_reserved_local_arg0, Arg1&& emboss_reserved_local_arg1,
+      Args&&... emboss_reserved_local_args)
+      : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
+                 ::std::forward<Arg1>(emboss_reserved_local_arg1),
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
+
+  template <typename OtherStorage>
+  GenericResidualConditionalDiscriminantView<Storage>& operator=(
+      const GenericResidualConditionalDiscriminantView<OtherStorage>&
+          emboss_reserved_local_other) {
+    backing_ = emboss_reserved_local_other.BackingStorage();
+    return *this;
+  }
+
+  bool Ok() const {
+    if (!IsComplete()) return false;
+
+    if (!has_outer().Known()) return false;
+    if (has_outer().ValueOrDefault() && !outer().Ok()) return false;
+
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
+
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
+
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
+
+    if (!has_tag().Known()) return false;
+    if (has_tag().ValueOrDefault() && !tag().Ok()) return false;
+
+    if (!has_a().Known()) return false;
+    if (has_a().ValueOrDefault() && !a().Ok()) return false;
+
+    if (!has_b().Known()) return false;
+    if (has_b().ValueOrDefault() && !b().Ok()) return false;
+
+    return true;
+  }
+  Storage BackingStorage() const { return backing_; }
+  bool IsComplete() const {
+    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+           backing_.SizeInBytes() >=
+               static_cast</**/ ::std::size_t>(
+                   IntrinsicSizeInBytes().UncheckedRead());
+  }
+  ::std::size_t SizeInBytes() const {
+    return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
+  }
+  bool SizeIsKnown() const { return IntrinsicSizeInBytes().Ok(); }
+
+  template <typename OtherStorage>
+  bool Equals(GenericResidualConditionalDiscriminantView<OtherStorage>
+                  emboss_reserved_local_other) const {
+    if (!has_outer().Known()) return false;
+    if (!emboss_reserved_local_other.has_outer().Known()) return false;
+
+    if (emboss_reserved_local_other.has_outer().ValueOrDefault() &&
+        !has_outer().ValueOrDefault())
+      return false;
+    if (has_outer().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_outer().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_outer().ValueOrDefault() &&
+        has_outer().ValueOrDefault() &&
+        !outer().Equals(emboss_reserved_local_other.outer()))
+      return false;
+
+    if (!has_tag().Known()) return false;
+    if (!emboss_reserved_local_other.has_tag().Known()) return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOrDefault() &&
+        !has_tag().ValueOrDefault())
+      return false;
+    if (has_tag().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_tag().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOrDefault() &&
+        has_tag().ValueOrDefault() &&
+        !tag().Equals(emboss_reserved_local_other.tag()))
+      return false;
+
+    if (!has_a().Known()) return false;
+    if (!emboss_reserved_local_other.has_a().Known()) return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOrDefault() &&
+        !has_a().ValueOrDefault())
+      return false;
+    if (has_a().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_a().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOrDefault() &&
+        has_a().ValueOrDefault() &&
+        !a().Equals(emboss_reserved_local_other.a()))
+      return false;
+
+    if (!has_b().Known()) return false;
+    if (!emboss_reserved_local_other.has_b().Known()) return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOrDefault() &&
+        !has_b().ValueOrDefault())
+      return false;
+    if (has_b().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_b().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOrDefault() &&
+        has_b().ValueOrDefault() &&
+        !b().Equals(emboss_reserved_local_other.b()))
+      return false;
+
+    return true;
+  }
+  template <typename OtherStorage>
+  bool UncheckedEquals(GenericResidualConditionalDiscriminantView<OtherStorage>
+                           emboss_reserved_local_other) const {
+    if (emboss_reserved_local_other.has_outer().ValueOr(false) &&
+        !has_outer().ValueOr(false))
+      return false;
+    if (has_outer().ValueOr(false) &&
+        !emboss_reserved_local_other.has_outer().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_outer().ValueOr(false) &&
+        has_outer().ValueOr(false) &&
+        !outer().UncheckedEquals(emboss_reserved_local_other.outer()))
+      return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOr(false) &&
+        !has_tag().ValueOr(false))
+      return false;
+    if (has_tag().ValueOr(false) &&
+        !emboss_reserved_local_other.has_tag().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOr(false) &&
+        has_tag().ValueOr(false) &&
+        !tag().UncheckedEquals(emboss_reserved_local_other.tag()))
+      return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOr(false) &&
+        !has_a().ValueOr(false))
+      return false;
+    if (has_a().ValueOr(false) &&
+        !emboss_reserved_local_other.has_a().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOr(false) &&
+        has_a().ValueOr(false) &&
+        !a().UncheckedEquals(emboss_reserved_local_other.a()))
+      return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOr(false) &&
+        !has_b().ValueOr(false))
+      return false;
+    if (has_b().ValueOr(false) &&
+        !emboss_reserved_local_other.has_b().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOr(false) &&
+        has_b().ValueOr(false) &&
+        !b().UncheckedEquals(emboss_reserved_local_other.b()))
+      return false;
+
+    return true;
+  }
+  template <typename OtherStorage>
+  void UncheckedCopyFrom(
+      GenericResidualConditionalDiscriminantView<OtherStorage>
+          emboss_reserved_local_other) const {
+    backing_.UncheckedCopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+  }
+
+  template <typename OtherStorage>
+  void CopyFrom(GenericResidualConditionalDiscriminantView<OtherStorage>
+                    emboss_reserved_local_other) const {
+    backing_.CopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+  template <typename OtherStorage>
+  bool TryToCopyFrom(GenericResidualConditionalDiscriminantView<OtherStorage>
+                         emboss_reserved_local_other) const {
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+
+  template <class Stream>
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
+    ::std::string emboss_reserved_local_brace;
+    if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                      &emboss_reserved_local_brace))
+      return false;
+    if (emboss_reserved_local_brace != "{") return false;
+    for (;;) {
+      ::std::string emboss_reserved_local_name;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_name))
+        return false;
+      if (emboss_reserved_local_name == ",")
+        if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                          &emboss_reserved_local_name))
+          return false;
+      if (emboss_reserved_local_name == "}") return true;
+      ::std::string emboss_reserved_local_colon;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_colon))
+        return false;
+      if (emboss_reserved_local_colon != ":") return false;
+      if (emboss_reserved_local_name == "outer") {
+        if (!outer().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "tag") {
+        if (!tag().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "a") {
+        if (!a().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "b") {
+        if (!b().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      return false;
+    }
+  }
+
+  template <class Stream>
+  void WriteToTextStream(
+      Stream* emboss_reserved_local_stream,
+      ::emboss::TextOutputOptions emboss_reserved_local_options) const {
+    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
+        emboss_reserved_local_options.PlusOneIndent();
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write("{\n");
+    } else {
+      emboss_reserved_local_stream->Write("{");
+    }
+    bool emboss_reserved_local_wrote_field = false;
+    if (has_outer().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          outer().IsAggregate() || outer().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("outer: ");
+        outer().WriteToTextStream(emboss_reserved_local_stream,
+                                  emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !outer().IsAggregate() && !outer().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# outer: UNREADABLE\n");
+      }
+    }
+
+    if (has_tag().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          tag().IsAggregate() || tag().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("tag: ");
+        tag().WriteToTextStream(emboss_reserved_local_stream,
+                                emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !tag().IsAggregate() && !tag().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# tag: UNREADABLE\n");
+      }
+    }
+
+    if (has_a().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          a().IsAggregate() || a().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("a: ");
+        a().WriteToTextStream(emboss_reserved_local_stream,
+                              emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !a().IsAggregate() && !a().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# a: UNREADABLE\n");
+      }
+    }
+
+    if (has_b().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          b().IsAggregate() || b().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("b: ");
+        b().WriteToTextStream(emboss_reserved_local_stream,
+                              emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !b().IsAggregate() && !b().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# b: UNREADABLE\n");
+      }
+    }
+
+    (void)emboss_reserved_local_wrote_field;
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write(
+          emboss_reserved_local_options.current_indent());
+      emboss_reserved_local_stream->Write("}");
+    } else {
+      emboss_reserved_local_stream->Write(" }");
+    }
+  }
+
+  static constexpr bool IsAggregate() { return true; }
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
+
+  outer() const;
+  ::emboss::support::Maybe<bool> has_outer() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 1>>,
+          8>>
+
+  tag() const;
+  ::emboss::support::Maybe<bool> has_tag() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+  a() const;
+  ::emboss::support::Maybe<bool> has_a() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+  b() const;
+  ::emboss::support::Maybe<bool> has_b() const;
+
+ public:
+  class EmbossReservedDollarVirtualIntrinsicSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    explicit EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const GenericResidualConditionalDiscriminantView&
+            emboss_reserved_local_view)
+        : view_(emboss_reserved_local_view) {}
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = delete;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
+
+    ::std::int32_t Read() const {
+      EMBOSS_CHECK(view_.has_IntrinsicSizeInBytes().ValueOr(false));
+      auto emboss_reserved_local_value = MaybeRead();
+      EMBOSS_CHECK(emboss_reserved_local_value.Known());
+      EMBOSS_CHECK(ValueIsOk(emboss_reserved_local_value.ValueOrDefault()));
+      return emboss_reserved_local_value.ValueOrDefault();
+    }
+    ::std::int32_t UncheckedRead() const {
+      return MaybeRead().ValueOrDefault();
+    }
+    bool Ok() const {
+      auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known() &&
+             ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
+    }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+
+   private:
+    ::emboss::support::Maybe</**/ ::std::int32_t> MaybeRead() const {
+      const auto emboss_reserved_local_subexpr_1 = view_.outer();
+      const auto emboss_reserved_local_subexpr_2 =
+          (emboss_reserved_local_subexpr_1.Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(
+                         emboss_reserved_local_subexpr_1.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>());
+      const auto emboss_reserved_local_subexpr_3 =
+          ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(1LL)));
+      const auto emboss_reserved_local_subexpr_4 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_3,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(2LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_5 = view_.tag();
+      const auto emboss_reserved_local_subexpr_6 =
+          (emboss_reserved_local_subexpr_5.Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(
+                         emboss_reserved_local_subexpr_5.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>());
+      const auto emboss_reserved_local_subexpr_7 =
+          ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_6,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_8 =
+          ::emboss::support::And</**/ bool, bool, bool, bool>(
+              emboss_reserved_local_subexpr_7, emboss_reserved_local_subexpr_3);
+      const auto emboss_reserved_local_subexpr_9 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_8,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(3LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_10 =
+          ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_6,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(1LL)));
+      const auto emboss_reserved_local_subexpr_11 =
+          ::emboss::support::And</**/ bool, bool, bool, bool>(
+              emboss_reserved_local_subexpr_10,
+              emboss_reserved_local_subexpr_3);
+      const auto emboss_reserved_local_subexpr_12 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_11,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(3LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_13 = ::emboss::support::Maximum<
+          /**/ ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t>(
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(0LL)),
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(1LL)),
+          emboss_reserved_local_subexpr_4, emboss_reserved_local_subexpr_9,
+          emboss_reserved_local_subexpr_12);
+
+      return emboss_reserved_local_subexpr_13;
+    }
+
+    static constexpr bool ValueIsOk(
+        ::std::int32_t emboss_reserved_local_value) {
+      return (void)emboss_reserved_local_value,  // Silence -Wunused-parameter
+             ::emboss::support::Maybe<bool>(true).ValueOr(false);
+    }
+
+    const GenericResidualConditionalDiscriminantView view_;
+  };
+  EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes()
+      const;
+  ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() const;
+
+ public:
+  class EmbossReservedDollarVirtualMaxSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
+    return EmbossReservedDollarVirtualMaxSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ public:
+  class EmbossReservedDollarVirtualMinSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
+    return EmbossReservedDollarVirtualMinSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ private:
+  Storage backing_;
+
+  template <class OtherStorage>
+  friend class GenericResidualConditionalDiscriminantView;
+};
+using ResidualConditionalDiscriminantView =
+    GenericResidualConditionalDiscriminantView<
+        /**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+using ResidualConditionalDiscriminantWriter =
+    GenericResidualConditionalDiscriminantView<
+        /**/ ::emboss::support::ReadWriteContiguousBuffer>;
+
+template <class View>
+struct EmbossReservedInternalIsGenericResidualConditionalDiscriminantView {
+  static constexpr const bool value = false;
+};
+
+template <class Storage>
+struct EmbossReservedInternalIsGenericResidualConditionalDiscriminantView<
+    GenericResidualConditionalDiscriminantView<Storage>> {
+  static constexpr const bool value = true;
+};
+
+template <typename T>
+inline GenericResidualConditionalDiscriminantView<
+    /**/ ::emboss::support::ContiguousBuffer<
+        typename ::std::remove_reference<
+            decltype(*::std::declval<T>()->data())>::type,
+        1, 0>>
+MakeResidualConditionalDiscriminantView(T&& emboss_reserved_local_arg) {
+  return GenericResidualConditionalDiscriminantView<
+      /**/ ::emboss::support::ContiguousBuffer<
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
+}
+
+template <typename T>
+inline GenericResidualConditionalDiscriminantView<
+    /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeResidualConditionalDiscriminantView(
+    T* emboss_reserved_local_data, ::std::size_t emboss_reserved_local_size) {
+  return GenericResidualConditionalDiscriminantView<
+      /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
+}
+
+template <typename T, ::std::size_t kAlignment>
+inline GenericResidualConditionalDiscriminantView<
+    /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
+MakeAlignedResidualConditionalDiscriminantView(
+    T* emboss_reserved_local_data, ::std::size_t emboss_reserved_local_size) {
+  return GenericResidualConditionalDiscriminantView<
+      /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
+}
+
+namespace BareConditionalDiscriminant {
+
+}  // namespace BareConditionalDiscriminant
+
+template <class View>
+struct EmbossReservedInternalIsGenericBareConditionalDiscriminantView;
+
+template <class Storage>
+class GenericBareConditionalDiscriminantView final {
+ public:
+  GenericBareConditionalDiscriminantView() : backing_() {}
+  explicit GenericBareConditionalDiscriminantView(
+      Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
+
+  template <typename OtherStorage>
+  GenericBareConditionalDiscriminantView(
+      const GenericBareConditionalDiscriminantView<OtherStorage>&
+          emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
+
+  template <typename Arg,
+            typename = typename ::std::enable_if<
+                !EmbossReservedInternalIsGenericBareConditionalDiscriminantView<
+                    typename ::std::remove_cv<typename ::std::remove_reference<
+                        Arg>::type>::type>::value>::type>
+  explicit GenericBareConditionalDiscriminantView(
+      Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
+  template <typename Arg0, typename Arg1, typename... Args>
+  explicit GenericBareConditionalDiscriminantView(
+      Arg0&& emboss_reserved_local_arg0, Arg1&& emboss_reserved_local_arg1,
+      Args&&... emboss_reserved_local_args)
+      : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
+                 ::std::forward<Arg1>(emboss_reserved_local_arg1),
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
+
+  template <typename OtherStorage>
+  GenericBareConditionalDiscriminantView<Storage>& operator=(
+      const GenericBareConditionalDiscriminantView<OtherStorage>&
+          emboss_reserved_local_other) {
+    backing_ = emboss_reserved_local_other.BackingStorage();
+    return *this;
+  }
+
+  bool Ok() const {
+    if (!IsComplete()) return false;
+
+    const auto emboss_reserved_local_ok_subexpr_1 = tag();
+    const auto emboss_reserved_local_ok_subexpr_2 =
+        (emboss_reserved_local_ok_subexpr_1.Ok()
+             ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                   static_cast</**/ ::std::int32_t>(
+                       emboss_reserved_local_ok_subexpr_1.UncheckedRead()))
+             : ::emboss::support::Maybe</**/ ::std::int32_t>());
+
+    if (!has_outer().Known()) return false;
+    if (has_outer().ValueOrDefault() && !outer().Ok()) return false;
+
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
+
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
+
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
+
+    if (!has_tag().Known()) return false;
+    if (has_tag().ValueOrDefault() && !tag().Ok()) return false;
+
+    {
+      const auto emboss_reserved_switch_discrim =
+          emboss_reserved_local_ok_subexpr_2;
+      if (!emboss_reserved_switch_discrim.Known()) return false;
+      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
+        case static_cast</**/ ::std::int32_t>(0LL):
+          if (!a().Ok()) return false;
+          break;
+
+        case static_cast</**/ ::std::int32_t>(1LL):
+          if (!b().Ok()) return false;
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    return true;
+  }
+  Storage BackingStorage() const { return backing_; }
+  bool IsComplete() const {
+    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+           backing_.SizeInBytes() >=
+               static_cast</**/ ::std::size_t>(
+                   IntrinsicSizeInBytes().UncheckedRead());
+  }
+  ::std::size_t SizeInBytes() const {
+    return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
+  }
+  bool SizeIsKnown() const { return IntrinsicSizeInBytes().Ok(); }
+
+  template <typename OtherStorage>
+  bool Equals(GenericBareConditionalDiscriminantView<OtherStorage>
+                  emboss_reserved_local_other) const {
+    if (!has_outer().Known()) return false;
+    if (!emboss_reserved_local_other.has_outer().Known()) return false;
+
+    if (emboss_reserved_local_other.has_outer().ValueOrDefault() &&
+        !has_outer().ValueOrDefault())
+      return false;
+    if (has_outer().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_outer().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_outer().ValueOrDefault() &&
+        has_outer().ValueOrDefault() &&
+        !outer().Equals(emboss_reserved_local_other.outer()))
+      return false;
+
+    if (!has_tag().Known()) return false;
+    if (!emboss_reserved_local_other.has_tag().Known()) return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOrDefault() &&
+        !has_tag().ValueOrDefault())
+      return false;
+    if (has_tag().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_tag().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOrDefault() &&
+        has_tag().ValueOrDefault() &&
+        !tag().Equals(emboss_reserved_local_other.tag()))
+      return false;
+
+    if (!has_a().Known()) return false;
+    if (!emboss_reserved_local_other.has_a().Known()) return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOrDefault() &&
+        !has_a().ValueOrDefault())
+      return false;
+    if (has_a().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_a().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOrDefault() &&
+        has_a().ValueOrDefault() &&
+        !a().Equals(emboss_reserved_local_other.a()))
+      return false;
+
+    if (!has_b().Known()) return false;
+    if (!emboss_reserved_local_other.has_b().Known()) return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOrDefault() &&
+        !has_b().ValueOrDefault())
+      return false;
+    if (has_b().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_b().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOrDefault() &&
+        has_b().ValueOrDefault() &&
+        !b().Equals(emboss_reserved_local_other.b()))
+      return false;
+
+    return true;
+  }
+  template <typename OtherStorage>
+  bool UncheckedEquals(GenericBareConditionalDiscriminantView<OtherStorage>
+                           emboss_reserved_local_other) const {
+    if (emboss_reserved_local_other.has_outer().ValueOr(false) &&
+        !has_outer().ValueOr(false))
+      return false;
+    if (has_outer().ValueOr(false) &&
+        !emboss_reserved_local_other.has_outer().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_outer().ValueOr(false) &&
+        has_outer().ValueOr(false) &&
+        !outer().UncheckedEquals(emboss_reserved_local_other.outer()))
+      return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOr(false) &&
+        !has_tag().ValueOr(false))
+      return false;
+    if (has_tag().ValueOr(false) &&
+        !emboss_reserved_local_other.has_tag().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOr(false) &&
+        has_tag().ValueOr(false) &&
+        !tag().UncheckedEquals(emboss_reserved_local_other.tag()))
+      return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOr(false) &&
+        !has_a().ValueOr(false))
+      return false;
+    if (has_a().ValueOr(false) &&
+        !emboss_reserved_local_other.has_a().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOr(false) &&
+        has_a().ValueOr(false) &&
+        !a().UncheckedEquals(emboss_reserved_local_other.a()))
+      return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOr(false) &&
+        !has_b().ValueOr(false))
+      return false;
+    if (has_b().ValueOr(false) &&
+        !emboss_reserved_local_other.has_b().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOr(false) &&
+        has_b().ValueOr(false) &&
+        !b().UncheckedEquals(emboss_reserved_local_other.b()))
+      return false;
+
+    return true;
+  }
+  template <typename OtherStorage>
+  void UncheckedCopyFrom(GenericBareConditionalDiscriminantView<OtherStorage>
+                             emboss_reserved_local_other) const {
+    backing_.UncheckedCopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+  }
+
+  template <typename OtherStorage>
+  void CopyFrom(GenericBareConditionalDiscriminantView<OtherStorage>
+                    emboss_reserved_local_other) const {
+    backing_.CopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+  template <typename OtherStorage>
+  bool TryToCopyFrom(GenericBareConditionalDiscriminantView<OtherStorage>
+                         emboss_reserved_local_other) const {
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+
+  template <class Stream>
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
+    ::std::string emboss_reserved_local_brace;
+    if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                      &emboss_reserved_local_brace))
+      return false;
+    if (emboss_reserved_local_brace != "{") return false;
+    for (;;) {
+      ::std::string emboss_reserved_local_name;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_name))
+        return false;
+      if (emboss_reserved_local_name == ",")
+        if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                          &emboss_reserved_local_name))
+          return false;
+      if (emboss_reserved_local_name == "}") return true;
+      ::std::string emboss_reserved_local_colon;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_colon))
+        return false;
+      if (emboss_reserved_local_colon != ":") return false;
+      if (emboss_reserved_local_name == "outer") {
+        if (!outer().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "tag") {
+        if (!tag().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "a") {
+        if (!a().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "b") {
+        if (!b().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      return false;
+    }
+  }
+
+  template <class Stream>
+  void WriteToTextStream(
+      Stream* emboss_reserved_local_stream,
+      ::emboss::TextOutputOptions emboss_reserved_local_options) const {
+    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
+        emboss_reserved_local_options.PlusOneIndent();
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write("{\n");
+    } else {
+      emboss_reserved_local_stream->Write("{");
+    }
+    bool emboss_reserved_local_wrote_field = false;
+    if (has_outer().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          outer().IsAggregate() || outer().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("outer: ");
+        outer().WriteToTextStream(emboss_reserved_local_stream,
+                                  emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !outer().IsAggregate() && !outer().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# outer: UNREADABLE\n");
+      }
+    }
+
+    if (has_tag().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          tag().IsAggregate() || tag().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("tag: ");
+        tag().WriteToTextStream(emboss_reserved_local_stream,
+                                emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !tag().IsAggregate() && !tag().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# tag: UNREADABLE\n");
+      }
+    }
+
+    if (has_a().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          a().IsAggregate() || a().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("a: ");
+        a().WriteToTextStream(emboss_reserved_local_stream,
+                              emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !a().IsAggregate() && !a().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# a: UNREADABLE\n");
+      }
+    }
+
+    if (has_b().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          b().IsAggregate() || b().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("b: ");
+        b().WriteToTextStream(emboss_reserved_local_stream,
+                              emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !b().IsAggregate() && !b().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# b: UNREADABLE\n");
+      }
+    }
+
+    (void)emboss_reserved_local_wrote_field;
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write(
+          emboss_reserved_local_options.current_indent());
+      emboss_reserved_local_stream->Write("}");
+    } else {
+      emboss_reserved_local_stream->Write(" }");
+    }
+  }
+
+  static constexpr bool IsAggregate() { return true; }
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
+
+  outer() const;
+  ::emboss::support::Maybe<bool> has_outer() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 1>>,
+          8>>
+
+  tag() const;
+  ::emboss::support::Maybe<bool> has_tag() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+  a() const;
+  ::emboss::support::Maybe<bool> has_a() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+  b() const;
+  ::emboss::support::Maybe<bool> has_b() const;
+
+ public:
+  class EmbossReservedDollarVirtualIntrinsicSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    explicit EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const GenericBareConditionalDiscriminantView&
+            emboss_reserved_local_view)
+        : view_(emboss_reserved_local_view) {}
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = delete;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
+
+    ::std::int32_t Read() const {
+      EMBOSS_CHECK(view_.has_IntrinsicSizeInBytes().ValueOr(false));
+      auto emboss_reserved_local_value = MaybeRead();
+      EMBOSS_CHECK(emboss_reserved_local_value.Known());
+      EMBOSS_CHECK(ValueIsOk(emboss_reserved_local_value.ValueOrDefault()));
+      return emboss_reserved_local_value.ValueOrDefault();
+    }
+    ::std::int32_t UncheckedRead() const {
+      return MaybeRead().ValueOrDefault();
+    }
+    bool Ok() const {
+      auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known() &&
+             ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
+    }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+
+   private:
+    ::emboss::support::Maybe</**/ ::std::int32_t> MaybeRead() const {
+      const auto emboss_reserved_local_subexpr_1 = view_.outer();
+      const auto emboss_reserved_local_subexpr_2 =
+          (emboss_reserved_local_subexpr_1.Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(
+                         emboss_reserved_local_subexpr_1.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>());
+      const auto emboss_reserved_local_subexpr_3 =
+          ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(1LL)));
+      const auto emboss_reserved_local_subexpr_4 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_3,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(2LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_5 = view_.tag();
+      const auto emboss_reserved_local_subexpr_6 =
+          (emboss_reserved_local_subexpr_5.Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(
+                         emboss_reserved_local_subexpr_5.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>());
+      const auto emboss_reserved_local_subexpr_7 =
+          ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_6,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_8 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_7,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(3LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_9 =
+          ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_6,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(1LL)));
+      const auto emboss_reserved_local_subexpr_10 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_9,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(3LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_11 = ::emboss::support::Maximum<
+          /**/ ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t>(
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(0LL)),
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(1LL)),
+          emboss_reserved_local_subexpr_4, emboss_reserved_local_subexpr_8,
+          emboss_reserved_local_subexpr_10);
+
+      return emboss_reserved_local_subexpr_11;
+    }
+
+    static constexpr bool ValueIsOk(
+        ::std::int32_t emboss_reserved_local_value) {
+      return (void)emboss_reserved_local_value,  // Silence -Wunused-parameter
+             ::emboss::support::Maybe<bool>(true).ValueOr(false);
+    }
+
+    const GenericBareConditionalDiscriminantView view_;
+  };
+  EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes()
+      const;
+  ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() const;
+
+ public:
+  class EmbossReservedDollarVirtualMaxSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
+    return EmbossReservedDollarVirtualMaxSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ public:
+  class EmbossReservedDollarVirtualMinSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
+    return EmbossReservedDollarVirtualMinSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ private:
+  Storage backing_;
+
+  template <class OtherStorage>
+  friend class GenericBareConditionalDiscriminantView;
+};
+using BareConditionalDiscriminantView = GenericBareConditionalDiscriminantView<
+    /**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+using BareConditionalDiscriminantWriter =
+    GenericBareConditionalDiscriminantView<
+        /**/ ::emboss::support::ReadWriteContiguousBuffer>;
+
+template <class View>
+struct EmbossReservedInternalIsGenericBareConditionalDiscriminantView {
+  static constexpr const bool value = false;
+};
+
+template <class Storage>
+struct EmbossReservedInternalIsGenericBareConditionalDiscriminantView<
+    GenericBareConditionalDiscriminantView<Storage>> {
+  static constexpr const bool value = true;
+};
+
+template <typename T>
+inline GenericBareConditionalDiscriminantView<
+    /**/ ::emboss::support::ContiguousBuffer<
+        typename ::std::remove_reference<
+            decltype(*::std::declval<T>()->data())>::type,
+        1, 0>>
+MakeBareConditionalDiscriminantView(T&& emboss_reserved_local_arg) {
+  return GenericBareConditionalDiscriminantView<
+      /**/ ::emboss::support::ContiguousBuffer<
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
+}
+
+template <typename T>
+inline GenericBareConditionalDiscriminantView<
+    /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeBareConditionalDiscriminantView(T* emboss_reserved_local_data,
+                                    ::std::size_t emboss_reserved_local_size) {
+  return GenericBareConditionalDiscriminantView<
+      /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
+}
+
+template <typename T, ::std::size_t kAlignment>
+inline GenericBareConditionalDiscriminantView<
+    /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
+MakeAlignedBareConditionalDiscriminantView(
+    T* emboss_reserved_local_data, ::std::size_t emboss_reserved_local_size) {
+  return GenericBareConditionalDiscriminantView<
+      /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
+}
+
+namespace DominatedBareDiscriminant {}  // namespace DominatedBareDiscriminant
+
+template <class View>
+struct EmbossReservedInternalIsGenericDominatedBareDiscriminantView;
+
+template <class Storage>
+class GenericDominatedBareDiscriminantView final {
+ public:
+  GenericDominatedBareDiscriminantView() : backing_() {}
+  explicit GenericDominatedBareDiscriminantView(
+      Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
+
+  template <typename OtherStorage>
+  GenericDominatedBareDiscriminantView(
+      const GenericDominatedBareDiscriminantView<OtherStorage>&
+          emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
+
+  template <typename Arg,
+            typename = typename ::std::enable_if<
+                !EmbossReservedInternalIsGenericDominatedBareDiscriminantView<
+                    typename ::std::remove_cv<typename ::std::remove_reference<
+                        Arg>::type>::type>::value>::type>
+  explicit GenericDominatedBareDiscriminantView(Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
+  template <typename Arg0, typename Arg1, typename... Args>
+  explicit GenericDominatedBareDiscriminantView(
+      Arg0&& emboss_reserved_local_arg0, Arg1&& emboss_reserved_local_arg1,
+      Args&&... emboss_reserved_local_args)
+      : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
+                 ::std::forward<Arg1>(emboss_reserved_local_arg1),
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
+
+  template <typename OtherStorage>
+  GenericDominatedBareDiscriminantView<Storage>& operator=(
+      const GenericDominatedBareDiscriminantView<OtherStorage>&
+          emboss_reserved_local_other) {
+    backing_ = emboss_reserved_local_other.BackingStorage();
+    return *this;
+  }
+
+  bool Ok() const {
+    if (!IsComplete()) return false;
+
+    const auto emboss_reserved_local_ok_subexpr_1 = tag();
+    const auto emboss_reserved_local_ok_subexpr_2 =
+        (emboss_reserved_local_ok_subexpr_1.Ok()
+             ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                   static_cast</**/ ::std::int32_t>(
+                       emboss_reserved_local_ok_subexpr_1.UncheckedRead()))
+             : ::emboss::support::Maybe</**/ ::std::int32_t>());
+
+    if (!has_outer().Known()) return false;
+    if (has_outer().ValueOrDefault() && !outer().Ok()) return false;
+
+    if (!has_tail().Known()) return false;
+    if (has_tail().ValueOrDefault() && !tail().Ok()) return false;
+
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
+
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
+
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
+
+    if (!has_tag().Known()) return false;
+    if (has_tag().ValueOrDefault() && !tag().Ok()) return false;
+
+    {
+      const auto emboss_reserved_switch_discrim =
+          emboss_reserved_local_ok_subexpr_2;
+      if (!emboss_reserved_switch_discrim.Known()) return false;
+      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
+        case static_cast</**/ ::std::int32_t>(0LL):
+          if (!a().Ok()) return false;
+          break;
+
+        case static_cast</**/ ::std::int32_t>(1LL):
+          if (!b().Ok()) return false;
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    return true;
+  }
+  Storage BackingStorage() const { return backing_; }
+  bool IsComplete() const {
+    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+           backing_.SizeInBytes() >=
+               static_cast</**/ ::std::size_t>(
+                   IntrinsicSizeInBytes().UncheckedRead());
+  }
+  static constexpr ::std::size_t SizeInBytes() {
+    return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
+  }
+  static constexpr bool SizeIsKnown() { return IntrinsicSizeInBytes().Ok(); }
+
+  template <typename OtherStorage>
+  bool Equals(GenericDominatedBareDiscriminantView<OtherStorage>
+                  emboss_reserved_local_other) const {
+    if (!has_outer().Known()) return false;
+    if (!emboss_reserved_local_other.has_outer().Known()) return false;
+
+    if (emboss_reserved_local_other.has_outer().ValueOrDefault() &&
+        !has_outer().ValueOrDefault())
+      return false;
+    if (has_outer().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_outer().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_outer().ValueOrDefault() &&
+        has_outer().ValueOrDefault() &&
+        !outer().Equals(emboss_reserved_local_other.outer()))
+      return false;
+
+    if (!has_tag().Known()) return false;
+    if (!emboss_reserved_local_other.has_tag().Known()) return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOrDefault() &&
+        !has_tag().ValueOrDefault())
+      return false;
+    if (has_tag().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_tag().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOrDefault() &&
+        has_tag().ValueOrDefault() &&
+        !tag().Equals(emboss_reserved_local_other.tag()))
+      return false;
+
+    if (!has_a().Known()) return false;
+    if (!emboss_reserved_local_other.has_a().Known()) return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOrDefault() &&
+        !has_a().ValueOrDefault())
+      return false;
+    if (has_a().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_a().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOrDefault() &&
+        has_a().ValueOrDefault() &&
+        !a().Equals(emboss_reserved_local_other.a()))
+      return false;
+
+    if (!has_b().Known()) return false;
+    if (!emboss_reserved_local_other.has_b().Known()) return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOrDefault() &&
+        !has_b().ValueOrDefault())
+      return false;
+    if (has_b().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_b().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOrDefault() &&
+        has_b().ValueOrDefault() &&
+        !b().Equals(emboss_reserved_local_other.b()))
+      return false;
+
+    if (!has_tail().Known()) return false;
+    if (!emboss_reserved_local_other.has_tail().Known()) return false;
+
+    if (emboss_reserved_local_other.has_tail().ValueOrDefault() &&
+        !has_tail().ValueOrDefault())
+      return false;
+    if (has_tail().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_tail().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_tail().ValueOrDefault() &&
+        has_tail().ValueOrDefault() &&
+        !tail().Equals(emboss_reserved_local_other.tail()))
+      return false;
+
+    return true;
+  }
+  template <typename OtherStorage>
+  bool UncheckedEquals(GenericDominatedBareDiscriminantView<OtherStorage>
+                           emboss_reserved_local_other) const {
+    if (emboss_reserved_local_other.has_outer().ValueOr(false) &&
+        !has_outer().ValueOr(false))
+      return false;
+    if (has_outer().ValueOr(false) &&
+        !emboss_reserved_local_other.has_outer().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_outer().ValueOr(false) &&
+        has_outer().ValueOr(false) &&
+        !outer().UncheckedEquals(emboss_reserved_local_other.outer()))
+      return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOr(false) &&
+        !has_tag().ValueOr(false))
+      return false;
+    if (has_tag().ValueOr(false) &&
+        !emboss_reserved_local_other.has_tag().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOr(false) &&
+        has_tag().ValueOr(false) &&
+        !tag().UncheckedEquals(emboss_reserved_local_other.tag()))
+      return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOr(false) &&
+        !has_a().ValueOr(false))
+      return false;
+    if (has_a().ValueOr(false) &&
+        !emboss_reserved_local_other.has_a().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOr(false) &&
+        has_a().ValueOr(false) &&
+        !a().UncheckedEquals(emboss_reserved_local_other.a()))
+      return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOr(false) &&
+        !has_b().ValueOr(false))
+      return false;
+    if (has_b().ValueOr(false) &&
+        !emboss_reserved_local_other.has_b().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOr(false) &&
+        has_b().ValueOr(false) &&
+        !b().UncheckedEquals(emboss_reserved_local_other.b()))
+      return false;
+
+    if (emboss_reserved_local_other.has_tail().ValueOr(false) &&
+        !has_tail().ValueOr(false))
+      return false;
+    if (has_tail().ValueOr(false) &&
+        !emboss_reserved_local_other.has_tail().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_tail().ValueOr(false) &&
+        has_tail().ValueOr(false) &&
+        !tail().UncheckedEquals(emboss_reserved_local_other.tail()))
+      return false;
+
+    return true;
+  }
+  template <typename OtherStorage>
+  void UncheckedCopyFrom(GenericDominatedBareDiscriminantView<OtherStorage>
+                             emboss_reserved_local_other) const {
+    backing_.UncheckedCopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+  }
+
+  template <typename OtherStorage>
+  void CopyFrom(GenericDominatedBareDiscriminantView<OtherStorage>
+                    emboss_reserved_local_other) const {
+    backing_.CopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+  template <typename OtherStorage>
+  bool TryToCopyFrom(GenericDominatedBareDiscriminantView<OtherStorage>
+                         emboss_reserved_local_other) const {
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+
+  template <class Stream>
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
+    ::std::string emboss_reserved_local_brace;
+    if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                      &emboss_reserved_local_brace))
+      return false;
+    if (emboss_reserved_local_brace != "{") return false;
+    for (;;) {
+      ::std::string emboss_reserved_local_name;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_name))
+        return false;
+      if (emboss_reserved_local_name == ",")
+        if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                          &emboss_reserved_local_name))
+          return false;
+      if (emboss_reserved_local_name == "}") return true;
+      ::std::string emboss_reserved_local_colon;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_colon))
+        return false;
+      if (emboss_reserved_local_colon != ":") return false;
+      if (emboss_reserved_local_name == "outer") {
+        if (!outer().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "tag") {
+        if (!tag().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "a") {
+        if (!a().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "b") {
+        if (!b().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "tail") {
+        if (!tail().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      return false;
+    }
+  }
+
+  template <class Stream>
+  void WriteToTextStream(
+      Stream* emboss_reserved_local_stream,
+      ::emboss::TextOutputOptions emboss_reserved_local_options) const {
+    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
+        emboss_reserved_local_options.PlusOneIndent();
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write("{\n");
+    } else {
+      emboss_reserved_local_stream->Write("{");
+    }
+    bool emboss_reserved_local_wrote_field = false;
+    if (has_outer().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          outer().IsAggregate() || outer().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("outer: ");
+        outer().WriteToTextStream(emboss_reserved_local_stream,
+                                  emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !outer().IsAggregate() && !outer().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# outer: UNREADABLE\n");
+      }
+    }
+
+    if (has_tag().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          tag().IsAggregate() || tag().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("tag: ");
+        tag().WriteToTextStream(emboss_reserved_local_stream,
+                                emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !tag().IsAggregate() && !tag().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# tag: UNREADABLE\n");
+      }
+    }
+
+    if (has_a().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          a().IsAggregate() || a().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("a: ");
+        a().WriteToTextStream(emboss_reserved_local_stream,
+                              emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !a().IsAggregate() && !a().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# a: UNREADABLE\n");
+      }
+    }
+
+    if (has_b().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          b().IsAggregate() || b().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("b: ");
+        b().WriteToTextStream(emboss_reserved_local_stream,
+                              emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !b().IsAggregate() && !b().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# b: UNREADABLE\n");
+      }
+    }
+
+    if (has_tail().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          tail().IsAggregate() || tail().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("tail: ");
+        tail().WriteToTextStream(emboss_reserved_local_stream,
+                                 emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !tail().IsAggregate() && !tail().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# tail: UNREADABLE\n");
+      }
+    }
+
+    (void)emboss_reserved_local_wrote_field;
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write(
+          emboss_reserved_local_options.current_indent());
+      emboss_reserved_local_stream->Write("}");
+    } else {
+      emboss_reserved_local_stream->Write(" }");
+    }
+  }
+
+  static constexpr bool IsAggregate() { return true; }
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
+
+  outer() const;
+  ::emboss::support::Maybe<bool> has_outer() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 1>>,
+          8>>
+
+  tag() const;
+  ::emboss::support::Maybe<bool> has_tag() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+  a() const;
+  ::emboss::support::Maybe<bool> has_a() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+  b() const;
+  ::emboss::support::Maybe<bool> has_b() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 3>>,
+          8>>
+
+  tail() const;
+  ::emboss::support::Maybe<bool> has_tail() const;
+
+ public:
+  class EmbossReservedDollarVirtualIntrinsicSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView() {}
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+  IntrinsicSizeInBytes() {
+    return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ public:
+  class EmbossReservedDollarVirtualMaxSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
+    return EmbossReservedDollarVirtualMaxSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ public:
+  class EmbossReservedDollarVirtualMinSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
+    return EmbossReservedDollarVirtualMinSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ private:
+  Storage backing_;
+
+  template <class OtherStorage>
+  friend class GenericDominatedBareDiscriminantView;
+};
+using DominatedBareDiscriminantView = GenericDominatedBareDiscriminantView<
+    /**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+using DominatedBareDiscriminantWriter = GenericDominatedBareDiscriminantView<
+    /**/ ::emboss::support::ReadWriteContiguousBuffer>;
+
+template <class View>
+struct EmbossReservedInternalIsGenericDominatedBareDiscriminantView {
+  static constexpr const bool value = false;
+};
+
+template <class Storage>
+struct EmbossReservedInternalIsGenericDominatedBareDiscriminantView<
+    GenericDominatedBareDiscriminantView<Storage>> {
+  static constexpr const bool value = true;
+};
+
+template <typename T>
+inline GenericDominatedBareDiscriminantView<
+    /**/ ::emboss::support::ContiguousBuffer<
+        typename ::std::remove_reference<
+            decltype(*::std::declval<T>()->data())>::type,
+        1, 0>>
+MakeDominatedBareDiscriminantView(T&& emboss_reserved_local_arg) {
+  return GenericDominatedBareDiscriminantView<
+      /**/ ::emboss::support::ContiguousBuffer<
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
+}
+
+template <typename T>
+inline GenericDominatedBareDiscriminantView<
+    /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeDominatedBareDiscriminantView(T* emboss_reserved_local_data,
+                                  ::std::size_t emboss_reserved_local_size) {
+  return GenericDominatedBareDiscriminantView<
+      /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
+}
+
+template <typename T, ::std::size_t kAlignment>
+inline GenericDominatedBareDiscriminantView<
+    /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
+MakeAlignedDominatedBareDiscriminantView(
+    T* emboss_reserved_local_data, ::std::size_t emboss_reserved_local_size) {
+  return GenericDominatedBareDiscriminantView<
+      /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
+}
+
+namespace DisjunctionConditionalDiscriminant {
+
+}  // namespace DisjunctionConditionalDiscriminant
+
+template <class View>
+struct EmbossReservedInternalIsGenericDisjunctionConditionalDiscriminantView;
+
+template <class Storage>
+class GenericDisjunctionConditionalDiscriminantView final {
+ public:
+  GenericDisjunctionConditionalDiscriminantView() : backing_() {}
+  explicit GenericDisjunctionConditionalDiscriminantView(
+      Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
+
+  template <typename OtherStorage>
+  GenericDisjunctionConditionalDiscriminantView(
+      const GenericDisjunctionConditionalDiscriminantView<OtherStorage>&
+          emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
+
+  template <
+      typename Arg,
+      typename = typename ::std::enable_if<
+          !EmbossReservedInternalIsGenericDisjunctionConditionalDiscriminantView<
+              typename ::std::remove_cv<typename ::std::remove_reference<
+                  Arg>::type>::type>::value>::type>
+  explicit GenericDisjunctionConditionalDiscriminantView(
+      Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
+  template <typename Arg0, typename Arg1, typename... Args>
+  explicit GenericDisjunctionConditionalDiscriminantView(
+      Arg0&& emboss_reserved_local_arg0, Arg1&& emboss_reserved_local_arg1,
+      Args&&... emboss_reserved_local_args)
+      : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
+                 ::std::forward<Arg1>(emboss_reserved_local_arg1),
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
+
+  template <typename OtherStorage>
+  GenericDisjunctionConditionalDiscriminantView<Storage>& operator=(
+      const GenericDisjunctionConditionalDiscriminantView<OtherStorage>&
+          emboss_reserved_local_other) {
+    backing_ = emboss_reserved_local_other.BackingStorage();
+    return *this;
+  }
+
+  bool Ok() const {
+    if (!IsComplete()) return false;
+
+    if (!has_outer().Known()) return false;
+    if (has_outer().ValueOrDefault() && !outer().Ok()) return false;
+
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
+
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
+
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
+
+    if (!has_tag().Known()) return false;
+    if (has_tag().ValueOrDefault() && !tag().Ok()) return false;
+
+    if (!has_a().Known()) return false;
+    if (has_a().ValueOrDefault() && !a().Ok()) return false;
+
+    if (!has_b().Known()) return false;
+    if (has_b().ValueOrDefault() && !b().Ok()) return false;
+
+    return true;
+  }
+  Storage BackingStorage() const { return backing_; }
+  bool IsComplete() const {
+    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+           backing_.SizeInBytes() >=
+               static_cast</**/ ::std::size_t>(
+                   IntrinsicSizeInBytes().UncheckedRead());
+  }
+  ::std::size_t SizeInBytes() const {
+    return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
+  }
+  bool SizeIsKnown() const { return IntrinsicSizeInBytes().Ok(); }
+
+  template <typename OtherStorage>
+  bool Equals(GenericDisjunctionConditionalDiscriminantView<OtherStorage>
+                  emboss_reserved_local_other) const {
+    if (!has_outer().Known()) return false;
+    if (!emboss_reserved_local_other.has_outer().Known()) return false;
+
+    if (emboss_reserved_local_other.has_outer().ValueOrDefault() &&
+        !has_outer().ValueOrDefault())
+      return false;
+    if (has_outer().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_outer().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_outer().ValueOrDefault() &&
+        has_outer().ValueOrDefault() &&
+        !outer().Equals(emboss_reserved_local_other.outer()))
+      return false;
+
+    if (!has_tag().Known()) return false;
+    if (!emboss_reserved_local_other.has_tag().Known()) return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOrDefault() &&
+        !has_tag().ValueOrDefault())
+      return false;
+    if (has_tag().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_tag().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOrDefault() &&
+        has_tag().ValueOrDefault() &&
+        !tag().Equals(emboss_reserved_local_other.tag()))
+      return false;
+
+    if (!has_a().Known()) return false;
+    if (!emboss_reserved_local_other.has_a().Known()) return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOrDefault() &&
+        !has_a().ValueOrDefault())
+      return false;
+    if (has_a().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_a().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOrDefault() &&
+        has_a().ValueOrDefault() &&
+        !a().Equals(emboss_reserved_local_other.a()))
+      return false;
+
+    if (!has_b().Known()) return false;
+    if (!emboss_reserved_local_other.has_b().Known()) return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOrDefault() &&
+        !has_b().ValueOrDefault())
+      return false;
+    if (has_b().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_b().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOrDefault() &&
+        has_b().ValueOrDefault() &&
+        !b().Equals(emboss_reserved_local_other.b()))
+      return false;
+
+    return true;
+  }
+  template <typename OtherStorage>
+  bool UncheckedEquals(
+      GenericDisjunctionConditionalDiscriminantView<OtherStorage>
+          emboss_reserved_local_other) const {
+    if (emboss_reserved_local_other.has_outer().ValueOr(false) &&
+        !has_outer().ValueOr(false))
+      return false;
+    if (has_outer().ValueOr(false) &&
+        !emboss_reserved_local_other.has_outer().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_outer().ValueOr(false) &&
+        has_outer().ValueOr(false) &&
+        !outer().UncheckedEquals(emboss_reserved_local_other.outer()))
+      return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOr(false) &&
+        !has_tag().ValueOr(false))
+      return false;
+    if (has_tag().ValueOr(false) &&
+        !emboss_reserved_local_other.has_tag().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOr(false) &&
+        has_tag().ValueOr(false) &&
+        !tag().UncheckedEquals(emboss_reserved_local_other.tag()))
+      return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOr(false) &&
+        !has_a().ValueOr(false))
+      return false;
+    if (has_a().ValueOr(false) &&
+        !emboss_reserved_local_other.has_a().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOr(false) &&
+        has_a().ValueOr(false) &&
+        !a().UncheckedEquals(emboss_reserved_local_other.a()))
+      return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOr(false) &&
+        !has_b().ValueOr(false))
+      return false;
+    if (has_b().ValueOr(false) &&
+        !emboss_reserved_local_other.has_b().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOr(false) &&
+        has_b().ValueOr(false) &&
+        !b().UncheckedEquals(emboss_reserved_local_other.b()))
+      return false;
+
+    return true;
+  }
+  template <typename OtherStorage>
+  void UncheckedCopyFrom(
+      GenericDisjunctionConditionalDiscriminantView<OtherStorage>
+          emboss_reserved_local_other) const {
+    backing_.UncheckedCopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+  }
+
+  template <typename OtherStorage>
+  void CopyFrom(GenericDisjunctionConditionalDiscriminantView<OtherStorage>
+                    emboss_reserved_local_other) const {
+    backing_.CopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+  template <typename OtherStorage>
+  bool TryToCopyFrom(GenericDisjunctionConditionalDiscriminantView<OtherStorage>
+                         emboss_reserved_local_other) const {
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+
+  template <class Stream>
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
+    ::std::string emboss_reserved_local_brace;
+    if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                      &emboss_reserved_local_brace))
+      return false;
+    if (emboss_reserved_local_brace != "{") return false;
+    for (;;) {
+      ::std::string emboss_reserved_local_name;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_name))
+        return false;
+      if (emboss_reserved_local_name == ",")
+        if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                          &emboss_reserved_local_name))
+          return false;
+      if (emboss_reserved_local_name == "}") return true;
+      ::std::string emboss_reserved_local_colon;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_colon))
+        return false;
+      if (emboss_reserved_local_colon != ":") return false;
+      if (emboss_reserved_local_name == "outer") {
+        if (!outer().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "tag") {
+        if (!tag().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "a") {
+        if (!a().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "b") {
+        if (!b().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      return false;
+    }
+  }
+
+  template <class Stream>
+  void WriteToTextStream(
+      Stream* emboss_reserved_local_stream,
+      ::emboss::TextOutputOptions emboss_reserved_local_options) const {
+    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
+        emboss_reserved_local_options.PlusOneIndent();
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write("{\n");
+    } else {
+      emboss_reserved_local_stream->Write("{");
+    }
+    bool emboss_reserved_local_wrote_field = false;
+    if (has_outer().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          outer().IsAggregate() || outer().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("outer: ");
+        outer().WriteToTextStream(emboss_reserved_local_stream,
+                                  emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !outer().IsAggregate() && !outer().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# outer: UNREADABLE\n");
+      }
+    }
+
+    if (has_tag().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          tag().IsAggregate() || tag().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("tag: ");
+        tag().WriteToTextStream(emboss_reserved_local_stream,
+                                emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !tag().IsAggregate() && !tag().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# tag: UNREADABLE\n");
+      }
+    }
+
+    if (has_a().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          a().IsAggregate() || a().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("a: ");
+        a().WriteToTextStream(emboss_reserved_local_stream,
+                              emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !a().IsAggregate() && !a().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# a: UNREADABLE\n");
+      }
+    }
+
+    if (has_b().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          b().IsAggregate() || b().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("b: ");
+        b().WriteToTextStream(emboss_reserved_local_stream,
+                              emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !b().IsAggregate() && !b().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# b: UNREADABLE\n");
+      }
+    }
+
+    (void)emboss_reserved_local_wrote_field;
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write(
+          emboss_reserved_local_options.current_indent());
+      emboss_reserved_local_stream->Write("}");
+    } else {
+      emboss_reserved_local_stream->Write(" }");
+    }
+  }
+
+  static constexpr bool IsAggregate() { return true; }
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
+
+  outer() const;
+  ::emboss::support::Maybe<bool> has_outer() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 1>>,
+          8>>
+
+  tag() const;
+  ::emboss::support::Maybe<bool> has_tag() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+  a() const;
+  ::emboss::support::Maybe<bool> has_a() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+  b() const;
+  ::emboss::support::Maybe<bool> has_b() const;
+
+ public:
+  class EmbossReservedDollarVirtualIntrinsicSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    explicit EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const GenericDisjunctionConditionalDiscriminantView&
+            emboss_reserved_local_view)
+        : view_(emboss_reserved_local_view) {}
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = delete;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
+
+    ::std::int32_t Read() const {
+      EMBOSS_CHECK(view_.has_IntrinsicSizeInBytes().ValueOr(false));
+      auto emboss_reserved_local_value = MaybeRead();
+      EMBOSS_CHECK(emboss_reserved_local_value.Known());
+      EMBOSS_CHECK(ValueIsOk(emboss_reserved_local_value.ValueOrDefault()));
+      return emboss_reserved_local_value.ValueOrDefault();
+    }
+    ::std::int32_t UncheckedRead() const {
+      return MaybeRead().ValueOrDefault();
+    }
+    bool Ok() const {
+      auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known() &&
+             ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
+    }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+
+   private:
+    ::emboss::support::Maybe</**/ ::std::int32_t> MaybeRead() const {
+      const auto emboss_reserved_local_subexpr_1 = view_.outer();
+      const auto emboss_reserved_local_subexpr_2 =
+          (emboss_reserved_local_subexpr_1.Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(
+                         emboss_reserved_local_subexpr_1.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>());
+      const auto emboss_reserved_local_subexpr_3 =
+          ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(1LL)));
+      const auto emboss_reserved_local_subexpr_4 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_3,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(2LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_5 = view_.tag();
+      const auto emboss_reserved_local_subexpr_6 =
+          (emboss_reserved_local_subexpr_5.Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(
+                         emboss_reserved_local_subexpr_5.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>());
+      const auto emboss_reserved_local_subexpr_7 =
+          ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_6,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_8 =
+          ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_6,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(1LL)));
+      const auto emboss_reserved_local_subexpr_9 =
+          ::emboss::support::Or</**/ bool, bool, bool, bool>(
+              emboss_reserved_local_subexpr_7, emboss_reserved_local_subexpr_8);
+      const auto emboss_reserved_local_subexpr_10 =
+          ::emboss::support::And</**/ bool, bool, bool, bool>(
+              emboss_reserved_local_subexpr_9, emboss_reserved_local_subexpr_3);
+      const auto emboss_reserved_local_subexpr_11 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_10,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(3LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_12 =
+          ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_6,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(2LL)));
+      const auto emboss_reserved_local_subexpr_13 =
+          ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_6,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(3LL)));
+      const auto emboss_reserved_local_subexpr_14 =
+          ::emboss::support::Or</**/ bool, bool, bool, bool>(
+              emboss_reserved_local_subexpr_12,
+              emboss_reserved_local_subexpr_13);
+      const auto emboss_reserved_local_subexpr_15 =
+          ::emboss::support::And</**/ bool, bool, bool, bool>(
+              emboss_reserved_local_subexpr_14,
+              emboss_reserved_local_subexpr_3);
+      const auto emboss_reserved_local_subexpr_16 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_15,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(3LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_17 = ::emboss::support::Maximum<
+          /**/ ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t>(
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(0LL)),
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(1LL)),
+          emboss_reserved_local_subexpr_4, emboss_reserved_local_subexpr_11,
+          emboss_reserved_local_subexpr_16);
+
+      return emboss_reserved_local_subexpr_17;
+    }
+
+    static constexpr bool ValueIsOk(
+        ::std::int32_t emboss_reserved_local_value) {
+      return (void)emboss_reserved_local_value,  // Silence -Wunused-parameter
+             ::emboss::support::Maybe<bool>(true).ValueOr(false);
+    }
+
+    const GenericDisjunctionConditionalDiscriminantView view_;
+  };
+  EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes()
+      const;
+  ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() const;
+
+ public:
+  class EmbossReservedDollarVirtualMaxSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
+    return EmbossReservedDollarVirtualMaxSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ public:
+  class EmbossReservedDollarVirtualMinSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
+    return EmbossReservedDollarVirtualMinSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ private:
+  Storage backing_;
+
+  template <class OtherStorage>
+  friend class GenericDisjunctionConditionalDiscriminantView;
+};
+using DisjunctionConditionalDiscriminantView =
+    GenericDisjunctionConditionalDiscriminantView<
+        /**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+using DisjunctionConditionalDiscriminantWriter =
+    GenericDisjunctionConditionalDiscriminantView<
+        /**/ ::emboss::support::ReadWriteContiguousBuffer>;
+
+template <class View>
+struct EmbossReservedInternalIsGenericDisjunctionConditionalDiscriminantView {
+  static constexpr const bool value = false;
+};
+
+template <class Storage>
+struct EmbossReservedInternalIsGenericDisjunctionConditionalDiscriminantView<
+    GenericDisjunctionConditionalDiscriminantView<Storage>> {
+  static constexpr const bool value = true;
+};
+
+template <typename T>
+inline GenericDisjunctionConditionalDiscriminantView<
+    /**/ ::emboss::support::ContiguousBuffer<
+        typename ::std::remove_reference<
+            decltype(*::std::declval<T>()->data())>::type,
+        1, 0>>
+MakeDisjunctionConditionalDiscriminantView(T&& emboss_reserved_local_arg) {
+  return GenericDisjunctionConditionalDiscriminantView<
+      /**/ ::emboss::support::ContiguousBuffer<
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
+}
+
+template <typename T>
+inline GenericDisjunctionConditionalDiscriminantView<
+    /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeDisjunctionConditionalDiscriminantView(
+    T* emboss_reserved_local_data, ::std::size_t emboss_reserved_local_size) {
+  return GenericDisjunctionConditionalDiscriminantView<
+      /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
+}
+
+template <typename T, ::std::size_t kAlignment>
+inline GenericDisjunctionConditionalDiscriminantView<
+    /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
+MakeAlignedDisjunctionConditionalDiscriminantView(
+    T* emboss_reserved_local_data, ::std::size_t emboss_reserved_local_size) {
+  return GenericDisjunctionConditionalDiscriminantView<
+      /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
+}
+
+namespace SingleEntryConditionalDiscriminant {
+
+}  // namespace SingleEntryConditionalDiscriminant
+
+template <class View>
+struct EmbossReservedInternalIsGenericSingleEntryConditionalDiscriminantView;
+
+template <class Storage>
+class GenericSingleEntryConditionalDiscriminantView final {
+ public:
+  GenericSingleEntryConditionalDiscriminantView() : backing_() {}
+  explicit GenericSingleEntryConditionalDiscriminantView(
+      Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
+
+  template <typename OtherStorage>
+  GenericSingleEntryConditionalDiscriminantView(
+      const GenericSingleEntryConditionalDiscriminantView<OtherStorage>&
+          emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
+
+  template <
+      typename Arg,
+      typename = typename ::std::enable_if<
+          !EmbossReservedInternalIsGenericSingleEntryConditionalDiscriminantView<
+              typename ::std::remove_cv<typename ::std::remove_reference<
+                  Arg>::type>::type>::value>::type>
+  explicit GenericSingleEntryConditionalDiscriminantView(
+      Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
+  template <typename Arg0, typename Arg1, typename... Args>
+  explicit GenericSingleEntryConditionalDiscriminantView(
+      Arg0&& emboss_reserved_local_arg0, Arg1&& emboss_reserved_local_arg1,
+      Args&&... emboss_reserved_local_args)
+      : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
+                 ::std::forward<Arg1>(emboss_reserved_local_arg1),
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
+
+  template <typename OtherStorage>
+  GenericSingleEntryConditionalDiscriminantView<Storage>& operator=(
+      const GenericSingleEntryConditionalDiscriminantView<OtherStorage>&
+          emboss_reserved_local_other) {
+    backing_ = emboss_reserved_local_other.BackingStorage();
+    return *this;
+  }
+
+  bool Ok() const {
+    if (!IsComplete()) return false;
+
+    if (!has_outer().Known()) return false;
+    if (has_outer().ValueOrDefault() && !outer().Ok()) return false;
+
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
+
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
+
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
+
+    if (!has_tag().Known()) return false;
+    if (has_tag().ValueOrDefault() && !tag().Ok()) return false;
+
+    if (!has_a().Known()) return false;
+    if (has_a().ValueOrDefault() && !a().Ok()) return false;
+
+    return true;
+  }
+  Storage BackingStorage() const { return backing_; }
+  bool IsComplete() const {
+    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+           backing_.SizeInBytes() >=
+               static_cast</**/ ::std::size_t>(
+                   IntrinsicSizeInBytes().UncheckedRead());
+  }
+  ::std::size_t SizeInBytes() const {
+    return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
+  }
+  bool SizeIsKnown() const { return IntrinsicSizeInBytes().Ok(); }
+
+  template <typename OtherStorage>
+  bool Equals(GenericSingleEntryConditionalDiscriminantView<OtherStorage>
+                  emboss_reserved_local_other) const {
+    if (!has_outer().Known()) return false;
+    if (!emboss_reserved_local_other.has_outer().Known()) return false;
+
+    if (emboss_reserved_local_other.has_outer().ValueOrDefault() &&
+        !has_outer().ValueOrDefault())
+      return false;
+    if (has_outer().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_outer().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_outer().ValueOrDefault() &&
+        has_outer().ValueOrDefault() &&
+        !outer().Equals(emboss_reserved_local_other.outer()))
+      return false;
+
+    if (!has_tag().Known()) return false;
+    if (!emboss_reserved_local_other.has_tag().Known()) return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOrDefault() &&
+        !has_tag().ValueOrDefault())
+      return false;
+    if (has_tag().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_tag().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOrDefault() &&
+        has_tag().ValueOrDefault() &&
+        !tag().Equals(emboss_reserved_local_other.tag()))
+      return false;
+
+    if (!has_a().Known()) return false;
+    if (!emboss_reserved_local_other.has_a().Known()) return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOrDefault() &&
+        !has_a().ValueOrDefault())
+      return false;
+    if (has_a().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_a().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOrDefault() &&
+        has_a().ValueOrDefault() &&
+        !a().Equals(emboss_reserved_local_other.a()))
+      return false;
+
+    return true;
+  }
+  template <typename OtherStorage>
+  bool UncheckedEquals(
+      GenericSingleEntryConditionalDiscriminantView<OtherStorage>
+          emboss_reserved_local_other) const {
+    if (emboss_reserved_local_other.has_outer().ValueOr(false) &&
+        !has_outer().ValueOr(false))
+      return false;
+    if (has_outer().ValueOr(false) &&
+        !emboss_reserved_local_other.has_outer().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_outer().ValueOr(false) &&
+        has_outer().ValueOr(false) &&
+        !outer().UncheckedEquals(emboss_reserved_local_other.outer()))
+      return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOr(false) &&
+        !has_tag().ValueOr(false))
+      return false;
+    if (has_tag().ValueOr(false) &&
+        !emboss_reserved_local_other.has_tag().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOr(false) &&
+        has_tag().ValueOr(false) &&
+        !tag().UncheckedEquals(emboss_reserved_local_other.tag()))
+      return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOr(false) &&
+        !has_a().ValueOr(false))
+      return false;
+    if (has_a().ValueOr(false) &&
+        !emboss_reserved_local_other.has_a().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOr(false) &&
+        has_a().ValueOr(false) &&
+        !a().UncheckedEquals(emboss_reserved_local_other.a()))
+      return false;
+
+    return true;
+  }
+  template <typename OtherStorage>
+  void UncheckedCopyFrom(
+      GenericSingleEntryConditionalDiscriminantView<OtherStorage>
+          emboss_reserved_local_other) const {
+    backing_.UncheckedCopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+  }
+
+  template <typename OtherStorage>
+  void CopyFrom(GenericSingleEntryConditionalDiscriminantView<OtherStorage>
+                    emboss_reserved_local_other) const {
+    backing_.CopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+  template <typename OtherStorage>
+  bool TryToCopyFrom(GenericSingleEntryConditionalDiscriminantView<OtherStorage>
+                         emboss_reserved_local_other) const {
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+
+  template <class Stream>
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
+    ::std::string emboss_reserved_local_brace;
+    if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                      &emboss_reserved_local_brace))
+      return false;
+    if (emboss_reserved_local_brace != "{") return false;
+    for (;;) {
+      ::std::string emboss_reserved_local_name;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_name))
+        return false;
+      if (emboss_reserved_local_name == ",")
+        if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                          &emboss_reserved_local_name))
+          return false;
+      if (emboss_reserved_local_name == "}") return true;
+      ::std::string emboss_reserved_local_colon;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_colon))
+        return false;
+      if (emboss_reserved_local_colon != ":") return false;
+      if (emboss_reserved_local_name == "outer") {
+        if (!outer().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "tag") {
+        if (!tag().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "a") {
+        if (!a().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      return false;
+    }
+  }
+
+  template <class Stream>
+  void WriteToTextStream(
+      Stream* emboss_reserved_local_stream,
+      ::emboss::TextOutputOptions emboss_reserved_local_options) const {
+    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
+        emboss_reserved_local_options.PlusOneIndent();
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write("{\n");
+    } else {
+      emboss_reserved_local_stream->Write("{");
+    }
+    bool emboss_reserved_local_wrote_field = false;
+    if (has_outer().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          outer().IsAggregate() || outer().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("outer: ");
+        outer().WriteToTextStream(emboss_reserved_local_stream,
+                                  emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !outer().IsAggregate() && !outer().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# outer: UNREADABLE\n");
+      }
+    }
+
+    if (has_tag().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          tag().IsAggregate() || tag().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("tag: ");
+        tag().WriteToTextStream(emboss_reserved_local_stream,
+                                emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !tag().IsAggregate() && !tag().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# tag: UNREADABLE\n");
+      }
+    }
+
+    if (has_a().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          a().IsAggregate() || a().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("a: ");
+        a().WriteToTextStream(emboss_reserved_local_stream,
+                              emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !a().IsAggregate() && !a().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# a: UNREADABLE\n");
+      }
+    }
+
+    (void)emboss_reserved_local_wrote_field;
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write(
+          emboss_reserved_local_options.current_indent());
+      emboss_reserved_local_stream->Write("}");
+    } else {
+      emboss_reserved_local_stream->Write(" }");
+    }
+  }
+
+  static constexpr bool IsAggregate() { return true; }
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
+
+  outer() const;
+  ::emboss::support::Maybe<bool> has_outer() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 1>>,
+          8>>
+
+  tag() const;
+  ::emboss::support::Maybe<bool> has_tag() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+  a() const;
+  ::emboss::support::Maybe<bool> has_a() const;
+
+ public:
+  class EmbossReservedDollarVirtualIntrinsicSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    explicit EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const GenericSingleEntryConditionalDiscriminantView&
+            emboss_reserved_local_view)
+        : view_(emboss_reserved_local_view) {}
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = delete;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
+
+    ::std::int32_t Read() const {
+      EMBOSS_CHECK(view_.has_IntrinsicSizeInBytes().ValueOr(false));
+      auto emboss_reserved_local_value = MaybeRead();
+      EMBOSS_CHECK(emboss_reserved_local_value.Known());
+      EMBOSS_CHECK(ValueIsOk(emboss_reserved_local_value.ValueOrDefault()));
+      return emboss_reserved_local_value.ValueOrDefault();
+    }
+    ::std::int32_t UncheckedRead() const {
+      return MaybeRead().ValueOrDefault();
+    }
+    bool Ok() const {
+      auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known() &&
+             ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
+    }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+
+   private:
+    ::emboss::support::Maybe</**/ ::std::int32_t> MaybeRead() const {
+      const auto emboss_reserved_local_subexpr_1 = view_.outer();
+      const auto emboss_reserved_local_subexpr_2 =
+          (emboss_reserved_local_subexpr_1.Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(
+                         emboss_reserved_local_subexpr_1.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>());
+      const auto emboss_reserved_local_subexpr_3 =
+          ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(1LL)));
+      const auto emboss_reserved_local_subexpr_4 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_3,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(2LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_5 = view_.tag();
+      const auto emboss_reserved_local_subexpr_6 =
+          (emboss_reserved_local_subexpr_5.Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(
+                         emboss_reserved_local_subexpr_5.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>());
+      const auto emboss_reserved_local_subexpr_7 =
+          ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                   ::std::int32_t>(
+              emboss_reserved_local_subexpr_6,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_8 =
+          ::emboss::support::And</**/ bool, bool, bool, bool>(
+              emboss_reserved_local_subexpr_7, emboss_reserved_local_subexpr_3);
+      const auto emboss_reserved_local_subexpr_9 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_8,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(3LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_10 =
+          ::emboss::support::Maximum</**/ ::std::int32_t, ::std::int32_t,
+                                     ::std::int32_t, ::std::int32_t,
+                                     ::std::int32_t, ::std::int32_t>(
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(1LL)),
+              emboss_reserved_local_subexpr_4, emboss_reserved_local_subexpr_9);
+
+      return emboss_reserved_local_subexpr_10;
+    }
+
+    static constexpr bool ValueIsOk(
+        ::std::int32_t emboss_reserved_local_value) {
+      return (void)emboss_reserved_local_value,  // Silence -Wunused-parameter
+             ::emboss::support::Maybe<bool>(true).ValueOr(false);
+    }
+
+    const GenericSingleEntryConditionalDiscriminantView view_;
+  };
+  EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes()
+      const;
+  ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() const;
+
+ public:
+  class EmbossReservedDollarVirtualMaxSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
+    return EmbossReservedDollarVirtualMaxSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ public:
+  class EmbossReservedDollarVirtualMinSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
+    return EmbossReservedDollarVirtualMinSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ private:
+  Storage backing_;
+
+  template <class OtherStorage>
+  friend class GenericSingleEntryConditionalDiscriminantView;
+};
+using SingleEntryConditionalDiscriminantView =
+    GenericSingleEntryConditionalDiscriminantView<
+        /**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+using SingleEntryConditionalDiscriminantWriter =
+    GenericSingleEntryConditionalDiscriminantView<
+        /**/ ::emboss::support::ReadWriteContiguousBuffer>;
+
+template <class View>
+struct EmbossReservedInternalIsGenericSingleEntryConditionalDiscriminantView {
+  static constexpr const bool value = false;
+};
+
+template <class Storage>
+struct EmbossReservedInternalIsGenericSingleEntryConditionalDiscriminantView<
+    GenericSingleEntryConditionalDiscriminantView<Storage>> {
+  static constexpr const bool value = true;
+};
+
+template <typename T>
+inline GenericSingleEntryConditionalDiscriminantView<
+    /**/ ::emboss::support::ContiguousBuffer<
+        typename ::std::remove_reference<
+            decltype(*::std::declval<T>()->data())>::type,
+        1, 0>>
+MakeSingleEntryConditionalDiscriminantView(T&& emboss_reserved_local_arg) {
+  return GenericSingleEntryConditionalDiscriminantView<
+      /**/ ::emboss::support::ContiguousBuffer<
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
+}
+
+template <typename T>
+inline GenericSingleEntryConditionalDiscriminantView<
+    /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeSingleEntryConditionalDiscriminantView(
+    T* emboss_reserved_local_data, ::std::size_t emboss_reserved_local_size) {
+  return GenericSingleEntryConditionalDiscriminantView<
+      /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
+}
+
+template <typename T, ::std::size_t kAlignment>
+inline GenericSingleEntryConditionalDiscriminantView<
+    /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
+MakeAlignedSingleEntryConditionalDiscriminantView(
+    T* emboss_reserved_local_data, ::std::size_t emboss_reserved_local_size) {
+  return GenericSingleEntryConditionalDiscriminantView<
+      /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
+}
+
+namespace EnumConditionalDiscriminant {
+
+}  // namespace EnumConditionalDiscriminant
+
+template <class View>
+struct EmbossReservedInternalIsGenericEnumConditionalDiscriminantView;
+
+template <class Storage>
+class GenericEnumConditionalDiscriminantView final {
+ public:
+  GenericEnumConditionalDiscriminantView() : backing_() {}
+  explicit GenericEnumConditionalDiscriminantView(
+      Storage emboss_reserved_local_bytes)
+      : backing_(emboss_reserved_local_bytes) {}
+
+  template <typename OtherStorage>
+  GenericEnumConditionalDiscriminantView(
+      const GenericEnumConditionalDiscriminantView<OtherStorage>&
+          emboss_reserved_local_other)
+      : backing_{emboss_reserved_local_other.BackingStorage()} {}
+
+  template <typename Arg,
+            typename = typename ::std::enable_if<
+                !EmbossReservedInternalIsGenericEnumConditionalDiscriminantView<
+                    typename ::std::remove_cv<typename ::std::remove_reference<
+                        Arg>::type>::type>::value>::type>
+  explicit GenericEnumConditionalDiscriminantView(
+      Arg&& emboss_reserved_local_arg)
+      : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
+  template <typename Arg0, typename Arg1, typename... Args>
+  explicit GenericEnumConditionalDiscriminantView(
+      Arg0&& emboss_reserved_local_arg0, Arg1&& emboss_reserved_local_arg1,
+      Args&&... emboss_reserved_local_args)
+      : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
+                 ::std::forward<Arg1>(emboss_reserved_local_arg1),
+                 ::std::forward<Args>(emboss_reserved_local_args)...) {}
+
+  template <typename OtherStorage>
+  GenericEnumConditionalDiscriminantView<Storage>& operator=(
+      const GenericEnumConditionalDiscriminantView<OtherStorage>&
+          emboss_reserved_local_other) {
+    backing_ = emboss_reserved_local_other.BackingStorage();
+    return *this;
+  }
+
+  bool Ok() const {
+    if (!IsComplete()) return false;
+
+    if (!has_outer().Known()) return false;
+    if (has_outer().ValueOrDefault() && !outer().Ok()) return false;
+
+    if (!has_IntrinsicSizeInBytes().Known()) return false;
+    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
+        !IntrinsicSizeInBytes().Ok())
+      return false;
+
+    if (!has_MaxSizeInBytes().Known()) return false;
+    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
+      return false;
+
+    if (!has_MinSizeInBytes().Known()) return false;
+    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
+      return false;
+
+    if (!has_tag().Known()) return false;
+    if (has_tag().ValueOrDefault() && !tag().Ok()) return false;
+
+    if (!has_a().Known()) return false;
+    if (has_a().ValueOrDefault() && !a().Ok()) return false;
+
+    if (!has_b().Known()) return false;
+    if (has_b().ValueOrDefault() && !b().Ok()) return false;
+
+    return true;
+  }
+  Storage BackingStorage() const { return backing_; }
+  bool IsComplete() const {
+    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+           backing_.SizeInBytes() >=
+               static_cast</**/ ::std::size_t>(
+                   IntrinsicSizeInBytes().UncheckedRead());
+  }
+  ::std::size_t SizeInBytes() const {
+    return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
+  }
+  bool SizeIsKnown() const { return IntrinsicSizeInBytes().Ok(); }
+
+  template <typename OtherStorage>
+  bool Equals(GenericEnumConditionalDiscriminantView<OtherStorage>
+                  emboss_reserved_local_other) const {
+    if (!has_outer().Known()) return false;
+    if (!emboss_reserved_local_other.has_outer().Known()) return false;
+
+    if (emboss_reserved_local_other.has_outer().ValueOrDefault() &&
+        !has_outer().ValueOrDefault())
+      return false;
+    if (has_outer().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_outer().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_outer().ValueOrDefault() &&
+        has_outer().ValueOrDefault() &&
+        !outer().Equals(emboss_reserved_local_other.outer()))
+      return false;
+
+    if (!has_tag().Known()) return false;
+    if (!emboss_reserved_local_other.has_tag().Known()) return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOrDefault() &&
+        !has_tag().ValueOrDefault())
+      return false;
+    if (has_tag().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_tag().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOrDefault() &&
+        has_tag().ValueOrDefault() &&
+        !tag().Equals(emboss_reserved_local_other.tag()))
+      return false;
+
+    if (!has_a().Known()) return false;
+    if (!emboss_reserved_local_other.has_a().Known()) return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOrDefault() &&
+        !has_a().ValueOrDefault())
+      return false;
+    if (has_a().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_a().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOrDefault() &&
+        has_a().ValueOrDefault() &&
+        !a().Equals(emboss_reserved_local_other.a()))
+      return false;
+
+    if (!has_b().Known()) return false;
+    if (!emboss_reserved_local_other.has_b().Known()) return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOrDefault() &&
+        !has_b().ValueOrDefault())
+      return false;
+    if (has_b().ValueOrDefault() &&
+        !emboss_reserved_local_other.has_b().ValueOrDefault())
+      return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOrDefault() &&
+        has_b().ValueOrDefault() &&
+        !b().Equals(emboss_reserved_local_other.b()))
+      return false;
+
+    return true;
+  }
+  template <typename OtherStorage>
+  bool UncheckedEquals(GenericEnumConditionalDiscriminantView<OtherStorage>
+                           emboss_reserved_local_other) const {
+    if (emboss_reserved_local_other.has_outer().ValueOr(false) &&
+        !has_outer().ValueOr(false))
+      return false;
+    if (has_outer().ValueOr(false) &&
+        !emboss_reserved_local_other.has_outer().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_outer().ValueOr(false) &&
+        has_outer().ValueOr(false) &&
+        !outer().UncheckedEquals(emboss_reserved_local_other.outer()))
+      return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOr(false) &&
+        !has_tag().ValueOr(false))
+      return false;
+    if (has_tag().ValueOr(false) &&
+        !emboss_reserved_local_other.has_tag().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_tag().ValueOr(false) &&
+        has_tag().ValueOr(false) &&
+        !tag().UncheckedEquals(emboss_reserved_local_other.tag()))
+      return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOr(false) &&
+        !has_a().ValueOr(false))
+      return false;
+    if (has_a().ValueOr(false) &&
+        !emboss_reserved_local_other.has_a().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_a().ValueOr(false) &&
+        has_a().ValueOr(false) &&
+        !a().UncheckedEquals(emboss_reserved_local_other.a()))
+      return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOr(false) &&
+        !has_b().ValueOr(false))
+      return false;
+    if (has_b().ValueOr(false) &&
+        !emboss_reserved_local_other.has_b().ValueOr(false))
+      return false;
+
+    if (emboss_reserved_local_other.has_b().ValueOr(false) &&
+        has_b().ValueOr(false) &&
+        !b().UncheckedEquals(emboss_reserved_local_other.b()))
+      return false;
+
+    return true;
+  }
+  template <typename OtherStorage>
+  void UncheckedCopyFrom(GenericEnumConditionalDiscriminantView<OtherStorage>
+                             emboss_reserved_local_other) const {
+    backing_.UncheckedCopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+  }
+
+  template <typename OtherStorage>
+  void CopyFrom(GenericEnumConditionalDiscriminantView<OtherStorage>
+                    emboss_reserved_local_other) const {
+    backing_.CopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+  template <typename OtherStorage>
+  bool TryToCopyFrom(GenericEnumConditionalDiscriminantView<OtherStorage>
+                         emboss_reserved_local_other) const {
+    return emboss_reserved_local_other.Ok() &&
+           backing_.TryToCopyFrom(
+               emboss_reserved_local_other.BackingStorage(),
+               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+  }
+
+  template <class Stream>
+  bool UpdateFromTextStream(Stream* emboss_reserved_local_stream) const {
+    ::std::string emboss_reserved_local_brace;
+    if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                      &emboss_reserved_local_brace))
+      return false;
+    if (emboss_reserved_local_brace != "{") return false;
+    for (;;) {
+      ::std::string emboss_reserved_local_name;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_name))
+        return false;
+      if (emboss_reserved_local_name == ",")
+        if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                          &emboss_reserved_local_name))
+          return false;
+      if (emboss_reserved_local_name == "}") return true;
+      ::std::string emboss_reserved_local_colon;
+      if (!::emboss::support::ReadToken(emboss_reserved_local_stream,
+                                        &emboss_reserved_local_colon))
+        return false;
+      if (emboss_reserved_local_colon != ":") return false;
+      if (emboss_reserved_local_name == "outer") {
+        if (!outer().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "tag") {
+        if (!tag().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "a") {
+        if (!a().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      if (emboss_reserved_local_name == "b") {
+        if (!b().UpdateFromTextStream(emboss_reserved_local_stream)) {
+          return false;
+        }
+        continue;
+      }
+
+      return false;
+    }
+  }
+
+  template <class Stream>
+  void WriteToTextStream(
+      Stream* emboss_reserved_local_stream,
+      ::emboss::TextOutputOptions emboss_reserved_local_options) const {
+    ::emboss::TextOutputOptions emboss_reserved_local_field_options =
+        emboss_reserved_local_options.PlusOneIndent();
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write("{\n");
+    } else {
+      emboss_reserved_local_stream->Write("{");
+    }
+    bool emboss_reserved_local_wrote_field = false;
+    if (has_outer().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          outer().IsAggregate() || outer().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("outer: ");
+        outer().WriteToTextStream(emboss_reserved_local_stream,
+                                  emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !outer().IsAggregate() && !outer().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# outer: UNREADABLE\n");
+      }
+    }
+
+    if (has_tag().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          tag().IsAggregate() || tag().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("tag: ");
+        tag().WriteToTextStream(emboss_reserved_local_stream,
+                                emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !tag().IsAggregate() && !tag().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# tag: UNREADABLE\n");
+      }
+    }
+
+    if (has_a().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          a().IsAggregate() || a().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("a: ");
+        a().WriteToTextStream(emboss_reserved_local_stream,
+                              emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !a().IsAggregate() && !a().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# a: UNREADABLE\n");
+      }
+    }
+
+    if (has_b().ValueOr(false)) {
+      if (!emboss_reserved_local_field_options.allow_partial_output() ||
+          b().IsAggregate() || b().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else {
+          if (emboss_reserved_local_wrote_field) {
+            emboss_reserved_local_stream->Write(",");
+          }
+          emboss_reserved_local_stream->Write(" ");
+        }
+        emboss_reserved_local_stream->Write("b: ");
+        b().WriteToTextStream(emboss_reserved_local_stream,
+                              emboss_reserved_local_field_options);
+        emboss_reserved_local_wrote_field = true;
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write("\n");
+        }
+      } else if (emboss_reserved_local_field_options.allow_partial_output() &&
+                 emboss_reserved_local_field_options.comments() &&
+                 !b().IsAggregate() && !b().Ok()) {
+        if (emboss_reserved_local_field_options.multiline()) {
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        }
+        emboss_reserved_local_stream->Write("# b: UNREADABLE\n");
+      }
+    }
+
+    (void)emboss_reserved_local_wrote_field;
+    if (emboss_reserved_local_options.multiline()) {
+      emboss_reserved_local_stream->Write(
+          emboss_reserved_local_options.current_indent());
+      emboss_reserved_local_stream->Write("}");
+    } else {
+      emboss_reserved_local_stream->Write(" }");
+    }
+  }
+
+  static constexpr bool IsAggregate() { return true; }
+
+ public:
+  typename ::emboss::support::EnumView<
+      /**/ ::emboss::test::OnOff,
+      ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
+
+  outer() const;
+  ::emboss::support::Maybe<bool> has_outer() const;
+
+ public:
+  typename ::emboss::support::EnumView<
+      /**/ ::emboss::test::OnOff,
+      ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 1>>,
+          8>>
+
+  tag() const;
+  ::emboss::support::Maybe<bool> has_tag() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+  a() const;
+  ::emboss::support::Maybe<bool> has_a() const;
+
+ public:
+  typename ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+  b() const;
+  ::emboss::support::Maybe<bool> has_b() const;
+
+ public:
+  class EmbossReservedDollarVirtualIntrinsicSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    explicit EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const GenericEnumConditionalDiscriminantView&
+            emboss_reserved_local_view)
+        : view_(emboss_reserved_local_view) {}
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = delete;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
+
+    ::std::int32_t Read() const {
+      EMBOSS_CHECK(view_.has_IntrinsicSizeInBytes().ValueOr(false));
+      auto emboss_reserved_local_value = MaybeRead();
+      EMBOSS_CHECK(emboss_reserved_local_value.Known());
+      EMBOSS_CHECK(ValueIsOk(emboss_reserved_local_value.ValueOrDefault()));
+      return emboss_reserved_local_value.ValueOrDefault();
+    }
+    ::std::int32_t UncheckedRead() const {
+      return MaybeRead().ValueOrDefault();
+    }
+    bool Ok() const {
+      auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known() &&
+             ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
+    }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+
+   private:
+    ::emboss::support::Maybe</**/ ::std::int32_t> MaybeRead() const {
+      const auto emboss_reserved_local_subexpr_1 = view_.outer();
+      const auto emboss_reserved_local_subexpr_2 =
+          (emboss_reserved_local_subexpr_1.Ok()
+               ? ::emboss::support::Maybe</**/ ::emboss::test::OnOff>(
+                     static_cast</**/ ::emboss::test::OnOff>(
+                         emboss_reserved_local_subexpr_1.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::emboss::test::OnOff>());
+      const auto emboss_reserved_local_subexpr_3 =
+          ::emboss::support::Equal</**/ ::emboss::test::OnOff, bool,
+                                   ::emboss::test::OnOff,
+                                   ::emboss::test::OnOff>(
+              emboss_reserved_local_subexpr_2,
+              ::emboss::support::Maybe</**/ ::emboss::test::OnOff>(
+                  static_cast</**/ ::emboss::test::OnOff>(1)));
+      const auto emboss_reserved_local_subexpr_4 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_3,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(2LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_5 = view_.tag();
+      const auto emboss_reserved_local_subexpr_6 =
+          (emboss_reserved_local_subexpr_5.Ok()
+               ? ::emboss::support::Maybe</**/ ::emboss::test::OnOff>(
+                     static_cast</**/ ::emboss::test::OnOff>(
+                         emboss_reserved_local_subexpr_5.UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::emboss::test::OnOff>());
+      const auto emboss_reserved_local_subexpr_7 =
+          ::emboss::support::Equal</**/ ::emboss::test::OnOff, bool,
+                                   ::emboss::test::OnOff,
+                                   ::emboss::test::OnOff>(
+              emboss_reserved_local_subexpr_6,
+              ::emboss::support::Maybe</**/ ::emboss::test::OnOff>(
+                  static_cast</**/ ::emboss::test::OnOff>(0)));
+      const auto emboss_reserved_local_subexpr_8 =
+          ::emboss::support::And</**/ bool, bool, bool, bool>(
+              emboss_reserved_local_subexpr_7, emboss_reserved_local_subexpr_3);
+      const auto emboss_reserved_local_subexpr_9 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_8,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(3LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_10 =
+          ::emboss::support::Equal</**/ ::emboss::test::OnOff, bool,
+                                   ::emboss::test::OnOff,
+                                   ::emboss::test::OnOff>(
+              emboss_reserved_local_subexpr_6,
+              ::emboss::support::Maybe</**/ ::emboss::test::OnOff>(
+                  static_cast</**/ ::emboss::test::OnOff>(1)));
+      const auto emboss_reserved_local_subexpr_11 =
+          ::emboss::support::And</**/ bool, bool, bool, bool>(
+              emboss_reserved_local_subexpr_10,
+              emboss_reserved_local_subexpr_3);
+      const auto emboss_reserved_local_subexpr_12 =
+          ::emboss::support::Choice</**/ ::std::int32_t, ::std::int32_t, bool,
+                                    ::std::int32_t, ::std::int32_t>(
+              emboss_reserved_local_subexpr_11,
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(3LL)),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL)));
+      const auto emboss_reserved_local_subexpr_13 = ::emboss::support::Maximum<
+          /**/ ::std::int32_t, ::std::int32_t, ::std::int32_t, ::std::int32_t,
+          ::std::int32_t, ::std::int32_t, ::std::int32_t>(
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(0LL)),
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(1LL)),
+          emboss_reserved_local_subexpr_4, emboss_reserved_local_subexpr_9,
+          emboss_reserved_local_subexpr_12);
+
+      return emboss_reserved_local_subexpr_13;
+    }
+
+    static constexpr bool ValueIsOk(
+        ::std::int32_t emboss_reserved_local_value) {
+      return (void)emboss_reserved_local_value,  // Silence -Wunused-parameter
+             ::emboss::support::Maybe<bool>(true).ValueOr(false);
+    }
+
+    const GenericEnumConditionalDiscriminantView view_;
+  };
+  EmbossReservedDollarVirtualIntrinsicSizeInBytesView IntrinsicSizeInBytes()
+      const;
+  ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() const;
+
+ public:
+  class EmbossReservedDollarVirtualMaxSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMaxSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  MaxSizeInBytes() {
+    return EmbossReservedDollarVirtualMaxSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ public:
+  class EmbossReservedDollarVirtualMinSizeInBytesView final {
+   public:
+    using ValueType = ::std::int32_t;
+
+    constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
+    EmbossReservedDollarVirtualMinSizeInBytesView& operator=(
+        EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
+    ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
+
+    static constexpr ::std::int32_t Read();
+    static constexpr ::std::int32_t UncheckedRead();
+    static constexpr bool Ok() { return true; }
+    template <class Stream>
+    void WriteToTextStream(Stream* emboss_reserved_local_stream,
+                           const ::emboss::TextOutputOptions&
+                               emboss_reserved_local_options) const {
+      ::emboss::support::WriteIntegerViewToTextStream(
+          this, emboss_reserved_local_stream, emboss_reserved_local_options);
+    }
+
+    static constexpr bool IsAggregate() { return false; }
+  };
+
+  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  MinSizeInBytes() {
+    return EmbossReservedDollarVirtualMinSizeInBytesView();
+  }
+  static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
+    return ::emboss::support::Maybe<bool>(true);
+  }
+
+ private:
+  Storage backing_;
+
+  template <class OtherStorage>
+  friend class GenericEnumConditionalDiscriminantView;
+};
+using EnumConditionalDiscriminantView = GenericEnumConditionalDiscriminantView<
+    /**/ ::emboss::support::ReadOnlyContiguousBuffer>;
+using EnumConditionalDiscriminantWriter =
+    GenericEnumConditionalDiscriminantView<
+        /**/ ::emboss::support::ReadWriteContiguousBuffer>;
+
+template <class View>
+struct EmbossReservedInternalIsGenericEnumConditionalDiscriminantView {
+  static constexpr const bool value = false;
+};
+
+template <class Storage>
+struct EmbossReservedInternalIsGenericEnumConditionalDiscriminantView<
+    GenericEnumConditionalDiscriminantView<Storage>> {
+  static constexpr const bool value = true;
+};
+
+template <typename T>
+inline GenericEnumConditionalDiscriminantView<
+    /**/ ::emboss::support::ContiguousBuffer<
+        typename ::std::remove_reference<
+            decltype(*::std::declval<T>()->data())>::type,
+        1, 0>>
+MakeEnumConditionalDiscriminantView(T&& emboss_reserved_local_arg) {
+  return GenericEnumConditionalDiscriminantView<
+      /**/ ::emboss::support::ContiguousBuffer<
+          typename ::std::remove_reference<
+              decltype(*::std::declval<T>()->data())>::type,
+          1, 0>>(::std::forward<T>(emboss_reserved_local_arg));
+}
+
+template <typename T>
+inline GenericEnumConditionalDiscriminantView<
+    /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
+MakeEnumConditionalDiscriminantView(T* emboss_reserved_local_data,
+                                    ::std::size_t emboss_reserved_local_size) {
+  return GenericEnumConditionalDiscriminantView<
+      /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
+}
+
+template <typename T, ::std::size_t kAlignment>
+inline GenericEnumConditionalDiscriminantView<
+    /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
+MakeAlignedEnumConditionalDiscriminantView(
+    T* emboss_reserved_local_data, ::std::size_t emboss_reserved_local_size) {
+  return GenericEnumConditionalDiscriminantView<
+      /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>(
+      emboss_reserved_local_data, emboss_reserved_local_size);
+}
+
 namespace BasicConditional {}  // namespace BasicConditional
 
 template <class Storage>
@@ -25745,6 +30192,1786 @@ template <class Storage>
 inline constexpr ::std::int32_t GenericConditionalOnFlagView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return ConditionalOnFlag::MinSizeInBytes();
+}
+namespace ResidualConditionalDiscriminant {
+
+}  // namespace ResidualConditionalDiscriminant
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        8>>
+
+GenericResidualConditionalDiscriminantView<Storage>::outer() const {
+  if (has_outer().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericResidualConditionalDiscriminantView<Storage>::has_outer() const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 1>>,
+        8>>
+
+GenericResidualConditionalDiscriminantView<Storage>::tag() const {
+  if (has_tag().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 1>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 1>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 1>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericResidualConditionalDiscriminantView<Storage>::has_tag() const {
+  return ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                  ::std::int32_t>(
+      (outer().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                 static_cast</**/ ::std::int32_t>(outer().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(1LL)));
+}
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 2>>,
+        8>>
+
+GenericResidualConditionalDiscriminantView<Storage>::a() const {
+  if (has_a().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(2LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 2>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 2>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericResidualConditionalDiscriminantView<Storage>::has_a() const {
+  return ::emboss::support::And</**/ bool, bool, bool, bool>(
+      ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                               ::std::int32_t>(
+          (tag().Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(tag().UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(0LL))),
+      ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                               ::std::int32_t>(
+          (outer().Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(outer().UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(1LL))));
+}
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 2>>,
+        8>>
+
+GenericResidualConditionalDiscriminantView<Storage>::b() const {
+  if (has_b().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(2LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 2>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 2>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericResidualConditionalDiscriminantView<Storage>::has_b() const {
+  return ::emboss::support::And</**/ bool, bool, bool, bool>(
+      ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                               ::std::int32_t>(
+          (tag().Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(tag().UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(1LL))),
+      ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                               ::std::int32_t>(
+          (outer().Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(outer().UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(1LL))));
+}
+
+template <class Storage>
+inline typename GenericResidualConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+GenericResidualConditionalDiscriminantView<Storage>::IntrinsicSizeInBytes()
+    const {
+  return typename GenericResidualConditionalDiscriminantView<
+      Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView(*this);
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericResidualConditionalDiscriminantView<Storage>::has_IntrinsicSizeInBytes()
+    const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
+
+namespace ResidualConditionalDiscriminant {
+inline constexpr ::std::int32_t MaxSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(3LL))
+      .ValueOrDefault();
+}
+}  // namespace ResidualConditionalDiscriminant
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericResidualConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+  return ResidualConditionalDiscriminant::MaxSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericResidualConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
+  return ResidualConditionalDiscriminant::MaxSizeInBytes();
+}
+
+namespace ResidualConditionalDiscriminant {
+inline constexpr ::std::int32_t MinSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
+}
+}  // namespace ResidualConditionalDiscriminant
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericResidualConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+  return ResidualConditionalDiscriminant::MinSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericResidualConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
+  return ResidualConditionalDiscriminant::MinSizeInBytes();
+}
+namespace BareConditionalDiscriminant {
+
+}  // namespace BareConditionalDiscriminant
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        8>>
+
+GenericBareConditionalDiscriminantView<Storage>::outer() const {
+  if (has_outer().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericBareConditionalDiscriminantView<Storage>::has_outer() const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 1>>,
+        8>>
+
+GenericBareConditionalDiscriminantView<Storage>::tag() const {
+  if (has_tag().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 1>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 1>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 1>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericBareConditionalDiscriminantView<Storage>::has_tag() const {
+  return ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                  ::std::int32_t>(
+      (outer().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                 static_cast</**/ ::std::int32_t>(outer().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(1LL)));
+}
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 2>>,
+        8>>
+
+GenericBareConditionalDiscriminantView<Storage>::a() const {
+  if (has_a().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(2LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 2>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 2>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericBareConditionalDiscriminantView<Storage>::has_a() const {
+  return ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                  ::std::int32_t>(
+      (tag().Ok() ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                        static_cast</**/ ::std::int32_t>(tag().UncheckedRead()))
+                  : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(0LL)));
+}
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 2>>,
+        8>>
+
+GenericBareConditionalDiscriminantView<Storage>::b() const {
+  if (has_b().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(2LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 2>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 2>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericBareConditionalDiscriminantView<Storage>::has_b() const {
+  return ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                  ::std::int32_t>(
+      (tag().Ok() ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                        static_cast</**/ ::std::int32_t>(tag().UncheckedRead()))
+                  : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(1LL)));
+}
+
+template <class Storage>
+inline typename GenericBareConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+GenericBareConditionalDiscriminantView<Storage>::IntrinsicSizeInBytes() const {
+  return typename GenericBareConditionalDiscriminantView<
+      Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView(*this);
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool> GenericBareConditionalDiscriminantView<
+    Storage>::has_IntrinsicSizeInBytes() const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
+
+namespace BareConditionalDiscriminant {
+inline constexpr ::std::int32_t MaxSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(3LL))
+      .ValueOrDefault();
+}
+}  // namespace BareConditionalDiscriminant
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericBareConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+  return BareConditionalDiscriminant::MaxSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericBareConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
+  return BareConditionalDiscriminant::MaxSizeInBytes();
+}
+
+namespace BareConditionalDiscriminant {
+inline constexpr ::std::int32_t MinSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
+}
+}  // namespace BareConditionalDiscriminant
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericBareConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+  return BareConditionalDiscriminant::MinSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericBareConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
+  return BareConditionalDiscriminant::MinSizeInBytes();
+}
+namespace DominatedBareDiscriminant {}  // namespace DominatedBareDiscriminant
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        8>>
+
+GenericDominatedBareDiscriminantView<Storage>::outer() const {
+  if (has_outer().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericDominatedBareDiscriminantView<Storage>::has_outer() const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 1>>,
+        8>>
+
+GenericDominatedBareDiscriminantView<Storage>::tag() const {
+  if (has_tag().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 1>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 1>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 1>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericDominatedBareDiscriminantView<Storage>::has_tag() const {
+  return ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                  ::std::int32_t>(
+      (outer().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                 static_cast</**/ ::std::int32_t>(outer().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(1LL)));
+}
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 2>>,
+        8>>
+
+GenericDominatedBareDiscriminantView<Storage>::a() const {
+  if (has_a().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(2LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 2>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 2>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericDominatedBareDiscriminantView<Storage>::has_a() const {
+  return ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                  ::std::int32_t>(
+      (tag().Ok() ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                        static_cast</**/ ::std::int32_t>(tag().UncheckedRead()))
+                  : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(0LL)));
+}
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 2>>,
+        8>>
+
+GenericDominatedBareDiscriminantView<Storage>::b() const {
+  if (has_b().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(2LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 2>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 2>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericDominatedBareDiscriminantView<Storage>::has_b() const {
+  return ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                  ::std::int32_t>(
+      (tag().Ok() ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                        static_cast</**/ ::std::int32_t>(tag().UncheckedRead()))
+                  : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(1LL)));
+}
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 3>>,
+        8>>
+
+GenericDominatedBareDiscriminantView<Storage>::tail() const {
+  if (has_tail().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(3LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 3>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 3>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 3>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericDominatedBareDiscriminantView<Storage>::has_tail() const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
+
+namespace DominatedBareDiscriminant {
+inline constexpr ::std::int32_t IntrinsicSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(4LL))
+      .ValueOrDefault();
+}
+}  // namespace DominatedBareDiscriminant
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericDominatedBareDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
+  return DominatedBareDiscriminant::IntrinsicSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericDominatedBareDiscriminantView<Storage>::
+    EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
+  return DominatedBareDiscriminant::IntrinsicSizeInBytes();
+}
+
+namespace DominatedBareDiscriminant {
+inline constexpr ::std::int32_t MaxSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(4LL))
+      .ValueOrDefault();
+}
+}  // namespace DominatedBareDiscriminant
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericDominatedBareDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+  return DominatedBareDiscriminant::MaxSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericDominatedBareDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
+  return DominatedBareDiscriminant::MaxSizeInBytes();
+}
+
+namespace DominatedBareDiscriminant {
+inline constexpr ::std::int32_t MinSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(4LL))
+      .ValueOrDefault();
+}
+}  // namespace DominatedBareDiscriminant
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericDominatedBareDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+  return DominatedBareDiscriminant::MinSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericDominatedBareDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
+  return DominatedBareDiscriminant::MinSizeInBytes();
+}
+namespace DisjunctionConditionalDiscriminant {
+
+}  // namespace DisjunctionConditionalDiscriminant
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        8>>
+
+GenericDisjunctionConditionalDiscriminantView<Storage>::outer() const {
+  if (has_outer().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericDisjunctionConditionalDiscriminantView<Storage>::has_outer() const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 1>>,
+        8>>
+
+GenericDisjunctionConditionalDiscriminantView<Storage>::tag() const {
+  if (has_tag().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 1>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 1>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 1>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericDisjunctionConditionalDiscriminantView<Storage>::has_tag() const {
+  return ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                  ::std::int32_t>(
+      (outer().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                 static_cast</**/ ::std::int32_t>(outer().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(1LL)));
+}
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 2>>,
+        8>>
+
+GenericDisjunctionConditionalDiscriminantView<Storage>::a() const {
+  if (has_a().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(2LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 2>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 2>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericDisjunctionConditionalDiscriminantView<Storage>::has_a() const {
+  return ::emboss::support::And</**/ bool, bool, bool, bool>(
+      ::emboss::support::Or</**/ bool, bool, bool, bool>(
+          ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                   ::std::int32_t>(
+              (tag().Ok() ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                                static_cast</**/ ::std::int32_t>(
+                                    tag().UncheckedRead()))
+                          : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(0LL))),
+          ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                   ::std::int32_t>(
+              (tag().Ok() ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                                static_cast</**/ ::std::int32_t>(
+                                    tag().UncheckedRead()))
+                          : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(1LL)))),
+      ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                               ::std::int32_t>(
+          (outer().Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(outer().UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(1LL))));
+}
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 2>>,
+        8>>
+
+GenericDisjunctionConditionalDiscriminantView<Storage>::b() const {
+  if (has_b().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(2LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 2>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 2>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericDisjunctionConditionalDiscriminantView<Storage>::has_b() const {
+  return ::emboss::support::And</**/ bool, bool, bool, bool>(
+      ::emboss::support::Or</**/ bool, bool, bool, bool>(
+          ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                   ::std::int32_t>(
+              (tag().Ok() ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                                static_cast</**/ ::std::int32_t>(
+                                    tag().UncheckedRead()))
+                          : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(2LL))),
+          ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                   ::std::int32_t>(
+              (tag().Ok() ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                                static_cast</**/ ::std::int32_t>(
+                                    tag().UncheckedRead()))
+                          : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+              ::emboss::support::Maybe</**/ ::std::int32_t>(
+                  static_cast</**/ ::std::int32_t>(3LL)))),
+      ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                               ::std::int32_t>(
+          (outer().Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(outer().UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(1LL))));
+}
+
+template <class Storage>
+inline typename GenericDisjunctionConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+GenericDisjunctionConditionalDiscriminantView<Storage>::IntrinsicSizeInBytes()
+    const {
+  return typename GenericDisjunctionConditionalDiscriminantView<
+      Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView(*this);
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericDisjunctionConditionalDiscriminantView<
+    Storage>::has_IntrinsicSizeInBytes() const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
+
+namespace DisjunctionConditionalDiscriminant {
+inline constexpr ::std::int32_t MaxSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(3LL))
+      .ValueOrDefault();
+}
+}  // namespace DisjunctionConditionalDiscriminant
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericDisjunctionConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+  return DisjunctionConditionalDiscriminant::MaxSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericDisjunctionConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
+  return DisjunctionConditionalDiscriminant::MaxSizeInBytes();
+}
+
+namespace DisjunctionConditionalDiscriminant {
+inline constexpr ::std::int32_t MinSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
+}
+}  // namespace DisjunctionConditionalDiscriminant
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericDisjunctionConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+  return DisjunctionConditionalDiscriminant::MinSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericDisjunctionConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
+  return DisjunctionConditionalDiscriminant::MinSizeInBytes();
+}
+namespace SingleEntryConditionalDiscriminant {
+
+}  // namespace SingleEntryConditionalDiscriminant
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        8>>
+
+GenericSingleEntryConditionalDiscriminantView<Storage>::outer() const {
+  if (has_outer().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericSingleEntryConditionalDiscriminantView<Storage>::has_outer() const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 1>>,
+        8>>
+
+GenericSingleEntryConditionalDiscriminantView<Storage>::tag() const {
+  if (has_tag().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 1>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 1>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 1>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericSingleEntryConditionalDiscriminantView<Storage>::has_tag() const {
+  return ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                                  ::std::int32_t>(
+      (outer().Ok()
+           ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                 static_cast</**/ ::std::int32_t>(outer().UncheckedRead()))
+           : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+      ::emboss::support::Maybe</**/ ::std::int32_t>(
+          static_cast</**/ ::std::int32_t>(1LL)));
+}
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 2>>,
+        8>>
+
+GenericSingleEntryConditionalDiscriminantView<Storage>::a() const {
+  if (has_a().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(2LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 2>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 2>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericSingleEntryConditionalDiscriminantView<Storage>::has_a() const {
+  return ::emboss::support::And</**/ bool, bool, bool, bool>(
+      ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                               ::std::int32_t>(
+          (tag().Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(tag().UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(0LL))),
+      ::emboss::support::Equal</**/ ::std::int32_t, bool, ::std::int32_t,
+                               ::std::int32_t>(
+          (outer().Ok()
+               ? ::emboss::support::Maybe</**/ ::std::int32_t>(
+                     static_cast</**/ ::std::int32_t>(outer().UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::std::int32_t>()),
+          ::emboss::support::Maybe</**/ ::std::int32_t>(
+              static_cast</**/ ::std::int32_t>(1LL))));
+}
+
+template <class Storage>
+inline typename GenericSingleEntryConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+GenericSingleEntryConditionalDiscriminantView<Storage>::IntrinsicSizeInBytes()
+    const {
+  return typename GenericSingleEntryConditionalDiscriminantView<
+      Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView(*this);
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericSingleEntryConditionalDiscriminantView<
+    Storage>::has_IntrinsicSizeInBytes() const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
+
+namespace SingleEntryConditionalDiscriminant {
+inline constexpr ::std::int32_t MaxSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(3LL))
+      .ValueOrDefault();
+}
+}  // namespace SingleEntryConditionalDiscriminant
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericSingleEntryConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+  return SingleEntryConditionalDiscriminant::MaxSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericSingleEntryConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
+  return SingleEntryConditionalDiscriminant::MaxSizeInBytes();
+}
+
+namespace SingleEntryConditionalDiscriminant {
+inline constexpr ::std::int32_t MinSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
+}
+}  // namespace SingleEntryConditionalDiscriminant
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericSingleEntryConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+  return SingleEntryConditionalDiscriminant::MinSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericSingleEntryConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
+  return SingleEntryConditionalDiscriminant::MinSizeInBytes();
+}
+namespace EnumConditionalDiscriminant {
+
+}  // namespace EnumConditionalDiscriminant
+
+template <class Storage>
+inline typename ::emboss::support::EnumView<
+    /**/ ::emboss::test::OnOff,
+    ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 0>>,
+        8>>
+
+GenericEnumConditionalDiscriminantView<Storage>::outer() const {
+  if (has_outer().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(0LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::support::EnumView<
+          /**/ ::emboss::test::OnOff,
+          ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 0>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::support::EnumView<
+      /**/ ::emboss::test::OnOff,
+      ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 0>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericEnumConditionalDiscriminantView<Storage>::has_outer() const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
+
+template <class Storage>
+inline typename ::emboss::support::EnumView<
+    /**/ ::emboss::test::OnOff,
+    ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 1>>,
+        8>>
+
+GenericEnumConditionalDiscriminantView<Storage>::tag() const {
+  if (has_tag().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::support::EnumView<
+          /**/ ::emboss::test::OnOff,
+          ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 1>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 1>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::support::EnumView<
+      /**/ ::emboss::test::OnOff,
+      ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 1>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericEnumConditionalDiscriminantView<Storage>::has_tag() const {
+  return ::emboss::support::Equal</**/ ::emboss::test::OnOff, bool,
+                                  ::emboss::test::OnOff, ::emboss::test::OnOff>(
+      (outer().Ok() ? ::emboss::support::Maybe</**/ ::emboss::test::OnOff>(
+                          static_cast</**/ ::emboss::test::OnOff>(
+                              outer().UncheckedRead()))
+                    : ::emboss::support::Maybe</**/ ::emboss::test::OnOff>()),
+      ::emboss::support::Maybe</**/ ::emboss::test::OnOff>(
+          static_cast</**/ ::emboss::test::OnOff>(1)));
+}
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 2>>,
+        8>>
+
+GenericEnumConditionalDiscriminantView<Storage>::a() const {
+  if (has_a().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(2LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 2>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 2>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericEnumConditionalDiscriminantView<Storage>::has_a() const {
+  return ::emboss::support::And</**/ bool, bool, bool, bool>(
+      ::emboss::support::Equal</**/ ::emboss::test::OnOff, bool,
+                               ::emboss::test::OnOff, ::emboss::test::OnOff>(
+          (tag().Ok() ? ::emboss::support::Maybe</**/ ::emboss::test::OnOff>(
+                            static_cast</**/ ::emboss::test::OnOff>(
+                                tag().UncheckedRead()))
+                      : ::emboss::support::Maybe</**/ ::emboss::test::OnOff>()),
+          ::emboss::support::Maybe</**/ ::emboss::test::OnOff>(
+              static_cast</**/ ::emboss::test::OnOff>(0))),
+      ::emboss::support::Equal</**/ ::emboss::test::OnOff, bool,
+                               ::emboss::test::OnOff, ::emboss::test::OnOff>(
+          (outer().Ok()
+               ? ::emboss::support::Maybe</**/ ::emboss::test::OnOff>(
+                     static_cast</**/ ::emboss::test::OnOff>(
+                         outer().UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::emboss::test::OnOff>()),
+          ::emboss::support::Maybe</**/ ::emboss::test::OnOff>(
+              static_cast</**/ ::emboss::test::OnOff>(1))));
+}
+
+template <class Storage>
+inline typename ::emboss::prelude::UIntView<
+    /**/ ::emboss::support::FixedSizeViewParameters<
+        8, ::emboss::support::AllValuesAreOk>,
+    typename ::emboss::support::BitBlock<
+        /**/ ::emboss::support::LittleEndianByteOrderer<
+            typename Storage::template OffsetStorageType</**/ 0, 2>>,
+        8>>
+
+GenericEnumConditionalDiscriminantView<Storage>::b() const {
+  if (has_b().ValueOr(false)) {
+    auto emboss_reserved_local_size =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(1LL));
+    auto emboss_reserved_local_offset =
+        ::emboss::support::Maybe</**/ ::std::int32_t>(
+            static_cast</**/ ::std::int32_t>(2LL));
+    if (emboss_reserved_local_size.Known() &&
+        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        emboss_reserved_local_offset.Known() &&
+        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+      return ::emboss::prelude::UIntView<
+          /**/ ::emboss::support::FixedSizeViewParameters<
+              8, ::emboss::support::AllValuesAreOk>,
+          typename ::emboss::support::BitBlock<
+              /**/ ::emboss::support::LittleEndianByteOrderer<
+                  typename Storage::template OffsetStorageType</**/ 0, 2>>,
+              8>>
+
+          (backing_.template GetOffsetStorage<0, 2>(
+              emboss_reserved_local_offset.ValueOrDefault(),
+              emboss_reserved_local_size.ValueOrDefault()));
+    }
+  }
+  return ::emboss::prelude::UIntView<
+      /**/ ::emboss::support::FixedSizeViewParameters<
+          8, ::emboss::support::AllValuesAreOk>,
+      typename ::emboss::support::BitBlock<
+          /**/ ::emboss::support::LittleEndianByteOrderer<
+              typename Storage::template OffsetStorageType</**/ 0, 2>>,
+          8>>
+
+      ();
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool>
+GenericEnumConditionalDiscriminantView<Storage>::has_b() const {
+  return ::emboss::support::And</**/ bool, bool, bool, bool>(
+      ::emboss::support::Equal</**/ ::emboss::test::OnOff, bool,
+                               ::emboss::test::OnOff, ::emboss::test::OnOff>(
+          (tag().Ok() ? ::emboss::support::Maybe</**/ ::emboss::test::OnOff>(
+                            static_cast</**/ ::emboss::test::OnOff>(
+                                tag().UncheckedRead()))
+                      : ::emboss::support::Maybe</**/ ::emboss::test::OnOff>()),
+          ::emboss::support::Maybe</**/ ::emboss::test::OnOff>(
+              static_cast</**/ ::emboss::test::OnOff>(1))),
+      ::emboss::support::Equal</**/ ::emboss::test::OnOff, bool,
+                               ::emboss::test::OnOff, ::emboss::test::OnOff>(
+          (outer().Ok()
+               ? ::emboss::support::Maybe</**/ ::emboss::test::OnOff>(
+                     static_cast</**/ ::emboss::test::OnOff>(
+                         outer().UncheckedRead()))
+               : ::emboss::support::Maybe</**/ ::emboss::test::OnOff>()),
+          ::emboss::support::Maybe</**/ ::emboss::test::OnOff>(
+              static_cast</**/ ::emboss::test::OnOff>(1))));
+}
+
+template <class Storage>
+inline typename GenericEnumConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+GenericEnumConditionalDiscriminantView<Storage>::IntrinsicSizeInBytes() const {
+  return typename GenericEnumConditionalDiscriminantView<
+      Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView(*this);
+}
+
+template <class Storage>
+inline ::emboss::support::Maybe<bool> GenericEnumConditionalDiscriminantView<
+    Storage>::has_IntrinsicSizeInBytes() const {
+  return ::emboss::support::Maybe</**/ bool>(true);
+}
+
+namespace EnumConditionalDiscriminant {
+inline constexpr ::std::int32_t MaxSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(3LL))
+      .ValueOrDefault();
+}
+}  // namespace EnumConditionalDiscriminant
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericEnumConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
+  return EnumConditionalDiscriminant::MaxSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericEnumConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
+  return EnumConditionalDiscriminant::MaxSizeInBytes();
+}
+
+namespace EnumConditionalDiscriminant {
+inline constexpr ::std::int32_t MinSizeInBytes() {
+  return ::emboss::support::Maybe</**/ ::std::int32_t>(
+             static_cast</**/ ::std::int32_t>(1LL))
+      .ValueOrDefault();
+}
+}  // namespace EnumConditionalDiscriminant
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericEnumConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
+  return EnumConditionalDiscriminant::MinSizeInBytes();
+}
+
+template <class Storage>
+inline constexpr ::std::int32_t GenericEnumConditionalDiscriminantView<
+    Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
+  return EnumConditionalDiscriminant::MinSizeInBytes();
 }
 
 }  // namespace test
