@@ -128,6 +128,18 @@ emboss_cc_test(
 )
 
 emboss_cc_test(
+    name = "ok_equivalence_test",
+    srcs = [
+        "testcode/ok_equivalence_test.cc",
+    ],
+    deps = [
+        "//testdata:condition_emboss",
+        "//testdata:many_conditionals_emboss",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+emboss_cc_test(
     name = "enum_test",
     srcs = [
         "testcode/enum_test.cc",
