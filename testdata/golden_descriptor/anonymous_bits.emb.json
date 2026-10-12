@@ -1,0 +1,178 @@
+{
+  "modules": [
+    {
+      "source_file_name": "testdata/anonymous_bits.emb",
+      "documentation": "",
+      "types": [
+        {
+          "name": "Foo",
+          "canonical_name": {
+            "module_file": "testdata/anonymous_bits.emb",
+            "object_path": [
+              "Foo"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 64,
+          "min_bit_size": 64,
+          "max_bit_size": 64,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "high_bit",
+              "abbreviation": null,
+              "bit_offset": 31,
+              "bit_size": 1,
+              "offset_expression": "31",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "bar",
+              "abbreviation": null,
+              "bit_offset": 14,
+              "bit_size": 4,
+              "offset_expression": "14",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "Bar",
+              "type": {
+                "module_file": "testdata/anonymous_bits.emb",
+                "object_path": [
+                  "Foo",
+                  "Bar"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": "Bar",
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "first_bit",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 1,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "bit_23",
+              "abbreviation": null,
+              "bit_offset": 55,
+              "bit_size": 1,
+              "offset_expression": "23",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "low_bit",
+              "abbreviation": null,
+              "bit_offset": 32,
+              "bit_size": 1,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Flag",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "Flag"
+                ]
+              },
+              "is_signed": null,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "Bar",
+          "canonical_name": {
+            "module_file": "testdata/anonymous_bits.emb",
+            "object_path": [
+              "Foo",
+              "Bar"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": false,
+          "maximum_bits": 64,
+          "members": [
+            {
+              "name": "BAR",
+              "value": 0,
+              "documentation": ""
+            },
+            {
+              "name": "BAZ",
+              "value": 1,
+              "documentation": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
