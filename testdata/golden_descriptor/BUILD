@@ -18,5 +18,5 @@ package(
 
 exports_files(
     glob(["*.emb.json"]),
-    visibility = ["//compiler/back_end/reflection:__pkg__"],
+    visibility = ["//compiler/back_end/descriptor:__pkg__"],
 )

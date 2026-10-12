@@ -19,7 +19,7 @@ load(
     "cc_emboss_library",
     "emboss_cc_library",
     "emboss_library",
-    "emboss_reflection_library",
+    "emboss_descriptor_library",
 )
 
 package(
@@ -376,10 +376,10 @@ emboss_cc_library(
     ],
 )
 
-# Exercises the reflection back end's Bazel rules.  The generated file is
+# Exercises the descriptor back end's Bazel rules.  The generated file is
 # testdata/nested_structure.emb.json.
-emboss_reflection_library(
-    name = "nested_structure_emboss_reflection",
+emboss_descriptor_library(
+    name = "nested_structure_emboss_descriptor",
     srcs = [
         "nested_structure.emb",
     ],

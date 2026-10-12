@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Emboss reflection metadata generator.
+# Emboss descriptor generator.
 
 load("@rules_python//python:py_binary.bzl", "py_binary")
 load("@rules_python//python:py_library.bzl", "py_library")
 load("@rules_python//python:py_test.bzl", "py_test")
-load(":build_defs.bzl", "reflection_golden_test")
+load(":build_defs.bzl", "descriptor_golden_test")
 
 package(
     default_applicable_licenses = ["//:license"],
@@ -27,19 +27,19 @@ package(
 )
 
 py_binary(
-    name = "emboss_codegen_reflection",
-    srcs = ["emboss_codegen_reflection.py"],
+    name = "emboss_codegen_descriptor",
+    srcs = ["emboss_codegen_descriptor.py"],
     visibility = ["//visibility:public"],
     deps = [
-        ":reflection_generator",
+        ":descriptor_generator",
         "//compiler/util:error",
         "//compiler/util:ir_data",
     ],
 )
 
 py_library(
-    name = "reflection_generator",
-    srcs = ["reflection_generator.py"],
+    name = "descriptor_generator",
+    srcs = ["descriptor_generator.py"],
     deps = [
         "//compiler/front_end:attributes",
         "//compiler/util:expression_printer",
@@ -49,10 +49,10 @@ py_library(
 )
 
 py_test(
-    name = "reflection_generator_test",
-    srcs = ["reflection_generator_test.py"],
+    name = "descriptor_generator_test",
+    srcs = ["descriptor_generator_test.py"],
     deps = [
-        ":reflection_generator",
+        ":descriptor_generator",
         "//compiler/front_end:glue",
         "//compiler/util:test_util",
     ],
@@ -69,60 +69,60 @@ py_binary(
     deps = [":one_golden_test_lib"],
 )
 
-# NOTE: When adding or removing reflection_golden_test(...) rules below, also
-# update the REFLECTION_GOLDENS list in scripts/regenerate_goldens.py so the two
+# NOTE: When adding or removing descriptor_golden_test(...) rules below, also
+# update the DESCRIPTOR_GOLDENS list in scripts/regenerate_goldens.py so the two
 # stay in sync.
 
-reflection_golden_test(
+descriptor_golden_test(
     name = "anonymous_bits_golden_test",
     emb_file = "//testdata:anonymous_bits.emb",
-    golden_file = "//testdata/golden_reflection:anonymous_bits.emb.json",
+    golden_file = "//testdata/golden_descriptor:anonymous_bits.emb.json",
 )
 
-reflection_golden_test(
+descriptor_golden_test(
     name = "bits_golden_test",
     emb_file = "//testdata:bits.emb",
-    golden_file = "//testdata/golden_reflection:bits.emb.json",
+    golden_file = "//testdata/golden_descriptor:bits.emb.json",
 )
 
-reflection_golden_test(
+descriptor_golden_test(
     name = "condition_golden_test",
     emb_file = "//testdata:condition.emb",
-    golden_file = "//testdata/golden_reflection:condition.emb.json",
+    golden_file = "//testdata/golden_descriptor:condition.emb.json",
 )
 
-reflection_golden_test(
+descriptor_golden_test(
     name = "dynamic_size_golden_test",
     emb_file = "//testdata:dynamic_size.emb",
-    golden_file = "//testdata/golden_reflection:dynamic_size.emb.json",
+    golden_file = "//testdata/golden_descriptor:dynamic_size.emb.json",
 )
 
-reflection_golden_test(
+descriptor_golden_test(
     name = "enum_golden_test",
     emb_file = "//testdata:enum.emb",
-    golden_file = "//testdata/golden_reflection:enum.emb.json",
+    golden_file = "//testdata/golden_descriptor:enum.emb.json",
 )
 
-reflection_golden_test(
+descriptor_golden_test(
     name = "nested_structure_golden_test",
     emb_file = "//testdata:nested_structure.emb",
-    golden_file = "//testdata/golden_reflection:nested_structure.emb.json",
+    golden_file = "//testdata/golden_descriptor:nested_structure.emb.json",
 )
 
-reflection_golden_test(
+descriptor_golden_test(
     name = "parameters_golden_test",
     emb_file = "//testdata:parameters.emb",
-    golden_file = "//testdata/golden_reflection:parameters.emb.json",
+    golden_file = "//testdata/golden_descriptor:parameters.emb.json",
 )
 
-reflection_golden_test(
+descriptor_golden_test(
     name = "requires_golden_test",
     emb_file = "//testdata:requires.emb",
-    golden_file = "//testdata/golden_reflection:requires.emb.json",
+    golden_file = "//testdata/golden_descriptor:requires.emb.json",
 )
 
-reflection_golden_test(
+descriptor_golden_test(
     name = "virtual_field_golden_test",
     emb_file = "//testdata:virtual_field.emb",
-    golden_file = "//testdata/golden_reflection:virtual_field.emb.json",
+    golden_file = "//testdata/golden_descriptor:virtual_field.emb.json",
 )

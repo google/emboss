@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Emboss reflection back end.
+"""Emboss descriptor back end.
 
 Emits a JSON description of a module's types: every field with its bit offset
 and bit size, every enum member with its value, every `let` with its value,
@@ -54,8 +54,8 @@ _PRELUDE_SIGNEDNESS = {
 }
 
 
-def generate_reflection(ir):
-    """Generates JSON reflection metadata for the main module of `ir`.
+def generate_descriptor(ir):
+    """Generates the JSON descriptor of the main module of `ir`.
 
     Arguments:
       ir: an `ir_data.EmbossIr`.
@@ -63,19 +63,19 @@ def generate_reflection(ir):
     Returns:
       A tuple of (JSON text, list of errors).
     """
-    module = _module_reflection(ir.module[0], ir)
+    module = _module_descriptor(ir.module[0], ir)
     return json.dumps({"modules": [module]}, indent=2) + "\n", []
 
 
 # ---- module and type -------------------------------------------------------
 
 
-def _module_reflection(module, ir):
+def _module_descriptor(module, ir):
     return {
         "source_file_name": module.source_file_name,
         "documentation": _documentation(module),
         "types": [
-            _type_reflection(type_definition, ir)
+            _type_descriptor(type_definition, ir)
             for type_definition in _named_types(module.type)
         ],
     }
@@ -97,8 +97,8 @@ def _named_types(type_definitions):
     return result
 
 
-def _type_reflection(type_definition, ir):
-    """Reflection metadata for one TypeDefinition."""
+def _type_descriptor(type_definition, ir):
+    """Descriptor of one TypeDefinition."""
     result = {
         "name": type_definition.name.name.text,
         "canonical_name": _canonical_name(type_definition.name.canonical_name),
@@ -107,9 +107,9 @@ def _type_reflection(type_definition, ir):
         "requires": _requires(type_definition.attribute),
     }
     if type_definition.has_field("enumeration"):
-        result.update(_enum_reflection(type_definition))
+        result.update(_enum_descriptor(type_definition))
     elif type_definition.has_field("structure"):
-        result.update(_structure_reflection(type_definition, ir))
+        result.update(_structure_descriptor(type_definition, ir))
     return result
 
 
@@ -124,7 +124,7 @@ def _kind_of_type(type_definition):
     return "struct"
 
 
-def _enum_reflection(type_definition):
+def _enum_descriptor(type_definition):
     return {
         "is_signed": ir_util.get_boolean_attribute(
             type_definition.attribute, attributes.IS_SIGNED
@@ -143,7 +143,7 @@ def _enum_reflection(type_definition):
     }
 
 
-def _structure_reflection(type_definition, ir):
+def _structure_descriptor(type_definition, ir):
     fields = []
     _add_physical_fields(type_definition, 0, None, ir, fields)
     bit_size, min_bit_size, max_bit_size = _sizes_of_structure(type_definition)
@@ -153,7 +153,7 @@ def _structure_reflection(type_definition, ir):
         "max_bit_size": max_bit_size,
         "byte_order": _byte_order_of_structure(type_definition),
         "parameters": [
-            _parameter_reflection(parameter)
+            _parameter_descriptor(parameter)
             for parameter in type_definition.runtime_parameter
         ],
         "fields": fields,
@@ -161,7 +161,7 @@ def _structure_reflection(type_definition, ir):
     }
 
 
-def _parameter_reflection(parameter):
+def _parameter_descriptor(parameter):
     physical_type = None
     if parameter.has_field("physical_type_alias"):
         physical_type = _base_type_name(parameter.physical_type_alias)
@@ -237,7 +237,7 @@ def _byte_order_of_field(field):
 
 
 def _add_physical_fields(type_definition, base_bit_offset, condition, ir, out):
-    """Appends reflection metadata for `type_definition`'s physical fields.
+    """Appends the descriptors of `type_definition`'s physical fields.
 
     Arguments:
       type_definition: the structure to walk.
@@ -273,16 +273,16 @@ def _add_physical_fields(type_definition, base_bit_offset, condition, ir, out):
             )
             continue
         out.append(
-            _physical_field_reflection(
+            _physical_field_descriptor(
                 field, unit, base_bit_offset, bit_offset, existence_condition, ir
             )
         )
 
 
-def _physical_field_reflection(
+def _physical_field_descriptor(
     field, unit, base_bit_offset, bit_offset, existence_condition, ir
 ):
-    """Reflection metadata for one physical field."""
+    """Descriptor of one physical field."""
     base_type = ir_util.get_base_type(field.type)
     type_definition = ir_util.find_object(base_type.atomic_type.reference, ir)
     is_enum = type_definition.has_field("enumeration")
@@ -373,7 +373,7 @@ def _base_type_name(type_ir):
 
 
 def _virtual_fields(type_definition, ir):
-    """Reflection metadata for the `let` fields the author wrote.
+    """Descriptors of the `let` fields the author wrote.
 
     Skips the compiler's own virtuals: the `$`-prefixed size fields, and the
     alias fields it synthesizes for anonymous `bits` members, whose targets are

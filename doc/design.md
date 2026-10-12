@@ -141,7 +141,7 @@ assigned to the reference.
 
 A back end takes Emboss IR and produces code in a specific language for
 manipulating the Emboss-defined data structures.  Currently there is a C++ back
-end, plus a reflection back end that emits a description of the types as JSON
+end, plus a descriptor back end that emits a description of the types as JSON
 rather than code in any language.
 
 ### C++
@@ -161,15 +161,15 @@ essentially inserts values from the IR into text templates.
 
 *TODO(bolms): add more documentation once the C++ back end has more features.*
 
-### Reflection
+### Descriptor
 
-*Implemented in [reflection_generator.py][reflection_generator_py], with a
-driver program in [emboss_codegen_reflection.py][emboss_codegen_reflection_py]*
+*Implemented in [descriptor_generator.py][descriptor_generator_py], with a
+driver program in [emboss_codegen_descriptor.py][emboss_codegen_descriptor_py]*
 
-[reflection_generator_py]: back_end/reflection/reflection_generator.py
-[emboss_codegen_reflection_py]: back_end/reflection/emboss_codegen_reflection.py
+[descriptor_generator_py]: back_end/descriptor/descriptor_generator.py
+[emboss_codegen_descriptor_py]: back_end/descriptor/emboss_codegen_descriptor.py
 
-The reflection back end emits a JSON description of the types in a module --
+The descriptor back end emits a JSON description of the types in a module --
 fields with their bit offsets and bit sizes, enum members with their values,
 `let` values, documentation, `requires` clauses, existence conditions, and byte
 order -- rather than code in any target language.  It exists so that a program

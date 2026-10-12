@@ -82,7 +82,7 @@ class OneGoldenTest(unittest.TestCase):
                     golden_contents.splitlines(keepends=True),
                     generated_contents.splitlines(keepends=True),
                     fromfile=self.golden_file,
-                    tofile="Generated reflection JSON",
+                    tofile="Generated descriptor JSON",
                 )
             ),
         )

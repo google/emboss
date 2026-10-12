@@ -16,7 +16,7 @@
 
 This is the inverse of `compiler.util.expression_parser.parse`: the text it
 produces re-parses to an equivalent expression.  Back ends that report
-expressions to a human -- documentation, reflection metadata -- want the
+expressions to a human -- documentation, type descriptors -- want the
 expression the way the author wrote it, not the way a target language spells
 it, which is what `back_end/cpp/header_generator.py` produces.
 

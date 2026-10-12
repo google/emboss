@@ -343,14 +343,14 @@ The `-I` option adds a directory to the *include path*.  The input file -- in
 this case, `bogonel.emb` -- must be found somewhere on the include path.
 
 The `--generate` option specifies which back end to use; `cc` is the C++ back
-end.  Passing `reflection` instead writes out a JSON description of the types
+end.  Passing `descriptor` instead writes out a JSON description of the types
 in the `.emb` -- every field with its bit offset and bit size, every enum
 member with its value, plus documentation, `requires` clauses, and existence
 conditions -- for programs that want to read an `.emb` as data rather than
 compile it into views:
 
 ```
-embossc -I src --generate reflection --output-path generated bogonel.emb
+embossc -I src --generate descriptor --output-path generated bogonel.emb
 ```
 
 Passing `ir` writes out the compiler's own intermediate representation as JSON,

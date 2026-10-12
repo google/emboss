@@ -14,12 +14,12 @@
 
 # -*- mode: python; -*-
 # vim:set ft=blazebuild:
-"""Bazel test macros for the Emboss reflection backend."""
+"""Bazel test macros for the Emboss descriptor backend."""
 
 load("@rules_python//python:py_test.bzl", "py_test")
 
-def reflection_golden_test(name, emb_file, golden_file, import_dirs = []):
-    """Defines a reflection golden file test.
+def descriptor_golden_test(name, emb_file, golden_file, import_dirs = []):
+    """Defines a descriptor golden file test.
 
     Args:
         name: The name of the test.
@@ -34,13 +34,13 @@ def reflection_golden_test(name, emb_file, golden_file, import_dirs = []):
         tags = ["golden"],
         args = [
             "$(location //compiler/front_end:emboss_front_end)",
-            "$(location :emboss_codegen_reflection)",
+            "$(location :emboss_codegen_descriptor)",
             "$(location %s)" % emb_file,
             "$(location %s)" % golden_file,
         ] + ["--import-dir=" + d for d in import_dirs],
         data = [
             "//compiler/front_end:emboss_front_end",
-            ":emboss_codegen_reflection",
+            ":emboss_codegen_descriptor",
             emb_file,
             golden_file,
             "//testdata:test_embs",

@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for the reflection generator."""
+"""Tests for the descriptor generator."""
 
 import json
 import unittest
 
-from compiler.back_end.reflection import reflection_generator
+from compiler.back_end.descriptor import descriptor_generator
 from compiler.front_end import glue
 from compiler.util import test_util
 
@@ -33,23 +33,23 @@ def _reflect_files(files, name="m.emb"):
     """Reflects `files[name]`, returning the parsed JSON of its one module."""
     ir, _, errors = glue.parse_emboss_file(name, test_util.dict_file_reader(files))
     assert not errors, errors
-    text, errors = reflection_generator.generate_reflection(ir)
+    text, errors = descriptor_generator.generate_descriptor(ir)
     assert not errors, errors
     return json.loads(text)["modules"][0]
 
 
 def _types(module):
     return {
-        type_reflection["name"]: type_reflection for type_reflection in module["types"]
+        type_descriptor["name"]: type_descriptor for type_descriptor in module["types"]
     }
 
 
-def _fields(type_reflection):
-    return {field["name"]: field for field in type_reflection["fields"]}
+def _fields(type_descriptor):
+    return {field["name"]: field for field in type_descriptor["fields"]}
 
 
-def _virtuals(type_reflection):
-    return {virtual["name"]: virtual for virtual in type_reflection["virtuals"]}
+def _virtuals(type_descriptor):
+    return {virtual["name"]: virtual for virtual in type_descriptor["virtuals"]}
 
 
 class ModuleTest(unittest.TestCase):
@@ -77,7 +77,7 @@ class ModuleTest(unittest.TestCase):
             test_util.dict_file_reader({"m.emb": "struct Foo:\n  0 [+1]  UInt  x\n"}),
         )
         assert not errors, errors
-        text, _ = reflection_generator.generate_reflection(ir)
+        text, _ = descriptor_generator.generate_descriptor(ir)
         self.assertTrue(text.endswith("\n"))
         json.loads(text)
 

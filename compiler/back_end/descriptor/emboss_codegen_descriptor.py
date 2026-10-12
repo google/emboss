@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Emboss reflection metadata generator.
+"""Emboss descriptor generator.
 
-This is a driver program that reads IR, feeds it to reflection_generator, and
+This is a driver program that reads IR, feeds it to descriptor_generator, and
 writes the resulting JSON to stdout or a file.
 """
 
@@ -22,7 +22,7 @@ import argparse
 import os
 import sys
 
-from compiler.back_end.reflection import reflection_generator
+from compiler.back_end.descriptor import descriptor_generator
 from compiler.util import error
 from compiler.util import ir_data
 from compiler.util import ir_data_utils
@@ -30,7 +30,7 @@ from compiler.util import ir_data_utils
 
 def _parse_command_line(argv):
     parser = argparse.ArgumentParser(
-        description="Emboss compiler reflection back end.", prog=argv[0]
+        description="Emboss compiler descriptor back end.", prog=argv[0]
     )
     parser.add_argument("--input-file", type=str, help=".emb.ir file to compile.")
     parser.add_argument(
@@ -66,7 +66,7 @@ def main(flags):
         ir = ir_data_utils.IrDataSerializer.from_json(
             ir_data.EmbossIr, sys.stdin.read()
         )
-    text, errors = reflection_generator.generate_reflection(ir)
+    text, errors = descriptor_generator.generate_descriptor(ir)
     if errors:
         _show_errors(errors, ir, flags.color_output)
         return 1
