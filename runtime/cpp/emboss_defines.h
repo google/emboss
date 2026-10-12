@@ -304,8 +304,45 @@
 #define EMBOSS_BYTESWAP64(x) __builtin_bswap64((x))
 #endif  // !defined(EMBOSS_BYTESWAP64)
 
+// EMBOSS_ALWAYS_INLINE is used in place of `inline` on the (many, tiny)
+// functions which make up a view.  Compilers' inlining heuristics are tuned
+// for ordinary code, and reliably give up partway through the deep call
+// chains in generated code -- view constructor -> buffer accessor -> byte
+// orderer -> memory accessor -> ... -- at which point each remaining layer
+// costs a real function call and the values that should live in registers
+// get spilled to the stack.  Forcing inlining lets the optimizer see a field
+// read or an Ok() check as a whole, where it typically collapses to a few
+// instructions.
+//
+// EMBOSS_ASSUME(x) tells the optimizer that `x` is true, without evaluating
+// `x` at runtime; it is only used for facts that the surrounding code has
+// already established (such as a non-null buffer pointer in an unchecked
+// read).
+//
+// Both may be overridden by site defines.  Defining EMBOSS_NO_OPTIMIZATIONS
+// turns EMBOSS_ALWAYS_INLINE into a plain `inline` and EMBOSS_ASSUME into a
+// no-op.
+#if !defined(EMBOSS_ALWAYS_INLINE)
+#define EMBOSS_ALWAYS_INLINE __attribute__((always_inline)) inline
+#endif  // !defined(EMBOSS_ALWAYS_INLINE)
+
+#if !defined(EMBOSS_ASSUME)
+#define EMBOSS_ASSUME(x)               \
+  do {                                 \
+    if (!(x)) __builtin_unreachable(); \
+  } while (0)
+#endif  // !defined(EMBOSS_ASSUME)
+
 #endif  // defined(__GNUC__)
 #endif  // !defined(EMBOSS_NO_OPTIMIZATIONS)
+
+#if !defined(EMBOSS_ALWAYS_INLINE)
+#define EMBOSS_ALWAYS_INLINE inline
+#endif  // !defined(EMBOSS_ALWAYS_INLINE)
+
+#if !defined(EMBOSS_ASSUME)
+#define EMBOSS_ASSUME(x) ((void)0)
+#endif  // !defined(EMBOSS_ASSUME)
 
 #if !defined(EMBOSS_SYSTEM_IS_TWOS_COMPLEMENT)
 #define EMBOSS_SYSTEM_IS_TWOS_COMPLEMENT 0

@@ -297,13 +297,15 @@ struct EmbossReservedInternalIsGenericUseKCamelEnumCaseView;
 template <class Storage>
 class GenericUseKCamelEnumCaseView final {
  public:
-  GenericUseKCamelEnumCaseView() : backing_() {}
-  explicit GenericUseKCamelEnumCaseView(Storage emboss_reserved_local_bytes)
+  EMBOSS_ALWAYS_INLINE GenericUseKCamelEnumCaseView() : backing_() {}
+  EMBOSS_ALWAYS_INLINE explicit GenericUseKCamelEnumCaseView(
+      Storage emboss_reserved_local_bytes)
       : backing_(emboss_reserved_local_bytes) {}
 
   template <typename OtherStorage>
-  GenericUseKCamelEnumCaseView(const GenericUseKCamelEnumCaseView<OtherStorage>&
-                                   emboss_reserved_local_other)
+  EMBOSS_ALWAYS_INLINE GenericUseKCamelEnumCaseView(
+      const GenericUseKCamelEnumCaseView<OtherStorage>&
+          emboss_reserved_local_other)
       : backing_{emboss_reserved_local_other.BackingStorage()} {}
 
   template <typename Arg,
@@ -311,18 +313,19 @@ class GenericUseKCamelEnumCaseView final {
                 !EmbossReservedInternalIsGenericUseKCamelEnumCaseView<
                     typename ::std::remove_cv<typename ::std::remove_reference<
                         Arg>::type>::type>::value>::type>
-  explicit GenericUseKCamelEnumCaseView(Arg&& emboss_reserved_local_arg)
+  EMBOSS_ALWAYS_INLINE explicit GenericUseKCamelEnumCaseView(
+      Arg&& emboss_reserved_local_arg)
       : backing_(::std::forward<Arg>(emboss_reserved_local_arg)) {}
   template <typename Arg0, typename Arg1, typename... Args>
-  explicit GenericUseKCamelEnumCaseView(Arg0&& emboss_reserved_local_arg0,
-                                        Arg1&& emboss_reserved_local_arg1,
-                                        Args&&... emboss_reserved_local_args)
+  EMBOSS_ALWAYS_INLINE explicit GenericUseKCamelEnumCaseView(
+      Arg0&& emboss_reserved_local_arg0, Arg1&& emboss_reserved_local_arg1,
+      Args&&... emboss_reserved_local_args)
       : backing_(::std::forward<Arg0>(emboss_reserved_local_arg0),
                  ::std::forward<Arg1>(emboss_reserved_local_arg1),
                  ::std::forward<Args>(emboss_reserved_local_args)...) {}
 
   template <typename OtherStorage>
-  GenericUseKCamelEnumCaseView<Storage>& operator=(
+  EMBOSS_ALWAYS_INLINE GenericUseKCamelEnumCaseView<Storage>& operator=(
       const GenericUseKCamelEnumCaseView<OtherStorage>&
           emboss_reserved_local_other) {
     backing_ = emboss_reserved_local_other.BackingStorage();
@@ -332,97 +335,60 @@ class GenericUseKCamelEnumCaseView final {
   bool Ok() const {
     if (!IsComplete()) return false;
 
-    if (!has_v().Known()) return false;
-    if (has_v().ValueOrDefault() && !v().Ok()) return false;
-
-    if (!has_first().Known()) return false;
-    if (has_first().ValueOrDefault() && !first().Ok()) return false;
-
-    if (!has_v_is_first().Known()) return false;
-    if (has_v_is_first().ValueOrDefault() && !v_is_first().Ok()) return false;
-
-    if (!has_IntrinsicSizeInBytes().Known()) return false;
-    if (has_IntrinsicSizeInBytes().ValueOrDefault() &&
-        !IntrinsicSizeInBytes().Ok())
-      return false;
-
-    if (!has_MaxSizeInBytes().Known()) return false;
-    if (has_MaxSizeInBytes().ValueOrDefault() && !MaxSizeInBytes().Ok())
-      return false;
-
-    if (!has_MinSizeInBytes().Known()) return false;
-    if (has_MinSizeInBytes().ValueOrDefault() && !MinSizeInBytes().Ok())
-      return false;
-
     return true;
   }
-  Storage BackingStorage() const { return backing_; }
-  bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+  EMBOSS_ALWAYS_INLINE Storage BackingStorage() const { return backing_; }
+  EMBOSS_ALWAYS_INLINE bool IsComplete() const {
+    if (!backing_.Ok()) return false;
+    const auto emboss_reserved_local_size =
+        IntrinsicSizeInBytes().OkAndUncheckedRead();
+    return emboss_reserved_local_size.Known() &&
            backing_.SizeInBytes() >=
                static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+                   emboss_reserved_local_size.ValueOrDefault());
   }
-  static constexpr ::std::size_t SizeInBytes() {
+  static EMBOSS_ALWAYS_INLINE constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
   }
-  static constexpr bool SizeIsKnown() { return IntrinsicSizeInBytes().Ok(); }
+  static EMBOSS_ALWAYS_INLINE constexpr bool SizeIsKnown() {
+    return IntrinsicSizeInBytes().Ok();
+  }
 
   template <typename OtherStorage>
   bool Equals(GenericUseKCamelEnumCaseView<OtherStorage>
                   emboss_reserved_local_other) const {
-    if (!has_v().Known()) return false;
-    if (!emboss_reserved_local_other.has_v().Known()) return false;
-
-    if (emboss_reserved_local_other.has_v().ValueOrDefault() &&
-        !has_v().ValueOrDefault())
-      return false;
-    if (has_v().ValueOrDefault() &&
-        !emboss_reserved_local_other.has_v().ValueOrDefault())
-      return false;
-
-    if (emboss_reserved_local_other.has_v().ValueOrDefault() &&
-        has_v().ValueOrDefault() &&
-        !v().Equals(emboss_reserved_local_other.v()))
-      return false;
+    if (!v().Equals(emboss_reserved_local_other.v())) return false;
 
     return true;
   }
   template <typename OtherStorage>
-  bool UncheckedEquals(GenericUseKCamelEnumCaseView<OtherStorage>
-                           emboss_reserved_local_other) const {
-    if (emboss_reserved_local_other.has_v().ValueOr(false) &&
-        !has_v().ValueOr(false))
-      return false;
-    if (has_v().ValueOr(false) &&
-        !emboss_reserved_local_other.has_v().ValueOr(false))
-      return false;
-
-    if (emboss_reserved_local_other.has_v().ValueOr(false) &&
-        has_v().ValueOr(false) &&
-        !v().UncheckedEquals(emboss_reserved_local_other.v()))
-      return false;
+  EMBOSS_ALWAYS_INLINE bool UncheckedEquals(
+      GenericUseKCamelEnumCaseView<OtherStorage> emboss_reserved_local_other)
+      const {
+    if (!v().UncheckedEquals(emboss_reserved_local_other.v())) return false;
 
     return true;
   }
   template <typename OtherStorage>
-  void UncheckedCopyFrom(GenericUseKCamelEnumCaseView<OtherStorage>
-                             emboss_reserved_local_other) const {
+  EMBOSS_ALWAYS_INLINE void UncheckedCopyFrom(
+      GenericUseKCamelEnumCaseView<OtherStorage> emboss_reserved_local_other)
+      const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
         emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
   }
 
   template <typename OtherStorage>
-  void CopyFrom(GenericUseKCamelEnumCaseView<OtherStorage>
-                    emboss_reserved_local_other) const {
+  EMBOSS_ALWAYS_INLINE void CopyFrom(GenericUseKCamelEnumCaseView<OtherStorage>
+                                         emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
         emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
   }
   template <typename OtherStorage>
-  bool TryToCopyFrom(GenericUseKCamelEnumCaseView<OtherStorage>
-                         emboss_reserved_local_other) const {
+  EMBOSS_ALWAYS_INLINE bool TryToCopyFrom(
+      GenericUseKCamelEnumCaseView<OtherStorage> emboss_reserved_local_other)
+      const {
     return emboss_reserved_local_other.Ok() &&
            backing_.TryToCopyFrom(
                emboss_reserved_local_other.BackingStorage(),
@@ -572,7 +538,7 @@ class GenericUseKCamelEnumCaseView final {
    public:
     using ValueType = ::emboss::test::EnumDefault;
 
-    constexpr EmbossReservedVirtualFirstView() {}
+    EMBOSS_ALWAYS_INLINE constexpr EmbossReservedVirtualFirstView() {}
     EmbossReservedVirtualFirstView(const EmbossReservedVirtualFirstView&) =
         default;
     EmbossReservedVirtualFirstView(EmbossReservedVirtualFirstView&&) = default;
@@ -582,9 +548,16 @@ class GenericUseKCamelEnumCaseView final {
         EmbossReservedVirtualFirstView&&) = default;
     ~EmbossReservedVirtualFirstView() = default;
 
-    static constexpr ::emboss::test::EnumDefault Read();
-    static constexpr ::emboss::test::EnumDefault UncheckedRead();
-    static constexpr bool Ok() { return true; }
+    static EMBOSS_ALWAYS_INLINE constexpr ::emboss::test::EnumDefault Read();
+    static EMBOSS_ALWAYS_INLINE constexpr ::emboss::test::EnumDefault
+    UncheckedRead();
+    static EMBOSS_ALWAYS_INLINE constexpr bool Ok() { return true; }
+    static EMBOSS_ALWAYS_INLINE constexpr ::emboss::support::Maybe<
+        /**/ ::emboss::test::EnumDefault>
+    OkAndUncheckedRead() {
+      return ::emboss::support::Maybe</**/ ::emboss::test::EnumDefault>(
+          UncheckedRead());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -596,10 +569,11 @@ class GenericUseKCamelEnumCaseView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedVirtualFirstView first() {
+  static EMBOSS_ALWAYS_INLINE constexpr EmbossReservedVirtualFirstView first() {
     return EmbossReservedVirtualFirstView();
   }
-  static constexpr ::emboss::support::Maybe<bool> has_first() {
+  static EMBOSS_ALWAYS_INLINE constexpr ::emboss::support::Maybe<bool>
+  has_first() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
@@ -608,7 +582,7 @@ class GenericUseKCamelEnumCaseView final {
    public:
     using ValueType = bool;
 
-    explicit EmbossReservedVirtualVIsFirstView(
+    EMBOSS_ALWAYS_INLINE explicit EmbossReservedVirtualVIsFirstView(
         const GenericUseKCamelEnumCaseView& emboss_reserved_local_view)
         : view_(emboss_reserved_local_view) {}
     EmbossReservedVirtualVIsFirstView() = delete;
@@ -622,18 +596,28 @@ class GenericUseKCamelEnumCaseView final {
         EmbossReservedVirtualVIsFirstView&&) = default;
     ~EmbossReservedVirtualVIsFirstView() = default;
 
-    bool Read() const {
+    EMBOSS_ALWAYS_INLINE bool Read() const {
       EMBOSS_CHECK(view_.has_v_is_first().ValueOr(false));
       auto emboss_reserved_local_value = MaybeRead();
       EMBOSS_CHECK(emboss_reserved_local_value.Known());
       EMBOSS_CHECK(ValueIsOk(emboss_reserved_local_value.ValueOrDefault()));
       return emboss_reserved_local_value.ValueOrDefault();
     }
-    bool UncheckedRead() const { return MaybeRead().ValueOrDefault(); }
-    bool Ok() const {
+    EMBOSS_ALWAYS_INLINE bool UncheckedRead() const {
+      return MaybeRead().ValueOrDefault();
+    }
+    EMBOSS_ALWAYS_INLINE bool Ok() const {
       auto emboss_reserved_local_value = MaybeRead();
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
+    }
+    EMBOSS_ALWAYS_INLINE ::emboss::support::Maybe</**/ bool>
+    OkAndUncheckedRead() const {
+      auto emboss_reserved_local_value = MaybeRead();
+      return (emboss_reserved_local_value.Known() &&
+              ValueIsOk(emboss_reserved_local_value.ValueOrDefault()))
+                 ? emboss_reserved_local_value
+                 : ::emboss::support::Maybe</**/ bool>();
     }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
@@ -646,26 +630,23 @@ class GenericUseKCamelEnumCaseView final {
     static constexpr bool IsAggregate() { return false; }
 
    private:
-    ::emboss::support::Maybe</**/ bool> MaybeRead() const {
-      const auto emboss_reserved_local_subexpr_1 = view_.v();
+    EMBOSS_ALWAYS_INLINE ::emboss::support::Maybe</**/ bool> MaybeRead() const {
+      const auto emboss_reserved_local_subexpr_1 =
+          ::emboss::support::MaybeStaticCast</**/ ::emboss::test::EnumDefault>(
+              view_.v().OkAndUncheckedRead());
       const auto emboss_reserved_local_subexpr_2 =
-          (emboss_reserved_local_subexpr_1.Ok()
-               ? ::emboss::support::Maybe</**/ ::emboss::test::EnumDefault>(
-                     static_cast</**/ ::emboss::test::EnumDefault>(
-                         emboss_reserved_local_subexpr_1.UncheckedRead()))
-               : ::emboss::support::Maybe</**/ ::emboss::test::EnumDefault>());
-      const auto emboss_reserved_local_subexpr_3 =
           ::emboss::support::Equal</**/ ::emboss::test::EnumDefault, bool,
                                    ::emboss::test::EnumDefault,
                                    ::emboss::test::EnumDefault>(
-              emboss_reserved_local_subexpr_2,
+              emboss_reserved_local_subexpr_1,
               ::emboss::support::Maybe</**/ ::emboss::test::EnumDefault>(
                   static_cast</**/ ::emboss::test::EnumDefault>(0)));
 
-      return emboss_reserved_local_subexpr_3;
+      return emboss_reserved_local_subexpr_2;
     }
 
-    static constexpr bool ValueIsOk(bool emboss_reserved_local_value) {
+    static EMBOSS_ALWAYS_INLINE constexpr bool ValueIsOk(
+        bool emboss_reserved_local_value) {
       return (void)emboss_reserved_local_value,  // Silence -Wunused-parameter
              ::emboss::support::Maybe<bool>(true).ValueOr(false);
     }
@@ -680,7 +661,8 @@ class GenericUseKCamelEnumCaseView final {
    public:
     using ValueType = ::std::int32_t;
 
-    constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView() {}
+    EMBOSS_ALWAYS_INLINE constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView() {
+    }
     EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
         const EmbossReservedDollarVirtualIntrinsicSizeInBytesView&) = default;
     EmbossReservedDollarVirtualIntrinsicSizeInBytesView(
@@ -691,9 +673,14 @@ class GenericUseKCamelEnumCaseView final {
         EmbossReservedDollarVirtualIntrinsicSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualIntrinsicSizeInBytesView() = default;
 
-    static constexpr ::std::int32_t Read();
-    static constexpr ::std::int32_t UncheckedRead();
-    static constexpr bool Ok() { return true; }
+    static EMBOSS_ALWAYS_INLINE constexpr ::std::int32_t Read();
+    static EMBOSS_ALWAYS_INLINE constexpr ::std::int32_t UncheckedRead();
+    static EMBOSS_ALWAYS_INLINE constexpr bool Ok() { return true; }
+    static EMBOSS_ALWAYS_INLINE constexpr ::emboss::support::Maybe<
+        /**/ ::std::int32_t>
+    OkAndUncheckedRead() {
+      return ::emboss::support::Maybe</**/ ::std::int32_t>(UncheckedRead());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -705,11 +692,12 @@ class GenericUseKCamelEnumCaseView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView
+  static EMBOSS_ALWAYS_INLINE constexpr EmbossReservedDollarVirtualIntrinsicSizeInBytesView
   IntrinsicSizeInBytes() {
     return EmbossReservedDollarVirtualIntrinsicSizeInBytesView();
   }
-  static constexpr ::emboss::support::Maybe<bool> has_IntrinsicSizeInBytes() {
+  static EMBOSS_ALWAYS_INLINE constexpr ::emboss::support::Maybe<bool>
+  has_IntrinsicSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
@@ -718,7 +706,8 @@ class GenericUseKCamelEnumCaseView final {
    public:
     using ValueType = ::std::int32_t;
 
-    constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {}
+    EMBOSS_ALWAYS_INLINE constexpr EmbossReservedDollarVirtualMaxSizeInBytesView() {
+    }
     EmbossReservedDollarVirtualMaxSizeInBytesView(
         const EmbossReservedDollarVirtualMaxSizeInBytesView&) = default;
     EmbossReservedDollarVirtualMaxSizeInBytesView(
@@ -729,9 +718,14 @@ class GenericUseKCamelEnumCaseView final {
         EmbossReservedDollarVirtualMaxSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMaxSizeInBytesView() = default;
 
-    static constexpr ::std::int32_t Read();
-    static constexpr ::std::int32_t UncheckedRead();
-    static constexpr bool Ok() { return true; }
+    static EMBOSS_ALWAYS_INLINE constexpr ::std::int32_t Read();
+    static EMBOSS_ALWAYS_INLINE constexpr ::std::int32_t UncheckedRead();
+    static EMBOSS_ALWAYS_INLINE constexpr bool Ok() { return true; }
+    static EMBOSS_ALWAYS_INLINE constexpr ::emboss::support::Maybe<
+        /**/ ::std::int32_t>
+    OkAndUncheckedRead() {
+      return ::emboss::support::Maybe</**/ ::std::int32_t>(UncheckedRead());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -743,11 +737,12 @@ class GenericUseKCamelEnumCaseView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
+  static EMBOSS_ALWAYS_INLINE constexpr EmbossReservedDollarVirtualMaxSizeInBytesView
   MaxSizeInBytes() {
     return EmbossReservedDollarVirtualMaxSizeInBytesView();
   }
-  static constexpr ::emboss::support::Maybe<bool> has_MaxSizeInBytes() {
+  static EMBOSS_ALWAYS_INLINE constexpr ::emboss::support::Maybe<bool>
+  has_MaxSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
@@ -756,7 +751,8 @@ class GenericUseKCamelEnumCaseView final {
    public:
     using ValueType = ::std::int32_t;
 
-    constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {}
+    EMBOSS_ALWAYS_INLINE constexpr EmbossReservedDollarVirtualMinSizeInBytesView() {
+    }
     EmbossReservedDollarVirtualMinSizeInBytesView(
         const EmbossReservedDollarVirtualMinSizeInBytesView&) = default;
     EmbossReservedDollarVirtualMinSizeInBytesView(
@@ -767,9 +763,14 @@ class GenericUseKCamelEnumCaseView final {
         EmbossReservedDollarVirtualMinSizeInBytesView&&) = default;
     ~EmbossReservedDollarVirtualMinSizeInBytesView() = default;
 
-    static constexpr ::std::int32_t Read();
-    static constexpr ::std::int32_t UncheckedRead();
-    static constexpr bool Ok() { return true; }
+    static EMBOSS_ALWAYS_INLINE constexpr ::std::int32_t Read();
+    static EMBOSS_ALWAYS_INLINE constexpr ::std::int32_t UncheckedRead();
+    static EMBOSS_ALWAYS_INLINE constexpr bool Ok() { return true; }
+    static EMBOSS_ALWAYS_INLINE constexpr ::emboss::support::Maybe<
+        /**/ ::std::int32_t>
+    OkAndUncheckedRead() {
+      return ::emboss::support::Maybe</**/ ::std::int32_t>(UncheckedRead());
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -781,11 +782,12 @@ class GenericUseKCamelEnumCaseView final {
     static constexpr bool IsAggregate() { return false; }
   };
 
-  static constexpr EmbossReservedDollarVirtualMinSizeInBytesView
+  static EMBOSS_ALWAYS_INLINE constexpr EmbossReservedDollarVirtualMinSizeInBytesView
   MinSizeInBytes() {
     return EmbossReservedDollarVirtualMinSizeInBytesView();
   }
-  static constexpr ::emboss::support::Maybe<bool> has_MinSizeInBytes() {
+  static EMBOSS_ALWAYS_INLINE constexpr ::emboss::support::Maybe<bool>
+  has_MinSizeInBytes() {
     return ::emboss::support::Maybe<bool>(true);
   }
 
@@ -812,7 +814,7 @@ struct EmbossReservedInternalIsGenericUseKCamelEnumCaseView<
 };
 
 template <typename T>
-inline GenericUseKCamelEnumCaseView<
+EMBOSS_ALWAYS_INLINE GenericUseKCamelEnumCaseView<
     /**/ ::emboss::support::ContiguousBuffer<
         typename ::std::remove_reference<
             decltype(*::std::declval<T>()->data())>::type,
@@ -826,7 +828,7 @@ MakeUseKCamelEnumCaseView(T&& emboss_reserved_local_arg) {
 }
 
 template <typename T>
-inline GenericUseKCamelEnumCaseView<
+EMBOSS_ALWAYS_INLINE GenericUseKCamelEnumCaseView<
     /**/ ::emboss::support::ContiguousBuffer<T, 1, 0>>
 MakeUseKCamelEnumCaseView(T* emboss_reserved_local_data,
                           ::std::size_t emboss_reserved_local_size) {
@@ -836,7 +838,7 @@ MakeUseKCamelEnumCaseView(T* emboss_reserved_local_data,
 }
 
 template <typename T, ::std::size_t kAlignment>
-inline GenericUseKCamelEnumCaseView<
+EMBOSS_ALWAYS_INLINE GenericUseKCamelEnumCaseView<
     /**/ ::emboss::support::ContiguousBuffer<T, kAlignment, 0>>
 MakeAlignedUseKCamelEnumCaseView(T* emboss_reserved_local_data,
                                  ::std::size_t emboss_reserved_local_size) {
@@ -1150,7 +1152,7 @@ static inline ::std::ostream& operator<<(
 namespace UseKCamelEnumCase {}  // namespace UseKCamelEnumCase
 
 template <class Storage>
-inline typename ::emboss::support::EnumView<
+EMBOSS_ALWAYS_INLINE typename ::emboss::support::EnumView<
     /**/ ::emboss::test::EnumDefault,
     ::emboss::support::FixedSizeViewParameters<
         32, ::emboss::support::AllValuesAreOk>,
@@ -1160,31 +1162,6 @@ inline typename ::emboss::support::EnumView<
         32>>
 
 GenericUseKCamelEnumCaseView<Storage>::v() const {
-  if (has_v().ValueOr(false)) {
-    auto emboss_reserved_local_size =
-        ::emboss::support::Maybe</**/ ::std::int32_t>(
-            static_cast</**/ ::std::int32_t>(4LL));
-    auto emboss_reserved_local_offset =
-        ::emboss::support::Maybe</**/ ::std::int32_t>(
-            static_cast</**/ ::std::int32_t>(0LL));
-    if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
-        emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
-      return ::emboss::support::EnumView<
-          /**/ ::emboss::test::EnumDefault,
-          ::emboss::support::FixedSizeViewParameters<
-              32, ::emboss::support::AllValuesAreOk>,
-          typename ::emboss::support::BitBlock<
-              /**/ ::emboss::support::LittleEndianByteOrderer<
-                  typename Storage::template OffsetStorageType</**/ 0, 0>>,
-              32>>
-
-          (backing_.template GetOffsetStorage<0, 0>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
-    }
-  }
   return ::emboss::support::EnumView<
       /**/ ::emboss::test::EnumDefault,
       ::emboss::support::FixedSizeViewParameters<
@@ -1194,17 +1171,19 @@ GenericUseKCamelEnumCaseView<Storage>::v() const {
               typename Storage::template OffsetStorageType</**/ 0, 0>>,
           32>>
 
-      ();
+      (backing_.template GetOffsetStorage<0, 0>(
+          static_cast</**/ ::std::int32_t>(0LL),
+          static_cast</**/ ::std::int32_t>(4LL)));
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
+EMBOSS_ALWAYS_INLINE ::emboss::support::Maybe<bool>
 GenericUseKCamelEnumCaseView<Storage>::has_v() const {
-  return ::emboss::support::Maybe</**/ bool>(true);
+  return ::emboss::support::Maybe<bool>(true);
 }
 
 namespace UseKCamelEnumCase {
-inline constexpr ::emboss::test::EnumDefault first() {
+EMBOSS_ALWAYS_INLINE constexpr ::emboss::test::EnumDefault first() {
   return ::emboss::support::Maybe</**/ ::emboss::test::EnumDefault>(
              static_cast</**/ ::emboss::test::EnumDefault>(0))
       .ValueOrDefault();
@@ -1212,19 +1191,20 @@ inline constexpr ::emboss::test::EnumDefault first() {
 }  // namespace UseKCamelEnumCase
 
 template <class Storage>
-inline constexpr ::emboss::test::EnumDefault
+EMBOSS_ALWAYS_INLINE constexpr ::emboss::test::EnumDefault
 GenericUseKCamelEnumCaseView<Storage>::EmbossReservedVirtualFirstView::Read() {
   return UseKCamelEnumCase::first();
 }
 
 template <class Storage>
-inline constexpr ::emboss::test::EnumDefault GenericUseKCamelEnumCaseView<
+EMBOSS_ALWAYS_INLINE constexpr ::emboss::test::EnumDefault
+GenericUseKCamelEnumCaseView<
     Storage>::EmbossReservedVirtualFirstView::UncheckedRead() {
   return UseKCamelEnumCase::first();
 }
 
 template <class Storage>
-inline typename GenericUseKCamelEnumCaseView<
+EMBOSS_ALWAYS_INLINE typename GenericUseKCamelEnumCaseView<
     Storage>::EmbossReservedVirtualVIsFirstView
 GenericUseKCamelEnumCaseView<Storage>::v_is_first() const {
   return typename GenericUseKCamelEnumCaseView<
@@ -1232,13 +1212,13 @@ GenericUseKCamelEnumCaseView<Storage>::v_is_first() const {
 }
 
 template <class Storage>
-inline ::emboss::support::Maybe<bool>
+EMBOSS_ALWAYS_INLINE ::emboss::support::Maybe<bool>
 GenericUseKCamelEnumCaseView<Storage>::has_v_is_first() const {
-  return ::emboss::support::Maybe</**/ bool>(true);
+  return ::emboss::support::Maybe<bool>(true);
 }
 
 namespace UseKCamelEnumCase {
-inline constexpr ::std::int32_t IntrinsicSizeInBytes() {
+EMBOSS_ALWAYS_INLINE constexpr ::std::int32_t IntrinsicSizeInBytes() {
   return ::emboss::support::Maybe</**/ ::std::int32_t>(
              static_cast</**/ ::std::int32_t>(4LL))
       .ValueOrDefault();
@@ -1246,19 +1226,20 @@ inline constexpr ::std::int32_t IntrinsicSizeInBytes() {
 }  // namespace UseKCamelEnumCase
 
 template <class Storage>
-inline constexpr ::std::int32_t GenericUseKCamelEnumCaseView<
+EMBOSS_ALWAYS_INLINE constexpr ::std::int32_t GenericUseKCamelEnumCaseView<
     Storage>::EmbossReservedDollarVirtualIntrinsicSizeInBytesView::Read() {
   return UseKCamelEnumCase::IntrinsicSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t GenericUseKCamelEnumCaseView<Storage>::
+EMBOSS_ALWAYS_INLINE constexpr ::std::int32_t
+GenericUseKCamelEnumCaseView<Storage>::
     EmbossReservedDollarVirtualIntrinsicSizeInBytesView::UncheckedRead() {
   return UseKCamelEnumCase::IntrinsicSizeInBytes();
 }
 
 namespace UseKCamelEnumCase {
-inline constexpr ::std::int32_t MaxSizeInBytes() {
+EMBOSS_ALWAYS_INLINE constexpr ::std::int32_t MaxSizeInBytes() {
   return ::emboss::support::Maybe</**/ ::std::int32_t>(
              static_cast</**/ ::std::int32_t>(4LL))
       .ValueOrDefault();
@@ -1266,19 +1247,19 @@ inline constexpr ::std::int32_t MaxSizeInBytes() {
 }  // namespace UseKCamelEnumCase
 
 template <class Storage>
-inline constexpr ::std::int32_t GenericUseKCamelEnumCaseView<
+EMBOSS_ALWAYS_INLINE constexpr ::std::int32_t GenericUseKCamelEnumCaseView<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::Read() {
   return UseKCamelEnumCase::MaxSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t GenericUseKCamelEnumCaseView<
+EMBOSS_ALWAYS_INLINE constexpr ::std::int32_t GenericUseKCamelEnumCaseView<
     Storage>::EmbossReservedDollarVirtualMaxSizeInBytesView::UncheckedRead() {
   return UseKCamelEnumCase::MaxSizeInBytes();
 }
 
 namespace UseKCamelEnumCase {
-inline constexpr ::std::int32_t MinSizeInBytes() {
+EMBOSS_ALWAYS_INLINE constexpr ::std::int32_t MinSizeInBytes() {
   return ::emboss::support::Maybe</**/ ::std::int32_t>(
              static_cast</**/ ::std::int32_t>(4LL))
       .ValueOrDefault();
@@ -1286,13 +1267,13 @@ inline constexpr ::std::int32_t MinSizeInBytes() {
 }  // namespace UseKCamelEnumCase
 
 template <class Storage>
-inline constexpr ::std::int32_t GenericUseKCamelEnumCaseView<
+EMBOSS_ALWAYS_INLINE constexpr ::std::int32_t GenericUseKCamelEnumCaseView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::Read() {
   return UseKCamelEnumCase::MinSizeInBytes();
 }
 
 template <class Storage>
-inline constexpr ::std::int32_t GenericUseKCamelEnumCaseView<
+EMBOSS_ALWAYS_INLINE constexpr ::std::int32_t GenericUseKCamelEnumCaseView<
     Storage>::EmbossReservedDollarVirtualMinSizeInBytesView::UncheckedRead() {
   return UseKCamelEnumCase::MinSizeInBytes();
 }

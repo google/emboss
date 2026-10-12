@@ -118,6 +118,12 @@ def constant_value(expression, bindings=None):
                 expression.type.which_type
             )
     elif expression.which_expression == "function":
+        if (
+            expression.function.function == ir_data.FunctionMapping.PRESENCE
+            and expression.type.which_type == "boolean"
+            and expression.type.boolean.has_field("value")
+        ):
+            return expression.type.boolean.value
         return _constant_value_of_function(expression.function, bindings)
     elif expression.which_expression == "field_reference":
         return None

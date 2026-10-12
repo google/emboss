@@ -33,29 +33,43 @@ namespace support {
 template <typename T>
 class Maybe final {
  public:
-  constexpr Maybe() : value_(), known_(false) {}
-  constexpr explicit Maybe(T value)
+  EMBOSS_ALWAYS_INLINE constexpr Maybe() : value_(), known_(false) {}
+  EMBOSS_ALWAYS_INLINE constexpr explicit Maybe(T value)
       : value_(::std::move(value)), known_(true) {}
-  constexpr Maybe(const Maybe<T> &) = default;
+#if !EMBOSS_GCC_BUG_115033
+  EMBOSS_ALWAYS_INLINE constexpr Maybe(const Maybe<T> &) = default;
   ~Maybe() = default;
-  Maybe &operator=(const Maybe &) = default;
-  Maybe &operator=(T value) {
+  EMBOSS_ALWAYS_INLINE Maybe &operator=(const Maybe &) = default;
+#else
+  // Affected versions of GCC fail to keep a Maybe<> in registers when it is
+  // copied with the defaulted copy constructor; see the comment on
+  // ContiguousBuffer's copy constructor in emboss_memory_util.h.
+  EMBOSS_ALWAYS_INLINE constexpr Maybe(const Maybe<T> &other)
+      : value_(other.value_), known_(other.known_) {}
+  ~Maybe() = default;
+  EMBOSS_ALWAYS_INLINE Maybe &operator=(const Maybe &other) {
+    value_ = other.value_;
+    known_ = other.known_;
+    return *this;
+  }
+#endif
+  EMBOSS_ALWAYS_INLINE Maybe &operator=(T value) {
     value_ = ::std::move(value);
     known_ = true;
     return *this;
   }
-  Maybe &operator=(const T &value) {
+  EMBOSS_ALWAYS_INLINE Maybe &operator=(const T &value) {
     value_ = value;
     known_ = true;
     return *this;
   }
 
-  constexpr bool Known() const { return known_; }
-  T Value() const {
+  EMBOSS_ALWAYS_INLINE constexpr bool Known() const { return known_; }
+  EMBOSS_ALWAYS_INLINE T Value() const {
     EMBOSS_CHECK(Known());
     return value_;
   }
-  constexpr T ValueOr(T default_value) const {
+  EMBOSS_ALWAYS_INLINE constexpr T ValueOr(T default_value) const {
     return known_ ? value_ : default_value;
   }
   // A non-Ok() Maybe value-initializes value_ to a default (by explicitly
@@ -63,7 +77,7 @@ class Maybe final {
   // is safe to just return value_ here.  For integral types and enums, value_
   // will be 0, for bool it will be false, and for other types it depends on the
   // constructor's behavior.
-  constexpr T ValueOrDefault() const { return value_; }
+  EMBOSS_ALWAYS_INLINE constexpr T ValueOrDefault() const { return value_; }
 
  private:
   T value_;

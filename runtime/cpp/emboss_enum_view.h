@@ -22,6 +22,7 @@
 #include <utility>
 
 #include "runtime/cpp/emboss_defines.h"
+#include "runtime/cpp/emboss_maybe.h"
 #include "runtime/cpp/emboss_view_parameters.h"
 
 // Forward declarations for optional text processing helpers.
@@ -48,36 +49,37 @@ class EnumView final {
       Parameters::kBits <= sizeof(ValueType) * 8,
       "EnumView requires sizeof(ValueType) * 8 >= Parameters::kBits.");
   template <typename... Args>
-  explicit EnumView(Args &&...args) : buffer_{::std::forward<Args>(args)...} {}
-  EnumView() : buffer_() {}
-  EnumView(const EnumView &) = default;
-  EnumView(EnumView &&) = default;
-  EnumView &operator=(const EnumView &) = default;
-  EnumView &operator=(EnumView &&) = default;
+  EMBOSS_ALWAYS_INLINE explicit EnumView(Args &&...args)
+      : buffer_{::std::forward<Args>(args)...} {}
+  EMBOSS_ALWAYS_INLINE EnumView() : buffer_() {}
+  EMBOSS_ALWAYS_INLINE EnumView(const EnumView &) = default;
+  EMBOSS_ALWAYS_INLINE EnumView(EnumView &&) = default;
+  EMBOSS_ALWAYS_INLINE EnumView &operator=(const EnumView &) = default;
+  EMBOSS_ALWAYS_INLINE EnumView &operator=(EnumView &&) = default;
   ~EnumView() = default;
 
   // TODO(bolms): Here and in CouldWriteValue(), the static_casts to ValueType
   // rely on implementation-defined behavior when ValueType is signed.
-  ValueType Read() const {
+  EMBOSS_ALWAYS_INLINE ValueType Read() const {
     ValueType result = static_cast<ValueType>(buffer_.ReadUInt());
     EMBOSS_CHECK(Parameters::ValueIsOk(result));
     return result;
   }
-  ValueType UncheckedRead() const {
+  EMBOSS_ALWAYS_INLINE ValueType UncheckedRead() const {
     return static_cast<ValueType>(buffer_.UncheckedReadUInt());
   }
-  void Write(ValueType value) const {
+  EMBOSS_ALWAYS_INLINE void Write(ValueType value) const {
     const bool result = TryToWrite(value);
     (void)result;
     EMBOSS_CHECK(result);
   }
-  bool TryToWrite(ValueType value) const {
+  EMBOSS_ALWAYS_INLINE bool TryToWrite(ValueType value) const {
     if (!CouldWriteValue(value)) return false;
     if (!IsComplete()) return false;
     buffer_.WriteUInt(static_cast<typename BitViewType::ValueType>(value));
     return true;
   }
-  static constexpr bool CouldWriteValue(ValueType value) {
+  static EMBOSS_ALWAYS_INLINE constexpr bool CouldWriteValue(ValueType value) {
     // The value can be written if:
     //
     // a) it can fit in BitViewType::ValueType (verified by casting to
@@ -98,39 +100,53 @@ class EnumView final {
               << 1))) &&
            Parameters::ValueIsOk(value);
   }
-  void UncheckedWrite(ValueType value) const {
+  EMBOSS_ALWAYS_INLINE void UncheckedWrite(ValueType value) const {
     buffer_.UncheckedWriteUInt(
         static_cast<typename BitViewType::ValueType>(value));
   }
 
   template <typename OtherView>
-  void CopyFrom(const OtherView &other) const {
+  EMBOSS_ALWAYS_INLINE void CopyFrom(const OtherView &other) const {
     Write(other.Read());
   }
   template <typename OtherView>
-  void UncheckedCopyFrom(const OtherView &other) const {
+  EMBOSS_ALWAYS_INLINE void UncheckedCopyFrom(const OtherView &other) const {
     UncheckedWrite(other.UncheckedRead());
   }
   template <typename OtherView>
-  bool TryToCopyFrom(const OtherView &other) const {
+  EMBOSS_ALWAYS_INLINE bool TryToCopyFrom(const OtherView &other) const {
     return other.Ok() && TryToWrite(other.Read());
   }
 
   // All bit patterns in the underlying buffer are valid, so Ok() is always
   // true if IsComplete() is true.
-  bool Ok() const {
-    return IsComplete() && Parameters::ValueIsOk(UncheckedRead());
+  static EMBOSS_ALWAYS_INLINE constexpr bool AllValuesAreOk() {
+    return Parameters::AllValuesAreOk();
+  }
+  EMBOSS_ALWAYS_INLINE bool Ok() const {
+    return IsComplete() &&
+           (AllValuesAreOk() || Parameters::ValueIsOk(UncheckedRead()));
+  }
+  EMBOSS_ALWAYS_INLINE ::emboss::support::Maybe<ValueType> OkAndUncheckedRead()
+      const {
+    if (!IsComplete()) return ::emboss::support::Maybe<ValueType>();
+    const ValueType value = UncheckedRead();
+    if (!AllValuesAreOk() && !Parameters::ValueIsOk(value)) {
+      return ::emboss::support::Maybe<ValueType>();
+    }
+    return ::emboss::support::Maybe<ValueType>(value);
   }
   template <class OtherBitViewType>
-  bool Equals(const EnumView<Enum, Parameters, OtherBitViewType> &other) const {
+  EMBOSS_ALWAYS_INLINE bool Equals(
+      const EnumView<Enum, Parameters, OtherBitViewType> &other) const {
     return Read() == other.Read();
   }
   template <class OtherBitViewType>
-  bool UncheckedEquals(
+  EMBOSS_ALWAYS_INLINE bool UncheckedEquals(
       const EnumView<Enum, Parameters, OtherBitViewType> &other) const {
     return UncheckedRead() == other.UncheckedRead();
   }
-  bool IsComplete() const {
+  EMBOSS_ALWAYS_INLINE bool IsComplete() const {
     return buffer_.Ok() && buffer_.SizeInBits() >= Parameters::kBits;
   }
 
