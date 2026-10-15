@@ -134,6 +134,16 @@ def _local_name(canonical_name):
     return canonical_name.object_path[-1]
 
 
+def _type_key(type_def):
+    """Returns a hashable key identifying `type_def`."""
+    canonical_name = type_def.name.canonical_name
+    return (canonical_name.module_file, tuple(canonical_name.object_path))
+
+
+def _lua_bool(value):
+    return "true" if value else "false"
+
+
 def _qualified_lua_name(canonical_name):
     """Returns a Lua-safe joined name for an IR object's canonical path."""
     return "_".join(
@@ -155,6 +165,13 @@ def _dissector_function(canonical_name):
 
 def _proto_var(protocol_name):
     return protocol_name + "_proto"
+
+
+# Parameter lists of the generated dissect functions.  A `bits` dissector also
+# takes the byte order of the enclosing struct field, because one named `bits`
+# may be used from both big- and little-endian structs.
+_STRUCT_PARAMS = "buffer, pinfo, tree, offset"
+_BITS_PARAMS = "buffer, pinfo, tree, offset, little_endian"
 
 
 _PRIMITIVE_TYPE_NAMES = ("UInt", "Int", "Bcd", "Flag", "Float")
@@ -341,7 +358,7 @@ class _FieldEmitter:
         self._filter_root = filter_root
         # field_decls: list of (key, declaration) preserving definition order.
         self.field_decls = []
-        # struct_bodies: list of (canonical_name, [body_lines])
+        # struct_bodies: list of (canonical_name, parameter_list, [body_lines])
         self.struct_bodies = []
         # struct_size_bytes: dict mapping canonical_name tuple -> size in bytes
         # for fixed-size byte structs; None if unknown.
@@ -354,6 +371,10 @@ class _FieldEmitter:
         #                   captured runtime value of that field.
         self._referenced = set()
         self._value_locals = {}
+        # _type_key() of each anonymous `bits` -> byte size of the struct field
+        # holding it.  Filled in while visiting the enclosing struct, which
+        # _all_types() always yields before the anonymous type itself.
+        self._anonymous_bits_container = {}
 
     def _emit_field_decl(self, key, declaration):
         self.field_decls.append((key, declaration))
@@ -451,12 +472,14 @@ class _FieldEmitter:
 
     def visit_struct(self, type_def):
         struct = type_def.structure
-        is_bits = type_def.addressable_unit == ir_data.AddressableUnit.BIT
         # Reset per-struct expression-translation state.  Value locals are only
         # emitted for fields some sibling actually refers to, so structs with no
         # conditional / dynamic fields produce exactly the same output as before.
         self._referenced = self._compute_referenced_fields(struct)
         self._value_locals = {}
+        if type_def.addressable_unit == ir_data.AddressableUnit.BIT:
+            self._emit_bits_type(type_def)
+            return
         # The struct filter qualifies every contained field, so it must be
         # unique across the module.  Use the override if present; otherwise
         # the dotted canonical path of the type (e.g. `parent.child`).
@@ -472,12 +495,10 @@ class _FieldEmitter:
             )
         )
 
-        if is_bits:
-            self._emit_bits_body(type_def, struct, struct_filter, body_lines)
-        else:
-            self._emit_byte_struct_body(type_def, struct, struct_filter, body_lines)
-
-        self.struct_bodies.append((type_def.name.canonical_name, body_lines))
+        self._emit_byte_struct_body(type_def, struct, struct_filter, body_lines)
+        self.struct_bodies.append(
+            (type_def.name.canonical_name, _STRUCT_PARAMS, body_lines)
+        )
 
     def _field_filter_path(self, struct_filter, field_ir):
         override = _filter_override(field_ir.attribute)
@@ -613,6 +634,7 @@ class _FieldEmitter:
                 start_lua,
                 size,
                 doc,
+                byte_order,
                 field_lines,
             )
         else:
@@ -700,15 +722,31 @@ class _FieldEmitter:
         start,
         size,
         doc,
+        byte_order,
         body_lines,
     ):
-        body_lines.append("-- nested field {}".format(field_name))
+        is_bits = sub_type_def.addressable_unit == ir_data.AddressableUnit.BIT
+        if is_bits and size is None:
+            body_lines.append(
+                "-- skipped dynamic-size bits field {}".format(field_name)
+            )
+            return
+        anonymous = is_bits and bool(sub_type_def.name.is_anonymous)
+        if anonymous:
+            # The anonymous bits' dissector adds its fields straight to this
+            # subtree, reading the whole of this field as its container.
+            self._anonymous_bits_container[_type_key(sub_type_def)] = size
+        else:
+            body_lines.append("-- nested field {}".format(field_name))
         if doc:
             body_lines.append("-- {}".format(doc))
+        # A `bits` is read in the byte order of the field that holds it.
+        extra = ", " + _lua_bool(byte_order == "LittleEndian") if is_bits else ""
         body_lines.append(
-            "{fn}(buffer, pinfo, subtree, offset + {start})".format(
+            "{fn}(buffer, pinfo, subtree, offset + {start}{extra})".format(
                 fn=_dissector_function(sub_type_def.name.canonical_name),
                 start=start,
+                extra=extra,
             )
         )
 
@@ -818,13 +856,17 @@ class _FieldEmitter:
             return
 
         if referenced and referenced.has_field("structure"):
+            extra = ""
+            if referenced.addressable_unit == ir_data.AddressableUnit.BIT:
+                extra = ", " + _lua_bool(byte_order == "LittleEndian")
             body_lines.append("for i = 0, {n} - 1 do".format(n=count_lua))
             body_lines.append(
                 "  {fn}(buffer, pinfo, subtree, offset + {start} + i * "
-                "{esize})".format(
+                "{esize}{extra})".format(
                     fn=_dissector_function(referenced.name.canonical_name),
                     start=start,
                     esize=element_size,
+                    extra=extra,
                 )
             )
             body_lines.append("end")
@@ -832,112 +874,186 @@ class _FieldEmitter:
 
         body_lines.append("-- skipped array of unsupported type: {}".format(field_name))
 
-    def _emit_bits_body(self, type_def, struct, struct_filter, body_lines):
-        # `bits` blocks are read as a single big-endian unsigned integer of
-        # the total bit width (rounded up to a byte boundary), with each
-        # sub-field exposed as a masked ProtoField on that same buffer slice.
-        total_bits = 0
-        for field in struct.field:
-            if ir_util.field_is_virtual(field) or not _is_unconditional(field):
-                continue
-            start = ir_util.constant_value(field.location.start)
-            size = ir_util.constant_value(field.location.size)
-            if start is None or size is None:
-                continue
-            total_bits = max(total_bits, start + size)
-        if total_bits == 0:
-            return
-        total_bytes = (total_bits + 7) // 8
-        ws_container_type = _wireshark_int_type("UInt", total_bits)
+    def _emit_bits_type(self, type_def):
+        """Emits the dissect function for a `bits` type.
 
-        for field in struct.field:
+        Emboss reads a `bits` as one unsigned integer spanning the whole struct
+        field that holds it, in that field's byte order, and numbers bits from
+        the integer's least-significant bit (bit 0).  Each sub-field is
+        therefore a ProtoField on that same byte range with the mask
+        `((1 << size) - 1) << start`, added with `add_le` or `add` according
+        to the enclosing field's byte order, which the caller passes in as
+        `little_endian`.
+        """
+        canonical_name = type_def.name.canonical_name
+        container_bytes = self._anonymous_bits_container.get(_type_key(type_def))
+        if container_bytes is None:
+            # A named `bits` can only be placed in a struct field of exactly
+            # its own size, so its fixed size is its container (rounded up
+            # for a `bits` that is only ever nested inside other `bits`).
+            fixed_size = ir_util.get_integer_attribute(
+                type_def.attribute, "fixed_size_in_bits"
+            )
+            container_bytes = ((fixed_size or 0) + 7) // 8
+        anonymous = bool(type_def.name.is_anonymous)
+        path = list(canonical_name.object_path)
+        if anonymous:
+            # An anonymous `bits` is invisible in the source: its fields read
+            # as if they belonged to the enclosing struct, so they are named
+            # after the struct and added straight to its subtree.
+            path = path[:-1]
+        struct_filter = _filter_override(type_def.attribute) or ".".join(
+            _sanitize_lua_identifier(part) for part in path
+        )
+        key_prefix = "_".join(_sanitize_lua_identifier(part) for part in path)
+        target = "tree" if anonymous else "subtree"
+        field_lines = []
+        if container_bytes:
+            self._emit_bits_fields(
+                type_def,
+                0,
+                container_bytes,
+                struct_filter,
+                key_prefix,
+                target,
+                field_lines,
+            )
+        body_lines = []
+        if not anonymous:
+            body_lines.append(
+                'local subtree = tree:add({}_proto, buffer(offset, {}), "{}")'.format(
+                    self._protocol_name, container_bytes, _local_name(canonical_name)
+                )
+            )
+        if field_lines:
+            body_lines.append(
+                "local range = buffer(offset, {})".format(container_bytes)
+            )
+            body_lines.append(
+                "local add = little_endian and {t}.add_le or {t}.add".format(t=target)
+            )
+            body_lines.extend(field_lines)
+        self.struct_bodies.append((canonical_name, _BITS_PARAMS, body_lines))
+
+    def _emit_bits_fields(
+        self,
+        bits_type_def,
+        bit_offset,
+        container_bytes,
+        struct_filter,
+        key_prefix,
+        target,
+        body_lines,
+    ):
+        """Emits masked ProtoFields for the fields of `bits_type_def`.
+
+        `bit_offset` is where this `bits` starts within the container: zero for
+        the `bits` the container holds directly, and the nested field's start
+        for a `bits` nested inside another `bits`, whose fields are flattened
+        into the same container.
+        """
+        container_bits = container_bytes * 8
+        for field in bits_type_def.structure.field:
             if ir_util.field_is_virtual(field):
                 continue
+            field_name = _local_name(field.name.canonical_name)
             if not _is_unconditional(field):
-                body_lines.append(
-                    "-- skipped conditional field {}".format(
-                        _local_name(field.name.canonical_name)
-                    )
-                )
+                body_lines.append("-- skipped conditional field {}".format(field_name))
                 continue
             start = ir_util.constant_value(field.location.start)
             size = ir_util.constant_value(field.location.size)
             if start is None or size is None:
                 body_lines.append(
-                    "-- skipped dynamic-location field {}".format(
-                        _local_name(field.name.canonical_name)
+                    "-- skipped dynamic-location field {}".format(field_name)
+                )
+                continue
+            start += bit_offset
+            if start + size > container_bits:
+                body_lines.append(
+                    "-- skipped field {} (outside its {}-byte container)".format(
+                        field_name, container_bytes
                     )
                 )
                 continue
-            field_name = _local_name(field.name.canonical_name)
-            key = _qualified_lua_name(type_def.name.canonical_name) + "." + field_name
+            key = key_prefix + "." + field_name
             proto_filter = self._proto_filter(
                 self._field_filter_path(struct_filter, field)
             )
-            mask_bits = ((1 << size) - 1) << (total_bits - start - size)
-            mask = "0x{:0{w}X}".format(mask_bits, w=total_bytes * 2)
+            mask = "0x{:0{w}X}".format(
+                ((1 << size) - 1) << start, w=container_bytes * 2
+            )
             doc = _doc_text(field.documentation)
 
             primitive = _primitive_name_of(field.type)
-            referenced = _referenced_type_definition(field.type, self._ir)
+            referenced = (
+                None if primitive else _referenced_type_definition(field.type, self._ir)
+            )
             if primitive == "Flag":
-                ws_type = "bool"
-                # `ProtoField.bool` uses `parent_bitlen` instead of `base`.
-                # Emit a raw declaration so we can pass total_bits as the
-                # 3rd positional argument.
-                parts = [_quote(proto_filter), _quote(field_name), str(total_bits)]
+                # `ProtoField.bool` takes the parent's width in bits where the
+                # integer constructors take `base`.
+                parts = [
+                    _quote(proto_filter),
+                    _quote(field_name),
+                    str(container_bits),
+                    "nil",
+                    mask,
+                ]
                 if doc:
-                    parts += ["nil", mask, _quote(doc)]
-                else:
-                    parts += ["nil", mask]
-                decl = "ProtoField.bool({})".format(", ".join(parts))
-                self._emit_field_decl(key, decl)
-            elif referenced and referenced.has_field("enumeration"):
-                ws_type = ws_container_type
-                valuestring = _enum_values_var(referenced.name.canonical_name)
+                    parts.append(_quote(doc))
+                self._emit_field_decl(
+                    key, "ProtoField.bool({})".format(", ".join(parts))
+                )
+            elif primitive in ("UInt", "Int", "Bcd"):
+                base = "base.DEC"
+                if primitive == "Bcd":
+                    # Wireshark can't decode a masked BCD value; show its hex
+                    # digits, which read as the decimal digits of the value.
+                    base = "base.HEX"
                 self._emit_protofield(
                     key,
                     proto_filter,
-                    ws_type,
+                    _wireshark_int_type(primitive, container_bits),
                     field_name,
-                    valuestring=valuestring,
+                    base=base,
                     mask=mask,
                     description=doc or None,
                 )
-            elif primitive in ("UInt", "Bcd"):
-                ws_type = ws_container_type
+            elif referenced is not None and referenced.has_field("enumeration"):
                 self._emit_protofield(
                     key,
                     proto_filter,
-                    ws_type,
+                    _wireshark_int_type("UInt", container_bits),
                     field_name,
+                    valuestring=_enum_values_var(referenced.name.canonical_name),
                     mask=mask,
                     description=doc or None,
                 )
-            elif primitive == "Int":
-                # Signed integers in masked bit fields are uncommon; expose
-                # as the corresponding signed Wireshark type but still
-                # against the container's byte width.
-                ws_type = _wireshark_int_type("Int", total_bits)
-                self._emit_protofield(
+            elif (
+                referenced is not None
+                and referenced.has_field("structure")
+                and referenced.addressable_unit == ir_data.AddressableUnit.BIT
+            ):
+                # A nested `bits`: flatten its fields into this container.
+                nested_filter = _filter_override(
+                    referenced.attribute
+                ) or self._field_filter_path(struct_filter, field)
+                self._emit_bits_fields(
+                    referenced,
+                    start,
+                    container_bytes,
+                    nested_filter,
                     key,
-                    proto_filter,
-                    ws_type,
-                    field_name,
-                    mask=mask,
-                    description=doc or None,
+                    target,
+                    body_lines,
                 )
+                continue
             else:
                 body_lines.append(
                     "-- skipped bits field with unsupported type: {}".format(field_name)
                 )
                 continue
 
-            body_lines.append(
-                "subtree:add(f[{key}], buffer(offset, {n}))".format(
-                    key=_quote(key), n=total_bytes
-                )
-            )
+            body_lines.append("add({}, f[{}], range)".format(target, _quote(key)))
 
 
 def _is_unconditional(field):
@@ -1092,11 +1208,9 @@ def generate_dissector(ir):
         lines.append("")
 
     # Per-struct dissector functions.
-    for canonical_name, body_lines in emitter.struct_bodies:
+    for canonical_name, params, body_lines in emitter.struct_bodies:
         lines.append(
-            "function {}(buffer, pinfo, tree, offset)".format(
-                _dissector_function(canonical_name)
-            )
+            "function {}({})".format(_dissector_function(canonical_name), params)
         )
         for body_line in body_lines:
             lines.append("  " + body_line)
@@ -1105,14 +1219,16 @@ def generate_dissector(ir):
 
     # Top-level dissector.  Pick the root struct from the (wireshark) root
     # module attribute if set; otherwise default to the first struct
-    # declared at module scope.
+    # declared at module scope.  A `bits` can't be a root: it has no byte
+    # order of its own (the C++ back end likewise has no view-from-bytes for
+    # one).
     root_attr = ir_util.get_attribute(module.attribute, attributes.Attribute.ROOT)
     root = None
     if root_attr:
         requested = root_attr.string_constant.text
         for type_def in module.type:
             if (
-                type_def.has_field("structure")
+                _is_byte_struct(type_def)
                 and _local_name(type_def.name.canonical_name) == requested
             ):
                 root = type_def
@@ -1131,7 +1247,7 @@ def generate_dissector(ir):
             ]
     else:
         for type_def in module.type:
-            if type_def.has_field("structure"):
+            if _is_byte_struct(type_def):
                 root = type_def
                 break
 

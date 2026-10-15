@@ -64,7 +64,7 @@ f["EnumSizes.eight_byte"] = ProtoField.uint64("emboss_uint_sizes.EnumSizes.eight
 f["ExplicitlySizedEnumSizes.one_byte"] = ProtoField.uint8("emboss_uint_sizes.ExplicitlySizedEnumSizes.one_byte", "one_byte", base.DEC, enums.ExplicitlySizedEnum)
 f["ExplicitlySizedEnumSizes.two_byte"] = ProtoField.uint16("emboss_uint_sizes.ExplicitlySizedEnumSizes.two_byte", "two_byte", base.DEC, enums.ExplicitlySizedEnum)
 f["ExplicitlySizedEnumSizes.three_byte"] = ProtoField.uint32("emboss_uint_sizes.ExplicitlySizedEnumSizes.three_byte", "three_byte", base.DEC, enums.ExplicitlySizedEnum)
-f["ExplicitlySizedEnumSizes_EmbossReservedAnonymousField1.three_and_a_half_byte"] = ProtoField.uint32("emboss_uint_sizes.ExplicitlySizedEnumSizes.EmbossReservedAnonymousField1.three_and_a_half_byte", "three_and_a_half_byte", base.DEC, enums.ExplicitlySizedEnum, 0x0FFFFFFF)
+f["ExplicitlySizedEnumSizes.three_and_a_half_byte"] = ProtoField.uint32("emboss_uint_sizes.ExplicitlySizedEnumSizes.three_and_a_half_byte", "three_and_a_half_byte", base.DEC, enums.ExplicitlySizedEnum, 0x0FFFFFFF)
 f["ArraySizes.one_byte"] = ProtoField.uint8("emboss_uint_sizes.ArraySizes.one_byte", "one_byte")
 f["ArraySizes.two_byte"] = ProtoField.uint16("emboss_uint_sizes.ArraySizes.two_byte", "two_byte")
 f["ArraySizes.three_byte"] = ProtoField.uint32("emboss_uint_sizes.ArraySizes.three_byte", "three_byte")
@@ -110,7 +110,7 @@ emboss_uint_sizes_proto.fields = {
   f["ExplicitlySizedEnumSizes.one_byte"],
   f["ExplicitlySizedEnumSizes.two_byte"],
   f["ExplicitlySizedEnumSizes.three_byte"],
-  f["ExplicitlySizedEnumSizes_EmbossReservedAnonymousField1.three_and_a_half_byte"],
+  f["ExplicitlySizedEnumSizes.three_and_a_half_byte"],
   f["ArraySizes.one_byte"],
   f["ArraySizes.two_byte"],
   f["ArraySizes.three_byte"],
@@ -176,13 +176,13 @@ function dissect.ExplicitlySizedEnumSizes(buffer, pinfo, tree, offset)
   subtree:add_le(f["ExplicitlySizedEnumSizes.one_byte"], buffer(offset + 0, 1))
   subtree:add_le(f["ExplicitlySizedEnumSizes.two_byte"], buffer(offset + 1, 2))
   subtree:add_le(f["ExplicitlySizedEnumSizes.three_byte"], buffer(offset + 3, 3))
-  -- nested field emboss_reserved_anonymous_field_1
-  dissect.ExplicitlySizedEnumSizes_EmbossReservedAnonymousField1(buffer, pinfo, subtree, offset + 6)
+  dissect.ExplicitlySizedEnumSizes_EmbossReservedAnonymousField1(buffer, pinfo, subtree, offset + 6, true)
 end
 
-function dissect.ExplicitlySizedEnumSizes_EmbossReservedAnonymousField1(buffer, pinfo, tree, offset)
-  local subtree = tree:add(emboss_uint_sizes_proto, buffer(offset), "EmbossReservedAnonymousField1")
-  subtree:add(f["ExplicitlySizedEnumSizes_EmbossReservedAnonymousField1.three_and_a_half_byte"], buffer(offset, 4))
+function dissect.ExplicitlySizedEnumSizes_EmbossReservedAnonymousField1(buffer, pinfo, tree, offset, little_endian)
+  local range = buffer(offset, 4)
+  local add = little_endian and tree.add_le or tree.add
+  add(tree, f["ExplicitlySizedEnumSizes.three_and_a_half_byte"], range)
 end
 
 function dissect.ArraySizes(buffer, pinfo, tree, offset)

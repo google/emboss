@@ -57,14 +57,14 @@ local f = {}
 f["ManifestEntry.kind"] = ProtoField.uint8("emboss_enum.ManifestEntry.kind", "kind", base.DEC, enums.Kind)
 f["ManifestEntry.count"] = ProtoField.uint32("emboss_enum.ManifestEntry.count", "count")
 f["ManifestEntry.wide_kind"] = ProtoField.uint32("emboss_enum.ManifestEntry.wide_kind", "wide_kind", base.DEC, enums.Kind)
-f["ManifestEntry_EmbossReservedAnonymousField1.wide_kind_in_bits"] = ProtoField.uint64("emboss_enum.ManifestEntry.EmbossReservedAnonymousField1.wide_kind_in_bits", "wide_kind_in_bits", base.DEC, enums.Kind, 0x00FFFFFFFF)
+f["ManifestEntry.wide_kind_in_bits"] = ProtoField.uint64("emboss_enum.ManifestEntry.wide_kind_in_bits", "wide_kind_in_bits", base.DEC, enums.Kind, 0x0FFFFFFFF0)
 f["StructContainingEnum.bar"] = ProtoField.uint8("emboss_enum.StructContainingEnum.bar", "bar")
 
 emboss_enum_proto.fields = {
   f["ManifestEntry.kind"],
   f["ManifestEntry.count"],
   f["ManifestEntry.wide_kind"],
-  f["ManifestEntry_EmbossReservedAnonymousField1.wide_kind_in_bits"],
+  f["ManifestEntry.wide_kind_in_bits"],
   f["StructContainingEnum.bar"],
 }
 
@@ -79,13 +79,13 @@ function dissect.ManifestEntry(buffer, pinfo, tree, offset)
   subtree:add_le(f["ManifestEntry.kind"], buffer(offset + 0, 1))
   subtree:add_le(f["ManifestEntry.count"], buffer(offset + 1, 4))
   subtree:add_le(f["ManifestEntry.wide_kind"], buffer(offset + 5, 4))
-  -- nested field emboss_reserved_anonymous_field_1
-  dissect.ManifestEntry_EmbossReservedAnonymousField1(buffer, pinfo, subtree, offset + 9)
+  dissect.ManifestEntry_EmbossReservedAnonymousField1(buffer, pinfo, subtree, offset + 9, true)
 end
 
-function dissect.ManifestEntry_EmbossReservedAnonymousField1(buffer, pinfo, tree, offset)
-  local subtree = tree:add(emboss_enum_proto, buffer(offset), "EmbossReservedAnonymousField1")
-  subtree:add(f["ManifestEntry_EmbossReservedAnonymousField1.wide_kind_in_bits"], buffer(offset, 5))
+function dissect.ManifestEntry_EmbossReservedAnonymousField1(buffer, pinfo, tree, offset, little_endian)
+  local range = buffer(offset, 5)
+  local add = little_endian and tree.add_le or tree.add
+  add(tree, f["ManifestEntry.wide_kind_in_bits"], range)
 end
 
 function dissect.StructContainingEnum(buffer, pinfo, tree, offset)

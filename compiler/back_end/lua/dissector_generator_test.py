@@ -333,6 +333,162 @@ class NestedStructTest(unittest.TestCase):
         self.assertIn("dissect.Inner(buffer, pinfo, subtree, offset + 0)", text)
 
 
+class BitsTest(unittest.TestCase):
+    """`bits` are read LSB-first from the enclosing field, in its byte order."""
+
+    _TWO_BYTE_ORDERS = (
+        '[expected_back_ends: "cpp, wireshark"]\n'
+        '[$default byte_order: "LittleEndian"]\n'
+        "struct Le:\n"
+        "  0 [+2]  bits:\n"
+        "    0  [+4]  UInt  lo\n"
+        "    4  [+4]  UInt  mid\n"
+        "    15 [+1]  Flag  top\n"
+        "struct Be:\n"
+        '  [$default byte_order: "BigEndian"]\n'
+        "  0 [+2]  bits:\n"
+        "    0  [+4]  UInt  lo\n"
+        "    15 [+1]  Flag  top\n"
+    )
+
+    def test_masks_count_from_least_significant_bit(self):
+        text, errors = _generate(self._TWO_BYTE_ORDERS)
+        self.assertEqual([], errors)
+        # Bit 0 is the lowest-order bit of the 16-bit container integer, so
+        # `0 [+4]` is 0x000F, not 0xF000.
+        self.assertIn(
+            'ProtoField.uint16("emboss_m.Le.lo", "lo", base.DEC, nil, 0x000F)', text
+        )
+        self.assertIn(
+            'ProtoField.uint16("emboss_m.Le.mid", "mid", base.DEC, nil, 0x00F0)',
+            text,
+        )
+        self.assertIn(
+            'ProtoField.bool("emboss_m.Le.top", "top", 16, nil, 0x8000)', text
+        )
+
+    def test_byte_order_comes_from_enclosing_field(self):
+        text, errors = _generate(self._TWO_BYTE_ORDERS)
+        self.assertEqual([], errors)
+        self.assertRegex(
+            text,
+            r"dissect\.Le_EmbossReservedAnonymousField\d+\(buffer, pinfo, subtree, "
+            r"offset \+ 0, true\)",
+        )
+        self.assertRegex(
+            text,
+            r"dissect\.Be_EmbossReservedAnonymousField\d+\(buffer, pinfo, subtree, "
+            r"offset \+ 0, false\)",
+        )
+        # The anonymous bits' fields go straight into the parent's subtree,
+        # using add_le or add according to the parameter.
+        self.assertRegex(
+            text,
+            r"function dissect\.Le_EmbossReservedAnonymousField\d+\(buffer, pinfo, "
+            r"tree, offset, little_endian\)\n"
+            r"  local range = buffer\(offset, 2\)\n"
+            r"  local add = little_endian and tree\.add_le or tree\.add\n"
+            r'  add\(tree, f\["Le\.lo"\], range\)\n',
+        )
+
+    def test_container_is_the_enclosing_field_not_the_bits_extent(self):
+        # `0 [+8] UInt x` inside a 4-byte big-endian field is the low byte of
+        # a 32-bit integer, i.e. the fourth byte on the wire.
+        text, errors = _generate(
+            '[expected_back_ends: "cpp, wireshark"]\n'
+            '[$default byte_order: "BigEndian"]\n'
+            "struct Pkt:\n"
+            "  0 [+4]  bits:\n"
+            "    0 [+8]  UInt  x\n"
+        )
+        self.assertEqual([], errors)
+        self.assertIn(
+            'ProtoField.uint32("emboss_m.Pkt.x", "x", base.DEC, nil, 0x000000FF)',
+            text,
+        )
+        self.assertIn("local range = buffer(offset, 4)", text)
+
+    def test_wide_container_uses_uint64_and_full_width_mask(self):
+        text, errors = _generate(
+            '[expected_back_ends: "cpp, wireshark"]\n'
+            '[$default byte_order: "LittleEndian"]\n'
+            "struct Wide:\n"
+            "  0 [+5]  bits:\n"
+            "    4 [+32]  UInt  wide\n"
+        )
+        self.assertEqual([], errors)
+        self.assertIn(
+            'ProtoField.uint64("emboss_m.Wide.wide", "wide", base.DEC, nil, '
+            "0x0FFFFFFFF0)",
+            text,
+        )
+
+    def test_named_bits_get_a_subtree_and_runtime_byte_order(self):
+        text, errors = _generate(
+            '[expected_back_ends: "cpp, wireshark"]\n'
+            '[$default byte_order: "LittleEndian"]\n'
+            "bits Flags:\n"
+            "  0 [+1]  Flag  a\n"
+            "  1 [+7]  UInt  rest\n"
+            "struct Pkt:\n"
+            "  0 [+1]  Flags     flags\n"
+            "  1 [+2]  Flags[2]  more\n"
+        )
+        self.assertEqual([], errors)
+        self.assertIn('ProtoField.bool("emboss_m.Flags.a", "a", 8, nil, 0x01)', text)
+        self.assertIn(
+            "function dissect.Flags(buffer, pinfo, tree, offset, little_endian)\n"
+            '  local subtree = tree:add(emboss_m_proto, buffer(offset, 1), "Flags")\n'
+            "  local range = buffer(offset, 1)\n"
+            "  local add = little_endian and subtree.add_le or subtree.add\n"
+            '  add(subtree, f["Flags.a"], range)\n',
+            text,
+        )
+        self.assertIn("dissect.Flags(buffer, pinfo, subtree, offset + 0, true)", text)
+        self.assertIn(
+            "dissect.Flags(buffer, pinfo, subtree, offset + 1 + i * 1, true)", text
+        )
+
+    def test_nested_bits_are_flattened_into_the_container(self):
+        text, errors = _generate(
+            '[expected_back_ends: "cpp, wireshark"]\n'
+            '[$default byte_order: "BigEndian"]\n'
+            "bits Inner:\n"
+            "  0 [+2]  UInt  v\n"
+            "bits Outer:\n"
+            "  0 [+4]  UInt   lo\n"
+            "  4 [+2]  Inner  inner\n"
+            "  6 [+2]  UInt   hi\n"
+            "struct Pkt:\n"
+            "  0 [+1]  Outer  outer\n"
+        )
+        self.assertEqual([], errors)
+        self.assertIn(
+            'ProtoField.uint8("emboss_m.Outer.inner.v", "v", base.DEC, nil, 0x30)',
+            text,
+        )
+        self.assertIn('add(subtree, f["Outer.inner.v"], range)', text)
+        # Inner is only ever nested, so its own dissector reads a 1-byte
+        # container.
+        self.assertIn(
+            "function dissect.Inner(buffer, pinfo, tree, offset, little_endian)\n"
+            '  local subtree = tree:add(emboss_m_proto, buffer(offset, 1), "Inner")\n',
+            text,
+        )
+
+    def test_bits_cannot_be_root(self):
+        text, errors = _generate(
+            '[expected_back_ends: "cpp, wireshark"]\n'
+            "bits Flags:\n"
+            "  0 [+1]  Flag  a\n"
+            "  1 [+7]  UInt  rest\n"
+            "struct Pkt:\n"
+            "  0 [+1]  Flags  flags\n"
+        )
+        self.assertEqual([], errors)
+        self.assertIn("dissect.Pkt(buffer, pinfo, tree, 0)", text)
+
+
 _FM = dissector_generator.ir_data.FunctionMapping
 
 
