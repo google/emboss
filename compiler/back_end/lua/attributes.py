@@ -25,7 +25,12 @@ BACK_END = "wireshark"
 class Attribute(str, enum.Enum):
     """Attributes available in the Wireshark/Lua backend."""
 
+    # Name of the generated Wireshark `Proto`.  Defaults to `emboss_` followed
+    # by the module's basename.
     PROTOCOL = "protocol"
+    # Overrides one segment of the generated display-filter names: on a
+    # module, the root segment (which otherwise is the protocol name); on a
+    # struct or bits, that type's segment; on a field, the field's segment.
     FILTER = "filter"
     # When set on a module, the generated dissector auto-registers itself
     # against one or more Wireshark dissector tables at load time.  The value
@@ -57,6 +62,7 @@ class Scope(set, enum.Enum):
 
     MODULE = {
         (Attribute.PROTOCOL, False),
+        (Attribute.FILTER, False),
         (Attribute.REGISTER_ON, False),
         (Attribute.ROOT, False),
     }

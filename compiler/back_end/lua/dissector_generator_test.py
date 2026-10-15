@@ -133,7 +133,21 @@ class FilterCompositionTest(unittest.TestCase):
             "  0 [+4]  UInt  bar\n"
         )
         self.assertEqual([], errors)
-        self.assertIn('ProtoField.uint32("m.Foo.bar", "bar")', text)
+        self.assertIn('ProtoField.uint32("emboss_m.Foo.bar", "bar")', text)
+
+    def test_module_filter_override_replaces_root(self):
+        text, errors = _generate(
+            '[expected_back_ends: "cpp, wireshark"]\n'
+            '[$default byte_order: "LittleEndian"]\n'
+            '[(wireshark) protocol: "p"]\n'
+            '[(wireshark) filter: "modf"]\n'
+            "struct Foo:\n"
+            "  0 [+4]  UInt  bar\n"
+        )
+        self.assertEqual([], errors)
+        self.assertIn('ProtoField.uint32("modf.Foo.bar", "bar")', text)
+        # The protocol itself keeps its own name.
+        self.assertIn('local p_proto = Proto("p", "p (Emboss)")', text)
 
     def test_struct_filter_override(self):
         text, errors = _generate(
@@ -237,8 +251,42 @@ class RegisterOnEmissionTest(unittest.TestCase):
             "  0 [+1]  UInt  x\n"
         )
         self.assertEqual([], errors)
-        self.assertIn('DissectorTable.get("udp.port"):add(12345, m_proto)', text)
-        self.assertIn('DissectorTable.get("tcp.port"):add(12345, m_proto)', text)
+        self.assertIn('DissectorTable.get("udp.port"):add(12345, emboss_m_proto)', text)
+        self.assertIn('DissectorTable.get("tcp.port"):add(12345, emboss_m_proto)', text)
+
+
+class ProtocolNameTest(unittest.TestCase):
+
+    def test_default_name_is_prefixed_basename(self):
+        # Unprefixed basenames such as `data`, `udp` or `frame` collide with
+        # Wireshark's built-in protocols and make the script fail to load.
+        text, errors = _generate(
+            '[expected_back_ends: "cpp, wireshark"]\n'
+            '[$default byte_order: "BigEndian"]\n'
+            "struct Pkt:\n"
+            "  0 [+1]  UInt  x\n",
+            name="data.emb",
+        )
+        self.assertEqual([], errors)
+        self.assertIn(
+            'local emboss_data_proto = Proto("emboss_data", "emboss_data (Emboss)")',
+            text,
+        )
+        self.assertIn('ProtoField.uint8("emboss_data.Pkt.x", "x")', text)
+        self.assertIn('pinfo.cols.protocol = "EMBOSS_DATA"', text)
+
+    def test_protocol_attribute_is_used_verbatim(self):
+        text, errors = _generate(
+            '[expected_back_ends: "cpp, wireshark"]\n'
+            '[$default byte_order: "BigEndian"]\n'
+            '[(wireshark) protocol: "myproto"]\n'
+            "struct Pkt:\n"
+            "  0 [+1]  UInt  x\n",
+            name="data.emb",
+        )
+        self.assertEqual([], errors)
+        self.assertIn('Proto("myproto", "myproto (Emboss)")', text)
+        self.assertNotIn("emboss_data", text)
 
 
 class RootSelectionTest(unittest.TestCase):

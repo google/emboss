@@ -97,16 +97,22 @@ def _module_protocol_name(module):
     """Returns the protocol name for `module`.
 
     If the module has a `[(wireshark) protocol: "..."]` attribute, its value
-    is used; otherwise the protocol name is derived from the source file's
-    basename.
+    is used; otherwise the protocol name is `emboss_` followed by the source
+    file's basename.
     """
     attr = ir_util.get_attribute(module.attribute, attributes.Attribute.PROTOCOL)
     if attr and attr.string_constant.text:
         return _sanitize_lua_identifier(attr.string_constant.text)
-    base = os.path.basename(module.source_file_name or "emboss")
+    base = os.path.basename(module.source_file_name or "")
     if base.endswith(".emb"):
         base = base[:-4]
-    return _sanitize_lua_identifier(base) or "emboss"
+    if not base:
+        return "emboss"
+    # Wireshark refuses to register a second protocol under the name of a
+    # built-in one ("there cannot be two protocols with the same name"), and
+    # plausible module names such as data, udp, can, usb or frame all collide
+    # with one.  Prefix the derived name so that it never does.
+    return "emboss_" + _sanitize_lua_identifier(base)
 
 
 def _filter_override(attribute_list):
@@ -328,9 +334,11 @@ def _value_reader(primitive, size, byte_order):
 class _FieldEmitter:
     """Accumulates ProtoField declarations and dissector body lines."""
 
-    def __init__(self, ir, protocol_name):
+    def __init__(self, ir, protocol_name, filter_root):
         self._ir = ir
         self._protocol_name = protocol_name
+        # First segment of every field's display-filter name.
+        self._filter_root = filter_root
         # field_decls: list of (key, declaration) preserving definition order.
         self.field_decls = []
         # struct_bodies: list of (canonical_name, [body_lines])
@@ -405,7 +413,7 @@ class _FieldEmitter:
         self._value_locals[key] = var
 
     def _proto_filter(self, *segments):
-        return ".".join((self._protocol_name,) + tuple(segments))
+        return ".".join((self._filter_root,) + tuple(segments))
 
     def _emit_protofield(
         self,
@@ -1020,10 +1028,17 @@ def generate_dissector(ir):
     module = ir.module[0]
     protocol_name = _module_protocol_name(module)
     proto_var = _proto_var(protocol_name)
+    # Root of every field's display-filter name: a module-level
+    # `[(wireshark) filter: "..."]` if present, otherwise the protocol name.
+    filter_root = _filter_override(module.attribute) or protocol_name
 
     lines = [_BANNER]
     if module.source_file_name:
         lines.append("-- Source: " + module.source_file_name)
+    lines.append(
+        "-- Protocol {} (override with a module-level"
+        ' [(wireshark) protocol: "..."] attribute).'.format(_quote(protocol_name))
+    )
     lines.append("")
 
     module_doc = _doc_text(module.documentation)
@@ -1053,7 +1068,7 @@ def generate_dissector(ir):
 
     # Build struct bodies / field declarations for every struct / bits
     # (including those nested in other structs).
-    emitter = _FieldEmitter(ir, protocol_name)
+    emitter = _FieldEmitter(ir, protocol_name, filter_root)
     for type_def in _all_types(module):
         if type_def.has_field("structure"):
             emitter.visit_struct(type_def)
