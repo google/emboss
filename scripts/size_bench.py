@@ -584,8 +584,24 @@ def current_ref():
     return r.stdout.strip() if r.returncode == 0 else run(["git", "rev-parse", "HEAD"])
 
 
-def measure_revision(rev, original_ref, work_root, with_speed=False):
-    sha = run(["git", "rev-parse", rev])
+def resolve_revision(rev):
+    """Full commit sha for `rev` against the starting checkout, or None.
+
+    Every revision is resolved before anything is checked out: relative names
+    (HEAD, HEAD~1, @) must mean what they meant to the caller, not what they
+    resolve to against whichever revision happened to be measured last.
+    """
+    r = subprocess.run(
+        ["git", "rev-parse", "--verify", "--quiet", rev + "^{commit}"],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+    )
+    return r.stdout.strip() if r.returncode == 0 else None
+
+
+def measure_revision(sha, original_ref, work_root, with_speed=False):
+    """Checks out `sha` (an already-resolved commit) and measures it."""
     run(["git", "checkout", sha])
     # Pull the fixed schema forward from the starting ref so the only thing that
     # differs between revisions is the generator (and runtime) under test.
@@ -618,21 +634,16 @@ def main():
     )
     args = parser.parse_args()
 
-    os.makedirs(args.out_dir, exist_ok=True)
-    work_root = tempfile.mkdtemp(dir=args.out_dir)
-
-    out = {"revisions": []}
-    if args.revisions == ["HEAD"]:
-        # Single-shot: measure the working tree as-is (no checkout dance).
-        out["revisions"].append(
-            {
-                "sha": run(["git", "rev-parse", "HEAD"]),
-                **measure_current(
-                    tempfile.mkdtemp(dir=work_root), with_speed=args.speed
-                ),
-            }
-        )
-    else:
+    # Resolve every revision up front, against the starting checkout.
+    shas = []
+    for rev in args.revisions:
+        sha = resolve_revision(rev)
+        if sha is None:
+            print(f"error: unknown revision '{rev}'", file=sys.stderr)
+            return 1
+        shas.append(sha)
+    single_shot = args.revisions == ["HEAD"]
+    if not single_shot:
         if subprocess.run(
             ["git", "status", "--porcelain"], cwd=REPO, capture_output=True, text=True
         ).stdout.strip():
@@ -640,12 +651,30 @@ def main():
                 "error: working tree is dirty; commit or stash first.", file=sys.stderr
             )
             return 1
+
+    # Only now create anything on disk: the default out-dir lives inside the
+    # repo (git-ignored), after the clean-tree check above.
+    os.makedirs(args.out_dir, exist_ok=True)
+    work_root = tempfile.mkdtemp(dir=args.out_dir)
+
+    out = {"revisions": []}
+    if single_shot:
+        # Single-shot: measure the working tree as-is (no checkout dance).
+        out["revisions"].append(
+            {
+                "sha": shas[0],
+                **measure_current(
+                    tempfile.mkdtemp(dir=work_root), with_speed=args.speed
+                ),
+            }
+        )
+    else:
         original = current_ref()
         try:
-            for rev in args.revisions:
-                print(f"Measuring {rev}...", file=sys.stderr)
+            for rev, sha in zip(args.revisions, shas):
+                print(f"Measuring {rev} ({sha[:12]})...", file=sys.stderr)
                 out["revisions"].append(
-                    measure_revision(rev, original, work_root, with_speed=args.speed)
+                    measure_revision(sha, original, work_root, with_speed=args.speed)
                 )
         finally:
             run(["git", "checkout", original])
