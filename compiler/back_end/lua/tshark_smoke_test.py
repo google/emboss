@@ -130,6 +130,36 @@ struct Bcdm:
     [byte_order: "LittleEndian"]
 """,
     ),
+    # Enum value names at several field widths, including values that only
+    # fit wide fields and a signed enum.
+    "enums": (
+        13374,
+        """\
+[expected_back_ends: "cpp, wireshark"]
+[$default byte_order: "BigEndian"]
+[(wireshark) protocol: "enumsproto"]
+[(wireshark) register_on: "udp.port == 13374"]
+
+enum Kind:
+  WIDGET   = 0
+  LARGE    = 2000
+  DUP      = LARGE
+  MAX32BIT = 4294967295
+  MAX64BIT = 18446744073709551615
+
+enum Sgn:
+  [is_signed: true]
+  NEG  = -1
+  ZERO = 0
+
+struct Xs:
+  0  [+1]  Kind  k8
+  1  [+4]  Kind  k32
+  5  [+8]  Kind  k64
+  13 [+1]  Sgn   s8
+  14 [+8]  Sgn   s64
+""",
+    ),
 }
 
 
@@ -262,6 +292,29 @@ class TsharkSmokeTest(unittest.TestCase):
         self.assertNotIn("data: ", out)
         self.assertNotIn("wide: ", out)
         self.assertNotIn("le_val: ", out)
+
+    def test_enum_names_match_the_values_the_cpp_back_end_reads(self):
+        # k8 = 0, k32 = 2000, k64 = s8 = s64 = all ones.
+        out = self._dissect(
+            "enums",
+            ["00", "00", "00", "07", "d0"] + ["ff"] * 8 + ["ff"] + ["ff"] * 8,
+        )
+        self.assertIn("k8: WIDGET (0)", out)
+        # The first name for a duplicated value wins.
+        self.assertIn("k32: LARGE (2000)", out)
+        self.assertNotIn("DUP", out)
+        self.assertIn("k64: MAX64BIT (18446744073709551615)", out)
+        # A one-byte field reads 0xFF as 255, which is not -1.
+        self.assertIn("s8: Unknown (255)", out)
+        self.assertIn("s64: NEG (18446744073709551615)", out)
+
+    def test_enum_values_too_wide_for_the_field_are_unknown(self):
+        out = self._dissect("enums", ["ff"] * 5 + ["00"] * 8 + ["00"] + ["00"] * 8)
+        self.assertIn("k8: Unknown (255)", out)
+        self.assertIn("k32: MAX32BIT (4294967295)", out)
+        self.assertIn("k64: WIDGET (0)", out)
+        self.assertIn("s8: ZERO (0)", out)
+        self.assertIn("s64: ZERO (0)", out)
 
 
 if __name__ == "__main__":

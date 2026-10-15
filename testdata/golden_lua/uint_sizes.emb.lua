@@ -6,8 +6,22 @@
 
 local emboss_uint_sizes_proto = Proto("emboss_uint_sizes", "emboss_uint_sizes (Emboss)")
 
+-- Enum value names, one table per width an enum is read at.  Keys
+-- are the raw unsigned field value; the first name for a value wins.
 local enums = {}
-enums.Enum = {
+enums.Enum_8 = {
+  [1] = "VALUE1",
+  [10] = "VALUE10",
+  [100] = "VALUE100",
+}
+enums.Enum_16 = {
+  [1] = "VALUE1",
+  [10] = "VALUE10",
+  [100] = "VALUE100",
+  [1000] = "VALUE1000",
+  [10000] = "VALUE10000",
+}
+enums.Enum_24 = {
   [1] = "VALUE1",
   [10] = "VALUE10",
   [100] = "VALUE100",
@@ -17,7 +31,79 @@ enums.Enum = {
   [1000000] = "VALUE1000000",
   [10000000] = "VALUE10000000",
 }
-enums.ExplicitlySizedEnum = {
+enums.Enum_32 = {
+  [1] = "VALUE1",
+  [10] = "VALUE10",
+  [100] = "VALUE100",
+  [1000] = "VALUE1000",
+  [10000] = "VALUE10000",
+  [100000] = "VALUE100000",
+  [1000000] = "VALUE1000000",
+  [10000000] = "VALUE10000000",
+}
+enums.Enum_40 = {
+  [1] = "VALUE1",
+  [10] = "VALUE10",
+  [100] = "VALUE100",
+  [1000] = "VALUE1000",
+  [10000] = "VALUE10000",
+  [100000] = "VALUE100000",
+  [1000000] = "VALUE1000000",
+  [10000000] = "VALUE10000000",
+}
+enums.Enum_48 = {
+  [1] = "VALUE1",
+  [10] = "VALUE10",
+  [100] = "VALUE100",
+  [1000] = "VALUE1000",
+  [10000] = "VALUE10000",
+  [100000] = "VALUE100000",
+  [1000000] = "VALUE1000000",
+  [10000000] = "VALUE10000000",
+}
+enums.Enum_56 = {
+  [1] = "VALUE1",
+  [10] = "VALUE10",
+  [100] = "VALUE100",
+  [1000] = "VALUE1000",
+  [10000] = "VALUE10000",
+  [100000] = "VALUE100000",
+  [1000000] = "VALUE1000000",
+  [10000000] = "VALUE10000000",
+}
+enums.Enum_64 = {
+  [1] = "VALUE1",
+  [10] = "VALUE10",
+  [100] = "VALUE100",
+  [1000] = "VALUE1000",
+  [10000] = "VALUE10000",
+  [100000] = "VALUE100000",
+  [1000000] = "VALUE1000000",
+  [10000000] = "VALUE10000000",
+}
+enums.ExplicitlySizedEnum_8 = {
+  [1] = "VALUE1",
+  [10] = "VALUE10",
+  [100] = "VALUE100",
+}
+enums.ExplicitlySizedEnum_16 = {
+  [1] = "VALUE1",
+  [10] = "VALUE10",
+  [100] = "VALUE100",
+  [1000] = "VALUE1000",
+  [10000] = "VALUE10000",
+}
+enums.ExplicitlySizedEnum_24 = {
+  [1] = "VALUE1",
+  [10] = "VALUE10",
+  [100] = "VALUE100",
+  [1000] = "VALUE1000",
+  [10000] = "VALUE10000",
+  [100000] = "VALUE100000",
+  [1000000] = "VALUE1000000",
+  [10000000] = "VALUE10000000",
+}
+enums.ExplicitlySizedEnum_28 = {
   [1] = "VALUE1",
   [10] = "VALUE10",
   [100] = "VALUE100",
@@ -53,18 +139,18 @@ f["AlternatingEndianSizes.five_byte"] = ProtoField.uint64("emboss_uint_sizes.Alt
 f["AlternatingEndianSizes.six_byte"] = ProtoField.uint64("emboss_uint_sizes.AlternatingEndianSizes.six_byte", "six_byte")
 f["AlternatingEndianSizes.seven_byte"] = ProtoField.uint64("emboss_uint_sizes.AlternatingEndianSizes.seven_byte", "seven_byte")
 f["AlternatingEndianSizes.eight_byte"] = ProtoField.uint64("emboss_uint_sizes.AlternatingEndianSizes.eight_byte", "eight_byte")
-f["EnumSizes.one_byte"] = ProtoField.uint8("emboss_uint_sizes.EnumSizes.one_byte", "one_byte", base.DEC, enums.Enum)
-f["EnumSizes.two_byte"] = ProtoField.uint16("emboss_uint_sizes.EnumSizes.two_byte", "two_byte", base.DEC, enums.Enum)
-f["EnumSizes.three_byte"] = ProtoField.uint32("emboss_uint_sizes.EnumSizes.three_byte", "three_byte", base.DEC, enums.Enum)
-f["EnumSizes.four_byte"] = ProtoField.uint32("emboss_uint_sizes.EnumSizes.four_byte", "four_byte", base.DEC, enums.Enum)
-f["EnumSizes.five_byte"] = ProtoField.uint64("emboss_uint_sizes.EnumSizes.five_byte", "five_byte", base.DEC, enums.Enum)
-f["EnumSizes.six_byte"] = ProtoField.uint64("emboss_uint_sizes.EnumSizes.six_byte", "six_byte", base.DEC, enums.Enum)
-f["EnumSizes.seven_byte"] = ProtoField.uint64("emboss_uint_sizes.EnumSizes.seven_byte", "seven_byte", base.DEC, enums.Enum)
-f["EnumSizes.eight_byte"] = ProtoField.uint64("emboss_uint_sizes.EnumSizes.eight_byte", "eight_byte", base.DEC, enums.Enum)
-f["ExplicitlySizedEnumSizes.one_byte"] = ProtoField.uint8("emboss_uint_sizes.ExplicitlySizedEnumSizes.one_byte", "one_byte", base.DEC, enums.ExplicitlySizedEnum)
-f["ExplicitlySizedEnumSizes.two_byte"] = ProtoField.uint16("emboss_uint_sizes.ExplicitlySizedEnumSizes.two_byte", "two_byte", base.DEC, enums.ExplicitlySizedEnum)
-f["ExplicitlySizedEnumSizes.three_byte"] = ProtoField.uint32("emboss_uint_sizes.ExplicitlySizedEnumSizes.three_byte", "three_byte", base.DEC, enums.ExplicitlySizedEnum)
-f["ExplicitlySizedEnumSizes.three_and_a_half_byte"] = ProtoField.uint32("emboss_uint_sizes.ExplicitlySizedEnumSizes.three_and_a_half_byte", "three_and_a_half_byte", base.DEC, enums.ExplicitlySizedEnum, 0x0FFFFFFF)
+f["EnumSizes.one_byte"] = ProtoField.uint8("emboss_uint_sizes.EnumSizes.one_byte", "one_byte", base.DEC, enums.Enum_8)
+f["EnumSizes.two_byte"] = ProtoField.uint16("emboss_uint_sizes.EnumSizes.two_byte", "two_byte", base.DEC, enums.Enum_16)
+f["EnumSizes.three_byte"] = ProtoField.uint32("emboss_uint_sizes.EnumSizes.three_byte", "three_byte", base.DEC, enums.Enum_24)
+f["EnumSizes.four_byte"] = ProtoField.uint32("emboss_uint_sizes.EnumSizes.four_byte", "four_byte", base.DEC, enums.Enum_32)
+f["EnumSizes.five_byte"] = ProtoField.uint64("emboss_uint_sizes.EnumSizes.five_byte", "five_byte", base.DEC, enums.Enum_40)
+f["EnumSizes.six_byte"] = ProtoField.uint64("emboss_uint_sizes.EnumSizes.six_byte", "six_byte", base.DEC, enums.Enum_48)
+f["EnumSizes.seven_byte"] = ProtoField.uint64("emboss_uint_sizes.EnumSizes.seven_byte", "seven_byte", base.DEC, enums.Enum_56)
+f["EnumSizes.eight_byte"] = ProtoField.uint64("emboss_uint_sizes.EnumSizes.eight_byte", "eight_byte", base.DEC, enums.Enum_64)
+f["ExplicitlySizedEnumSizes.one_byte"] = ProtoField.uint8("emboss_uint_sizes.ExplicitlySizedEnumSizes.one_byte", "one_byte", base.DEC, enums.ExplicitlySizedEnum_8)
+f["ExplicitlySizedEnumSizes.two_byte"] = ProtoField.uint16("emboss_uint_sizes.ExplicitlySizedEnumSizes.two_byte", "two_byte", base.DEC, enums.ExplicitlySizedEnum_16)
+f["ExplicitlySizedEnumSizes.three_byte"] = ProtoField.uint32("emboss_uint_sizes.ExplicitlySizedEnumSizes.three_byte", "three_byte", base.DEC, enums.ExplicitlySizedEnum_24)
+f["ExplicitlySizedEnumSizes.three_and_a_half_byte"] = ProtoField.uint32("emboss_uint_sizes.ExplicitlySizedEnumSizes.three_and_a_half_byte", "three_and_a_half_byte", base.DEC, enums.ExplicitlySizedEnum_28, 0x0FFFFFFF)
 f["ArraySizes.one_byte"] = ProtoField.uint8("emboss_uint_sizes.ArraySizes.one_byte", "one_byte")
 f["ArraySizes.two_byte"] = ProtoField.uint16("emboss_uint_sizes.ArraySizes.two_byte", "two_byte")
 f["ArraySizes.three_byte"] = ProtoField.uint32("emboss_uint_sizes.ArraySizes.three_byte", "three_byte")

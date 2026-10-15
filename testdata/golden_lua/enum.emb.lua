@@ -4,60 +4,29 @@
 
 local emboss_enum_proto = Proto("emboss_enum", "emboss_enum (Emboss)")
 
+-- Enum value names, one table per width an enum is read at.  Keys
+-- are the raw unsigned field value; the first name for a value wins.
 local enums = {}
-enums.Kind = {
+enums.Kind_8 = {
+  [0] = "WIDGET",
+  [1] = "SPROCKET",
+  [2] = "GEEGAW",
+  [3] = "COMPUTED",
+}
+enums.Kind_32 = {
   [0] = "WIDGET",
   [1] = "SPROCKET",
   [2] = "GEEGAW",
   [3] = "COMPUTED",
   [2000] = "LARGE_VALUE",
-  [2000] = "DUPLICATE_LARGE_VALUE",
   [4294967295] = "MAX32BIT",
-  [18446744073709551615] = "MAX64BIT",
-}
-enums.Signed = {
-  [-9223372036854775808] = "MIN64BIT",
-  [9223372036854775807] = "MAX64BIT",
-}
-enums.OnlyShortValues = {
-  [0] = "ZERO",
-  [1] = "ONE",
-}
-enums.OnlyShortSignedValues = {
-  [0] = "ZERO",
-  [-1] = "NEGATIVE_ONE",
-}
-enums.ExplicitlySigned = {
-  [0] = "ZERO",
-}
-enums.ExplicitlySized64 = {
-  [0] = "ZERO",
-}
-enums.ExplicitlySized32 = {
-  [0] = "ZERO",
-}
-enums.ExplicitlySized16 = {
-  [0] = "ZERO",
-}
-enums.ExplicitlySized8 = {
-  [0] = "ZERO",
-}
-enums.ExplicitlySized12 = {
-  [0] = "ZERO",
-}
-enums.ExplicitlySizedAndSigned = {
-  [0] = "ZERO",
-}
-enums.StructContainingEnum_Status = {
-  [0] = "OK",
-  [1] = "FAILURE",
 }
 
 local f = {}
-f["ManifestEntry.kind"] = ProtoField.uint8("emboss_enum.ManifestEntry.kind", "kind", base.DEC, enums.Kind)
+f["ManifestEntry.kind"] = ProtoField.uint8("emboss_enum.ManifestEntry.kind", "kind", base.DEC, enums.Kind_8)
 f["ManifestEntry.count"] = ProtoField.uint32("emboss_enum.ManifestEntry.count", "count")
-f["ManifestEntry.wide_kind"] = ProtoField.uint32("emboss_enum.ManifestEntry.wide_kind", "wide_kind", base.DEC, enums.Kind)
-f["ManifestEntry.wide_kind_in_bits"] = ProtoField.uint64("emboss_enum.ManifestEntry.wide_kind_in_bits", "wide_kind_in_bits", base.DEC, enums.Kind, 0x0FFFFFFFF0)
+f["ManifestEntry.wide_kind"] = ProtoField.uint32("emboss_enum.ManifestEntry.wide_kind", "wide_kind", base.DEC, enums.Kind_32)
+f["ManifestEntry.wide_kind_in_bits"] = ProtoField.uint64("emboss_enum.ManifestEntry.wide_kind_in_bits", "wide_kind_in_bits", base.DEC, enums.Kind_32, 0x0FFFFFFFF0)
 f["StructContainingEnum.bar"] = ProtoField.uint8("emboss_enum.StructContainingEnum.bar", "bar")
 
 emboss_enum_proto.fields = {

@@ -109,18 +109,112 @@ class ParseRegisterOnTest(unittest.TestCase):
 
 
 class EnumValuesTableTest(unittest.TestCase):
+    """Value-name tables are keyed by the raw field value, per field width."""
 
-    def test_emits_value_strings(self):
+    _EMB = (
+        '[expected_back_ends: "cpp, wireshark"]\n'
+        '[$default byte_order: "BigEndian"]\n'
+        "enum Kind:\n"
+        "  WIDGET   = 0\n"
+        "  LARGE    = 2000\n"
+        "  DUP      = LARGE\n"
+        "  MAX32BIT = 4294967295\n"
+        "  MAX64BIT = 18446744073709551615\n"
+        "enum Unused:\n"
+        "  NOT_USED = 1\n"
+        "struct Xs:\n"
+        "  0 [+1]  Kind  k8\n"
+        "  1 [+4]  Kind  k32\n"
+        "  5 [+8]  Kind  k64\n"
+    )
+
+    def test_one_table_per_width_holding_the_values_that_fit(self):
+        text, errors = _generate(self._EMB)
+        self.assertEqual([], errors)
+        self.assertIn(
+            "local enums = {}\n" 'enums.Kind_8 = {\n  [0] = "WIDGET",\n}\n', text
+        )
+        self.assertIn(
+            "enums.Kind_32 = {\n"
+            '  [0] = "WIDGET",\n'
+            '  [2000] = "LARGE",\n'
+            '  [4294967295] = "MAX32BIT",\n'
+            "}\n",
+            text,
+        )
+        self.assertIn(
+            'ProtoField.uint8("emboss_m.Xs.k8", "k8", base.DEC, enums.Kind_8)', text
+        )
+        self.assertIn(
+            'ProtoField.uint32("emboss_m.Xs.k32", "k32", base.DEC, enums.Kind_32)', text
+        )
+
+    def test_duplicate_values_keep_the_first_name(self):
+        text, errors = _generate(self._EMB)
+        self.assertEqual([], errors)
+        self.assertNotIn("DUP", text)
+
+    def test_values_of_2_to_the_63_and_above_are_hex_literals(self):
+        # A decimal literal that large becomes a float in Lua and matches no
+        # integer field value.
+        text, errors = _generate(self._EMB)
+        self.assertEqual([], errors)
+        self.assertIn('  [0xFFFFFFFFFFFFFFFF] = "MAX64BIT",\n}\n', text)
+        self.assertNotIn("18446744073709551615", text)
+
+    def test_unused_enums_get_no_table(self):
+        text, errors = _generate(self._EMB)
+        self.assertEqual([], errors)
+        self.assertNotIn("enums.Unused", text)
+
+    def test_negative_values_are_keyed_by_their_encoding(self):
         text, errors = _generate(
             '[expected_back_ends: "cpp, wireshark"]\n'
-            "enum Kind:\n"
+            '[$default byte_order: "BigEndian"]\n'
+            "enum Sgn:\n"
+            "  [is_signed: true]\n"
+            "  NEG  = -1\n"
             "  ZERO = 0\n"
-            "  ONE  = 1\n"
+            "enum Small:\n"
+            "  [is_signed: true]\n"
+            "  [maximum_bits: 8]\n"
+            "  MINUS_ONE = -1\n"
+            "struct Xs:\n"
+            "  0 [+1]  Sgn    s8\n"
+            "  1 [+8]  Sgn    s64\n"
+            "  9 [+1]  Small  sm8\n"
         )
         self.assertEqual([], errors)
-        self.assertIn("local enums = {}\nenums.Kind = {", text)
-        self.assertIn('[0] = "ZERO",', text)
-        self.assertIn('[1] = "ONE",', text)
+        # -1 in a 64-bit enum is 0xFF..FF, which a one-byte field can't hold
+        # (the C++ back end reads 0xFF as 255 there, matching no name either).
+        self.assertIn('enums.Sgn_8 = {\n  [0] = "ZERO",\n}\n', text)
+        self.assertIn(
+            'enums.Sgn_64 = {\n  [0xFFFFFFFFFFFFFFFF] = "NEG",\n  [0] = "ZERO",\n}\n',
+            text,
+        )
+        self.assertIn('enums.Small_8 = {\n  [255] = "MINUS_ONE",\n}\n', text)
+
+    def test_enum_with_no_value_fitting_the_width_gets_no_valuestring(self):
+        text, errors = _generate(
+            '[expected_back_ends: "cpp, wireshark"]\n'
+            '[$default byte_order: "BigEndian"]\n'
+            "enum Big:\n"
+            "  HUGE = 70000\n"
+            "struct Xs:\n"
+            "  0 [+1]  Big  b\n"
+        )
+        self.assertEqual([], errors)
+        self.assertNotIn("enums", text)
+        self.assertIn('ProtoField.uint8("emboss_m.Xs.b", "b")', text)
+
+    def test_enum_in_bits_uses_the_bit_fields_width(self):
+        text, errors = _generate(self._EMB + "  13 [+1]  bits:\n    0 [+4]  Kind  k4\n")
+        self.assertEqual([], errors)
+        self.assertIn('enums.Kind_4 = {\n  [0] = "WIDGET",\n}\n', text)
+        self.assertIn(
+            'ProtoField.uint8("emboss_m.Xs.k4", "k4", base.DEC, enums.Kind_4, 0x0F)',
+            text,
+        )
 
 
 class FilterCompositionTest(unittest.TestCase):

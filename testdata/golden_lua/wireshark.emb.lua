@@ -6,15 +6,17 @@
 
 local myproto_proto = Proto("myproto", "myproto (Emboss)")
 
+-- Enum value names, one table per width an enum is read at.  Keys
+-- are the raw unsigned field value; the first name for a value wins.
 local enums = {}
-enums.Kind = {
+enums.Kind_8 = {
   [0] = "REQUEST",
   [1] = "RESPONSE",
   [2] = "ERROR",
 }
 
 local f = {}
-f["Header.kind"] = ProtoField.uint8("myproto.hdr.kind", "kind", base.DEC, enums.Kind, nil, "Message kind.")
+f["Header.kind"] = ProtoField.uint8("myproto.hdr.kind", "kind", base.DEC, enums.Kind_8, nil, "Message kind.")
 f["Header.seq_num"] = ProtoField.uint32("myproto.hdr.seq_num", "seq_num", base.DEC, nil, nil, "Sequence number used for matching requests with responses.")
 f["Packet.payload_len"] = ProtoField.uint32("myproto.Packet.payload_len", "payload_len", base.DEC, nil, nil, "Number of bytes of payload following.")
 f["Packet.checksum"] = ProtoField.uint32("myproto.Packet.checksum", "checksum")

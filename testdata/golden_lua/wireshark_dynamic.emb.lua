@@ -6,15 +6,17 @@
 
 local vproto_proto = Proto("vproto", "vproto (Emboss)")
 
+-- Enum value names, one table per width an enum is read at.  Keys
+-- are the raw unsigned field value; the first name for a value wins.
 local enums = {}
-enums.MsgType = {
+enums.MsgType_8 = {
   [0] = "PING",
   [1] = "DATA",
   [2] = "ERROR",
 }
 
 local f = {}
-f["Message.msg_type"] = ProtoField.uint8("vproto.Message.msg_type", "msg_type", base.DEC, enums.MsgType, nil, "Message type.")
+f["Message.msg_type"] = ProtoField.uint8("vproto.Message.msg_type", "msg_type", base.DEC, enums.MsgType_8, nil, "Message type.")
 f["Message.count"] = ProtoField.uint8("vproto.Message.count", "count", base.DEC, nil, nil, "Number of payload bytes that follow.")
 f["Message.error_code"] = ProtoField.uint16("vproto.Message.error_code", "error_code", base.DEC, nil, nil, "16-bit error code, present only for ERROR messages.")
 f["Message.payload"] = ProtoField.uint8("vproto.Message.payload", "payload", base.DEC, nil, nil, "Variable-length payload, `count` bytes long.")

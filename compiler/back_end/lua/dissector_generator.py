@@ -155,8 +155,8 @@ def _qualified_lua_name(canonical_name):
 # level tables (`enums` and `dissect`) rather than as individual locals: Lua
 # allows at most 200 local variables per function, including the main chunk, so
 # a module with a couple of hundred types would otherwise fail to load.
-def _enum_values_var(canonical_name):
-    return "enums." + _qualified_lua_name(canonical_name)
+def _enum_values_var(canonical_name, width_bits):
+    return "enums.{}_{}".format(_qualified_lua_name(canonical_name), width_bits)
 
 
 def _dissector_function(canonical_name):
@@ -434,6 +434,11 @@ class _FieldEmitter:
         self._nullable_locals = set()
         # Whether the generated script needs the add_bcd helper.
         self.needs_bcd_helper = False
+        # Enum value-strings tables, one per (enum, field width) actually used,
+        # as Lua text in first-use order.  _enum_table_vars caches their names
+        # by (_type_key(), width); None when no value of the enum fits.
+        self.enum_tables = []
+        self._enum_table_vars = {}
         # _type_key() of each anonymous `bits` -> byte size of the struct field
         # holding it.  Filled in while visiting the enclosing struct, which
         # _all_types() always yields before the anonymous type itself.
@@ -493,6 +498,22 @@ class _FieldEmitter:
 
     def _proto_filter(self, *segments):
         return ".".join((self._filter_root,) + tuple(segments))
+
+    def _enum_valuestring(self, enum_type_def, width_bits):
+        """Returns the value-strings table for an enum read at `width_bits`.
+
+        The table is emitted on first use; the result is None (no table) when
+        none of the enum's values fits in `width_bits`.
+        """
+        cache_key = (_type_key(enum_type_def), width_bits)
+        if cache_key not in self._enum_table_vars:
+            table = _generate_enum_values_table(enum_type_def, width_bits)
+            var = None
+            if table is not None:
+                self.enum_tables.append(table)
+                var = _enum_values_var(enum_type_def.name.canonical_name, width_bits)
+            self._enum_table_vars[cache_key] = var
+        return self._enum_table_vars[cache_key]
 
     def _emit_protofield(
         self,
@@ -789,7 +810,7 @@ class _FieldEmitter:
         body_lines,
     ):
         ws_type = _wireshark_int_type("UInt", size * 8)
-        valuestring = _enum_values_var(enum_type_def.name.canonical_name)
+        valuestring = self._enum_valuestring(enum_type_def, size * 8)
         self._emit_protofield(
             key,
             proto_filter,
@@ -937,7 +958,7 @@ class _FieldEmitter:
         referenced = _referenced_type_definition(base_type, self._ir)
         if referenced and referenced.has_field("enumeration"):
             ws_type = _wireshark_int_type("UInt", element_size_bits)
-            valuestring = _enum_values_var(referenced.name.canonical_name)
+            valuestring = self._enum_valuestring(referenced, element_size_bits)
             self._emit_protofield(
                 key,
                 proto_filter,
@@ -1128,7 +1149,7 @@ class _FieldEmitter:
                     proto_filter,
                     _wireshark_int_type("UInt", container_bits),
                     field_name,
-                    valuestring=_enum_values_var(referenced.name.canonical_name),
+                    valuestring=self._enum_valuestring(referenced, size),
                     mask=mask,
                     description=doc or None,
                 )
@@ -1172,23 +1193,43 @@ def _is_unconditional(field):
     return False
 
 
-def _generate_enum_values_table(type_def):
-    """Generates a Lua table mapping enum integer values to value names."""
-    enum = type_def.enumeration
-    lines = ["{} = {{".format(_enum_values_var(type_def.name.canonical_name))]
-    for value in enum.value:
+def _generate_enum_values_table(type_def, width_bits):
+    """Returns the Lua value-strings table for `type_def` read at `width_bits`.
+
+    Keys are the raw unsigned field value, which is what Wireshark looks up: a
+    negative enum value is keyed by its two's-complement encoding in the enum's
+    `maximum_bits`, and values that can't occur in a field `width_bits` wide
+    are left out.  Where several names share one value the first wins, as in
+    the C++ back end's TryToGetNameFromEnum.  Returns None if no value fits.
+    """
+    max_bits = ir_util.get_integer_attribute(type_def.attribute, "maximum_bits")
+    modulus = 1 << (max_bits or 64)
+    entries = []
+    seen = set()
+    for value in type_def.enumeration.value:
         if not value.name or not value.value:
             continue
         numeric = ir_util.constant_value(value.value)
         if numeric is None:
             continue
-        lines.append(
+        key = numeric % modulus if numeric < 0 else numeric
+        if key in seen or key >= (1 << width_bits):
+            continue
+        seen.add(key)
+        # A decimal literal of 2^63 or more reads as a float in Lua, which
+        # then matches nothing; a hex literal wraps to the right integer.
+        literal = "0x{:016X}".format(key) if key >= (1 << 63) else str(key)
+        entries.append(
             "  [{}] = {},".format(
-                numeric, _quote(_local_name(value.name.canonical_name))
+                literal, _quote(_local_name(value.name.canonical_name))
             )
         )
-    lines.append("}")
-    return "\n".join(lines)
+    if not entries:
+        return None
+    header = "{} = {{".format(
+        _enum_values_var(type_def.name.canonical_name, width_bits)
+    )
+    return "\n".join([header] + entries + ["}"])
 
 
 def _propagate_defaults_and_verify_attributes(ir):
@@ -1275,23 +1316,23 @@ def generate_dissector(ir):
     )
     lines.append("")
 
-    # Enum value-strings tables for every enum in the module (including
-    # enums nested inside structs / bits).
-    enum_blocks = []
-    for type_def in _all_types(module):
-        if type_def.has_field("enumeration"):
-            enum_blocks.append(_generate_enum_values_table(type_def))
-    if enum_blocks:
-        lines.append("local enums = {}")
-        lines.extend(enum_blocks)
-        lines.append("")
-
     # Build struct bodies / field declarations for every struct / bits
     # (including those nested in other structs).
     emitter = _FieldEmitter(ir, protocol_name, filter_root)
     for type_def in _all_types(module):
         if type_def.has_field("structure"):
             emitter.visit_struct(type_def)
+
+    if emitter.enum_tables:
+        lines.append(
+            "-- Enum value names, one table per width an enum is read at.  Keys"
+        )
+        lines.append(
+            "-- are the raw unsigned field value; the first name for a value wins."
+        )
+        lines.append("local enums = {}")
+        lines.extend(emitter.enum_tables)
+        lines.append("")
 
     if emitter.field_decls:
         lines.append("local f = {}")
