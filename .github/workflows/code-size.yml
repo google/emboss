@@ -59,10 +59,10 @@ jobs:
             meson ninja-build pkg-config libglib2.0-dev
 
       # embedded code-size targets compile against the MicroBlaze gcc toolchain
-      # hard-coded under /opt/microblaze/...; cache the Bootlin tarball in a
-      # runner-writable path (caching /opt fights root perms on restore), then
-      # extract it into place. clang has no MicroBlaze back end, so MicroBlaze is
-      # gcc-only.
+      # under size_bench.py's default EMBOSS_MB_TOOLCHAIN_DIR, /opt/microblaze;
+      # cache the Bootlin tarball in a runner-writable path (caching /opt fights
+      # root perms on restore), then extract it into place. clang has no
+      # MicroBlaze back end, so MicroBlaze is gcc-only.
       - name: Cache MicroBlaze (Bootlin) toolchain tarball
         uses: actions/cache@v4
         with:

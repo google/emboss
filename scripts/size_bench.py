@@ -52,18 +52,31 @@ COMMON_FLAGS = (
 CONFIGS = {"Os": "-Os", "O2": "-O2", "O0": "-O0"}
 
 # MicroBlaze big-endian (the toolchain the landed #257 numbers were measured on)
-# and little-endian, both from Bootlin.
-_MB_BE = "/opt/microblaze/microblazebe--glibc--stable-2025.08-1/bin/microblaze-buildroot-linux-gnu"
-_MB_LE = "/opt/microblaze/microblazeel--glibc--stable-2025.08-1/bin/microblazeel-buildroot-linux-gnu"
+# and little-endian, both from Bootlin. EMBOSS_MB_TOOLCHAIN_DIR overrides the
+# directory both tarballs were extracted into (the CI workflow uses the
+# default, /opt/microblaze).
+_MB_DIR = os.environ.get("EMBOSS_MB_TOOLCHAIN_DIR", "/opt/microblaze")
+_MB_BE = f"{_MB_DIR}/microblazebe--glibc--stable-2025.08-1/bin/microblaze-buildroot-linux-gnu"
+_MB_LE = f"{_MB_DIR}/microblazeel--glibc--stable-2025.08-1/bin/microblazeel-buildroot-linux-gnu"
 
 # AMD/Xilinx Vitis MicroBlaze little-endian toolchain: the actually-shipped
 # target, so authoritative for LE size. It is proprietary and locally-licensed,
 # so it is never present in public CI -- have() skips it there, and the
 # open-source Bootlin microblazeel build stands in as the CI little-endian proxy
 # (its `.text`/Ok() numbers track BE closely; Vitis is the number that ships).
-_VITIS = "/usr/local/google/edatools/xilinx/2025.2/Vitis"
+# EMBOSS_VITIS_DIR overrides the install root; mb-g++ and its binutils need
+# LD_LIBRARY_PATH pointed at the install's own shared libs (the distro-specific
+# directory first, Vitis' generic one as the fallback).
+_VITIS = os.environ.get(
+    "EMBOSS_VITIS_DIR", "/usr/local/google/edatools/xilinx/2025.2/Vitis"
+)
 _VITIS_MB = _VITIS + "/gnu/microblaze/lin/bin/mb"
-_VITIS_ENV = {"LD_LIBRARY_PATH": _VITIS + "/lib/lnx64.o/Ubuntu/24"}
+_VITIS_ENV = {
+    "LD_LIBRARY_PATH": _VITIS
+    + "/lib/lnx64.o/Ubuntu/24:"
+    + _VITIS
+    + "/lib/lnx64.o/Default"
+}
 _VITIS_FLAGS = (
     "-mcpu=v11.0 -mlittle-endian -mxl-barrel-shift -mxl-pattern-compare "
     "-mno-xl-soft-mul -mno-xl-soft-div"
