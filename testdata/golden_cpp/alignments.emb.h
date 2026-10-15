@@ -706,6 +706,7 @@ class GenericAlignmentsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !zero_offset().IsAggregate() && !zero_offset().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -749,6 +750,7 @@ class GenericAlignmentsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !zero_offset_substructure().IsAggregate() &&
                  !zero_offset_substructure().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -794,6 +796,7 @@ class GenericAlignmentsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !two_offset_substructure().IsAggregate() &&
                  !two_offset_substructure().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -838,6 +841,7 @@ class GenericAlignmentsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !three_offset().IsAggregate() && !three_offset().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -880,6 +884,7 @@ class GenericAlignmentsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !four_offset().IsAggregate() && !four_offset().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -922,6 +927,7 @@ class GenericAlignmentsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !eleven_offset().IsAggregate() && !eleven_offset().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -964,6 +970,7 @@ class GenericAlignmentsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !twelve_offset().IsAggregate() && !twelve_offset().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -1009,6 +1016,7 @@ class GenericAlignmentsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !zero_offset_four_stride_array().IsAggregate() &&
                  !zero_offset_four_stride_array().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -1055,6 +1063,7 @@ class GenericAlignmentsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !zero_offset_six_stride_array().IsAggregate() &&
                  !zero_offset_six_stride_array().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -1102,6 +1111,7 @@ class GenericAlignmentsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !three_offset_four_stride_array().IsAggregate() &&
                  !three_offset_four_stride_array().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -1148,6 +1158,7 @@ class GenericAlignmentsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !four_offset_six_stride_array().IsAggregate() &&
                  !four_offset_six_stride_array().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -1672,6 +1683,7 @@ class GenericPlaceholder4View final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !dummy().IsAggregate() && !dummy().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -2148,6 +2160,7 @@ class GenericPlaceholder6View final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !zero_offset().IsAggregate() && !zero_offset().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -2190,6 +2203,7 @@ class GenericPlaceholder6View final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !two_offset().IsAggregate() && !two_offset().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(

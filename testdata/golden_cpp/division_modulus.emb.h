@@ -315,6 +315,7 @@ class GenericArrayOfUint16BySizeInBytesView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !size_in_bytes().IsAggregate() && !size_in_bytes().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -357,6 +358,7 @@ class GenericArrayOfUint16BySizeInBytesView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !elements().IsAggregate() && !elements().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -921,6 +923,7 @@ class GenericChunkedPayloadView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !chunk_count().IsAggregate() && !chunk_count().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -963,6 +966,7 @@ class GenericChunkedPayloadView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !padded().IsAggregate() && !padded().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -1463,7 +1467,8 @@ class GenericConstantsView final {
     }
     bool emboss_reserved_local_wrote_field = false;
     if (has_exact_quotient().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           exact_quotient().IsAggregate() || exact_quotient().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -1482,7 +1487,8 @@ class GenericConstantsView final {
     }
 
     if (has_truncating_quotient().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           truncating_quotient().IsAggregate() || truncating_quotient().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -1502,7 +1508,8 @@ class GenericConstantsView final {
     }
 
     if (has_negative_quotient().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           negative_quotient().IsAggregate() || negative_quotient().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -1522,7 +1529,8 @@ class GenericConstantsView final {
     }
 
     if (has_exact_modulus().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           exact_modulus().IsAggregate() || exact_modulus().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -1541,7 +1549,8 @@ class GenericConstantsView final {
     }
 
     if (has_truncating_modulus().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           truncating_modulus().IsAggregate() || truncating_modulus().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -1561,7 +1570,8 @@ class GenericConstantsView final {
     }
 
     if (has_negative_modulus().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           negative_modulus().IsAggregate() || negative_modulus().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -1580,7 +1590,8 @@ class GenericConstantsView final {
     }
 
     if (has_chained_div().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           chained_div().IsAggregate() || chained_div().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -1599,7 +1610,8 @@ class GenericConstantsView final {
     }
 
     if (has_chained_mod().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           chained_mod().IsAggregate() || chained_mod().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -1618,7 +1630,8 @@ class GenericConstantsView final {
     }
 
     if (has_mixed_divmod().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           mixed_divmod().IsAggregate() || mixed_divmod().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -2533,6 +2546,7 @@ class GenericSignedRuntimeDivisionView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !wide_dividend().IsAggregate() && !wide_dividend().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -2575,6 +2589,7 @@ class GenericSignedRuntimeDivisionView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !narrow_dividend().IsAggregate() && !narrow_dividend().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -2617,6 +2632,7 @@ class GenericSignedRuntimeDivisionView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !divisor_magnitude().IsAggregate() &&
                  !divisor_magnitude().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -2629,7 +2645,8 @@ class GenericSignedRuntimeDivisionView final {
     }
 
     if (has_wide_quotient_by_constant().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           wide_quotient_by_constant().IsAggregate() ||
           wide_quotient_by_constant().Ok()) {
@@ -2650,7 +2667,8 @@ class GenericSignedRuntimeDivisionView final {
     }
 
     if (has_wide_remainder_by_constant().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           wide_remainder_by_constant().IsAggregate() ||
           wide_remainder_by_constant().Ok()) {
@@ -2671,7 +2689,8 @@ class GenericSignedRuntimeDivisionView final {
     }
 
     if (has_wide_quotient_by_divisor().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           wide_quotient_by_divisor().IsAggregate() ||
           wide_quotient_by_divisor().Ok()) {
@@ -2692,7 +2711,8 @@ class GenericSignedRuntimeDivisionView final {
     }
 
     if (has_wide_remainder_by_negative_divisor().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           wide_remainder_by_negative_divisor().IsAggregate() ||
           wide_remainder_by_negative_divisor().Ok()) {
@@ -2714,7 +2734,8 @@ class GenericSignedRuntimeDivisionView final {
     }
 
     if (has_narrow_quotient_by_negative_divisor().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           narrow_quotient_by_negative_divisor().IsAggregate() ||
           narrow_quotient_by_negative_divisor().Ok()) {
@@ -2736,7 +2757,8 @@ class GenericSignedRuntimeDivisionView final {
     }
 
     if (has_narrow_remainder_by_negative_divisor().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           narrow_remainder_by_negative_divisor().IsAggregate() ||
           narrow_remainder_by_negative_divisor().Ok()) {
@@ -3826,6 +3848,7 @@ class GenericPayloadSizedByDivisionView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !divisor().IsAggregate() && !divisor().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -3868,6 +3891,7 @@ class GenericPayloadSizedByDivisionView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !payload().IsAggregate() && !payload().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -4426,6 +4450,7 @@ class GenericFieldGatedByDivisionView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !divisor().IsAggregate() && !divisor().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -4468,6 +4493,7 @@ class GenericFieldGatedByDivisionView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !gated().IsAggregate() && !gated().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -4989,6 +5015,7 @@ class GenericCollapsingQuotientView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !divisor().IsAggregate() && !divisor().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -4999,7 +5026,8 @@ class GenericCollapsingQuotientView final {
     }
 
     if (has_zero_or_undefined().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           zero_or_undefined().IsAggregate() || zero_or_undefined().Ok()) {
         emboss_reserved_local_stream->Write(

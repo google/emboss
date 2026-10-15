@@ -517,6 +517,7 @@ class GenericRequiresIntegersView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !zero_through_nine().IsAggregate() &&
                  !zero_through_nine().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -561,6 +562,7 @@ class GenericRequiresIntegersView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !ten_through_twenty().IsAggregate() &&
                  !ten_through_twenty().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -605,6 +607,7 @@ class GenericRequiresIntegersView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !disjoint().IsAggregate() && !disjoint().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -615,7 +618,8 @@ class GenericRequiresIntegersView final {
     }
 
     if (has_ztn_plus_ttt().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           ztn_plus_ttt().IsAggregate() || ztn_plus_ttt().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -668,6 +672,7 @@ class GenericRequiresIntegersView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !alias_of_zero_through_nine().IsAggregate() &&
                  !alias_of_zero_through_nine().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -714,6 +719,7 @@ class GenericRequiresIntegersView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !zero_through_nine_plus_five().IsAggregate() &&
                  !zero_through_nine_plus_five().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -1705,6 +1711,7 @@ class GenericEmbossReservedAnonymousField2View final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !a().IsAggregate() && !a().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -1747,6 +1754,7 @@ class GenericEmbossReservedAnonymousField2View final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !b().IsAggregate() && !b().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -1789,6 +1797,7 @@ class GenericEmbossReservedAnonymousField2View final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !must_be_true().IsAggregate() && !must_be_true().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -1831,6 +1840,7 @@ class GenericEmbossReservedAnonymousField2View final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !must_be_false().IsAggregate() && !must_be_false().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -2372,6 +2382,7 @@ class GenericRequiresBoolsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !a().IsAggregate() && !a().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -2414,6 +2425,7 @@ class GenericRequiresBoolsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !b().IsAggregate() && !b().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -2456,6 +2468,7 @@ class GenericRequiresBoolsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !must_be_true().IsAggregate() && !must_be_true().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -2498,6 +2511,7 @@ class GenericRequiresBoolsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !must_be_false().IsAggregate() && !must_be_false().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -2508,7 +2522,8 @@ class GenericRequiresBoolsView final {
     }
 
     if (has_b_must_be_false().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           b_must_be_false().IsAggregate() || b_must_be_false().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -2560,6 +2575,7 @@ class GenericRequiresBoolsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !alias_of_a_must_be_true().IsAggregate() &&
                  !alias_of_a_must_be_true().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -3494,6 +3510,7 @@ class GenericRequiresEnumsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !a().IsAggregate() && !a().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -3536,6 +3553,7 @@ class GenericRequiresEnumsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !b().IsAggregate() && !b().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -3578,6 +3596,7 @@ class GenericRequiresEnumsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !c().IsAggregate() && !c().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -3588,7 +3607,8 @@ class GenericRequiresEnumsView final {
     }
 
     if (has_filtered_a().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           filtered_a().IsAggregate() || filtered_a().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -3639,6 +3659,7 @@ class GenericRequiresEnumsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !alias_of_a().IsAggregate() && !alias_of_a().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -4467,6 +4488,7 @@ class GenericEmbossReservedAnonymousField1View final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !a().IsAggregate() && !a().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -4509,6 +4531,7 @@ class GenericEmbossReservedAnonymousField1View final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !b_exists().IsAggregate() && !b_exists().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -4551,6 +4574,7 @@ class GenericEmbossReservedAnonymousField1View final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !b().IsAggregate() && !b().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -4593,6 +4617,7 @@ class GenericEmbossReservedAnonymousField1View final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !b_true().IsAggregate() && !b_true().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -5168,6 +5193,7 @@ class GenericRequiresWithOptionalFieldsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !a().IsAggregate() && !a().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -5210,6 +5236,7 @@ class GenericRequiresWithOptionalFieldsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !b_exists().IsAggregate() && !b_exists().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -5252,6 +5279,7 @@ class GenericRequiresWithOptionalFieldsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !b().IsAggregate() && !b().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -5294,6 +5322,7 @@ class GenericRequiresWithOptionalFieldsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !b_true().IsAggregate() && !b_true().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -5792,6 +5821,7 @@ class GenericElementView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !x().IsAggregate() && !x().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -6229,6 +6259,7 @@ class GenericRequiresInArrayElementsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !xs().IsAggregate() && !xs().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
