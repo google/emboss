@@ -307,7 +307,7 @@ void WriteIntegerToTextStream(IntegralType value, Stream *stream,
         digit = 0;
         ++value;
       }
-      buffer_char(digits[digit]);
+      buffer_char(digits[static_cast<int>(digit)]);
       ++digit_count;
     } else {
       value = -value;
@@ -317,7 +317,7 @@ void WriteIntegerToTextStream(IntegralType value, Stream *stream,
     if (digit_count && digit_count % grouping == 0 && digit_grouping) {
       buffer_char('_');
     }
-    buffer_char(digits[value % base]);
+    buffer_char(digits[static_cast<int>(value % base)]);
     value /= base;
     ++digit_count;
   }
