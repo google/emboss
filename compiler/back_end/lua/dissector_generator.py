@@ -417,10 +417,6 @@ class _FieldEmitter:
         self.field_decls = []
         # struct_bodies: list of (canonical_name, parameter_list, [body_lines])
         self.struct_bodies = []
-        # struct_size_bytes: dict mapping canonical_name tuple -> size in bytes
-        # for fixed-size byte structs; None if unknown.
-        self._struct_size_bytes = {}
-        self.errors = []
         # Per-struct expression-translation state, reset in visit_struct():
         #   _referenced:    hashable canonical names of fields referenced by some
         #                   sibling's condition / location / array-count.
@@ -1253,13 +1249,6 @@ def _propagate_defaults_and_verify_attributes(ir):
         bits_attributes=attributes.Scope.BITS,
         structure_physical_field_attributes=attributes.Scope.STRUCT_PHYSICAL_FIELD,
     )
-
-
-def _module_has_dissectable_root(module):
-    for type_def in module.type:
-        if type_def.has_field("structure"):
-            return True
-    return False
 
 
 def _is_byte_struct(type_def):

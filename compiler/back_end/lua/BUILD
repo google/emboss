@@ -91,7 +91,7 @@ py_binary(
 )
 
 # NOTE: When adding or removing lua_golden_test(...) rules below, also update
-# the GOLDENS list in scripts/regenerate_goldens.py so the two stay in sync.
+# the LUA_GOLDENS list in scripts/regenerate_goldens.py so the two stay in sync.
 
 lua_golden_test(
     name = "enum_golden_test",
