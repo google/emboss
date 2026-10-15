@@ -20,9 +20,9 @@
 -- comparable over time: a change here moves the measured baseline. Only edit it
 -- to cover a genuinely new language feature, accepting that the numbers shift.
 --
--- The benchmark driver instantiates each parameter-free top-level struct
--- (Scalars, Bitfields, Repeated, Conditional, Nested) and exercises Ok(),
--- Equals() (read-all) and CopyFrom() (read-all + write-all).
+-- The benchmark driver (scripts/size_bench.py) instantiates each parameter-free
+-- top-level struct (Scalars, Bitfields, Repeated, Conditional, Nested) and
+-- exercises Ok() (validate / read-all) and CopyFrom() (read-all + write-all).
 
 [$default byte_order: "LittleEndian"]
 [(cpp) namespace: "emboss::benchmark"]

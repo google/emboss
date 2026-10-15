@@ -14,19 +14,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Measures the size and instruction count of Emboss-generated code.
+"""Measures the size, and optionally the speed, of Emboss-generated code.
 
 Compiles a fixed benchmark schema (testdata/benchmark.emb) plus the
-many_conditionals Ok() highlight across a matrix of target x compiler x
-optimization level, reporting `.text` bytes and static instruction counts
-(from objdump disassembly -- a deterministic stand-in for a runtime benchmark).
+many_conditionals Ok() highlights across a matrix of target x compiler x
+optimization level, reporting code size (Berkeley `size` text column: code plus
+read-only data, unwind tables disabled), a static instruction count (objdump
+mnemonics) and the per-symbol size of the optimized Ok() methods.
+
+With --speed it also builds a runnable reader-Ok() loop with each linux-user
+toolchain and records native wall-clock seconds on the host and, under a
+plugin-enabled qemu-user, a deterministic retired-instruction count for the
+cross targets (see scripts/build_qemu_plugin.sh).
 
 With --revisions BASE HEAD, each revision is measured with the benchmark schema
-held fixed (pulled forward from HEAD), so only the code generator under test
-varies between them. Results, including which compiler/version produced each
-number, are written as JSON.
+held fixed (pulled forward from the starting checkout), so only the code
+generator under test varies between them. Results, including which
+compiler/version produced each number, are written as JSON; a cell whose
+codegen or compile failed is logged on stderr and recorded as
+{"skipped": reason}. scripts/size_comment.py renders the JSON as Markdown.
 
   python3 scripts/size_bench.py --revisions <base-sha> <head-sha> --out-dir out
+
+Environment overrides (all optional):
+  EMBOSS_MB_TOOLCHAIN_DIR  directory the Bootlin MicroBlaze toolchains were
+                           extracted into (default /opt/microblaze)
+  EMBOSS_VITIS_DIR         AMD/Xilinx Vitis install root (local-only target)
+  EMBOSS_QEMU_DIR          directory of a plugin-enabled qemu-user build
+  EMBOSS_QEMU_PLUGIN       path to the built emboss_insncount.so (--speed only)
 """
 
 import argparse
@@ -226,10 +241,12 @@ MANYCOND_DISJ_OK_SYMBOL = r"GenericDisjunctionConditionalsView<.*>::Ok\(\) const
 #   both           -- read-only View Ok() + read-write Writer Ok()/CopyFrom()
 #   writer_only    -- read-write Writer Ok()/CopyFrom() only (Lever B watches this
 #                     for a regression when Ok() is deduped onto the reader)
-#   residual_heavy -- a residual-guarded schema; stubbed on DisjunctionConditionals
-#                     until Phase 2 adds an OuterGuardedUnion schema
-# Read-only storage demangles as ContiguousBuffer<char const, ...>; read-write as
-# ContiguousBuffer<char, ...>. ok_symbols() splits the two on that `const`.
+#   residual_heavy -- a residual-guarded schema (OuterGuardedUnion: every arm is
+#                     `tag == N && outer == 1`, so the switch on tag leaves the
+#                     `outer` residual on each arm; 12 is its exact byte size)
+# Read-only storage demangles as ContiguousBuffer<unsigned char const, ...>;
+# read-write as ContiguousBuffer<unsigned char, ...>. ok_symbols() splits the two
+# on that `const`.
 _OK_HDR = (
     "#include <cstdint>\n\n"
     '#include "testdata/many_conditionals.emb.h"\n\n'
@@ -443,10 +460,10 @@ def symbol_bytes(nm, obj, pattern, env=None):
 def ok_symbols(nm, obj, struct, env=None):
     """Reader/writer Ok() sizes for Generic<struct>View, as {'reader','writer'}.
 
-    Read-only storage demangles as ContiguousBuffer<char const, ...> and
-    read-write as ContiguousBuffer<char, ...>; the `const` in the storage arg
-    (before `>::Ok`) tells them apart. Either value is None when its
-    instantiation isn't present in the object.
+    Read-only storage demangles as ContiguousBuffer<unsigned char const, ...>
+    and read-write as ContiguousBuffer<unsigned char, ...>; the `const` in the
+    storage arg (before `>::Ok`) tells them apart. Either value is None when
+    its instantiation isn't present in the object.
     """
     pattern = rf"Generic{struct}View<.*>::Ok\(\) const$"
     out = subprocess.run(
@@ -726,14 +743,20 @@ def measure_revision(sha, original_ref, work_root, with_speed=False):
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument(
         "--revisions",
         nargs="+",
         default=["HEAD"],
         help="Revisions to measure; with two, the first is the base for deltas.",
     )
-    parser.add_argument("--out-dir", default="size_results")
+    parser.add_argument(
+        "--out-dir",
+        default="size_results",
+        help="Where to write size_bench.json (default: size_results/, git-ignored).",
+    )
     parser.add_argument(
         "--speed",
         action="store_true",

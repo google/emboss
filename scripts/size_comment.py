@@ -179,7 +179,8 @@ def render(data):
         "### 📐 Generated code size & instructions",
         f"`{base['sha'][:9]} → {head['sha'][:9]}` · smaller is better · **{verdict(base, head)}**",
         "",
-        "<sub>**Code size** (compiled `.text` bytes) and **Instructions** (objdump count) are totals "
+        "<sub>**Code size** (compiled code + read-only data: `size` text column, bytes) and "
+        "**Instructions** (objdump mnemonic count) are totals "
         "for the generated code of the all-features `benchmark.emb` fixture. **`Large Ok()`** / "
         "**`Disj Ok()`** are the sizes (bytes) of the optimized `LargeConditionals` and "
         "`DisjunctionConditionals` validation methods, highlights. "
