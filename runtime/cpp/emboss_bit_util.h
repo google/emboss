@@ -18,6 +18,7 @@
 #define EMBOSS_RUNTIME_CPP_EMBOSS_BIT_UTIL_H_
 
 #include <cstdint>
+#include <limits>
 #include <type_traits>
 
 #include "runtime/cpp/emboss_defines.h"
@@ -56,10 +57,21 @@ inline constexpr ::std::uint64_t ByteSwap(::std::uint64_t x) {
 #endif
 }
 
+#if EMBOSS_HAS_INT128
+inline constexpr EMBOSS_UINT128_T ByteSwap(EMBOSS_UINT128_T x) {
+  return (static_cast<EMBOSS_UINT128_T>(
+              ByteSwap(static_cast</**/ ::std::uint64_t>(x)))
+          << 64) |
+         ByteSwap(static_cast</**/ ::std::uint64_t>(x >> 64));
+}
+#endif  // EMBOSS_HAS_INT128
+
 // Masks the given value to the given number of bits.
 template <typename T>
 inline constexpr T MaskToNBits(T value, unsigned bits) {
-  static_assert(!::std::is_signed<T>::value,
+  // numeric_limits, not is_signed: the latter is false for __int128 under a
+  // strict -std=c++NN, which would silently disable this check.
+  static_assert(!::std::numeric_limits<T>::is_signed,
                 "MaskToNBits only works on unsigned values.");
   return bits < sizeof value * 8 ? value & ((static_cast<T>(1) << bits) - 1)
                                  : value;

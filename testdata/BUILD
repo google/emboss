@@ -61,6 +61,7 @@ filegroup(
         "imported_genfiles.emb",
         "importer.emb",
         "importer2.emb",
+        "int128_sizes.emb",
         "int_sizes.emb",
         "nested_structure.emb",
         "next_keyword.emb",
@@ -231,6 +232,13 @@ emboss_cc_library(
     name = "int_sizes_emboss",
     srcs = [
         "int_sizes.emb",
+    ],
+)
+
+emboss_cc_library(
+    name = "int128_sizes_emboss",
+    srcs = [
+        "int128_sizes.emb",
     ],
 )
 
