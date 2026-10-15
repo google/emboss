@@ -289,6 +289,7 @@ class GenericFloatsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !float_little_endian().IsAggregate() &&
                  !float_little_endian().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -333,6 +334,7 @@ class GenericFloatsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !float_big_endian().IsAggregate() &&
                  !float_big_endian().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -815,6 +817,7 @@ class GenericDoublesView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !double_little_endian().IsAggregate() &&
                  !double_little_endian().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -859,6 +862,7 @@ class GenericDoublesView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !double_big_endian().IsAggregate() &&
                  !double_big_endian().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {

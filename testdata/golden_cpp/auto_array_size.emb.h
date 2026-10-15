@@ -276,6 +276,7 @@ class GenericElementView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !a().IsAggregate() && !a().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -318,6 +319,7 @@ class GenericElementView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !b().IsAggregate() && !b().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -920,6 +922,7 @@ class GenericAutoSizeView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !array_size().IsAggregate() && !array_size().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -962,6 +965,7 @@ class GenericAutoSizeView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !four_byte_array().IsAggregate() && !four_byte_array().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -1004,6 +1008,7 @@ class GenericAutoSizeView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !four_struct_array().IsAggregate() &&
                  !four_struct_array().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -1048,6 +1053,7 @@ class GenericAutoSizeView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !dynamic_byte_array().IsAggregate() &&
                  !dynamic_byte_array().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -1092,6 +1098,7 @@ class GenericAutoSizeView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !dynamic_struct_array().IsAggregate() &&
                  !dynamic_struct_array().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {

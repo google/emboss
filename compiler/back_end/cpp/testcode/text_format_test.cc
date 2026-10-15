@@ -16,8 +16,11 @@
 #include <stdint.h>
 
 #include <array>
+#include <clocale>
+#include <cstring>
 #include <limits>
 #include <numeric>
+#include <string>
 
 #include "gtest/gtest.h"
 #include "runtime/cpp/emboss_text_util.h"
@@ -294,6 +297,108 @@ TEST(TextFormat, JsonNegativeInfinity) {
   view.f().Write(-::std::numeric_limits<float>::infinity());
   view.d().Write(::std::numeric_limits<double>::quiet_NaN());
   EXPECT_EQ("{\"f\":\"-Infinity\",\"d\":\"NaN\"}",
+            ::emboss::WriteToString(view, TextOutputOptions().Json(true)));
+}
+
+TEST(TextFormat, JsonMultilineNestedStructOutput) {
+  ::std::array<char, 6> values = {1, 2, 3, 4, 5, 6};
+  const auto view = MakeStructWithSkippedStructureFieldsView(&values);
+  // Nested structures are indented one level deeper than their parent, and the
+  // skipped field b does not leave a dangling comma behind.
+  EXPECT_EQ(
+      "{\n"
+      "  \"a\":{\n"
+      "    \"a\":1,\n"
+      "    \"b\":2\n"
+      "  },\n"
+      "  \"c\":{\n"
+      "    \"a\":5,\n"
+      "    \"b\":6\n"
+      "  }\n"
+      "}",
+      ::emboss::WriteToString(
+          view,
+          TextOutputOptions().Json(true).Multiline(true).WithIndent("  ")));
+}
+
+TEST(TextFormat, JsonMultilineArrayOutput) {
+  ::std::array<char, 4> values = {2, 7, 8, 9};
+  const auto view = JsonOptionalStructWriter(values.data(), values.size());
+  EXPECT_EQ(
+      "{\n"
+      "  \"count\":2,\n"
+      "  \"bytes\":[\n"
+      "    7,\n"
+      "    8\n"
+      "  ],\n"
+      "  \"tail\":9\n"
+      "}",
+      ::emboss::WriteToString(
+          view,
+          TextOutputOptions().Json(true).Multiline(true).WithIndent("  ")));
+}
+
+TEST(TextFormat, JsonEmptyArrayAndConditionalField) {
+  // Comments are enabled to check that the virtual field tail_present is still
+  // omitted: in text mode it would be written as a comment.
+  const auto options = TextOutputOptions().Json(true).WithComments(true);
+
+  // count == 0: the array is empty and the conditional field tail is absent.
+  ::std::array<char, 1> absent = {0};
+  EXPECT_EQ("{\"count\":0,\"bytes\":[]}",
+            ::emboss::WriteToString(
+                JsonOptionalStructWriter(absent.data(), absent.size()),
+                options));
+
+  // count == 1: one array element, and tail is present.
+  ::std::array<char, 3> present = {1, 7, 9};
+  EXPECT_EQ("{\"count\":1,\"bytes\":[7],\"tail\":9}",
+            ::emboss::WriteToString(
+                JsonOptionalStructWriter(present.data(), present.size()),
+                options));
+}
+
+TEST(TextFormat, JsonPartialOutputOmitsUnreadableFirstField) {
+  // second_byte is declared first but lies outside the one-byte buffer.  It
+  // must be omitted without a leading comma, and without the UNREADABLE
+  // comment that text mode would write, since comments are enabled.
+  ::std::array<char, 1> values = {10};
+  const auto view = JsonPartialStructWriter(values.data(), values.size());
+  EXPECT_EQ("{\"first_byte\":10}",
+            ::emboss::WriteToString(view, TextOutputOptions()
+                                              .Json(true)
+                                              .WithAllowPartialOutput(true)
+                                              .WithComments(true)));
+}
+
+TEST(TextFormat, JsonFloatDecimalPointIsLocaleIndependent) {
+  // Floating-point values are formatted with snprintf, which writes the
+  // decimal point of the current C locale.  JSON output must use "." anyway.
+  // Try a few locales that use ","; skip the test if none is installed.
+  struct LocaleRestorer {
+    ::std::string saved;
+    ~LocaleRestorer() { ::std::setlocale(LC_NUMERIC, saved.c_str()); }
+  };
+  const char *const saved = ::std::setlocale(LC_NUMERIC, nullptr);
+  ASSERT_NE(saved, nullptr);
+  const LocaleRestorer restorer{saved};
+  bool found_comma_locale = false;
+  for (const char *name : {"de_DE.UTF-8", "de_DE.utf8", "de_DE", "fr_FR.UTF-8",
+                           "fr_FR.utf8", "fr_FR"}) {
+    if (::std::setlocale(LC_NUMERIC, name) != nullptr &&
+        ::std::strcmp(::std::localeconv()->decimal_point, ",") == 0) {
+      found_comma_locale = true;
+      break;
+    }
+  }
+  if (!found_comma_locale) {
+    GTEST_SKIP() << "No locale with a \",\" decimal point is installed.";
+  }
+  ::std::array<char, 12> values = {};
+  auto view = MakeJsonFloatStructView(&values);
+  view.f().Write(0.5f);
+  view.d().Write(-0.25);
+  EXPECT_EQ("{\"f\":0.5,\"d\":-0.25}",
             ::emboss::WriteToString(view, TextOutputOptions().Json(true)));
 }
 

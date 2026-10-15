@@ -369,7 +369,8 @@ class GenericStructureWithConstantsView final {
     }
     bool emboss_reserved_local_wrote_field = false;
     if (has_ten().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           ten().IsAggregate() || ten().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -388,7 +389,8 @@ class GenericStructureWithConstantsView final {
     }
 
     if (has_twenty().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           twenty().IsAggregate() || twenty().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -407,7 +409,8 @@ class GenericStructureWithConstantsView final {
     }
 
     if (has_four_billion().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           four_billion().IsAggregate() || four_billion().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -426,7 +429,8 @@ class GenericStructureWithConstantsView final {
     }
 
     if (has_ten_billion().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           ten_billion().IsAggregate() || ten_billion().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -445,7 +449,8 @@ class GenericStructureWithConstantsView final {
     }
 
     if (has_minus_ten_billion().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           minus_ten_billion().IsAggregate() || minus_ten_billion().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -497,6 +502,7 @@ class GenericStructureWithConstantsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !value().IsAggregate() && !value().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -539,6 +545,7 @@ class GenericStructureWithConstantsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !alias_of_value().IsAggregate() && !alias_of_value().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -582,6 +589,7 @@ class GenericStructureWithConstantsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !alias_of_alias_of_value().IsAggregate() &&
                  !alias_of_alias_of_value().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -594,7 +602,8 @@ class GenericStructureWithConstantsView final {
     }
 
     if (has_alias_of_ten().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           alias_of_ten().IsAggregate() || alias_of_ten().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -613,7 +622,8 @@ class GenericStructureWithConstantsView final {
     }
 
     if (has_alias_of_alias_of_ten().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           alias_of_alias_of_ten().IsAggregate() ||
           alias_of_alias_of_ten().Ok()) {
@@ -1394,6 +1404,7 @@ class GenericStructureWithComputedValuesView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !value().IsAggregate() && !value().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -1404,7 +1415,8 @@ class GenericStructureWithComputedValuesView final {
     }
 
     if (has_doubled().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           doubled().IsAggregate() || doubled().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -1455,6 +1467,7 @@ class GenericStructureWithComputedValuesView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !plus_ten().IsAggregate() && !plus_ten().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -1497,6 +1510,7 @@ class GenericStructureWithComputedValuesView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !value2().IsAggregate() && !value2().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -1507,7 +1521,8 @@ class GenericStructureWithComputedValuesView final {
     }
 
     if (has_signed_doubled().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           signed_doubled().IsAggregate() || signed_doubled().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -1558,6 +1573,7 @@ class GenericStructureWithComputedValuesView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !signed_plus_ten().IsAggregate() && !signed_plus_ten().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -1568,7 +1584,8 @@ class GenericStructureWithComputedValuesView final {
     }
 
     if (has_product().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           product().IsAggregate() || product().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -2509,6 +2526,7 @@ class GenericStructureWithConditionalValueView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !x().IsAggregate() && !x().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -2519,7 +2537,8 @@ class GenericStructureWithConditionalValueView final {
     }
 
     if (has_two_x().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           two_x().IsAggregate() || two_x().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -2570,6 +2589,7 @@ class GenericStructureWithConditionalValueView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !x_plus_one().IsAggregate() && !x_plus_one().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -3243,6 +3263,7 @@ class GenericStructureWithValueInConditionView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !x().IsAggregate() && !x().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -3253,7 +3274,8 @@ class GenericStructureWithValueInConditionView final {
     }
 
     if (has_two_x().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           two_x().IsAggregate() || two_x().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -3304,6 +3326,7 @@ class GenericStructureWithValueInConditionView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !if_two_x_lt_100().IsAggregate() && !if_two_x_lt_100().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -3955,6 +3978,7 @@ class GenericStructureWithValuesInLocationView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !x().IsAggregate() && !x().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -3965,7 +3989,8 @@ class GenericStructureWithValuesInLocationView final {
     }
 
     if (has_two_x().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           two_x().IsAggregate() || two_x().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -4016,6 +4041,7 @@ class GenericStructureWithValuesInLocationView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !offset_two_x().IsAggregate() && !offset_two_x().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -4058,6 +4084,7 @@ class GenericStructureWithValuesInLocationView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !size_two_x().IsAggregate() && !size_two_x().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -4652,6 +4679,7 @@ class GenericStructureWithBoolValueView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !x().IsAggregate() && !x().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -4662,7 +4690,8 @@ class GenericStructureWithBoolValueView final {
     }
 
     if (has_x_is_ten().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           x_is_ten().IsAggregate() || x_is_ten().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -5265,6 +5294,7 @@ class GenericStructureWithEnumValueView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !x().IsAggregate() && !x().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -5275,7 +5305,8 @@ class GenericStructureWithEnumValueView final {
     }
 
     if (has_x_size().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           x_size().IsAggregate() || x_size().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -5815,6 +5846,7 @@ class GenericStructureWithBitsWithValueView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !b().IsAggregate() && !b().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -5825,7 +5857,8 @@ class GenericStructureWithBitsWithValueView final {
     }
 
     if (has_alias_of_b_sum().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           alias_of_b_sum().IsAggregate() || alias_of_b_sum().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -5876,6 +5909,7 @@ class GenericStructureWithBitsWithValueView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !alias_of_b_a().IsAggregate() && !alias_of_b_a().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -6409,6 +6443,7 @@ class GenericBitsWithValueView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !a().IsAggregate() && !a().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -6451,6 +6486,7 @@ class GenericBitsWithValueView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !b().IsAggregate() && !b().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -6461,7 +6497,8 @@ class GenericBitsWithValueView final {
     }
 
     if (has_sum().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           sum().IsAggregate() || sum().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -6984,6 +7021,7 @@ class GenericStructureUsingForeignConstantsView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !x().IsAggregate() && !x().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -6994,7 +7032,8 @@ class GenericStructureUsingForeignConstantsView final {
     }
 
     if (has_one_hundred().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           one_hundred().IsAggregate() || one_hundred().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -7502,6 +7541,7 @@ class GenericHeaderView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !size().IsAggregate() && !size().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -7544,6 +7584,7 @@ class GenericHeaderView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !message_id().IsAggregate() && !message_id().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -7995,6 +8036,7 @@ class GenericSubfieldOfAliasView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !header().IsAggregate() && !header().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -8037,6 +8079,7 @@ class GenericSubfieldOfAliasView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !h().IsAggregate() && !h().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -8079,6 +8122,7 @@ class GenericSubfieldOfAliasView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !size().IsAggregate() && !size().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -8559,6 +8603,7 @@ class GenericRestrictedAliasView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !a_b().IsAggregate() && !a_b().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -8601,6 +8646,7 @@ class GenericRestrictedAliasView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !alias_switch().IsAggregate() && !alias_switch().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -8643,6 +8689,7 @@ class GenericRestrictedAliasView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !a_b_alias().IsAggregate() && !a_b_alias().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -9116,6 +9163,7 @@ class GenericXView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !v().IsAggregate() && !v().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -9158,6 +9206,7 @@ class GenericXView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !y().IsAggregate() && !y().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -9690,6 +9739,7 @@ class GenericHasFieldView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !z().IsAggregate() && !z().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -9732,6 +9782,7 @@ class GenericHasFieldView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !x().IsAggregate() && !x().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -9774,6 +9825,7 @@ class GenericHasFieldView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !y().IsAggregate() && !y().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -9784,7 +9836,8 @@ class GenericHasFieldView final {
     }
 
     if (has_x_has_y().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           x_has_y().IsAggregate() || x_has_y().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -10387,6 +10440,7 @@ class GenericVirtualUnconditionallyUsesConditionalView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !x().IsAggregate() && !x().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -10429,6 +10483,7 @@ class GenericVirtualUnconditionallyUsesConditionalView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !xc().IsAggregate() && !xc().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -10439,7 +10494,8 @@ class GenericVirtualUnconditionallyUsesConditionalView final {
     }
 
     if (has_x_nor_xc().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           x_nor_xc().IsAggregate() || x_nor_xc().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -11028,6 +11084,7 @@ class GenericRView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !q().IsAggregate() && !q().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -11038,7 +11095,8 @@ class GenericRView final {
     }
 
     if (has_q_plus_bit_size().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           q_plus_bit_size().IsAggregate() || q_plus_bit_size().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -11538,6 +11596,7 @@ class GenericUsesSizeView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !r().IsAggregate() && !r().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -11548,7 +11607,8 @@ class GenericUsesSizeView final {
     }
 
     if (has_r_q_plus_byte_size().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           r_q_plus_byte_size().IsAggregate() || r_q_plus_byte_size().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -12087,6 +12147,7 @@ class GenericUsesExternalSizeView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !x().IsAggregate() && !x().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -12129,6 +12190,7 @@ class GenericUsesExternalSizeView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !y().IsAggregate() && !y().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -12606,6 +12668,7 @@ class GenericImplicitWriteBackView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !x().IsAggregate() && !x().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -12648,6 +12711,7 @@ class GenericImplicitWriteBackView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !x_plus_ten().IsAggregate() && !x_plus_ten().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -12690,6 +12754,7 @@ class GenericImplicitWriteBackView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !ten_plus_x().IsAggregate() && !ten_plus_x().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -12732,6 +12797,7 @@ class GenericImplicitWriteBackView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !x_minus_ten().IsAggregate() && !x_minus_ten().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -12774,6 +12840,7 @@ class GenericImplicitWriteBackView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !ten_minus_x().IsAggregate() && !ten_minus_x().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -12816,6 +12883,7 @@ class GenericImplicitWriteBackView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !ten_minus_x_plus_ten().IsAggregate() &&
                  !ten_minus_x_plus_ten().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {

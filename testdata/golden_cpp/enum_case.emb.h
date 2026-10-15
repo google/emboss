@@ -507,6 +507,7 @@ class GenericUseKCamelEnumCaseView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !v().IsAggregate() && !v().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -517,7 +518,8 @@ class GenericUseKCamelEnumCaseView final {
     }
 
     if (has_first().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           first().IsAggregate() || first().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -536,7 +538,8 @@ class GenericUseKCamelEnumCaseView final {
     }
 
     if (has_v_is_first().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           v_is_first().IsAggregate() || v_is_first().Ok()) {
         emboss_reserved_local_stream->Write(

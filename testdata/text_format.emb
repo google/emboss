@@ -14,7 +14,6 @@
 
 -- Structures used specifically to test text format input and output.
 
-[$default byte_order: "LittleEndian"]
 [(cpp) namespace: "emboss::test"]
 
 
@@ -58,10 +57,14 @@ struct JsonTestStruct:
 
   2  [+1]         UInt                   one_byte_uint
   3  [+2]         UInt                   two_byte_uint
+    [byte_order: "LittleEndian"]
   5  [+4]         UInt                   four_byte_uint
+    [byte_order: "LittleEndian"]
   9  [+8]         UInt                   eight_byte_uint
+    [byte_order: "LittleEndian"]
   17 [+10]        UInt:8[]               uint8_array
   27 [+20]        UInt:16[]              uint16_array
+    [byte_order: "LittleEndian"]
   47 [+8]         JsonTestArrayStruct[]  struct_array
 
 
@@ -77,11 +80,34 @@ enum JsonNarrowEnum:
 # its unnamed value is left as a bare number.
 struct JsonEnumStruct:
   0 [+8]  JsonTestEnum    wide_enum
+    [byte_order: "LittleEndian"]
   8 [+2]  JsonNarrowEnum  narrow_enum
+    [byte_order: "LittleEndian"]
 
 
 # Float and double fields, used to exercise JSON serialization of the special
 # values NaN, Infinity, and -Infinity as quoted strings.
 struct JsonFloatStruct:
   0 [+4]  Float  f
+    [byte_order: "LittleEndian"]
   4 [+8]  Float  d
+    [byte_order: "LittleEndian"]
+
+
+# Dynamically sized array, conditional field, and virtual field, used to
+# exercise JSON serialization of an empty array, an absent conditional field,
+# and (with comments enabled) the omission of virtual fields.
+struct JsonOptionalStruct:
+  0 [+1]      UInt      count
+  1 [+count]  UInt:8[]  bytes
+  if count > 0:
+    1+count [+1]  UInt  tail
+  let tail_present = count > 0
+
+
+# A field that is declared first but located last, used to check that JSON
+# output with allow_partial_output does not emit a leading comma (or an
+# UNREADABLE comment) when the first field in declaration order is unreadable.
+struct JsonPartialStruct:
+  1 [+1]  UInt  second_byte
+  0 [+1]  UInt  first_byte

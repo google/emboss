@@ -469,6 +469,7 @@ class GenericFooView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !status().IsAggregate() && !status().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -511,6 +512,7 @@ class GenericFooView final {
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !secondary_status().IsAggregate() &&
                  !secondary_status().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {

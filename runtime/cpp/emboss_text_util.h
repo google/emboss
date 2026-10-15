@@ -34,9 +34,10 @@
 
 namespace emboss {
 
-// Controls how large integers are serialized in JSON output.  JSON numbers are
-// 64-bit floating-point, so integers outside the range [-2^53, 2^53] may lose
-// precision when parsed by standard JSON parsers.
+// Controls how large integers are serialized in JSON output.  JSON itself does
+// not limit the precision of numbers, but many JSON parsers store them as
+// IEEE-754 doubles, so integers outside the range [-2^53, 2^53] may lose
+// precision when parsed.
 enum class JsonLargeIntegerHandling {
   // Serialize all integers as JSON numbers.  Integers outside [-2^53, 2^53] may
   // lose precision when parsed by JSON parsers that back numbers with IEEE-754
@@ -376,7 +377,7 @@ void WriteIntegerViewToTextStream(View *view, Stream *stream,
                                   const TextOutputOptions &options) {
   // In JSON mode with kLargeAsString, serialize integers larger than 32 bits
   // as quoted strings to avoid precision loss in JSON parsers.
-  bool quote_value =
+  const bool quote_value =
       options.json() &&
       options.json_large_integer_handling() ==
           JsonLargeIntegerHandling::kLargeAsString &&
@@ -581,6 +582,13 @@ bool ReadFloatFromTextStream(View *view, Stream *stream) {
   return view->TryToWrite(value);
 }
 
+// Returns true if `c` can appear in the output of printf("%g") for a finite
+// value other than as (part of) the current locale's decimal point.
+inline bool IsLocaleIndependentFloatChar(char c) {
+  return (c >= '0' && c <= '9') || c == '-' || c == '+' || c == 'e' ||
+         c == 'E';
+}
+
 template <class Stream, class Float>
 void WriteFloatToTextStream(Float n, Stream *stream,
                             const TextOutputOptions &options) {
@@ -665,6 +673,23 @@ void WriteFloatToTextStream(Float n, Stream *stream,
       FloatConstants<Float>::kPrintfPrecision(), static_cast<double>(n)));
   (void)snprintf_result;  // Unused if EMBOSS_CHECK_LE is compiled out.
   EMBOSS_CHECK_LE(snprintf_result, buffer.size());
+  if (options.json()) {
+    // snprintf writes the decimal point of the current C locale, which is ","
+    // in many locales, but JSON only allows ".".  The decimal point is the only
+    // run of characters in "%g" output that is not a digit, a sign, or an
+    // exponent marker, so find that run (if any) and replace it with ".".
+    char *point = &buffer[0];
+    while (*point != '\0' && IsLocaleIndependentFloatChar(*point)) ++point;
+    if (*point != '\0') {
+      char *after_point = point + 1;
+      while (*after_point != '\0' &&
+             !IsLocaleIndependentFloatChar(*after_point)) {
+        ++after_point;
+      }
+      *point = '.';
+      ::std::memmove(point + 1, after_point, ::std::strlen(after_point) + 1);
+    }
+  }
   stream->Write(&buffer[0]);
 
   // TODO(bolms): Support digit grouping.

@@ -364,6 +364,7 @@ ${write_fields}
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !${field_name}().IsAggregate() && !${field_name}().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -374,8 +375,11 @@ ${write_fields}
     }
 
 // ** write_read_only_field_to_text_stream ** //////////////////////////////////
+    // Read-only (virtual) fields are only ever written as comments, which JSON
+    // has no syntax for, so they are omitted entirely in JSON mode.
     if (has_${field_name}().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           ${field_name}().IsAggregate() || ${field_name}().Ok()) {
         emboss_reserved_local_stream->Write(
