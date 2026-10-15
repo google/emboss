@@ -41,9 +41,13 @@ import tempfile
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Common flags: C++17, per-function/data sections (so `size`/objdump are
-# comparable), and no exceptions/RTTI to match typical embedded builds.
+# comparable), no exceptions/RTTI to match typical embedded builds, and no
+# unwind tables: Berkeley `size` folds .eh_frame into its text column, and x86
+# emits unwind tables by default where arm-none-eabi and MicroBlaze do not, so
+# without this the "Code size" rows would not be comparable across targets.
 COMMON_FLAGS = (
-    "-std=c++17 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti"
+    "-std=c++17 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti "
+    "-fno-asynchronous-unwind-tables -fno-unwind-tables"
 )
 CONFIGS = {"Os": "-Os", "O2": "-O2", "O0": "-O0"}
 
@@ -375,7 +379,12 @@ def embossc(emb, out_include_dir):
 
 
 def text_bytes(obj):
-    """`.text` size of an object file, via host binutils `size`."""
+    """Code size of an object file: the text column of host binutils `size`.
+
+    Berkeley `size` sums the code and read-only data sections (.text, .rodata;
+    unwind tables are disabled by COMMON_FLAGS, so no .eh_frame), which is the
+    number that matters for a flash budget.
+    """
     out = run(["size", obj])
     return int(out.splitlines()[1].split()[0])
 
