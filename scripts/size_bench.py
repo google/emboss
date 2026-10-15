@@ -165,6 +165,23 @@ BENCHMARK_DRIVER = (
     "  }\n\n" + "".join(f"BENCH({v}, Make{v}View)\n" for v in BENCHMARK_VIEWS)
 )
 
+# Calls v.Ok() through a member-function pointer laundered by an empty asm, so
+# the compiler cannot inline the measured Ok() into the driver wrapper and must
+# emit it as its own symbol (which nm then sizes). Without this, a compiler that
+# inlines a single-call function -- MicroBlaze gcc at -O2 does, for the
+# Disjunction Ok() -- leaves no symbol and the per-symbol cell goes missing.
+# Only the call site is opaque; Ok()'s own body is compiled exactly as before.
+# Used by the MANYCOND and OK drivers below (which measure Ok() per symbol), not
+# by BENCHMARK_DRIVER (which measures total text, where inlining is real).
+_CALL_OK = (
+    "template <typename View>\n"
+    "static inline bool CallOk(const View &v) {\n"
+    "  bool (View::*ok)() const = &View::Ok;\n"
+    '  asm volatile("" : "+m"(ok));\n'
+    "  return (v.*ok)();\n"
+    "}\n\n"
+)
+
 # Highlight driver: forces the optimized many_conditionals Ok() methods to be
 # emitted. Both LargeConditionals (single-equality switch) and
 # DisjunctionConditionals (||-coalesced switch) are measured -- the two shapes
@@ -172,14 +189,15 @@ BENCHMARK_DRIVER = (
 MANYCOND_DRIVER = (
     "#include <cstdint>\n\n"
     '#include "testdata/many_conditionals.emb.h"\n\n'
-    "volatile bool emboss_result_sink;\n"
+    + _CALL_OK
+    + "volatile bool emboss_result_sink;\n"
     'extern "C" void large_ok(const unsigned char *buf) {\n'
     "  auto v = ::emboss::test::MakeLargeConditionalsView(buf, 100);\n"
-    "  emboss_result_sink = v.Ok();\n"
+    "  emboss_result_sink = CallOk(v);\n"
     "}\n"
     'extern "C" void disjunction_ok(const unsigned char *buf) {\n'
     "  auto v = ::emboss::test::MakeDisjunctionConditionalsView(buf, 16);\n"
-    "  emboss_result_sink = v.Ok();\n"
+    "  emboss_result_sink = CallOk(v);\n"
     "}\n"
 )
 MANYCOND_OK_SYMBOL = r"GenericLargeConditionalsView<.*>::Ok\(\) const$"
@@ -198,17 +216,18 @@ MANYCOND_DISJ_OK_SYMBOL = r"GenericDisjunctionConditionalsView<.*>::Ok\(\) const
 _OK_HDR = (
     "#include <cstdint>\n\n"
     '#include "testdata/many_conditionals.emb.h"\n\n'
-    "volatile bool emboss_ok_sink;\n\n"
+    + _CALL_OK
+    + "volatile bool emboss_ok_sink;\n\n"
 )
 _LARGE_READER = (
     'extern "C" void reader_ok(const unsigned char *buf) {\n'
-    "  emboss_ok_sink = ::emboss::test::MakeLargeConditionalsView(buf, 100).Ok();\n"
+    "  emboss_ok_sink = CallOk(::emboss::test::MakeLargeConditionalsView(buf, 100));\n"
     "}\n"
 )
 _LARGE_WRITER = (
     'extern "C" void writer_ok(unsigned char *a, unsigned char *b) {\n'
     "  auto va = ::emboss::test::MakeLargeConditionalsView(a, 100);\n"
-    "  emboss_ok_sink = va.Ok();\n"
+    "  emboss_ok_sink = CallOk(va);\n"
     "  va.CopyFrom(::emboss::test::MakeLargeConditionalsView(b, 100));\n"
     "}\n"
 )
@@ -220,7 +239,7 @@ OK_DRIVERS = {
     + (
         'extern "C" void residual_ok(const unsigned char *buf) {\n'
         "  emboss_ok_sink = "
-        "::emboss::test::MakeOuterGuardedUnionView(buf, 12).Ok();\n"
+        "CallOk(::emboss::test::MakeOuterGuardedUnionView(buf, 12));\n"
         "}\n"
     ),
 }
