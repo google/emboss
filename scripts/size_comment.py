@@ -39,11 +39,19 @@ def cell(rev, target, compiler, config):
     ) or {}
 
 
+# Float metrics (wall-clock seconds) jitter from run to run on shared runners.
+# A change smaller than this fraction of the baseline is shown as the bare
+# value, with no delta or icon, so the comment does not flap on noise.
+FLOAT_NOISE_FLOOR = 0.02
+
+
 def delta(base_v, head_v, unit=""):
-    """'1234 B  🟢−5' style cell: head value + colored delta (smaller is better).
+    """'1234 B  🟢-5 (-0.4%)' style cell: head value + colored delta (smaller
+    is better).
 
     Handles both integer metrics (bytes, instructions) and float metrics
-    (wall-clock seconds).
+    (wall-clock seconds). A zero baseline gets "(new)" in place of a
+    percentage; a float change within FLOAT_NOISE_FLOOR is not flagged.
     """
     if head_v is None:
         return "—"
@@ -54,7 +62,9 @@ def delta(base_v, head_v, unit=""):
     d = head_v - base_v
     if d == 0:
         return s
-    pct = f"{d / base_v * 100:+.1f}%" if base_v else ""
+    if flt and base_v and abs(d) < FLOAT_NOISE_FLOOR * abs(base_v):
+        return s
+    pct = f"{d / base_v * 100:+.1f}%" if base_v else "new"
     dstr = f"{d:+.4f}" if flt else f"{d:+d}"
     icon = "🟢" if d < 0 else "🔴"
     return f"{s}  {icon}{dstr} ({pct})"
@@ -126,7 +136,7 @@ def speed_table(base, head):
 
 def verdict(base, head):
     """Headline focused on `.text` (size) regressions, with a worst-case call-out."""
-    worst = None  # (delta_bytes, pct, label)
+    worst = None  # (delta_bytes, base_bytes, label)
     improved = 0
     for target, compiler in rows(base, head):
         for config in CONFIGS:
@@ -141,14 +151,14 @@ def verdict(base, head):
                 if bv is None or hv is None:
                     continue
                 if hv > bv:
-                    pct = (hv - bv) / bv * 100 if bv else 0.0
                     if worst is None or (hv - bv) > worst[0]:
-                        worst = (hv - bv, pct, f"{target} {compiler} {label} -{config}")
+                        worst = (hv - bv, bv, f"{target} {compiler} {label} -{config}")
                 elif hv < bv:
                     improved += 1
     if worst:
-        d, pct, lbl = worst
-        return f"⚠️ largest size regression +{d} B ({pct:+.1f}%) on {lbl}"
+        d, bv, lbl = worst
+        pct = f"{d / bv * 100:+.1f}%" if bv else "new"
+        return f"⚠️ largest size regression +{d} B ({pct}) on {lbl}"
     if improved:
         return f"🟢 smaller in {improved} place(s), none larger"
     return "✅ no change"
