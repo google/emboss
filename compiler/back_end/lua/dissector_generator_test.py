@@ -649,6 +649,26 @@ class BcdTest(unittest.TestCase):
         self.assertIn("if val_Msg_n ~= nil and (val_Msg_n == 1) then", text)
 
 
+class FloatTest(unittest.TestCase):
+
+    def test_float_fields_take_no_base_or_mask(self):
+        text, errors = _generate(
+            '[expected_back_ends: "cpp, wireshark"]\n'
+            '[$default byte_order: "BigEndian"]\n'
+            "struct Flt:\n"
+            "  0 [+4]  Float  x\n"
+            "    -- The x value.\n"
+            "  4 [+8]  Float  y\n"
+        )
+        self.assertEqual([], errors)
+        # `ProtoField.float(abbr, name, valuestring, desc)`: a base argument
+        # in the third position makes Wireshark reject the field.
+        self.assertIn(
+            'ProtoField.float("emboss_m.Flt.x", "x", nil, "The x value.")', text
+        )
+        self.assertIn('ProtoField.double("emboss_m.Flt.y", "y")', text)
+
+
 _FM = dissector_generator.ir_data.FunctionMapping
 
 

@@ -534,6 +534,16 @@ class _FieldEmitter:
         argument further to the right is supplied.
         """
         parts = [_quote(proto_filter), _quote(display_name)]
+        if ws_type in ("float", "double"):
+            # The floating-point constructors take no base or mask:
+            # `ProtoField.float(abbr, name, valuestring, desc)`.
+            assert not valuestring and not mask
+            if description:
+                parts += ["nil", _quote(description)]
+            self._emit_field_decl(
+                key, "ProtoField.{}({})".format(ws_type, ", ".join(parts))
+            )
+            return
         need_base = bool(valuestring) or bool(mask) or bool(description)
         need_valuestring = bool(mask) or bool(description) or bool(valuestring)
         need_mask = bool(mask) or bool(description)
