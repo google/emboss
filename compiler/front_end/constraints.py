@@ -180,7 +180,12 @@ def _check_that_enum_values_are_representable(
     else:
         enum_range = (0, 2**max_enum_size - 1)
     for value in enum_type.value:
-        values.append((ir_util.constant_value(value.value), value))
+        numeric_value = ir_util.constant_value(value.value)
+        if numeric_value is None:
+            # Division by a constant zero; reported separately by
+            # _check_division_and_modulus_have_nonzero_divisors.
+            continue
+        values.append((numeric_value, value))
     out_of_range = [v for v in values if not enum_range[0] <= v[0] <= enum_range[1]]
     # If all values are in range, this loop will have zero iterations.
     for value in out_of_range:
@@ -710,6 +715,52 @@ def _check_bounds_on_runtime_integer_expressions(
     errors += _integer_bounds_errors_for_expression(expression, source_file_name)
 
 
+def _check_division_and_modulus_have_nonzero_divisors(
+    expression, source_file_name, errors
+):
+    """Rejects `l // r` and `l % r` whose divisor range could contain zero.
+
+    This is the initial, strict rollout of `//` and `%`: because the expression
+    type system does not yet track an `undefined` value, the only sound option
+    for a divisor whose range includes zero is to reject it at compile time.  A
+    later change will loosen this to allow a *possibly*-zero divisor to propagate
+    an `undefined` value, keeping the error only for a *provably*-zero divisor.
+    """
+    if expression.which_expression != "function":
+        return
+    op = expression.function.function
+    if op not in (
+        ir_data.FunctionMapping.FLOOR_DIVISION,
+        ir_data.FunctionMapping.MODULUS,
+    ):
+        return
+    divisor = expression.function.args[1]
+    if divisor.type.which_type != "integer":
+        return
+    rmin = divisor.type.integer.minimum_value
+    rmax = divisor.type.integer.maximum_value
+    rmin_le_zero = rmin == "-infinity" or int(rmin) <= 0
+    rmax_ge_zero = rmax == "infinity" or int(rmax) >= 0
+    if rmin_le_zero and rmax_ge_zero:
+        op_text = expression.function.function_name.text
+        errors.append(
+            [
+                error.error(
+                    source_file_name,
+                    expression.source_location,
+                    "Right argument of '{}' cannot be zero.".format(op_text),
+                ),
+                error.note(
+                    source_file_name,
+                    divisor.source_location,
+                    "Divisor range is {} to {}, which includes zero.".format(
+                        rmin, rmax
+                    ),
+                ),
+            ]
+        )
+
+
 def _attribute_in_attribute_action(a):
     return {"in_attribute": a}
 
@@ -817,6 +868,12 @@ def check_constraints(ir):
         incidental_actions={ir_data.Attribute: _attribute_in_attribute_action},
         skip_descendants_of={ir_data.EnumValue, ir_data.Expression},
         parameters={"errors": errors, "in_attribute": None},
+    )
+    traverse_ir.fast_traverse_ir_top_down(
+        ir,
+        [ir_data.Expression],
+        _check_division_and_modulus_have_nonzero_divisors,
+        parameters={"errors": errors},
     )
     traverse_ir.fast_traverse_ir_top_down(
         ir,

@@ -329,6 +329,95 @@ class ComputeConstantsTest(unittest.TestCase):
         self.assertEqual("5", start.function.args[1].type.integer.modular_value)
         self.assertEqual("infinity", start.type.integer.modulus)
 
+    def _virtual_fields(self, ir):
+        return {
+            f.name.name.text: f.read_transform.type.integer
+            for f in ir.module[0].type[0].structure.field
+            if f.read_transform is not None
+            and f.read_transform.type.which_type == "integer"
+        }
+
+    def test_constant_floor_division(self):
+        # Sign table from the division_and_modulus design doc:
+        # +8 // +3 == 2, +8 // -3 == -3, -8 // +3 == -3, -8 // -3 == 2.
+        ir = self._make_ir(
+            "struct Foo:\n"
+            "  let q_pp = 8 // 3\n"
+            "  let q_pn = 8 // (0-3)\n"
+            "  let q_np = (0-8) // 3\n"
+            "  let q_nn = (0-8) // (0-3)\n"
+        )
+        self.assertEqual([], expression_bounds.compute_constants(ir))
+        fields = self._virtual_fields(ir)
+        for name, expected in (
+            ("q_pp", "2"),
+            ("q_pn", "-3"),
+            ("q_np", "-3"),
+            ("q_nn", "2"),
+        ):
+            self.assertEqual(expected, fields[name].modular_value, name)
+            self.assertEqual("infinity", fields[name].modulus, name)
+            self.assertEqual(expected, fields[name].minimum_value, name)
+            self.assertEqual(expected, fields[name].maximum_value, name)
+
+    def test_constant_modulus(self):
+        # +8 % +3 == 2, +8 % -3 == -1, -8 % +3 == 1, -8 % -3 == -2.
+        ir = self._make_ir(
+            "struct Foo:\n"
+            "  let m_pp = 8 % 3\n"
+            "  let m_pn = 8 % (0-3)\n"
+            "  let m_np = (0-8) % 3\n"
+            "  let m_nn = (0-8) % (0-3)\n"
+        )
+        self.assertEqual([], expression_bounds.compute_constants(ir))
+        fields = self._virtual_fields(ir)
+        for name, expected in (
+            ("m_pp", "2"),
+            ("m_pn", "-1"),
+            ("m_np", "1"),
+            ("m_nn", "-2"),
+        ):
+            self.assertEqual(expected, fields[name].modular_value, name)
+            self.assertEqual("infinity", fields[name].modulus, name)
+
+    def test_non_constant_floor_division_by_constant(self):
+        ir = self._make_ir(
+            "struct Foo:\n" "  0 [+1]  UInt  x\n" "  let half = x // 2\n"
+        )
+        self.assertEqual([], expression_bounds.compute_constants(ir))
+        half = self._virtual_fields(ir)["half"]
+        # x in [0, 255], so x // 2 in [0, 127].
+        self.assertEqual("0", half.minimum_value)
+        self.assertEqual("127", half.maximum_value)
+
+    def test_non_constant_floor_division_by_negative_constant(self):
+        ir = self._make_ir(
+            "struct Foo:\n" "  0 [+1]  UInt  x\n" "  let q = x // (0-2)\n"
+        )
+        self.assertEqual([], expression_bounds.compute_constants(ir))
+        q = self._virtual_fields(ir)["q"]
+        # x in [0, 255], flooring: 255 // -2 == -128, 0 // -2 == 0.
+        self.assertEqual("-128", q.minimum_value)
+        self.assertEqual("0", q.maximum_value)
+
+    def test_non_constant_modulus_by_constant(self):
+        ir = self._make_ir("struct Foo:\n" "  0 [+1]  UInt  x\n" "  let r = x % 4\n")
+        self.assertEqual([], expression_bounds.compute_constants(ir))
+        r = self._virtual_fields(ir)["r"]
+        # x % 4 in [0, 3] regardless of x, since the divisor is positive.
+        self.assertEqual("0", r.minimum_value)
+        self.assertEqual("3", r.maximum_value)
+
+    def test_non_constant_modulus_by_negative_constant(self):
+        ir = self._make_ir(
+            "struct Foo:\n" "  0 [+1]  UInt  x\n" "  let r = x % (0-4)\n"
+        )
+        self.assertEqual([], expression_bounds.compute_constants(ir))
+        r = self._virtual_fields(ir)["r"]
+        # Flooring modulus by a negative divisor yields a result in [-3, 0].
+        self.assertEqual("-3", r.minimum_value)
+        self.assertEqual("0", r.maximum_value)
+
     def test_nested_constant_expression(self):
         ir = self._make_ir(
             "struct Foo:\n" "  if 7*(3+1) == 28:\n" "    0 [+1]  UInt  x\n"

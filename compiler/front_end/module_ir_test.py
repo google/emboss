@@ -3881,6 +3881,59 @@ enum Foo:
     }
   ]
 }
+===
+floor division and modulus operators
+---
+struct Foo:
+  0 [+8//3]    UInt  x
+  1 [+8%3]     UInt  y
+  2 [+2*3*4]   UInt  z
+  3 [+8//3%2]  UInt  w
+---
+{
+  "type": [
+    {
+      "structure": {
+        "field": [
+          {
+            "name": { "name": { "text": "x" } },
+            "location": {
+              "size": {
+                "function": {
+                  "function": "FLOOR_DIVISION",
+                  "function_name": { "text": "//" }
+                }
+              }
+            }
+          },
+          {
+            "name": { "name": { "text": "y" } },
+            "location": {
+              "size": {
+                "function": {
+                  "function": "MODULUS",
+                  "function_name": { "text": "%" }
+                }
+              }
+            }
+          },
+          {
+            "name": { "name": { "text": "z" } },
+            "location": {
+              "size": { "function": { "function": "MULTIPLICATION" } }
+            }
+          },
+          {
+            "name": { "name": { "text": "w" } },
+            "location": {
+              "size": { "function": { "function": "MODULUS" } }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
 
 """
 
@@ -3906,6 +3959,34 @@ struct Foo:
     enum Bar:
       X = 1
     0 [+2]  Bar  bar
+===
+star cannot be followed by floor-division without parentheses
+---
+//
+---
+struct Foo:
+  0 [+a*b//c]  UInt  x
+===
+floor-division cannot be followed by star without parentheses
+---
+*
+---
+struct Foo:
+  0 [+a//b*c]  UInt  x
+===
+star cannot be followed by modulus without parentheses
+---
+%
+---
+struct Foo:
+  0 [+a*b%c]  UInt  x
+===
+modulus cannot be followed by star without parentheses
+---
+*
+---
+struct Foo:
+  0 [+a%b*c]  UInt  x
 """
 
 
