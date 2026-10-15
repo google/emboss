@@ -627,6 +627,30 @@ TEST(NullByteOrderer, Methods) {
                    .Ok()));
 }
 
+TEST(NullByteOrderer, SliceAtEndOfBufferIsEmpty) {
+  // A slice taken at or past the end of a buffer is non-null but has size 0.
+  // NullByteOrderer must report that size (rather than "1 if Ok()"), or a
+  // one-byte field just past the end of a truncated structure would look
+  // complete to BitBlock and be read out of bounds.
+  ::std::uint8_t bytes[] = {0x5a};
+  const auto whole = ReadOnlyContiguousBuffer{bytes, sizeof bytes};
+  const auto at_end = whole.GetOffsetStorage<1, 0>(1, 1);
+  ASSERT_TRUE(at_end.Ok());
+  ASSERT_EQ(0U, at_end.SizeInBytes());
+  EXPECT_EQ(0U,
+            NullByteOrderer<ReadOnlyContiguousBuffer>{at_end}.SizeInBytes());
+  EXPECT_FALSE((::emboss::support::BitBlock<
+                NullByteOrderer<ReadOnlyContiguousBuffer>, 8>{at_end}
+                    .Ok()));
+  // A one-byte slice inside the buffer is still a complete byte.
+  const auto first = whole.GetOffsetStorage<1, 0>(0, 1);
+  EXPECT_EQ(1U,
+            NullByteOrderer<ReadOnlyContiguousBuffer>{first}.SizeInBytes());
+  EXPECT_TRUE((::emboss::support::BitBlock<
+               NullByteOrderer<ReadOnlyContiguousBuffer>, 8>{first}
+                   .Ok()));
+}
+
 TEST(BitBlock, BigEndianMethods) {
   ::std::uint8_t bytes[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
                             0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10};

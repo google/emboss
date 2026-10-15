@@ -856,7 +856,11 @@ class NullByteOrderer final {
   NullByteOrderer &operator=(const NullByteOrderer &other) = default;
 
   bool Ok() const { return buffer_.Ok(); }
-  ::std::size_t SizeInBytes() const { return Ok() ? 1 : 0; }
+  // Reports the underlying buffer's size rather than "1 if Ok()": a slice taken
+  // at or past the end of a storage region is non-null but empty, and must not
+  // count as a byte, or BitBlock::Ok() would treat a one-byte field just past
+  // the end of a truncated structure as complete.
+  ::std::size_t SizeInBytes() const { return buffer_.SizeInBytes(); }
 
   template </**/ ::std::size_t kBits>
   typename LeastWidthInteger<kBits>::Unsigned ReadUInt() const {
