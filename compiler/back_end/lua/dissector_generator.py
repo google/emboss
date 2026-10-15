@@ -173,6 +173,35 @@ def _proto_var(protocol_name):
 _STRUCT_PARAMS = "buffer, pinfo, tree, offset"
 _BITS_PARAMS = "buffer, pinfo, tree, offset, little_endian"
 
+# Emitted once, when some byte-struct field is a `Bcd`.  Wireshark has no
+# packed-BCD field type, so the value is decoded here and added explicitly;
+# the ProtoField itself is a plain unsigned integer so it can be filtered on.
+_BCD_HELPER = """\
+-- Adds the packed-BCD `range` (two decimal digits per byte, most significant
+-- digit first) to `tree` as `field`, and returns its value.  If a nibble isn't
+-- a decimal digit, the raw bytes are added instead and the result is nil.
+local function add_bcd(tree, field, range, little_endian)
+  local len = range:len()
+  local value = 0
+  for i = 0, len - 1 do
+    local byte = range:range(little_endian and (len - 1 - i) or i, 1):uint()
+    local high, low = math.floor(byte / 16), byte % 16
+    if high > 9 or low > 9 then
+      tree:add(field, range):append_text(" [invalid BCD]")
+      return nil
+    end
+    value = value * 100 + high * 10 + low
+  end
+  if len > 4 then
+    -- A uint64 field needs a UInt64 object rather than a Lua number.
+    local low32 = value % 4294967296
+    tree:add(field, range, UInt64(low32, math.floor((value - low32) / 4294967296)))
+  else
+    tree:add(field, range, value)
+  end
+  return value
+end"""
+
 
 _PRIMITIVE_TYPE_NAMES = ("UInt", "Int", "Bcd", "Flag", "Float")
 
@@ -336,16 +365,44 @@ def _value_reader(primitive, size, byte_order):
     Only fixed-size integer-like fields of 1-4 bytes are capturable; Wireshark's
     `TvbRange:uint`/`:int` accessors return a plain Lua number for those widths.
     Wider or non-integer fields return None and simply aren't captured, so any
-    expression referring to them is skipped rather than mistranslated.
+    expression referring to them is skipped rather than mistranslated.  (`Bcd`
+    values are captured from `add_bcd` instead; see _emit_primitive_field.)
     """
     if size is None or size < 1 or size > 4:
         return None
     little_endian = byte_order == "LittleEndian"
     if primitive == "Int":
         return "le_int" if little_endian else "int"
-    if primitive in ("UInt", "Bcd", "Enum"):
+    if primitive in ("UInt", "Enum"):
         return "le_uint" if little_endian else "uint"
     return None
+
+
+def _field_references(field):
+    """Returns the hashable names of the sibling fields `field` depends on.
+
+    These are the single-segment field references in its existence condition,
+    location and (for arrays) element count, in order of first appearance.
+    """
+    refs = []
+    _collect_field_references(field.existence_condition, refs)
+    # Virtual fields have no physical location, and aren't emitted.
+    if field.location is not None:
+        _collect_field_references(field.location.start, refs)
+        _collect_field_references(field.location.size, refs)
+    if (
+        field.type is not None
+        and field.type.has_field("array_type")
+        and (field.type.array_type.which_size == "element_count")
+    ):
+        _collect_field_references(field.type.array_type.element_count, refs)
+    keys = []
+    for ref in refs:
+        if len(ref.path) == 1:
+            key = ir_util.hashable_form_of_reference(ref.path[0])
+            if key not in keys:
+                keys.append(key)
+    return keys
 
 
 class _FieldEmitter:
@@ -369,8 +426,14 @@ class _FieldEmitter:
         #                   sibling's condition / location / array-count.
         #   _value_locals:  hashable canonical name -> Lua local holding the
         #                   captured runtime value of that field.
+        #   _nullable_locals: the value locals that may hold nil at run time
+        #                   (a `Bcd` that didn't decode); fields depending on
+        #                   one are dissected only when it isn't nil.
         self._referenced = set()
         self._value_locals = {}
+        self._nullable_locals = set()
+        # Whether the generated script needs the add_bcd helper.
+        self.needs_bcd_helper = False
         # _type_key() of each anonymous `bits` -> byte size of the struct field
         # holding it.  Filled in while visiting the enclosing struct, which
         # _all_types() always yields before the anonymous type itself.
@@ -394,22 +457,17 @@ class _FieldEmitter:
         """Collects fields referenced by sibling conditions/locations/counts."""
         referenced = set()
         for field in struct.field:
-            refs = []
-            _collect_field_references(field.existence_condition, refs)
-            # Virtual fields have no physical location, and aren't emitted.
-            if field.location is not None:
-                _collect_field_references(field.location.start, refs)
-                _collect_field_references(field.location.size, refs)
-            if (
-                field.type is not None
-                and field.type.has_field("array_type")
-                and (field.type.array_type.which_size == "element_count")
-            ):
-                _collect_field_references(field.type.array_type.element_count, refs)
-            for ref in refs:
-                if len(ref.path) == 1:
-                    referenced.add(ir_util.hashable_form_of_reference(ref.path[0]))
+            referenced.update(_field_references(field))
         return referenced
+
+    def _nil_guards(self, field):
+        """Returns Lua conditions requiring `field`'s nullable inputs be set."""
+        guards = []
+        for key in _field_references(field):
+            var = self._value_locals.get(key)
+            if var in self._nullable_locals and var + " ~= nil" not in guards:
+                guards.append(var + " ~= nil")
+        return guards
 
     def _maybe_capture_value(
         self, field, primitive, start_lua, size, byte_order, body_lines
@@ -477,6 +535,7 @@ class _FieldEmitter:
         # conditional / dynamic fields produce exactly the same output as before.
         self._referenced = self._compute_referenced_fields(struct)
         self._value_locals = {}
+        self._nullable_locals = set()
         if type_def.addressable_unit == ir_data.AddressableUnit.BIT:
             self._emit_bits_type(type_def)
             return
@@ -540,6 +599,15 @@ class _FieldEmitter:
                     )
                 )
                 return
+        # A value that failed to decode (so far only an invalid `Bcd`) leaves
+        # its local nil; a field whose presence or placement depends on one is
+        # dissected only when the value is known.
+        guards = self._nil_guards(field)
+        if guards:
+            if conditional:
+                guards.append(condition_lua)
+            condition_lua = " and ".join(guards)
+            conditional = True
 
         # Field location.  A constant start renders to an integer literal, so
         # fixed-offset fields produce byte-identical output to the prior
@@ -574,6 +642,15 @@ class _FieldEmitter:
                 self._maybe_capture_value(
                     field, capture_primitive, start_lua, size, byte_order, body_lines
                 )
+        # A `Bcd` is captured from the decoded value add_bcd returns, which is
+        # nil for an invalid encoding.
+        value_var = None
+        if primitive == "Bcd" and not conditional and size is not None:
+            field_key = ir_util.hashable_form_of_reference(field.name)
+            if field_key in self._referenced:
+                value_var = "val_" + _qualified_lua_name(field.name.canonical_name)
+                self._value_locals[field_key] = value_var
+                self._nullable_locals.add(value_var)
 
         field_lines = []
         if type_ir.has_field("array_type"):
@@ -605,6 +682,7 @@ class _FieldEmitter:
                     doc,
                     byte_order,
                     field_lines,
+                    value_var,
                 )
         elif referenced_type is None:
             field_lines.append(
@@ -660,6 +738,7 @@ class _FieldEmitter:
         doc,
         byte_order,
         body_lines,
+        value_var=None,
     ):
         size_in_bits = size * 8
         if primitive == "Flag":
@@ -675,6 +754,19 @@ class _FieldEmitter:
             field_name,
             description=doc or None,
         )
+        if primitive == "Bcd":
+            self.needs_bcd_helper = True
+            call = "add_bcd(subtree, f[{key}], buffer(offset + {start}, {size}), {le})"
+            call = call.format(
+                key=_quote(key),
+                start=start,
+                size=size,
+                le=_lua_bool(byte_order == "LittleEndian"),
+            )
+            if value_var:
+                call = "local {} = {}".format(value_var, call)
+            body_lines.append(call)
+            return
         body_lines.append(
             "subtree:{call}(f[{key}], buffer(offset + {start}, {size}))".format(
                 call=_add_call(byte_order),
@@ -818,15 +910,27 @@ class _FieldEmitter:
                 description=doc or None,
             )
             body_lines.append("for i = 0, {n} - 1 do".format(n=count_lua))
-            body_lines.append(
-                "  subtree:{call}(f[{key}], buffer(offset + {start} + i * "
-                "{esize}, {esize}))".format(
-                    call=_add_call(byte_order),
-                    key=_quote(key),
-                    start=start,
-                    esize=element_size,
+            if primitive == "Bcd":
+                self.needs_bcd_helper = True
+                body_lines.append(
+                    "  add_bcd(subtree, f[{key}], buffer(offset + {start} + i * "
+                    "{esize}, {esize}), {le})".format(
+                        key=_quote(key),
+                        start=start,
+                        esize=element_size,
+                        le=_lua_bool(byte_order == "LittleEndian"),
+                    )
                 )
-            )
+            else:
+                body_lines.append(
+                    "  subtree:{call}(f[{key}], buffer(offset + {start} + i * "
+                    "{esize}, {esize}))".format(
+                        call=_add_call(byte_order),
+                        key=_quote(key),
+                        start=start,
+                        esize=element_size,
+                    )
+                )
             body_lines.append("end")
             return
 
@@ -1198,6 +1302,10 @@ def generate_dissector(ir):
         for key, _ in emitter.field_decls:
             lines.append("  f[{}],".format(_quote(key)))
         lines.append("}")
+        lines.append("")
+
+    if emitter.needs_bcd_helper:
+        lines.extend(_BCD_HELPER.splitlines())
         lines.append("")
 
     # All dissect functions live in one table, so dissectors may reference

@@ -110,6 +110,26 @@ struct Pkt:
     0 [+8]  UInt  x
 """,
     ),
+    # Packed BCD, including a BCD length that other fields depend on.
+    "bcd": (
+        13373,
+        """\
+[expected_back_ends: "cpp, wireshark"]
+[$default byte_order: "BigEndian"]
+[(wireshark) protocol: "bcdproto"]
+[(wireshark) register_on: "udp.port == 13373"]
+
+struct Bcdm:
+  0 [+1]    Bcd        n
+  1 [+1]    UInt       a
+  if 0 < a < 5:
+    2 [+1]  UInt       chained
+  3 [+n]    UInt:8[n]  data
+  3+n [+5]  Bcd        wide
+  8+n [+2]  Bcd        le_val
+    [byte_order: "LittleEndian"]
+""",
+    ),
 }
 
 
@@ -210,6 +230,38 @@ class TsharkSmokeTest(unittest.TestCase):
         # Bit 0 of a 4-byte big-endian field is in its last byte.
         out = self._dissect("partial_bits", ["01", "02", "03", "04"])
         self.assertIn("= x: 4", out)
+
+    def test_bcd_values_are_decoded(self):
+        # n = 12 (0x12 in BCD), a = 3, chained = 5, twelve data bytes, then
+        # the 5-byte BCD 1234567890 and the little-endian 2-byte BCD 1234.
+        out = self._dissect(
+            "bcd",
+            ["12", "03", "05"]
+            + ["{:02x}".format(i) for i in range(1, 13)]
+            + ["12", "34", "56", "78", "90", "34", "12"],
+        )
+        self.assertIn("n: 12", out)
+        self.assertIn("a: 3", out)
+        self.assertIn("chained: 5", out)
+        self.assertEqual(12, out.count("data: "))
+        self.assertIn("data: 12", out)
+        self.assertIn("wide: 1234567890", out)
+        self.assertIn("le_val: 1234", out)
+
+    def test_invalid_bcd_is_flagged_and_dependents_are_skipped(self):
+        # 0x1a is not valid BCD, so `n` is unknown: the fields whose position
+        # or count depend on it are left out, while independent ones remain.
+        out = self._dissect(
+            "bcd",
+            ["1a", "03", "05"]
+            + ["{:02x}".format(i) for i in range(1, 13)]
+            + ["12", "34", "56", "78", "90", "34", "12"],
+        )
+        self.assertIn("n: 26 [invalid BCD]", out)
+        self.assertIn("chained: 5", out)
+        self.assertNotIn("data: ", out)
+        self.assertNotIn("wide: ", out)
+        self.assertNotIn("le_val: ", out)
 
 
 if __name__ == "__main__":

@@ -489,6 +489,72 @@ class BitsTest(unittest.TestCase):
         self.assertIn("dissect.Pkt(buffer, pinfo, tree, 0)", text)
 
 
+class BcdTest(unittest.TestCase):
+    """`Bcd` fields are decoded by the emitted add_bcd helper."""
+
+    _EMB = (
+        '[expected_back_ends: "cpp, wireshark"]\n'
+        '[$default byte_order: "BigEndian"]\n'
+        "struct Msg:\n"
+        "  0 [+1]    Bcd        n\n"
+        "  1 [+2]    Bcd        plain\n"
+        '    [byte_order: "LittleEndian"]\n'
+        "  3 [+n]    UInt:8[n]  data\n"
+        "  3+n [+2]  Bcd:8[2]   pair\n"
+        "  if n == 1:\n"
+        "    5+n [+1]  UInt     one\n"
+    )
+
+    def test_helper_is_emitted_once_and_only_when_needed(self):
+        text, errors = _generate(self._EMB)
+        self.assertEqual([], errors)
+        self.assertEqual(1, text.count("local function add_bcd("))
+        text, errors = _generate(
+            '[expected_back_ends: "cpp, wireshark"]\n'
+            '[$default byte_order: "BigEndian"]\n'
+            "struct Msg:\n"
+            "  0 [+1]  UInt  x\n"
+        )
+        self.assertEqual([], errors)
+        self.assertNotIn("add_bcd", text)
+
+    def test_fields_are_added_through_the_helper(self):
+        text, errors = _generate(self._EMB)
+        self.assertEqual([], errors)
+        # The ProtoField stays an unsigned integer (so it can be filtered on);
+        # the helper passes the decoded value explicitly.
+        self.assertIn(
+            'f["Msg.plain"] = ProtoField.uint16("emboss_m.Msg.plain", "plain")', text
+        )
+        self.assertIn(
+            'add_bcd(subtree, f["Msg.plain"], buffer(offset + 1, 2), true)', text
+        )
+        self.assertIn(
+            'add_bcd(subtree, f["Msg.pair"], buffer(offset + (3 + val_Msg_n) + '
+            "i * 1, 1), false)",
+            text,
+        )
+
+    def test_referenced_value_comes_from_the_helper_and_is_nil_guarded(self):
+        text, errors = _generate(self._EMB)
+        self.assertEqual([], errors)
+        self.assertIn(
+            'local val_Msg_n = add_bcd(subtree, f["Msg.n"], buffer(offset + 0, 1), '
+            "false)",
+            text,
+        )
+        self.assertNotIn("buffer(offset + 0, 1):uint()", text)
+        # add_bcd returns nil for an invalid encoding, so every field that
+        # depends on the value is dissected only when it decoded.
+        self.assertIn(
+            "if val_Msg_n ~= nil then\n"
+            "    -- array field data (val_Msg_n elements)\n"
+            "    for i = 0, val_Msg_n - 1 do\n",
+            text,
+        )
+        self.assertIn("if val_Msg_n ~= nil and (val_Msg_n == 1) then", text)
+
+
 _FM = dissector_generator.ir_data.FunctionMapping
 
 
