@@ -98,11 +98,11 @@ def main(argv):
         default_ext = ".h"
     elif backend == "lua":
         from compiler.back_end.lua import ( # pylint:disable=import-outside-toplevel
-        dissector_generator, emboss_codegen_lua
+        emboss_codegen_lua
         )
-        output_text, gen_errors = dissector_generator.generate_dissector(ir)
-        if gen_errors:
-            emboss_codegen_lua._show_errors(gen_errors, ir, flags.color_output)
+        output_text, gen_errors = emboss_codegen_lua.generate_dissector_and_log_errors(
+            ir, flags.color_output
+        )
         default_ext = ".lua"
     else:
         print("Unknown backend: {}".format(backend), file=sys.stderr)

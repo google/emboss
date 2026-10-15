@@ -58,6 +58,22 @@ def _show_errors(errors, ir, color_output):
     print(error.format_errors(errors, source_codes, use_color), file=sys.stderr)
 
 
+def generate_dissector_and_log_errors(ir, color_output):
+    """Generates a Wireshark Lua dissector and logs any errors.
+
+    Arguments:
+      ir: EmbossIr of the module.
+      color_output: "always", "never", "if_tty", "auto"
+
+    Returns:
+      A tuple of (lua_source, errors)
+    """
+    text, errors = dissector_generator.generate_dissector(ir)
+    if errors:
+        _show_errors(errors, ir, color_output)
+    return text, errors
+
+
 def main(flags):
     if flags.input_file:
         with open(flags.input_file) as f:
@@ -66,9 +82,8 @@ def main(flags):
         ir = ir_data_utils.IrDataSerializer.from_json(
             ir_data.EmbossIr, sys.stdin.read()
         )
-    text, errors = dissector_generator.generate_dissector(ir)
+    text, errors = generate_dissector_and_log_errors(ir, flags.color_output)
     if errors:
-        _show_errors(errors, ir, flags.color_output)
         return 1
     if flags.output_file:
         with open(flags.output_file, "w") as f:
