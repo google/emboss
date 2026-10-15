@@ -182,7 +182,9 @@ _BCD_HELPER = """\
 -- a decimal digit, the raw bytes are added instead and the result is nil.
 local function add_bcd(tree, field, range, little_endian)
   local len = range:len()
-  local value = 0
+  -- A uint64 field needs a UInt64 object rather than a Lua number, and a
+  -- Lua number cannot hold all sixteen digits of an 8-byte value exactly.
+  local value = len > 4 and UInt64(0) or 0
   for i = 0, len - 1 do
     local byte = range:range(little_endian and (len - 1 - i) or i, 1):uint()
     local high, low = math.floor(byte / 16), byte % 16
@@ -190,15 +192,9 @@ local function add_bcd(tree, field, range, little_endian)
       tree:add(field, range):append_text(" [invalid BCD]")
       return nil
     end
-    value = value * 100 + high * 10 + low
+    value = value * 100 + (high * 10 + low)
   end
-  if len > 4 then
-    -- A uint64 field needs a UInt64 object rather than a Lua number.
-    local low32 = value % 4294967296
-    tree:add(field, range, UInt64(low32, math.floor((value - low32) / 4294967296)))
-  else
-    tree:add(field, range, value)
-  end
+  tree:add(field, range, value)
   return value
 end"""
 
@@ -670,9 +666,16 @@ class _FieldEmitter:
                     field, capture_primitive, start_lua, size, byte_order, body_lines
                 )
         # A `Bcd` is captured from the decoded value add_bcd returns, which is
-        # nil for an invalid encoding.
+        # nil for an invalid encoding.  As with the other capturable fields,
+        # only 1-4 byte values are captured: add_bcd returns a UInt64 object
+        # rather than a Lua number for anything wider.
         value_var = None
-        if primitive == "Bcd" and not conditional and size is not None:
+        if (
+            primitive == "Bcd"
+            and not conditional
+            and size is not None
+            and 1 <= size <= 4
+        ):
             field_key = ir_util.hashable_form_of_reference(field.name)
             if field_key in self._referenced:
                 value_var = "val_" + _qualified_lua_name(field.name.canonical_name)

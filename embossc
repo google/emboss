@@ -97,9 +97,7 @@ def main(argv):
             output_text = emboss_codegen_cpp.format_header(output_text)
         default_ext = ".h"
     elif backend == "lua":
-        from compiler.back_end.lua import ( # pylint:disable=import-outside-toplevel
-        emboss_codegen_lua
-        )
+        from compiler.back_end.lua import emboss_codegen_lua  # pylint:disable=import-outside-toplevel
         output_text, gen_errors = emboss_codegen_lua.generate_dissector_and_log_errors(
             ir, flags.color_output
         )

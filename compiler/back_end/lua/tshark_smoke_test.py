@@ -128,6 +128,7 @@ struct Bcdm:
   3+n [+5]  Bcd        wide
   8+n [+2]  Bcd        le_val
     [byte_order: "LittleEndian"]
+  10+n [+8]  Bcd       big
 """,
     ),
     # Enum value names at several field widths, including values that only
@@ -268,7 +269,8 @@ class TsharkSmokeTest(unittest.TestCase):
             "bcd",
             ["12", "03", "05"]
             + ["{:02x}".format(i) for i in range(1, 13)]
-            + ["12", "34", "56", "78", "90", "34", "12"],
+            + ["12", "34", "56", "78", "90", "34", "12"]
+            + ["98", "76", "54", "32", "10", "98", "76", "54"],
         )
         self.assertIn("n: 12", out)
         self.assertIn("a: 3", out)
@@ -277,6 +279,8 @@ class TsharkSmokeTest(unittest.TestCase):
         self.assertIn("data: 12", out)
         self.assertIn("wide: 1234567890", out)
         self.assertIn("le_val: 1234", out)
+        # Sixteen digits: more than a double holds exactly.
+        self.assertIn("big: 9876543210987654", out)
 
     def test_invalid_bcd_is_flagged_and_dependents_are_skipped(self):
         # 0x1a is not valid BCD, so `n` is unknown: the fields whose position
@@ -285,13 +289,15 @@ class TsharkSmokeTest(unittest.TestCase):
             "bcd",
             ["1a", "03", "05"]
             + ["{:02x}".format(i) for i in range(1, 13)]
-            + ["12", "34", "56", "78", "90", "34", "12"],
+            + ["12", "34", "56", "78", "90", "34", "12"]
+            + ["98", "76", "54", "32", "10", "98", "76", "54"],
         )
         self.assertIn("n: 26 [invalid BCD]", out)
         self.assertIn("chained: 5", out)
         self.assertNotIn("data: ", out)
         self.assertNotIn("wide: ", out)
         self.assertNotIn("le_val: ", out)
+        self.assertNotIn("big: ", out)
 
     def test_enum_names_match_the_values_the_cpp_back_end_reads(self):
         # k8 = 0, k32 = 2000, k64 = s8 = s64 = all ones.
