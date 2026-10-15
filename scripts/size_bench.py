@@ -390,11 +390,26 @@ def text_bytes(obj):
 
 
 def insn_count(objdump, obj, env=None):
-    """Static instruction count: disassembly lines that begin with an address."""
+    """Static instruction count: disassembly lines that carry a mnemonic.
+
+    --no-show-raw-insn stops objdump wrapping long x86 encodings onto extra
+    address-prefixed continuation lines (which inflated the count by ~4%), and
+    requiring a mnemonic that does not start with '.' drops ARM literal-pool
+    entries (`.word`), which have an address but are data, not instructions.
+    """
     out = subprocess.run(
-        [objdump, "-d", obj], cwd=REPO, capture_output=True, text=True, env=env
+        [objdump, "-d", "--no-show-raw-insn", obj],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+        env=env,
     ).stdout
-    return sum(1 for ln in out.splitlines() if re.match(r"\s+[0-9a-f]+:", ln))
+    count = 0
+    for ln in out.splitlines():
+        m = re.match(r"\s*[0-9a-f]+:\s+(\S+)", ln)
+        if m and not m.group(1).startswith("."):
+            count += 1
+    return count
 
 
 def symbol_bytes(nm, obj, pattern, env=None):
