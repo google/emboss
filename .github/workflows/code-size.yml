@@ -113,11 +113,16 @@ jobs:
           path: ~/emboss-qemu
           key: emboss-qemu-10.0.11-${{ hashFiles('scripts/emboss_insncount.c', 'scripts/build_qemu_plugin.sh') }}
       - name: Build plugin-enabled qemu + instruction-count plugin
+        id: qemu
         continue-on-error: true
         run: |
           if [ ! -x "$HOME/emboss-qemu/qemu-build/qemu-microblazeel" ]; then
             scripts/build_qemu_plugin.sh 10.0.11 "$HOME/emboss-qemu"
           fi
+      - name: Flag a failed qemu build (speed degrades to wall-clock only)
+        if: steps.qemu.outcome == 'failure'
+        run: |
+          echo "::warning::plugin-enabled qemu build failed; the speed table will have no retired-instruction counts (wall-clock only). See the 'Build plugin-enabled qemu' step log."
 
       - name: Measure generated code size (merge-base vs PR head)
         env:
@@ -137,11 +142,17 @@ jobs:
              && [ -f "$HOME/emboss-qemu/emboss_insncount.so" ]; then
             export EMBOSS_QEMU_DIR="$HOME/emboss-qemu/qemu-build"
             export EMBOSS_QEMU_PLUGIN="$HOME/emboss-qemu/emboss_insncount.so"
+          else
+            echo "::warning::no plugin-enabled qemu under ~/emboss-qemu; retired-instruction counts will be skipped (wall-clock only)."
           fi
+          # size_bench.py logs every cell it could not measure (toolchain or
+          # codegen failure) as a warning and records it as skipped; the
+          # comment renders those as "skipped (<reason>)".
           python3 scripts/size_bench.py --revisions "$base" "$HEAD_SHA" --speed --out-dir "$RUNNER_TEMP/size"
           # Fail loudly rather than post an empty table if the head build produced
-          # no data (missing toolchain/dep or a codegen break).
-          python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); h=d["revisions"][-1]["results"]; sys.exit(0 if any(cfg.get("benchmark") for t in h.values() for c in t.values() for cfg in c.values()) else 1)' "$RUNNER_TEMP/size/size_bench.json" \
+          # no data (missing toolchain/dep or a codegen break). A skipped cell is
+          # {"skipped": reason}, so test for a measured value, not a non-empty dict.
+          python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); h=d["revisions"][-1]["results"]; sys.exit(0 if any((cfg.get("benchmark") or {}).get("text") is not None for t in h.values() for c in t.values() for cfg in c.values()) else 1)' "$RUNNER_TEMP/size/size_bench.json" \
             || { echo "::error::size_bench produced no head benchmark data (toolchain/codegen failure); see output above."; exit 1; }
           python3 scripts/size_comment.py "$RUNNER_TEMP/size/size_bench.json" > "$RUNNER_TEMP/size/comment.md"
 

@@ -303,6 +303,20 @@ def run(args, **kw):
     ).stdout.strip()
 
 
+def warn(msg, detail="", tail=5):
+    """Reports a degraded measurement on stderr, with the last `tail` lines of
+    the failing tool's output. Nothing in the matrix fails silently: a cell that
+    could not be measured is logged here and recorded as {"skipped": reason}."""
+    print(f"warning: {msg}", file=sys.stderr)
+    for ln in detail.strip().splitlines()[-tail:]:
+        print(f"    {ln}", file=sys.stderr)
+
+
+def note(msg):
+    """Reports a by-design skip (absent optional toolchain) on stderr."""
+    print(f"note: {msg}", file=sys.stderr)
+
+
 def have(compiler):
     """True if the compiler's executable is available."""
     cxx = compiler["cxx"]
@@ -399,8 +413,12 @@ def ok_symbols(nm, obj, struct, env=None):
     return {"reader": reader, "writer": writer}
 
 
-def compile_obj(compiler, flags, driver_path, include_dir, obj):
-    """Compiles a driver TU; returns True on success."""
+def compile_obj(compiler, flags, driver_path, include_dir, obj, label):
+    """Compiles a driver TU. Returns None on success, else a short reason.
+
+    A failure is logged (TU, matrix cell, tail of the compiler's stderr) and the
+    reason is recorded by the caller as the cell's {"skipped": reason}.
+    """
     cmd = (
         [compiler["cxx"]]
         + COMMON_FLAGS.split()
@@ -408,12 +426,14 @@ def compile_obj(compiler, flags, driver_path, include_dir, obj):
         + compiler["flags"].split()
         + ["-I" + REPO, "-I" + include_dir, "-c", driver_path, "-o", obj]
     )
-    return (
-        subprocess.run(
-            cmd, cwd=REPO, capture_output=True, text=True, env=compiler_env(compiler)
-        ).returncode
-        == 0
+    r = subprocess.run(
+        cmd, cwd=REPO, capture_output=True, text=True, env=compiler_env(compiler)
     )
+    if r.returncode == 0:
+        return None
+    reason = f"compile failed (exit {r.returncode})"
+    warn(f"{label}: {os.path.basename(driver_path)}: {reason}", r.stderr)
+    return reason
 
 
 def _qemu_bin(name):
@@ -437,10 +457,11 @@ def measure_speed(work, include_dir):
     have_plugin = bool(plugin and os.path.exists(plugin))
     out = {}
     for st in SPEED_TARGETS:
-        cxx = st["cxx"]
+        target, cxx = st["target"], st["cxx"]
         if not (shutil.which(cxx) or os.path.exists(cxx)):
+            note(f"speed {target}: skipped, {cxx} not found")
             continue
-        exe = os.path.join(work, "speed_" + st["target"].replace(" ", "_"))
+        exe = os.path.join(work, "speed_" + target.replace(" ", "_"))
         cmd = (
             [cxx]
             + SPEED_FLAGS.split()
@@ -448,7 +469,11 @@ def measure_speed(work, include_dir):
             + (["-static"] if st["static"] else [])
             + ["-I" + REPO, "-I" + include_dir, drv, "-o", exe]
         )
-        if subprocess.run(cmd, cwd=REPO, capture_output=True, text=True).returncode:
+        r = subprocess.run(cmd, cwd=REPO, capture_output=True, text=True)
+        if r.returncode:
+            reason = f"compile failed (exit {r.returncode})"
+            warn(f"speed {target}: speed_driver.cc: {reason}", r.stderr)
+            out[target] = {"skipped": reason}
             continue
         cell = {"iters": SPEED_ITERS, "wallclock_s": None, "retired_insns": None}
         if st["qemu"] is None:
@@ -461,11 +486,18 @@ def measure_speed(work, include_dir):
                     times.append(float(m.group(1)))
             if times:
                 cell["wallclock_s"] = min(times)
+            else:
+                warn(f"speed {target}: binary produced no wall-clock", r.stderr)
         else:
             # Cross target: retired-instruction count is the deterministic metric
             # (wall-clock under qemu measures emulation, not the target -- skipped).
             qemu = _qemu_bin(st["qemu"])
-            if qemu and have_plugin:
+            if not (qemu and have_plugin):
+                note(
+                    f"speed {target}: retired-insns skipped, no plugin-enabled qemu "
+                    "(set EMBOSS_QEMU_DIR and EMBOSS_QEMU_PLUGIN)"
+                )
+            else:
                 r = subprocess.run(
                     [qemu, "-plugin", plugin, exe],
                     cwd=REPO,
@@ -475,7 +507,13 @@ def measure_speed(work, include_dir):
                 m = re.search(r"insns:\s*(\d+)", r.stderr)
                 if m:
                     cell["retired_insns"] = int(m.group(1))
-        out[st["target"]] = cell
+                else:
+                    warn(
+                        f"speed {target}: {os.path.basename(qemu)} produced no "
+                        f"instruction count (exit {r.returncode})",
+                        r.stderr,
+                    )
+        out[target] = cell
     return out
 
 
@@ -485,17 +523,19 @@ def measure_current(work, with_speed=False):
     os.makedirs(include_dir, exist_ok=True)
 
     # Generate headers with the revision's own embossc (the generator under
-    # test). A revision that can't generate the fixed schema is reported as
-    # missing rather than skewing a total.
-    have_bench = have_manycond = True
-    try:
-        embossc("benchmark.emb", include_dir)
-    except subprocess.CalledProcessError:
-        have_bench = False
-    try:
-        embossc("many_conditionals.emb", include_dir)
-    except subprocess.CalledProcessError:
-        have_manycond = False
+    # test). A revision that can't generate the fixed schema has its cells
+    # recorded as skipped rather than skewing a total.
+    def generate(emb):
+        try:
+            embossc(emb, include_dir)
+            return None
+        except subprocess.CalledProcessError as e:
+            reason = f"embossc failed on {emb} (exit {e.returncode})"
+            warn(reason, e.stderr or "")
+            return reason
+
+    bench_err = generate("benchmark.emb")
+    manycond_err = generate("many_conditionals.emb")
 
     bench_drv = os.path.join(work, "benchmark_driver.cc")
     manycond_drv = os.path.join(work, "manycond_driver.cc")
@@ -530,40 +570,53 @@ def measure_current(work, with_speed=False):
                 versions[f"{target}/{cname}"] = "?"
             results[target][cname] = {}
             for cfg, cfg_flag in CONFIGS.items():
+                # Each metric group below is either its metrics dict or
+                # {"skipped": reason} when codegen or the compile failed.
+                label = f"{target}/{cname} -{cfg}"
                 cell = {}
-                if have_bench:
-                    obj = os.path.join(work, f"bench_{target}_{cname}_{cfg}.o")
-                    if compile_obj(compiler, cfg_flag, bench_drv, include_dir, obj):
-                        cell["benchmark"] = {
-                            "text": text_bytes(obj),
-                            "insns": insn_count(objdump, obj, cenv),
-                        }
-                if have_manycond:
-                    obj = os.path.join(work, f"mc_{target}_{cname}_{cfg}.o")
-                    if compile_obj(compiler, cfg_flag, manycond_drv, include_dir, obj):
-                        cell["many_conditionals_ok"] = {
-                            "text": symbol_bytes(nm, obj, MANYCOND_OK_SYMBOL, cenv),
-                            "disj_text": symbol_bytes(
-                                nm, obj, MANYCOND_DISJ_OK_SYMBOL, cenv
-                            ),
-                            "insns": insn_count(objdump, obj, cenv),
-                        }
-                    # Per-instantiation Ok() drivers for the later phases.
-                    drivers = {}
-                    for dname, dpath in ok_drv.items():
-                        dobj = os.path.join(
-                            work, f"ok_{dname}_{target}_{cname}_{cfg}.o"
-                        )
-                        if compile_obj(compiler, cfg_flag, dpath, include_dir, dobj):
-                            syms = ok_symbols(nm, dobj, OK_DRIVER_STRUCT[dname], cenv)
-                            drivers[dname] = {
-                                "text": text_bytes(dobj),
-                                "insns": insn_count(objdump, dobj, cenv),
-                                "reader_ok": syms["reader"],
-                                "writer_ok": syms["writer"],
-                            }
-                    if drivers:
-                        cell["ok_drivers"] = drivers
+                obj = os.path.join(work, f"bench_{target}_{cname}_{cfg}.o")
+                err = bench_err or compile_obj(
+                    compiler, cfg_flag, bench_drv, include_dir, obj, label
+                )
+                if err:
+                    cell["benchmark"] = {"skipped": err}
+                else:
+                    cell["benchmark"] = {
+                        "text": text_bytes(obj),
+                        "insns": insn_count(objdump, obj, cenv),
+                    }
+                obj = os.path.join(work, f"mc_{target}_{cname}_{cfg}.o")
+                err = manycond_err or compile_obj(
+                    compiler, cfg_flag, manycond_drv, include_dir, obj, label
+                )
+                if err:
+                    cell["many_conditionals_ok"] = {"skipped": err}
+                else:
+                    cell["many_conditionals_ok"] = {
+                        "text": symbol_bytes(nm, obj, MANYCOND_OK_SYMBOL, cenv),
+                        "disj_text": symbol_bytes(
+                            nm, obj, MANYCOND_DISJ_OK_SYMBOL, cenv
+                        ),
+                        "insns": insn_count(objdump, obj, cenv),
+                    }
+                # Per-instantiation Ok() drivers for the later phases.
+                drivers = {}
+                for dname, dpath in ok_drv.items():
+                    dobj = os.path.join(work, f"ok_{dname}_{target}_{cname}_{cfg}.o")
+                    err = manycond_err or compile_obj(
+                        compiler, cfg_flag, dpath, include_dir, dobj, label
+                    )
+                    if err:
+                        drivers[dname] = {"skipped": err}
+                        continue
+                    syms = ok_symbols(nm, dobj, OK_DRIVER_STRUCT[dname], cenv)
+                    drivers[dname] = {
+                        "text": text_bytes(dobj),
+                        "insns": insn_count(objdump, dobj, cenv),
+                        "reader_ok": syms["reader"],
+                        "writer_ok": syms["writer"],
+                    }
+                cell["ok_drivers"] = drivers
                 results[target][cname][cfg] = cell
     out = {"compiler_versions": versions, "results": results}
     if with_speed:

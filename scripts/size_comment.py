@@ -60,6 +60,18 @@ def delta(base_v, head_v, unit=""):
     return f"{s}  {icon}{dstr} ({pct})"
 
 
+def metric(b, h, key, unit=""):
+    """Table cell for metric `key` of a base/head metric group.
+
+    size_bench.py records a group it could not measure (codegen or compile
+    failure) as {"skipped": reason}; that renders as such instead of as the
+    "—" used for a metric that is merely absent.
+    """
+    if h.get("skipped"):
+        return f"skipped ({h['skipped']})"
+    return delta(b.get(key), h.get(key), unit)
+
+
 def rows(base, head):
     """Ordered (target, compiler) pairs present in head."""
     out = []
@@ -78,14 +90,15 @@ def table(base, head, config):
     for target, compiler in rows(base, head):
         b = cell(base, target, compiler, config)
         h = cell(head, target, compiler, config)
-        bb, hb = b.get("benchmark", {}), h.get("benchmark", {})
-        bm, hm = b.get("many_conditionals_ok", {}), h.get("many_conditionals_ok", {})
+        bb, hb = b.get("benchmark") or {}, h.get("benchmark") or {}
+        bm = b.get("many_conditionals_ok") or {}
+        hm = h.get("many_conditionals_ok") or {}
         lines.append(
             f"| {target} · {compiler} "
-            f"| {delta(bb.get('text'), hb.get('text'), ' B')} "
-            f"| {delta(bb.get('insns'), hb.get('insns'))} "
-            f"| {delta(bm.get('text'), hm.get('text'), ' B')} "
-            f"| {delta(bm.get('disj_text'), hm.get('disj_text'), ' B')} |"
+            f"| {metric(bb, hb, 'text', ' B')} "
+            f"| {metric(bb, hb, 'insns')} "
+            f"| {metric(bm, hm, 'text', ' B')} "
+            f"| {metric(bm, hm, 'disj_text', ' B')} |"
         )
     return "\n".join(lines)
 
@@ -101,11 +114,12 @@ def speed_table(base, head):
         "|---|--:|--:|",
     ]
     for target, h in hs.items():
-        b = bs.get(target, {}) or {}
+        b = bs.get(target) or {}
+        h = h or {}
         lines.append(
             f"| {target} "
-            f"| {delta(b.get('retired_insns'), h.get('retired_insns'))} "
-            f"| {delta(b.get('wallclock_s'), h.get('wallclock_s'), ' s')} |"
+            f"| {metric(b, h, 'retired_insns')} "
+            f"| {metric(b, h, 'wallclock_s', ' s')} |"
         )
     return "\n".join(lines)
 
