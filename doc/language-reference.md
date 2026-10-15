@@ -1447,8 +1447,9 @@ The `//` operator requires two integer arguments, and returns an integer.
 
 The right argument may not be zero.  This is enforced at compile time: if the
 divisor's range includes zero, the compiler rejects the expression.  Most uses
-of `//` divide by a constant, or by a value whose range has been narrowed (for
-example by an enclosing `if divisor != 0:`).
+of `//` divide by a constant; a non-constant divisor must have a range that
+excludes zero, which can be arranged with `$max` (for example,
+`x // $max(divisor, 1)`).
 
 
 ##### `%`

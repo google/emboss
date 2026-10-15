@@ -16,6 +16,7 @@
 // operators in generated C++ code.
 #include <array>
 #include <cstdint>
+#include <limits>
 
 #include "gtest/gtest.h"
 #include "testdata/division_modulus.emb.h"
@@ -87,6 +88,43 @@ TEST(ChunkedPayload, RoundsUpToMultipleOfFour) {
   // ((5 + 3) // 4) * 4 == 8 bytes of payload, plus the 1-byte count = 9 total.
   EXPECT_EQ(9U, view.SizeInBytes());
   EXPECT_EQ(8U, view.padded().ElementCount());
+}
+
+TEST(SignedRuntimeDivision, NegativeDividends) {
+  ::std::array</**/ ::std::uint8_t, 13> buf = {};
+  auto view = MakeSignedRuntimeDivisionView(&buf);
+  view.wide_dividend().Write(-7);
+  view.narrow_dividend().Write(-7);
+  view.divisor_magnitude().Write(2);
+  ASSERT_TRUE(view.Ok());
+  EXPECT_EQ(-2, view.wide_quotient_by_constant().Read());   // -7 // 4
+  EXPECT_EQ(1, view.wide_remainder_by_constant().Read());   // -7 % 4
+  EXPECT_EQ(-4, view.wide_quotient_by_divisor().Read());    // -7 // 2
+  EXPECT_EQ(-1, view.wide_remainder_by_negative_divisor().Read());   // -7 % -2
+  EXPECT_EQ(3, view.narrow_quotient_by_negative_divisor().Read());   // -7 // -2
+  EXPECT_EQ(-1, view.narrow_remainder_by_negative_divisor().Read());  // -7 % -2
+}
+
+TEST(SignedRuntimeDivision, MostNegativeDividends) {
+  ::std::array</**/ ::std::uint8_t, 13> buf = {};
+  auto view = MakeSignedRuntimeDivisionView(&buf);
+  constexpr ::std::int64_t kMin64 = ::std::numeric_limits<::std::int64_t>::min();
+  constexpr ::std::int32_t kMin32 = ::std::numeric_limits<::std::int32_t>::min();
+  view.wide_dividend().Write(kMin64);
+  view.narrow_dividend().Write(kMin32);
+  // divisor_magnitude == 0 still yields a divisor of magnitude 1.
+  view.divisor_magnitude().Write(0);
+  ASSERT_TRUE(view.Ok());
+  EXPECT_EQ(kMin64 / 4, view.wide_quotient_by_constant().Read());
+  EXPECT_EQ(0, view.wide_remainder_by_constant().Read());
+  EXPECT_EQ(kMin64, view.wide_quotient_by_divisor().Read());
+  // INT64_MIN % -1: mathematically 0; must not trap.
+  EXPECT_EQ(0, view.wide_remainder_by_negative_divisor().Read());
+  // INT32_MIN // -1 == 2**31, which does not fit in 32 bits but does in the
+  // 64-bit intermediate type.
+  EXPECT_EQ(::std::int64_t{1} << 31,
+            view.narrow_quotient_by_negative_divisor().Read());
+  EXPECT_EQ(0, view.narrow_remainder_by_negative_divisor().Read());
 }
 
 }  // namespace

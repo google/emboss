@@ -180,7 +180,12 @@ def _check_that_enum_values_are_representable(
     else:
         enum_range = (0, 2**max_enum_size - 1)
     for value in enum_type.value:
-        values.append((ir_util.constant_value(value.value), value))
+        numeric_value = ir_util.constant_value(value.value)
+        if numeric_value is None:
+            # Division by a constant zero; reported separately by
+            # _check_division_and_modulus_have_nonzero_divisors.
+            continue
+        values.append((numeric_value, value))
     out_of_range = [v for v in values if not enum_range[0] <= v[0] <= enum_range[1]]
     # If all values are in range, this loop will have zero iterations.
     for value in out_of_range:

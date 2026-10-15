@@ -102,6 +102,14 @@ class ConstraintsTest(unittest.TestCase):
         self.assertEqual(1, len(errors))
         self.assertIn("Right argument of '%' cannot be zero.", errors[0][0].message)
 
+    def test_error_on_division_by_zero_in_enum_value(self):
+        # Enum values are evaluated by the attribute checker before the
+        # constraints pass runs, so a zero divisor must not crash it.
+        ir = _make_ir_from_emb("enum Foo:\n" "  BAR = 8 // 0\n")
+        errors = error.filter_errors(constraints.check_constraints(ir))
+        self.assertEqual(1, len(errors))
+        self.assertIn("Right argument of '//' cannot be zero.", errors[0][0].message)
+
     def test_error_on_division_by_zero_literal(self):
         ir = _make_ir_from_emb(
             "struct Foo:\n" "  0 [+1]  UInt  x\n" "  let q = x // 0\n"

@@ -43,3 +43,19 @@ struct Constants:
   let chained_div = 100 // 5 // 2
   let chained_mod = 17 % 7 % 4
   let mixed_divmod = 17 % 7 // 2
+
+
+struct SignedRuntimeDivision:
+  # Runtime (not constant-folded) `//` and `%` with signed dividends and both
+  # constant and non-constant divisors, exercising the C++ runtime's flooring
+  # adjustment, including the most negative dividend of each width.
+  0  [+8]  Int   wide_dividend
+  8  [+4]  Int   narrow_dividend
+  12 [+1]  UInt  divisor_magnitude (d)
+  let wide_quotient_by_constant = wide_dividend // 4
+  let wide_remainder_by_constant = wide_dividend % 4
+  # `$max(d, 1)` keeps the divisor's range clear of zero.
+  let wide_quotient_by_divisor = wide_dividend // $max(d, 1)
+  let wide_remainder_by_negative_divisor = wide_dividend % (0 - $max(d, 1))
+  let narrow_quotient_by_negative_divisor = narrow_dividend // (0 - $max(d, 1))
+  let narrow_remainder_by_negative_divisor = narrow_dividend % (0 - $max(d, 1))

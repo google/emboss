@@ -123,12 +123,19 @@ struct ProductOperation {
 // signs and the division is inexact.  For unsigned types the two definitions
 // agree, so no conversion is needed (and the signed comparison would warn), so
 // we dispatch on signedness with enable_if.
+// Flooring division and modulus.  Both are undefined in C++ when `r` is -1 and
+// `l` is the most negative value of `T` (`l / r` overflows, and `l % r` traps
+// on some targets even though the mathematical remainder is 0), so a divisor of
+// -1 is handled without dividing.  The front end's 64-bit range check keeps
+// `(most negative) // -1` out of generated code, but `(most negative) % -1` is
+// reachable with a signed 64-bit dividend and a non-constant divisor.
 struct FlooringQuotientOperation {
   template <typename T>
   static inline constexpr
       typename ::std::enable_if<::std::is_signed<T>::value, T>::type
       Do(T l, T r) {
-    return (l % r != T{0} && ((l < T{0}) != (r < T{0})))
+    return r == T{-1} ? static_cast<T>(T{0} - l)
+           : (l % r != T{0} && ((l < T{0}) != (r < T{0})))
                ? static_cast<T>((l / r) - T{1})
                : static_cast<T>(l / r);
   }
@@ -149,7 +156,8 @@ struct FlooringRemainderOperation {
   static inline constexpr
       typename ::std::enable_if<::std::is_signed<T>::value, T>::type
       Do(T l, T r) {
-    return (l % r != T{0} && ((l < T{0}) != (r < T{0})))
+    return r == T{-1} ? T{0}
+           : (l % r != T{0} && ((l < T{0}) != (r < T{0})))
                ? static_cast<T>((l % r) + r)
                : static_cast<T>(l % r);
   }
