@@ -31,17 +31,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out PR head (full history for merge-base + revision checkouts)
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803  # v6.1.0
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
+          # Nothing after checkout talks to GitHub over git (size_bench.py only
+          # checks out revisions that the full fetch above already brought in).
+          persist-credentials: false
 
       # embossc formats generated headers with clang-format (the clang-format
       # PyPI package, pinned in requirements.txt), so the codegen run needs the
       # Emboss Python deps. setup-python avoids the runner's externally-managed
       # system Python (PEP 668).
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065  # v5.6.0
         with:
           python-version: '3.x'
           cache: 'pip'
@@ -64,7 +67,7 @@ jobs:
       # root perms on restore), then extract it into place. clang has no
       # MicroBlaze back end, so MicroBlaze is gcc-only.
       - name: Cache MicroBlaze (Bootlin) toolchain tarball
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830  # v4.3.0
         with:
           path: ~/mb-toolchain/mb.tar.xz
           key: bootlin-microblazebe--glibc--stable-2025.08-1
@@ -86,7 +89,7 @@ jobs:
       # open-source Bootlin microblazeel build is the CI LE proxy (and provides
       # the LE speed binary below); locally, both are measured.
       - name: Cache MicroBlaze LE (Bootlin) toolchain tarball
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830  # v4.3.0
         with:
           path: ~/mb-toolchain/mbel.tar.xz
           key: bootlin-microblazeel--glibc--stable-2025.08-1
@@ -108,7 +111,7 @@ jobs:
       # is best-effort: if it fails, the speed run degrades to host wall-clock and
       # the size report is unaffected.
       - name: Cache plugin-enabled qemu build
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830  # v4.3.0
         with:
           path: ~/emboss-qemu
           key: emboss-qemu-10.0.11-${{ hashFiles('scripts/emboss_insncount.c', 'scripts/build_qemu_plugin.sh') }}
@@ -160,7 +163,7 @@ jobs:
         # Fork PRs get a read-only GITHUB_TOKEN; same-repo PRs (the chain branches)
         # can comment. (Fork-safe upgrade: a separate workflow_run job.)
         if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b  # v7.1.0
         env:
           COMMENT_PATH: ${{ runner.temp }}/size/comment.md
         with:
