@@ -16,6 +16,7 @@
 
 #include <string>
 #include <type_traits>
+#include <array>
 
 #include "absl/strings/str_format.h"
 #include "gtest/gtest.h"
@@ -89,6 +90,43 @@ TEST(ArrayView, Methods) {
   EXPECT_FALSE((ArrayView<FixedUIntView<32>, ReadWriteContiguousBuffer, 1>{
       ReadWriteContiguousBuffer{
           nullptr}}.Ok()));
+
+  // Test CopyBytesFrom
+  ::std::array<::std::uint8_t, 4> new_bytes = {0xaa, 0xbb, 0xcc, 0xdd};
+  auto dest_array = ArrayView<FixedUIntView<8>, ReadWriteContiguousBuffer, 1>{
+      ReadWriteContiguousBuffer{bytes, 4}};
+  dest_array.CopyBytesFrom(new_bytes);
+  EXPECT_EQ(0xaa, bytes[0]);
+  EXPECT_EQ(0xbb, bytes[1]);
+  EXPECT_EQ(0xcc, bytes[2]);
+  EXPECT_EQ(0xdd, bytes[3]);
+
+  // Test CopyBytesFrom with signed elements to ensure values >= 128 do not abort
+  bytes[0] = 0;
+  bytes[1] = 0;
+  bytes[2] = 0;
+  bytes[3] = 0;
+  auto dest_signed_array =
+      ArrayView<FixedIntView<8>, ReadWriteContiguousBuffer, 1>{
+          ReadWriteContiguousBuffer{bytes, 4}};
+  dest_signed_array.CopyBytesFrom(new_bytes);
+  EXPECT_EQ(0xaa, bytes[0]);
+  EXPECT_EQ(0xbb, bytes[1]);
+  EXPECT_EQ(0xcc, bytes[2]);
+  EXPECT_EQ(0xdd, bytes[3]);
+
+  // Test CopyBytesFrom with a raw C-style array
+  const ::std::uint8_t raw_bytes[4] = {0x11, 0x22, 0x33, 0x44};
+  dest_array.CopyBytesFrom(raw_bytes);
+  EXPECT_EQ(0x11, bytes[0]);
+  EXPECT_EQ(0x22, bytes[1]);
+  EXPECT_EQ(0x33, bytes[2]);
+  EXPECT_EQ(0x44, bytes[3]);
+
+#if EMBOSS_CHECK_ABORTS
+  ::std::array<::std::uint8_t, 3> wrong_size_bytes = {0xaa, 0xbb, 0xcc};
+  EXPECT_DEATH(dest_array.CopyBytesFrom(wrong_size_bytes), "");
+#endif  // EMBOSS_CHECK_ABORTS
 }
 
 TEST(ArrayView, Ok) {

@@ -258,6 +258,29 @@ class GenericArrayView final {
     WriteArrayToTextStream(this, stream, options);
   }
 
+  template <class Container, int N = 0>
+  typename ::std::enable_if<
+      ((void)N, kAddressableUnitSize * kElementSize == 8), void>::type
+  CopyBytesFrom(const Container &source) const {
+    EMBOSS_CHECK(IsComplete());
+    EMBOSS_CHECK(static_cast<::std::size_t>(source.size()) == ElementCount());
+    auto it = source.begin();
+    for (::std::size_t i = 0; i < ElementCount(); ++i, ++it) {
+      (*this)[i].Write(static_cast<typename ElementView::ValueType>(*it));
+    }
+  }
+
+  template <typename T, ::std::size_t N, int M = 0>
+  typename ::std::enable_if<
+      ((void)M, kAddressableUnitSize * kElementSize == 8), void>::type
+  CopyBytesFrom(const T (&source)[N]) const {
+    EMBOSS_CHECK(IsComplete());
+    EMBOSS_CHECK(N == ElementCount());
+    for (::std::size_t i = 0; i < ElementCount(); ++i) {
+      (*this)[i].Write(static_cast<typename ElementView::ValueType>(source[i]));
+    }
+  }
+
   static constexpr bool IsAggregate() { return true; }
 
   BufferType BackingStorage() const { return buffer_; }
