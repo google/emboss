@@ -3,7 +3,8 @@
 
 local enum_proto = Proto("enum", "enum (Emboss)")
 
-local Kind_VALUES = {
+local enums = {}
+enums.Kind = {
   [0] = "WIDGET",
   [1] = "SPROCKET",
   [2] = "GEEGAW",
@@ -13,49 +14,49 @@ local Kind_VALUES = {
   [4294967295] = "MAX32BIT",
   [18446744073709551615] = "MAX64BIT",
 }
-local Signed_VALUES = {
+enums.Signed = {
   [-9223372036854775808] = "MIN64BIT",
   [9223372036854775807] = "MAX64BIT",
 }
-local OnlyShortValues_VALUES = {
+enums.OnlyShortValues = {
   [0] = "ZERO",
   [1] = "ONE",
 }
-local OnlyShortSignedValues_VALUES = {
+enums.OnlyShortSignedValues = {
   [0] = "ZERO",
   [-1] = "NEGATIVE_ONE",
 }
-local ExplicitlySigned_VALUES = {
+enums.ExplicitlySigned = {
   [0] = "ZERO",
 }
-local ExplicitlySized64_VALUES = {
+enums.ExplicitlySized64 = {
   [0] = "ZERO",
 }
-local ExplicitlySized32_VALUES = {
+enums.ExplicitlySized32 = {
   [0] = "ZERO",
 }
-local ExplicitlySized16_VALUES = {
+enums.ExplicitlySized16 = {
   [0] = "ZERO",
 }
-local ExplicitlySized8_VALUES = {
+enums.ExplicitlySized8 = {
   [0] = "ZERO",
 }
-local ExplicitlySized12_VALUES = {
+enums.ExplicitlySized12 = {
   [0] = "ZERO",
 }
-local ExplicitlySizedAndSigned_VALUES = {
+enums.ExplicitlySizedAndSigned = {
   [0] = "ZERO",
 }
-local StructContainingEnum_Status_VALUES = {
+enums.StructContainingEnum_Status = {
   [0] = "OK",
   [1] = "FAILURE",
 }
 
 local f = {}
-f["ManifestEntry.kind"] = ProtoField.uint8("enum.ManifestEntry.kind", "kind", base.DEC, Kind_VALUES)
+f["ManifestEntry.kind"] = ProtoField.uint8("enum.ManifestEntry.kind", "kind", base.DEC, enums.Kind)
 f["ManifestEntry.count"] = ProtoField.uint32("enum.ManifestEntry.count", "count")
-f["ManifestEntry.wide_kind"] = ProtoField.uint32("enum.ManifestEntry.wide_kind", "wide_kind", base.DEC, Kind_VALUES)
-f["ManifestEntry_EmbossReservedAnonymousField1.wide_kind_in_bits"] = ProtoField.uint64("enum.ManifestEntry.EmbossReservedAnonymousField1.wide_kind_in_bits", "wide_kind_in_bits", base.DEC, Kind_VALUES, 0x00FFFFFFFF)
+f["ManifestEntry.wide_kind"] = ProtoField.uint32("enum.ManifestEntry.wide_kind", "wide_kind", base.DEC, enums.Kind)
+f["ManifestEntry_EmbossReservedAnonymousField1.wide_kind_in_bits"] = ProtoField.uint64("enum.ManifestEntry.EmbossReservedAnonymousField1.wide_kind_in_bits", "wide_kind_in_bits", base.DEC, enums.Kind, 0x00FFFFFFFF)
 f["StructContainingEnum.bar"] = ProtoField.uint8("enum.StructContainingEnum.bar", "bar")
 
 enum_proto.fields = {
@@ -66,34 +67,34 @@ enum_proto.fields = {
   f["StructContainingEnum.bar"],
 }
 
-local dissect_Constants, dissect_ManifestEntry, dissect_ManifestEntry_EmbossReservedAnonymousField1, dissect_StructContainingEnum
+local dissect = {}
 
-function dissect_Constants(buffer, pinfo, tree, offset)
+function dissect.Constants(buffer, pinfo, tree, offset)
   local subtree = tree:add(enum_proto, buffer(offset), "Constants")
 end
 
-function dissect_ManifestEntry(buffer, pinfo, tree, offset)
+function dissect.ManifestEntry(buffer, pinfo, tree, offset)
   local subtree = tree:add(enum_proto, buffer(offset), "ManifestEntry")
   subtree:add_le(f["ManifestEntry.kind"], buffer(offset + 0, 1))
   subtree:add_le(f["ManifestEntry.count"], buffer(offset + 1, 4))
   subtree:add_le(f["ManifestEntry.wide_kind"], buffer(offset + 5, 4))
   -- nested field emboss_reserved_anonymous_field_1
-  dissect_ManifestEntry_EmbossReservedAnonymousField1(buffer, pinfo, subtree, offset + 9)
+  dissect.ManifestEntry_EmbossReservedAnonymousField1(buffer, pinfo, subtree, offset + 9)
 end
 
-function dissect_ManifestEntry_EmbossReservedAnonymousField1(buffer, pinfo, tree, offset)
+function dissect.ManifestEntry_EmbossReservedAnonymousField1(buffer, pinfo, tree, offset)
   local subtree = tree:add(enum_proto, buffer(offset), "EmbossReservedAnonymousField1")
   subtree:add(f["ManifestEntry_EmbossReservedAnonymousField1.wide_kind_in_bits"], buffer(offset, 5))
 end
 
-function dissect_StructContainingEnum(buffer, pinfo, tree, offset)
+function dissect.StructContainingEnum(buffer, pinfo, tree, offset)
   local subtree = tree:add(enum_proto, buffer(offset), "StructContainingEnum")
   subtree:add_le(f["StructContainingEnum.bar"], buffer(offset + 0, 1))
 end
 
 function enum_proto.dissector(buffer, pinfo, tree)
   pinfo.cols.protocol = "ENUM"
-  dissect_Constants(buffer, pinfo, tree, 0)
+  dissect.Constants(buffer, pinfo, tree, 0)
 end
 
 -- To register this dissector automatically, add a `[(wireshark) register_on: ...]`

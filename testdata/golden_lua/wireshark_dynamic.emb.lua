@@ -5,14 +5,15 @@
 
 local vproto_proto = Proto("vproto", "vproto (Emboss)")
 
-local MsgType_VALUES = {
+local enums = {}
+enums.MsgType = {
   [0] = "PING",
   [1] = "DATA",
   [2] = "ERROR",
 }
 
 local f = {}
-f["Message.msg_type"] = ProtoField.uint8("vproto.Message.msg_type", "msg_type", base.DEC, MsgType_VALUES, nil, "Message type.")
+f["Message.msg_type"] = ProtoField.uint8("vproto.Message.msg_type", "msg_type", base.DEC, enums.MsgType, nil, "Message type.")
 f["Message.count"] = ProtoField.uint8("vproto.Message.count", "count", base.DEC, nil, nil, "Number of payload bytes that follow.")
 f["Message.error_code"] = ProtoField.uint16("vproto.Message.error_code", "error_code", base.DEC, nil, nil, "16-bit error code, present only for ERROR messages.")
 f["Message.payload"] = ProtoField.uint8("vproto.Message.payload", "payload", base.DEC, nil, nil, "Variable-length payload, `count` bytes long.")
@@ -24,9 +25,9 @@ vproto_proto.fields = {
   f["Message.payload"],
 }
 
-local dissect_Message
+local dissect = {}
 
-function dissect_Message(buffer, pinfo, tree, offset)
+function dissect.Message(buffer, pinfo, tree, offset)
   local subtree = tree:add(vproto_proto, buffer(offset), "Message")
   local val_Message_msg_type = buffer(offset + 0, 1):uint()
   subtree:add(f["Message.msg_type"], buffer(offset + 0, 1))
@@ -43,7 +44,7 @@ end
 
 function vproto_proto.dissector(buffer, pinfo, tree)
   pinfo.cols.protocol = "VPROTO"
-  dissect_Message(buffer, pinfo, tree, 0)
+  dissect.Message(buffer, pinfo, tree, 0)
 end
 
 DissectorTable.get("udp.port"):add(13370, vproto_proto)

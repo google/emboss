@@ -118,7 +118,7 @@ class EnumValuesTableTest(unittest.TestCase):
             "  ONE  = 1\n"
         )
         self.assertEqual([], errors)
-        self.assertIn("local Kind_VALUES = {", text)
+        self.assertIn("local enums = {}\nenums.Kind = {", text)
         self.assertIn('[0] = "ZERO",', text)
         self.assertIn('[1] = "ONE",', text)
 
@@ -253,7 +253,7 @@ class RootSelectionTest(unittest.TestCase):
             "  0 [+1]  UInt  b\n"
         )
         self.assertEqual([], errors)
-        self.assertIn("dissect_First(buffer, pinfo, tree, 0)", text)
+        self.assertIn("dissect.First(buffer, pinfo, tree, 0)", text)
 
     def test_root_override(self):
         text, errors = _generate(
@@ -266,7 +266,7 @@ class RootSelectionTest(unittest.TestCase):
             "  0 [+1]  UInt  b\n"
         )
         self.assertEqual([], errors)
-        self.assertIn("dissect_Second(buffer, pinfo, tree, 0)", text)
+        self.assertIn("dissect.Second(buffer, pinfo, tree, 0)", text)
 
 
 class NestedStructTest(unittest.TestCase):
@@ -282,7 +282,7 @@ class NestedStructTest(unittest.TestCase):
             "  1 [+1]  UInt   tail\n"
         )
         self.assertEqual([], errors)
-        self.assertIn("dissect_Inner(buffer, pinfo, subtree, offset + 0)", text)
+        self.assertIn("dissect.Inner(buffer, pinfo, subtree, offset + 0)", text)
 
 
 _FM = dissector_generator.ir_data.FunctionMapping

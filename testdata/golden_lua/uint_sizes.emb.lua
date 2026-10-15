@@ -5,7 +5,8 @@
 
 local uint_sizes_proto = Proto("uint_sizes", "uint_sizes (Emboss)")
 
-local Enum_VALUES = {
+local enums = {}
+enums.Enum = {
   [1] = "VALUE1",
   [10] = "VALUE10",
   [100] = "VALUE100",
@@ -15,7 +16,7 @@ local Enum_VALUES = {
   [1000000] = "VALUE1000000",
   [10000000] = "VALUE10000000",
 }
-local ExplicitlySizedEnum_VALUES = {
+enums.ExplicitlySizedEnum = {
   [1] = "VALUE1",
   [10] = "VALUE10",
   [100] = "VALUE100",
@@ -51,18 +52,18 @@ f["AlternatingEndianSizes.five_byte"] = ProtoField.uint64("uint_sizes.Alternatin
 f["AlternatingEndianSizes.six_byte"] = ProtoField.uint64("uint_sizes.AlternatingEndianSizes.six_byte", "six_byte")
 f["AlternatingEndianSizes.seven_byte"] = ProtoField.uint64("uint_sizes.AlternatingEndianSizes.seven_byte", "seven_byte")
 f["AlternatingEndianSizes.eight_byte"] = ProtoField.uint64("uint_sizes.AlternatingEndianSizes.eight_byte", "eight_byte")
-f["EnumSizes.one_byte"] = ProtoField.uint8("uint_sizes.EnumSizes.one_byte", "one_byte", base.DEC, Enum_VALUES)
-f["EnumSizes.two_byte"] = ProtoField.uint16("uint_sizes.EnumSizes.two_byte", "two_byte", base.DEC, Enum_VALUES)
-f["EnumSizes.three_byte"] = ProtoField.uint32("uint_sizes.EnumSizes.three_byte", "three_byte", base.DEC, Enum_VALUES)
-f["EnumSizes.four_byte"] = ProtoField.uint32("uint_sizes.EnumSizes.four_byte", "four_byte", base.DEC, Enum_VALUES)
-f["EnumSizes.five_byte"] = ProtoField.uint64("uint_sizes.EnumSizes.five_byte", "five_byte", base.DEC, Enum_VALUES)
-f["EnumSizes.six_byte"] = ProtoField.uint64("uint_sizes.EnumSizes.six_byte", "six_byte", base.DEC, Enum_VALUES)
-f["EnumSizes.seven_byte"] = ProtoField.uint64("uint_sizes.EnumSizes.seven_byte", "seven_byte", base.DEC, Enum_VALUES)
-f["EnumSizes.eight_byte"] = ProtoField.uint64("uint_sizes.EnumSizes.eight_byte", "eight_byte", base.DEC, Enum_VALUES)
-f["ExplicitlySizedEnumSizes.one_byte"] = ProtoField.uint8("uint_sizes.ExplicitlySizedEnumSizes.one_byte", "one_byte", base.DEC, ExplicitlySizedEnum_VALUES)
-f["ExplicitlySizedEnumSizes.two_byte"] = ProtoField.uint16("uint_sizes.ExplicitlySizedEnumSizes.two_byte", "two_byte", base.DEC, ExplicitlySizedEnum_VALUES)
-f["ExplicitlySizedEnumSizes.three_byte"] = ProtoField.uint32("uint_sizes.ExplicitlySizedEnumSizes.three_byte", "three_byte", base.DEC, ExplicitlySizedEnum_VALUES)
-f["ExplicitlySizedEnumSizes_EmbossReservedAnonymousField1.three_and_a_half_byte"] = ProtoField.uint32("uint_sizes.ExplicitlySizedEnumSizes.EmbossReservedAnonymousField1.three_and_a_half_byte", "three_and_a_half_byte", base.DEC, ExplicitlySizedEnum_VALUES, 0x0FFFFFFF)
+f["EnumSizes.one_byte"] = ProtoField.uint8("uint_sizes.EnumSizes.one_byte", "one_byte", base.DEC, enums.Enum)
+f["EnumSizes.two_byte"] = ProtoField.uint16("uint_sizes.EnumSizes.two_byte", "two_byte", base.DEC, enums.Enum)
+f["EnumSizes.three_byte"] = ProtoField.uint32("uint_sizes.EnumSizes.three_byte", "three_byte", base.DEC, enums.Enum)
+f["EnumSizes.four_byte"] = ProtoField.uint32("uint_sizes.EnumSizes.four_byte", "four_byte", base.DEC, enums.Enum)
+f["EnumSizes.five_byte"] = ProtoField.uint64("uint_sizes.EnumSizes.five_byte", "five_byte", base.DEC, enums.Enum)
+f["EnumSizes.six_byte"] = ProtoField.uint64("uint_sizes.EnumSizes.six_byte", "six_byte", base.DEC, enums.Enum)
+f["EnumSizes.seven_byte"] = ProtoField.uint64("uint_sizes.EnumSizes.seven_byte", "seven_byte", base.DEC, enums.Enum)
+f["EnumSizes.eight_byte"] = ProtoField.uint64("uint_sizes.EnumSizes.eight_byte", "eight_byte", base.DEC, enums.Enum)
+f["ExplicitlySizedEnumSizes.one_byte"] = ProtoField.uint8("uint_sizes.ExplicitlySizedEnumSizes.one_byte", "one_byte", base.DEC, enums.ExplicitlySizedEnum)
+f["ExplicitlySizedEnumSizes.two_byte"] = ProtoField.uint16("uint_sizes.ExplicitlySizedEnumSizes.two_byte", "two_byte", base.DEC, enums.ExplicitlySizedEnum)
+f["ExplicitlySizedEnumSizes.three_byte"] = ProtoField.uint32("uint_sizes.ExplicitlySizedEnumSizes.three_byte", "three_byte", base.DEC, enums.ExplicitlySizedEnum)
+f["ExplicitlySizedEnumSizes_EmbossReservedAnonymousField1.three_and_a_half_byte"] = ProtoField.uint32("uint_sizes.ExplicitlySizedEnumSizes.EmbossReservedAnonymousField1.three_and_a_half_byte", "three_and_a_half_byte", base.DEC, enums.ExplicitlySizedEnum, 0x0FFFFFFF)
 f["ArraySizes.one_byte"] = ProtoField.uint8("uint_sizes.ArraySizes.one_byte", "one_byte")
 f["ArraySizes.two_byte"] = ProtoField.uint16("uint_sizes.ArraySizes.two_byte", "two_byte")
 f["ArraySizes.three_byte"] = ProtoField.uint32("uint_sizes.ArraySizes.three_byte", "three_byte")
@@ -119,9 +120,9 @@ uint_sizes_proto.fields = {
   f["ArraySizes.eight_byte"],
 }
 
-local dissect_Sizes, dissect_BigEndianSizes, dissect_AlternatingEndianSizes, dissect_EnumSizes, dissect_ExplicitlySizedEnumSizes, dissect_ExplicitlySizedEnumSizes_EmbossReservedAnonymousField1, dissect_ArraySizes
+local dissect = {}
 
-function dissect_Sizes(buffer, pinfo, tree, offset)
+function dissect.Sizes(buffer, pinfo, tree, offset)
   local subtree = tree:add(uint_sizes_proto, buffer(offset), "Sizes")
   subtree:add_le(f["Sizes.one_byte"], buffer(offset + 0, 1))
   subtree:add_le(f["Sizes.two_byte"], buffer(offset + 1, 2))
@@ -133,7 +134,7 @@ function dissect_Sizes(buffer, pinfo, tree, offset)
   subtree:add_le(f["Sizes.eight_byte"], buffer(offset + 28, 8))
 end
 
-function dissect_BigEndianSizes(buffer, pinfo, tree, offset)
+function dissect.BigEndianSizes(buffer, pinfo, tree, offset)
   local subtree = tree:add(uint_sizes_proto, buffer(offset), "BigEndianSizes")
   subtree:add(f["BigEndianSizes.one_byte"], buffer(offset + 0, 1))
   subtree:add(f["BigEndianSizes.two_byte"], buffer(offset + 1, 2))
@@ -145,7 +146,7 @@ function dissect_BigEndianSizes(buffer, pinfo, tree, offset)
   subtree:add(f["BigEndianSizes.eight_byte"], buffer(offset + 28, 8))
 end
 
-function dissect_AlternatingEndianSizes(buffer, pinfo, tree, offset)
+function dissect.AlternatingEndianSizes(buffer, pinfo, tree, offset)
   local subtree = tree:add(uint_sizes_proto, buffer(offset), "AlternatingEndianSizes")
   subtree:add(f["AlternatingEndianSizes.one_byte"], buffer(offset + 0, 1))
   subtree:add_le(f["AlternatingEndianSizes.two_byte"], buffer(offset + 1, 2))
@@ -157,7 +158,7 @@ function dissect_AlternatingEndianSizes(buffer, pinfo, tree, offset)
   subtree:add_le(f["AlternatingEndianSizes.eight_byte"], buffer(offset + 28, 8))
 end
 
-function dissect_EnumSizes(buffer, pinfo, tree, offset)
+function dissect.EnumSizes(buffer, pinfo, tree, offset)
   local subtree = tree:add(uint_sizes_proto, buffer(offset), "EnumSizes")
   subtree:add_le(f["EnumSizes.one_byte"], buffer(offset + 0, 1))
   subtree:add_le(f["EnumSizes.two_byte"], buffer(offset + 1, 2))
@@ -169,21 +170,21 @@ function dissect_EnumSizes(buffer, pinfo, tree, offset)
   subtree:add_le(f["EnumSizes.eight_byte"], buffer(offset + 28, 8))
 end
 
-function dissect_ExplicitlySizedEnumSizes(buffer, pinfo, tree, offset)
+function dissect.ExplicitlySizedEnumSizes(buffer, pinfo, tree, offset)
   local subtree = tree:add(uint_sizes_proto, buffer(offset), "ExplicitlySizedEnumSizes")
   subtree:add_le(f["ExplicitlySizedEnumSizes.one_byte"], buffer(offset + 0, 1))
   subtree:add_le(f["ExplicitlySizedEnumSizes.two_byte"], buffer(offset + 1, 2))
   subtree:add_le(f["ExplicitlySizedEnumSizes.three_byte"], buffer(offset + 3, 3))
   -- nested field emboss_reserved_anonymous_field_1
-  dissect_ExplicitlySizedEnumSizes_EmbossReservedAnonymousField1(buffer, pinfo, subtree, offset + 6)
+  dissect.ExplicitlySizedEnumSizes_EmbossReservedAnonymousField1(buffer, pinfo, subtree, offset + 6)
 end
 
-function dissect_ExplicitlySizedEnumSizes_EmbossReservedAnonymousField1(buffer, pinfo, tree, offset)
+function dissect.ExplicitlySizedEnumSizes_EmbossReservedAnonymousField1(buffer, pinfo, tree, offset)
   local subtree = tree:add(uint_sizes_proto, buffer(offset), "EmbossReservedAnonymousField1")
   subtree:add(f["ExplicitlySizedEnumSizes_EmbossReservedAnonymousField1.three_and_a_half_byte"], buffer(offset, 4))
 end
 
-function dissect_ArraySizes(buffer, pinfo, tree, offset)
+function dissect.ArraySizes(buffer, pinfo, tree, offset)
   local subtree = tree:add(uint_sizes_proto, buffer(offset), "ArraySizes")
   -- array field one_byte (2 elements)
   for i = 0, 2 - 1 do
@@ -221,7 +222,7 @@ end
 
 function uint_sizes_proto.dissector(buffer, pinfo, tree)
   pinfo.cols.protocol = "UINT_SIZES"
-  dissect_Sizes(buffer, pinfo, tree, 0)
+  dissect.Sizes(buffer, pinfo, tree, 0)
 end
 
 -- To register this dissector automatically, add a `[(wireshark) register_on: ...]`

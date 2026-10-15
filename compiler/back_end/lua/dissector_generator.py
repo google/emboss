@@ -135,12 +135,16 @@ def _qualified_lua_name(canonical_name):
     )
 
 
+# Enum value tables and per-struct dissect functions are stored in two module
+# level tables (`enums` and `dissect`) rather than as individual locals: Lua
+# allows at most 200 local variables per function, including the main chunk, so
+# a module with a couple of hundred types would otherwise fail to load.
 def _enum_values_var(canonical_name):
-    return _qualified_lua_name(canonical_name) + "_VALUES"
+    return "enums." + _qualified_lua_name(canonical_name)
 
 
 def _dissector_function(canonical_name):
-    return "dissect_" + _qualified_lua_name(canonical_name)
+    return "dissect." + _qualified_lua_name(canonical_name)
 
 
 def _proto_var(protocol_name):
@@ -943,7 +947,7 @@ def _is_unconditional(field):
 def _generate_enum_values_table(type_def):
     """Generates a Lua table mapping enum integer values to value names."""
     enum = type_def.enumeration
-    lines = ["local {} = {{".format(_enum_values_var(type_def.name.canonical_name))]
+    lines = ["{} = {{".format(_enum_values_var(type_def.name.canonical_name))]
     for value in enum.value:
         if not value.name or not value.value:
             continue
@@ -1043,6 +1047,7 @@ def generate_dissector(ir):
         if type_def.has_field("enumeration"):
             enum_blocks.append(_generate_enum_values_table(type_def))
     if enum_blocks:
+        lines.append("local enums = {}")
         lines.extend(enum_blocks)
         lines.append("")
 
@@ -1064,13 +1069,11 @@ def generate_dissector(ir):
         lines.append("}")
         lines.append("")
 
-    # Forward-declare all dissect functions as locals first, so dissectors
-    # may reference each other regardless of definition order.
+    # All dissect functions live in one table, so dissectors may reference
+    # each other regardless of definition order without consuming a Lua local
+    # per struct (see _dissector_function).
     if emitter.struct_bodies:
-        lines.append(
-            "local "
-            + ", ".join(_dissector_function(cn) for cn, _ in emitter.struct_bodies)
-        )
+        lines.append("local dissect = {}")
         lines.append("")
 
     # Per-struct dissector functions.

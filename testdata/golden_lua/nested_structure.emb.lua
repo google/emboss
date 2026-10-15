@@ -16,35 +16,35 @@ nested_structure_proto.fields = {
   f["Truck.id"],
 }
 
-local dissect_Container, dissect_Box, dissect_Truck
+local dissect = {}
 
-function dissect_Container(buffer, pinfo, tree, offset)
+function dissect.Container(buffer, pinfo, tree, offset)
   local subtree = tree:add(nested_structure_proto, buffer(offset), "Container")
   subtree:add_le(f["Container.weight"], buffer(offset + 0, 4))
   -- nested field important_box
-  dissect_Box(buffer, pinfo, subtree, offset + 4)
+  dissect.Box(buffer, pinfo, subtree, offset + 4)
   -- nested field other_box
-  dissect_Box(buffer, pinfo, subtree, offset + 12)
+  dissect.Box(buffer, pinfo, subtree, offset + 12)
 end
 
-function dissect_Box(buffer, pinfo, tree, offset)
+function dissect.Box(buffer, pinfo, tree, offset)
   local subtree = tree:add(nested_structure_proto, buffer(offset), "Box")
   subtree:add_le(f["Box.id"], buffer(offset + 0, 4))
   subtree:add_le(f["Box.count"], buffer(offset + 4, 4))
 end
 
-function dissect_Truck(buffer, pinfo, tree, offset)
+function dissect.Truck(buffer, pinfo, tree, offset)
   local subtree = tree:add(nested_structure_proto, buffer(offset), "Truck")
   subtree:add_le(f["Truck.id"], buffer(offset + 0, 4))
   -- array field cargo (2 elements)
   for i = 0, 2 - 1 do
-    dissect_Container(buffer, pinfo, subtree, offset + 4 + i * 20)
+    dissect.Container(buffer, pinfo, subtree, offset + 4 + i * 20)
   end
 end
 
 function nested_structure_proto.dissector(buffer, pinfo, tree)
   pinfo.cols.protocol = "NESTED_STRUCTURE"
-  dissect_Container(buffer, pinfo, tree, 0)
+  dissect.Container(buffer, pinfo, tree, 0)
 end
 
 -- To register this dissector automatically, add a `[(wireshark) register_on: ...]`

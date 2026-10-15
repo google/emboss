@@ -26,9 +26,9 @@ int_sizes_proto.fields = {
   f["Sizes.eight_byte"],
 }
 
-local dissect_Sizes
+local dissect = {}
 
-function dissect_Sizes(buffer, pinfo, tree, offset)
+function dissect.Sizes(buffer, pinfo, tree, offset)
   local subtree = tree:add(int_sizes_proto, buffer(offset), "Sizes")
   subtree:add_le(f["Sizes.one_byte"], buffer(offset + 0, 1))
   subtree:add_le(f["Sizes.two_byte"], buffer(offset + 1, 2))
@@ -42,7 +42,7 @@ end
 
 function int_sizes_proto.dissector(buffer, pinfo, tree)
   pinfo.cols.protocol = "INT_SIZES"
-  dissect_Sizes(buffer, pinfo, tree, 0)
+  dissect.Sizes(buffer, pinfo, tree, 0)
 end
 
 -- To register this dissector automatically, add a `[(wireshark) register_on: ...]`
