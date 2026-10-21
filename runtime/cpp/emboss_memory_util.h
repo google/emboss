@@ -396,8 +396,9 @@ class ContiguousBuffer final {
   // cv-qualified as T.
   template <typename T,
             typename = typename ::std::enable_if<
-                IsAliasSafe<T>::value && ::std::is_same<
-                    typename AddSourceCV<T, Byte>::Type, Byte>::value>>
+                IsAliasSafe<T>::value &&
+                ::std::is_same<typename AddSourceCV<T, Byte>::Type,
+                               Byte>::value>::type>
   explicit ContiguousBuffer(T *bytes, ::std::size_t size)
       : bytes_{reinterpret_cast<Byte *>(bytes)},
         size_{bytes == nullptr ? 0 : size} {
