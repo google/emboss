@@ -165,7 +165,9 @@ class UIntView final {
     EMBOSS_CHECK(Parameters::ValueIsOk(result));
     return result;
   }
-  ValueType UncheckedRead() const { return buffer_.UncheckedReadUInt(); }
+  ValueType UncheckedRead() const {
+    return static_cast<ValueType>(buffer_.UncheckedReadUInt());
+  }
 
   // The Write, TryToWrite, and CouldWriteValue methods are templated in order
   // to avoid surprises due to implicit narrowing.
@@ -528,10 +530,11 @@ class IntView final {
           static_cast<typename BitViewType::ValueType>(1)
           << (Parameters::kBits - 1);
       typename BitViewType::ValueType mask = sign_bit - 1;
-      typename BitViewType::ValueType data_mod2_to_n = mask & data;
+      ValueType data_mod2_to_n = static_cast<ValueType>(mask & data);
       ValueType result_sign_bit =
           static_cast<ValueType>((data & sign_bit) >> 1);
-      return data_mod2_to_n - result_sign_bit - result_sign_bit;
+      return static_cast<ValueType>(data_mod2_to_n - result_sign_bit -
+                                    result_sign_bit);
     }
 #endif
   }
@@ -543,8 +546,10 @@ class IntView final {
 // of bits.
 template <typename ValueType>
 constexpr inline ValueType MaxBcd(int bits) {
-  return bits < 4 ? (1 << bits) - 1
-                  : 10 * (MaxBcd<ValueType>(bits - 4) + 1) - 1;
+  return bits < 4
+             ? static_cast<ValueType>((1 << bits) - 1)
+             : static_cast<ValueType>(10 * (MaxBcd<ValueType>(bits - 4) + 1) -
+                                      1);
 }
 
 template <typename ValueType>
@@ -632,10 +637,10 @@ class BcdView final {
 
   ValueType Read() const {
     EMBOSS_CHECK(Ok());
-    return ConvertToBinary(buffer_.ReadUInt());
+    return ConvertToBinary(static_cast<ValueType>(buffer_.ReadUInt()));
   }
   ValueType UncheckedRead() const {
-    return ConvertToBinary(buffer_.UncheckedReadUInt());
+    return ConvertToBinary(static_cast<ValueType>(buffer_.UncheckedReadUInt()));
   }
   void Write(ValueType value) const {
     const bool result = TryToWrite(value);
@@ -713,8 +718,9 @@ class BcdView final {
     ValueType result = 0;
     ValueType multiplier = 1;
     for (int shift = 0; shift < Parameters::kBits; shift += 4) {
-      result += ((bcd_value >> shift) & 0xf) * multiplier;
-      multiplier *= 10;
+      result = static_cast<ValueType>(
+          result + ((bcd_value >> shift) & 0xf) * multiplier);
+      multiplier = static_cast<ValueType>(multiplier * 10);
     }
     return result;
   }
@@ -722,7 +728,7 @@ class BcdView final {
   static ValueType ConvertToBcd(ValueType value) {
     ValueType bcd_value = 0;
     for (int shift = 0; shift < Parameters::kBits; shift += 4) {
-      bcd_value |= (value % 10) << shift;
+      bcd_value = static_cast<ValueType>(bcd_value | ((value % 10) << shift));
       value /= 10;
     }
     return bcd_value;

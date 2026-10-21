@@ -72,11 +72,14 @@
 #if !defined(EMBOSS_CHECK)
 #if defined(EMBOSS_SKIP_CHECKS)
 #define EMBOSS_CHECK(x) ((void)0)
-#define EMBOSS_CHECK_ABORTS false
 #else  // !defined(EMBOSS_SKIP_CHECKS)
 #define EMBOSS_CHECK(x) assert((x))
-#define EMBOSS_CHECK_ABORTS (!(NDEBUG))
 #endif  // defined(EMBOSS_SKIP_CHECKS)
+#if defined(EMBOSS_SKIP_CHECKS) || defined(NDEBUG)
+#define EMBOSS_CHECK_ABORTS false
+#else  // !defined(EMBOSS_SKIP_CHECKS) && !defined(NDEBUG)
+#define EMBOSS_CHECK_ABORTS true
+#endif  // defined(EMBOSS_SKIP_CHECKS) || defined(NDEBUG)
 #endif  // !defined(EMBOSS_CHECK)
 
 #if !defined(EMBOSS_CHECK_ABORTS)
@@ -114,7 +117,11 @@
 // disable EMBOSS_DCHECK in situations where you do not disable EMBOSS_CHECK.
 #if !defined(EMBOSS_DCHECK)
 #define EMBOSS_DCHECK(x) assert((x))
-#define EMBOSS_DCHECK_ABORTS (!(NDEBUG))
+#if defined(NDEBUG)
+#define EMBOSS_DCHECK_ABORTS false
+#else  // !defined(NDEBUG)
+#define EMBOSS_DCHECK_ABORTS true
+#endif  // defined(NDEBUG)
 #endif  // !defined(EMBOSS_DCHECK)
 
 #if !defined(EMBOSS_DCHECK_ABORTS)

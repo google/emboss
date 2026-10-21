@@ -107,10 +107,12 @@ class TextOutputStream final {
   inline explicit TextOutputStream() = default;
 
   inline void Write(const ::std::string &text) {
-    text_.write(text.data(), text.size());
+    text_.write(text.data(), static_cast</**/ ::std::streamsize>(text.size()));
   }
 
-  inline void Write(const char *text) { text_.write(text, strlen(text)); }
+  inline void Write(const char *text) {
+    text_.write(text, static_cast</**/ ::std::streamsize>(strlen(text)));
+  }
 
   inline void Write(const char c) { text_.put(c); }
 
@@ -157,11 +159,11 @@ bool DecodeInteger(const ::std::string &text, IntType *result) {
       }
       continue;
     } else if (c >= '0' && c <= '9') {
-      digit = c - '0';
+      digit = static_cast<IntType>(c - '0');
     } else if (c >= 'A' && c <= 'F') {
-      digit = c - 'A' + 10;
+      digit = static_cast<IntType>(c - 'A' + 10);
     } else if (c >= 'a' && c <= 'f') {
-      digit = c - 'a' + 10;
+      digit = static_cast<IntType>(c - 'a' + 10);
     } else {
       return false;
     }
@@ -173,13 +175,13 @@ bool DecodeInteger(const ::std::string &text, IntType *result) {
           (::std::numeric_limits<IntType>::min() + digit) / base) {
         return false;
       }
-      accumulator = accumulator * base - digit;
+      accumulator = static_cast<IntType>(accumulator * base - digit);
     } else {
       if (accumulator >
           (::std::numeric_limits<IntType>::max() - digit) / base) {
         return false;
       }
-      accumulator = accumulator * base + digit;
+      accumulator = static_cast<IntType>(accumulator * base + digit);
     }
   }
   *result = accumulator;
@@ -276,10 +278,10 @@ void WriteIntegerToTextStream(IntegralType value, Stream *stream,
   // minus 1 char for the '_' that does not appear at the front of the number,
   // plus 2 chars for "0b", plus 1 char for '-', plus 1 extra char for the
   // trailing '\0', which is (sizeof value) * CHAR_BIT * 9 / 8 - 1 + 2 + 1 + 1.
-  const int buffer_size = (sizeof value) * CHAR_BIT * 9 / 8 + 3;
+  const ::std::size_t buffer_size = (sizeof value) * CHAR_BIT * 9 / 8 + 3;
   char buffer[buffer_size];
   buffer[buffer_size - 1] = '\0';
-  int next_char = buffer_size - 2;
+  int next_char = static_cast<int>(buffer_size - 2);
   if (value == 0) {
     EMBOSS_DCHECK_GE(next_char, 0);
     buffer[next_char] = digits[0];
@@ -298,7 +300,7 @@ void WriteIntegerToTextStream(IntegralType value, Stream *stream,
       // positive value, so 'value = -value' is not useful in that case.
       // Instead, we do some trickery to buffer the lowest-order digit here.
       auto digit = -(value + 1) % base + 1;
-      value = -(value + 1) / base;
+      value = static_cast<IntegralType>(-(value + 1) / base);
       if (digit == base) {
         digit = 0;
         ++value;
@@ -306,7 +308,7 @@ void WriteIntegerToTextStream(IntegralType value, Stream *stream,
       buffer_char(digits[digit]);
       ++digit_count;
     } else {
-      value = -value;
+      value = static_cast<IntegralType>(-value);
     }
   }
   while (value > 0) {
@@ -314,7 +316,7 @@ void WriteIntegerToTextStream(IntegralType value, Stream *stream,
       buffer_char('_');
     }
     buffer_char(digits[value % base]);
-    value /= base;
+    value = static_cast<IntegralType>(value / base);
     ++digit_count;
   }
   if (base == 16) {
@@ -725,14 +727,14 @@ void WriteShorthandAsciiArrayCommentToTextStream(
   if (!options.multiline()) return;
   if (!options.comments()) return;
   if (array->ElementCount() == 0) return;
-  static constexpr int kCharsPerBlock = 64;
+  static constexpr ::std::size_t kCharsPerBlock = 64;
   static constexpr char kStandInForNonPrintableChar = '.';
   auto start_new_line = [&]() {
     stream->Write("\n");
     stream->Write(options.current_indent());
     stream->Write("# ");
   };
-  for (int i = 0, n = array->ElementCount(); i < n; ++i) {
+  for (::std::size_t i = 0, n = array->ElementCount(); i < n; ++i) {
     const int c = (*array)[i].Read();
     const bool c_is_printable = (c >= 32 && c <= 126);
     const bool starting_new_block = ((i % kCharsPerBlock) == 0);
