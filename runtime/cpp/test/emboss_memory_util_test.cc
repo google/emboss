@@ -90,7 +90,7 @@ void TestMemoryAccessor() {
       bytes.data(), 0x7172737475767778UL & (~0x0UL >> (64 - kBits)));
   auto expected_vector_after_write = init_container<std::vector<CharT>>(
       0x78, 0x77, 0x76, 0x75, 0x74, 0x73, 0x72, 0x71);
-  for (int i = kBits / 8; i < 8; ++i) {
+  for (::std::size_t i = kBits / 8; i < 8; ++i) {
     expected_vector_after_write[i] = CharT(i + 1);
   }
   EXPECT_EQ(expected_vector_after_write,
@@ -102,7 +102,7 @@ void TestMemoryAccessor() {
       bytes.data(), 0x7172737475767778UL >> (64 - kBits));
   expected_vector_after_write = init_container<std::vector<CharT>>(
       0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78);
-  for (int i = kBits / 8; i < 8; ++i) {
+  for (::std::size_t i = kBits / 8; i < 8; ++i) {
     expected_vector_after_write[i] = CharT(i + 1);
   }
   EXPECT_EQ(expected_vector_after_write,

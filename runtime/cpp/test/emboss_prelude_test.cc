@@ -32,7 +32,7 @@ using BitBlockN = ::emboss::support::BitBlock<
     ::emboss::support::LittleEndianByteOrderer<ReadWriteContiguousBuffer>,
     kBits>;
 
-template </**/ ::std::size_t kBits>
+template <int kBits>
 using ViewParameters = ::emboss::support::FixedSizeViewParameters<
     kBits, ::emboss::support::AllValuesAreOk>;
 
@@ -776,7 +776,7 @@ TEST(BcdLittleEndianView, AllByteValues) {
       BcdViewN<8>{BitBlockN<8>{ReadWriteContiguousBuffer{&byte, 1}}};
   for (int i = 0; i < 15; ++i) {
     for (int j = 0; j < 15; ++j) {
-      byte = i * 16 + j;
+      byte = static_cast</**/ ::std::uint8_t>(i * 16 + j);
       if (i > 9 || j > 9) {
         EXPECT_FALSE(bcd8_view.Ok()) << i << ", " << j;
       } else {

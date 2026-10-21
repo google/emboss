@@ -4,3 +4,4 @@
 #
 # TODO(bolms): Find and port to a C++11-compatible unit test framework.
 build --copt=-std=c++17
+build --features=external_include_paths

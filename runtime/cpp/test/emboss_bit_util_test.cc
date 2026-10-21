@@ -73,6 +73,25 @@ TEST(IsPowerOfTwo, IsPowerOfTwo) {
   EXPECT_FALSE(IsPowerOfTwo(::std::int8_t{127}));
 }
 
+TEST(FitsInSizeT, FitsInSizeT) {
+  EXPECT_TRUE(FitsInSizeT(::std::int32_t{0}));
+  EXPECT_TRUE(FitsInSizeT(::std::int32_t{1}));
+  EXPECT_TRUE(FitsInSizeT(::std::numeric_limits</**/ ::std::int32_t>::max()));
+  EXPECT_FALSE(FitsInSizeT(::std::int32_t{-1}));
+  EXPECT_FALSE(FitsInSizeT(::std::numeric_limits</**/ ::std::int32_t>::min()));
+
+  EXPECT_TRUE(FitsInSizeT(::std::uint32_t{0}));
+  EXPECT_TRUE(FitsInSizeT(::std::numeric_limits</**/ ::std::uint32_t>::max()));
+
+  EXPECT_TRUE(FitsInSizeT(::std::int64_t{0}));
+  EXPECT_FALSE(FitsInSizeT(::std::int64_t{-1}));
+  EXPECT_FALSE(FitsInSizeT(::std::numeric_limits</**/ ::std::int64_t>::min()));
+
+  EXPECT_TRUE(FitsInSizeT(::std::uint64_t{0}));
+  EXPECT_TRUE(FitsInSizeT(static_cast</**/ ::std::uint64_t>(
+      ::std::numeric_limits</**/ ::std::size_t>::max())));
+}
+
 #if defined(EMBOSS_LITTLE_ENDIAN_TO_NATIVE)
 TEST(EndianConversion, LittleEndianToNative) {
   ::std::uint16_t data16 = 0;
