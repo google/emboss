@@ -649,6 +649,14 @@ def _cpp_integer_type_for_enum(max_bits, is_signed):
     assert False, f"Invalid value {max_bits} for maximum_bits"
 
 
+def _cpp_underlying_type_for_enum(enum_name, ir):
+    """Returns the C++ underlying integer type for an enum CanonicalName."""
+    type_ir = ir_util.find_object(enum_name, ir)
+    max_bits = ir_util.get_integer_attribute(type_ir.attribute, "maximum_bits")
+    is_signed = ir_util.get_boolean_attribute(type_ir.attribute, "is_signed")
+    return _cpp_integer_type_for_enum(max_bits, is_signed)
+
+
 def _render_builtin_operation(expression, ir, field_reader, subexpressions):
     """Renders a built-in operation (+, -, &&, etc.) into C++ code."""
     assert expression.function.function not in (
@@ -973,8 +981,8 @@ def _generate_custom_validator_expression_for(field_ir, ir):
                     == field_ir.name.canonical_name
                 )
                 expression_cpp_type = _cpp_basic_type_for_expression(expression, ir)
-                return "{}(emboss_reserved_local_value)".format(
-                    _maybe_type(expression_cpp_type)
+                return "{}(static_cast</**/{}>(emboss_reserved_local_value))".format(
+                    _maybe_type(expression_cpp_type), expression_cpp_type
                 )
 
         validation_body = _render_expression(
@@ -1369,10 +1377,11 @@ def _render_case_label(expression, ir):
     if expression.type.which_type == "integer":
         return _render_integer(int(expression.type.integer.modular_value))
     elif expression.type.which_type == "enumeration":
-        # Need fully qualified enum type name
         enum_type = expression.type.enumeration
-        cpp_enum_type = _get_fully_qualified_name(enum_type.name.canonical_name, ir)
-        return "static_cast</**/{}>({})".format(cpp_enum_type, enum_type.value)
+        cpp_enum_type = _cpp_underlying_type_for_enum(enum_type.name.canonical_name, ir)
+        return "static_cast</**/{}>({})".format(
+            cpp_enum_type, _render_integer(int(enum_type.value))
+        )
     else:
         assert False, "Unsupported switch case type"
 
@@ -1865,10 +1874,22 @@ def _emit_switch_block(group, ir, subexpressions):
     else:
         known_check = ""
 
+    discrim_type = group["discrim_expr"].type
+    if discrim_type.which_type == "enumeration":
+        underlying_type = _cpp_underlying_type_for_enum(
+            discrim_type.enumeration.name.canonical_name, ir
+        )
+        switch_value = "static_cast</**/{}>(emboss_reserved_switch_discrim.ValueOrDefault())".format(
+            underlying_type
+        )
+    else:
+        switch_value = "emboss_reserved_switch_discrim.ValueOrDefault()"
+
     return code_template.format_template(
         _TEMPLATES.ok_method_switch_block,
         discriminant=group["discrim_rendered"],
         known_check=known_check,
+        switch_value=switch_value,
         switch_cases="".join(rendered_arms),
     )
 
@@ -2050,8 +2071,13 @@ def _generate_structure_definition(type_ir, ir, config: Config):
         ok_subexpressions=ok_subexpressions.definition_code(),
         parameter_ok_checks="\n".join(parameter_checks),
         requires_check=requires_check,
-        equals_method_body="\n".join(equals_method_clauses),
-        unchecked_equals_method_body="\n".join(unchecked_equals_method_clauses),
+        equals_method_body=(
+            "\n".join(equals_method_clauses) or "(void)emboss_reserved_local_other;"
+        ),
+        unchecked_equals_method_body=(
+            "\n".join(unchecked_equals_method_clauses)
+            or "(void)emboss_reserved_local_other;"
+        ),
         enum_usings="\n".join(enum_using_statements),
         text_stream_methods=text_stream_methods,
         parameter_fields="\n".join(parameter_fields),
