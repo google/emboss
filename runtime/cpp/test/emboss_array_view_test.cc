@@ -256,9 +256,9 @@ TEST(ArrayView, TextFormatOutput_16BitIntElementTypes) {
 TEST(ArrayView, TextFormatOutput_MultilineComment) {
   ::std::uint8_t bytes[65];
   for (::std::size_t i = 0; i < sizeof bytes; ++i) {
-    bytes[i] = '0' + (i % 10);
+    bytes[i] = static_cast</**/ ::std::uint8_t>('0' + (i % 10));
   }
-  for (const ::std::size_t length : {63, 64, 65}) {
+  for (const ::std::size_t length : {63U, 64U, 65U}) {
     auto buffer = ReadWriteContiguousBuffer{bytes, length};
     ::std::string expected_text =
         "{\n  # "
