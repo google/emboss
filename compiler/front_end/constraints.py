@@ -718,9 +718,15 @@ def _check_bounds_on_runtime_integer_expressions(
 def _check_division_and_modulus_have_nonzero_divisors(
     expression, source_file_name, errors
 ):
-    """Rejects `l // r` and `l % r` whose divisor range could contain zero.
+    """Rejects `l // r` and `l % r` whose divisor is *provably always* zero.
 
-    TODO(webstera): Allow possibly-zero divisors once `undefined` is tracked.
+    A divisor that is provably zero (its range is exactly {0}, e.g. `x // 0`)
+    has no defined result and is rejected at compile time.  A divisor that is
+    merely *possibly* zero (a non-constant range that includes zero, e.g.
+    `x // d` for a byte `d`) is allowed: the expression type system propagates an
+    `undefined` value (tracked by IntegerType.can_be_undefined) and the runtime
+    yields an Unknown result for a `// 0`, so the field's `Ok()` becomes false
+    rather than the whole schema failing to compile.
     """
     if expression.which_expression != "function":
         return
@@ -735,9 +741,10 @@ def _check_division_and_modulus_have_nonzero_divisors(
         return
     rmin = divisor.type.integer.minimum_value
     rmax = divisor.type.integer.maximum_value
-    rmin_le_zero = rmin == "-infinity" or int(rmin) <= 0
-    rmax_ge_zero = rmax == "infinity" or int(rmax) >= 0
-    if rmin_le_zero and rmax_ge_zero:
+    # Provably always zero iff the divisor's range is exactly {0}.  (The bounds
+    # invariant guarantees minimum_value == maximum_value implies the value is a
+    # constant.)
+    if rmin == "0" and rmax == "0":
         op_text = expression.function.function_name.text
         errors.append(
             [
@@ -749,9 +756,7 @@ def _check_division_and_modulus_have_nonzero_divisors(
                 error.note(
                     source_file_name,
                     divisor.source_location,
-                    "Divisor range is {} to {}, which includes zero.".format(
-                        rmin, rmax
-                    ),
+                    "Divisor is always zero.",
                 ),
             ]
         )

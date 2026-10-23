@@ -836,8 +836,16 @@ def _render_expression(expression, ir, field_reader=None, subexpressions=None):
     # will fit into C++ types, or that operator arguments and return types can fit
     # in the same type: expressions like `-0x8000_0000_0000_0000` and
     # `0x1_0000_0000_0000_0000 - 1` can appear.
+    # A value that can be undefined must not be folded to a compile-time literal,
+    # even when its *defined* range collapses to a single value (modulus ==
+    # "infinity" / a fixed boolean): at runtime it may be Unknown (e.g. a
+    # division by zero), which only the real Maybe<>-returning computation can
+    # represent.
     if expression.type.which_type == "integer":
-        if expression.type.integer.modulus == "infinity":
+        if (
+            expression.type.integer.modulus == "infinity"
+            and not expression.type.integer.can_be_undefined
+        ):
             return _ExpressionResult(
                 _render_integer_for_expression(
                     int(expression.type.integer.modular_value)
@@ -845,7 +853,10 @@ def _render_expression(expression, ir, field_reader=None, subexpressions=None):
                 True,
             )
     elif expression.type.which_type == "boolean":
-        if expression.type.boolean.has_field("value"):
+        if (
+            expression.type.boolean.has_field("value")
+            and not expression.type.boolean.can_be_undefined
+        ):
             if expression.type.boolean.value:
                 return _ExpressionResult(_maybe_type("bool") + "(true)", True)
             else:
@@ -1418,6 +1429,7 @@ def _is_discriminant_provably_known(discrim_expr, fields):
         return (
             cond.type.which_type == "boolean"
             and cond.type.boolean.has_field("value")
+            and not cond.type.boolean.can_be_undefined
             and bool(cond.type.boolean.value)
         )
     return False
