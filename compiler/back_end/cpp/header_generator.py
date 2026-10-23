@@ -1426,11 +1426,6 @@ def _is_discriminant_provably_known(discrim_expr, fields):
         if ir_util.field_is_virtual(f):
             return False
         cond = f.existence_condition
-        # An existence condition that can be undefined is not provably known at
-        # runtime, so the Known() guard on the discriminant read must be kept.
-        # (In practice the boolean folder never sets `value` on a
-        # can-be-undefined condition, so this is belt-and-suspenders; it keeps
-        # the elision sound regardless of how folding evolves.)
         return (
             cond.type.which_type == "boolean"
             and cond.type.boolean.has_field("value")

@@ -81,9 +81,6 @@ class ConstraintsTest(unittest.TestCase):
         self.assertEqual([], constraints.check_constraints(ir))
 
     def test_no_error_on_division_with_divisor_range_including_zero(self):
-        # A *possibly*-zero divisor is now allowed: it propagates an `undefined`
-        # value (IntegerType.can_be_undefined) and yields an Unknown result at
-        # runtime rather than failing to compile.
         ir = _make_ir_from_emb(
             "struct Foo:\n"
             "  0 [+1]  UInt  divisor\n"
@@ -102,7 +99,7 @@ class ConstraintsTest(unittest.TestCase):
         self.assertEqual([], constraints.check_constraints(ir))
 
     def test_error_on_division_by_zero_literal(self):
-        # A *provably*-always-zero divisor is still a hard compile error.
+        # A provably-always-zero divisor is a hard compile error.
         ir = _make_ir_from_emb(
             "struct Foo:\n" "  0 [+1]  UInt  x\n" "  let q = x // 0\n"
         )
