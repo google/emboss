@@ -18,7 +18,10 @@ The resolve_symbols function should be used to generate canonical resolutions
 for all symbol references in an Emboss IR.
 """
 
-import collections
+from __future__ import annotations
+
+from collections.abc import Iterable, Sequence
+from typing import Any, NamedTuple
 
 from compiler.util import error
 from compiler.util import ir_data
@@ -30,20 +33,33 @@ from compiler.util import traverse_ir
 # TODO(bolms): Symbol resolution raises an exception at the first error, but
 # this is one place where it can make sense to report multiple errors.
 
-FileLocation = collections.namedtuple("FileLocation", ["file", "location"])
+
+class FileLocation(NamedTuple):
+    file: str
+    location: parser_types.SourceLocation
 
 
-def ambiguous_name_error(file_name, location, name, candidate_locations):
+def ambiguous_name_error(
+    file_name: str,
+    location: parser_types.SourceLocation,
+    name: str,
+    candidate_locations: Iterable[FileLocation],
+) -> list[error.Message]:
     """A name cannot be resolved because there are two or more candidates."""
     result = [error.error(file_name, location, "Ambiguous name '{}'".format(name))]
-    for location in sorted(candidate_locations):
+    for candidate in sorted(candidate_locations):
         result.append(
-            error.note(location.file, location.location, "Possible resolution")
+            error.note(candidate.file, candidate.location, "Possible resolution")
         )
     return result
 
 
-def duplicate_name_error(file_name, location, name, original_location):
+def duplicate_name_error(
+    file_name: str,
+    location: parser_types.SourceLocation,
+    name: str,
+    original_location: FileLocation,
+) -> list[error.Message]:
     """A name is defined two or more times."""
     return [
         error.error(file_name, location, "Duplicate name '{}'".format(name)),
@@ -53,11 +69,15 @@ def duplicate_name_error(file_name, location, name, original_location):
     ]
 
 
-def missing_name_error(file_name, location, name):
+def missing_name_error(
+    file_name: str, location: parser_types.SourceLocation, name: str
+) -> list[error.Message]:
     return [error.error(file_name, location, "No candidate for '{}'".format(name))]
 
 
-def array_subfield_error(file_name, location, name):
+def array_subfield_error(
+    file_name: str, location: parser_types.SourceLocation, name: str
+) -> list[error.Message]:
     return [
         error.error(
             file_name, location, "Cannot access member of array '{}'".format(name)
@@ -65,7 +85,9 @@ def array_subfield_error(file_name, location, name):
     ]
 
 
-def noncomposite_subfield_error(file_name, location, name):
+def noncomposite_subfield_error(
+    file_name: str, location: parser_types.SourceLocation, name: str
+) -> list[error.Message]:
     return [
         error.error(
             file_name,
@@ -75,7 +97,9 @@ def noncomposite_subfield_error(file_name, location, name):
     ]
 
 
-def _nested_name(canonical_name, name):
+def _nested_name(
+    canonical_name: ir_data.CanonicalName, name: str
+) -> ir_data.CanonicalName:
     """Creates a new CanonicalName with name appended to the object_path."""
     return ir_data.CanonicalName(
         module_file=canonical_name.module_file,
@@ -83,7 +107,7 @@ def _nested_name(canonical_name, name):
     )
 
 
-class _Scope(dict):
+class _Scope(dict[str, "_Scope"]):
     """A _Scope holds data for a symbol.
 
     A _Scope is a dict with some additional attributes.  Lexically nested names
@@ -120,7 +144,13 @@ class _Scope(dict):
     # This applies to type names ('Foo'), which may be found from many scopes.
     SEARCHABLE = object()
 
-    def __init__(self, canonical_name, source_location, visibility, alias=None):
+    def __init__(
+        self,
+        canonical_name: ir_data.CanonicalName,
+        source_location: parser_types.SourceLocation | None,
+        visibility: object,
+        alias: Sequence[str] | None = None,
+    ) -> None:
         super(_Scope, self).__init__()
         self.canonical_name = canonical_name
         self.source_location = source_location
@@ -128,7 +158,17 @@ class _Scope(dict):
         self.alias = alias
 
 
-def _add_name_to_scope(name_ir, scope, canonical_name, visibility, errors):
+# The top-level symbol table: a map from module file name to the module's _Scope.
+_SymbolTable = dict[str, _Scope]
+
+
+def _add_name_to_scope(
+    name_ir: ir_data.Word,
+    scope: _Scope,
+    canonical_name: ir_data.CanonicalName,
+    visibility: object,
+    errors: list[list[error.Message]],
+) -> _Scope:
     """Adds the given name_ir to the given scope."""
     name = name_ir.text
     new_scope = _Scope(canonical_name, name_ir.source_location, visibility)
@@ -148,7 +188,12 @@ def _add_name_to_scope(name_ir, scope, canonical_name, visibility, errors):
     return new_scope
 
 
-def _add_name_to_scope_and_normalize(name_ir, scope, visibility, errors):
+def _add_name_to_scope_and_normalize(
+    name_ir: ir_data.NameDefinition,
+    scope: _Scope,
+    visibility: object,
+    errors: list[list[error.Message]],
+) -> _Scope:
     """Adds the given name_ir to scope and sets its canonical_name."""
     name = name_ir.name.text
     canonical_name = _nested_name(scope.canonical_name, name)
@@ -156,7 +201,9 @@ def _add_name_to_scope_and_normalize(name_ir, scope, visibility, errors):
     return _add_name_to_scope(name_ir.name, scope, canonical_name, visibility, errors)
 
 
-def _add_struct_field_to_scope(field, scope, errors):
+def _add_struct_field_to_scope(
+    field: ir_data.Field, scope: _Scope, errors: list[list[error.Message]]
+) -> None:
     """Adds the name of the given field to the scope."""
     new_scope = _add_name_to_scope_and_normalize(
         field.name, scope, _Scope.LOCAL, errors
@@ -177,17 +224,27 @@ def _add_struct_field_to_scope(field, scope, errors):
     )
 
 
-def _add_parameter_name_to_scope(parameter, scope, errors):
+def _add_parameter_name_to_scope(
+    parameter: ir_data.RuntimeParameter,
+    scope: _Scope,
+    errors: list[list[error.Message]],
+) -> None:
     """Adds the name of the given parameter to the scope."""
     _add_name_to_scope_and_normalize(parameter.name, scope, _Scope.LOCAL, errors)
 
 
-def _add_enum_value_to_scope(value, scope, errors):
+def _add_enum_value_to_scope(
+    value: ir_data.EnumValue, scope: _Scope, errors: list[list[error.Message]]
+) -> None:
     """Adds the name of the enum value to scope."""
     _add_name_to_scope_and_normalize(value.name, scope, _Scope.LOCAL, errors)
 
 
-def _add_type_name_to_scope(type_definition, scope, errors):
+def _add_type_name_to_scope(
+    type_definition: ir_data.TypeDefinition,
+    scope: _Scope,
+    errors: list[list[error.Message]],
+) -> dict[str, _Scope]:
     """Adds the name of type_definition to the given scope."""
     new_scope = _add_name_to_scope_and_normalize(
         type_definition.name, scope, _Scope.SEARCHABLE, errors
@@ -195,12 +252,16 @@ def _add_type_name_to_scope(type_definition, scope, errors):
     return {"scope": new_scope}
 
 
-def _set_scope_for_type_definition(type_definition, scope):
+def _set_scope_for_type_definition(
+    type_definition: ir_data.TypeDefinition, scope: _Scope
+) -> dict[str, _Scope]:
     """Sets the current scope for an ir_data.AddressableUnit."""
     return {"scope": scope[type_definition.name.name.text]}
 
 
-def _add_module_to_scope(module, scope):
+def _add_module_to_scope(
+    module: ir_data.Module, scope: _SymbolTable
+) -> dict[str, _Scope]:
     """Adds the name of the module to the given scope."""
     module_symbol_table = _Scope(
         ir_data.CanonicalName(module_file=module.source_file_name, object_path=[]),
@@ -211,12 +272,19 @@ def _add_module_to_scope(module, scope):
     return {"scope": scope[module.source_file_name]}
 
 
-def _set_scope_for_module(module, scope):
+def _set_scope_for_module(
+    module: ir_data.Module, scope: _SymbolTable
+) -> dict[str, _Scope]:
     """Adds the name of the module to the given scope."""
     return {"scope": scope[module.source_file_name]}
 
 
-def _add_import_to_scope(foreign_import, table, module, errors):
+def _add_import_to_scope(
+    foreign_import: ir_data.Import,
+    table: _SymbolTable,
+    module: _Scope,
+    errors: list[list[error.Message]],
+) -> None:
     if not foreign_import.local_name.text:
         # This is the prelude import; ignore it.
         return
@@ -230,10 +298,12 @@ def _add_import_to_scope(foreign_import, table, module, errors):
     )
 
 
-def _construct_symbol_tables(ir):
+def _construct_symbol_tables(
+    ir: ir_data.EmbossIr,
+) -> tuple[_SymbolTable, list[list[error.Message]]]:
     """Constructs per-module symbol tables for each module in ir."""
-    symbol_tables = {}
-    errors = []
+    symbol_tables: _SymbolTable = {}
+    errors: list[list[error.Message]] = []
     traverse_ir.fast_traverse_ir_top_down(
         ir,
         [ir_data.Module],
@@ -288,7 +358,14 @@ def _construct_symbol_tables(ir):
     return symbol_tables, errors
 
 
-def _add_alias_to_scope(name_ir, table, scope, alias, visibility, errors):
+def _add_alias_to_scope(
+    name_ir: ir_data.Word,
+    table: _SymbolTable,
+    scope: ir_data.CanonicalName,
+    alias: Sequence[str],
+    visibility: object,
+    errors: list[list[error.Message]],
+) -> _Scope:
     """Adds the given name to the scope as an alias."""
     name = name_ir.text
     new_scope = _Scope(
@@ -315,8 +392,13 @@ def _add_alias_to_scope(name_ir, table, scope, alias, visibility, errors):
 
 
 def _resolve_head_of_field_reference(
-    field_reference, table, current_scope, visible_scopes, source_file_name, errors
-):
+    field_reference: ir_data.FieldReference,
+    table: _SymbolTable,
+    current_scope: ir_data.CanonicalName,
+    visible_scopes: Sequence[ir_data.CanonicalName],
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     return _resolve_reference(
         field_reference.path[0],
         table,
@@ -328,8 +410,13 @@ def _resolve_head_of_field_reference(
 
 
 def _resolve_reference(
-    reference, table, current_scope, visible_scopes, source_file_name, errors
-):
+    reference: ir_data.Reference,
+    table: _SymbolTable,
+    current_scope: ir_data.CanonicalName,
+    visible_scopes: Sequence[ir_data.CanonicalName],
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     """Sets the canonical name of the given reference."""
     if reference.has_field("canonical_name"):
         # This reference has already been resolved by the _resolve_field_reference
@@ -344,10 +431,15 @@ def _resolve_reference(
 
 
 def _find_target_of_reference(
-    reference, table, current_scope, visible_scopes, source_file_name, errors
-):
+    reference: ir_data.Reference,
+    table: _SymbolTable,
+    current_scope: ir_data.CanonicalName,
+    visible_scopes: Sequence[ir_data.CanonicalName],
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> _Scope | None:
     """Returns the resolved name of the given reference."""
-    found_in_table = None
+    found_in_table: _Scope | None = None
     name = reference.source_name[0].text
     for scope in visible_scopes:
         scoped_table = table[scope.module_file]
@@ -436,22 +528,27 @@ def _find_target_of_reference(
                 return None
             found_in_table = found_in_table[subname.text]
             while found_in_table.alias:
-                referenced_table = table
-                for name in found_in_table.alias:
+                referenced_table = table[found_in_table.alias[0]]
+                for name in found_in_table.alias[1:]:
                     referenced_table = referenced_table[name]
-                    # TODO(bolms): This section should really be a recursive lookup
-                    # function, which would be able to handle arbitrary aliases through
-                    # other aliases.
-                    #
-                    # This should be fine for now, since the only aliases here should be
-                    # imports, which can't refer to other imports.
-                    assert not referenced_table.alias, "Alias found to contain alias."
+                # TODO(bolms): This section should really be a recursive lookup
+                # function, which would be able to handle arbitrary aliases through
+                # other aliases.
+                #
+                # This should be fine for now, since the only aliases here should be
+                # imports, which can't refer to other imports.
+                assert not referenced_table.alias, "Alias found to contain alias."
                 found_in_table = referenced_table
         return found_in_table
     return None
 
 
-def _resolve_field_reference(field_reference, source_file_name, errors, ir):
+def _resolve_field_reference(
+    field_reference: ir_data.FieldReference,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+    ir: ir_data.EmbossIr,
+) -> None:
     """Resolves the References inside of a FieldReference."""
     if field_reference.path[-1].has_field("canonical_name"):
         # Already done.
@@ -465,7 +562,7 @@ def _resolve_field_reference(field_reference, source_file_name, errors, ir):
                 # call so that only one copy of the error for a particular reference
                 # will actually surface: in particular, the one that results from a
                 # direct call from traverse_ir_top_down into _resolve_field_reference.
-                new_errors = []
+                new_errors: list[list[error.Message]] = []
                 _resolve_field_reference(
                     previous_field.read_transform.field_reference,
                     previous_field.name.canonical_name.module_file,
@@ -520,7 +617,10 @@ def _resolve_field_reference(field_reference, source_file_name, errors, ir):
         previous_reference = ref
 
 
-def _set_visible_scopes_for_type_definition(type_definition, visible_scopes):
+def _set_visible_scopes_for_type_definition(
+    type_definition: ir_data.TypeDefinition,
+    visible_scopes: tuple[ir_data.CanonicalName, ...],
+) -> dict[str, Any]:
     """Sets current_scope and visible_scopes for the given type_definition."""
     return {
         "current_scope": type_definition.name.canonical_name,
@@ -532,10 +632,10 @@ def _set_visible_scopes_for_type_definition(type_definition, visible_scopes):
     }
 
 
-def _set_visible_scopes_for_module(module):
+def _set_visible_scopes_for_module(module: ir_data.Module) -> dict[str, Any]:
     """Sets visible_scopes for the given module."""
     self_scope = ir_data.CanonicalName(module_file=module.source_file_name)
-    extra_visible_scopes = []
+    extra_visible_scopes: list[ir_data.CanonicalName] = []
     for foreign_import in module.foreign_import:
         # Anonymous imports are searched for top-level names; named imports are not.
         # As of right now, only the prelude should be imported anonymously; other
@@ -547,24 +647,32 @@ def _set_visible_scopes_for_module(module):
     return {"visible_scopes": (self_scope,) + tuple(extra_visible_scopes)}
 
 
-def _set_visible_scopes_for_attribute(attribute, field, visible_scopes):
+def _set_visible_scopes_for_attribute(
+    attribute: ir_data.Attribute,
+    field: ir_data.Field | None,
+    visible_scopes: tuple[ir_data.CanonicalName, ...],
+) -> dict[str, Any] | None:
     """Sets current_scope and visible_scopes for the attribute."""
     del attribute  # Unused
     if field is None:
-        return
+        return None
     return {
         "current_scope": field.name.canonical_name,
         "visible_scopes": (field.name.canonical_name,) + visible_scopes,
     }
 
 
-def _module_source_from_table_action(m, table):
+def _module_source_from_table_action(
+    m: ir_data.Module, table: _SymbolTable
+) -> dict[str, _Scope]:
     return {"module": table[m.source_file_name]}
 
 
-def _resolve_symbols_from_table(ir, table):
+def _resolve_symbols_from_table(
+    ir: ir_data.EmbossIr, table: _SymbolTable
+) -> list[list[error.Message]]:
     """Resolves all references in the given IR, given the constructed table."""
-    errors = []
+    errors: list[list[error.Message]] = []
     # Symbol resolution is broken into five passes.  First, this code resolves any
     # imports, and adds import aliases to modules.
     traverse_ir.fast_traverse_ir_top_down(
@@ -607,9 +715,9 @@ def _resolve_symbols_from_table(ir, table):
     return errors
 
 
-def resolve_field_references(ir):
+def resolve_field_references(ir: ir_data.EmbossIr) -> list[list[error.Message]]:
     """Resolves structure member accesses ("field.subfield") in ir."""
-    errors = []
+    errors: list[list[error.Message]] = []
     traverse_ir.fast_traverse_ir_top_down(
         ir,
         [ir_data.FieldReference],
@@ -624,7 +732,7 @@ def resolve_field_references(ir):
     return errors
 
 
-def resolve_symbols(ir):
+def resolve_symbols(ir: ir_data.EmbossIr) -> list[list[error.Message]]:
     """Resolves the symbols in all modules in ir."""
     symbol_tables, errors = _construct_symbol_tables(ir)
     if errors:

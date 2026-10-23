@@ -9,19 +9,28 @@ deep inspection of the parser tables to quickly find traversals of the parser
 state space that correspond to realizable sequences of tokens.
 """
 
-from __future__ import print_function
+from __future__ import annotations
 
 import argparse
-import collections
-import pkgutil
 import sys
+from collections.abc import Collection, Iterable, Mapping, Sequence
 
 from compiler.front_end import lr1
 from compiler.front_end import parser
 from compiler.front_end import tokenizer
 
+# Maps a terminal (or None, for the start of input) to the terminals that may
+# follow it.
+_NextTerminals = dict[str | None, Collection[str | None]]
+# Maps a (first terminal, last terminal) boundary to a token sequence that
+# starts and ends with those terminals.  (None, None) marks the empty sequence.
+_Boundaries = dict[tuple[str | None, str | None], list[str]]
+# An error example: parser state, token sequence leading to the state, the
+# terminals that are errors in that state, and the terminals that are not.
+_Example = tuple[int, tuple[str, ...], list[str], list[str]]
 
-def _parse_command_line(argv):
+
+def _parse_command_line(argv: Sequence[str]) -> argparse.Namespace:
     """Parses the given command-line arguments."""
     parser = argparse.ArgumentParser(
         description="Generator of examples inputs for Emboss parser errors.",
@@ -41,7 +50,9 @@ def _parse_command_line(argv):
     return parser.parse_args(argv[1:])
 
 
-def _token_sequences_for_symbols(parser, next_terminals):
+def _token_sequences_for_symbols(
+    parser: lr1.Parser, next_terminals: _NextTerminals
+) -> dict[str, _Boundaries]:
     # `boundaries` is a dict of symbols to dicts of (first terminal, last
     # terminal) pairs to [terminal lists].
     #
@@ -54,7 +65,7 @@ def _token_sequences_for_symbols(parser, next_terminals):
     # This construction makes it possible to efficiently find terminal sequences
     # that can be added to an input stream in order to force a REDUCE action as
     # a transition to a new top-of-stack state.
-    boundaries = {}
+    boundaries: dict[str, _Boundaries] = {}
 
     # The boundary for a terminal symbol is always just that terminal symbol.
     for terminal in parser.terminals:
@@ -62,7 +73,7 @@ def _token_sequences_for_symbols(parser, next_terminals):
     for nonterminal in parser.nonterminals:
         boundaries[nonterminal] = {}
 
-    def _boundary(symbols):
+    def _boundary(symbols: Sequence[str]) -> _Boundaries:
         # `symbols` is the right-hand side (RHS) of a production -- something
         # like `["aexpr", "+", "mexpr"]`.
         #
@@ -100,9 +111,9 @@ def _token_sequences_for_symbols(parser, next_terminals):
         #         ("(", "NUM"): ["(", "NUM", ")", "+", "-", "NUM",],
         #         ("(", ")"): ["(", "NUM", ")", "+", "(", "NUM", ")"],
         #     }
-        prefix_boundaries = {(None, None): []}
+        prefix_boundaries: _Boundaries = {(None, None): []}
         for symbol in symbols:
-            new_prefix_boundaries = {}
+            new_prefix_boundaries: _Boundaries = {}
             for symbol_boundary, symbol_token_sequence in boundaries[symbol].items():
                 first, last = symbol_boundary
                 if first is None and last is None:
@@ -130,7 +141,7 @@ def _token_sequences_for_symbols(parser, next_terminals):
         # nonterminal symbol.  This could be slow (polynomial time), but
         # requires a pathological grammar; useful grammars should complete in
         # only a few iterations.
-        boundaries_to_add = {}
+        boundaries_to_add: dict[str, _Boundaries] = {}
         for production in parser.productions:
             for boundary, sequence in _boundary(production.rhs).items():
                 if boundary not in boundaries[production.lhs]:
@@ -145,31 +156,31 @@ def _token_sequences_for_symbols(parser, next_terminals):
     return boundaries
 
 
-def _token_examples():
+def _token_examples() -> dict[str, str]:
     """Builds a list of example tokens for each token defined by the tokenizer."""
-    tokens = {}
+    tokens: dict[str, str] = {}
     for token in tokenizer.LITERAL_TOKEN_PATTERNS:
         tokens['"' + token + '"'] = token
-    for token in tokenizer.REGEX_TOKEN_PATTERNS:
-        if token.symbol:  # Skip whitespace.
-            tokens[token.symbol] = token.example
+    for pattern in tokenizer.REGEX_TOKEN_PATTERNS:
+        if pattern.symbol:  # Skip whitespace.
+            tokens[pattern.symbol] = pattern.example
     return tokens
 
 
 class _RenderError(Exception):
-    def __init__(self, last_token, token):
+    def __init__(self, last_token: str | None, token: str) -> None:
         self.last_token = last_token
         self.token = token
         super().__init__()
 
 
 def _render(
-    token_strings,
-    next_terminals,
-    sequence,
-    trailing_error_terminals,
-    trailing_ok_terminals,
-):
+    token_strings: Mapping[str, str],
+    next_terminals: _NextTerminals,
+    sequence: tuple[str, ...],
+    trailing_error_terminals: Iterable[str],
+    trailing_ok_terminals: Iterable[str],
+) -> str | None:
     """Renders a sequence of tokens as source text.
 
     Arguments:
@@ -179,9 +190,9 @@ def _render(
       A string which should tokenize to the original sequence (possibly with
       trailing newline).
     """
-    result = []
+    result: list[str] = []
     indent = 0
-    last_token = None
+    last_token: str | None = None
     for token in sequence + ("$END",):
         if token not in next_terminals[last_token] and token != "$END":
             raise _RenderError(last_token, token)
@@ -211,10 +222,10 @@ def _render(
     return "".join(result).replace(" \n", "\n")
 
 
-def _next_terminals(parser):
+def _next_terminals(parser: lr1.Parser) -> _NextTerminals:
     """Generates a table of terminals which can follow other terminals."""
     terminals = parser.terminals
-    next_terminals = {}
+    next_terminals: _NextTerminals = {}
 
     # Most terminals can follow most terminals.  Only a few specific terminals
     # require special handling.
@@ -293,7 +304,9 @@ def _next_terminals(parser):
     return next_terminals
 
 
-def _target_states(parser, next_terminals, flags):
+def _target_states(
+    parser: lr1.Parser, next_terminals: _NextTerminals, flags: argparse.Namespace
+) -> set[int]:
     """Generates a list of states which should have associated error messages."""
     terminals = parser.terminals
     states = set(parser.action.keys())
@@ -318,7 +331,7 @@ def _target_states(parser, next_terminals, flags):
     # However, since the Documentation regex consumes all input until the
     # newline, it is impossible to get a token other than '"\\n"' after
     # Documentation, and thus it is impossible to actually trigger the error.
-    target_states = set()
+    target_states: set[int] = set()
     if flags.find_examples_for_existing_errors:
         target_states.add(0)
     elif 0 not in parser.default_errors:
@@ -351,7 +364,9 @@ def _target_states(parser, next_terminals, flags):
     return target_states
 
 
-def _errors_by_production_search(parser, next_terminals, flags):
+def _errors_by_production_search(
+    parser: lr1.Parser, next_terminals: _NextTerminals, flags: argparse.Namespace
+) -> list[_Example]:
     """Finds all reachable parser states without exhaustive error messages."""
     # We can treat the states of a shift-reduce parser as nodes on a graph,
     # with edges labeled by the *symbol* (either terminal or nonterminal) which
@@ -390,12 +405,12 @@ def _errors_by_production_search(parser, next_terminals, flags):
     # stream.  However, the "can follow" rule seems to work well enough in
     # practice, and it means that we aren't trying to take the cartesian
     # product of the state tables for two different grammars.
-    found_states = {(0, None): [None]}
-    states_to_check = [(0, [None])]
+    found_states: dict[tuple[int, str | None], list[str | None]] = {(0, None): [None]}
+    states_to_check: list[tuple[int, list[str | None]]] = [(0, [None])]
     terminals = parser.terminals
     target_states = _target_states(parser, next_terminals, flags)
     token_sequences = _token_sequences_for_symbols(parser, next_terminals)
-    result = []
+    result: list[_Example] = []
     while states_to_check:
         state_to_check, prefix = states_to_check[0]
         del states_to_check[0]
@@ -426,8 +441,8 @@ def _errors_by_production_search(parser, next_terminals, flags):
                 found_states[(next_state, new_end)] = prefix + tokens
                 states_to_check.append((next_state, prefix + tokens))
                 if next_state in target_states:
-                    error_terminals = set()
-                    non_error_terminals = set()
+                    error_terminals: set[str] = set()
+                    non_error_terminals: set[str] = set()
                     for t in terminals:
                         action = parser.action.get(next_state, {}).get(t)
                         if action is None:
@@ -456,7 +471,7 @@ def _errors_by_production_search(parser, next_terminals, flags):
     return result
 
 
-def main(flags):
+def main(flags: argparse.Namespace) -> int:
     next_terminals = _next_terminals(parser.module_parser())
     examples = _errors_by_production_search(
         parser.module_parser(), next_terminals, flags

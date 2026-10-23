@@ -14,6 +14,10 @@
 
 """Functions for checking expression types."""
 
+from __future__ import annotations
+
+from collections.abc import Callable, Iterable
+
 from compiler.front_end import attributes
 from compiler.util import error
 from compiler.util import ir_data
@@ -21,8 +25,26 @@ from compiler.util import ir_data_utils
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 
+# The type-checking rule for an operator or function: a function that sets the
+# result type of the expression, a function that checks one argument, the
+# argument names for error messages, the minimum and maximum (None for
+# unbounded) argument counts, and "operator" or "function".
+_OperatorSpec = tuple[
+    Callable[[ir_data.Expression], None],
+    Callable[[ir_data.Expression, str, list[list[error.Message]], str], None],
+    Iterable[str],
+    int,
+    int | None,
+    str,
+]
 
-def _type_check_expression(expression, source_file_name, ir, errors):
+
+def _type_check_expression(
+    expression: ir_data.Expression,
+    source_file_name: str,
+    ir: ir_data.EmbossIr,
+    errors: list[list[error.Message]],
+) -> None:
     """Checks and annotates the type of an expression and all subexpressions."""
     if ir_data_utils.reader(expression).type.which_type:
         # This expression has already been type checked.
@@ -44,17 +66,22 @@ def _type_check_expression(expression, source_file_name, ir, errors):
         assert False, "Unknown expression variety {!r}".format(expression_variety)
 
 
-def _annotate_as_integer(expression):
+def _annotate_as_integer(expression: ir_data.Expression) -> None:
     ir_data_utils.builder(expression).type.integer.CopyFrom(ir_data.IntegerType())
 
 
-def _annotate_as_boolean(expression):
+def _annotate_as_boolean(expression: ir_data.Expression) -> None:
     ir_data_utils.builder(expression).type.boolean.CopyFrom(ir_data.BooleanType())
 
 
 def _type_check(
-    expression, source_file_name, errors, type_oneof, type_name, expression_name
-):
+    expression: ir_data.Expression,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+    type_oneof: str,
+    type_name: str,
+    expression_name: str,
+) -> None:
     if ir_data_utils.reader(expression).type.which_type != type_oneof:
         errors.append(
             [
@@ -67,19 +94,34 @@ def _type_check(
         )
 
 
-def _type_check_integer(expression, source_file_name, errors, expression_name):
+def _type_check_integer(
+    expression: ir_data.Expression,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+    expression_name: str,
+) -> None:
     _type_check(
         expression, source_file_name, errors, "integer", "an integer", expression_name
     )
 
 
-def _type_check_boolean(expression, source_file_name, errors, expression_name):
+def _type_check_boolean(
+    expression: ir_data.Expression,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+    expression_name: str,
+) -> None:
     _type_check(
         expression, source_file_name, errors, "boolean", "a boolean", expression_name
     )
 
 
-def _kind_check_field_reference(expression, source_file_name, errors, expression_name):
+def _kind_check_field_reference(
+    expression: ir_data.Expression,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+    expression_name: str,
+) -> None:
     if expression.which_expression != "field_reference":
         errors.append(
             [
@@ -92,11 +134,16 @@ def _kind_check_field_reference(expression, source_file_name, errors, expression
         )
 
 
-def _type_check_integer_constant(expression):
+def _type_check_integer_constant(expression: ir_data.Expression) -> None:
     _annotate_as_integer(expression)
 
 
-def _type_check_constant_reference(expression, source_file_name, ir, errors):
+def _type_check_constant_reference(
+    expression: ir_data.Expression,
+    source_file_name: str,
+    ir: ir_data.EmbossIr,
+    errors: list[list[error.Message]],
+) -> None:
     """Annotates the type of a constant reference."""
     referred_name = expression.constant_reference.canonical_name
     referred_object = ir_util.find_object(referred_name, ir)
@@ -132,7 +179,12 @@ def _type_check_constant_reference(expression, source_file_name, ir, errors):
         assert False, "Unexpected constant reference type."
 
 
-def _type_check_operation(expression, source_file_name, ir, errors):
+def _type_check_operation(
+    expression: ir_data.Expression,
+    source_file_name: str,
+    ir: ir_data.EmbossIr,
+    errors: list[list[error.Message]],
+) -> None:
     """Type checks a function or operator expression."""
     for arg in expression.function.args:
         _type_check_expression(arg, source_file_name, ir, errors)
@@ -152,7 +204,11 @@ def _type_check_operation(expression, source_file_name, ir, errors):
         _type_check_monomorphic_operator(expression, source_file_name, errors)
 
 
-def _type_check_monomorphic_operator(expression, source_file_name, errors):
+def _type_check_monomorphic_operator(
+    expression: ir_data.Expression,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     """Type checks an operator that accepts only one set of argument types."""
     args = expression.function.args
     int_args = _type_check_integer
@@ -162,7 +218,7 @@ def _type_check_monomorphic_operator(expression, source_file_name, errors):
     bool_result = _annotate_as_boolean
     binary = ("Left argument", "Right argument")
     n_ary = ("Argument {}".format(n) for n in range(len(args)))
-    functions = {
+    functions: dict[ir_data.FunctionMapping, _OperatorSpec] = {
         ir_data.FunctionMapping.ADDITION: (
             int_result,
             int_args,
@@ -285,7 +341,11 @@ def _type_check_monomorphic_operator(expression, source_file_name, errors):
     set_result_type(expression)
 
 
-def _type_check_local_reference(expression, ir, errors):
+def _type_check_local_reference(
+    expression: ir_data.Expression,
+    ir: ir_data.EmbossIr,
+    errors: list[list[error.Message]],
+) -> None:
     """Annotates the type of a local reference."""
     referrent = ir_util.find_object(expression.field_reference.path[-1], ir)
     assert referrent, "Local reference should be non-None after name resolution."
@@ -298,7 +358,7 @@ def _type_check_local_reference(expression, ir, errors):
     field = referrent
     if ir_util.field_is_virtual(field):
         _type_check_expression(
-            field.read_transform, expression.field_reference.path[0], ir, errors
+            field.read_transform, field.name.canonical_name.module_file, ir, errors
         )
         ir_data_utils.builder(expression).type.CopyFrom(field.read_transform.type)
         return
@@ -310,7 +370,9 @@ def _type_check_local_reference(expression, ir, errors):
         )
 
 
-def unbounded_expression_type_for_physical_type(type_definition):
+def unbounded_expression_type_for_physical_type(
+    type_definition: ir_data.TypeDefinition,
+) -> ir_data.ExpressionType:
     """Gets the ExpressionType for a field of the given TypeDefinition.
 
     Arguments:
@@ -341,7 +403,11 @@ def unbounded_expression_type_for_physical_type(type_definition):
         return ir_data.ExpressionType(opaque=ir_data.OpaqueType())
 
 
-def _set_expression_type_from_physical_type_reference(expression, type_reference, ir):
+def _set_expression_type_from_physical_type_reference(
+    expression: ir_data.Expression | ir_data.RuntimeParameter,
+    type_reference: ir_data.Reference,
+    ir: ir_data.EmbossIr,
+) -> None:
     """Sets the type of an expression to match a physical type."""
     field_type = ir_util.find_object(type_reference, ir)
     assert field_type, "Field type should be non-None after name resolution."
@@ -350,7 +416,12 @@ def _set_expression_type_from_physical_type_reference(expression, type_reference
     )
 
 
-def _annotate_parameter_type(parameter, ir, source_file_name, errors):
+def _annotate_parameter_type(
+    parameter: ir_data.RuntimeParameter,
+    ir: ir_data.EmbossIr,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     if parameter.physical_type_alias.which_type != "atomic_type":
         errors.append(
             [
@@ -367,7 +438,7 @@ def _annotate_parameter_type(parameter, ir, source_file_name, errors):
     )
 
 
-def _types_are_compatible(a, b):
+def _types_are_compatible(a: ir_data.Expression, b: ir_data.Expression) -> bool:
     """Returns true if a and b have compatible types."""
     if a.type.which_type != b.type.which_type:
         return False
@@ -383,10 +454,15 @@ def _types_are_compatible(a, b):
         assert False, "_types_are_compatible works with enums, integers, booleans."
 
 
-def _type_check_comparison_operator(expression, source_file_name, errors):
+def _type_check_comparison_operator(
+    expression: ir_data.Expression,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     """Checks the type of a comparison operator (==, !=, <, >, >=, <=)."""
     # Applying less than or greater than to a boolean is likely a mistake, so
     # only equality and inequality are allowed for booleans.
+    acceptable_types: tuple[str, ...]
     if expression.function.function in (
         ir_data.FunctionMapping.EQUALITY,
         ir_data.FunctionMapping.INEQUALITY,
@@ -428,7 +504,11 @@ def _type_check_comparison_operator(expression, source_file_name, errors):
     _annotate_as_boolean(expression)
 
 
-def _type_check_choice_operator(expression, source_file_name, errors):
+def _type_check_choice_operator(
+    expression: ir_data.Expression,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     """Checks the type of the choice operator cond ? if_true : if_false."""
     condition = expression.function.args[0]
     if condition.type.which_type != "boolean":
@@ -478,11 +558,11 @@ def _type_check_choice_operator(expression, source_file_name, errors):
         assert False, "Unexpected type for if_true."
 
 
-def _type_check_boolean_constant(expression):
+def _type_check_boolean_constant(expression: ir_data.Expression) -> None:
     _annotate_as_boolean(expression)
 
 
-def _type_check_builtin_reference(expression):
+def _type_check_builtin_reference(expression: ir_data.Expression) -> None:
     name = expression.builtin_reference.canonical_name.object_path[0]
     if name == "$is_statically_sized":
         _annotate_as_boolean(expression)
@@ -492,22 +572,32 @@ def _type_check_builtin_reference(expression):
         assert False, "Unknown builtin '{}'.".format(name)
 
 
-def _type_check_array_size(expression, source_file_name, errors):
+def _type_check_array_size(
+    expression: ir_data.Expression,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     _type_check_integer(expression, source_file_name, errors, "Array size")
 
 
-def _type_check_field_location(location, source_file_name, errors):
+def _type_check_field_location(
+    location: ir_data.FieldLocation,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     _type_check_integer(location.start, source_file_name, errors, "Start of field")
     _type_check_integer(location.size, source_file_name, errors, "Size of field")
 
 
-def _type_check_field_existence_condition(field, source_file_name, errors):
+def _type_check_field_existence_condition(
+    field: ir_data.Field, source_file_name: str, errors: list[list[error.Message]]
+) -> None:
     _type_check_boolean(
         field.existence_condition, source_file_name, errors, "Existence condition"
     )
 
 
-def _type_name_for_error_messages(expression_type):
+def _type_name_for_error_messages(expression_type: ir_data.ExpressionType) -> str:
     if expression_type.which_type == "integer":
         return "integer"
     elif expression_type.which_type == "enumeration":
@@ -516,7 +606,12 @@ def _type_name_for_error_messages(expression_type):
     assert False, "Shouldn't be here."
 
 
-def _type_check_passed_parameters(atomic_type, ir, source_file_name, errors):
+def _type_check_passed_parameters(
+    atomic_type: ir_data.AtomicType,
+    ir: ir_data.EmbossIr,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     """Checks the types of parameters to a parameterized physical type."""
     referenced_type = ir_util.find_object(atomic_type.reference.canonical_name, ir)
     if len(referenced_type.runtime_parameter) != len(atomic_type.runtime_parameter):
@@ -580,7 +675,11 @@ def _type_check_passed_parameters(atomic_type, ir, source_file_name, errors):
             )
 
 
-def _type_check_parameter(runtime_parameter, source_file_name, errors):
+def _type_check_parameter(
+    runtime_parameter: ir_data.RuntimeParameter,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     """Checks the type of a parameter to a physical type."""
     if runtime_parameter.type.which_type not in ("integer", "enumeration"):
         errors.append(
@@ -594,7 +693,7 @@ def _type_check_parameter(runtime_parameter, source_file_name, errors):
         )
 
 
-def annotate_types(ir):
+def annotate_types(ir: ir_data.EmbossIr) -> list[list[error.Message]]:
     """Adds type annotations to all expressions in ir.
 
     annotate_types adds type information to all expressions (and subexpressions)
@@ -608,7 +707,7 @@ def annotate_types(ir):
     Returns:
         A (possibly empty) list of errors.
     """
-    errors = []
+    errors: list[list[error.Message]] = []
     traverse_ir.fast_traverse_ir_top_down(
         ir,
         [ir_data.Expression],
@@ -625,7 +724,7 @@ def annotate_types(ir):
     return errors
 
 
-def check_types(ir):
+def check_types(ir: ir_data.EmbossIr) -> list[list[error.Message]]:
     """Checks that expressions within the IR have the correct top-level types.
 
     check_types ensures that expressions at the top level have correct types; in
@@ -638,7 +737,7 @@ def check_types(ir):
     Returns:
         A (possibly empty) list of errors.
     """
-    errors = []
+    errors: list[list[error.Message]] = []
     traverse_ir.fast_traverse_ir_top_down(
         ir,
         [ir_data.FieldLocation],

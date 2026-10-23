@@ -18,8 +18,11 @@ The parse_emboss_file function performs a complete parse of the specified file,
 and returns an IR or formatted error message.
 """
 
-import collections
+from __future__ import annotations
+
 import sys
+from collections.abc import Callable, Iterable
+from typing import Any, NamedTuple
 
 from compiler.front_end import attribute_checker
 from compiler.front_end import constraints
@@ -39,7 +42,15 @@ from compiler.util import ir_data_utils
 from compiler.util import parser_types
 from compiler.util import resources
 
-_IrDebugInfo = collections.namedtuple("IrDebugInfo", ["ir", "debug_info", "errors"])
+# A function that reads a source file by name, returning (contents, None) on
+# success or (None, [error strings]) on failure.
+FileReader = Callable[[str], tuple[str | None, list[str] | None]]
+
+
+class _IrDebugInfo(NamedTuple):
+    ir: Any  # An ir_data.Module or ir_data.EmbossIr, or None on error.
+    debug_info: DebugInfo | ModuleDebugInfo | None
+    errors: list[list[error.Message]]
 
 
 class DebugInfo(object):
@@ -47,13 +58,13 @@ class DebugInfo(object):
 
     __slots__ = "modules"
 
-    def __init__(self):
-        self.modules = {}
+    def __init__(self) -> None:
+        self.modules: dict[str, ModuleDebugInfo] = {}
 
-    def __eq__(self, other):
-        return self.modules == other.modules
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, DebugInfo) and self.modules == other.modules
 
-    def __ne__(self, other):
+    def __ne__(self, other: object) -> bool:
         return not self == other
 
 
@@ -80,17 +91,18 @@ class ModuleDebugInfo(object):
         "source_code",
     )
 
-    def __init__(self, file_name):
+    def __init__(self, file_name: str) -> None:
         self.file_name = file_name
-        self.tokens = None
-        self.parse_tree = None
-        self.ir = None
-        self.used_productions = None
-        self.source_code = None
+        self.tokens: list[parser_types.Token] | None = None
+        self.parse_tree: parser_types.Token | lr1.Reduction | None = None
+        self.ir: ir_data.Module | None = None
+        self.used_productions: set[parser_types.Production] | None = None
+        self.source_code: str | None = None
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         return (
-            self.file_name == other.file_name
+            isinstance(other, ModuleDebugInfo)
+            and self.file_name == other.file_name
             and self.tokens == other.tokens
             and self.parse_tree == other.parse_tree
             and self.ir == other.ir
@@ -98,18 +110,22 @@ class ModuleDebugInfo(object):
             and self.source_code == other.source_code
         )
 
-    def __ne__(self, other):
+    def __ne__(self, other: object) -> bool:
         return not self == other
 
-    def format_tokenization(self):
+    def format_tokenization(self) -> str:
         """Renders self.tokens in a human-readable format."""
         return "\n".join([str(token) for token in self.tokens])
 
-    def format_parse_tree(self, parse_tree=None, indent=""):
+    def format_parse_tree(
+        self,
+        parse_tree: parser_types.Token | lr1.Reduction | None = None,
+        indent: str = "",
+    ) -> str:
         """Renders self.parse_tree in a human-readable format."""
         if parse_tree is None:
             parse_tree = self.parse_tree
-        result = []
+        result: list[str] = []
         if isinstance(parse_tree, lr1.Reduction):
             result.append(indent + parse_tree.symbol)
             if parse_tree.children:
@@ -122,20 +138,20 @@ class ModuleDebugInfo(object):
             result.append("{}{}\n".format(indent, parse_tree))
         return "".join(result)
 
-    def format_module_ir(self):
+    def format_module_ir(self) -> str:
         """Renders self.ir in a human-readable format."""
         return ir_data_utils.IrDataSerializer(self.ir).to_json(indent=2)
 
 
-def format_production_set(productions):
+def format_production_set(productions: Iterable[parser_types.Production]) -> str:
     """Renders a set of productions in a human-readable format."""
     return "\n".join([str(production) for production in sorted(productions)])
 
 
-_cached_modules = {}
+_cached_modules: dict[tuple[str, str], ModuleDebugInfo] = {}
 
 
-def parse_module_text(source_code, file_name):
+def parse_module_text(source_code: str, file_name: str) -> _IrDebugInfo:
     """Parses the text of a module, returning a module-level IR.
 
     Arguments:
@@ -171,7 +187,7 @@ def parse_module_text(source_code, file_name):
                 [error.make_error_from_parse_error(file_name, parse_result.error)],
             )
         debug_info.parse_tree = parse_result.parse_tree
-        used_productions = set()
+        used_productions: set[parser_types.Production] = set()
         ir = module_ir.build_ir(parse_result.parse_tree, used_productions)
         ir.source_text = source_code
         debug_info.used_productions = used_productions
@@ -181,7 +197,7 @@ def parse_module_text(source_code, file_name):
     return _IrDebugInfo(ir, debug_info, [])
 
 
-def parse_module(file_name, file_reader):
+def parse_module(file_name: str, file_reader: FileReader) -> _IrDebugInfo:
     """Parses a module, returning a module-level IR.
 
     Arguments:
@@ -204,7 +220,7 @@ def parse_module(file_name, file_reader):
     source_code, errors = file_reader(file_name)
     if errors:
         location = parser_types.SourceLocation((1, 1), (1, 1))
-        return (
+        return _IrDebugInfo(
             None,
             None,
             [
@@ -215,12 +231,14 @@ def parse_module(file_name, file_reader):
     return parse_module_text(source_code, file_name)
 
 
-def get_prelude():
+def get_prelude() -> _IrDebugInfo:
     """Returns the module IR and debug info of the Emboss Prelude."""
     return parse_module_text(resources.load("compiler.front_end", "prelude.emb"), "")
 
 
-def parse_emboss_file(file_name, file_reader, stop_before_step=None):
+def parse_emboss_file(
+    file_name: str, file_reader: FileReader, stop_before_step: str | None = None
+) -> _IrDebugInfo:
     """Fully parses an .emb, and returns an IR suitable for passing to a back end.
 
     parse_emboss_file is a convenience function which calls only_parse_emboss_file
@@ -250,7 +268,7 @@ def parse_emboss_file(file_name, file_reader, stop_before_step=None):
     return _IrDebugInfo(ir, debug_info, errors)
 
 
-def only_parse_emboss_file(file_name, file_reader):
+def only_parse_emboss_file(file_name: str, file_reader: FileReader) -> _IrDebugInfo:
     """Parses an .emb, and returns an IR suitable for process_ir.
 
     only_parse_emboss_file parses the given file and all of its transitive
@@ -279,7 +297,7 @@ def only_parse_emboss_file(file_name, file_reader):
             module, module_debug_info, errors = parse_module(file_to_parse, file_reader)
         else:
             module, module_debug_info, errors = get_prelude()
-        if module_debug_info:
+        if isinstance(module_debug_info, ModuleDebugInfo):
             debug_info.modules[file_to_parse] = module_debug_info
         if errors:
             return _IrDebugInfo(None, debug_info, errors)
@@ -291,7 +309,9 @@ def only_parse_emboss_file(file_name, file_reader):
     return _IrDebugInfo(ir, debug_info, [])
 
 
-def process_ir(ir, stop_before_step):
+def process_ir(
+    ir: ir_data.EmbossIr, stop_before_step: str | None
+) -> tuple[ir_data.EmbossIr | None, list[list[error.Message]]]:
     """Turns a first-stage IR into a fully-processed IR.
 
     process_ir performs all of the semantic processing steps on `ir`: resolving
@@ -372,7 +392,7 @@ def process_ir(ir, stop_before_step):
     # formatting for the synthetic errors will show '[compiler bug]' for the
     # error location, which (hopefully) will provide the end user with a cue that
     # the error is a compiler bug.
-    deferred_errors = []
+    deferred_errors: list[list[error.Message]] = []
     for function in passes:
         if stop_before_step == function.__name__:
             return (ir, [])

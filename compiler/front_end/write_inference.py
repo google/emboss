@@ -14,8 +14,11 @@
 
 """Adds auto-generated virtual fields to the IR."""
 
+from __future__ import annotations
+
 from compiler.front_end import attributes
 from compiler.front_end import expression_bounds
+from compiler.util import error
 from compiler.util import ir_data
 from compiler.util import ir_data_utils
 from compiler.util import ir_util
@@ -23,7 +26,7 @@ from compiler.util import parser_types
 from compiler.util import traverse_ir
 
 
-def _find_field_reference_path(expression):
+def _find_field_reference_path(expression: ir_data.Expression) -> list[int] | None:
     """Returns a path to a field reference, or None.
 
     If the provided expression contains exactly one field_reference,
@@ -50,13 +53,15 @@ def _find_field_reference_path(expression):
         return None
 
 
-def _recursively_find_field_reference_path(expression):
+def _recursively_find_field_reference_path(
+    expression: ir_data.Expression,
+) -> tuple[int, list[int]]:
     """Recursive implementation of _find_field_reference_path."""
     if expression.which_expression == "field_reference":
         return 1, []
     elif expression.which_expression == "function":
         field_count = 0
-        path = []
+        path: list[int] = []
         for index in range(len(expression.function.args)):
             arg = expression.function.args[index]
             arg_result = _recursively_find_field_reference_path(arg)
@@ -72,7 +77,9 @@ def _recursively_find_field_reference_path(expression):
         return 0, []
 
 
-def _invert_expression(expression, ir):
+def _invert_expression(
+    expression: ir_data.Expression, ir: ir_data.EmbossIr
+) -> tuple[ir_data.Expression, ir_data.Expression] | None:
     """For the given expression, searches for an algebraic inverse expression.
 
     That is, it takes the notional equation:
@@ -195,7 +202,7 @@ def _invert_expression(expression, ir):
     return subexpression, result
 
 
-def _add_write_method(field, ir):
+def _add_write_method(field: ir_data.Field, ir: ir_data.EmbossIr) -> None:
     """Adds an appropriate write_method to field, if applicable.
 
     Currently, the "alias" write_method will be added for virtual fields of the
@@ -279,7 +286,7 @@ def _add_write_method(field, ir):
     field_builder.write_method.alias.CopyFrom(field.read_transform.field_reference)
 
 
-def set_write_methods(ir):
+def set_write_methods(ir: ir_data.EmbossIr) -> list[list[error.Message]]:
     """Sets the write_method member of all ir_data.Fields in ir.
 
     Arguments:

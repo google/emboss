@@ -17,12 +17,12 @@
 This program formats an Emboss source file given on the command line.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import annotations
 
 import argparse
 import os
 import sys
+from collections.abc import Sequence
 
 from compiler.front_end import format_emb
 from compiler.front_end import parser
@@ -30,7 +30,7 @@ from compiler.front_end import tokenizer
 from compiler.util import error
 
 
-def _parse_command_line(argv):
+def _parse_command_line(argv: Sequence[str]) -> argparse.Namespace:
     """Parses the given command-line arguments."""
     argparser = argparse.ArgumentParser(
         description="Emboss compiler front end.", prog=argv[0]
@@ -73,14 +73,18 @@ def _parse_command_line(argv):
     return argparser.parse_args(argv[1:])
 
 
-def _print_errors(errors, source_codes, flags):
+def _print_errors(
+    errors: list[list[error.Message]],
+    source_codes: dict[str, str],
+    flags: argparse.Namespace,
+) -> None:
     use_color = flags.color_output == "always" or (
         flags.color_output in ("auto", "if-tty") and os.isatty(sys.stderr.fileno())
     )
     print(error.format_errors(errors, source_codes, use_color), file=sys.stderr)
 
 
-def main(argv=()):
+def main(argv: Sequence[str] = ()) -> int:
     flags = _parse_command_line(argv)
 
     if not flags.edit_in_place and len(flags.input_file) > 1:
@@ -123,9 +127,11 @@ def main(argv=()):
         )
 
         if flags.check_result and not flags.debug_show_line_types:
-            errors = format_emb.sanity_check_format_result(formatted_text, source_code)
-            if errors:
-                for e in errors:
+            check_errors = format_emb.sanity_check_format_result(
+                formatted_text, source_code
+            )
+            if check_errors:
+                for e in check_errors:
                     print(e, file=sys.stderr)
                 continue
 

@@ -13,16 +13,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import annotations
+
 import keyword
-import collections
 import sys
+from collections.abc import Sequence
+from typing import Any, NamedTuple
 
 from compiler.front_end import lr1
 from compiler.front_end import make_parser
 from compiler.util import parser_types
 
 
-def _identifier(i):
+class _Placeholder(NamedTuple):
+    """Stand-in for an identifier that is chosen once all uses are counted."""
+
+    temp_ident: int
+
+
+def _identifier(i: int) -> str:
     """Turns a number into a Python identifier.
 
     Does not account for reserved words: your code will need to do so.
@@ -43,7 +52,7 @@ def _identifier(i):
     return header
 
 
-def as_py_source(parser, function_name):
+def as_py_source(parser: lr1.Parser, function_name: str) -> str:
     """Turns a Parser into Python source code.
 
     Returns a string that is a definition of a Python function that will
@@ -68,14 +77,12 @@ def as_py_source(parser, function_name):
         " A = lr1.Accept\n"
         " E = lr1.Error\n"
     ]
-    body = []
+    body: list[str | _Placeholder] = []
 
-    S = collections.namedtuple("S", "temp_ident")
-
-    def declaration(ident, s):
+    def declaration(ident: _Placeholder, s: object) -> list[str | _Placeholder]:
         """Returns a declaration of s with symbol-based compression."""
         if isinstance(s, parser_types.Production):
-            r = [" ", ident, "=P(", sym(s.lhs), ","]
+            r: list[str | _Placeholder] = [" ", ident, "=P(", sym(s.lhs), ","]
             if len(s.rhs) == 0:
                 r += ["()"]
             elif len(s.rhs) == 1:
@@ -93,15 +100,16 @@ def as_py_source(parser, function_name):
 
     # Bookkkeeping for sym()
     counter = 0  # Next available ID.
-    symbols = {}  # Map of object => S() placeholder
-    symbol_uses = {}  # Map of object => count of uses
-    symbol_defs = []  # Map of object => declaration (may have placeholders)
+    symbols: dict[Any, _Placeholder] = {}  # Map of object => placeholder
+    symbol_uses: dict[Any, int] = {}  # Map of object => count of uses
+    # Declarations of every object, in order (may contain placeholders).
+    symbol_defs: list[str | _Placeholder] = []
 
-    def sym(s):
+    def sym(s: object) -> _Placeholder:
         """Returns a placeholder for s."""
         nonlocal counter
         if s not in symbols:
-            ident = S(counter)
+            ident = _Placeholder(counter)
             counter += 1
             symbols[s] = ident
             symbol_uses[s] = 0
@@ -124,7 +132,6 @@ def as_py_source(parser, function_name):
     body.append(" goto = {\n")
     for key_state in sorted(parser.goto.keys()):
         body.append(f"  {key_state}:" "{")
-        goto_body = []
         for key_symbol, goto_state in sorted(parser.goto[key_state].items()):
             body += [sym(key_symbol), f":{goto_state}", ","]
         del body[-1]
@@ -154,8 +161,8 @@ def as_py_source(parser, function_name):
 
     # Serialize the default errors map.
     body.append(" defe = {\n")
-    for key, value in sorted(parser.default_errors.items()):
-        body += [f"  {key}:", sym(value), ",\n"]
+    for key, error_code in sorted(parser.default_errors.items()):
+        body += [f"  {key}:", sym(error_code), ",\n"]
     body.append(" }\n")
 
     # Finally, Parser construction.
@@ -182,7 +189,7 @@ def as_py_source(parser, function_name):
     # do not seem to be very many of those, and it would be necessary to track
     # symbol definitions individually, instead of just concatenating them all
     # together in symbol_defs.
-    symbol_idents = {}  # Map of placeholder => final identifier
+    symbol_idents: dict[_Placeholder, str] = {}  # Map of placeholder => identifier
     ident_counter = 0  # Counter used for generating identifiers
     reserved_identifiers = "P S R A E prods act goto defe".split()
 
@@ -201,15 +208,16 @@ def as_py_source(parser, function_name):
         # Assign the final symbol to the placeholder.
         symbol_idents[symbols[symbol]] = ident
 
-    # Iterate through the text fragments looking for any placeholders (S's),
-    # and replace the placeholders with their final symbol.
-    for l in (symbol_defs, body):
-        for i in range(len(l)):
-            if isinstance(l[i], S):
-                l[i] = symbol_idents[l[i]]
+    # Iterate through the text fragments looking for any placeholders, and
+    # replace the placeholders with their final symbol.
+    def resolve(fragments: list[str | _Placeholder]) -> list[str]:
+        return [
+            symbol_idents[fragment] if isinstance(fragment, _Placeholder) else fragment
+            for fragment in fragments
+        ]
 
     # Return the final result.
-    return "".join(header + symbol_defs + body)
+    return "".join(header + resolve(symbol_defs) + resolve(body))
 
 
 _HEADER = """
@@ -236,7 +244,7 @@ from compiler.util import parser_types
 """.strip()
 
 
-def generate_parser_file_text():
+def generate_parser_file_text() -> str:
     module_parser = make_parser.build_module_parser()
     expression_parser = make_parser.build_expression_parser()
     return "".join(
@@ -251,7 +259,7 @@ def generate_parser_file_text():
     )
 
 
-def main(argv):
+def main(argv: Sequence[str]) -> int:
     print(generate_parser_file_text(), end="")
     return 0
 

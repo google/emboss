@@ -14,12 +14,21 @@
 
 """Routines to generate a shift-reduce parser from the module_ir module."""
 
+from __future__ import annotations
+
+from collections.abc import Iterable
+
 from compiler.front_end import lr1
 from compiler.front_end import module_ir
 from compiler.front_end import tokenizer
 from compiler.util import parser_types
 from compiler.util import resources
 from compiler.util import simple_memoizer
+
+# An error example from the error_examples resource: the tokens of the
+# example, the token at which the error should be reported, the error message,
+# and the original example text.
+ErrorExample = tuple[list[parser_types.Token], parser_types.Token, str, str]
 
 
 class ParserGenerationError(Exception):
@@ -28,7 +37,7 @@ class ParserGenerationError(Exception):
     pass
 
 
-def parse_error_examples(error_example_text):
+def parse_error_examples(error_example_text: str) -> list[ErrorExample]:
     """Parses error examples from error_example_text.
 
     Arguments:
@@ -74,11 +83,16 @@ def parse_error_examples(error_example_text):
                     "No error token marker '$ERR' in:\n" + error_example
                 )
 
+            assert error_token is not None
             result.append((tokens, error_token, message.strip(), example))
     return result
 
 
-def generate_parser(start_symbol, productions, error_examples):
+def generate_parser(
+    start_symbol: str,
+    productions: Iterable[parser_types.Production],
+    error_examples: Iterable[ErrorExample],
+) -> lr1.Parser:
     """Generates a parser from grammar, and applies error_examples.
 
     Arguments:
@@ -107,7 +121,7 @@ def generate_parser(start_symbol, productions, error_examples):
     return parser
 
 
-def build_module_parser():
+def build_module_parser() -> lr1.Parser:
     """Constructs a new Parser for an Emboss module (complete source file)."""
     error_examples = parse_error_examples(
         resources.load("compiler.front_end", "error_examples")
@@ -117,7 +131,7 @@ def build_module_parser():
     )
 
 
-def build_expression_parser():
+def build_expression_parser() -> lr1.Parser:
     """Constructs a new Parser for an Emboss expression."""
     return generate_parser(
         module_ir.EXPRESSION_START_SYMBOL, sorted(module_ir.PRODUCTIONS), []

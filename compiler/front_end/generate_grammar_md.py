@@ -14,14 +14,19 @@
 
 """Generates a Markdown file documenting the raw Emboss grammar."""
 
-from __future__ import print_function
+from __future__ import annotations
 
 import re
 import sys
+from collections.abc import Iterable, Sequence
+from typing import TYPE_CHECKING
 
 from compiler.front_end import constraints
 from compiler.front_end import module_ir
 from compiler.front_end import tokenizer
+
+if TYPE_CHECKING:
+    from compiler.util import parser_types
 
 # Keep the output to less than 80 columns, so that the preformatted sections are
 # not cut off.
@@ -64,9 +69,11 @@ be used as field, type, or enum value names.
 """
 
 
-def _sort_productions(productions, start_symbol):
+def _sort_productions(
+    productions: Sequence[parser_types.Production], start_symbol: str
+) -> tuple[list[parser_types.Production], list[parser_types.Production]]:
     """Sorts the given productions in a human-friendly order."""
-    productions_by_lhs = {}
+    productions_by_lhs: dict[str, set[parser_types.Production]] = {}
     for p in productions:
         if p.lhs not in productions_by_lhs:
             productions_by_lhs[p.lhs] = set()
@@ -74,7 +81,7 @@ def _sort_productions(productions, start_symbol):
 
     queue = [start_symbol]
     previously_queued_symbols = set(queue)
-    main_production_list = []
+    main_production_list: list[parser_types.Production] = []
     # This sorts productions depth-first.  I'm not sure if it is better to sort
     # them breadth-first or depth-first, or with some hybrid.
     while queue:
@@ -106,10 +113,10 @@ def _sort_productions(productions, start_symbol):
     return main_production_list, boilerplate_production_list
 
 
-def _word_wrap_at_column(words, width):
+def _word_wrap_at_column(words: Iterable[str], width: int) -> list[str]:
     """Wraps words to the specified width, and returns a list of wrapped lines."""
-    result = []
-    in_progress = []
+    result: list[str] = []
+    in_progress: list[str] = []
     for word in words:
         if len(" ".join(in_progress + [word])) > width:
             result.append(" ".join(in_progress))
@@ -121,7 +128,7 @@ def _word_wrap_at_column(words, width):
     return result
 
 
-def _format_productions(productions):
+def _format_productions(productions: Sequence[parser_types.Production]) -> str:
     """Formats a list of productions for inclusion in a Markdown document."""
     max_lhs_len = max([len(production.lhs) for production in productions])
 
@@ -148,14 +155,16 @@ def _format_productions(productions):
     return "".join(result)
 
 
-def _normalize_literal_patterns(literals):
+def _normalize_literal_patterns(literals: Iterable[str]) -> list[tuple[str, str]]:
     """Normalizes a list of strings to a list of (regex, symbol) pairs."""
     return [
         (re.sub(r"(\W)", r"\\\1", literal), '"' + literal + '"') for literal in literals
     ]
 
 
-def _normalize_regex_patterns(regexes):
+def _normalize_regex_patterns(
+    regexes: Iterable[tokenizer._RegexTokenPattern],
+) -> list[tuple[str, str | None]]:
     """Normalizes a list of tokenizer regexes to a list of (regex, symbol)."""
     # g3doc breaks up patterns containing '|' when they are inserted into a table,
     # unless they're preceded by '\'.  Note that other special characters,
@@ -163,9 +172,9 @@ def _normalize_regex_patterns(regexes):
     return [(re.sub(r"\|", r"\\|", r.regex.pattern), r.symbol) for r in regexes]
 
 
-def _normalize_reserved_word_list(reserved_words):
+def _normalize_reserved_word_list(reserved_words: Iterable[str]) -> list[str]:
     """Returns words that would be allowed as names if they were not reserved."""
-    interesting_reserved_words = []
+    interesting_reserved_words: list[str] = []
     for word in reserved_words:
         tokens, errors = tokenizer.tokenize(word, "")
         assert tokens and not errors, "Failed to tokenize " + word
@@ -174,7 +183,7 @@ def _normalize_reserved_word_list(reserved_words):
     return sorted(interesting_reserved_words)
 
 
-def _format_token_rules(token_rules):
+def _format_token_rules(token_rules: Sequence[tuple[str, str | None]]) -> str:
     """Formats a list of (pattern, symbol) pairs as a table."""
     pattern_width = max([len(rule[0]) for rule in token_rules])
     pattern_width += 2  # For the `` characters.
@@ -197,9 +206,9 @@ def _format_token_rules(token_rules):
     return "".join(result)
 
 
-def _format_keyword_list(reserved_words):
+def _format_keyword_list(reserved_words: Iterable[str]) -> str:
     """formats a list of reserved words."""
-    lines = []
+    lines: list[str] = []
     current_line = ""
     for word in reserved_words:
         if len(current_line) + len(word) + 2 > 80:
@@ -209,7 +218,7 @@ def _format_keyword_list(reserved_words):
     return "".join([line[:-1] + "\n" for line in lines])
 
 
-def generate_grammar_md():
+def generate_grammar_md() -> str:
     """Generates up-to-date text for grammar.md."""
     main_productions, boilerplate_productions = _sort_productions(
         module_ir.PRODUCTIONS, module_ir.START_SYMBOL
@@ -221,7 +230,9 @@ def generate_grammar_md():
         _format_productions(boilerplate_productions),
     ]
 
-    main_tokens = _normalize_literal_patterns(tokenizer.LITERAL_TOKEN_PATTERNS)
+    main_tokens: list[tuple[str, str | None]] = _normalize_literal_patterns(
+        tokenizer.LITERAL_TOKEN_PATTERNS
+    )
     main_tokens += _normalize_regex_patterns(tokenizer.REGEX_TOKEN_PATTERNS)
     result.append(_TOKENIZER_RULE_HEADER)
     result.append(_format_token_rules(main_tokens))
@@ -233,7 +244,7 @@ def generate_grammar_md():
     return "".join(result)
 
 
-def main(argv):
+def main(argv: Sequence[str]) -> int:
     del argv  # Unused.
     print(generate_grammar_md(), end="")
     return 0
