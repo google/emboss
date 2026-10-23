@@ -132,7 +132,11 @@ bool DecodeInteger(const ::std::string &text, IntType *result) {
   IntType base = 10;
   bool negative = false;
   unsigned offset = 0;
-  if (::std::is_signed<IntType>::value && text.size() >= 1 + offset &&
+  // ::std::numeric_limits<>::is_signed is used rather than ::std::is_signed<>
+  // because the latter is false for extended integer types such as __int128_t
+  // under a strict -std=c++NN, which would prevent parsing negative values into
+  // those types.  numeric_limits *is* specialized for them.
+  if (::std::numeric_limits<IntType>::is_signed && text.size() >= 1 + offset &&
       text[offset] == '-') {
     negative = true;
     offset += 1;
@@ -303,7 +307,7 @@ void WriteIntegerToTextStream(IntegralType value, Stream *stream,
         digit = 0;
         ++value;
       }
-      buffer_char(digits[digit]);
+      buffer_char(digits[static_cast<int>(digit)]);
       ++digit_count;
     } else {
       value = -value;
@@ -313,7 +317,7 @@ void WriteIntegerToTextStream(IntegralType value, Stream *stream,
     if (digit_count && digit_count % grouping == 0 && digit_grouping) {
       buffer_char('_');
     }
-    buffer_char(digits[value % base]);
+    buffer_char(digits[static_cast<int>(value % base)]);
     value /= base;
     ++digit_count;
   }

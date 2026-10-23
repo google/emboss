@@ -264,7 +264,7 @@ class UIntView final {
     // where N is the number of bits in the type, this is entirely
     // standards-compliant.
     return value >= 0 &&
-           static_cast</**/ ::std::uint64_t>(value) <=
+           static_cast<::emboss::support::MaxWidthUnsigned>(value) <=
                ((static_cast<ValueType>(1) << (Parameters::kBits - 1)) << 1) -
                    1 &&
            Parameters::ValueIsOk(static_cast<ValueType>(value));
@@ -416,9 +416,16 @@ class IntView final {
     // ((1 << 6) - 1) * 2 + 1, which is (64 - 1) * 2 + 1, which is 63 * 2 + 1,
     // which is 126 + 1, which is 127.  The upper bound must be computed in
     // multiple steps like this in order to avoid overflow.
-    return (!::std::is_signed<typename ::std::remove_cv<
-                typename ::std::remove_reference<IntT>::type>::type>::value ||
-            static_cast</**/ ::std::int64_t>(value) >=
+    // Note: signedness is checked via ::std::numeric_limits<>::is_signed rather
+    // than ::std::is_signed<>, because ::std::is_signed is false for extended
+    // integer types like __int128_t under a strict -std=c++NN (they are not
+    // "integral types" in the standard sense), whereas numeric_limits *is*
+    // specialized for them.  This must match the is_integer check used to
+    // enable this method, above.
+    return (!::std::numeric_limits<typename ::std::remove_cv<
+                typename ::std::remove_reference<IntT>::type>::type>::
+                is_signed ||
+            static_cast<::emboss::support::MaxWidthSigned>(value) >=
                 (Parameters::kBits == 1
                      ? -1
                      : (static_cast<ValueType>(1) << (Parameters::kBits - 2)) *
