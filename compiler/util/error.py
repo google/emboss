@@ -14,11 +14,11 @@
 
 """Error and warning message support for Emboss.
 
-This module exports the error, warn, and note functions, which return a _Message
+This module exports the error, warn, and note functions, which return a Message
 representing the error, warning, or note, respectively.  The format method of
 the returned object can be used to render the message with source code snippets.
 
-Throughout Emboss, messages are passed around as lists of lists of _Messages.
+Throughout Emboss, messages are passed around as lists of lists of Messages.
 Each inner list represents a group of messages which should either all be
 printed, or not printed; i.e., an error message and associated informational
 messages.  For example, to indicate both a duplicate definition error and a
@@ -36,7 +36,15 @@ warning that a field is a reserved word, one might return:
     ]
 """
 
+from __future__ import annotations
+
+from collections.abc import Iterable, Mapping
+from typing import TYPE_CHECKING
+
 from compiler.util import parser_types
+
+if TYPE_CHECKING:
+    from compiler.front_end import lr1
 
 # Error levels; represented by the strings that will be included in messages.
 ERROR = "error"
@@ -66,40 +74,54 @@ BOLD = "\033[0;1m"
 RESET = "\033[0m"
 
 
-def location_or_default(location):
+def location_or_default(
+    location: parser_types.SourceLocation | None,
+) -> parser_types.SourceLocation:
     if not location:
         return parser_types.SourceLocation((0, 0), (0, 0))
     return location
 
 
-def error(source_file, location, message):
+def error(
+    source_file: str, location: parser_types.SourceLocation | None, message: str
+) -> Message:
     """Returns an object representing an error message."""
-    return _Message(source_file, location_or_default(location), ERROR, message)
+    return Message(source_file, location_or_default(location), ERROR, message)
 
 
-def warn(source_file, location, message):
+def warn(
+    source_file: str, location: parser_types.SourceLocation | None, message: str
+) -> Message:
     """Returns an object representing a warning."""
-    return _Message(source_file, location_or_default(location), WARNING, message)
+    return Message(source_file, location_or_default(location), WARNING, message)
 
 
-def note(source_file, location, message):
+def note(
+    source_file: str, location: parser_types.SourceLocation | None, message: str
+) -> Message:
     """Returns and object representing an informational note."""
-    return _Message(source_file, location_or_default(location), NOTE, message)
+    return Message(source_file, location_or_default(location), NOTE, message)
 
 
-class _Message(object):
-    """_Message holds a human-readable message."""
+class Message:
+    """Message holds a human-readable message."""
 
     __slots__ = ("location", "source_file", "severity", "message")
 
-    def __init__(self, source_file, location, severity, message):
+    def __init__(
+        self,
+        source_file: str,
+        location: parser_types.SourceLocation,
+        severity: str,
+        message: str,
+    ):
         self.location = location
         self.source_file = source_file
         self.severity = severity
         self.message = message
 
-    def format(self, source_code):
-        """Formats the _Message for display.
+    def format(self, source_code: Mapping[str, str]) -> list[tuple[str, str]]:
+        """Formats the Message for display.
 
         Arguments:
           source_code: A dict of file names to source texts.  This is used to
@@ -133,7 +155,7 @@ class _Message(object):
             NOTE: (WHITE, WHITE),
         }
 
-        result = []
+        result: list[tuple[str, str]] = []
         if self.location.is_synthetic:
             pos = "[compiler bug]"
         else:
@@ -171,10 +193,10 @@ class _Message(object):
             result.append((BRIGHT_GREEN, indicator_indent + indicator_caret))
         return result
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Message({repr(self.source_file)}, {repr(self.location)}, {repr(self.severity)}, {repr(self.message)})"
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         return (
             self.__class__ == other.__class__
             and self.location == other.location
@@ -183,28 +205,30 @@ class _Message(object):
             and self.message == other.message
         )
 
-    def __ne__(self, other):
+    def __ne__(self, other: object) -> bool:
         return not self == other
 
 
-def split_errors(errors):
+def split_errors(
+    errors: Iterable[list[Message]],
+) -> tuple[list[list[Message]], list[list[Message]]]:
     """Splits errors into (user_errors, synthetic_errors).
 
     Arguments:
-        errors: A list of lists of _Message, which is a list of bundles of
+        errors: A list of lists of Message, which is a list of bundles of
             associated messages.
 
     Returns:
         (user_errors, synthetic_errors), where both user_errors and
-        synthetic_errors are lists of lists of _Message.  synthetic_errors will
+        synthetic_errors are lists of lists of Message.  synthetic_errors will
         contain all bundles that reference any synthetic source_location, and
         user_errors will contain the rest.
 
         The intent is that user_errors can be shown to end users, while
         synthetic_errors should generally be suppressed.
     """
-    synthetic_errors = []
-    user_errors = []
+    synthetic_errors: list[list[Message]] = []
+    user_errors: list[list[Message]] = []
     for error_block in errors:
         if any(message.location.is_synthetic for message in error_block):
             synthetic_errors.append(error_block)
@@ -213,12 +237,16 @@ def split_errors(errors):
     return user_errors, synthetic_errors
 
 
-def filter_errors(errors):
+def filter_errors(errors: Iterable[list[Message]]) -> list[list[Message]]:
     """Returns the non-synthetic errors from `errors`."""
     return split_errors(errors)[0]
 
 
-def format_errors(errors, source_codes, use_color=False):
+def format_errors(
+    errors: Iterable[list[Message]],
+    source_codes: Mapping[str, str],
+    use_color: bool = False,
+) -> str:
     """Formats error messages with source code snippets."""
     result = []
     for error_group in errors:
@@ -233,16 +261,22 @@ def format_errors(errors, source_codes, use_color=False):
     return "\n".join(result)
 
 
-def make_error_from_parse_error(file_name, parse_error):
+def make_error_from_parse_error(
+    file_name: str, parse_error: lr1.ParseError
+) -> list[Message]:
+    token = parse_error.token
+    # The parser's end-of-input pseudo-token (lr1.Symbol) carries no text or
+    # source location, so it cannot be reported here.
+    assert isinstance(token, parser_types.Token), "Parse error at end of input."
     return [
         error(
             file_name,
-            parse_error.token.source_location,
+            token.source_location,
             "{code}\n"
             "Found {text!r} ({symbol}), expected {expected}.".format(
                 code=parse_error.code or "Syntax error",
-                text=parse_error.token.text,
-                symbol=parse_error.token.symbol,
+                text=token.text,
+                symbol=token.symbol,
                 expected=", ".join(parse_error.expected_tokens),
             ),
         )

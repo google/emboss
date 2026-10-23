@@ -18,6 +18,11 @@ The main entry point is check_attributes_in_ir(), which checks attributes in an
 IR.
 """
 
+from __future__ import annotations
+
+from collections.abc import Callable, Iterable, Mapping
+from typing import Any
+
 from compiler.util import error
 from compiler.util import ir_data
 from compiler.util import ir_data_utils
@@ -29,8 +34,16 @@ from compiler.util import traverse_ir
 _BAD_TYPE_MESSAGE = "Attribute '{name}' must have {type} value."
 _MUST_BE_CONSTANT_MESSAGE = "Attribute '{name}' must have a constant value."
 
+# An attribute validator takes an attribute and the name of the file containing
+# it, and returns a list of error groups (empty if the attribute is valid).
+AttributeChecker = Callable[[ir_data.Attribute, str], list[list[error.Message]]]
 
-def _attribute_name_for_errors(attr):
+# A set of (attribute_name, is_default) pairs: the attributes allowed in some
+# scope.
+AttributeSpecs = set[tuple[str, bool]]
+
+
+def _attribute_name_for_errors(attr: ir_data.Attribute) -> str:
     if ir_data_utils.reader(attr).back_end.text:
         return f"({attr.back_end.text}) {attr.name.text}"
     else:
@@ -38,7 +51,9 @@ def _attribute_name_for_errors(attr):
 
 
 # Attribute type checkers
-def _is_constant_boolean(attr, module_source_file):
+def _is_constant_boolean(
+    attr: ir_data.Attribute, module_source_file: str
+) -> list[list[error.Message]]:
     """Checks if the given attr is a constant boolean."""
     if not attr.value.expression.type.boolean.has_field("value"):
         return [
@@ -55,7 +70,9 @@ def _is_constant_boolean(attr, module_source_file):
     return []
 
 
-def _is_boolean(attr, module_source_file):
+def _is_boolean(
+    attr: ir_data.Attribute, module_source_file: str
+) -> list[list[error.Message]]:
     """Checks if the given attr is a boolean."""
     if attr.value.expression.type.which_type != "boolean":
         return [
@@ -72,7 +89,9 @@ def _is_boolean(attr, module_source_file):
     return []
 
 
-def _is_constant_integer(attr, module_source_file):
+def _is_constant_integer(
+    attr: ir_data.Attribute, module_source_file: str
+) -> list[list[error.Message]]:
     """Checks if the given attr is an integer constant expression."""
     if (
         not attr.value.has_field("expression")
@@ -104,7 +123,9 @@ def _is_constant_integer(attr, module_source_file):
     return []
 
 
-def _is_string(attr, module_source_file):
+def _is_string(
+    attr: ir_data.Attribute, module_source_file: str
+) -> list[list[error.Message]]:
     """Checks if the given attr is a string."""
     if not attr.value.has_field("string_constant"):
         return [
@@ -129,10 +150,12 @@ INTEGER_CONSTANT = _is_constant_integer
 STRING = _is_string
 
 
-def string_from_list(valid_values):
+def string_from_list(valid_values: Iterable[str]) -> AttributeChecker:
     """Checks if the given attr has one of the valid_values."""
 
-    def _string_from_list(attr, module_source_file):
+    def _string_from_list(
+        attr: ir_data.Attribute, module_source_file: str
+    ) -> list[list[error.Message]]:
         if ir_data_utils.reader(attr).value.string_constant.text not in valid_values:
             return [
                 [
@@ -152,19 +175,19 @@ def string_from_list(valid_values):
 
 
 def check_attributes_in_ir(
-    ir,
+    ir: ir_data.EmbossIr,
     *,
-    back_end=None,
-    types=None,
-    module_attributes=None,
-    struct_attributes=None,
-    bits_attributes=None,
-    enum_attributes=None,
-    enum_value_attributes=None,
-    external_attributes=None,
-    structure_virtual_field_attributes=None,
-    structure_physical_field_attributes=None,
-):
+    back_end: str | None = None,
+    types: Mapping[str, AttributeChecker] | None = None,
+    module_attributes: AttributeSpecs | None = None,
+    struct_attributes: AttributeSpecs | None = None,
+    bits_attributes: AttributeSpecs | None = None,
+    enum_attributes: AttributeSpecs | None = None,
+    enum_value_attributes: AttributeSpecs | None = None,
+    external_attributes: AttributeSpecs | None = None,
+    structure_virtual_field_attributes: AttributeSpecs | None = None,
+    structure_physical_field_attributes: AttributeSpecs | None = None,
+) -> list[list[error.Message]]:
     """Performs basic checks on all attributes in the given ir.
 
     This function calls _check_attributes on each attribute list in ir.
@@ -204,7 +227,7 @@ def check_attributes_in_ir(
       A list of lists of error.error, or an empty list if there were no errors.
     """
 
-    def check_module(module, errors):
+    def check_module(module: ir_data.Module, errors: list[list[error.Message]]) -> None:
         errors.extend(
             _check_attributes(
                 module.attribute,
@@ -216,7 +239,11 @@ def check_attributes_in_ir(
             )
         )
 
-    def check_type_definition(type_definition, source_file_name, errors):
+    def check_type_definition(
+        type_definition: ir_data.TypeDefinition,
+        source_file_name: str,
+        errors: list[list[error.Message]],
+    ) -> None:
         if type_definition.has_field("structure"):
             if type_definition.addressable_unit == ir_data.AddressableUnit.BYTE:
                 errors.extend(
@@ -267,7 +294,9 @@ def check_attributes_in_ir(
                 )
             )
 
-    def check_struct_field(field, source_file_name, errors):
+    def check_struct_field(
+        field: ir_data.Field, source_file_name: str, errors: list[list[error.Message]]
+    ) -> None:
         if ir_util.field_is_virtual(field):
             field_attributes = structure_virtual_field_attributes
             field_adjective = "virtual "
@@ -285,7 +314,11 @@ def check_attributes_in_ir(
             )
         )
 
-    def check_enum_value(value, source_file_name, errors):
+    def check_enum_value(
+        value: ir_data.EnumValue,
+        source_file_name: str,
+        errors: list[list[error.Message]],
+    ) -> None:
         errors.extend(
             _check_attributes(
                 value.attribute,
@@ -297,7 +330,7 @@ def check_attributes_in_ir(
             )
         )
 
-    errors = []
+    errors: list[list[error.Message]] = []
     # TODO(bolms): Add a check that only known $default'ed attributes are
     # used.
     traverse_ir.fast_traverse_ir_top_down(
@@ -319,8 +352,13 @@ def check_attributes_in_ir(
 
 
 def _check_attributes(
-    attribute_list, types, back_end, attribute_specs, context_name, module_source_file
-):
+    attribute_list: Iterable[ir_data.Attribute],
+    types: Mapping[str, AttributeChecker] | None,
+    back_end: str | None,
+    attribute_specs: AttributeSpecs | None,
+    context_name: str,
+    module_source_file: str,
+) -> list[list[error.Message]]:
     """Performs basic checks on the given list of attributes.
 
     Checks the given attribute_list for duplicates, unknown attributes,
@@ -343,9 +381,9 @@ def _check_attributes(
         found.
     """
     if attribute_specs is None:
-        attribute_specs = []
-    errors = []
-    already_seen_attributes = {}
+        attribute_specs = set()
+    errors: list[list[error.Message]] = []
+    already_seen_attributes: dict[tuple[str, bool], ir_data.Attribute] = {}
     for attr in attribute_list:
         field_checker = ir_data_utils.reader(attr)
         if field_checker.back_end.text:
@@ -396,7 +434,10 @@ def _check_attributes(
     return errors
 
 
-def gather_default_attributes(obj, defaults):
+def gather_default_attributes(
+    obj: ir_data.Module | ir_data.TypeDefinition | ir_data.Field,
+    defaults: dict[str, ir_data.Attribute],
+) -> dict[str, Any]:
     """Gathers default attributes for an IR object.
 
     This is designed to be able to be used as-is as an incidental action in an

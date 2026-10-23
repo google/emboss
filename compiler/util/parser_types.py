@@ -23,11 +23,14 @@ other parts of the compiler:
     Token: a token; lr1.Parser operates on lists of tokens.
 """
 
-import collections
+from __future__ import annotations
 
-PositionTuple = collections.namedtuple(
-    "PositionTuple", ["line", "column"], defaults=[0, 0]
-)
+from typing import Any, NamedTuple
+
+
+class PositionTuple(NamedTuple):
+    line: int = 0
+    column: int = 0
 
 
 class SourcePosition(PositionTuple):
@@ -47,7 +50,7 @@ class SourcePosition(PositionTuple):
     # unnecessary when running under -O.
     if __debug__:
 
-        def __new__(cls, /, line=0, column=0):
+        def __new__(cls, /, line: int = 0, column: int = 0) -> SourcePosition:
             assert isinstance(line, int), f"line {line} is not int"
             assert isinstance(column, int), f"column {column} is not int"
             assert line >= 0, f"line {line} is negative"
@@ -57,26 +60,26 @@ class SourcePosition(PositionTuple):
             ), f"Cannot have line {line} with column {column}"
             return PositionTuple.__new__(cls, line, column)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.line}:{self.column}"
 
     @staticmethod
-    def from_str(value):
+    def from_str(value: str) -> SourcePosition:
         try:
             l, c = value.split(":")
             return SourcePosition(line=int(l.strip()), column=int(c.strip()))
         except Exception as e:
             raise ValueError(f"{repr(value)} is not a valid SourcePosition.")
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         return bool(self.line)
 
 
-LocationTuple = collections.namedtuple(
-    "LocationTuple",
-    ["start", "end", "is_disjoint_from_parent", "is_synthetic"],
-    defaults=[SourcePosition(), SourcePosition(), False, False],
-)
+class LocationTuple(NamedTuple):
+    start: SourcePosition = SourcePosition()
+    end: SourcePosition = SourcePosition()
+    is_disjoint_from_parent: bool = False
+    is_synthetic: bool = False
 
 
 class SourceLocation(LocationTuple):
@@ -99,12 +102,12 @@ class SourceLocation(LocationTuple):
     def __new__(
         cls,
         /,
-        start=SourcePosition(),
-        end=SourcePosition(),
+        start: SourcePosition | tuple[int, int] = SourcePosition(),
+        end: SourcePosition | tuple[int, int] = SourcePosition(),
         *,
-        is_disjoint_from_parent=False,
-        is_synthetic=False,
-    ):
+        is_disjoint_from_parent: bool = False,
+        is_synthetic: bool = False,
+    ) -> SourceLocation:
         if not isinstance(start, SourcePosition):
             start = SourcePosition(*start)
         if not isinstance(end, SourcePosition):
@@ -123,7 +126,7 @@ class SourceLocation(LocationTuple):
             cls, start, end, is_disjoint_from_parent, is_synthetic
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         suffix = ""
         if self.is_disjoint_from_parent:
             suffix += "^"
@@ -132,7 +135,7 @@ class SourceLocation(LocationTuple):
         return f"{self.start}-{self.end}{suffix}"
 
     @staticmethod
-    def from_str(value):
+    def from_str(value: str) -> SourceLocation:
         original_value = value
         try:
             is_synthetic = False
@@ -153,12 +156,12 @@ class SourceLocation(LocationTuple):
         except Exception as e:
             raise ValueError(f"{repr(original_value)} is not a valid SourceLocation.")
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         # Should this check is_synthetic and is_disjoint_from_parent as well?
         return bool(self.start)
 
 
-def merge_source_locations(*nodes):
+def merge_source_locations(*nodes: Any) -> SourceLocation | None:
     locations = [
         node.source_location
         for node in nodes
@@ -178,7 +181,7 @@ def merge_source_locations(*nodes):
     )
 
 
-class Token(collections.namedtuple("Token", ["symbol", "text", "source_location"])):
+class Token(NamedTuple):
     """A Token is a chunk of text from a source file, and a classification.
 
     Attributes:
@@ -187,13 +190,17 @@ class Token(collections.namedtuple("Token", ["symbol", "text", "source_location"
       source_location: Where this token came from in the original source file.
     """
 
-    def __str__(self):
+    symbol: str
+    text: str
+    source_location: SourceLocation
+
+    def __str__(self) -> str:
         return "{} {} {}".format(
             self.symbol, repr(self.text), str(self.source_location)
         )
 
 
-class Production(collections.namedtuple("Production", ["lhs", "rhs"])):
+class Production(NamedTuple):
     """A Production is a simple production from a context-free grammar.
 
     A Production takes the form:
@@ -209,11 +216,14 @@ class Production(collections.namedtuple("Production", ["lhs", "rhs"])):
       rhs: The sequence of symbols on the right-hand-side of the production.
     """
 
-    def __str__(self):
+    lhs: str
+    rhs: tuple[str, ...]
+
+    def __str__(self) -> str:
         return str(self.lhs) + " -> " + " ".join([str(r) for r in self.rhs])
 
     @staticmethod
-    def parse(production_text):
+    def parse(production_text: str) -> Production:
         """Parses a Production from a "symbol -> symbol symbol symbol" string."""
         words = production_text.split()
         if words[1] != "->":

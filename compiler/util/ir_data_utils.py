@@ -68,6 +68,9 @@ from typing import (
     Any,
     Callable,
     Generic,
+    Iterable,
+    Iterator,
+    Mapping,
     MutableMapping,
     MutableSequence,
     Optional,
@@ -85,7 +88,9 @@ from compiler.util import parser_types
 MessageT = TypeVar("MessageT", bound=ir_data.Message)
 
 
-def field_specs(ir: Union[MessageT, type[MessageT]]):
+def field_specs(
+    ir: Union[MessageT, type[MessageT]],
+) -> Mapping[str, ir_data_fields.FieldSpec]:
     """Retrieves the field specs for the IR data class"""
     data_type = ir if isinstance(ir, type) else type(ir)
     return ir_data_fields.IrDataclassSpecs.get_specs(data_type).all_field_specs
@@ -118,15 +123,15 @@ class IrDataSerializer:
             values[spec.name] = value
         return values
 
-    def to_dict(self, exclude_none: bool = False):
+    def to_dict(self, exclude_none: bool = False) -> MutableMapping[str, Any]:
         """Converts the IR data class to a dictionary."""
 
-        def non_empty(ir):
+        def non_empty(ir: MessageT) -> list[Tuple[ir_data_fields.FieldSpec, Any]]:
             return _fields_and_values(
-                ir, lambda v: v is not None and (not isinstance(v, list) or len(v))
+                ir, lambda v: v is not None and (not isinstance(v, list) or len(v) > 0)
             )
 
-        def all_fields(ir):
+        def all_fields(ir: MessageT) -> list[Tuple[ir_data_fields.FieldSpec, Any]]:
             return _fields_and_values(ir)
 
         # It's tempting to use `dataclasses.asdict` here, but that does a deep
@@ -134,17 +139,17 @@ class IrDataSerializer:
         # for `to_json` and `repr`.
         return self._to_dict(self.ir, non_empty if exclude_none else all_fields)
 
-    def to_json(self, *args, **kwargs):
+    def to_json(self, *args: Any, **kwargs: Any) -> str:
         """Converts the IR data class to a JSON string."""
         return json.dumps(self.to_dict(exclude_none=True), *args, **kwargs)
 
     @staticmethod
-    def from_json(data_cls, data):
+    def from_json(data_cls: type[MessageT], data: str) -> MessageT:
         """Constructs an IR data class from the given JSON string."""
         as_dict = json.loads(data)
         return IrDataSerializer.from_dict(data_cls, as_dict)
 
-    def copy_from_dict(self, data):
+    def copy_from_dict(self, data: Mapping[str, Any]) -> None:
         """Deserializes the data and overwrites the IR data class with it."""
         cls = type(self.ir)
         data_copy = IrDataSerializer.from_dict(cls, data)
@@ -159,11 +164,11 @@ class IrDataSerializer:
         return enum_cls(val)
 
     @staticmethod
-    def _enum_type_hook(enum_cls: type[enum.Enum]):
+    def _enum_type_hook(enum_cls: type[enum.Enum]) -> Callable[[Any], enum.Enum]:
         return lambda val: IrDataSerializer._enum_type_converter(enum_cls, val)
 
     @staticmethod
-    def _from_dict(data_cls: type[MessageT], data):
+    def _from_dict(data_cls: type[MessageT], data: Mapping[str, Any]) -> MessageT:
         """Translates the given `data` dict to an instance of `data_cls`."""
         class_fields: MutableMapping[str, Any] = {}
         for name, spec in ir_data_fields.field_specs(data_cls).items():
@@ -196,7 +201,7 @@ class IrDataSerializer:
         return data_cls(**class_fields)
 
     @staticmethod
-    def from_dict(data_cls: type[MessageT], data):
+    def from_dict(data_cls: type[MessageT], data: Mapping[str, Any]) -> MessageT:
         """Creates a new IR data instance from a serialized dict."""
         return IrDataSerializer._from_dict(data_cls, data)
 
@@ -211,36 +216,36 @@ class _IrDataSequenceBuilder(MutableSequence[MessageT]):
     def __init__(self, target: MutableSequence[MessageT]):
         self._target = target
 
-    def __delitem__(self, key):
+    def __delitem__(self, key: Any) -> None:
         del self._target[key]
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: Any) -> Any:
         return _IrDataBuilder(self._target.__getitem__(key))
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: Any, value: Any) -> None:
         self._target[key] = value
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Any]:
         itr = iter(self._target)
         for i in itr:
             yield _IrDataBuilder(i)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return repr(self._target)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._target)
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         return self._target == other
 
-    def __ne__(self, other):
+    def __ne__(self, other: object) -> bool:
         return self._target != other
 
-    def insert(self, index, value):
+    def insert(self, index: int, value: MessageT) -> None:
         self._target.insert(index, value)
 
-    def extend(self, values):
+    def extend(self, values: Iterable[MessageT]) -> None:
         self._target.extend(values)
 
 
@@ -307,9 +312,11 @@ class _IrDataBuilder(Generic[MessageT]):
 
         return obj
 
-    def CopyFrom(self, template: MessageT):  # pylint:disable=invalid-name
+    def CopyFrom(
+        self, template: MessageT
+    ) -> None:  # pylint:disable=invalid-name  # pylint:disable=invalid-name
         """Updates the fields of this class with values set in the template."""
-        update(cast(type[MessageT], self), template)
+        update(cast(MessageT, self), template)
 
 
 def builder(target: MessageT) -> MessageT:
@@ -327,7 +334,7 @@ def builder(target: MessageT) -> MessageT:
     return cast(MessageT, _IrDataBuilder(target))
 
 
-def _field_checker_from_spec(spec: ir_data_fields.FieldSpec):
+def _field_checker_from_spec(spec: ir_data_fields.FieldSpec) -> Any:
     """Helper that builds an FieldChecker that pretends to be an IR class."""
     if spec.is_sequence:
         return []
@@ -392,12 +399,12 @@ class _ReadOnlyFieldChecker:
 
         return value
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         if isinstance(other, _ReadOnlyFieldChecker):
             other = other.ir_or_spec
         return self.ir_or_spec == other
 
-    def __ne__(self, other):
+    def __ne__(self, other: object) -> bool:
         return not self == other
 
 
@@ -452,15 +459,15 @@ def reader(obj: Union[MessageT, _ReadOnlyFieldChecker]) -> MessageT:
 def _extract_ir(
     ir_or_wrapper: Union[MessageT, _ReadOnlyFieldChecker, _IrDataBuilder, None],
 ) -> Optional[ir_data_fields.IrDataclassInstance]:
+    ir: Any = ir_or_wrapper
     if isinstance(ir_or_wrapper, _ReadOnlyFieldChecker):
-        ir_or_spec = ir_or_wrapper.ir_or_spec
-        if isinstance(ir_or_spec, ir_data_fields.FieldSpec):
+        ir = ir_or_wrapper.ir_or_spec
+        if isinstance(ir, ir_data_fields.FieldSpec):
             # This is a placeholder entry, no fields are set.
             return None
-        ir_or_wrapper = ir_or_spec
     elif isinstance(ir_or_wrapper, _IrDataBuilder):
-        ir_or_wrapper = ir_or_wrapper.ir
-    return cast(ir_data_fields.IrDataclassInstance, ir_or_wrapper)
+        ir = ir_or_wrapper.ir
+    return cast(ir_data_fields.IrDataclassInstance, ir)
 
 
 def _fields_and_values(
@@ -483,7 +490,7 @@ def _fields_and_values(
     return ir_data_fields.fields_and_values(ir, value_filt)
 
 
-def get_set_fields(ir: MessageT):
+def get_set_fields(ir: MessageT) -> list[Tuple[ir_data_fields.FieldSpec, Any]]:
     """Retrieves the field specs and values of fields that are set in `ir`.
 
     A value is considered "set" if it is not None.
@@ -506,7 +513,7 @@ def copy(ir_wrapper: Optional[MessageT]) -> Optional[MessageT]:
     return cast(MessageT, ir_copy)
 
 
-def update(ir: MessageT, template: MessageT):
+def update(ir: MessageT, template: MessageT) -> None:
     """Updates `ir`s fields with all set fields in the template."""
     if not (template_ir := _extract_ir(template)):
         return

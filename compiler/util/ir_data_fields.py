@@ -35,6 +35,7 @@ Various utilities are provided for working with `dataclasses.Field`s:
 import dataclasses
 import enum
 import sys
+from types import ModuleType
 from typing import (
     Any,
     Callable,
@@ -71,7 +72,7 @@ CopyValuesListT = TypeVar("CopyValuesListT", bound=type)
 _IR_DATACLASSS_ATTR = "IR_DATACLASS"
 
 
-def _is_ir_dataclass(obj):
+def _is_ir_dataclass(obj: Any) -> bool:
     return hasattr(obj, _IR_DATACLASSS_ATTR)
 
 
@@ -87,15 +88,15 @@ class CopyValuesList(list[CopyValuesListT]):
             super().__init__()
         self.value_type = value_type
 
-    def _copy(self, obj: Any):
+    def _copy(self, obj: Any) -> Any:
         if _is_ir_dataclass(obj):
             return copy(obj)
         return self.value_type(obj)
 
-    def extend(self, iterable: Iterable) -> None:
+    def extend(self, iterable: Iterable[Any]) -> None:
         return super().extend([self._copy(i) for i in iterable])
 
-    def shallow_copy(self, iterable: Iterable) -> None:
+    def shallow_copy(self, iterable: Iterable[Any]) -> None:
         """Explicitly performs a shallow copy of the provided list."""
         return super().extend(iterable)
 
@@ -145,7 +146,7 @@ class FieldSpec(NamedTuple):
 
 def make_field_spec(
     name: str, data_type: type, container: FieldContainer, oneof: Optional[str]
-):
+) -> FieldSpec:
     """Builds a field spec with cached type queries."""
     return FieldSpec(
         name,
@@ -159,7 +160,7 @@ def make_field_spec(
     )
 
 
-def build_default(field_spec: FieldSpec):
+def build_default(field_spec: FieldSpec) -> Any:
     """Builds a default instance of the given field."""
     if field_spec.is_sequence:
         return CopyValuesList(field_spec.data_type)
@@ -178,7 +179,7 @@ class FilteredIrFieldSpecs:
         self.sequence_field_specs = tuple(v for v in specs.values() if v.is_sequence)
 
 
-def all_ir_classes(mod):
+def all_ir_classes(mod: ModuleType) -> Iterable[type[IrDataclassInstance]]:
     """Retrieves a list of all IR dataclass definitions in the given module."""
     return (
         v
@@ -193,7 +194,7 @@ class IrDataclassSpecs:
     spec_cache: MutableMapping[type, FilteredIrFieldSpecs] = {}
 
     @classmethod
-    def get_mod_specs(cls, mod):
+    def get_mod_specs(cls, mod: ModuleType) -> Mapping[type, FilteredIrFieldSpecs]:
         """Gets the IR dataclass specs for the given module."""
         return {
             ir_class: FilteredIrFieldSpecs(_field_specs(ir_class))
@@ -201,7 +202,7 @@ class IrDataclassSpecs:
         }
 
     @classmethod
-    def get_specs(cls, data_class):
+    def get_specs(cls, data_class: type) -> FilteredIrFieldSpecs:
         """Gets the field specs for the given class. The specs will be cached."""
         if data_class not in cls.spec_cache:
             mod = sys.modules[data_class.__module__]
@@ -209,7 +210,7 @@ class IrDataclassSpecs:
         return cls.spec_cache[data_class]
 
 
-def cache_message_specs(mod, cls):
+def cache_message_specs(mod: ModuleType, cls: type) -> None:
     """Adds `field_specs` to `mod`, excluding `cls`.
 
     Adds a cached `field_specs` attribute to IR dataclasses in module `mod`
@@ -306,7 +307,7 @@ def field_specs(obj: Union[IrDataT, type[IrDataT]]) -> Mapping[str, FieldSpec]:
 def fields_and_values(
     ir: IrDataT,
     value_filt: Optional[Callable[[Any], bool]] = None,
-):
+) -> list[Tuple[FieldSpec, Any]]:
     """Retrieves the fields and their values for a given IR data class.
 
     Args:
@@ -340,7 +341,7 @@ def fields_and_values(
 # 4. `FieldSpec` checks are cached including `is_dataclass` and `is_sequence`.
 # 5. None checks are only done in `copy()`, `_copy_set_fields` only
 #    references `_copy()` to avoid this step.
-def _copy_set_fields(ir: IrDataT):
+def _copy_set_fields(ir: IrDataT) -> MutableMapping[str, Any]:
     """Deep copies fields from IR node `ir`."""
     values: MutableMapping[str, Any] = {}
 
@@ -364,7 +365,7 @@ def _copy_set_fields(ir: IrDataT):
 
 
 def _copy(ir: IrDataT) -> IrDataT:
-    return type(ir)(**_copy_set_fields(ir))  # type: ignore[misc]
+    return type(ir)(**_copy_set_fields(ir))
 
 
 def copy(ir: IrDataT) -> Optional[IrDataT]:
@@ -374,7 +375,7 @@ def copy(ir: IrDataT) -> Optional[IrDataT]:
     return _copy(ir)
 
 
-def update(ir: IrDataT, template: IrDataT):
+def update(ir: IrDataT, template: IrDataT) -> None:
     """Updates `ir`s fields with all set fields in the template."""
     for k, v in _copy_set_fields(template).items():
         if isinstance(v, TemporaryCopyValuesList):
@@ -394,12 +395,12 @@ class OneOfField:
     def __init__(self, oneof: str) -> None:
         super().__init__()
         self.oneof = oneof
-        self.owner_type = None
+        self.owner_type: Optional[type] = None
         self.proxy_name: str = f"_value_{oneof}"
         self.proxy_choice_name: str = f"which_{oneof}"
         self.name: str = ""
 
-    def __set_name__(self, owner, name):
+    def __set_name__(self, owner: type, name: str) -> None:
         self.name = name
         self.owner_type = owner
         # Add the empty proxy fields to the class.  This may re-initialize
@@ -407,13 +408,13 @@ class OneOfField:
         setattr(owner, self.proxy_name, None)
         setattr(owner, self.proxy_choice_name, None)
 
-    def __get__(self, obj, objtype=None):
+    def __get__(self, obj: Any, objtype: Optional[type] = None) -> Any:
         if getattr(obj, self.proxy_choice_name, None) == self.name:
             return getattr(obj, self.proxy_name)
         else:
             return None
 
-    def __set__(self, obj, value):
+    def __set__(self, obj: Any, value: Any) -> None:
         if value is self:
             # This will happen if the dataclass uses the default value, we just
             # default to None.
@@ -428,19 +429,19 @@ class OneOfField:
             setattr(obj, self.proxy_choice_name, self.name)
 
 
-def oneof_field(name: str):
+def oneof_field(name: str) -> Any:
     """Alternative for `datclasses.field` that sets up a oneof variable."""
     return dataclasses.field(  # pylint:disable=invalid-field-call
         default=OneOfField(name), metadata={"oneof": name}, init=True
     )
 
 
-def str_field():
+def str_field() -> Any:
     """Helper used to define a defaulted str field."""
     return dataclasses.field(default_factory=str)  # pylint:disable=invalid-field-call
 
 
-def list_field(cls_or_fn):
+def list_field(cls_or_fn: Union[type, Callable[[], type]]) -> Any:
     """Helper used to define a defaulted list field.
 
     A lambda can be used to defer resolution of a field type that references its
@@ -458,7 +459,7 @@ def list_field(cls_or_fn):
         A field with a `default_factory` that produces an appropriate list.
     """
 
-    def list_factory(c):
+    def list_factory(c: Union[type, Callable[[], type]]) -> CopyValuesList[Any]:
         return CopyValuesList(c if isinstance(c, type) else c())
 
     return dataclasses.field(  # pylint:disable=invalid-field-call

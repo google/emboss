@@ -15,11 +15,12 @@
 """Utility function to parse text into an ir_data.Expression."""
 
 from compiler.front_end import module_ir
+from compiler.util import ir_data
 from compiler.front_end import parser
 from compiler.front_end import tokenizer
 
 
-def parse(text):
+def parse(text: str) -> ir_data.Expression:
     """Parses text as an Expression.
 
     This parses text using the expression subset of the Emboss grammar, and

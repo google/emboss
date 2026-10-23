@@ -14,7 +14,10 @@
 
 """Conversions between snake-, camel-, and shouty-case names."""
 
+from __future__ import annotations
+
 import enum
+from collections.abc import Callable
 
 
 class Case(str, enum.Enum):
@@ -27,13 +30,17 @@ class Case(str, enum.Enum):
 # Map of (from, to) cases to their conversion function. Initially only contains
 # identity case conversions, additional conversions are added with the
 # _case_conversion decorator.
-_case_conversions = {(case.value, case.value): lambda x: x for case in Case}
+_case_conversions: dict[tuple[str, str], Callable[[str], str]] = {
+    (case.value, case.value): lambda x: x for case in Case
+}
 
 
-def _case_conversion(case_from, case_to):
+def _case_conversion(
+    case_from: str, case_to: str
+) -> Callable[[Callable[[str], str]], Callable[[str], str]]:
     """Decorator to dynamically dispatch case conversions at runtime."""
 
-    def _func(f):
+    def _func(f: Callable[[str], str]) -> Callable[[str], str]:
         _case_conversions[case_from, case_to] = f
         return f
 
@@ -42,25 +49,25 @@ def _case_conversion(case_from, case_to):
 
 @_case_conversion(Case.SNAKE, Case.CAMEL)
 @_case_conversion(Case.SHOUTY, Case.CAMEL)
-def snake_to_camel(name):
+def snake_to_camel(name: str) -> str:
     """Convert from snake_case to CamelCase. Also works from SHOUTY_CASE."""
     return "".join(word.capitalize() for word in name.split("_"))
 
 
 @_case_conversion(Case.CAMEL, Case.K_CAMEL)
-def camel_to_k_camel(name):
+def camel_to_k_camel(name: str) -> str:
     """Convert from CamelCase to kCamelCase."""
     return "k" + name
 
 
 @_case_conversion(Case.SNAKE, Case.K_CAMEL)
 @_case_conversion(Case.SHOUTY, Case.K_CAMEL)
-def snake_to_k_camel(name):
+def snake_to_k_camel(name: str) -> str:
     """Converts from snake_case to kCamelCase. Also works from SHOUTY_CASE."""
     return camel_to_k_camel(snake_to_camel(name))
 
 
-def convert_case(case_from, case_to, value):
+def convert_case(case_from: str, case_to: str, value: str) -> str:
     """Converts cases based on runtime case values.
 
     Note: Cases can be strings or enum values.
@@ -76,6 +83,6 @@ def convert_case(case_from, case_to, value):
     return _case_conversions[case_from, case_to](value)
 
 
-def is_case_conversion_supported(case_from, case_to):
+def is_case_conversion_supported(case_from: str, case_to: str) -> bool:
     """Determines if a case conversion would be supported."""
     return (case_from, case_to) in _case_conversions

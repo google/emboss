@@ -14,8 +14,15 @@
 
 """Provides a simple memoizing decorator."""
 
+from __future__ import annotations
 
-def memoize(f):
+from collections.abc import Callable
+from typing import Any, TypeVar, cast
+
+_F = TypeVar("_F", bound=Callable[..., Any])
+
+
+def memoize(f: _F) -> _F:
     """Memoizes f.
 
     The @memoize decorator returns a function which caches the results of f, and
@@ -56,9 +63,9 @@ def memoize(f):
         A function which acts like f, but faster when called repeatedly with the
         same arguments.
     """
-    cache = {}
+    cache: dict[tuple[Any, ...], Any] = {}
 
-    def _memoized(*args):
+    def _memoized(*args: Any) -> Any:
         assert all(
             arg.__hash__ for arg in args
         ), "Arguments to memoized function {} must be hashable.".format(f.__name__)
@@ -66,4 +73,4 @@ def memoize(f):
             cache[args] = f(*args)
         return cache[args]
 
-    return _memoized
+    return cast(_F, _memoized)
