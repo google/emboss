@@ -18,12 +18,13 @@ This is a driver program that reads IR, feeds it to header_generator, and prints
 the result.
 """
 
-from __future__ import print_function
+from __future__ import annotations
 
 import argparse
 import os
 import subprocess
 import sys
+from collections.abc import Sequence
 
 from compiler.back_end.cpp import clang_format_path
 from compiler.back_end.cpp import header_generator
@@ -32,7 +33,7 @@ from compiler.util import ir_data
 from compiler.util import ir_data_utils
 
 
-def format_header(header):
+def format_header(header: str) -> str:
     """Runs the generated header through clang-format (Google style)."""
     clang_format_subprocess = subprocess.run(
         [
@@ -48,7 +49,7 @@ def format_header(header):
     return clang_format_subprocess.stdout
 
 
-def _parse_command_line(argv):
+def _parse_command_line(argv: Sequence[str]) -> argparse.Namespace:
     """Parses the given command-line arguments."""
     parser = argparse.ArgumentParser(
         description="Emboss compiler C++ back end.", prog=argv[0]
@@ -75,9 +76,11 @@ def _parse_command_line(argv):
     return parser.parse_args(argv[1:])
 
 
-def _show_errors(errors, ir, color_output):
+def _show_errors(
+    errors: list[list[error.Message]], ir: ir_data.EmbossIr, color_output: str
+) -> None:
     """Prints errors with source code snippets."""
-    source_codes = {}
+    source_codes: dict[str, str] = {}
     for module in ir.module:
         source_codes[module.source_file_name] = module.source_text
     use_color = color_output == "always" or (
@@ -86,7 +89,9 @@ def _show_errors(errors, ir, color_output):
     print(error.format_errors(errors, source_codes, use_color), file=sys.stderr)
 
 
-def generate_headers_and_log_errors(ir, color_output, config: header_generator.Config):
+def generate_headers_and_log_errors(
+    ir: ir_data.EmbossIr, color_output: str, config: header_generator.Config
+) -> tuple[str | None, list[list[error.Message]]]:
     """Generates a C++ header and logs any errors.
 
     Arguments:
@@ -103,7 +108,7 @@ def generate_headers_and_log_errors(ir, color_output, config: header_generator.C
     return (header, errors)
 
 
-def main(flags):
+def main(flags: argparse.Namespace) -> int:
     if flags.input_file:
         with open(flags.input_file) as f:
             ir = ir_data_utils.IrDataSerializer.from_json(ir_data.EmbossIr, f.read())
