@@ -86,10 +86,11 @@ class GenericOuter2View final {
   }
   Storage BackingStorage() const { return backing_; }
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
-           backing_.SizeInBytes() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeInBytes().UncheckedRead());
+    return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            backing_.SizeInBytes() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeInBytes().UncheckedRead()));
   }
   static constexpr ::std::size_t SizeInBytes() {
     return static_cast</**/ ::std::size_t>(IntrinsicSizeInBytes().Read());
@@ -270,6 +271,9 @@ class GenericOuter2View final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -308,6 +312,9 @@ class GenericOuter2View final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&
@@ -346,6 +353,9 @@ class GenericOuter2View final {
     static constexpr ::std::int32_t Read();
     static constexpr ::std::int32_t UncheckedRead();
     static constexpr bool Ok() { return true; }
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream* emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions&

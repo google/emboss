@@ -133,11 +133,20 @@ ${requires_check}
     return true;
   }
   Storage BackingStorage() const { return backing_; }
+  // The intention of IsComplete() is that it returns true iff adding more bytes
+  // to the backing store cannot change the result of Ok() -- i.e. there are
+  // enough bytes to hold the structure, even if it is broken in some other way.
+  //
+  // If the structure's intrinsic size is *undefined* -- it depends on a dynamic
+  // value that divides or takes a modulus by zero -- then it can never be Ok(),
+  // no matter how many bytes are supplied, so there is nothing more to wait for
+  // and IsComplete() returns true.  (Ok() still returns false in that case.)
   bool IsComplete() const {
-    return backing_.Ok() && IntrinsicSizeIn${units}().Ok() &&
-           backing_.SizeIn${units}() >=
-               static_cast</**/ ::std::size_t>(
-                   IntrinsicSizeIn${units}().UncheckedRead());
+    return IntrinsicSizeIn${units}().IsUndefined().ValueOr(false) ||
+           (backing_.Ok() && IntrinsicSizeIn${units}().Ok() &&
+            backing_.SizeIn${units}() >=
+                static_cast</**/ ::std::size_t>(
+                    IntrinsicSizeIn${units}().UncheckedRead()));
   }
 ${size_method}
 
@@ -565,6 +574,12 @@ Generic${parent_type}View<Storage>::has_${name}() const {
     static constexpr ${logical_type} Read();
     static constexpr ${logical_type} UncheckedRead();
     static constexpr bool Ok() { return true; }
+    // A constant virtual field always has a defined value, so it is never
+    // undefined.  (Mirrors the dynamic virtual field's IsUndefined() so that
+    // IsComplete() can query IntrinsicSizeIn*() uniformly.)
+    static constexpr ::emboss::support::Maybe<bool> IsUndefined() {
+      return ::emboss::support::Maybe<bool>(false);
+    }
     template <class Stream>
     void WriteToTextStream(Stream *emboss_reserved_local_stream,
                            const ::emboss::TextOutputOptions
@@ -667,6 +682,19 @@ Generic${parent_type}View<
       auto emboss_reserved_local_value = MaybeRead();
       return emboss_reserved_local_value.Known() &&
              ValueIsOk(emboss_reserved_local_value.ValueOrDefault());
+    }
+    // Distinguishes the two ways this field can fail to have a value.  Returns
+    // a Known() true if the value is *undefined* (the arithmetic divides or
+    // takes a modulus by zero, so more bytes can never make it readable), a
+    // Known() false if it has a defined value, or Unknown if it is merely
+    // *unreadable* for now (more bytes might resolve it either way).
+    ::emboss::support::Maybe<bool> IsUndefined() const {
+      const auto emboss_reserved_local_value = MaybeRead();
+      return emboss_reserved_local_value.Known()
+                 ? ::emboss::support::Maybe<bool>(false)
+                 : (emboss_reserved_local_value.IsUndefined()
+                        ? ::emboss::support::Maybe<bool>(true)
+                        : ::emboss::support::Maybe<bool>());
     }
     template <class Stream>
     void WriteToTextStream(Stream *emboss_reserved_local_stream,
