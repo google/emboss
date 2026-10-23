@@ -1,0 +1,43 @@
+# Copyright 2026 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+-- Fixture exercising the Wireshark Lua back end's conditional fields and
+-- variable-length arrays.
+
+[expected_back_ends: "cpp, wireshark"]
+[$default byte_order: "BigEndian"]
+[(cpp) namespace: "emboss::test::wireshark_dynamic"]
+[(wireshark) protocol: "vproto"]
+[(wireshark) root: "Message"]
+[(wireshark) register_on: "udp.port == 13370"]
+
+
+enum MsgType:
+  -- Type of message.
+  PING  = 0
+  DATA  = 1
+  ERROR = 2
+
+
+struct Message:
+  -- A length-prefixed message with an optional error code.
+  0 [+1]      MsgType        msg_type
+    -- Message type.
+  1 [+1]      UInt           count
+    -- Number of payload bytes that follow.
+  if msg_type == MsgType.ERROR:
+    2 [+2]    UInt           error_code
+      -- 16-bit error code, present only for ERROR messages.
+  4 [+count]  UInt:8[count]  payload
+    -- Variable-length payload, `count` bytes long.
