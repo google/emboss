@@ -537,13 +537,11 @@ def _set_dummy_integer_bounds(expression):
 
 
 def _set_conservative_modulus(expression, mn, mx):
-    """Records a conservative `x ≡ 0 (mod 1)` bound for a nonconstant result.
+    """Sets the modulus of a `//` or `%` result whose range is [mn, mx].
 
-    When the computed range has collapsed to a single finite value (e.g.
-    `x // 1000` where `x` is a byte), the result is actually constant, so record
-    it as such -- this preserves the invariant (asserted in
-    `_assert_integer_constraints`) that `minimum_value == maximum_value` implies
-    `modulus == "infinity"`.
+    A range that has collapsed to a single finite value (e.g. `x // 1000` for a
+    byte `x`) is a constant, so it is recorded as one.  Otherwise nothing is
+    known beyond the range, so the result is `x ≡ 0 (mod 1)`.
     """
     if mn == mx and not _is_infinite(mn):
         expression.type.integer.modulus = "infinity"

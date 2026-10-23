@@ -720,11 +720,7 @@ def _check_division_and_modulus_have_nonzero_divisors(
 ):
     """Rejects `l // r` and `l % r` whose divisor range could contain zero.
 
-    This is the initial, strict rollout of `//` and `%`: because the expression
-    type system does not yet track an `undefined` value, the only sound option
-    for a divisor whose range includes zero is to reject it at compile time.  A
-    later change will loosen this to allow a *possibly*-zero divisor to propagate
-    an `undefined` value, keeping the error only for a *provably*-zero divisor.
+    TODO(webstera): Allow possibly-zero divisors once `undefined` is tracked.
     """
     if expression.which_expression != "function":
         return
