@@ -36,6 +36,7 @@
 #include <stdint.h>
 
 #include <cstddef>
+#include <initializer_list>
 #include <sstream>
 #include <string>
 
@@ -420,6 +421,138 @@ TEST(OkEquivalence, OuterGuardedUnion) {
   EXPECT_EQ(kFillPatternCount * 6u * 3u * 256u * 13u, checked);
 }
 
+// ---------------------------------------------------------------------------
+// $size_in_bytes.  The intrinsic size is `$max(0, cond_1 ? end_1 : 0, ...)`,
+// which is Known iff every existence condition is Known.  The generated code
+// evaluates the conditions as a tree of nested switches, and may skip the
+// Known() test on a discriminant which an earlier test proved to be in
+// bounds; these tests pin SizeIsKnown()/SizeInBytes()/IsComplete() to the
+// definition on every length of buffers covering every arm, including arms
+// whose discriminant lies past the end of the buffer.
+// ---------------------------------------------------------------------------
+
+// Checks a prepared buffer at every length in [0, kSize] against a reference
+// which returns the intrinsic size, or -1 when it is not Known.
+template <::std::size_t kSize, typename MakeView, typename Reference>
+void CheckSizeForEveryLength(const char* schema, MakeView make_view,
+                             Reference reference, const ::std::uint8_t* bytes,
+                             ::std::uint64_t* checked, int* mismatches) {
+  for (::std::size_t length = 0; length <= kSize; ++length) {
+    const auto view = make_view(bytes, length);
+    const int expected = reference(view);
+    const bool expected_known = expected >= 0;
+    const bool expected_complete =
+        expected_known && length >= static_cast<::std::size_t>(expected);
+    ++*checked;
+    bool mismatch = view.SizeIsKnown() != expected_known ||
+                    view.IsComplete() != expected_complete;
+    if (!mismatch && expected_known) {
+      mismatch = view.SizeInBytes() != static_cast<::std::size_t>(expected);
+    }
+    if (!mismatch) continue;
+    if (++*mismatches <= 10) {
+      ADD_FAILURE() << schema << ": SizeIsKnown() is " << view.SizeIsKnown()
+                    << ", IsComplete() is " << view.IsComplete()
+                    << " but the reference size is " << expected << " for "
+                    << DescribeBuffer(bytes, length);
+    }
+  }
+}
+
+// `end` if `field` is present, 0 if it is absent, -1 if that is not Known.
+#define EMBOSS_TEST_FIELD_END(view, field, end)       \
+  (!(view).has_##field().Known()                      \
+       ? -1                                           \
+       : ((view).has_##field().ValueOrDefault() ? (end) : 0))
+
+// The maximum of the field ends, or -1 if any of them is not Known.
+int MaxFieldEnd(::std::initializer_list<int> ends) {
+  int result = 0;
+  for (int end : ends) {
+    if (end < 0) return -1;
+    if (end > result) result = end;
+  }
+  return result;
+}
+
+// Bytes 0..2 of NestedUnionWithEarlyKind are `outer_tag`, `kind` and
+// `inner_tag`; in NestedUnionWithLateKind they are `outer_tag`, `inner_tag`
+// and `bare_payload`, with `kind` at byte 3.  Each discriminant takes every
+// value that selects an arm, plus values that select none.
+constexpr ::std::uint8_t kOuterTagValues[] = {0, 1, 2, 255};
+constexpr ::std::uint8_t kKindValues[] = {0, 7, 8, 255};
+constexpr ::std::uint8_t kInnerTagValues[] = {0, 2, 3, 255};
+
+TEST(SizeEquivalence, NestedUnionWithEarlyKind) {
+  const char* const schema = "NestedUnionWithEarlyKind";
+  const auto make_view = [](const ::std::uint8_t* bytes, ::std::size_t length) {
+    return MakeNestedUnionWithEarlyKindView(bytes, length);
+  };
+  const auto reference = [](const NestedUnionWithEarlyKindView& view) {
+    return MaxFieldEnd({EMBOSS_TEST_FIELD_END(view, outer_tag, 1),
+                        EMBOSS_TEST_FIELD_END(view, kind, 2),
+                        EMBOSS_TEST_FIELD_END(view, inner_tag, 3),
+                        EMBOSS_TEST_FIELD_END(view, bare_payload, 4),
+                        EMBOSS_TEST_FIELD_END(view, payload_a, 8),
+                        EMBOSS_TEST_FIELD_END(view, payload_b, 12)});
+  };
+  ::std::uint8_t bytes[12] = {0};
+  ::std::uint64_t checked = 0;
+  int mismatches = 0;
+  for (::std::uint8_t fill : kFillPatterns) {
+    for (int i = 3; i < 12; ++i) bytes[i] = fill;
+    for (::std::uint8_t outer_tag : kOuterTagValues) {
+      for (::std::uint8_t kind : kKindValues) {
+        for (::std::uint8_t inner_tag : kInnerTagValues) {
+          bytes[0] = outer_tag;
+          bytes[1] = kind;
+          bytes[2] = inner_tag;
+          CheckSizeForEveryLength<12>(schema, make_view, reference, bytes,
+                                      &checked, &mismatches);
+        }
+      }
+    }
+  }
+  EXPECT_EQ(0, mismatches);
+  EXPECT_EQ(kFillPatternCount * 4u * 4u * 4u * 13u, checked);
+}
+
+TEST(SizeEquivalence, NestedUnionWithLateKind) {
+  const char* const schema = "NestedUnionWithLateKind";
+  const auto make_view = [](const ::std::uint8_t* bytes, ::std::size_t length) {
+    return MakeNestedUnionWithLateKindView(bytes, length);
+  };
+  const auto reference = [](const NestedUnionWithLateKindView& view) {
+    return MaxFieldEnd({EMBOSS_TEST_FIELD_END(view, outer_tag, 1),
+                        EMBOSS_TEST_FIELD_END(view, inner_tag, 2),
+                        EMBOSS_TEST_FIELD_END(view, bare_payload, 3),
+                        EMBOSS_TEST_FIELD_END(view, kind, 4),
+                        EMBOSS_TEST_FIELD_END(view, payload_a, 8),
+                        EMBOSS_TEST_FIELD_END(view, payload_b, 12)});
+  };
+  ::std::uint8_t bytes[12] = {0};
+  ::std::uint64_t checked = 0;
+  int mismatches = 0;
+  for (::std::uint8_t fill : kFillPatterns) {
+    for (int i = 4; i < 12; ++i) bytes[i] = fill;
+    for (::std::uint8_t outer_tag : kOuterTagValues) {
+      for (::std::uint8_t inner_tag : kInnerTagValues) {
+        for (::std::uint8_t kind : kKindValues) {
+          bytes[0] = outer_tag;
+          bytes[1] = inner_tag;
+          bytes[2] = fill;
+          bytes[3] = kind;
+          CheckSizeForEveryLength<12>(schema, make_view, reference, bytes,
+                                      &checked, &mismatches);
+        }
+      }
+    }
+  }
+  EXPECT_EQ(0, mismatches);
+  EXPECT_EQ(kFillPatternCount * 4u * 4u * 4u * 13u, checked);
+}
+
+#undef EMBOSS_TEST_FIELD_END
 #undef EMBOSS_TEST_FOR_EACH_ARM
 #undef EMBOSS_TEST_FIELD_OK
 

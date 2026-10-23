@@ -658,6 +658,27 @@ def _render_builtin_operation(expression, ir, field_reader, subexpressions):
             expression.function.args[0], subexpressions
         )
     args = expression.function.args
+    # `true && x` and `false || x` are exactly `x` under Emboss's Maybe<bool>
+    # semantics; the constant operands come from existence conditions which
+    # have been partially resolved at compile time.
+    if expression.function.function == ir_data.FunctionMapping.AND:
+        if _is_constant_true(args[0]):
+            return _render_expression(
+                args[1], ir, field_reader, subexpressions
+            ).rendered
+        if _is_constant_true(args[1]):
+            return _render_expression(
+                args[0], ir, field_reader, subexpressions
+            ).rendered
+    elif expression.function.function == ir_data.FunctionMapping.OR:
+        if _is_constant_false(args[0]):
+            return _render_expression(
+                args[1], ir, field_reader, subexpressions
+            ).rendered
+        if _is_constant_false(args[1]):
+            return _render_expression(
+                args[0], ir, field_reader, subexpressions
+            ).rendered
     rendered_args = [
         _render_expression(arg, ir, field_reader, subexpressions).rendered
         for arg in args
@@ -720,20 +741,14 @@ class _FieldRenderer(object):
     """Base class for rendering field reads."""
 
     def render_field_read_with_context(self, expression, ir, prefix, subexpressions):
+        # The read is a single call, so there is no subexpression to share.
+        del subexpressions  # Unused.
         field = prefix + _render_variable(
             ir_util.hashable_form_of_field_reference(expression.field_reference)
         )
-        if subexpressions is None:
-            field_expression = field
-        else:
-            field_expression = subexpressions.add(field)
         expression_cpp_type = _cpp_basic_type_for_expression(expression, ir)
-        return (
-            "({0}.Ok()"
-            "    ? {1}(static_cast</**/{2}>({0}.UncheckedRead()))"
-            "    : {1}())".format(
-                field_expression, _maybe_type(expression_cpp_type), expression_cpp_type
-            )
+        return "::emboss::support::MaybeStaticCast</**/{}>({}.OkAndUncheckedRead())".format(
+            expression_cpp_type, field
         )
 
     def render_existence_with_context(self, expression, prefix, subexpressions):
@@ -776,6 +791,20 @@ class ExpressionScope(object):
         self._parent = parent
         self._subexpr_to_name = {}
         self._index_to_subexpr = []
+        self._depth = 0 if parent is None else parent._depth + 1
+
+    def child(self):
+        """Returns a new scope for a block nested inside this scope's block.
+
+        Subexpressions already defined in this scope (or its ancestors) are
+        reused by the child; new subexpressions are defined in the child.  The
+        child's names cannot collide with any ancestor's, but sibling scopes
+        (for sibling blocks) use the same names, so that blocks with identical
+        contents render identically.
+        """
+        return ExpressionScope(
+            "{}{}_".format(self._prefix, self._depth + 1), parent=self
+        )
 
     def add(self, subexpr):
         # Check if expression exists in current or parent scopes
@@ -790,16 +819,30 @@ class ExpressionScope(object):
         self._subexpr_to_name[subexpr] = self._prefix + str(len(self._index_to_subexpr))
         return self._subexpr_to_name[subexpr]
 
+    def mark(self):
+        """Returns a token for discard_since()."""
+        return len(self._index_to_subexpr)
+
+    def discard_since(self, mark):
+        """Removes the subexpressions added to this scope since `mark`.
+
+        Used to drop a subexpression which turned out to have no users, so
+        that the generated code does not define an unused variable.
+        """
+        for subexpr in self._index_to_subexpr[mark:]:
+            del self._subexpr_to_name[subexpr]
+        del self._index_to_subexpr[mark:]
+
     def subexprs(self):
         return [
             (self._subexpr_to_name[subexpr], subexpr)
             for subexpr in self._index_to_subexpr
         ]
 
-    def definition_code(self):
+    def definition_code(self, indent="      "):
         return "".join(
             [
-                "      const auto {} = {};\n".format(name, subexpr)
+                "{}const auto {} = {};\n".format(indent, name, subexpr)
                 for name, subexpr in self.subexprs()
             ]
         )
@@ -885,7 +928,143 @@ def _render_expression(expression, ir, field_reader=None, subexpressions=None):
 
 
 def _render_existence_test(field, ir, subexpressions=None):
-    return _render_expression(field.existence_condition, ir, subexpressions)
+    return _render_expression(
+        field.existence_condition, ir, subexpressions=subexpressions
+    )
+
+
+# Generated methods whose bodies evaluate Emboss expressions -- has_${field}(),
+# the accessors of fields at non-constant locations, and the read methods of
+# virtual fields -- are only forced inline (EMBOSS_ALWAYS_INLINE) when the code
+# they pull in is bounded.  Forcing a method inline forces everything it calls
+# that is also forced inline, so a chain like
+#
+#     let o1 = l1.length + 1
+#     o1 [+1]  Length  l2
+#     let o2 = o1 + l2.length + 1   # reads o1 twice: once directly, once
+#     ...                           # through l2's location
+#
+# would otherwise inline 2**N copies of o1 into oN, and the compiler would run
+# out of memory on real-world structures.  The analysis below follows
+# references from one generated method into the next -- a conditional field's
+# has_${field}(), a dynamically-located field's accessor, a virtual field's
+# read -- and stops forcing after _MAX_FORCED_INLINE_DEPTH such hops, so that
+# the forced-inline code reachable from any method is a bounded multiple of the
+# size of the structure definition.
+_MAX_FORCED_INLINE_DEPTH = 3
+
+
+def _field_is_cheap_to_read(field, ir, depth):
+    """Returns True if reading `field` inlines a bounded amount of code.
+
+    `depth` is the number of generated methods already traversed to reach this
+    field; see _MAX_FORCED_INLINE_DEPTH.
+    """
+    if ir_util.field_is_virtual(field):
+        if _is_constant(field.read_transform):
+            pass
+        elif field.write_method.which_method == "alias":
+            # The alias's accessor forwards to the aliased field's view.
+            if not _field_reference_is_cheap_to_inline(
+                field.write_method.alias.path, ir, depth
+            ):
+                return False
+        elif depth >= _MAX_FORCED_INLINE_DEPTH:
+            return False
+        elif not _expression_is_cheap_to_inline(field.read_transform, ir, depth + 1):
+            # Reading the virtual field runs its read method.
+            return False
+    else:
+        start = field.location.start
+        size = field.location.size
+        if (
+            ir_util.constant_value(start) is None
+            or ir_util.constant_value(size) is None
+        ):
+            # The accessor evaluates the field's location.
+            if depth >= _MAX_FORCED_INLINE_DEPTH:
+                return False
+            if not (
+                _expression_is_cheap_to_inline(start, ir, depth + 1)
+                and _expression_is_cheap_to_inline(size, ir, depth + 1)
+            ):
+                return False
+        if field.type.has_field("atomic_type") and not all(
+            _expression_is_cheap_to_inline(parameter, ir, depth + 1)
+            for parameter in field.type.atomic_type.runtime_parameter
+        ):
+            # The accessor also evaluates the field's parameters.
+            return False
+    if not _is_constant_true(field.existence_condition):
+        # Reading a conditional field runs its has_${field}().
+        if depth >= _MAX_FORCED_INLINE_DEPTH:
+            return False
+        conjuncts = _existence_conjuncts(field.existence_condition, ir)
+        if conjuncts and not all(
+            _expression_is_cheap_to_inline(conjunct, ir, depth + 1)
+            for conjunct in conjuncts
+        ):
+            return False
+    return True
+
+
+def _field_reference_is_cheap_to_inline(path, ir, depth):
+    """Returns True if reading the referenced field inlines a bounded amount of code.
+
+    Every field along the path (`a.b.c` reads `a`, then `b` within it, then
+    `c`) must be cheap to read.
+    """
+    for segment in path:
+        target = ir_util.find_object(segment, ir)
+        if isinstance(target, ir_data.RuntimeParameter):
+            continue
+        if not isinstance(target, ir_data.Field):
+            return False
+        if not _field_is_cheap_to_read(target, ir, depth):
+            return False
+    return True
+
+
+def _expression_is_cheap_to_inline(expression, ir, depth=0):
+    """Returns True if evaluating `expression` inlines a bounded amount of code.
+
+    See `_field_reference_is_cheap_to_inline` for the definition of "bounded".
+    """
+    if _is_constant(expression):
+        return True
+    if expression.which_expression == "field_reference":
+        return _field_reference_is_cheap_to_inline(
+            expression.field_reference.path, ir, depth
+        )
+    if expression.which_expression == "function":
+        if expression.function.function == ir_data.FunctionMapping.PRESENCE:
+            # `$present(x)` calls has_x(), which evaluates x's existence
+            # condition.
+            path = expression.function.args[0].field_reference.path
+            target = ir_util.find_object(path[-1], ir)
+            if len(path) != 1 or not isinstance(target, ir_data.Field):
+                return False
+            if _is_constant_true(target.existence_condition):
+                return True
+            if depth >= _MAX_FORCED_INLINE_DEPTH:
+                return False
+            return _expression_is_cheap_to_inline(
+                target.existence_condition, ir, depth + 1
+            )
+        return all(
+            _expression_is_cheap_to_inline(arg, ir, depth)
+            for arg in expression.function.args
+        )
+    return True
+
+
+def _inline_specifier(expressions, ir):
+    """Returns the inline specifier for a method which evaluates `expressions`."""
+    if all(
+        _expression_is_cheap_to_inline(expression, ir) for expression in expressions
+    ):
+        return "EMBOSS_ALWAYS_INLINE"
+    return "inline"
 
 
 def _alignment_of_location(location):
@@ -1004,10 +1183,15 @@ def _generate_structure_virtual_field_methods(enclosing_type_name, field_ir, ir)
         field_reader=_VirtualViewFieldRenderer(),
         subexpressions=read_subexpressions,
     )
-    field_exists = _render_existence_test(field_ir, ir)
+    field_exists_subexpressions, field_exists_rendered = _generate_field_existence_body(
+        field_ir, ir
+    )
+    field_exists_is_constant = _render_expression(
+        field_ir.existence_condition, ir
+    ).is_constant
     logical_type = _cpp_basic_type_for_expression(field_ir.read_transform, ir)
 
-    if read_value.is_constant and field_exists.is_constant:
+    if read_value.is_constant and field_exists_is_constant:
         assert not read_subexpressions.subexprs()
         declaration_template = (
             _TEMPLATES.structure_single_const_virtual_field_method_declarations
@@ -1015,6 +1199,8 @@ def _generate_structure_virtual_field_methods(enclosing_type_name, field_ir, ir)
         definition_template = (
             _TEMPLATES.structure_single_const_virtual_field_method_definitions
         )
+        rendered_read_subexpressions = ""
+        rendered_read_value = read_value.rendered
     else:
         declaration_template = (
             _TEMPLATES.structure_single_virtual_field_method_declarations
@@ -1022,6 +1208,13 @@ def _generate_structure_virtual_field_methods(enclosing_type_name, field_ir, ir)
         definition_template = (
             _TEMPLATES.structure_single_virtual_field_method_definitions
         )
+        if field_ir.name.name.text in ("$size_in_bits", "$size_in_bytes"):
+            rendered_read_subexpressions, rendered_read_value = (
+                _generate_optimized_size_read(field_ir, logical_type, ir)
+            )
+        else:
+            rendered_read_subexpressions = read_subexpressions.definition_code()
+            rendered_read_value = read_value.rendered
 
     if field_ir.write_method.which_method == "transform":
         destination = _render_variable(
@@ -1066,32 +1259,37 @@ def _generate_structure_virtual_field_methods(enclosing_type_name, field_ir, ir)
         )
 
     value_is_ok = _generate_validator_expression_for(field_ir, ir)
+    # The read methods evaluate the read transform and, through Read()'s and
+    # Ok()'s ValueIsOk(), the [requires] expression, if any.
+    read_expressions = [field_ir.read_transform]
+    requires_attr = ir_util.get_attribute(field_ir.attribute, "requires")
+    if requires_attr is not None:
+        read_expressions.append(requires_attr.expression)
+    existence_conjuncts = _existence_conjuncts(field_ir.existence_condition, ir)
     declaration = code_template.format_template(
         declaration_template,
         visibility=_visibility_for_field(field_ir),
         name=name,
         virtual_view_type_name=virtual_view_type_name,
         logical_type=logical_type,
-        read_subexpressions="".join(
-            [
-                "      const auto {} = {};\n".format(subexpr_name, subexpr)
-                for subexpr_name, subexpr in read_subexpressions.subexprs()
-            ]
-        ),
-        read_value=read_value.rendered,
+        read_subexpressions=rendered_read_subexpressions,
+        read_value=rendered_read_value,
         write_to_text_stream_function=write_to_text_stream_function,
         parent_type=enclosing_type_name,
         write_methods=write_methods,
         value_is_ok=value_is_ok,
+        inline=_inline_specifier(read_expressions, ir),
     )
     definition = code_template.format_template(
         definition_template,
         name=name,
         virtual_view_type_name=virtual_view_type_name,
         logical_type=logical_type,
-        read_value=read_value.rendered,
+        read_value=rendered_read_value,
         parent_type=enclosing_type_name,
-        field_exists=field_exists.rendered,
+        field_exists_subexpressions=field_exists_subexpressions,
+        field_exists=field_exists_rendered,
+        has_inline=_inline_specifier(existence_conjuncts or [], ir),
     )
     return "", declaration, definition
 
@@ -1153,7 +1351,7 @@ def _generate_structure_physical_field_methods(
 
     subexpressions = ExpressionScope("emboss_reserved_local_subexpr_")
     parameter_values = []
-    parameters_known = []
+    parameter_known_checks = []
     for parameter in parameter_expressions:
         parameter_cpp_expr = _render_expression(
             parameter, ir, subexpressions=subexpressions
@@ -1161,30 +1359,12 @@ def _generate_structure_physical_field_methods(
         parameter_values.append(
             "{}.ValueOrDefault(), ".format(parameter_cpp_expr.rendered)
         )
-        parameters_known.append("{}.Known() && ".format(parameter_cpp_expr.rendered))
-    parameter_subexpressions = "".join(
-        [
-            "  const auto {} = {};\n".format(name, subexpr)
-            for name, subexpr in subexpressions.subexprs()
-        ]
-    )
+        parameter_known_checks.append("{}.Known()".format(parameter_cpp_expr.rendered))
+    parameter_subexpressions = subexpressions.definition_code("  ")
 
-    first_size_and_offset_subexpr = len(subexpressions.subexprs())
-    offset = _render_expression(
-        field_ir.location.start, ir, subexpressions=subexpressions
-    ).rendered
-    size = _render_expression(
-        field_ir.location.size, ir, subexpressions=subexpressions
-    ).rendered
-    size_and_offset_subexpressions = "".join(
-        [
-            "    const auto {} = {};\n".format(name, subexpr)
-            for name, subexpr in subexpressions.subexprs()[
-                first_size_and_offset_subexpr:
-            ]
-        ]
+    field_exists_subexpressions, field_exists_rendered = _generate_field_existence_body(
+        field_ir, ir
     )
-
     field_alignment, field_offset = _alignment_of_location(field_ir.location)
     declaration = code_template.format_template(
         _TEMPLATES.structure_single_field_method_declarations,
@@ -1192,21 +1372,79 @@ def _generate_structure_physical_field_methods(
         visibility=_visibility_for_field(field_ir),
         name=field_name,
     )
-    definition = code_template.format_template(
-        _TEMPLATES.structure_single_field_method_definitions,
+    common_arguments = dict(
         parent_type=enclosing_type_name,
         name=field_name,
         type_reader=type_reader,
-        offset=offset,
-        size=size,
-        size_and_offset_subexpressions=size_and_offset_subexpressions,
-        field_exists=_render_existence_test(field_ir, ir).rendered,
         alignment=field_alignment,
-        parameters_known="".join(parameters_known),
+        static_offset=field_offset,
+        field_exists_subexpressions=field_exists_subexpressions,
+        field_exists=field_exists_rendered,
         parameter_values="".join(parameter_values),
         parameter_subexpressions=parameter_subexpressions,
-        static_offset=field_offset,
+        has_inline=_inline_specifier(
+            _existence_conjuncts(field_ir.existence_condition, ir) or [], ir
+        ),
     )
+    constant_offset = ir_util.constant_value(field_ir.location.start)
+    constant_size = ir_util.constant_value(field_ir.location.size)
+    if (
+        constant_offset is not None
+        and constant_offset >= 0
+        and constant_size is not None
+        and constant_size >= 0
+    ):
+        # The field's location is known at compile time, so the only runtime
+        # questions are whether the field is present and whether its
+        # parameters (if any) are Known.
+        conditions = list(parameter_known_checks)
+        if not _is_constant_true(field_ir.existence_condition):
+            conditions.append("has_{}().ValueOr(false)".format(field_name))
+        if conditions:
+            template = _TEMPLATES.conditional_constant_location_field_method_definitions
+        else:
+            template = (
+                _TEMPLATES.unconditional_constant_location_field_method_definitions
+            )
+        definition = code_template.format_template(
+            template,
+            const_offset=_render_integer(constant_offset),
+            const_size=_render_integer(constant_size),
+            condition=" && ".join(conditions),
+            inline=_inline_specifier(parameter_expressions, ir),
+            **common_arguments,
+        )
+    else:
+        first_size_and_offset_subexpr = len(subexpressions.subexprs())
+        offset = _render_expression(
+            field_ir.location.start, ir, subexpressions=subexpressions
+        ).rendered
+        size = _render_expression(
+            field_ir.location.size, ir, subexpressions=subexpressions
+        ).rendered
+        size_and_offset_subexpressions = "".join(
+            [
+                "    const auto {} = {};\n".format(name, subexpr)
+                for name, subexpr in subexpressions.subexprs()[
+                    first_size_and_offset_subexpr:
+                ]
+            ]
+        )
+        definition = code_template.format_template(
+            _TEMPLATES.structure_single_field_method_definitions,
+            offset=offset,
+            size=size,
+            size_and_offset_subexpressions=size_and_offset_subexpressions,
+            parameters_known="".join(
+                "{} && ".format(check) for check in parameter_known_checks
+            ),
+            inline=_inline_specifier(
+                [field_ir.location.start, field_ir.location.size]
+                + list(parameter_expressions),
+                ir,
+            ),
+            **common_arguments,
+        )
     return validator_declaration, declaration, definition
 
 
@@ -1289,8 +1527,28 @@ def _generate_field_indirection(field_ir, parent_type_name, ir):
     rendered_aliased_field = _render_variable(
         ir_util.hashable_form_of_field_reference(field_ir.write_method.alias)
     )
+    field_exists_subexpressions, field_exists_rendered = _generate_field_existence_body(
+        field_ir, ir
+    )
+    first_target = ir_util.find_object(field_ir.write_method.alias.path[0], ir)
+    if _is_constant_true(field_ir.existence_condition) or (
+        isinstance(first_target, ir_data.Field) and first_target.name.is_anonymous
+    ):
+        # The aliased field's own view already reflects the alias's existence
+        # condition: the alias is either unconditional, or an alias into an
+        # anonymous `bits` field, whose existence condition (the `&&` of the
+        # anonymous field's and the aliased field's conditions) is exactly
+        # what the chain of field methods checks.  Either way, there is no
+        # need to check has_${name}() before forwarding.
+        declaration_template = (
+            _TEMPLATES.unconditional_structure_single_field_indirect_method_declarations
+        )
+    else:
+        declaration_template = (
+            _TEMPLATES.structure_single_field_indirect_method_declarations
+        )
     declaration = code_template.format_template(
-        _TEMPLATES.structure_single_field_indirect_method_declarations,
+        declaration_template,
         aliased_field=rendered_aliased_field,
         visibility=_visibility_for_field(field_ir),
         parent_type=parent_type_name,
@@ -1301,7 +1559,11 @@ def _generate_field_indirection(field_ir, parent_type_name, ir):
         parent_type=parent_type_name,
         name=field_ir.name.name.text,
         aliased_field=rendered_aliased_field,
-        field_exists=_render_existence_test(field_ir, ir).rendered,
+        field_exists_subexpressions=field_exists_subexpressions,
+        field_exists=field_exists_rendered,
+        has_inline=_inline_specifier(
+            _existence_conjuncts(field_ir.existence_condition, ir) or [], ir
+        ),
     )
     return "", declaration, definition
 
@@ -1344,6 +1606,171 @@ def _cpp_field_name(name):
         return name
 
 
+# The rest of this section analyzes field existence conditions, so that Ok(),
+# has_${field}(), and $size_in_bits/$size_in_bytes can:
+#
+#   * evaluate a condition that several fields share once, as an `if` or a
+#     `switch`, instead of once per field;
+#   * skip checks that provably cannot fail; and
+#   * skip `Known()` tests on conditions that provably are Known().
+#
+# Everything here is conservative: when in doubt, the generated code falls
+# back to evaluating the full Emboss expression with Maybe<> semantics.
+
+
+def _is_constant_true(expression):
+    """Returns True if `expression` is statically known to be `true`."""
+    return (
+        expression.type.which_type == "boolean"
+        and expression.type.boolean.has_field("value")
+        and expression.type.boolean.value
+    )
+
+
+def _is_constant_false(expression):
+    """Returns True if `expression` is statically known to be `false`."""
+    return (
+        expression.type.which_type == "boolean"
+        and expression.type.boolean.has_field("value")
+        and not expression.type.boolean.value
+    )
+
+
+def _is_constant(expression):
+    """Returns True if the front end found a static value for `expression`."""
+    expression_type = expression.type
+    if expression_type.which_type == "integer":
+        return expression_type.integer.modulus == "infinity"
+    if expression_type.which_type == "boolean":
+        return expression_type.boolean.has_field("value")
+    if expression_type.which_type == "enumeration":
+        return expression_type.enumeration.has_field("value")
+    return False
+
+
+def _inline_condition_helpers(expression, ir):
+    """Replaces boolean `let`s and `$present()` in a condition by their definitions.
+
+    A pattern like
+
+        let is_sync = message_type == MessageType.SYNC
+        if is_sync:
+          ...
+
+    hides the comparison behind a field reference, and `$present(x)` (which
+    the front end also synthesizes for aliases into anonymous `bits`) hides
+    `x`'s existence condition behind a call to has_x().  Inlining the
+    definitions lets the condition-tree code below see the underlying
+    comparisons, so that it can route the field into a `switch` on
+    `message_type` together with the fields which test `message_type`
+    directly, and recognize when the condition is implied by an enclosing one.
+
+    Only unconditional, `[requires]`-free boolean virtuals are inlined, so
+    that the inlined expression has exactly the same Maybe<bool> value as
+    reading the virtual field; `$present(x)` always has the same value as
+    `x`'s existence condition.
+    """
+    if expression.which_expression == "field_reference":
+        path = expression.field_reference.path
+        if len(path) != 1:
+            return expression
+        target = ir_util.find_object(path[0], ir)
+        if (
+            isinstance(target, ir_data.Field)
+            and ir_util.field_is_virtual(target)
+            and target.read_transform.type.which_type == "boolean"
+            and _is_constant_true(target.existence_condition)
+            and ir_util.get_attribute(target.attribute, "requires") is None
+        ):
+            return _inline_condition_helpers(target.read_transform, ir)
+        return expression
+    if expression.which_expression != "function":
+        return expression
+    function = expression.function.function
+    if function == ir_data.FunctionMapping.PRESENCE:
+        path = expression.function.args[0].field_reference.path
+        if len(path) != 1:
+            return expression
+        target = ir_util.find_object(path[0], ir)
+        if not isinstance(target, ir_data.Field):
+            return expression
+        return _inline_condition_helpers(target.existence_condition, ir)
+    if function in (ir_data.FunctionMapping.AND, ir_data.FunctionMapping.OR):
+        result = ir_data_utils.copy(expression)
+        del result.function.args[:]
+        for arg in expression.function.args:
+            result.function.args.append(_inline_condition_helpers(arg, ir))
+        return result
+    return expression
+
+
+def _existence_conjuncts(condition, ir):
+    """Splits an existence condition into its top-level `&&` conjuncts.
+
+    Returns `[]` when `condition` is statically true and `None` when it is
+    statically false; otherwise returns the (non-empty) list of conjuncts,
+    after inlining boolean `let`s and `$present()` (see
+    `_inline_condition_helpers`).
+
+    Emboss's `&&` is symmetric and associative (a Known-false operand makes
+    the result Known-false even if the other operand is not Known), so the
+    Maybe<bool> value of the condition is the `&&` of the conjuncts in any
+    order, and callers are free to regroup them.
+    """
+    condition = _inline_condition_helpers(condition, ir)
+    if _is_constant_false(condition):
+        return None
+    if _is_constant_true(condition):
+        return []
+    if (
+        condition.which_expression == "function"
+        and condition.function.function == ir_data.FunctionMapping.AND
+    ):
+        conjuncts = []
+        for arg in condition.function.args:
+            sub_conjuncts = _existence_conjuncts(arg, ir)
+            if sub_conjuncts is None:
+                return None
+            conjuncts.extend(sub_conjuncts)
+        return conjuncts
+    return [condition]
+
+
+def _boolean_function_expression(function, args):
+    """Returns a synthetic boolean `function(*args)` IR expression."""
+    return ir_data.Expression(
+        function=ir_data.Function(function=function, args=list(args)),
+        type=ir_data.ExpressionType(boolean=ir_data.BooleanType()),
+    )
+
+
+def _and_expression(conjuncts):
+    """Returns an IR expression for the Emboss `&&` of `conjuncts`."""
+    assert conjuncts
+    result = conjuncts[0]
+    for conjunct in conjuncts[1:]:
+        result = _boolean_function_expression(
+            ir_data.FunctionMapping.AND, [result, conjunct]
+        )
+    return result
+
+
+def _or_expression(disjuncts):
+    """Returns an IR expression for the Emboss `||` of `disjuncts`."""
+    assert disjuncts
+    result = disjuncts[0]
+    for disjunct in disjuncts[1:]:
+        result = _boolean_function_expression(
+            ir_data.FunctionMapping.OR, [result, disjunct]
+        )
+    return result
+
+
+def _render_condition_key(expression, ir):
+    """Renders `expression` without a scope, for use as a grouping key."""
+    return _render_expression(expression, ir, subexpressions=None).rendered
+
+
 def _is_equality_check(expression):
     return (
         expression.which_expression == "function"
@@ -1378,47 +1805,6 @@ def _case_sort_key(expression):
         return int(expression.type.enumeration.value)
     else:
         assert False, "Unsupported switch case type"
-
-
-def _is_discriminant_provably_known(discrim_expr, fields):
-    """Returns True when the switch's Known() guard is provably redundant.
-
-    The optimized switch block emits
-
-        if (!emboss_reserved_switch_discrim.Known()) return false;
-
-    as a safety net: if reading the discriminant failed for any reason,
-    Ok() must return false. But when the discriminant is a direct
-    reference to a non-conditional, non-virtual field of the current
-    structure, the earlier per-field validation loop (which runs in
-    dependency order, so the discriminant field is validated before any
-    field that references it) has already enforced its `.Ok()`. From
-    that point the Maybe<> wrapper around the field read is provably
-    Known, and the extra `Known()` check is dead code.
-
-    The detection is intentionally narrow: only a single-segment field
-    reference (`tag`, not `inner.tag` or `f(x)`) is recognized, since
-    proving the chain is sound for nested or computed paths needs
-    walking the IR and is rarely worth the complexity.
-    """
-    if discrim_expr.which_expression != "field_reference":
-        return False
-    path = discrim_expr.field_reference.path
-    if len(path) != 1:
-        return False
-    name = path[0].canonical_name.object_path[-1]
-    for f in fields:
-        if f.name.name.text != name:
-            continue
-        if ir_util.field_is_virtual(f):
-            return False
-        cond = f.existence_condition
-        return (
-            cond.type.which_type == "boolean"
-            and cond.type.boolean.has_field("value")
-            and bool(cond.type.boolean.value)
-        )
-    return False
 
 
 def _get_switch_candidate(expression, ir):
@@ -1495,10 +1881,9 @@ def _extract_switch_arms(expression, ir):
         (tag == 1 && b) || tag == 2` → three arms with respective
         residuals `[a]`, `[b]`, `[]`.
 
-    Residuals are rendered into the case body at emit time as an extra
-    `if (residual.ValueOrDefault())` guard around the field's `Ok()`
-    check, so the optimization stays sound for partially-Known
-    residuals (we still `return false` if the residual isn't Known()).
+    Residuals are handled by the condition tree as additional conjuncts
+    nested inside the arm, so the optimization stays sound for
+    partially-Known residuals.
     """
     # Bare equality.
     discrim, case_val = _get_switch_candidate(expression, ir)
@@ -1539,9 +1924,7 @@ def _extract_switch_arms(expression, ir):
             sub_discrim, sub_arms = _extract_switch_arms(d, ir)
             if sub_discrim is None:
                 return None, None
-            sub_discrim_str = _render_expression(
-                sub_discrim, ir, subexpressions=None
-            ).rendered
+            sub_discrim_str = _render_condition_key(sub_discrim, ir)
             if common_discrim_str is None:
                 common_discrim = sub_discrim
                 common_discrim_str = sub_discrim_str
@@ -1554,12 +1937,894 @@ def _extract_switch_arms(expression, ir):
     return None, None
 
 
-def _generate_optimized_ok_method_body(fields, ir, subexpressions):
-    """Generates optimized C++ code for the Ok() method body.
+# Functions whose result is Known() whenever all of their arguments are.
+#
+# `$present()` is deliberately absent: `$present(x)` is `has_x()`, which can
+# be un-Known even though its argument is a plain field reference.  `&&` is
+# handled specially in _expression_is_always_known().
+_TOTAL_FUNCTIONS = frozenset(
+    [
+        ir_data.FunctionMapping.ADDITION,
+        ir_data.FunctionMapping.SUBTRACTION,
+        ir_data.FunctionMapping.MULTIPLICATION,
+        ir_data.FunctionMapping.EQUALITY,
+        ir_data.FunctionMapping.INEQUALITY,
+        ir_data.FunctionMapping.OR,
+        ir_data.FunctionMapping.LESS,
+        ir_data.FunctionMapping.LESS_OR_EQUAL,
+        ir_data.FunctionMapping.GREATER,
+        ir_data.FunctionMapping.GREATER_OR_EQUAL,
+        ir_data.FunctionMapping.CHOICE,
+        ir_data.FunctionMapping.MAXIMUM,
+        ir_data.FunctionMapping.UPPER_BOUND,
+        ir_data.FunctionMapping.LOWER_BOUND,
+    ]
+)
 
-    This function optimizes validation logic for structures with conditional
-    fields by grouping fields that share the same discriminant into switch
-    statements, rather than generating separate if-statements for each field.
+
+class _EvaluationPoint(object):
+    """What is known at a point in generated code where a condition is evaluated.
+
+    Attributes:
+        guards: A frozenset of rendered conjuncts (see `_render_condition_key`)
+            which are Known-true at this point.
+        fields_validated: True inside Ok(), after IsComplete() has passed and
+            while the structure's fields are being checked in dependency
+            order.  There, every present field is in bounds (because
+            $size_in_bits/$size_in_bytes covers every present field) and
+            reads as Known: either its own Ok() check has already passed, or
+            that check was elided because the field cannot be anything but
+            Ok().  False inside the $size_in_bits/$size_in_bytes virtual,
+            which IsComplete() evaluates before anything is known about the
+            backing storage.
+        readable_end: When `fields_validated` is False, the number of
+            addressable units at the start of the backing storage which are
+            known to exist, because a condition which reads them has already
+            tested Known.  Fields which end before this point are complete.
+    """
+
+    def __init__(self, guards=frozenset(), fields_validated=True, readable_end=0):
+        self.guards = guards
+        self.fields_validated = fields_validated
+        self.readable_end = readable_end
+
+    def assuming(self, ir, conjuncts=(), readable_end=0):
+        """Returns the point reached once `conjuncts` are Known-true.
+
+        `readable_end` is the number of units known to exist at that point.
+        """
+        return self.with_guards(
+            [_render_condition_key(c, ir) for c in conjuncts], readable_end
+        )
+
+    def with_guards(self, rendered_conjuncts, readable_end=0):
+        """As `assuming`, for conjuncts which are already rendered."""
+        return _EvaluationPoint(
+            self.guards | frozenset(rendered_conjuncts),
+            self.fields_validated,
+            max(self.readable_end, readable_end),
+        )
+
+
+def _condition_is_implied(condition, guards, ir):
+    """Returns True if `condition` must be Known-true wherever `guards` hold.
+
+    `guards` is a set of rendered conjuncts (see `_render_condition_key`)
+    which are Known-true at the point of interest.  The check is purely
+    syntactic: every conjunct of `condition` must be one of the guards.
+    """
+    conjuncts = _existence_conjuncts(condition, ir)
+    if conjuncts is None:
+        return False
+    return all(_render_condition_key(c, ir) in guards for c in conjuncts)
+
+
+def _field_end(field, ir):
+    """Returns the end of `field`'s location, in its structure's units, or None.
+
+    Aliases resolve to the location of the aliased field; other virtual fields
+    and fields at non-constant locations have no end.
+    """
+    if ir_util.field_is_virtual(field):
+        if field.write_method.which_method == "alias":
+            return _reference_end(field.write_method.alias.path, ir)
+        return None
+    start = ir_util.constant_value(field.location.start)
+    size = ir_util.constant_value(field.location.size)
+    if start is None or size is None or start < 0 or size < 0:
+        return None
+    return start + size
+
+
+def _reference_end(path, ir):
+    """Returns how many units of the structure a field reference needs, or None.
+
+    This is the end of the referenced field, relative to the structure whose
+    field is the first element of `path`: a reference `a.b` constructs `b`'s
+    view over `a`'s bytes, so `b` is complete iff the structure has `a.start +
+    b.end` units.  A `bits` field nested in a `struct` is read as a whole, so
+    the end of the enclosing `struct` field is used instead.
+    """
+    offset = 0
+    units = None
+    whole_end = None
+    for index, segment in enumerate(path):
+        field = ir_util.find_object(segment, ir)
+        if isinstance(field, ir_data.RuntimeParameter):
+            # Parameters are not read from the backing storage.
+            return 0 if len(path) == 1 else None
+        if not isinstance(field, ir_data.Field):
+            return None
+        parent_units = ir_util.find_parent_object(field.name, ir).addressable_unit
+        if units is None:
+            units = parent_units
+        elif parent_units != units:
+            return whole_end
+        field_end = _field_end(field, ir)
+        if field_end is None:
+            return None
+        whole_end = offset + field_end
+        if index == len(path) - 1:
+            return whole_end
+        if ir_util.field_is_virtual(field):
+            # Following a reference through an alias is not supported.
+            return None
+        offset += ir_util.constant_value(field.location.start)
+    return whole_end
+
+
+def _readable_end_if_known(expression, ir):
+    """Returns how many units of the structure exist if `expression` is Known.
+
+    A field read is only Known when the field is complete, so a Known
+    expression proves that the backing storage extends at least as far as
+    the end of the fields it must have read.  `&&` and `||` are Known as soon
+    as one operand decides them, so they only prove what both operands prove.
+    """
+    if _is_constant(expression):
+        return 0
+    expression = _inline_condition_helpers(expression, ir)
+    if expression.which_expression == "field_reference":
+        path = expression.field_reference.path
+        first = ir_util.find_object(path[0], ir)
+        if not isinstance(first, ir_data.Field):
+            return 0
+        if (
+            ir_util.field_is_virtual(first)
+            and first.write_method.which_method != "alias"
+        ):
+            if len(path) != 1:
+                return 0
+            return _readable_end_if_known(first.read_transform, ir)
+        return _reference_end(path, ir) or 0
+    if expression.which_expression == "function":
+        function = expression.function.function
+        args = expression.function.args
+        if function in (ir_data.FunctionMapping.AND, ir_data.FunctionMapping.OR):
+            return min(_readable_end_if_known(arg, ir) for arg in args)
+        if function == ir_data.FunctionMapping.CHOICE:
+            condition, if_true, if_false = args
+            return max(
+                _readable_end_if_known(condition, ir),
+                min(
+                    _readable_end_if_known(if_true, ir),
+                    _readable_end_if_known(if_false, ir),
+                ),
+            )
+        if function in _TOTAL_FUNCTIONS:
+            # Known iff every argument is Known.
+            return max([_readable_end_if_known(arg, ir) for arg in args] + [0])
+    return 0
+
+
+def _readable_end_if_true(expression, ir):
+    """Returns how many units of the structure exist if `expression` is Known-true.
+
+    A Known-true `&&` has both operands Known-true, so it proves what either
+    operand proves; a Known-true `||` only proves what both do.
+    """
+    expression = _inline_condition_helpers(expression, ir)
+    if expression.which_expression == "function":
+        function = expression.function.function
+        args = expression.function.args
+        if function == ir_data.FunctionMapping.AND:
+            return max(_readable_end_if_true(arg, ir) for arg in args)
+        if function == ir_data.FunctionMapping.OR:
+            return min(_readable_end_if_true(arg, ir) for arg in args)
+        if function == ir_data.FunctionMapping.CHOICE:
+            condition, if_true, if_false = args
+            return max(
+                _readable_end_if_known(condition, ir),
+                min(
+                    _readable_end_if_true(if_true, ir),
+                    _readable_end_if_true(if_false, ir),
+                ),
+            )
+    return _readable_end_if_known(expression, ir)
+
+
+def _field_value_is_always_ok(field, ir):
+    """Returns True if a complete view of `field` is always Ok(), by type alone.
+
+    Unlike `_field_is_always_ok_when_present`, this does not evaluate anything
+    in the field's structure, so it can be applied to a field reached through
+    a reference into a substructure.
+    """
+    if ir_util.get_attribute(field.attribute, "requires") is not None:
+        return False
+    if ir_util.field_is_virtual(field):
+        if field.write_method.which_method != "alias":
+            return False
+        target = ir_util.find_object(field.write_method.alias.path[-1], ir)
+        return isinstance(target, ir_data.Field) and _field_value_is_always_ok(
+            target, ir
+        )
+    if not field.type.has_field("atomic_type") or (
+        field.type.atomic_type.runtime_parameter
+    ):
+        return False
+    size = ir_util.constant_value(field.location.size)
+    if size is None:
+        return False
+    parent_type = ir_util.find_parent_object(field.name, ir)
+    type_def = ir_util.find_object(field.type.atomic_type.reference, ir)
+    return _type_is_always_ok_when_complete(
+        type_def, size * parent_type.addressable_unit, ir, parameters_known=False
+    )
+
+
+def _expression_is_always_known(expression, ir, point):
+    """Returns True if `expression` cannot evaluate to an un-Known() Maybe<>.
+
+    The guarantee is relative to `point`, an `_EvaluationPoint`.  A field is
+    considered present when its existence condition is implied by the point's
+    guards; a present field reads as Known when the point's fields have been
+    validated, or when the field ends within the point's `readable_end` and
+    every one of its possible values is Ok().
+
+    Operators other than `$present()` are total on Known operands; `&&`
+    additionally only needs its right operand to be Known when its left
+    operand is true, since a Known-false left operand already makes the
+    result Known.
+    """
+    if _is_constant(expression):
+        return True
+    expression = _inline_condition_helpers(expression, ir)
+    if expression.which_expression == "field_reference":
+        path = expression.field_reference.path
+        first = ir_util.find_object(path[0], ir)
+        if isinstance(first, ir_data.RuntimeParameter):
+            # A view with Ok() backing storage always has its parameters set.
+            return True
+        if not isinstance(first, ir_data.Field):
+            return False
+        if not _condition_is_implied(first.existence_condition, point.guards, ir):
+            return False
+        if (
+            ir_util.field_is_virtual(first)
+            and first.write_method.which_method != "alias"
+        ):
+            if len(path) != 1:
+                return False
+            if point.fields_validated:
+                return True
+            # The virtual's value is Known iff its definition is.
+            return ir_util.get_attribute(
+                first.attribute, "requires"
+            ) is None and _expression_is_always_known(first.read_transform, ir, point)
+        for segment in path[1:]:
+            # The existence condition of a field nested inside a substructure
+            # is expressed in terms of that substructure's fields, so only
+            # unconditional nested fields are provably present.
+            nested = ir_util.find_object(segment, ir)
+            if not isinstance(nested, ir_data.Field) or not _is_constant_true(
+                nested.existence_condition
+            ):
+                return False
+        if point.fields_validated:
+            return True
+        end = _reference_end(path, ir)
+        if end is None or end > point.readable_end:
+            return False
+        if len(path) == 1:
+            return _field_is_always_ok_when_present(first, ir, point)
+        last = ir_util.find_object(path[-1], ir)
+        return _field_value_is_always_ok(last, ir)
+    if expression.which_expression == "function":
+        function = expression.function.function
+        args = expression.function.args
+        if function == ir_data.FunctionMapping.AND:
+            left, right = args
+            if not _expression_is_always_known(left, ir, point):
+                return False
+            left_conjuncts = _existence_conjuncts(left, ir)
+            if left_conjuncts is None:
+                # `false && anything` is Known-false.
+                return True
+            return _expression_is_always_known(
+                right,
+                ir,
+                point.assuming(ir, left_conjuncts, _readable_end_if_true(left, ir)),
+            )
+        if function in _TOTAL_FUNCTIONS:
+            return all(_expression_is_always_known(arg, ir, point) for arg in args)
+        return False
+    return False
+
+
+def _type_is_always_ok_when_complete(type_def, field_bits, ir, parameters_known):
+    """Returns True if a `field_bits`-bit view of `type_def` is Ok() when IsComplete().
+
+    This is the case for the prelude's UInt, Int, Flag, and Float types, for
+    enums (Emboss enums are open: any value is Ok()), and for structures
+    without `[requires]` whose fields are all, recursively, Ok() whenever
+    they are present.  Bcd (and any other external type) can reject bit
+    patterns, so it never qualifies.
+    """
+    if type_def.has_field("external"):
+        if type_def.name.canonical_name.module_file != "":
+            # Not a prelude type; nothing is known about its Ok().
+            return False
+        name = type_def.name.name.text
+        if name in ("UInt", "Int", "Flag"):
+            return field_bits is not None and 1 <= field_bits <= 64
+        if name == "Float":
+            return field_bits in (32, 64)
+        return False
+    if type_def.has_field("enumeration"):
+        maximum_bits = ir_util.get_integer_attribute(type_def.attribute, "maximum_bits")
+        return (
+            field_bits is not None
+            and maximum_bits is not None
+            and 1 <= field_bits <= maximum_bits
+        )
+    if type_def.has_field("structure"):
+        if type_def.runtime_parameter and not parameters_known:
+            return False
+        if ir_util.get_attribute(type_def.attribute, "requires") is not None:
+            return False
+        fixed_size = ir_util.get_integer_attribute(
+            type_def.attribute, "fixed_size_in_bits"
+        )
+        if fixed_size is None or fixed_size != field_bits:
+            return False
+        return all(
+            _field_ok_check_is_redundant(field, ir)
+            for field in type_def.structure.field
+        )
+    return False
+
+
+def _field_is_always_ok_when_present(field, ir, point):
+    """Returns True if `field.Ok()` cannot be false while `has_field()` is true.
+
+    `point` is the `_EvaluationPoint` at which the field is read; its guards
+    should include the field's own existence conjuncts.
+    """
+    if ir_util.get_attribute(field.attribute, "requires") is not None:
+        return False
+    if ir_util.field_is_virtual(field):
+        # Aliases and other virtual fields are Ok() iff their value is Known.
+        return _expression_is_always_known(field.read_transform, ir, point)
+    # A physical field at a constant location is in bounds whenever it is
+    # present and the structure IsComplete(), because $size_in_bits/bytes
+    # includes the end of every present field.  It is then Ok() iff its
+    # value is, which depends only on its type.
+    constant_offset = ir_util.constant_value(field.location.start)
+    constant_size = ir_util.constant_value(field.location.size)
+    if (
+        constant_offset is None
+        or constant_offset < 0
+        or constant_size is None
+        or constant_size <= 0
+    ):
+        return False
+    parent_type = ir_util.find_parent_object(field.name, ir)
+    field_bits = constant_size * parent_type.addressable_unit
+    if ir_util.is_array(field.type):
+        element_type = field.type.array_type.base_type
+        if ir_util.is_array(element_type) or not element_type.has_field("atomic_type"):
+            return False
+        if element_type.atomic_type.runtime_parameter:
+            return False
+        element_bits = ir_util.fixed_size_of_type_in_bits(element_type, ir)
+        if (
+            element_bits is None
+            or element_bits <= 0
+            or element_bits % parent_type.addressable_unit != 0
+            or field_bits % element_bits != 0
+        ):
+            return False
+        element_type_def = ir_util.find_object(element_type.atomic_type.reference, ir)
+        return _type_is_always_ok_when_complete(
+            element_type_def, element_bits, ir, parameters_known=False
+        )
+    if not field.type.has_field("atomic_type"):
+        return False
+    type_def = ir_util.find_object(field.type.atomic_type.reference, ir)
+    # If any parameter value is un-Known, the field's view is null, and so
+    # not Ok(), even though the field is present.
+    parameters_known = all(
+        _expression_is_always_known(parameter, ir, point)
+        for parameter in field.type.atomic_type.runtime_parameter
+    )
+    return _type_is_always_ok_when_complete(type_def, field_bits, ir, parameters_known)
+
+
+def _field_ok_check_is_redundant(field, ir):
+    """Returns True if `field`'s check in its structure's Ok() can never fail.
+
+    The per-field check is
+
+        if (!has_field().Known()) return false;
+        if (has_field().ValueOrDefault() && !field().Ok()) return false;
+
+    which is a no-op when the existence condition is always Known() and the
+    field is Ok() whenever it is present.
+    """
+    name = field.name.name.text
+    if name in ("$size_in_bits", "$size_in_bytes"):
+        # IsComplete() already requires the intrinsic size to be Ok().
+        return True
+    if name in (
+        "$max_size_in_bits",
+        "$min_size_in_bits",
+        "$max_size_in_bytes",
+        "$min_size_in_bytes",
+    ):
+        # Compile-time constants.
+        return True
+    if field.write_method.which_method == "alias":
+        first_target = ir_util.find_object(field.write_method.alias.path[0], ir)
+        if isinstance(first_target, ir_data.Field) and first_target.name.is_anonymous:
+            # An alias into an anonymous `bits` field has nothing to check of
+            # its own: the anonymous field's Ok() checks the aliased field,
+            # and the alias's existence condition is Known whenever the
+            # anonymous field is Ok().
+            return True
+    conjuncts = _existence_conjuncts(field.existence_condition, ir)
+    if conjuncts is None:
+        # The field is never present.
+        return True
+    return _expression_is_always_known(
+        field.existence_condition, ir, _EvaluationPoint()
+    ) and _field_is_always_ok_when_present(
+        field, ir, _EvaluationPoint().assuming(ir, conjuncts)
+    )
+
+
+def _generate_field_existence_body(field_ir, ir):
+    """Returns (statements, expression) for the body of has_${field}().
+
+    The generated body is `${statements}  return ${expression};`.
+
+    A condition with several conjuncts is evaluated one conjunct at a time, so
+    that a Known-false conjunct short-circuits the remaining ones (which, in a
+    tagged union, typically read fields that are not even present).  The
+    result is the same as Emboss's symmetric `&&`: Known-false if any
+    conjunct is Known-false, un-Known if any conjunct is un-Known, and
+    Known-true otherwise.
+    """
+    conjuncts = _existence_conjuncts(field_ir.existence_condition, ir)
+    if conjuncts is None:
+        return "", "::emboss::support::Maybe<bool>(false)"
+    if not conjuncts:
+        return "", "::emboss::support::Maybe<bool>(true)"
+    if len(conjuncts) == 1:
+        scope = ExpressionScope("emboss_reserved_local_subexpr_")
+        rendered = _render_expression(conjuncts[0], ir, subexpressions=scope).rendered
+        return scope.definition_code("  "), rendered
+    lines = ["  bool emboss_reserved_local_all_known = true;\n"]
+    scope = None
+    for index, conjunct in enumerate(conjuncts):
+        # Each conjunct's subexpressions are defined just before the conjunct
+        # is tested, so that they are only evaluated if no earlier conjunct
+        # was Known-false.  Chaining the scopes lets later conjuncts reuse
+        # earlier subexpressions.
+        scope = ExpressionScope(
+            "emboss_reserved_local_subexpr_{}_".format(index), parent=scope
+        )
+        rendered = _render_expression(conjunct, ir, subexpressions=scope).rendered
+        lines.append(scope.definition_code("  "))
+        lines.append(
+            "  if (!{0}.ValueOr(true)) return ::emboss::support::Maybe<bool>(false);\n"
+            "  if (!{0}.Known()) emboss_reserved_local_all_known = false;\n".format(
+                rendered
+            )
+        )
+    return (
+        "".join(lines),
+        "emboss_reserved_local_all_known ? ::emboss::support::Maybe<bool>(true)"
+        " : ::emboss::support::Maybe<bool>()",
+    )
+
+
+# A payload (a field to check in Ok(), or a field end in $size_in_*) together
+# with the conjuncts of its existence condition which have not been tested
+# yet.
+_ConditionItem = collections.namedtuple("ConditionItem", ["conjuncts", "payload"])
+
+
+class _ConditionGroup(object):
+    """A set of condition items which share a head conjunct.
+
+    `kind` is "if" when the shared head is an arbitrary boolean expression
+    (`guard`), or "switch" when the heads compare the discriminant expression
+    `guard` against constants.  `items` are the original items, with all of
+    their remaining conjuncts; `entries` (for "if") or `cases` (for "switch")
+    hold the same payloads with the head conjunct removed.
+    """
+
+    def __init__(self, kind, guard):
+        self.kind = kind
+        self.guard = guard
+        self.items = []
+        # The head conjunct of each item, in the same order as `items`.
+        self.heads = []
+        self.entries = []
+        self.cases = {}
+
+    def all_entries(self):
+        if self.kind == "if":
+            return self.entries
+        return [entry for case in self.cases.values() for entry in case.entries]
+
+
+class _SwitchCase(object):
+    """One case label of a "switch" _ConditionGroup."""
+
+    def __init__(self, sort_key):
+        self.sort_key = sort_key
+        self.entries = []
+        # Rendered conjuncts which are Known-true inside this case.
+        self.implied = set()
+
+
+def _group_condition_items(items, ir):
+    """Partitions `items` by the conjunct which is most widely shared among them.
+
+    For each item, one of its remaining conjuncts is chosen as the "head";
+    items whose heads test the same thing form one group:
+
+      * a "switch" group, when the heads compare one discriminant expression
+        against constants (`tag == 1`, `tag == 2 || tag == 3`, ...);
+      * an "if" group, when the heads are the same boolean expression.
+
+    The head is chosen to maximize sharing: the conjunct whose group would
+    contain the most items wins, with ties going to the earliest conjunct,
+    which is usually the outermost condition in the Emboss source.  Groups
+    are returned in order of first appearance.
+    """
+    classified = []
+    key_counts = collections.Counter()
+    for item in items:
+        per_conjunct = []
+        keys_in_item = set()
+        for conjunct in item.conjuncts:
+            discriminant, arms = _extract_switch_arms(conjunct, ir)
+            if discriminant is not None:
+                key = ("switch", _render_condition_key(discriminant, ir))
+                per_conjunct.append((key, discriminant, arms))
+            else:
+                key = ("if", _render_condition_key(conjunct, ir))
+                per_conjunct.append((key, conjunct, None))
+            keys_in_item.add(key)
+        key_counts.update(keys_in_item)
+        classified.append(per_conjunct)
+
+    groups = {}
+    for item, per_conjunct in zip(items, classified):
+        head_index = max(
+            range(len(per_conjunct)),
+            key=lambda i: (key_counts[per_conjunct[i][0]], -i),
+        )
+        key, guard, arms = per_conjunct[head_index]
+        head = item.conjuncts[head_index]
+        rest = item.conjuncts[:head_index] + item.conjuncts[head_index + 1 :]
+        if key not in groups:
+            groups[key] = _ConditionGroup(key[0], guard)
+        group = groups[key]
+        group.items.append(item)
+        group.heads.append(head)
+        if group.kind == "if":
+            group.entries.append(_ConditionItem(rest, item.payload))
+            continue
+        # Inside `case K`, the head reduces to the `||` of the residuals of the
+        # arms with case value K (every other arm is Known-false).
+        arms_by_label = {}
+        for case_value, residual in arms:
+            label = _render_case_label(case_value, ir)
+            if label not in group.cases:
+                group.cases[label] = _SwitchCase(_case_sort_key(case_value))
+            arms_by_label.setdefault(label, []).append((case_value, residual))
+        for label, case_arms in arms_by_label.items():
+            case = group.cases[label]
+            residuals = [residual for _, residual in case_arms]
+            if any(not residual for residual in residuals):
+                remaining = []
+                # Both the head conjunct and `discriminant == case_value` are
+                # Known-true inside this case.
+                case.implied.add(_render_condition_key(head, ir))
+                case.implied.add(
+                    _render_condition_key(
+                        _boolean_function_expression(
+                            ir_data.FunctionMapping.EQUALITY,
+                            [guard, case_arms[0][0]],
+                        ),
+                        ir,
+                    )
+                )
+            elif len(residuals) == 1:
+                remaining = residuals[0]
+            else:
+                remaining = [
+                    _or_expression(
+                        [_and_expression(residual) for residual in residuals]
+                    )
+                ]
+            case.entries.append(_ConditionItem(remaining + rest, item.payload))
+    return list(groups.values())
+
+
+class _ConditionTree(object):
+    """Renders nested `if`/`switch` statements which test existence conditions.
+
+    Given items tagged with the conjuncts of their existence conditions, the
+    tree groups the items by shared conjuncts (see `_group_condition_items`)
+    and emits one test per group, recursing into each group with the items'
+    remaining conjuncts.  A payload is "reached" when all of its conjuncts
+    have tested true.
+
+    The generated code must agree with the straightforward evaluation of each
+    payload's full condition using Maybe<bool> semantics, in which an
+    un-Known conjunct does *not* necessarily make the condition un-Known:
+    `unknown && false` is Known-false.  Testing one conjunct at a time is
+    therefore only equivalent when, for each group,
+
+      (1) the guard is provably Known (`_expression_is_always_known`), so
+          that there is nothing to check; or
+      (2) some item's condition is exactly the guard, so that an un-Known
+          guard makes that item's whole condition un-Known, which is where
+          the straightforward evaluation would also give up.
+
+    Otherwise the tree falls back to testing each item's full remaining
+    condition as a single expression.
+
+    Each level of the tree is rendered relative to an `_EvaluationPoint`,
+    which records what the enclosing tests have established (which conjuncts
+    are Known-true, and how much of the backing storage is known to exist);
+    this is what lets nested guards be recognized as provably Known.
+
+    Subclasses define `unknown_statement`, which aborts the enclosing method
+    when a condition turns out to be un-Known, `field_reader`, and
+    `render_payloads()`.  `context` is an opaque value threaded from parents
+    to children; `render_payloads()` may replace it for its siblings.
+    """
+
+    unknown_statement = None
+    field_reader = None
+
+    def __init__(self, ir):
+        self.ir = ir
+
+    def render_payloads(self, payloads, indent, scope, context):
+        """Returns (statements, context) for payloads whose conditions hold."""
+        raise NotImplementedError()
+
+    def render_shortcut(self, entry, depth):
+        """Returns statements for a lone, un-Known-able item, or None.
+
+        Called before the generic rendering of a single-item group with no
+        remaining conjuncts; the Ok() tree uses it to reuse has_${field}().
+        """
+        del entry, depth  # Unused by default.
+        return None
+
+    def render(self, items, point, scope, depth, indent, context):
+        """Renders `items`; subexpressions are defined in `scope`."""
+        immediate = [item.payload for item in items if not item.conjuncts]
+        conditional = [item for item in items if item.conjuncts]
+        statements, context = self.render_payloads(immediate, indent, scope, context)
+        parts = [statements]
+        for group in _group_condition_items(conditional, self.ir):
+            parts.append(
+                self._render_group(group, point, scope, depth, indent, context)
+            )
+        return "".join(parts)
+
+    def _render_group(self, group, point, scope, depth, indent, context):
+        guard_is_known = _expression_is_always_known(group.guard, self.ir, point)
+        has_bare_item = any(not entry.conjuncts for entry in group.all_entries())
+        if not guard_is_known and not has_bare_item:
+            # Neither (1) nor (2) above holds; test each item's remaining
+            # condition as one expression, for which (2) holds trivially.
+            return "".join(
+                self._render_if(
+                    _and_expression(item.conjuncts),
+                    [_ConditionItem([], item.payload)],
+                    False,
+                    point,
+                    scope,
+                    depth,
+                    indent,
+                    context,
+                )
+                for item in group.items
+            )
+        if group.kind == "if":
+            return self._render_if(
+                group.guard,
+                group.entries,
+                guard_is_known,
+                point,
+                scope,
+                depth,
+                indent,
+                context,
+            )
+        if len(group.items) == 1 and len(group.cases) == 1:
+            # A one-armed switch costs more than the equivalent `if`.  The
+            # head may carry residual conjuncts (`tag == 1 && a`), so whether
+            # it is Known is not the same question as for the discriminant.
+            head = group.heads[0]
+            return self._render_if(
+                head,
+                group.all_entries(),
+                _expression_is_always_known(head, self.ir, point),
+                point,
+                scope,
+                depth,
+                indent,
+                context,
+            )
+        return self._render_switch(
+            group, guard_is_known, point, scope, depth, indent, context
+        )
+
+    def _render_if(
+        self,
+        condition,
+        entries,
+        condition_is_known,
+        point,
+        scope,
+        depth,
+        indent,
+        context,
+    ):
+        if not condition_is_known and len(entries) == 1 and not entries[0].conjuncts:
+            shortcut = self.render_shortcut(entries[0], depth)
+            if shortcut is not None:
+                return shortcut
+        mark = scope.mark()
+        rendered = _render_expression(
+            condition, self.ir, self.field_reader, subexpressions=scope
+        ).rendered
+        inner_scope = scope.child()
+        # Inside the `if`, the condition is Known-true.
+        inner_point = point.assuming(
+            self.ir, [condition], _readable_end_if_true(condition, self.ir)
+        )
+        body = self.render(
+            entries, inner_point, inner_scope, depth + 1, indent + "  ", context
+        )
+        if condition_is_known and not body:
+            # Nothing to test after all; drop the condition's subexpressions.
+            scope.discard_since(mark)
+            return ""
+        lines = []
+        if not condition_is_known:
+            lines.append(
+                "{}if (!{}.Known()) {}\n".format(
+                    indent, rendered, self.unknown_statement
+                )
+            )
+        if body:
+            lines.append("{}if ({}.ValueOrDefault()) {{\n".format(indent, rendered))
+            lines.append(inner_scope.definition_code(indent + "  "))
+            lines.append(body)
+            lines.append("{}}}\n".format(indent))
+        return "".join(lines)
+
+    def _render_switch(
+        self, group, discriminant_is_known, point, scope, depth, indent, context
+    ):
+        mark = scope.mark()
+        rendered = _render_expression(
+            group.guard, self.ir, self.field_reader, subexpressions=scope
+        ).rendered
+        # Inside the switch, the discriminant is Known.
+        switch_point = point.assuming(
+            self.ir, readable_end=_readable_end_if_known(group.guard, self.ir)
+        )
+        bodies = {}
+        for label, case in group.cases.items():
+            inner_scope = scope.child()
+            body = self.render(
+                case.entries,
+                switch_point.with_guards(case.implied),
+                inner_scope,
+                depth + 1,
+                indent + "    ",
+                context,
+            )
+            if not body:
+                # Nothing to do for this case; let it fall to `default`.
+                continue
+            body = inner_scope.definition_code(indent + "    ") + body
+            bodies.setdefault(body, []).append((case.sort_key, label))
+        if discriminant_is_known and not bodies:
+            # Nothing to test after all; drop the discriminant's subexpressions.
+            scope.discard_since(mark)
+            return ""
+        lines = []
+        if not discriminant_is_known:
+            lines.append(
+                "{}if (!{}.Known()) {}\n".format(
+                    indent, rendered, self.unknown_statement
+                )
+            )
+        if not bodies:
+            return "".join(lines)
+        # Sort case labels numerically, so that compilers are more likely to
+        # emit a jump table, and merge cases with identical bodies.
+        arms = sorted((sorted(labels), body) for body, labels in bodies.items())
+        lines.append("{}switch ({}.ValueOrDefault()) {{\n".format(indent, rendered))
+        for labels, body in arms:
+            lines.extend("{}  case {}:\n".format(indent, label) for _, label in labels)
+            lines.append("{}  {{\n".format(indent))
+            lines.append(body)
+            lines.append("{}    break;\n".format(indent))
+            lines.append("{}  }}\n".format(indent))
+        lines.append("{}  default:\n".format(indent))
+        lines.append("{}    break;\n".format(indent))
+        lines.append("{}}}\n".format(indent))
+        return "".join(lines)
+
+
+_OkCheck = collections.namedtuple("OkCheck", ["field_name", "needs_ok_check"])
+
+
+class _OkConditionTree(_ConditionTree):
+    """Condition tree for the field checks in a structure's Ok() method.
+
+    Payloads are `_OkCheck`s.  When a check is reached, the field is present,
+    so the check reduces to `field().Ok()`; fields which are Ok() whenever
+    they are present only participate to get their existence conditions
+    tested.
+    """
+
+    unknown_statement = "return false;"
+    field_reader = _DirectFieldRenderer()
+
+    def __init__(self, ir):
+        super(_OkConditionTree, self).__init__(ir)
+
+    def render_payloads(self, payloads, indent, scope, context):
+        del scope  # Unused.
+        return (
+            "".join(
+                "{}if (!{}().Ok()) return false;\n".format(indent, check.field_name)
+                for check in payloads
+                if check.needs_ok_check
+            ),
+            context,
+        )
+
+    def render_shortcut(self, entry, depth):
+        if depth != 0:
+            return None
+        # At the top level, an item's full condition is has_${field}(), which
+        # is already generated; reuse it instead of re-rendering the condition.
+        if entry.payload.needs_ok_check:
+            template = _TEMPLATES.ok_method_test
+        else:
+            template = _TEMPLATES.ok_method_known_test
+        return code_template.format_template(template, field=entry.payload.field_name)
+
+
+def _generate_optimized_ok_method_body(fields, ir, subexpressions):
+    """Generates the per-field checks of a structure's Ok() method.
 
     For example, given this Emboss definition:
 
@@ -1569,294 +2834,247 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
             4 [+4]  UInt  var_0
           if tag == 1:
             4 [+4]  UInt  var_1
-          if tag == 0:
-            8 [+4]  UInt  var_x
+          if tag == 1 && var_1 == 3:
+            8 [+4]  Bar   var_x
 
-    Instead of generating separate if-statements:
+    instead of a test per field:
 
-        if (tag() == 0 && !var_0().Ok()) return false;
-        if (tag() == 1 && !var_1().Ok()) return false;
-        if (tag() == 0 && !var_x().Ok()) return false;
+        if (!has_var_0().Known()) return false;
+        if (has_var_0().ValueOrDefault() && !var_0().Ok()) return false;
+        ...
 
-    This generates an optimized switch statement:
+    this generates nested tests which read `tag` once:
 
-        const auto emboss_reserved_switch_discrim = tag();
-        if (!emboss_reserved_switch_discrim.Known()) return false;
-        switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
+        switch (emboss_reserved_local_ok_subexpr_1.ValueOrDefault()) {
           case 0:
-            if (!var_0().Ok()) return false;
-            break;
+          ...
           case 1:
-            if (!var_1().Ok()) return false;
+          {
+            if (emboss_reserved_local_ok_subexpr_1_2.ValueOrDefault()) {
+              if (!var_x().Ok()) return false;
+            }
+            break;
+          }
+          default:
             break;
         }
 
-    Note: When multiple fields share the same case value (like var_0 and var_x
-    both guarded by tag == 0), only the first field for that case value is
-    checked in the switch. This is because once we've checked var_0 for case 0,
-    we break out of the switch. Fields with duplicate case values will fall
-    through to the if-statement path.
-
-    Fields with non-equality conditions (or conditions that can't be converted
-    to switch cases) are grouped by their rendered condition and emitted as
-    if-statements.
-
-    Additionally, when a condition is statically known to be true (e.g., fields
-    that are always present), the if-block wrapper is omitted entirely and the
-    field checks are emitted directly. This avoids generating unnecessary
-    runtime checks like:
-
-        const auto emboss_reserved_cond = Maybe<bool>(true);
-        if (!emboss_reserved_cond.Known()) return false;  // Always true
-        if (emboss_reserved_cond.ValueOrDefault()) { ... } // Always true
+    with `tag == 0` and `tag == 1` sharing one read of `tag` (defined in
+    `subexpressions`), and the `UInt` fields' own `Ok()` checks elided,
+    since a `UInt` which is in bounds is always Ok().  `var_x`'s check is
+    nested inside the `case 1` arm, where `var_1` is already known to be
+    present.
 
     Arguments:
-        fields: List of field IR nodes to generate Ok() checks for.
-        ir: The full IR for looking up references.
-        subexpressions: An ExpressionScope for sharing common subexpressions.
+        fields: The structure's fields, in dependency order.
+        ir: The full IR.
+        subexpressions: The ExpressionScope for Ok()'s top-level
+            subexpressions.
 
     Returns:
-        A string containing the C++ code for the optimized Ok() method body.
+        A string containing the C++ code for the field checks.
     """
-    groups = {}
-    ordered_keys = []
-    # Track which group each field was routed to and whether the field's
-    # arms have residuals; the demotion pass at the end uses this to fall
-    # back to ok_method_test for groups where switch-ifying isn't a net
-    # win (single-entry groups, where the switch wrapper costs more than
-    # the dedupe saves).
-    field_group_key = {}
-
+    items = []
     for field in fields:
-        discrim_expr, arms = _extract_switch_arms(field.existence_condition, ir)
-        if discrim_expr:
-            # Render the discriminant unscoped to build the grouping key.
-            # We can't render-with-scope yet because we don't know which
-            # groups will survive demotion (see below); committing a
-            # subexpression to `subexpressions` for a group that ends up
-            # demoted would leave a dead `const auto = ...` definition in
-            # the emitted C++. The scoped render happens at emit time,
-            # only for groups that survive.
-            discrim_key = _render_expression(
-                discrim_expr, ir, subexpressions=None
-            ).rendered
-            key = "SWITCH:" + discrim_key
-            if key not in groups:
-                groups[key] = {
-                    "type": "switch",
-                    "discrim_expr": discrim_expr,
-                    "cases_by_label": {},
-                    "encounter_order": [],
-                    "encountered_field_ids": set(),
-                }
-                ordered_keys.append(key)
-            group = groups[key]
-            if id(field) not in group["encountered_field_ids"]:
-                group["encountered_field_ids"].add(id(field))
-                group["encounter_order"].append(field)
-            for case_expr, residual in arms:
-                case_str = _render_case_label(case_expr, ir)
-                case_entry = group["cases_by_label"].setdefault(
-                    case_str, {"sort_key": _case_sort_key(case_expr), "entries": []}
-                )
-                # Avoid duplicating a field across cases that map to the same
-                # case label twice (`tag == 0 || tag == 0`); after #9 the
-                # simplifier should normally prevent this from reaching us.
-                if not any(e[0] is field for e in case_entry["entries"]):
-                    case_entry["entries"].append((field, residual))
-            field_group_key[id(field)] = key
-        else:
-            cond_res = _render_expression(
-                field.existence_condition, ir, subexpressions=None
-            )
-            key = "IF:" + cond_res.rendered
-            if key not in groups:
-                groups[key] = {
-                    "type": "if",
-                    "fields": [],
-                }
-                ordered_keys.append(key)
-            groups[key]["fields"].append(field)
-            field_group_key[id(field)] = key
-
-    # Demote switch groups to per-field checks in two cases.
-    #
-    # (1) Size: a switch's overhead — the temporary discriminant variable,
-    #     the Known() guard, the scope braces — is only worthwhile if the
-    #     switch dedupes either at least two distinct case labels (sharing
-    #     one subexpression read) or at least two distinct fields (sharing
-    #     one discriminant evaluation). When a group has just one entry
-    #     total (one field, one bare case), the unoptimized has_${field}()-
-    #     based check is strictly smaller.
-    #
-    # (2) Correctness: the switch reads its discriminant once and guards it
-    #     with `if (!discrim.Known()) return false;`. That guard is only
-    #     sound when the discriminant is provably present OR the group has
-    #     at least one *bare* arm (existence condition exactly `discrim ==
-    #     K`, no residual). With a bare arm, an Unknown (out-of-bounds)
-    #     discriminant leaves that field's has_X() Unknown, so the
-    #     unoptimized Ok() bails for the same reason the guard does. But
-    #     when the discriminant is itself a conditionally-present field and
-    #     *every* arm carries a residual, a valid message can have an
-    #     Unknown discriminant while every arm's residual is statically
-    #     false — making every has_X() Known-false (absent). The blanket
-    #     guard would wrongly reject it. Demote that shape to per-field
-    #     has_${field}() checks, which handle an Unknown discriminant
-    #     correctly (an Unknown discriminant can never make has_X()
-    #     Known-true, so a Known-false residual leaves the field simply
-    #     absent). (`ResidualConditionalDiscriminant` in
-    #     testdata/condition.emb exercises this shape.)
-    for key in ordered_keys:
-        group = groups[key]
-        if group["type"] != "switch":
+        if _field_ok_check_is_redundant(field, ir):
             continue
-        total_entries = sum(
-            len(case_entry["entries"])
-            for case_entry in group["cases_by_label"].values()
-        )
-        if total_entries < 2:
-            group["type"] = "demoted_to_if"
+        conjuncts = _existence_conjuncts(field.existence_condition, ir)
+        if conjuncts is None:
             continue
-        has_bare_arm = any(
-            not residual
-            for case_entry in group["cases_by_label"].values()
-            for (_, residual) in case_entry["entries"]
+        needs_ok_check = not _field_is_always_ok_when_present(
+            field, ir, _EvaluationPoint().assuming(ir, conjuncts)
         )
-        if not has_bare_arm and not _is_discriminant_provably_known(
-            group["discrim_expr"], fields
-        ):
-            group["type"] = "demoted_to_if"
-
-    blocks = []
-    for key in ordered_keys:
-        group = groups[key]
-        if group["type"] == "switch":
-            # Now that we know this group survived demotion, render the
-            # discriminant with the active scope so it shares
-            # subexpression slots with the rest of Ok().
-            group["discrim_rendered"] = _render_expression(
-                group["discrim_expr"], ir, subexpressions=subexpressions
-            ).rendered
-            group["known_check_required"] = not _is_discriminant_provably_known(
-                group["discrim_expr"], fields
-            )
-            blocks.append(_emit_switch_block(group, ir, subexpressions))
-        elif group["type"] == "demoted_to_if":
-            for field in group["encounter_order"]:
-                blocks.append(
-                    code_template.format_template(
-                        _TEMPLATES.ok_method_test,
-                        field=_cpp_field_name(field.name.name.text),
-                    )
-                )
-        else:
-            for field in group["fields"]:
-                blocks.append(
-                    code_template.format_template(
-                        _TEMPLATES.ok_method_test,
-                        field=_cpp_field_name(field.name.name.text),
-                    )
-                )
-
-    return "".join(blocks)
-
-
-def _render_case_body(entries, ir, subexpressions):
-    """Renders the body of a single switch arm.
-
-    Each entry is `(field, residuals)` where `residuals` is the list of
-    predicate conjuncts in the field's existence condition beyond the
-    discriminant equality that routed it to this case. When the list is
-    empty the case body is a single direct Ok() check.
-
-    When the list of residuals is not empty, the Ok() check is gated on the
-    residuals alone: inside `case K:` the discriminant is already Known and
-    equal to K, so the residuals are all that remains of `has_${field}()`.
-    The gate is required for correctness, since `${field}()` returns a null
-    view when the field is absent; the arm also fails if the residuals are
-    not Known.
-    """
-    parts = []
-    for field, residuals in entries:
-        name = _cpp_field_name(field.name.name.text)
-        if not residuals:
-            parts.append("          if (!{}().Ok()) return false;\n".format(name))
-            continue
-        if len(residuals) == 1:
-            residual = residuals[0]
-        else:
-            # Fold the conjuncts into one AND so the residual renders once.
-            residual = ir_data.Expression(
-                function=ir_data.Function(
-                    function=ir_data.FunctionMapping.AND,
-                    args=residuals,
-                ),
-                type=ir_data.ExpressionType(boolean=ir_data.BooleanType()),
-            )
-        rendered = _render_expression(
-            residual, ir, subexpressions=subexpressions
-        ).rendered
-        parts.append(
-            "          if (!({0}).Known()) return false;\n"
-            "          if (({0}).ValueOrDefault() && !{1}().Ok()) return false;\n".format(
-                rendered, name
+        items.append(
+            _ConditionItem(
+                conjuncts,
+                _OkCheck(_cpp_field_name(field.name.name.text), needs_ok_check),
             )
         )
-    return "".join(parts)
-
-
-def _emit_switch_block(group, ir, subexpressions):
-    """Emits a complete switch block from a collected switch group.
-
-    Performs case-label sorting and identical-body coalescing:
-
-      * Case labels within an arm are sorted by underlying numeric value, so
-        the C++ compiler is presented with monotonic case sequences and is
-        more likely to emit a dense jump table on embedded targets.
-      * Distinct case values whose bodies are textually identical (which
-        happens when several disjuncts of `||` guard the same field, or when
-        multiple fields share an existence condition) are merged into a
-        single multi-label arm, so the compiler emits one body for all of
-        them rather than duplicating per case.
-    """
-    body_to_labels = {}
-    body_first_seen = {}
-    for case_str, case_entry in group["cases_by_label"].items():
-        body = _render_case_body(case_entry["entries"], ir, subexpressions)
-        body_to_labels.setdefault(body, []).append((case_entry["sort_key"], case_str))
-        if body not in body_first_seen:
-            body_first_seen[body] = case_entry["sort_key"]
-
-    arms = []
-    for body, labels in body_to_labels.items():
-        labels.sort()  # by (sort_key, case_str)
-        arms.append((body_first_seen[body], labels, body))
-    arms.sort(key=lambda arm: arm[0])
-
-    rendered_arms = []
-    for _, labels, body in arms:
-        case_labels = "".join("        case {}:\n".format(cs) for _, cs in labels)
-        rendered_arms.append(
-            code_template.format_template(
-                _TEMPLATES.ok_method_switch_arm,
-                case_labels=case_labels,
-                case_body=body,
-            )
-        )
-
-    if group.get("known_check_required", True):
-        known_check = (
-            "      if (!emboss_reserved_switch_discrim.Known()) return false;\n"
-        )
-    else:
-        known_check = ""
-
-    return code_template.format_template(
-        _TEMPLATES.ok_method_switch_block,
-        discriminant=group["discrim_rendered"],
-        known_check=known_check,
-        switch_cases="".join(rendered_arms),
+    return _OkConditionTree(ir).render(
+        items, _EvaluationPoint(), subexpressions, depth=0, indent="    ", context=None
     )
+
+
+class _SizeConditionTree(_ConditionTree):
+    """Condition tree for the body of $size_in_bits/$size_in_bytes.
+
+    Payloads are IR expressions for the ends of fields; the generated code
+    folds them into `emboss_reserved_local_size`.  `context` is the largest
+    constant end already folded in on the current path, so that smaller
+    constants nested below it can be skipped.
+    """
+
+    field_reader = _VirtualViewFieldRenderer()
+
+    def __init__(self, ir, logical_type, intermediate_type):
+        super(_SizeConditionTree, self).__init__(ir)
+        self.unknown_statement = "return ::emboss::support::Maybe</**/ {}>();".format(
+            logical_type
+        )
+        self.intermediate_type = intermediate_type
+
+    def render_payloads(self, payloads, indent, scope, context):
+        lines = []
+        constant_floor = context
+        dynamic_ends = []
+        for end in payloads:
+            if _is_constant(end):
+                constant_floor = max(
+                    constant_floor, int(end.type.integer.modular_value)
+                )
+            else:
+                dynamic_ends.append(end)
+        if constant_floor > context:
+            rendered = _render_integer(constant_floor)
+            lines.append(
+                "{0}if (emboss_reserved_local_size < {1}) emboss_reserved_local_size = {1};\n".format(
+                    indent, rendered
+                )
+            )
+        for end in dynamic_ends:
+            rendered = _render_expression(
+                end, self.ir, self.field_reader, subexpressions=scope
+            ).rendered
+            lines.append(
+                "{0}if (!{1}.Known()) {2}\n"
+                "{0}if (static_cast</**/ {3}>({1}.ValueOrDefault()) >\n"
+                "{0}    emboss_reserved_local_size) {{\n"
+                "{0}  emboss_reserved_local_size =\n"
+                "{0}      static_cast</**/ {3}>({1}.ValueOrDefault());\n"
+                "{0}}}\n".format(
+                    indent, rendered, self.unknown_statement, self.intermediate_type
+                )
+            )
+        return "".join(lines), constant_floor
+
+
+def _generate_optimized_size_read(field_ir, logical_type, ir):
+    """Generates (read_subexpressions, read_value) for a $size_in_* field.
+
+    The front end defines the size of a structure as
+
+        $max(0, cond_1 ? end_1 : 0, cond_2 ? end_2 : 0, ...)
+
+    with one clause per physical field.  Evaluating that expression directly
+    evaluates every field's existence condition, even though most of the
+    conditions in a tagged union are mutually exclusive, and then folds all
+    of the clauses with Maybe<> arithmetic.  This instead generates a
+    condition tree (see `_SizeConditionTree`) which evaluates shared
+    conditions once and folds the ends into a plain integer, with the same
+    result as the original expression: un-Known if any evaluated condition
+    or end is un-Known, otherwise the maximum.
+    """
+    size_expression = field_ir.read_transform
+    if (
+        size_expression.which_expression != "function"
+        or size_expression.function.function != ir_data.FunctionMapping.MAXIMUM
+    ):
+        scope = ExpressionScope("emboss_reserved_local_subexpr_")
+        read_value = _render_expression(
+            size_expression,
+            ir,
+            field_reader=_VirtualViewFieldRenderer(),
+            subexpressions=scope,
+        )
+        return scope.definition_code("      "), read_value.rendered
+
+    # Mirror _render_builtin_operation()'s choice of intermediate type, so that
+    # the comparisons below are performed in the same C++ type as $max()'s.
+    minimum_integers = []
+    maximum_integers = []
+    for expression in [size_expression] + list(size_expression.function.args):
+        assert expression.type.which_type == "integer"
+        minimum_integers.append(int(expression.type.integer.minimum_value))
+        maximum_integers.append(int(expression.type.integer.maximum_value))
+    intermediate_type = _cpp_integer_type_for_range(
+        min(minimum_integers), max(maximum_integers)
+    )
+
+    constant_floor = 0
+    items = []
+    for arg in size_expression.function.args:
+        if (
+            arg.which_expression == "function"
+            and arg.function.function == ir_data.FunctionMapping.CHOICE
+            and _is_constant(arg.function.args[2])
+            and int(arg.function.args[2].type.integer.modular_value) == 0
+        ):
+            conjuncts = _existence_conjuncts(arg.function.args[0], ir)
+            if conjuncts is None:
+                # The field is never present.
+                continue
+            ends = _flatten_function(
+                arg.function.args[1], ir_data.FunctionMapping.MAXIMUM
+            )
+        else:
+            conjuncts = []
+            ends = _flatten_function(arg, ir_data.FunctionMapping.MAXIMUM)
+        for end in ends:
+            if not conjuncts and _is_constant(end):
+                constant_floor = max(
+                    constant_floor, int(end.type.integer.modular_value)
+                )
+            else:
+                items.append(_ConditionItem(conjuncts, end))
+
+    scope = ExpressionScope("emboss_reserved_local_subexpr_")
+    tree = _SizeConditionTree(ir, logical_type, intermediate_type).render(
+        items,
+        _EvaluationPoint(fields_validated=False),
+        scope,
+        depth=0,
+        indent="      ",
+        context=constant_floor,
+    )
+    read_subexpressions = (
+        scope.definition_code("      ")
+        + "      {} emboss_reserved_local_size = {};\n".format(
+            intermediate_type, _render_integer(constant_floor)
+        )
+        + tree
+    )
+    read_value = "::emboss::support::Maybe</**/ {0}>(static_cast</**/ {0}>(emboss_reserved_local_size))".format(
+        logical_type
+    )
+    return read_subexpressions, read_value
+
+
+def _bitwise_compared_location(field, ir):
+    """Returns the (start, end) of `field` if its Equals() is a bitwise comparison.
+
+    Two views of an always-present `UInt`, `Int`, `Flag`, or `enum` field
+    without `[requires]` at a constant location are Equals() exactly when the
+    bits they occupy are equal.  When several such fields overlay the same
+    bits (for example a 48-bit field which is also exposed as 16-bit and
+    32-bit halves), comparing the largest one compares all of them, and the
+    structure's Equals() can skip the others.
+
+    Returns None for every other kind of field.
+    """
+    if ir_util.field_is_virtual(field):
+        return None
+    if not _is_constant_true(field.existence_condition):
+        return None
+    if ir_util.get_attribute(field.attribute, "requires") is not None:
+        return None
+    if (
+        not field.type.has_field("atomic_type")
+        or field.type.atomic_type.runtime_parameter
+    ):
+        return None
+    start = ir_util.constant_value(field.location.start)
+    size = ir_util.constant_value(field.location.size)
+    if start is None or start < 0 or size is None or size <= 0:
+        return None
+    type_def = ir_util.find_object(field.type.atomic_type.reference, ir)
+    if type_def.has_field("external"):
+        if type_def.name.canonical_name.module_file != "" or (
+            type_def.name.name.text not in ("UInt", "Int", "Flag")
+        ):
+            return None
+    elif not type_def.has_field("enumeration"):
+        return None
+    return (start, start + size)
 
 
 def _generate_structure_definition(type_ir, ir, config: Config):
@@ -1952,6 +3170,7 @@ def _generate_structure_definition(type_ir, ir, config: Config):
 
     # Generate code using subexpression store.
     ok_subexpressions = ExpressionScope("emboss_reserved_local_ok_subexpr_")
+    bitwise_compared_locations = []
     for field_index in type_ir.structure.fields_in_dependency_order:
         field = type_ir.structure.field[field_index]
         helper_types, declaration, definition = _generate_structure_field_methods(
@@ -1962,17 +3181,41 @@ def _generate_structure_definition(type_ir, ir, config: Config):
         if not ir_util.field_is_virtual(field):
             # Virtual fields do not participate in equality tests -- they are equal by
             # definition.
-            equals_method_clauses.append(
-                code_template.format_template(
-                    _TEMPLATES.equals_method_test, field=field.name.name.text + "()"
+            location = _bitwise_compared_location(field, ir)
+            if location is not None and any(
+                start <= location[0] and location[1] <= end
+                for start, end in bitwise_compared_locations
+            ):
+                # An earlier field's Equals() already compares these bits.
+                pass
+            elif _is_constant_true(field.existence_condition):
+                equals_method_clauses.append(
+                    code_template.format_template(
+                        _TEMPLATES.unconditional_equals_method_test,
+                        field=field.name.name.text + "()",
+                    )
                 )
-            )
-            unchecked_equals_method_clauses.append(
-                code_template.format_template(
-                    _TEMPLATES.unchecked_equals_method_test,
-                    field=field.name.name.text + "()",
+                unchecked_equals_method_clauses.append(
+                    code_template.format_template(
+                        _TEMPLATES.unconditional_unchecked_equals_method_test,
+                        field=field.name.name.text + "()",
+                    )
                 )
-            )
+            else:
+                equals_method_clauses.append(
+                    code_template.format_template(
+                        _TEMPLATES.equals_method_test,
+                        field=field.name.name.text + "()",
+                    )
+                )
+                unchecked_equals_method_clauses.append(
+                    code_template.format_template(
+                        _TEMPLATES.unchecked_equals_method_test,
+                        field=field.name.name.text + "()",
+                    )
+                )
+            if location is not None:
+                bitwise_compared_locations.append(location)
         field_method_declarations.append(declaration)
         if not field.name.is_anonymous and not ir_util.field_is_read_only(field):
             # As above, read-only fields cannot be decoded from text format.

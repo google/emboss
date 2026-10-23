@@ -47,16 +47,19 @@ struct MemoryAccessor {
   using ChainedAccessor =
       MemoryAccessor<CharT, kAlignment / 2, kOffset % (kAlignment / 2), kBits>;
   using Unsigned = typename LeastWidthInteger<kBits>::Unsigned;
-  static inline Unsigned ReadLittleEndianUInt(const CharT *bytes) {
+  static EMBOSS_ALWAYS_INLINE Unsigned
+  ReadLittleEndianUInt(const CharT *bytes) {
     return ChainedAccessor::ReadLittleEndianUInt(bytes);
   }
-  static inline void WriteLittleEndianUInt(CharT *bytes, Unsigned value) {
+  static EMBOSS_ALWAYS_INLINE void WriteLittleEndianUInt(CharT *bytes,
+                                                         Unsigned value) {
     ChainedAccessor::WriteLittleEndianUInt(bytes, value);
   }
-  static inline Unsigned ReadBigEndianUInt(const CharT *bytes) {
+  static EMBOSS_ALWAYS_INLINE Unsigned ReadBigEndianUInt(const CharT *bytes) {
     return ChainedAccessor::ReadBigEndianUInt(bytes);
   }
-  static inline void WriteBigEndianUInt(CharT *bytes, Unsigned value) {
+  static EMBOSS_ALWAYS_INLINE void WriteBigEndianUInt(CharT *bytes,
+                                                      Unsigned value) {
     ChainedAccessor::WriteBigEndianUInt(bytes, value);
   }
 };
@@ -70,8 +73,13 @@ struct MemoryAccessor {
 // shift+or them together in the appropriate order.  I (bolms@) haven't found a
 // compiler that will optimize the multiple reads, shifts, and ors into a single
 // read, so the memcpy version is *much* faster for 32-bit and larger reads.
-template <typename CharT, ::std::size_t kBits>
-struct MemoryAccessor<CharT, 1, 0, kBits> {
+//
+// For non-power-of-two byte widths (24, 40, 48, 56 bits), splitting into two
+// power-of-two accesses avoids unaligned-size memcpy into an interior offset of
+// a stack-spilled integer variable.
+template <typename CharT, ::std::size_t kBits,
+          bool kIsPowerOfTwo = IsPowerOfTwo(kBits)>
+struct UnalignedMemoryAccessor {
   static_assert(kBits % 8 == 0,
                 "MemoryAccessor can only read and write whole-byte values.");
   static_assert(IsAliasSafe<CharT>::value,
@@ -80,13 +88,15 @@ struct MemoryAccessor<CharT, 1, 0, kBits> {
   using Unsigned = typename LeastWidthInteger<kBits>::Unsigned;
 
 #if defined(EMBOSS_LITTLE_ENDIAN_TO_NATIVE)
-  static inline Unsigned ReadLittleEndianUInt(const CharT *bytes) {
+  static EMBOSS_ALWAYS_INLINE Unsigned
+  ReadLittleEndianUInt(const CharT *bytes) {
     Unsigned result = 0;
     ::std::memcpy(&result, bytes, kBits / 8);
     return EMBOSS_LITTLE_ENDIAN_TO_NATIVE(result);
   }
 #else
-  static inline Unsigned ReadLittleEndianUInt(const CharT *bytes) {
+  static EMBOSS_ALWAYS_INLINE Unsigned
+  ReadLittleEndianUInt(const CharT *bytes) {
     Unsigned result = 0;
     for (decltype(kBits) i = 0; i < kBits / 8; ++i) {
       result |=
@@ -98,12 +108,14 @@ struct MemoryAccessor<CharT, 1, 0, kBits> {
 #endif
 
 #if defined(EMBOSS_NATIVE_TO_LITTLE_ENDIAN)
-  static inline void WriteLittleEndianUInt(CharT *bytes, Unsigned value) {
+  static EMBOSS_ALWAYS_INLINE void WriteLittleEndianUInt(CharT *bytes,
+                                                         Unsigned value) {
     value = EMBOSS_NATIVE_TO_LITTLE_ENDIAN(value);
     ::std::memcpy(bytes, &value, kBits / 8);
   }
 #else
-  static inline void WriteLittleEndianUInt(CharT *bytes, Unsigned value) {
+  static EMBOSS_ALWAYS_INLINE void WriteLittleEndianUInt(CharT *bytes,
+                                                         Unsigned value) {
     for (decltype(kBits) i = 0; i < kBits / 8; ++i) {
       bytes[i] = static_cast<CharT>(static_cast</**/ ::std::uint8_t>(value));
       if (sizeof value > 1) {
@@ -116,8 +128,7 @@ struct MemoryAccessor<CharT, 1, 0, kBits> {
 #endif
 
 #if defined(EMBOSS_BIG_ENDIAN_TO_NATIVE)
-  static inline Unsigned ReadBigEndianUInt(const CharT *bytes) {
-    Unsigned result = 0;
+  static EMBOSS_ALWAYS_INLINE Unsigned ReadBigEndianUInt(const CharT *bytes) {
     // When a big-endian source integer is smaller than the result, the source
     // bytes must be copied into the final bytes of the destination.  This is
     // true whether the host is big- or little-endian.
@@ -160,13 +171,14 @@ struct MemoryAccessor<CharT, 1, 0, kBits> {
     // +--------+--------+--------+--------+
     // | 0x00   | 0x11   | 0x22   | 0x33   |
     // +--------+--------+--------+--------+
+    Unsigned result = 0;
     ::std::memcpy(reinterpret_cast<char *>(&result) + sizeof result - kBits / 8,
                   bytes, kBits / 8);
     result = EMBOSS_BIG_ENDIAN_TO_NATIVE(result);
     return result;
   }
 #else
-  static inline Unsigned ReadBigEndianUInt(const CharT *bytes) {
+  static EMBOSS_ALWAYS_INLINE Unsigned ReadBigEndianUInt(const CharT *bytes) {
     Unsigned result = 0;
     for (decltype(kBits) i = 0; i < kBits / 8; ++i) {
       result |=
@@ -178,14 +190,16 @@ struct MemoryAccessor<CharT, 1, 0, kBits> {
 #endif
 
 #if defined(EMBOSS_NATIVE_TO_BIG_ENDIAN)
-  static inline void WriteBigEndianUInt(CharT *bytes, Unsigned value) {
+  static EMBOSS_ALWAYS_INLINE void WriteBigEndianUInt(CharT *bytes,
+                                                      Unsigned value) {
     value = EMBOSS_NATIVE_TO_BIG_ENDIAN(value);
     ::std::memcpy(bytes,
                   reinterpret_cast<char *>(&value) + sizeof value - kBits / 8,
                   kBits / 8);
   }
 #else
-  static inline void WriteBigEndianUInt(CharT *bytes, Unsigned value) {
+  static EMBOSS_ALWAYS_INLINE void WriteBigEndianUInt(CharT *bytes,
+                                                      Unsigned value) {
     for (decltype(kBits) i = 0; i < kBits / 8; ++i) {
       bytes[kBits / 8 - 1 - i] =
           static_cast<CharT>(static_cast</**/ ::std::uint8_t>(value));
@@ -199,6 +213,57 @@ struct MemoryAccessor<CharT, 1, 0, kBits> {
 #endif
 };
 
+template <typename CharT, ::std::size_t kBits>
+struct UnalignedMemoryAccessor<CharT, kBits, false> {
+  static_assert(kBits % 8 == 0,
+                "MemoryAccessor can only read and write whole-byte values.");
+  static_assert(IsAliasSafe<CharT>::value,
+                "MemoryAccessor can only be used on pointers to char types.");
+
+  using Unsigned = typename LeastWidthInteger<kBits>::Unsigned;
+  static constexpr ::std::size_t kSplitBits = kBits > 32 ? 32 : 16;
+  static constexpr ::std::size_t kRemBits = kBits - kSplitBits;
+  using SplitAccessor = UnalignedMemoryAccessor<CharT, kSplitBits>;
+  using RemAccessor = UnalignedMemoryAccessor<CharT, kRemBits>;
+  using SplitUnsigned = typename LeastWidthInteger<kSplitBits>::Unsigned;
+  using RemUnsigned = typename LeastWidthInteger<kRemBits>::Unsigned;
+
+  static EMBOSS_ALWAYS_INLINE Unsigned
+  ReadLittleEndianUInt(const CharT *bytes) {
+    return static_cast<Unsigned>(SplitAccessor::ReadLittleEndianUInt(bytes)) |
+           (static_cast<Unsigned>(
+                RemAccessor::ReadLittleEndianUInt(bytes + kSplitBits / 8))
+            << kSplitBits);
+  }
+
+  static EMBOSS_ALWAYS_INLINE void WriteLittleEndianUInt(CharT *bytes,
+                                                         Unsigned value) {
+    SplitAccessor::WriteLittleEndianUInt(bytes,
+                                         static_cast<SplitUnsigned>(value));
+    RemAccessor::WriteLittleEndianUInt(
+        bytes + kSplitBits / 8, static_cast<RemUnsigned>(value >> kSplitBits));
+  }
+
+  static EMBOSS_ALWAYS_INLINE Unsigned ReadBigEndianUInt(const CharT *bytes) {
+    return (static_cast<Unsigned>(SplitAccessor::ReadBigEndianUInt(bytes))
+            << kRemBits) |
+           static_cast<Unsigned>(
+               RemAccessor::ReadBigEndianUInt(bytes + kSplitBits / 8));
+  }
+
+  static EMBOSS_ALWAYS_INLINE void WriteBigEndianUInt(CharT *bytes,
+                                                      Unsigned value) {
+    SplitAccessor::WriteBigEndianUInt(
+        bytes, static_cast<SplitUnsigned>(value >> kRemBits));
+    RemAccessor::WriteBigEndianUInt(bytes + kSplitBits / 8,
+                                    static_cast<RemUnsigned>(value));
+  }
+};
+
+template <typename CharT, ::std::size_t kBits>
+struct MemoryAccessor<CharT, 1, 0, kBits>
+    : public UnalignedMemoryAccessor<CharT, kBits> {};
+
 // Specialization of UIntMemoryAccessor for 16- 32- and 64-bit-aligned reads and
 // writes, using EMBOSS_ALIAS_SAFE_POINTER_CAST instead of memcpy.
 #if defined(EMBOSS_ALIAS_SAFE_POINTER_CAST) && \
@@ -208,23 +273,26 @@ struct MemoryAccessor<CharT, 1, 0, kBits> {
     defined(EMBOSS_NATIVE_TO_BIG_ENDIAN)
 template <typename CharT>
 struct MemoryAccessor<CharT, 8, 0, 64> {
-  static inline ::std::uint64_t ReadLittleEndianUInt(const CharT *bytes) {
+  static EMBOSS_ALWAYS_INLINE ::std::uint64_t ReadLittleEndianUInt(
+      const CharT *bytes) {
     return EMBOSS_LITTLE_ENDIAN_TO_NATIVE(
         *EMBOSS_ALIAS_SAFE_POINTER_CAST(const ::std::uint64_t, bytes));
   }
 
-  static inline void WriteLittleEndianUInt(CharT *bytes,
-                                           ::std::uint64_t value) {
+  static EMBOSS_ALWAYS_INLINE void WriteLittleEndianUInt(
+      CharT *bytes, ::std::uint64_t value) {
     *EMBOSS_ALIAS_SAFE_POINTER_CAST(::std::uint64_t, bytes) =
         EMBOSS_NATIVE_TO_LITTLE_ENDIAN(value);
   }
 
-  static inline ::std::uint64_t ReadBigEndianUInt(const CharT *bytes) {
+  static EMBOSS_ALWAYS_INLINE ::std::uint64_t ReadBigEndianUInt(
+      const CharT *bytes) {
     return EMBOSS_BIG_ENDIAN_TO_NATIVE(
         *EMBOSS_ALIAS_SAFE_POINTER_CAST(const ::std::uint64_t, bytes));
   }
 
-  static inline void WriteBigEndianUInt(CharT *bytes, ::std::uint64_t value) {
+  static EMBOSS_ALWAYS_INLINE void WriteBigEndianUInt(CharT *bytes,
+                                                      ::std::uint64_t value) {
     *EMBOSS_ALIAS_SAFE_POINTER_CAST(::std::uint64_t, bytes) =
         EMBOSS_NATIVE_TO_BIG_ENDIAN(value);
   }
@@ -232,23 +300,26 @@ struct MemoryAccessor<CharT, 8, 0, 64> {
 
 template <typename CharT>
 struct MemoryAccessor<CharT, 4, 0, 32> {
-  static inline ::std::uint32_t ReadLittleEndianUInt(const CharT *bytes) {
+  static EMBOSS_ALWAYS_INLINE ::std::uint32_t ReadLittleEndianUInt(
+      const CharT *bytes) {
     return EMBOSS_LITTLE_ENDIAN_TO_NATIVE(
         *EMBOSS_ALIAS_SAFE_POINTER_CAST(const ::std::uint32_t, bytes));
   }
 
-  static inline void WriteLittleEndianUInt(CharT *bytes,
-                                           ::std::uint32_t value) {
+  static EMBOSS_ALWAYS_INLINE void WriteLittleEndianUInt(
+      CharT *bytes, ::std::uint32_t value) {
     *EMBOSS_ALIAS_SAFE_POINTER_CAST(::std::uint32_t, bytes) =
         EMBOSS_NATIVE_TO_LITTLE_ENDIAN(value);
   }
 
-  static inline ::std::uint32_t ReadBigEndianUInt(const CharT *bytes) {
+  static EMBOSS_ALWAYS_INLINE ::std::uint32_t ReadBigEndianUInt(
+      const CharT *bytes) {
     return EMBOSS_BIG_ENDIAN_TO_NATIVE(
         *EMBOSS_ALIAS_SAFE_POINTER_CAST(const ::std::uint32_t, bytes));
   }
 
-  static inline void WriteBigEndianUInt(CharT *bytes, ::std::uint32_t value) {
+  static EMBOSS_ALWAYS_INLINE void WriteBigEndianUInt(CharT *bytes,
+                                                      ::std::uint32_t value) {
     *EMBOSS_ALIAS_SAFE_POINTER_CAST(::std::uint32_t, bytes) =
         EMBOSS_NATIVE_TO_BIG_ENDIAN(value);
   }
@@ -256,23 +327,26 @@ struct MemoryAccessor<CharT, 4, 0, 32> {
 
 template <typename CharT>
 struct MemoryAccessor<CharT, 2, 0, 16> {
-  static inline ::std::uint16_t ReadLittleEndianUInt(const CharT *bytes) {
+  static EMBOSS_ALWAYS_INLINE ::std::uint16_t ReadLittleEndianUInt(
+      const CharT *bytes) {
     return EMBOSS_LITTLE_ENDIAN_TO_NATIVE(
         *EMBOSS_ALIAS_SAFE_POINTER_CAST(const ::std::uint16_t, bytes));
   }
 
-  static inline void WriteLittleEndianUInt(CharT *bytes,
-                                           ::std::uint16_t value) {
+  static EMBOSS_ALWAYS_INLINE void WriteLittleEndianUInt(
+      CharT *bytes, ::std::uint16_t value) {
     *EMBOSS_ALIAS_SAFE_POINTER_CAST(::std::uint16_t, bytes) =
         EMBOSS_NATIVE_TO_LITTLE_ENDIAN(value);
   }
 
-  static inline ::std::uint16_t ReadBigEndianUInt(const CharT *bytes) {
+  static EMBOSS_ALWAYS_INLINE ::std::uint16_t ReadBigEndianUInt(
+      const CharT *bytes) {
     return EMBOSS_BIG_ENDIAN_TO_NATIVE(
         *EMBOSS_ALIAS_SAFE_POINTER_CAST(const ::std::uint16_t, bytes));
   }
 
-  static inline void WriteBigEndianUInt(CharT *bytes, ::std::uint16_t value) {
+  static EMBOSS_ALWAYS_INLINE void WriteBigEndianUInt(CharT *bytes,
+                                                      ::std::uint16_t value) {
     *EMBOSS_ALIAS_SAFE_POINTER_CAST(::std::uint16_t, bytes) =
         EMBOSS_NATIVE_TO_BIG_ENDIAN(value);
   }
@@ -357,7 +431,7 @@ class ContiguousBuffer final {
                            GreatestCommonDivisor(kAlignment, kSubAlignment)>;
 
   // Constructs a default ContiguousBuffer.
-  ContiguousBuffer() : bytes_(nullptr), size_(0) {}
+  EMBOSS_ALWAYS_INLINE ContiguousBuffer() : bytes_(nullptr), size_(0) {}
 
   // Constructs a ContiguousBuffer from a contiguous container type over some
   // `char` type, such as std::string, std::vector<signed char>,
@@ -385,8 +459,9 @@ class ContiguousBuffer final {
               is_same<typename AddSourceCV<
                           decltype(*::std::declval<T>().data()), Byte>::Type,
                       Byte>::value>::type>
-  explicit ContiguousBuffer(T *bytes)
-      : bytes_{reinterpret_cast<Byte *>(bytes->data())}, size_{bytes->size()} {
+  EMBOSS_ALWAYS_INLINE explicit ContiguousBuffer(T *bytes)
+      : bytes_{reinterpret_cast<Byte *>(bytes->data())},
+        size_{bytes_ == nullptr ? 0 : bytes->size()} {
     if (bytes != nullptr)
       EMBOSS_DCHECK_POINTER_ALIGNMENT(bytes, kAlignment, kOffset);
   }
@@ -398,7 +473,7 @@ class ContiguousBuffer final {
             typename = typename ::std::enable_if<
                 IsAliasSafe<T>::value && ::std::is_same<
                     typename AddSourceCV<T, Byte>::Type, Byte>::value>>
-  explicit ContiguousBuffer(T *bytes, ::std::size_t size)
+  EMBOSS_ALWAYS_INLINE explicit ContiguousBuffer(T *bytes, ::std::size_t size)
       : bytes_{reinterpret_cast<Byte *>(bytes)},
         size_{bytes == nullptr ? 0 : size} {
     if (bytes != nullptr)
@@ -409,12 +484,15 @@ class ContiguousBuffer final {
   // ContiguousBuffer().
   //
   // TODO(bolms): Update callers and remove this constructor.
-  explicit ContiguousBuffer(::std::nullptr_t) : bytes_{nullptr}, size_{0} {}
+  EMBOSS_ALWAYS_INLINE explicit ContiguousBuffer(::std::nullptr_t)
+      : bytes_{nullptr}, size_{0} {}
 
   // Implicitly construct or assign a ContiguousBuffer from a ContiguousBuffer.
 #if !EMBOSS_GCC_BUG_115033
-  ContiguousBuffer(const ContiguousBuffer &other) = default;
-  ContiguousBuffer &operator=(const ContiguousBuffer &other) = default;
+  EMBOSS_ALWAYS_INLINE ContiguousBuffer(const ContiguousBuffer &other) =
+      default;
+  EMBOSS_ALWAYS_INLINE ContiguousBuffer &operator=(
+      const ContiguousBuffer &other) = default;
 #else
   // See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=115033 for details on the
   // bug (determined by bisecting GCC).
@@ -426,9 +504,10 @@ class ContiguousBuffer final {
   // but they appear to.  One notable difference (and also the main reason that
   // we only use these definitions for affected versions of GCC) is that they
   // change the ABI of ContiguousBuffer, at least in the minimized case.
-  ContiguousBuffer(const ContiguousBuffer &other)
+  EMBOSS_ALWAYS_INLINE ContiguousBuffer(const ContiguousBuffer &other)
       : bytes_{other.bytes_}, size_{other.size_} {}
-  ContiguousBuffer &operator=(const ContiguousBuffer &other) {
+  EMBOSS_ALWAYS_INLINE ContiguousBuffer &operator=(
+      const ContiguousBuffer &other) {
     bytes_ = other.bytes_;
     size_ = other.size_;
     return *this;
@@ -454,7 +533,7 @@ class ContiguousBuffer final {
           !::std::is_same<ContiguousBuffer,
                           ContiguousBuffer<OtherByte, kOtherAlignment,
                                            kOtherOffset>>::value>::type>
-  explicit ContiguousBuffer(
+  EMBOSS_ALWAYS_INLINE explicit ContiguousBuffer(
       const ContiguousBuffer<OtherByte, kOtherAlignment, kOtherOffset> &other)
       : bytes_{reinterpret_cast<Byte *>(other.data())},
         size_{other.SizeInBytes()} {}
@@ -468,8 +547,9 @@ class ContiguousBuffer final {
                     kOffset && ::std::is_same<
                         typename AddSourceCV<OtherByte, Byte>::Type,
                         Byte>::value>::type>
-  bool operator==(const ContiguousBuffer<OtherByte, kOtherAlignment,
-                                         kOtherOffset> &other) const {
+  EMBOSS_ALWAYS_INLINE bool operator==(
+      const ContiguousBuffer<OtherByte, kOtherAlignment, kOtherOffset> &other)
+      const {
     return bytes_ == reinterpret_cast<Byte *>(other.data()) &&
            size_ == other.SizeInBytes();
   }
@@ -483,8 +563,9 @@ class ContiguousBuffer final {
                     kOffset && ::std::is_same<
                         typename AddSourceCV<OtherByte, Byte>::Type,
                         Byte>::value>::type>
-  bool operator!=(const ContiguousBuffer<OtherByte, kOtherAlignment,
-                                         kOtherOffset> &other) const {
+  EMBOSS_ALWAYS_INLINE bool operator!=(
+      const ContiguousBuffer<OtherByte, kOtherAlignment, kOtherOffset> &other)
+      const {
     return !(*this == other);
   }
 
@@ -497,7 +578,7 @@ class ContiguousBuffer final {
                     kOffset && ::std::is_same<
                         typename AddSourceCV<OtherByte, Byte>::Type,
                         Byte>::value>::type>
-  ContiguousBuffer &operator=(
+  EMBOSS_ALWAYS_INLINE ContiguousBuffer &operator=(
       const ContiguousBuffer<OtherByte, kOtherAlignment, kOtherOffset> &other) {
     bytes_ = reinterpret_cast<Byte *>(other.data());
     size_ = other.SizeInBytes();
@@ -521,8 +602,8 @@ class ContiguousBuffer final {
   // views of their fields; the code generator can determine proper values for
   // `kSubAlignment` and `kSubOffset`.
   template </**/ ::std::size_t kSubAlignment, ::std::size_t kSubOffset>
-  OffsetStorageType<kSubAlignment, kSubOffset> GetOffsetStorage(
-      ::std::size_t offset, ::std::size_t size) const {
+  EMBOSS_ALWAYS_INLINE OffsetStorageType<kSubAlignment, kSubOffset>
+  GetOffsetStorage(::std::size_t offset, ::std::size_t size) const {
     static_assert(kSubAlignment == 0 || kSubAlignment > kSubOffset,
                   "kSubAlignment must be greater than kSubOffset.");
     // Emboss provides a fast, unchecked path for reads and writes like:
@@ -541,11 +622,10 @@ class ContiguousBuffer final {
                        kSubOffset);
     }
     using ResultStorageType = OffsetStorageType<kSubAlignment, kSubOffset>;
-    return bytes_ == nullptr
-               ? ResultStorageType{nullptr}
-               : ResultStorageType{
-                     bytes_ + offset,
-                     size_ < offset ? 0 : ::std::min(size, size_ - offset)};
+    return ResultStorageType{
+        typename ResultStorageType::UncheckedConstructTag{},
+        (offset == 0 || bytes_ == nullptr) ? bytes_ : bytes_ + offset,
+        size_ < offset ? 0 : ::std::min(size, size_ - offset)};
   }
 
   // ReadLittleEndianUInt, ReadBigEndianUInt, and the unchecked versions thereof
@@ -560,32 +640,36 @@ class ContiguousBuffer final {
   // Read...UInt always reads the entire buffer; to read a smaller section, use
   // GetOffsetStorage first.
   template </**/ ::std::size_t kBits>
-  typename LeastWidthInteger<kBits>::Unsigned ReadLittleEndianUInt() const {
+  EMBOSS_ALWAYS_INLINE typename LeastWidthInteger<kBits>::Unsigned
+  ReadLittleEndianUInt() const {
     EMBOSS_CHECK_EQ(SizeInBytes() * 8, kBits);
     EMBOSS_CHECK_POINTER_ALIGNMENT(bytes_, kAlignment, kOffset);
     return UncheckedReadLittleEndianUInt<kBits>();
   }
   template </**/ ::std::size_t kBits>
-  typename LeastWidthInteger<kBits>::Unsigned UncheckedReadLittleEndianUInt()
-      const {
+  EMBOSS_ALWAYS_INLINE typename LeastWidthInteger<kBits>::Unsigned
+  UncheckedReadLittleEndianUInt() const {
     static_assert(kBits % 8 == 0,
                   "ContiguousBuffer::ReadLittleEndianUInt() can only read "
                   "whole-byte values.");
+    EMBOSS_ASSUME(bytes_ != nullptr);
     return MemoryAccessor<Byte, kAlignment, kOffset,
                           kBits>::ReadLittleEndianUInt(bytes_);
   }
   template </**/ ::std::size_t kBits>
-  typename LeastWidthInteger<kBits>::Unsigned ReadBigEndianUInt() const {
+  EMBOSS_ALWAYS_INLINE typename LeastWidthInteger<kBits>::Unsigned
+  ReadBigEndianUInt() const {
     EMBOSS_CHECK_EQ(SizeInBytes() * 8, kBits);
     EMBOSS_CHECK_POINTER_ALIGNMENT(bytes_, kAlignment, kOffset);
     return UncheckedReadBigEndianUInt<kBits>();
   }
   template </**/ ::std::size_t kBits>
-  typename LeastWidthInteger<kBits>::Unsigned UncheckedReadBigEndianUInt()
-      const {
+  EMBOSS_ALWAYS_INLINE typename LeastWidthInteger<kBits>::Unsigned
+  UncheckedReadBigEndianUInt() const {
     static_assert(kBits % 8 == 0,
                   "ContiguousBuffer::ReadBigEndianUInt() can only read "
                   "whole-byte values.");
+    EMBOSS_ASSUME(bytes_ != nullptr);
     return MemoryAccessor<Byte, kAlignment, kOffset, kBits>::ReadBigEndianUInt(
         bytes_);
   }
@@ -597,48 +681,52 @@ class ContiguousBuffer final {
   // written, and to write a subsection of the buffer use GetOffsetStorage
   // first.
   template </**/ ::std::size_t kBits>
-  void WriteLittleEndianUInt(
+  EMBOSS_ALWAYS_INLINE void WriteLittleEndianUInt(
       typename LeastWidthInteger<kBits>::Unsigned value) const {
     EMBOSS_CHECK_EQ(SizeInBytes() * 8, kBits);
     EMBOSS_CHECK_POINTER_ALIGNMENT(bytes_, kAlignment, kOffset);
     UncheckedWriteLittleEndianUInt<kBits>(value);
   }
   template </**/ ::std::size_t kBits>
-  void UncheckedWriteLittleEndianUInt(
+  EMBOSS_ALWAYS_INLINE void UncheckedWriteLittleEndianUInt(
       typename LeastWidthInteger<kBits>::Unsigned value) const {
     static_assert(kBits % 8 == 0,
                   "ContiguousBuffer::WriteLittleEndianUInt() can only write "
                   "whole-byte values.");
+    EMBOSS_ASSUME(bytes_ != nullptr);
     MemoryAccessor<Byte, kAlignment, kOffset, kBits>::WriteLittleEndianUInt(
         bytes_, value);
   }
   template </**/ ::std::size_t kBits>
-  void WriteBigEndianUInt(
+  EMBOSS_ALWAYS_INLINE void WriteBigEndianUInt(
       typename LeastWidthInteger<kBits>::Unsigned value) const {
     EMBOSS_CHECK_EQ(SizeInBytes() * 8, kBits);
     EMBOSS_CHECK_POINTER_ALIGNMENT(bytes_, kAlignment, kOffset);
     return UncheckedWriteBigEndianUInt<kBits>(value);
   }
   template </**/ ::std::size_t kBits>
-  void UncheckedWriteBigEndianUInt(
+  EMBOSS_ALWAYS_INLINE void UncheckedWriteBigEndianUInt(
       typename LeastWidthInteger<kBits>::Unsigned value) const {
     static_assert(kBits % 8 == 0,
                   "ContiguousBuffer::WriteBigEndianUInt() can only write "
                   "whole-byte values.");
+    EMBOSS_ASSUME(bytes_ != nullptr);
     MemoryAccessor<Byte, kAlignment, kOffset, kBits>::WriteBigEndianUInt(bytes_,
                                                                          value);
   }
 
   template <typename OtherByte, ::std::size_t kOtherAlignment,
             ::std::size_t kOtherOffset>
-  void UncheckedCopyFrom(
+  EMBOSS_ALWAYS_INLINE void UncheckedCopyFrom(
       const ContiguousBuffer<OtherByte, kOtherAlignment, kOtherOffset> &other,
       ::std::size_t size) const {
+    EMBOSS_ASSUME(bytes_ != nullptr);
+    EMBOSS_ASSUME(other.data() != nullptr);
     memmove(data(), other.data(), size);
   }
   template <typename OtherByte, ::std::size_t kOtherAlignment,
             ::std::size_t kOtherOffset>
-  void CopyFrom(
+  EMBOSS_ALWAYS_INLINE void CopyFrom(
       const ContiguousBuffer<OtherByte, kOtherAlignment, kOtherOffset> &other,
       ::std::size_t size) const {
     EMBOSS_CHECK(Ok());
@@ -650,7 +738,7 @@ class ContiguousBuffer final {
   }
   template <typename OtherByte, ::std::size_t kOtherAlignment,
             ::std::size_t kOtherOffset>
-  bool TryToCopyFrom(
+  EMBOSS_ALWAYS_INLINE bool TryToCopyFrom(
       const ContiguousBuffer<OtherByte, kOtherAlignment, kOtherOffset> &other,
       ::std::size_t size) const {
     if (Ok() && other.Ok() && SizeInBytes() >= size &&
@@ -660,11 +748,11 @@ class ContiguousBuffer final {
     }
     return false;
   }
-  ::std::size_t SizeInBytes() const { return size_; }
-  bool Ok() const { return bytes_ != nullptr; }
-  Byte *data() const { return bytes_; }
-  Byte *begin() const { return bytes_; }
-  Byte *end() const { return bytes_ + size_; }
+  EMBOSS_ALWAYS_INLINE ::std::size_t SizeInBytes() const { return size_; }
+  EMBOSS_ALWAYS_INLINE bool Ok() const { return bytes_ != nullptr; }
+  EMBOSS_ALWAYS_INLINE Byte *data() const { return bytes_; }
+  EMBOSS_ALWAYS_INLINE Byte *begin() const { return bytes_; }
+  EMBOSS_ALWAYS_INLINE Byte *end() const { return bytes_ + size_; }
 
   // Constructs a string type from the underlying data; mostly intended to be
   // called as:
@@ -695,6 +783,15 @@ class ContiguousBuffer final {
   }
 
  private:
+  struct UncheckedConstructTag {};
+
+  EMBOSS_ALWAYS_INLINE ContiguousBuffer(UncheckedConstructTag, Byte *bytes,
+                                        ::std::size_t size)
+      : bytes_{bytes}, size_{size} {}
+
+  template <typename, ::std::size_t, ::std::size_t>
+  friend class ContiguousBuffer;
+
   Byte *bytes_ = nullptr;
   ::std::size_t size_ = 0;
 };
@@ -731,32 +828,40 @@ class LittleEndianByteOrderer final {
   // Type declaration so that BitBlock can use BufferType::BufferType.
   using BufferType = BufferT;
 
-  LittleEndianByteOrderer() : buffer_() {}
-  explicit LittleEndianByteOrderer(BufferType buffer) : buffer_{buffer} {}
-  LittleEndianByteOrderer(const LittleEndianByteOrderer &other) = default;
-  LittleEndianByteOrderer(LittleEndianByteOrderer &&other) = default;
-  LittleEndianByteOrderer &operator=(const LittleEndianByteOrderer &other) =
-      default;
+  EMBOSS_ALWAYS_INLINE LittleEndianByteOrderer() : buffer_() {}
+  EMBOSS_ALWAYS_INLINE explicit LittleEndianByteOrderer(BufferType buffer)
+      : buffer_{buffer} {}
+  EMBOSS_ALWAYS_INLINE LittleEndianByteOrderer(
+      const LittleEndianByteOrderer &other) = default;
+  EMBOSS_ALWAYS_INLINE LittleEndianByteOrderer(
+      LittleEndianByteOrderer &&other) = default;
+  EMBOSS_ALWAYS_INLINE LittleEndianByteOrderer &operator=(
+      const LittleEndianByteOrderer &other) = default;
 
   // LittleEndianByteOrderer just passes straight through to the underlying
   // buffer.
-  bool Ok() const { return buffer_.Ok(); }
-  ::std::size_t SizeInBytes() const { return buffer_.SizeInBytes(); }
+  EMBOSS_ALWAYS_INLINE bool Ok() const { return buffer_.Ok(); }
+  EMBOSS_ALWAYS_INLINE ::std::size_t SizeInBytes() const {
+    return buffer_.SizeInBytes();
+  }
 
   template </**/ ::std::size_t kBits>
-  typename LeastWidthInteger<kBits>::Unsigned ReadUInt() const {
+  EMBOSS_ALWAYS_INLINE typename LeastWidthInteger<kBits>::Unsigned ReadUInt()
+      const {
     return buffer_.template ReadLittleEndianUInt<kBits>();
   }
   template </**/ ::std::size_t kBits>
-  typename LeastWidthInteger<kBits>::Unsigned UncheckedReadUInt() const {
+  EMBOSS_ALWAYS_INLINE typename LeastWidthInteger<kBits>::Unsigned
+  UncheckedReadUInt() const {
     return buffer_.template UncheckedReadLittleEndianUInt<kBits>();
   }
   template </**/ ::std::size_t kBits>
-  void WriteUInt(typename LeastWidthInteger<kBits>::Unsigned value) const {
+  EMBOSS_ALWAYS_INLINE void WriteUInt(
+      typename LeastWidthInteger<kBits>::Unsigned value) const {
     buffer_.template WriteLittleEndianUInt<kBits>(value);
   }
   template </**/ ::std::size_t kBits>
-  void UncheckedWriteUInt(
+  EMBOSS_ALWAYS_INLINE void UncheckedWriteUInt(
       typename LeastWidthInteger<kBits>::Unsigned value) const {
     buffer_.template UncheckedWriteLittleEndianUInt<kBits>(value);
   }
@@ -804,30 +909,39 @@ class BigEndianByteOrderer final {
   // Type declaration so that BitBlock can use BufferType::BufferType.
   using BufferType = BufferT;
 
-  BigEndianByteOrderer() : buffer_() {}
-  explicit BigEndianByteOrderer(BufferType buffer) : buffer_{buffer} {}
-  BigEndianByteOrderer(const BigEndianByteOrderer &other) = default;
-  BigEndianByteOrderer(BigEndianByteOrderer &&other) = default;
-  BigEndianByteOrderer &operator=(const BigEndianByteOrderer &other) = default;
+  EMBOSS_ALWAYS_INLINE BigEndianByteOrderer() : buffer_() {}
+  EMBOSS_ALWAYS_INLINE explicit BigEndianByteOrderer(BufferType buffer)
+      : buffer_{buffer} {}
+  EMBOSS_ALWAYS_INLINE BigEndianByteOrderer(const BigEndianByteOrderer &other) =
+      default;
+  EMBOSS_ALWAYS_INLINE BigEndianByteOrderer(BigEndianByteOrderer &&other) =
+      default;
+  EMBOSS_ALWAYS_INLINE BigEndianByteOrderer &operator=(
+      const BigEndianByteOrderer &other) = default;
 
   // Ok() and SizeInBytes() get passed through with no changes.
-  bool Ok() const { return buffer_.Ok(); }
-  ::std::size_t SizeInBytes() const { return buffer_.SizeInBytes(); }
+  EMBOSS_ALWAYS_INLINE bool Ok() const { return buffer_.Ok(); }
+  EMBOSS_ALWAYS_INLINE ::std::size_t SizeInBytes() const {
+    return buffer_.SizeInBytes();
+  }
 
   template </**/ ::std::size_t kBits>
-  typename LeastWidthInteger<kBits>::Unsigned ReadUInt() const {
+  EMBOSS_ALWAYS_INLINE typename LeastWidthInteger<kBits>::Unsigned ReadUInt()
+      const {
     return buffer_.template ReadBigEndianUInt<kBits>();
   }
   template </**/ ::std::size_t kBits>
-  typename LeastWidthInteger<kBits>::Unsigned UncheckedReadUInt() const {
+  EMBOSS_ALWAYS_INLINE typename LeastWidthInteger<kBits>::Unsigned
+  UncheckedReadUInt() const {
     return buffer_.template UncheckedReadBigEndianUInt<kBits>();
   }
   template </**/ ::std::size_t kBits>
-  void WriteUInt(typename LeastWidthInteger<kBits>::Unsigned value) const {
+  EMBOSS_ALWAYS_INLINE void WriteUInt(
+      typename LeastWidthInteger<kBits>::Unsigned value) const {
     buffer_.template WriteBigEndianUInt<kBits>(value);
   }
   template </**/ ::std::size_t kBits>
-  void UncheckedWriteUInt(
+  EMBOSS_ALWAYS_INLINE void UncheckedWriteUInt(
       typename LeastWidthInteger<kBits>::Unsigned value) const {
     buffer_.template UncheckedWriteBigEndianUInt<kBits>(value);
   }
@@ -849,32 +963,39 @@ class NullByteOrderer final {
   // Type declaration so that BitBlock can use BufferType::BufferType.
   using BufferType = BufferT;
 
-  NullByteOrderer() : buffer_() {}
-  explicit NullByteOrderer(BufferType buffer) : buffer_{buffer} {}
-  NullByteOrderer(const NullByteOrderer &other) = default;
-  NullByteOrderer(NullByteOrderer &&other) = default;
-  NullByteOrderer &operator=(const NullByteOrderer &other) = default;
+  EMBOSS_ALWAYS_INLINE NullByteOrderer() : buffer_() {}
+  EMBOSS_ALWAYS_INLINE explicit NullByteOrderer(BufferType buffer)
+      : buffer_{buffer} {}
+  EMBOSS_ALWAYS_INLINE NullByteOrderer(const NullByteOrderer &other) = default;
+  EMBOSS_ALWAYS_INLINE NullByteOrderer(NullByteOrderer &&other) = default;
+  EMBOSS_ALWAYS_INLINE NullByteOrderer &operator=(
+      const NullByteOrderer &other) = default;
 
-  bool Ok() const { return buffer_.Ok(); }
-  ::std::size_t SizeInBytes() const { return Ok() ? 1 : 0; }
+  EMBOSS_ALWAYS_INLINE bool Ok() const { return buffer_.Ok(); }
+  EMBOSS_ALWAYS_INLINE ::std::size_t SizeInBytes() const {
+    return Ok() ? 1 : 0;
+  }
 
   template </**/ ::std::size_t kBits>
-  typename LeastWidthInteger<kBits>::Unsigned ReadUInt() const {
+  EMBOSS_ALWAYS_INLINE typename LeastWidthInteger<kBits>::Unsigned ReadUInt()
+      const {
     static_assert(kBits == 8, "NullByteOrderer may only read 8-bit values.");
     return buffer_.template ReadLittleEndianUInt<kBits>();
   }
   template </**/ ::std::size_t kBits>
-  typename LeastWidthInteger<kBits>::Unsigned UncheckedReadUInt() const {
+  EMBOSS_ALWAYS_INLINE typename LeastWidthInteger<kBits>::Unsigned
+  UncheckedReadUInt() const {
     static_assert(kBits == 8, "NullByteOrderer may only read 8-bit values.");
     return buffer_.template UncheckedReadLittleEndianUInt<kBits>();
   }
   template </**/ ::std::size_t kBits>
-  void WriteUInt(typename LeastWidthInteger<kBits>::Unsigned value) const {
+  EMBOSS_ALWAYS_INLINE void WriteUInt(
+      typename LeastWidthInteger<kBits>::Unsigned value) const {
     static_assert(kBits == 8, "NullByteOrderer may only read 8-bit values.");
     buffer_.template WriteBigEndianUInt<kBits>(value);
   }
   template </**/ ::std::size_t kBits>
-  void UncheckedWriteUInt(
+  EMBOSS_ALWAYS_INLINE void UncheckedWriteUInt(
       typename LeastWidthInteger<kBits>::Unsigned value) const {
     static_assert(kBits == 8, "NullByteOrderer may only read 8-bit values.");
     buffer_.template UncheckedWriteBigEndianUInt<kBits>(value);
@@ -907,33 +1028,45 @@ class OffsetBitBlock final {
   template </**/ ::std::size_t kNewAlignment, ::std::size_t kNewOffset>
   using OffsetStorageType = OffsetBitBlock<UnderlyingBitBlockType>;
 
-  OffsetBitBlock() : bit_block_(), offset_(0), size_(0), ok_(false) {}
-  explicit OffsetBitBlock(UnderlyingBitBlockType bit_block,
-                          ::std::size_t offset, ::std::size_t size, bool ok)
+  EMBOSS_ALWAYS_INLINE OffsetBitBlock()
+      : bit_block_(), offset_(0), size_(0), ok_(false) {}
+  EMBOSS_ALWAYS_INLINE explicit OffsetBitBlock(UnderlyingBitBlockType bit_block,
+                                               ::std::size_t offset,
+                                               ::std::size_t size, bool ok)
       : bit_block_{bit_block},
         offset_{static_cast</**/ ::std::uint8_t>(offset)},
         size_{static_cast</**/ ::std::uint8_t>(size)},
         ok_{offset == offset_ && size == size_ && ok} {}
-  OffsetBitBlock(const OffsetBitBlock &other) = default;
+#if !EMBOSS_GCC_BUG_115033
+  EMBOSS_ALWAYS_INLINE OffsetBitBlock(const OffsetBitBlock &other) = default;
   OffsetBitBlock &operator=(const OffsetBitBlock &other) = default;
+#else
+  // See the comment on ContiguousBuffer's copy constructor, above.
+  EMBOSS_ALWAYS_INLINE OffsetBitBlock(const OffsetBitBlock &other)
+      : bit_block_{other.bit_block_},
+        offset_{other.offset_},
+        size_{other.size_},
+        ok_{other.ok_} {}
+  OffsetBitBlock &operator=(const OffsetBitBlock &other) = default;
+#endif
 
   template </**/ ::std::size_t kNewAlignment, ::std::size_t kNewOffset>
-  OffsetStorageType<kNewAlignment, kNewOffset> GetOffsetStorage(
-      ::std::size_t offset, ::std::size_t size) const {
+  EMBOSS_ALWAYS_INLINE OffsetStorageType<kNewAlignment, kNewOffset>
+  GetOffsetStorage(::std::size_t offset, ::std::size_t size) const {
     return OffsetStorageType<kNewAlignment, kNewOffset>{
         bit_block_, offset_ + offset, size, ok_ && offset + size <= size_};
   }
 
   // ReadUInt reads the entire underlying bit block, then shifts and masks to
   // the appropriate size.
-  ValueType ReadUInt() const {
+  EMBOSS_ALWAYS_INLINE ValueType ReadUInt() const {
     EMBOSS_CHECK_GE(bit_block_.SizeInBits(), offset_ + size_);
     EMBOSS_CHECK_GE(bit_block_.SizeInBits(),
                     static_cast</**/ ::std::uint64_t>(offset_ + size_));
     EMBOSS_CHECK(Ok());
     return MaskToNBits(bit_block_.ReadUInt(), offset_ + size_) >> offset_;
   }
-  ValueType UncheckedReadUInt() const {
+  EMBOSS_ALWAYS_INLINE ValueType UncheckedReadUInt() const {
     return MaskToNBits(bit_block_.UncheckedReadUInt(), offset_ + size_) >>
            offset_;
   }
@@ -942,7 +1075,7 @@ class OffsetBitBlock final {
   // the specific bits that should be changed, the current value is first read,
   // then masked out and or'ed with the new value, and finally the result is
   // written back to memory.
-  void WriteUInt(ValueType value) const {
+  EMBOSS_ALWAYS_INLINE void WriteUInt(ValueType value) const {
     EMBOSS_CHECK_EQ(value, MaskToNBits(value, size_));
     EMBOSS_CHECK(Ok());
     // OffsetBitBlock::WriteUInt *always* does a read-modify-write because it is
@@ -953,16 +1086,17 @@ class OffsetBitBlock final {
     // directly when they are placed directly in a `struct`.
     bit_block_.WriteUInt(MaskInValue(bit_block_.ReadUInt(), value));
   }
-  void UncheckedWriteUInt(ValueType value) const {
+  EMBOSS_ALWAYS_INLINE void UncheckedWriteUInt(ValueType value) const {
     bit_block_.UncheckedWriteUInt(
         MaskInValue(bit_block_.UncheckedReadUInt(), value));
   }
 
-  ::std::size_t SizeInBits() const { return size_; }
-  bool Ok() const { return ok_; }
+  EMBOSS_ALWAYS_INLINE ::std::size_t SizeInBits() const { return size_; }
+  EMBOSS_ALWAYS_INLINE bool Ok() const { return ok_; }
 
  private:
-  ValueType MaskInValue(ValueType original_value, ValueType new_value) const {
+  EMBOSS_ALWAYS_INLINE ValueType MaskInValue(ValueType original_value,
+                                             ValueType new_value) const {
     ValueType original_mask = static_cast<ValueType>(~(
         MaskToNBits(static_cast<ValueType>(~ValueType{0}), size_) << offset_));
     return static_cast<ValueType>((original_value & original_mask) |
@@ -1003,20 +1137,38 @@ class BitBlock final {
   using OffsetStorageType =
       OffsetBitBlock<BitBlock<BufferType, kBufferSizeInBits>>;
 
-  explicit BitBlock() : buffer_() {}
-  explicit BitBlock(BufferType buffer) : buffer_{buffer} {}
-  explicit BitBlock(typename BufferType::BufferType buffer) : buffer_{buffer} {}
-  BitBlock(const BitBlock &) = default;
-  BitBlock(BitBlock &&) = default;
-  BitBlock &operator=(const BitBlock &) = default;
-  BitBlock &operator=(BitBlock &&) = default;
+  EMBOSS_ALWAYS_INLINE explicit BitBlock() : buffer_() {}
+  EMBOSS_ALWAYS_INLINE explicit BitBlock(BufferType buffer) : buffer_{buffer} {}
+  EMBOSS_ALWAYS_INLINE explicit BitBlock(typename BufferType::BufferType buffer)
+      : buffer_{buffer} {}
+#if !EMBOSS_GCC_BUG_115033
+  EMBOSS_ALWAYS_INLINE BitBlock(const BitBlock &) = default;
+  EMBOSS_ALWAYS_INLINE BitBlock(BitBlock &&) = default;
+  EMBOSS_ALWAYS_INLINE BitBlock &operator=(const BitBlock &) = default;
+  EMBOSS_ALWAYS_INLINE BitBlock &operator=(BitBlock &&) = default;
+#else
+  // See the comment on ContiguousBuffer's copy constructor, above.
+  EMBOSS_ALWAYS_INLINE BitBlock(const BitBlock &other)
+      : buffer_{other.buffer_} {}
+  EMBOSS_ALWAYS_INLINE BitBlock(BitBlock &&other) : buffer_{other.buffer_} {}
+  EMBOSS_ALWAYS_INLINE BitBlock &operator=(const BitBlock &other) {
+    buffer_ = other.buffer_;
+    return *this;
+  }
+  EMBOSS_ALWAYS_INLINE BitBlock &operator=(BitBlock &&other) {
+    buffer_ = other.buffer_;
+    return *this;
+  }
+#endif
   ~BitBlock() = default;
 
-  static constexpr ::std::size_t Bits() { return kBufferSizeInBits; }
+  static EMBOSS_ALWAYS_INLINE constexpr ::std::size_t Bits() {
+    return kBufferSizeInBits;
+  }
 
   template </**/ ::std::size_t kNewAlignment, ::std::size_t kNewOffset>
-  OffsetStorageType<kNewAlignment, kNewOffset> GetOffsetStorage(
-      ::std::size_t offset, ::std::size_t size) const {
+  EMBOSS_ALWAYS_INLINE OffsetStorageType<kNewAlignment, kNewOffset>
+  GetOffsetStorage(::std::size_t offset, ::std::size_t size) const {
     return OffsetStorageType<kNewAlignment, kNewOffset>{
         *this, offset, size, Ok() && offset + size <= kBufferSizeInBits};
   }
@@ -1025,23 +1177,27 @@ class BitBlock final {
   // unsigned integer.  OffsetBitBlock can be used to extract a portion of the
   // value via shift and mask, and individual view types such as IntView or
   // BcdView are expected to convert ValueType to/from their desired types.
-  ValueType ReadUInt() const {
+  EMBOSS_ALWAYS_INLINE ValueType ReadUInt() const {
     return buffer_.template ReadUInt<kBufferSizeInBits>();
   }
-  ValueType UncheckedReadUInt() const {
+  EMBOSS_ALWAYS_INLINE ValueType UncheckedReadUInt() const {
     return buffer_.template UncheckedReadUInt<kBufferSizeInBits>();
   }
-  void WriteUInt(ValueType value) const {
+  EMBOSS_ALWAYS_INLINE void WriteUInt(ValueType value) const {
     EMBOSS_CHECK_EQ(value, MaskToNBits(value, kBufferSizeInBits));
     buffer_.template WriteUInt<kBufferSizeInBits>(value);
   }
-  void UncheckedWriteUInt(ValueType value) const {
+  EMBOSS_ALWAYS_INLINE void UncheckedWriteUInt(ValueType value) const {
     buffer_.template UncheckedWriteUInt<kBufferSizeInBits>(value);
   }
 
-  ::std::size_t SizeInBits() const { return kBufferSizeInBits; }
-  bool Ok() const {
-    return buffer_.Ok() && buffer_.SizeInBytes() * 8 == kBufferSizeInBits;
+  EMBOSS_ALWAYS_INLINE ::std::size_t SizeInBits() const {
+    return kBufferSizeInBits;
+  }
+  EMBOSS_ALWAYS_INLINE bool Ok() const {
+    // A null buffer always has size 0, so there is no need to check
+    // buffer_.Ok() separately.
+    return buffer_.SizeInBytes() == kBufferSizeInBits / 8;
   }
 
  private:

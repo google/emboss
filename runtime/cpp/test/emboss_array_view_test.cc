@@ -109,6 +109,32 @@ TEST(ArrayView, Ok) {
   byte_array = ArrayView<FixedUIntView<16>, ReadWriteContiguousBuffer, 2>(
       ReadWriteContiguousBuffer(bytes, 0));
   EXPECT_TRUE(byte_array.Ok());
+
+  // An array over null storage should not be Ok(), even though its element
+  // type's values are all Ok().
+  byte_array = ArrayView<FixedUIntView<16>, ReadWriteContiguousBuffer, 2>(
+      ReadWriteContiguousBuffer());
+  EXPECT_FALSE(byte_array.Ok());
+}
+
+// A validator which only accepts values less than 16, so that the array view
+// cannot skip checking its elements.
+struct LessThan16 {
+  template <typename ValueType>
+  static constexpr bool ValueIsOk(ValueType value) {
+    return value < 16;
+  }
+};
+
+TEST(ArrayView, OkChecksElementValues) {
+  ::std::uint8_t bytes[] = {0x01, 0x02, 0x03, 0x04};
+  using ValidatedUInt8View = UIntView<FixedSizeViewParameters<8, LessThan16>,
+                                      LittleEndianBitBlockN<8>>;
+  auto byte_array = ArrayView<ValidatedUInt8View, ReadWriteContiguousBuffer, 1>(
+      ReadWriteContiguousBuffer(bytes, sizeof bytes));
+  EXPECT_TRUE(byte_array.Ok());
+  bytes[2] = 0x10;
+  EXPECT_FALSE(byte_array.Ok());
 }
 
 TEST(ArrayView, TextFormatInput) {

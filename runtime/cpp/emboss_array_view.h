@@ -172,29 +172,35 @@ class GenericArrayView final {
       ElementViewIterator<GenericArrayView,
                           ElementViewIteratorDirection::kReverse>;
 
-  GenericArrayView() : buffer_() {}
-  explicit GenericArrayView(const ElementViewParameterTypes &...parameters,
-                            BufferType buffer)
+  EMBOSS_ALWAYS_INLINE GenericArrayView() : buffer_() {}
+  EMBOSS_ALWAYS_INLINE explicit GenericArrayView(
+      const ElementViewParameterTypes &...parameters, BufferType buffer)
       : parameters_{parameters...}, buffer_{buffer} {}
 
-  ElementView operator[](::std::size_t index) const {
+  EMBOSS_ALWAYS_INLINE ElementView operator[](::std::size_t index) const {
     return IndexOperatorHelper<(sizeof...(ElementViewParameterTypes) ==
                                 0)>::UncheckedConstructElement(parameters_,
                                                                buffer_, index);
   }
 
-  ElementView at(::std::size_t index) const {
+  EMBOSS_ALWAYS_INLINE ElementView at(::std::size_t index) const {
     return IndexOperatorHelper<(sizeof...(ElementViewParameterTypes) ==
                                 0)>::ConstructElement(parameters_, buffer_,
                                                       index, ElementCount());
   }
 
-  ForwardIterator begin() const { return ForwardIterator(*this, 0); }
-  ForwardIterator end() const { return ForwardIterator(*this, ElementCount()); }
-  ReverseIterator rbegin() const {
+  EMBOSS_ALWAYS_INLINE ForwardIterator begin() const {
+    return ForwardIterator(*this, 0);
+  }
+  EMBOSS_ALWAYS_INLINE ForwardIterator end() const {
+    return ForwardIterator(*this, ElementCount());
+  }
+  EMBOSS_ALWAYS_INLINE ReverseIterator rbegin() const {
     return ReverseIterator(*this, ElementCount() - 1);
   }
-  ReverseIterator rend() const { return ReverseIterator(*this, -1); }
+  EMBOSS_ALWAYS_INLINE ReverseIterator rend() const {
+    return ReverseIterator(*this, -1);
+  }
 
   // In order to selectively enable SizeInBytes and SizeInBits, it is
   // necessary to make them into templates.  Further, it is necessary for
@@ -204,22 +210,30 @@ class GenericArrayView final {
   // condition.  The explicit cast to void is needed to silence GCC's
   // -Wunused-value.
   template <int N = 0>
-  typename ::std::enable_if<((void)N, kAddressableUnitSize == 8),
-                            ::std::size_t>::type
-  SizeInBytes() const {
+  EMBOSS_ALWAYS_INLINE
+      typename ::std::enable_if<((void)N, kAddressableUnitSize == 8),
+                                ::std::size_t>::type
+      SizeInBytes() const {
     return buffer_.SizeInBytes();
   }
   template <int N = 0>
-  typename ::std::enable_if<((void)N, kAddressableUnitSize == 1),
-                            ::std::size_t>::type
-  SizeInBits() const {
+  EMBOSS_ALWAYS_INLINE
+      typename ::std::enable_if<((void)N, kAddressableUnitSize == 1),
+                                ::std::size_t>::type
+      SizeInBits() const {
     return buffer_.SizeInBits();
   }
 
-  ::std::size_t ElementCount() const { return SizeOfBuffer() / kElementSize; }
+  EMBOSS_ALWAYS_INLINE ::std::size_t ElementCount() const {
+    return SizeOfBuffer() / kElementSize;
+  }
   bool Ok() const {
     if (!buffer_.Ok()) return false;
     if (SizeOfBuffer() % kElementSize != 0) return false;
+    if (AllCompleteElementsAreOk<ElementView,
+                                 kElementSize * kAddressableUnitSize>::value) {
+      return true;
+    }
     for (::std::size_t i = 0; i < ElementCount(); ++i) {
       if (!(*this)[i].Ok()) return false;
     }
@@ -245,7 +259,7 @@ class GenericArrayView final {
     }
     return true;
   }
-  bool IsComplete() const { return buffer_.Ok(); }
+  EMBOSS_ALWAYS_INLINE bool IsComplete() const { return buffer_.Ok(); }
 
   template <class Stream>
   bool UpdateFromTextStream(Stream *stream) const {
@@ -260,7 +274,7 @@ class GenericArrayView final {
 
   static constexpr bool IsAggregate() { return true; }
 
-  BufferType BackingStorage() const { return buffer_; }
+  EMBOSS_ALWAYS_INLINE BufferType BackingStorage() const { return buffer_; }
 
   // Forwards to BufferType's ToString(), if any, but only if ElementView is a
   // 1-byte type.
@@ -272,7 +286,7 @@ class GenericArrayView final {
     return BackingStorage().template ToString<String>();
   }
 
-  bool operator==(const GenericArrayView &other) const {
+  EMBOSS_ALWAYS_INLINE bool operator==(const GenericArrayView &other) const {
     return parameters_ == other.parameters_ && buffer_ == other.buffer_;
   }
 
@@ -280,15 +294,17 @@ class GenericArrayView final {
   // This uses the same technique to select the correct definition of
   // SizeOfBuffer() as in the SizeInBits()/SizeInBytes() selection above.
   template <int N = 0>
-  typename ::std::enable_if<((void)N, kAddressableUnitSize == 8),
-                            ::std::size_t>::type
-  SizeOfBuffer() const {
+  EMBOSS_ALWAYS_INLINE
+      typename ::std::enable_if<((void)N, kAddressableUnitSize == 8),
+                                ::std::size_t>::type
+      SizeOfBuffer() const {
     return SizeInBytes();
   }
   template <int N = 0>
-  typename ::std::enable_if<((void)N, kAddressableUnitSize == 1),
-                            ::std::size_t>::type
-  SizeOfBuffer() const {
+  EMBOSS_ALWAYS_INLINE
+      typename ::std::enable_if<((void)N, kAddressableUnitSize == 1),
+                                ::std::size_t>::type
+      SizeOfBuffer() const {
     return SizeInBits();
   }
 
@@ -320,7 +336,7 @@ class GenericArrayView final {
   // that (further) complicates the matrix of constructors for view types.
   template <bool, ::std::size_t... N>
   struct IndexOperatorHelper {
-    static ElementView ConstructElement(
+    static EMBOSS_ALWAYS_INLINE ElementView ConstructElement(
         const ::std::tuple<ElementViewParameterTypes...> &parameters,
         BufferType buffer, ::std::size_t index, ::std::size_t size) {
       return IndexOperatorHelper<
@@ -328,7 +344,7 @@ class GenericArrayView final {
           sizeof...(N)>::ConstructElement(parameters, buffer, index, size);
     }
 
-    static ElementView UncheckedConstructElement(
+    static EMBOSS_ALWAYS_INLINE ElementView UncheckedConstructElement(
         const ::std::tuple<ElementViewParameterTypes...> &parameters,
         BufferType buffer, ::std::size_t index) {
       return IndexOperatorHelper<
@@ -339,7 +355,7 @@ class GenericArrayView final {
 
   template </**/ ::std::size_t... N>
   struct IndexOperatorHelper<true, N...> {
-    static ElementView ConstructElement(
+    static EMBOSS_ALWAYS_INLINE ElementView ConstructElement(
         const ::std::tuple<ElementViewParameterTypes...> &parameters,
         BufferType buffer, ::std::size_t index, ::std::size_t size) {
       return ElementView(
@@ -351,13 +367,28 @@ class GenericArrayView final {
                     kElementSize * index, kElementSize));
     }
 
-    static ElementView UncheckedConstructElement(
+    static EMBOSS_ALWAYS_INLINE ElementView UncheckedConstructElement(
         const ::std::tuple<ElementViewParameterTypes...> &parameters,
         BufferType buffer, ::std::size_t index) {
       return ElementView(::std::get<N>(parameters)...,
                          buffer.template GetOffsetStorage<kElementSize, 0>(
                              kElementSize * index, kElementSize));
     }
+  };
+
+  template <typename T, ::std::size_t kElementBits, typename = void>
+  struct AllCompleteElementsAreOk {
+    static constexpr bool value = false;
+  };
+
+  template <typename T, ::std::size_t kElementBits>
+  struct AllCompleteElementsAreOk<
+      T, kElementBits,
+      typename ::std::enable_if<
+          sizeof...(ElementViewParameterTypes) == 0 && T::AllValuesAreOk() &&
+          (kElementBits >=
+           static_cast</**/ ::std::size_t>(T::SizeInBits()))>::type> {
+    static constexpr bool value = true;
   };
 
   ::std::tuple<ElementViewParameterTypes...> parameters_;
