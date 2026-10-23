@@ -416,13 +416,9 @@ inline constexpr Maybe<ResultT> Choice(Maybe<ConditionT> condition,
                            : Maybe<ResultT>(condition.Reason());
 }
 
-// Computes the reason a `//` or `%` produced an un-Known() result.  A Known()
-// zero divisor is the one true source of kUndefined: `x // 0` is undefined and
-// no amount of additional bytes can change that.  Otherwise (some operand is
-// itself un-Known()) the reason propagates arithmetic-style: kUndefined if an
-// operand is already undefined, else kUnreadable.  Note IntermediateT{0} is
-// only compared when r.Known(), so an un-Known() r never spuriously reads as a
-// zero divisor.
+// The reason a `//` or `%` produced an un-Known() result: kUndefined for a
+// Known() zero divisor, otherwise the same as ArithmeticUnknowability.  The
+// divisor is only compared with zero when it is Known().
 template <typename IntermediateT, typename LeftT, typename RightT>
 inline constexpr Unknowability DivideOrModuloUnknowability(Maybe<LeftT> l,
                                                            Maybe<RightT> r) {

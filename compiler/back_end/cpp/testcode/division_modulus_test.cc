@@ -146,7 +146,7 @@ TEST(PayloadSizedByDivision, NonzeroDivisor) {
 // When the divisor is zero the payload size is undefined, so the structure's
 // size is unknown and Ok() is false -- with no division-by-zero UB.  Because an
 // undefined size can never be made Ok() by adding bytes, IsComplete() is true
-// and IntrinsicSizeInBytes().IsUndefined() reports true (Phase C).
+// and IntrinsicSizeInBytes().IsUndefined() reports true.
 TEST(PayloadSizedByDivision, ZeroDivisorIsNotOk) {
   static constexpr ::std::array</**/ ::std::uint8_t, 5> kBuf = {{
       0x00,                          // divisor = 0 -> 16 // 0 undefined
@@ -162,8 +162,7 @@ TEST(PayloadSizedByDivision, ZeroDivisorIsNotOk) {
 
 // A nonzero divisor whose payload runs past the end of the buffer has a
 // *defined* but *unreadable* size: the structure is genuinely short, so
-// IsComplete() is false and the size is not undefined.  This is the crux of the
-// unreadable-vs-undefined distinction Phase C draws.
+// IsComplete() is false and the size is not undefined.
 TEST(PayloadSizedByDivision, NonzeroDivisorTruncatedIsIncomplete) {
   static constexpr ::std::array</**/ ::std::uint8_t, 3> kBuf = {{
       0x04,        // divisor = 4 -> needs 1 + 16 // 4 = 5 bytes...
