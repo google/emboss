@@ -16,11 +16,14 @@
 
 """Creates and validates the `build.json` file."""
 
+from __future__ import annotations
+
 import argparse
 import json
 import os
 import subprocess
 import sys
+from collections.abc import Iterable, Sequence
 
 # The Bazel targets that define the embossc compiler sources.
 EMBOSSC_TARGETS = [
@@ -32,7 +35,7 @@ EMBOSSC_TARGETS = [
 RUNTIME_CPP_TARGET = "//runtime/cpp:cpp_utils"
 
 
-def get_bazel_query_output(query):
+def get_bazel_query_output(query: str) -> list[str]:
     """Runs a Bazel query and returns the output as a list of strings."""
     result = subprocess.run(
         ["bazel", "query", query],
@@ -43,7 +46,7 @@ def get_bazel_query_output(query):
     return result.stdout.strip().split("\n")
 
 
-def get_source_files_for_targets(targets):
+def get_source_files_for_targets(targets: Sequence[str]) -> list[str]:
     """Queries Bazel for all source files in the transitive dependencies."""
     query = f"kind('source file', deps({'+'.join(targets)}))"
     output = get_bazel_query_output(query)
@@ -56,17 +59,17 @@ def get_source_files_for_targets(targets):
     )
 
 
-def read_build_json(file_path):
+def read_build_json(file_path: str) -> dict[str, list[str]]:
     """Reads build.json, strips comments, and returns the parsed JSON data."""
     with open(file_path, "r") as f:
         content = "".join(line for line in f if not line.strip().startswith("//"))
     return json.loads(content)
 
 
-def find_init_py_files(source_files):
+def find_init_py_files(source_files: Iterable[str]) -> list[str]:
     """Finds all __init__.py files in the directories of the source files."""
-    init_py_files = set()
-    checked_dirs = set()
+    init_py_files: set[str] = set()
+    checked_dirs: set[str] = set()
 
     for source_file in source_files:
         dir_path = os.path.dirname(source_file)
@@ -84,7 +87,7 @@ def find_init_py_files(source_files):
     return sorted(list(init_py_files))
 
 
-def generate_build_json(output_path):
+def generate_build_json(output_path: str) -> int:
     """Generates the build.json file from Bazel sources."""
     print("Generating fresh source lists from Bazel...")
     embossc_sources = get_source_files_for_targets(EMBOSSC_TARGETS)
@@ -118,7 +121,7 @@ def generate_build_json(output_path):
     return 0
 
 
-def validate_build_json(file_path):
+def validate_build_json(file_path: str) -> int:
     """Validates that the on-disk build.json file is up-to-date."""
     print("Generating fresh source lists from Bazel for validation...")
     fresh_embossc_sources = get_source_files_for_targets(EMBOSSC_TARGETS)
@@ -143,7 +146,7 @@ def validate_build_json(file_path):
 
     print("\nERROR: build.json is out of date!", file=sys.stderr)
 
-    def print_diff(title, fresh_set, on_disk_set):
+    def print_diff(title: str, fresh_set: set[str], on_disk_set: set[str]) -> None:
         added = sorted(list(fresh_set - on_disk_set))
         removed = sorted(list(on_disk_set - fresh_set))
         if added or removed:
@@ -171,7 +174,7 @@ def validate_build_json(file_path):
     return 1
 
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(description="Manage the build.json file.")
     parser.add_argument(
         "--validate",

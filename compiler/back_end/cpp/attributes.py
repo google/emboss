@@ -14,7 +14,10 @@
 
 """Attributes in the C++ backend and associated metadata."""
 
+from __future__ import annotations
+
 import enum
+
 from compiler.util import attribute_util
 
 
@@ -26,7 +29,7 @@ class Attribute(str, enum.Enum):
 
 
 # Types associated with C++ backend attributes.
-TYPES = {
+TYPES: dict[str, attribute_util.AttributeChecker] = {
     Attribute.NAMESPACE: attribute_util.STRING,
     Attribute.ENUM_CASE: attribute_util.STRING,
 }

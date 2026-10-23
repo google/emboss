@@ -24,6 +24,6 @@ clang-format path, without touching any other Emboss source.
 from clang_format import get_executable
 
 
-def get_clang_format_path():
+def get_clang_format_path() -> str:
     """Returns the path to the clang-format executable."""
     return get_executable("clang-format")

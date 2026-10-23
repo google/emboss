@@ -21,7 +21,7 @@ from compiler.util import parser_types
 
 
 class MessageTest(unittest.TestCase):
-    """Tests for _Message, as returned by error, warn, and note."""
+    """Tests for Message, as returned by error, warn, and note."""
 
     def test_error(self):
         error_message = error.error(

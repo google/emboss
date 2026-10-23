@@ -14,10 +14,18 @@
 
 """Utilities for test code."""
 
+from __future__ import annotations
+
+from collections.abc import Callable, Mapping
+from typing import Any
+
+from compiler.util import ir_data
 from compiler.util import ir_data_utils
 
 
-def proto_is_superset(proto, expected_values, path=""):
+def proto_is_superset(
+    proto: ir_data.Message, expected_values: ir_data.Message, path: str = ""
+) -> tuple[bool, str]:
     """Returns true if every value in expected_values is set in proto.
 
     This is intended to be used in assertTrue in a unit test, like so:
@@ -86,7 +94,9 @@ def proto_is_superset(proto, expected_values, path=""):
     return True, ""
 
 
-def dict_file_reader(file_dict):
+def dict_file_reader(
+    file_dict: Mapping[str, str],
+) -> Callable[[str], tuple[str | None, list[str] | None]]:
     """Returns a callable that retrieves entries from file_dict as files.
 
     This can be used to call glue.parse_emboss_file with file text declared
@@ -100,7 +110,7 @@ def dict_file_reader(file_dict):
         "read" builtin.
     """
 
-    def read(file_name):
+    def read(file_name: str) -> tuple[str | None, list[str] | None]:
         try:
             return file_dict[file_name], None
         except KeyError:

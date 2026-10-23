@@ -14,6 +14,10 @@
 
 """Routines to check miscellaneous constraints on the IR."""
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from compiler.front_end import attributes
 from compiler.util import error
 from compiler.util import ir_data
@@ -22,8 +26,11 @@ from compiler.util import ir_util
 from compiler.util import resources
 from compiler.util import traverse_ir
 
+if TYPE_CHECKING:
+    from compiler.util import parser_types
 
-def _render_type(type_ir, ir):
+
+def _render_type(type_ir: ir_data.Type, ir: ir_data.EmbossIr) -> str:
     """Returns the human-readable notation of the given type."""
     assert type_ir.has_field(
         "atomic_type"
@@ -36,7 +43,9 @@ def _render_type(type_ir, ir):
         return _render_atomic_type_name(type_ir, ir)
 
 
-def _render_atomic_type_name(type_ir, ir, suffix=None):
+def _render_atomic_type_name(
+    type_ir: ir_data.Type, ir: ir_data.EmbossIr, suffix: str | None = None
+) -> str:
     assert type_ir.has_field(
         "atomic_type"
     ), "_render_atomic_type_name() requires an atomic type"
@@ -49,7 +58,11 @@ def _render_atomic_type_name(type_ir, ir, suffix=None):
         return "type '{}{}'".format(type_definition.name.name.text, suffix)
 
 
-def _check_that_inner_array_dimensions_are_constant(type_ir, source_file_name, errors):
+def _check_that_inner_array_dimensions_are_constant(
+    type_ir: ir_data.ArrayType,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     """Checks that inner array dimensions are constant."""
     if type_ir.which_size == "automatic":
         errors.append(
@@ -76,7 +89,12 @@ def _check_that_inner_array_dimensions_are_constant(type_ir, source_file_name, e
         assert False, 'Expected "element_count" or "automatic" array size.'
 
 
-def _check_that_array_base_types_are_fixed_size(type_ir, source_file_name, errors, ir):
+def _check_that_array_base_types_are_fixed_size(
+    type_ir: ir_data.ArrayType,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+    ir: ir_data.EmbossIr,
+) -> None:
     """Checks that the sizes of array elements are known at compile time."""
     if type_ir.base_type.has_field("array_type"):
         # An array is fixed size if its base_type is fixed size and its array
@@ -107,8 +125,12 @@ def _check_that_array_base_types_are_fixed_size(type_ir, source_file_name, error
 
 
 def _check_that_array_base_types_in_structs_are_multiples_of_bytes(
-    type_ir, type_definition, source_file_name, errors, ir
-):
+    type_ir: ir_data.ArrayType,
+    type_definition: ir_data.TypeDefinition,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+    ir: ir_data.EmbossIr,
+) -> None:
     # TODO(bolms): Remove this limitation.
     """Checks that the sizes of array elements are multiples of 8 bits."""
     if type_ir.base_type.has_field("array_type"):
@@ -138,7 +160,12 @@ def _check_that_array_base_types_in_structs_are_multiples_of_bytes(
         )
 
 
-def _check_constancy_of_constant_references(expression, source_file_name, errors, ir):
+def _check_constancy_of_constant_references(
+    expression: ir_data.Expression,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+    ir: ir_data.EmbossIr,
+) -> None:
     """Checks that constant_references are constant."""
     if expression.which_expression != "constant_reference":
         return
@@ -165,10 +192,13 @@ def _check_constancy_of_constant_references(expression, source_file_name, errors
 
 
 def _check_that_enum_values_are_representable(
-    enum_type, type_definition, source_file_name, errors
-):
+    enum_type: ir_data.Enum,
+    type_definition: ir_data.TypeDefinition,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     """Checks that enumeration values can fit in their specified int type."""
-    values = []
+    values: list[tuple[int, ir_data.EnumValue]] = []
     max_enum_size = ir_util.get_integer_attribute(
         type_definition.attribute, attributes.ENUM_MAXIMUM_BITS
     )
@@ -188,21 +218,25 @@ def _check_that_enum_values_are_representable(
         values.append((numeric_value, value))
     out_of_range = [v for v in values if not enum_range[0] <= v[0] <= enum_range[1]]
     # If all values are in range, this loop will have zero iterations.
-    for value in out_of_range:
+    for out_of_range_value, value_ir in out_of_range:
         errors.append(
             [
                 error.error(
                     source_file_name,
-                    value[1].value.source_location,
+                    value_ir.value.source_location,
                     "Value {} is out of range for {}-bit {} enumeration.".format(
-                        value[0], max_enum_size, "signed" if is_signed else "unsigned"
+                        out_of_range_value,
+                        max_enum_size,
+                        "signed" if is_signed else "unsigned",
                     ),
                 )
             ]
         )
 
 
-def _field_size(field, type_definition):
+def _field_size(
+    field: ir_data.Field, type_definition: ir_data.TypeDefinition
+) -> int | None:
     """Calculates the size of the given field in bits, if it is constant."""
     size = ir_util.constant_value(field.location.size)
     if size is None:
@@ -211,8 +245,13 @@ def _field_size(field, type_definition):
 
 
 def _check_type_requirements_for_field(
-    type_ir, type_definition, field, ir, source_file_name, errors
-):
+    type_ir: ir_data.Type,
+    type_definition: ir_data.TypeDefinition,
+    field: ir_data.Field,
+    ir: ir_data.EmbossIr,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     """Checks that the `requires` attribute of each field's type is fulfilled."""
     if not type_ir.has_field("atomic_type"):
         return
@@ -325,8 +364,11 @@ def _check_type_requirements_for_field(
 
 
 def _check_early_type_requirements_for_parameter_type(
-    runtime_parameter, ir, source_file_name, errors
-):
+    runtime_parameter: ir_data.RuntimeParameter,
+    ir: ir_data.EmbossIr,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     """Checks that the type of a parameter is valid."""
     physical_type = runtime_parameter.physical_type_alias
     logical_type = runtime_parameter.type
@@ -368,8 +410,11 @@ def _check_early_type_requirements_for_parameter_type(
 
 
 def _check_type_requirements_for_parameter_type(
-    runtime_parameter, ir, source_file_name, errors
-):
+    runtime_parameter: ir_data.RuntimeParameter,
+    ir: ir_data.EmbossIr,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     """Checks that the type of a parameter is valid."""
     physical_type = runtime_parameter.physical_type_alias
     logical_type = runtime_parameter.type
@@ -400,8 +445,12 @@ def _check_type_requirements_for_parameter_type(
 
 
 def _check_physical_type_requirements(
-    type_ir, usage_source_location, size, ir, source_file_name
-):
+    type_ir: ir_data.Type,
+    usage_source_location: parser_types.SourceLocation,
+    size: int | None,
+    ir: ir_data.EmbossIr,
+    source_file_name: str,
+) -> list[list[error.Message]]:
     """Checks that the given atomic `type_ir` is allowed to be `size` bits."""
     referenced_type_definition = ir_util.find_object(type_ir.atomic_type.reference, ir)
     if referenced_type_definition.has_field("enumeration"):
@@ -437,6 +486,7 @@ def _check_physical_type_requirements(
                     ]
                 ]
 
+    bindings: dict[str, int | bool]
     if size is None:
         bindings = {"$is_statically_sized": False}
     else:
@@ -468,7 +518,13 @@ def _check_physical_type_requirements(
     return []
 
 
-def _check_allowed_in_bits(type_ir, type_definition, source_file_name, ir, errors):
+def _check_allowed_in_bits(
+    type_ir: ir_data.Type,
+    type_definition: ir_data.TypeDefinition,
+    source_file_name: str,
+    ir: ir_data.EmbossIr,
+    errors: list[list[error.Message]],
+) -> None:
     """Verifies that atomic fields have types that are allowed in `bits`."""
     if not type_ir.has_field("atomic_type"):
         return
@@ -494,7 +550,12 @@ def _check_allowed_in_bits(type_ir, type_definition, source_file_name, ir, error
         )
 
 
-def _check_size_of_bits(type_ir, type_definition, source_file_name, errors):
+def _check_size_of_bits(
+    type_ir: ir_data.Type,
+    type_definition: ir_data.TypeDefinition,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     """Checks that `bits` types are fixed size, less than 64 bits."""
     del type_ir  # Unused
     if type_definition.addressable_unit != ir_data.AddressableUnit.BIT:
@@ -525,16 +586,16 @@ def _check_size_of_bits(type_ir, type_definition, source_file_name, errors):
         )
 
 
-_RESERVED_WORDS = None
+_RESERVED_WORDS: dict[str, str] | None = None
 
 
-def get_reserved_word_list():
+def get_reserved_word_list() -> dict[str, str]:
     if _RESERVED_WORDS is None:
         _initialize_reserved_word_list()
     return _RESERVED_WORDS
 
 
-def _initialize_reserved_word_list():
+def _initialize_reserved_word_list() -> None:
     global _RESERVED_WORDS
     _RESERVED_WORDS = {}
     language = None
@@ -550,7 +611,12 @@ def _initialize_reserved_word_list():
                 _RESERVED_WORDS[stripped_line] = language
 
 
-def _check_name_for_reserved_words(obj, source_file_name, errors, context_name):
+def _check_name_for_reserved_words(
+    obj: ir_data.Field | ir_data.EnumValue | ir_data.TypeDefinition,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+    context_name: str,
+) -> None:
     if obj.name.name.text in get_reserved_word_list():
         errors.append(
             [
@@ -565,45 +631,51 @@ def _check_name_for_reserved_words(obj, source_file_name, errors, context_name):
         )
 
 
-def _check_field_name_for_reserved_words(field, source_file_name, errors):
-    return _check_name_for_reserved_words(
-        field, source_file_name, errors, "a field name"
-    )
+def _check_field_name_for_reserved_words(
+    field: ir_data.Field, source_file_name: str, errors: list[list[error.Message]]
+) -> None:
+    _check_name_for_reserved_words(field, source_file_name, errors, "a field name")
 
 
-def _check_enum_name_for_reserved_words(enum, source_file_name, errors):
-    return _check_name_for_reserved_words(
-        enum, source_file_name, errors, "an enum name"
-    )
+def _check_enum_name_for_reserved_words(
+    enum: ir_data.EnumValue, source_file_name: str, errors: list[list[error.Message]]
+) -> None:
+    _check_name_for_reserved_words(enum, source_file_name, errors, "an enum name")
 
 
-def _check_type_name_for_reserved_words(type_definition, source_file_name, errors):
-    return _check_name_for_reserved_words(
+def _check_type_name_for_reserved_words(
+    type_definition: ir_data.TypeDefinition,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
+    _check_name_for_reserved_words(
         type_definition, source_file_name, errors, "a type name"
     )
 
 
-def _bounds_can_fit_64_bit_unsigned(minimum, maximum):
+def _bounds_can_fit_64_bit_unsigned(minimum: int, maximum: int) -> bool:
     return minimum >= 0 and maximum <= 2**64 - 1
 
 
-def _bounds_can_fit_64_bit_signed(minimum, maximum):
+def _bounds_can_fit_64_bit_signed(minimum: int, maximum: int) -> bool:
     return minimum >= -(2**63) and maximum <= 2**63 - 1
 
 
-def _bounds_can_fit_any_64_bit_integer_type(minimum, maximum):
+def _bounds_can_fit_any_64_bit_integer_type(minimum: int, maximum: int) -> bool:
     return _bounds_can_fit_64_bit_unsigned(
         minimum, maximum
     ) or _bounds_can_fit_64_bit_signed(minimum, maximum)
 
 
-def _integer_bounds_errors_for_expression(expression, source_file_name):
+def _integer_bounds_errors_for_expression(
+    expression: ir_data.Expression, source_file_name: str
+) -> list[list[error.Message]]:
     """Checks that `expression` is in range for int64_t or uint64_t."""
     # Only check non-constant subexpressions.
     if expression.which_expression == "function" and not ir_util.is_constant_type(
         expression.type
     ):
-        errors = []
+        errors: list[list[error.Message]] = []
         for arg in expression.function.args:
             errors += _integer_bounds_errors_for_expression(arg, source_file_name)
         if errors:
@@ -622,8 +694,8 @@ def _integer_bounds_errors_for_expression(expression, source_file_name):
     if expression.which_expression == "function" and not ir_util.is_constant_type(
         expression.type
     ):
-        int64_only_clauses = []
-        uint64_only_clauses = []
+        int64_only_clauses: list[ir_data.Expression] = []
+        uint64_only_clauses: list[ir_data.Expression] = []
         for clause in [expression] + list(expression.function.args):
             if clause.type.which_type == "integer":
                 arg_minimum = int(clause.type.integer.minimum_value)
@@ -658,7 +730,12 @@ def _integer_bounds_errors_for_expression(expression, source_file_name):
     return []
 
 
-def _integer_bounds_errors(bounds, name, source_file_name, error_source_location):
+def _integer_bounds_errors(
+    bounds: ir_data.IntegerType,
+    name: str,
+    source_file_name: str,
+    error_source_location: parser_types.SourceLocation,
+) -> list[list[error.Message]]:
     """Returns appropriate errors, if any, for the given integer bounds."""
     assert bounds.minimum_value, "{}".format(bounds)
     assert bounds.maximum_value, "{}".format(bounds)
@@ -704,8 +781,11 @@ def _integer_bounds_errors(bounds, name, source_file_name, error_source_location
 
 
 def _check_bounds_on_runtime_integer_expressions(
-    expression, source_file_name, in_attribute, errors
-):
+    expression: ir_data.Expression,
+    source_file_name: str,
+    in_attribute: ir_data.Attribute | None,
+    errors: list[list[error.Message]],
+) -> None:
     if in_attribute and in_attribute.name.text == attributes.STATIC_REQUIREMENTS:
         # [static_requirements] is never evaluated at runtime, and $size_in_bits is
         # unbounded, so it should not be checked.
@@ -716,8 +796,10 @@ def _check_bounds_on_runtime_integer_expressions(
 
 
 def _check_division_and_modulus_have_nonzero_divisors(
-    expression, source_file_name, errors
-):
+    expression: ir_data.Expression,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     """Rejects `l // r` and `l % r` whose divisor is *provably always* zero.
 
     A divisor that is provably zero (its range is exactly {0}, e.g. `x // 0`)
@@ -762,12 +844,14 @@ def _check_division_and_modulus_have_nonzero_divisors(
         )
 
 
-def _attribute_in_attribute_action(a):
+def _attribute_in_attribute_action(
+    a: ir_data.Attribute,
+) -> dict[str, ir_data.Attribute]:
     return {"in_attribute": a}
 
 
-def check_early_constraints(ir):
-    errors = []
+def check_early_constraints(ir: ir_data.EmbossIr) -> list[list[error.Message]]:
+    errors: list[list[error.Message]] = []
     traverse_ir.fast_traverse_ir_top_down(
         ir,
         [ir_data.RuntimeParameter],
@@ -777,7 +861,7 @@ def check_early_constraints(ir):
     return errors
 
 
-def check_constraints(ir):
+def check_constraints(ir: ir_data.EmbossIr) -> list[list[error.Message]]:
     """Checks miscellaneous validity constraints in ir.
 
     Checks that auto array sizes are only used for the outermost size of
@@ -796,7 +880,7 @@ def check_constraints(ir):
     Returns:
       A list of ConstraintViolations, or an empty list if there are none.
     """
-    errors = []
+    errors: list[list[error.Message]] = []
     traverse_ir.fast_traverse_ir_top_down(
         ir,
         [ir_data.Structure, ir_data.Type],

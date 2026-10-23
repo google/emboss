@@ -14,13 +14,24 @@
 
 """Routines for fully traversing an IR."""
 
+from __future__ import annotations
+
 import inspect
+from collections.abc import Callable, Iterable, Mapping, Sequence
+from typing import Any
 
 from compiler.util import ir_data
 from compiler.util import ir_data_fields
 from compiler.util import ir_data_utils
 from compiler.util import parser_types
 from compiler.util import simple_memoizer
+
+# A map from node types to a callable, or a list or tuple of callables, that
+# should be called on nodes of that type during traversal.
+IncidentalActions = Mapping[
+    type[ir_data.Message],
+    Callable[..., Any] | list[Callable[..., Any]] | tuple[Callable[..., Any], ...],
+]
 
 
 class _FunctionCaller:
@@ -49,11 +60,11 @@ class _FunctionCaller:
     caller_2.invoke(a, generic_params)
     """
 
-    def __init__(self, function):
+    def __init__(self, function: Callable[..., Any]):
         self.function = function
         self.needs_filtering = True
-        self.valid_arg_names = set()
-        self.required_arg_names = set()
+        self.valid_arg_names: set[str] = set()
+        self.required_arg_names: set[str] = set()
 
         argspec = inspect.getfullargspec(function)
         if argspec.varkw:
@@ -82,7 +93,7 @@ class _FunctionCaller:
                 args = args[: -len(argspec.defaults)]
             self.required_arg_names.update(args)
 
-    def invoke(self, positional_arg, keyword_args):
+    def invoke(self, positional_arg: Any, keyword_args: Mapping[str, Any]) -> Any:
         """Invokes the function with the given args."""
         if self.needs_filtering:
             # Trim to just recognized args.
@@ -101,7 +112,7 @@ class _FunctionCaller:
 
 
 @simple_memoizer.memoize
-def _memoized_caller(function):
+def _memoized_caller(function: Callable[..., Any]) -> _FunctionCaller:
     default_lambda_name = (lambda: None).__name__
     assert (
         callable(function) and function.__name__ != default_lambda_name
@@ -109,33 +120,40 @@ def _memoized_caller(function):
     return _FunctionCaller(function)
 
 
-def _call_with_optional_args(function, positional_arg, keyword_args):
+def _call_with_optional_args(
+    function: Callable[..., Any], positional_arg: Any, keyword_args: Mapping[str, Any]
+) -> Any:
     """Calls function with whatever keyword_args it will accept."""
     caller = _memoized_caller(function)
     return caller.invoke(positional_arg, keyword_args)
 
 
 def _fast_traverse_proto_top_down(
-    proto, incidental_actions, pattern, skip_descendants_of, action, parameters
-):
+    proto: ir_data.Message,
+    incidental_actions: Mapping[type[ir_data.Message], Iterable[Callable[..., Any]]],
+    pattern: Sequence[type[ir_data.Message]],
+    skip_descendants_of: Iterable[type[ir_data.Message]],
+    action: Callable[..., Any],
+    parameters: Mapping[str, Any],
+) -> None:
     """Traverses an IR, calling `action` on some nodes."""
 
     # Parameters are scoped to the branch of the tree, so make a copy here, before
     # any action or incidental_action can update them.
-    parameters = parameters.copy()
+    params: dict[str, Any] = dict(parameters)
 
     # If there is an incidental action for this node type, run it.
     if type(proto) in incidental_actions:  # pylint: disable=unidiomatic-typecheck
         for incidental_action in incidental_actions[type(proto)]:
-            parameters.update(
-                _call_with_optional_args(incidental_action, proto, parameters) or {}
+            params.update(
+                _call_with_optional_args(incidental_action, proto, params) or {}
             )
 
     # If we are at the end of pattern, check to see if we should call action.
     if len(pattern) == 1:
         new_pattern = pattern
         if pattern[0] == type(proto):
-            parameters.update(_call_with_optional_args(action, proto, parameters) or {})
+            params.update(_call_with_optional_args(action, proto, params) or {})
     else:
         # Otherwise, if this node's type matches the head of pattern, recurse with
         # the tail of the pattern.
@@ -165,7 +183,7 @@ def _fast_traverse_proto_top_down(
                 new_pattern,
                 skip_descendants_of,
                 action,
-                parameters,
+                params,
             )
     for member_name in repeated_fields:
         for array_element in getattr(proto, member_name) or []:
@@ -175,11 +193,15 @@ def _fast_traverse_proto_top_down(
                 new_pattern,
                 skip_descendants_of,
                 action,
-                parameters,
+                params,
             )
 
 
-def _fields_to_scan_by_current_and_target():
+def _fields_to_scan_by_current_and_target() -> (
+    dict[
+        tuple[type[ir_data.Message], type[ir_data.Message]], tuple[list[str], list[str]]
+    ]
+):
     """Generates _FIELDS_TO_SCAN_BY_CURRENT_AND_TARGET."""
     # In order to avoid spending a *lot* of time just walking the IR, this
     # function sets up a dict that allows `_fast_traverse_proto_top_down()` to
@@ -192,22 +214,24 @@ def _fields_to_scan_by_current_and_target():
 
     # type_to_fields is a map of types to maps of field names to field types.
     # That is, type_to_fields[ir_data.Module]["type"] == ir_data.AddressableUnit.
-    type_to_fields = {}
+    type_to_fields: dict[type[ir_data.Message], dict[str, type[ir_data.Message]]] = {}
 
     # Later, we need to know which fields are singular and which are repeated,
     # because the access methods are not uniform.  This maps (type, field_name)
     # tuples to descriptor labels: type_fields_to_cardinality[ir_data.Module,
     # "type"] == ir_data.Repeated.
-    type_fields_to_cardinality = {}
+    type_fields_to_cardinality: dict[
+        tuple[type[ir_data.Message], str], ir_data_fields.FieldContainer
+    ] = {}
 
     # Fill out the above maps by recursively walking the IR type tree, starting
     # from the root.
-    types_to_check = [ir_data.EmbossIr]
+    types_to_check: list[type[ir_data.Message]] = [ir_data.EmbossIr]
     while types_to_check:
         type_to_check = types_to_check.pop()
         if type_to_check in type_to_fields:
             continue
-        fields = {}
+        fields: dict[str, type[ir_data.Message]] = {}
         for field_name, field_type in ir_data_utils.field_specs(type_to_check).items():
             if field_type.is_dataclass:
                 fields[field_name] = field_type.data_type
@@ -226,10 +250,12 @@ def _fields_to_scan_by_current_and_target():
     # The while loop basically ors in the known descendants of each known
     # descendant of each type until the dict stops changing, which is a bit
     # brute-force, but in practice only iterates a few times.
-    type_to_descendant_types = {}
+    type_to_descendant_types: dict[
+        type[ir_data.Message], set[type[ir_data.Message]]
+    ] = {}
     for parent_type, field_map in type_to_fields.items():
         type_to_descendant_types[parent_type] = set(field_map.values())
-    previous_map = {}
+    previous_map: dict[type[ir_data.Message], set[type[ir_data.Message]]] = {}
     while type_to_descendant_types != previous_map:
         # In order to check the previous iteration against the current iteration, it
         # is necessary to make a two-level copy.  Otherwise, the updates to the
@@ -244,17 +270,22 @@ def _fields_to_scan_by_current_and_target():
     # want: given a current node type and a target node type, which fields should
     # be checked?  (This implicitly skips fields that *can't* contain the target
     # type.)
-    fields_to_scan_by_current_and_target = {}
+    fields_to_scan_by_current_and_target: dict[
+        tuple[type[ir_data.Message], type[ir_data.Message]],
+        tuple[list[str], list[str]],
+    ] = {}
     for current_node_type in type_to_fields:
         for target_node_type in type_to_fields:
             singular_fields_to_scan = []
             repeated_fields_to_scan = []
-            for field_name, field_type in type_to_fields[current_node_type].items():
+            for field_name, field_data_type in type_to_fields[
+                current_node_type
+            ].items():
                 # If the target node type cannot contain another instance of itself, it
                 # is still necessary to scan fields that have the actual target type.
                 if (
-                    target_node_type == field_type
-                    or target_node_type in type_to_descendant_types[field_type]
+                    target_node_type == field_data_type
+                    or target_node_type in type_to_descendant_types[field_data_type]
                 ):
                     # Singular and repeated fields go to different lists, so that they can
                     # be handled separately.
@@ -274,30 +305,30 @@ def _fields_to_scan_by_current_and_target():
 _FIELDS_TO_SCAN_BY_CURRENT_AND_TARGET = _fields_to_scan_by_current_and_target()
 
 
-def _emboss_ir_action(ir):
+def _emboss_ir_action(ir: ir_data.EmbossIr) -> dict[str, Any]:
     return {"ir": ir}
 
 
-def _module_action(m):
+def _module_action(m: ir_data.Module) -> dict[str, Any]:
     return {"source_file_name": m.source_file_name}
 
 
-def _type_definition_action(t):
+def _type_definition_action(t: ir_data.TypeDefinition) -> dict[str, Any]:
     return {"type_definition": t}
 
 
-def _field_action(f):
+def _field_action(f: ir_data.Field) -> dict[str, Any]:
     return {"field": f}
 
 
 def fast_traverse_ir_top_down(
-    ir,
-    pattern,
-    action,
-    incidental_actions=None,
-    skip_descendants_of=(),
-    parameters=None,
-):
+    ir: ir_data.EmbossIr,
+    pattern: Sequence[type[ir_data.Message]],
+    action: Callable[..., Any],
+    incidental_actions: IncidentalActions | None = None,
+    skip_descendants_of: Iterable[type[ir_data.Message]] = (),
+    parameters: Mapping[str, Any] | None = None,
+) -> None:
     """Traverses an IR from the top down, executing the given actions.
 
     `fast_traverse_ir_top_down` walks the given IR in preorder traversal,
@@ -382,7 +413,7 @@ def fast_traverse_ir_top_down(
     Returns:
       None
     """
-    all_incidental_actions = {
+    all_incidental_actions: dict[type[ir_data.Message], list[Callable[..., Any]]] = {
         ir_data.EmbossIr: [_emboss_ir_action],
         ir_data.Module: [_module_action],
         ir_data.TypeDefinition: [_type_definition_action],
@@ -390,9 +421,10 @@ def fast_traverse_ir_top_down(
     }
     if incidental_actions:
         for key, incidental_action in incidental_actions.items():
-            if not isinstance(incidental_action, (list, tuple)):
-                incidental_action = [incidental_action]
-            all_incidental_actions.setdefault(key, []).extend(incidental_action)
+            if isinstance(incidental_action, (list, tuple)):
+                all_incidental_actions.setdefault(key, []).extend(incidental_action)
+            else:
+                all_incidental_actions.setdefault(key, []).append(incidental_action)
     _fast_traverse_proto_top_down(
         ir,
         all_incidental_actions,
@@ -404,13 +436,15 @@ def fast_traverse_ir_top_down(
 
 
 def fast_traverse_node_top_down(
-    node,
-    pattern,
-    action,
-    incidental_actions=None,
-    skip_descendants_of=(),
-    parameters=None,
-):
+    node: ir_data.Message,
+    pattern: Sequence[type[ir_data.Message]],
+    action: Callable[..., Any],
+    incidental_actions: (
+        Mapping[type[ir_data.Message], Sequence[Callable[..., Any]]] | None
+    ) = None,
+    skip_descendants_of: Iterable[type[ir_data.Message]] = (),
+    parameters: Mapping[str, Any] | None = None,
+) -> None:
     """Traverse a subtree of an IR, executing the given actions.
 
     fast_traverse_node_top_down is like fast_traverse_ir_top_down, except that:

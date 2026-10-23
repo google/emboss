@@ -14,6 +14,8 @@
 
 """Adds auto-generated virtual fields to the IR."""
 
+from __future__ import annotations
+
 from compiler.front_end import attributes
 from compiler.util import error
 from compiler.util import expression_parser
@@ -23,7 +25,7 @@ from compiler.util import ir_util
 from compiler.util import traverse_ir
 
 
-def _mark_as_synthetic(proto):
+def _mark_as_synthetic(proto: object) -> None:
     """Marks all source_locations in proto with is_synthetic=True."""
     if not isinstance(proto, ir_data.Message):
         return
@@ -40,7 +42,7 @@ def _mark_as_synthetic(proto):
                 _mark_as_synthetic(value)
 
 
-def _skip_text_output_attribute():
+def _skip_text_output_attribute() -> ir_data.Attribute:
     """Returns the IR for a [text_output: "Skip"] attribute."""
     result = ir_data.Attribute(
         name=ir_data.Word(text=attributes.TEXT_OUTPUT),
@@ -59,7 +61,9 @@ _ANONYMOUS_BITS_ALIAS_EXISTENCE_SKELETON = expression_parser.parse(
 )
 
 
-def _add_anonymous_aliases(structure, type_definition):
+def _add_anonymous_aliases(
+    structure: ir_data.Structure, type_definition: ir_data.TypeDefinition
+) -> None:
     """Adds synthetic alias fields for all fields in anonymous fields.
 
     This essentially completes the rewrite of this:
@@ -167,7 +171,9 @@ _SIZE_BOUNDS = {
 }
 
 
-def _add_size_bound_virtuals(structure, type_definition):
+def _add_size_bound_virtuals(
+    structure: ir_data.Structure, type_definition: ir_data.TypeDefinition
+) -> None:
     """Adds ${min,max}_size_in_{bits,bytes} virtual fields to structure."""
     names = {
         ir_data.AddressableUnit.BIT: ("$max_size_in_bits", "$min_size_in_bits"),
@@ -196,7 +202,9 @@ _SIZE_CLAUSE_SKELETON = expression_parser.parse(
 _SIZE_SKELETON = expression_parser.parse("$max(0)")
 
 
-def _add_size_virtuals(structure, type_definition):
+def _add_size_virtuals(
+    structure: ir_data.Structure, type_definition: ir_data.TypeDefinition
+) -> None:
     """Adds a $size_in_bits or $size_in_bytes virtual field to structure."""
     names = {
         ir_data.AddressableUnit.BIT: "$size_in_bits",
@@ -236,8 +244,11 @@ _NEXT_KEYWORD_REPLACEMENT_EXPRESSION = expression_parser.parse("x + y")
 
 
 def _maybe_replace_next_keyword_in_expression(
-    expression_ir, last_location, source_file_name, errors
-):
+    expression_ir: ir_data.Expression,
+    last_location: ir_data.FieldLocation | None,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     """Replaces the `$next` keyword in an expression."""
     if not expression_ir.has_field("builtin_reference"):
         return
@@ -269,7 +280,11 @@ def _maybe_replace_next_keyword_in_expression(
     _mark_as_synthetic(expression.function)
 
 
-def _check_for_bad_next_keyword_in_size(expression, source_file_name, errors):
+def _check_for_bad_next_keyword_in_size(
+    expression: ir_data.Expression,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     if not expression.has_field("builtin_reference"):
         return
     if expression.builtin_reference.canonical_name.object_path[0] != "$next":
@@ -286,9 +301,13 @@ def _check_for_bad_next_keyword_in_size(expression, source_file_name, errors):
     )
 
 
-def _replace_next_keyword(structure, source_file_name, errors):
-    last_physical_field_location = None
-    new_errors = []
+def _replace_next_keyword(
+    structure: ir_data.Structure,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
+    last_physical_field_location: ir_data.FieldLocation | None = None
+    new_errors: list[list[error.Message]] = []
     for field in structure.field:
         if ir_util.field_is_virtual(field):
             # TODO(bolms): It could be useful to allow `$next` in a virtual field, in
@@ -337,13 +356,15 @@ def _replace_next_keyword(structure, source_file_name, errors):
         last_physical_field_location = field.location
 
 
-def _add_virtuals_to_structure(structure, type_definition):
+def _add_virtuals_to_structure(
+    structure: ir_data.Structure, type_definition: ir_data.TypeDefinition
+) -> None:
     _add_anonymous_aliases(structure, type_definition)
     _add_size_virtuals(structure, type_definition)
     _add_size_bound_virtuals(structure, type_definition)
 
 
-def desugar(ir):
+def desugar(ir: ir_data.EmbossIr) -> list[list[error.Message]]:
     """Translates pure syntactic sugar to its desugared form.
 
     Replaces `$next` symbols with the start+length of the previous physical
@@ -357,7 +378,7 @@ def desugar(ir):
     Returns:
         A list of errors, or an empty list.
     """
-    errors = []
+    errors: list[list[error.Message]] = []
     traverse_ir.fast_traverse_ir_top_down(
         ir, [ir_data.Structure], _replace_next_keyword, parameters={"errors": errors}
     )

@@ -18,44 +18,58 @@ This module exports a single function, format_emboss_parse_tree(), which
 pretty-prints an Emboss parse tree.
 """
 
-from __future__ import print_function
+from __future__ import annotations
 
 import collections
 import itertools
+from collections.abc import Callable, Iterable, Sequence
+from typing import TYPE_CHECKING, Any, NamedTuple, TypeVar
 
 from compiler.front_end import module_ir
 from compiler.front_end import tokenizer
 from compiler.util import parser_types
 from compiler.util import parser_util
 
+if TYPE_CHECKING:
+    from compiler.front_end import lr1
 
-class Config(collections.namedtuple("Config", ["indent_width", "show_line_types"])):
+_T = TypeVar("_T")
+_F = TypeVar("_F", bound=Callable[..., Any])
+
+
+class Config(NamedTuple):
     """Configuration for formatting."""
 
-    def __new__(cls, indent_width=2, show_line_types=False):
-        return super(cls, Config).__new__(cls, indent_width, show_line_types)
+    indent_width: int = 2
+    show_line_types: bool = False
 
 
 class _Row(collections.namedtuple("Row", ["name", "columns", "indent"])):
     """Structured contents of a single line."""
 
-    def __new__(cls, name, columns=None, indent=0):
+    def __new__(
+        cls, name: str, columns: Iterable[str] | None = None, indent: int = 0
+    ) -> _Row:
         return super(cls, _Row).__new__(cls, name, tuple(columns or []), indent)
 
 
 class _Block(collections.namedtuple("Block", ["prefix", "header", "body"])):
     """Structured block of multiple lines."""
 
-    def __new__(cls, prefix, header, body):
+    def __new__(cls, prefix: list[_Row], header: _Row, body: list[_Row]) -> _Block:
         assert header
         return super(cls, _Block).__new__(cls, prefix, header, body)
 
 
 # Map of productions to their formatters.
-_formatters = {}
+_formatters: dict[parser_types.Production, Callable[..., Any]] = {}
 
 
-def format_emboss_parse_tree(parse_tree, config, used_productions=None):
+def format_emboss_parse_tree(
+    parse_tree: parser_types.Token | lr1.Reduction,
+    config: Config,
+    used_productions: set[parser_types.Production] | None = None,
+) -> str:
     """Formats Emboss source code.
 
     Arguments:
@@ -68,11 +82,11 @@ def format_emboss_parse_tree(parse_tree, config, used_productions=None):
     Returns:
         A string of the reformatted source text.
     """
-    formatters = {}
+    formatters: dict[parser_types.Production, Callable[..., Any]] = {}
     for production, handler in _formatters.items():
         # An extra layer of indirection is required here so that the resulting
         # lambda does not capture the local variable `handler`.
-        def wrapped_handler(handler):
+        def wrapped_handler(handler: Callable[..., Any]) -> Callable[..., Any]:
             return lambda _, *args: handler(*(args + (config,)))
 
         formatters[production] = wrapped_handler(handler)
@@ -81,7 +95,7 @@ def format_emboss_parse_tree(parse_tree, config, used_productions=None):
     )
 
 
-def sanity_check_format_result(formatted_text, original_text):
+def sanity_check_format_result(formatted_text: str, original_text: str) -> list[str]:
     """Checks that the given texts are equivalent."""
     # The texts are considered equivalent if they tokenize to the same token
     # stream, except that:
@@ -118,9 +132,11 @@ def sanity_check_format_result(formatted_text, original_text):
     return []
 
 
-def _collapse_newline_tokens(token_list):
+def _collapse_newline_tokens(
+    token_list: Iterable[parser_types.Token],
+) -> list[parser_types.Token]:
     r"""Collapses multiple consecutive "\\n" tokens into a single newline."""
-    result = []
+    result: list[parser_types.Token] = []
     for symbol, group in itertools.groupby(token_list, lambda x: x.symbol):
         if symbol == '"\\n"':
             # Skip all newlines if they are at the start, otherwise add a single
@@ -132,18 +148,18 @@ def _collapse_newline_tokens(token_list):
     return result
 
 
-def _indent_row(row):
+def _indent_row(row: _Row) -> _Row:
     """Adds one level of indent to the given row, returning a new row."""
     assert isinstance(row, _Row), repr(row)
     return _Row(name=row.name, columns=row.columns, indent=row.indent + 1)
 
 
-def _indent_rows(rows):
+def _indent_rows(rows: Iterable[_Row]) -> list[_Row]:
     """Adds one level of indent to the given rows, returning a new list."""
     return list(map(_indent_row, rows))
 
 
-def _indent_blocks(blocks):
+def _indent_blocks(blocks: Iterable[_Block]) -> list[_Block]:
     """Adds one level of indent to the given blocks, returning a new list."""
     return [
         _Block(
@@ -155,9 +171,11 @@ def _indent_blocks(blocks):
     ]
 
 
-def _intersperse(interspersed, sections):
+def _intersperse(
+    interspersed: list[_Row], sections: Iterable[list[_Row]]
+) -> list[_Row]:
     """Intersperses `interspersed` between non-empty `sections`."""
-    result = []
+    result: list[_Row] = []
     for section in sections:
         if section:
             if result:
@@ -166,7 +184,7 @@ def _intersperse(interspersed, sections):
     return result
 
 
-def _should_add_blank_lines(blocks):
+def _should_add_blank_lines(blocks: Sequence[_Block]) -> bool:
     """Returns true if blank lines should be added between blocks."""
     other_non_empty_lines = 0
     last_non_empty_lines = 0
@@ -180,7 +198,9 @@ def _should_add_blank_lines(blocks):
     return len(blocks) <= other_non_empty_lines - last_non_empty_lines
 
 
-def _columnize(blocks, indent_width, indent_columns=1):
+def _columnize(
+    blocks: Sequence[_Block], indent_width: int, indent_columns: int = 1
+) -> list[list[_Row]]:
     """Aligns columns in the header rows of the given blocks.
 
     The `indent_columns` argument is used to determine how many columns should be
@@ -211,7 +231,9 @@ def _columnize(blocks, indent_width, indent_columns=1):
     """
     single_width_separators = {"enum-value": {0, 1}, "field": {0}}
     # For each type of row, figure out how many characters each column needs.
-    row_types = collections.defaultdict(lambda: collections.defaultdict(lambda: 0))
+    row_types: dict[str, dict[int, int]] = collections.defaultdict(
+        lambda: collections.defaultdict(lambda: 0)
+    )
     for block in blocks:
         max_lengths = row_types[block.header.name]
         for i in range(len(block.header.columns)):
@@ -226,9 +248,9 @@ def _columnize(blocks, indent_width, indent_columns=1):
     assert len(row_types) < 3
 
     # Then, for each row, actually columnize it.
-    result = []
+    result: list[list[_Row]] = []
     for block in blocks:
-        columns = []
+        columns: list[str] = []
         for i in range(len(block.header.columns)):
             column_width = row_types[block.header.name][i]
             if column_width == 0:
@@ -261,9 +283,9 @@ def _columnize(blocks, indent_width, indent_columns=1):
     return result
 
 
-def _indent_blanks_and_comments(rows):
+def _indent_blanks_and_comments(rows: Sequence[_Row]) -> list[_Row]:
     """Indents blank and comment lines to match the next non-blank line."""
-    result = []
+    result: list[_Row] = []
     previous_indent = 0
     for row in reversed(rows):
         if not "".join(row.columns) or row.name == "comment":
@@ -271,12 +293,12 @@ def _indent_blanks_and_comments(rows):
         else:
             result.append(row)
             previous_indent = row.indent
-    return reversed(result)
+    return result[::-1]
 
 
-def _add_blank_rows_on_dedent(rows):
+def _add_blank_rows_on_dedent(rows: Iterable[_Row]) -> list[_Row]:
     """Adds blank rows before dedented lines, where needed."""
-    result = []
+    result: list[_Row] = []
     previous_indent = 0
     previous_row_was_blank = True
     for row in rows:
@@ -290,14 +312,16 @@ def _add_blank_rows_on_dedent(rows):
     return result
 
 
-def _render_row_to_text(row, indent_width):
+def _render_row_to_text(row: _Row, indent_width: int) -> str:
     assert len(row.columns) < 2, "{!r}".format(row)
     text = " " * indent_width * row.indent
     text += "".join(row.columns)
     return text.rstrip()
 
 
-def _render_rows_to_text(rows, indent_width, show_line_types):
+def _render_rows_to_text(
+    rows: Sequence[_Row], indent_width: int, show_line_types: bool
+) -> str:
     max_row_name_len = max([0] + [len(row.name) for row in rows])
     flattened_rows = []
     for row in rows:
@@ -308,7 +332,7 @@ def _render_rows_to_text(rows, indent_width, show_line_types):
     return "\n".join(flattened_rows + [""])
 
 
-def _check_productions():
+def _check_productions() -> None:
     """Asserts that the productions in this module match those in module_ir."""
     productions_ok = True
     for production in module_ir.PRODUCTIONS:
@@ -324,11 +348,11 @@ def _check_productions():
     assert productions_ok, "Grammar mismatch."
 
 
-def _formats_with_config(production_text):
+def _formats_with_config(production_text: str) -> Callable[[_F], _F]:
     """Marks a function as a formatter requiring a config argument."""
     production = parser_types.Production.parse(production_text)
 
-    def formats(f):
+    def formats(f: _F) -> _F:
         assert production not in _formatters, production
         _formatters[production] = f
         return f
@@ -336,10 +360,10 @@ def _formats_with_config(production_text):
     return formats
 
 
-def _formats(production_text):
+def _formats(production_text: str) -> Callable[[_F], _F]:
     """Marks a function as the formatter for a particular production."""
 
-    def strip_config_argument(f):
+    def strip_config_argument(f: _F) -> _F:
         _formats_with_config(production_text)(lambda *a, **kw: f(*a[:-1], **kw))
         return f
 
@@ -376,7 +400,14 @@ def _formats(production_text):
     "module -> comment-line* doc-line* import-line*"
     "          attribute-line* type-definition*"
 )
-def _module(comments, docs, imports, attributes, types, config):
+def _module(
+    comments: list[_Row],
+    docs: list[_Row],
+    imports: list[_Row],
+    attributes: list[_Row],
+    types: list[list[_Row]],
+    config: Config,
+) -> str:
     """Performs top-level formatting for an Emboss source file."""
 
     # The top-level sections other than types should be separated by single lines.
@@ -403,7 +434,7 @@ def _module(comments, docs, imports, attributes, types, config):
 
 
 @_formats("doc-line -> doc Comment? eol")
-def _doc_line(doc, comment, eol):
+def _doc_line(doc: str, comment: str, eol: list[_Row]) -> list[_Row]:
     assert not comment, "Comment should not be possible on the same line as doc."
     return [_Row("doc", [doc])] + eol
 
@@ -412,7 +443,9 @@ def _doc_line(doc, comment, eol):
     'import-line -> "import" string-constant "as" snake-word Comment?'
     "               eol"
 )
-def _import_line(import_, filename, as_, name, comment, eol):
+def _import_line(
+    import_: str, filename: str, as_: str, name: str, comment: str, eol: list[_Row]
+) -> list[_Row]:
     return [
         _Row(
             "import", ["{} {} {} {}  {}".format(import_, filename, as_, name, comment)]
@@ -421,7 +454,7 @@ def _import_line(import_, filename, as_, name, comment, eol):
 
 
 @_formats("attribute-line -> attribute Comment? eol")
-def _attribute_line(attribute, comment, eol):
+def _attribute_line(attribute: str, comment: str, eol: list[_Row]) -> list[_Row]:
     return [_Row("attribute", ["{}  {}".format(attribute, comment)])] + eol
 
 
@@ -429,19 +462,29 @@ def _attribute_line(attribute, comment, eol):
     'attribute -> "[" attribute-context? "$default"? snake-word ":"'
     '             attribute-value "]"'
 )
-def _attribute(open_, context, default, name, colon, value, close):
+def _attribute(
+    open_: str,
+    context: str,
+    default: str,
+    name: str,
+    colon: str,
+    value: str,
+    close: str,
+) -> str:
     return "".join(
         [open_, _concatenate_with_spaces(context, default, name + colon, value), close]
     )
 
 
 @_formats('parameter-definition -> snake-name ":" type')
-def _parameter_definition(name, colon, type_specifier):
+def _parameter_definition(name: str, colon: str, type_specifier: str) -> str:
     return "{}{} {}".format(name, colon, type_specifier)
 
 
 @_formats("type-definition* -> type-definition type-definition*")
-def _type_defitinions(definition, definitions):
+def _type_defitinions(
+    definition: list[_Row], definitions: list[list[_Row]]
+) -> list[list[_Row]]:
     return [definition] + definitions
 
 
@@ -453,7 +496,15 @@ def _type_defitinions(definition, definitions):
     'struct -> "struct" type-name delimited-parameter-definition-list?'
     '          ":" Comment? eol struct-body'
 )
-def _structure_type(struct, name, parameters, colon, comment, eol, body):
+def _structure_type(
+    struct: str,
+    name: str,
+    parameters: str,
+    colon: str,
+    comment: str,
+    eol: list[_Row],
+    body: list[_Row],
+) -> list[_Row]:
     return (
         [
             _Row(
@@ -468,7 +519,9 @@ def _structure_type(struct, name, parameters, colon, comment, eol, body):
 
 @_formats('enum -> "enum" type-name ":" Comment? eol enum-body')
 @_formats('external -> "external" type-name ":" Comment? eol external-body')
-def _type(struct, name, colon, comment, eol, body):
+def _type(
+    struct: str, name: str, colon: str, comment: str, eol: list[_Row], body: list[_Row]
+) -> list[_Row]:
     return (
         [_Row("type-header", ["{} {}{}  {}".format(struct, name, colon, comment)])]
         + eol
@@ -484,7 +537,15 @@ def _type(struct, name, colon, comment, eol, body):
     "struct-body -> Indent doc-line* attribute-line*"
     "               type-definition* struct-field-block Dedent"
 )
-def _structure_body(indent, docs, attributes, type_definitions, fields, dedent, config):
+def _structure_body(
+    indent: str,
+    docs: list[_Row],
+    attributes: list[_Row],
+    type_definitions: list[list[_Row]],
+    fields: list[_Block],
+    dedent: str,
+    config: Config,
+) -> list[_Row]:
     """Formats a structure (`bits` or `struct`) body."""
     del indent, dedent  # Unused.
     spacing = [_Row("field-separator")] if _should_add_blank_lines(fields) else []
@@ -495,7 +556,9 @@ def _structure_body(indent, docs, attributes, type_definitions, fields, dedent, 
 
 
 @_formats('field-location -> expression "[" "+" expression "]"')
-def _field_location(start, open_bracket, plus, size, close_bracket):
+def _field_location(
+    start: str, open_bracket: str, plus: str, size: str, close_bracket: str
+) -> list[str]:
     return [start, open_bracket + plus + size + close_bracket]
 
 
@@ -540,7 +603,7 @@ def _field_location(start, open_bracket, plus, size, close_bracket):
     "unconditional-struct-field+ -> unconditional-struct-field"
     "                               unconditional-struct-field*"
 )
-def _structure_block(field, block):
+def _structure_block(field: list[_Block], block: list[_Block]) -> list[_Block]:
     """Prepends field to block."""
     return field + block
 
@@ -549,7 +612,15 @@ def _structure_block(field, block):
     'virtual-field -> "let" snake-name "=" expression Comment? eol'
     "                 field-body?"
 )
-def _virtual_field(let_keyword, name, equals, value, comment, eol, body):
+def _virtual_field(
+    let_keyword: str,
+    name: str,
+    equals: str,
+    value: str,
+    comment: str,
+    eol: list[_Row],
+    body: list[_Row],
+) -> list[_Block]:
     # This formatting doesn't look the best when there are blocks of several
     # virtual fields next to each other, but works pretty well when they're
     # intermixed with physical fields.  It's probably good enough for now, since
@@ -578,8 +649,16 @@ def _virtual_field(let_keyword, name, equals, value, comment, eol, body):
     "         attribute* doc? Comment? eol field-body?"
 )
 def _unconditional_field(
-    location, type_, name, abbreviation, attributes, doc, comment, eol, body
-):
+    location: list[str],
+    type_: str,
+    name: str,
+    abbreviation: str,
+    attributes: str,
+    doc: str,
+    comment: str,
+    eol: list[_Row],
+    body: list[_Row],
+) -> list[_Block]:
     return [
         _Block(
             [],
@@ -600,7 +679,9 @@ def _unconditional_field(
 
 
 @_formats("field-body -> Indent doc-line* attribute-line* Dedent")
-def _field_body(indent, docs, attributes, dedent):
+def _field_body(
+    indent: str, docs: list[_Row], attributes: list[_Row], dedent: str
+) -> list[_Row]:
     del indent, dedent  # Unused
     return _indent_rows(docs + attributes)
 
@@ -609,7 +690,14 @@ def _field_body(indent, docs, attributes, dedent):
     "anonymous-bits-field-definition ->"
     '    field-location "bits" ":" Comment? eol anonymous-bits-body'
 )
-def _inline_bits(location, bits, colon, comment, eol, body):
+def _inline_bits(
+    location: list[str],
+    bits: str,
+    colon: str,
+    comment: str,
+    eol: list[_Row],
+    body: _InlineBitsBodyType,
+) -> list[_Block]:
     """Formats an inline `bits` definition."""
     # Even though an anonymous bits field technically defines a new, anonymous
     # type, conceptually it's more like defining a bunch of fields on the
@@ -637,7 +725,16 @@ def _inline_bits(location, bits, colon, comment, eol, body):
     '    field-location "bits" snake-name abbreviation? ":" Comment? eol'
     "    bits-body"
 )
-def _inline_type(location, keyword, name, abbreviation, colon, comment, eol, body):
+def _inline_type(
+    location: list[str],
+    keyword: str,
+    name: str,
+    abbreviation: str,
+    colon: str,
+    comment: str,
+    eol: list[_Row],
+    body: list[_Row],
+) -> list[_Block]:
     """Formats an inline type in a struct or bits."""
     header_row = _Row(
         "field",
@@ -668,7 +765,16 @@ def _inline_type(location, keyword, name, abbreviation, colon, comment, eol, bod
     '    "if" expression ":" Comment? eol'
     "    Indent unconditional-anonymous-bits-field+ Dedent"
 )
-def _conditional_field(if_, condition, colon, comment, eol, indent, body, dedent):
+def _conditional_field(
+    if_: str,
+    condition: str,
+    colon: str,
+    comment: str,
+    eol: list[_Row],
+    indent: str,
+    body: list[_Block],
+    dedent: str,
+) -> list[_Block]:
     """Formats an `if` construct."""
     del indent, dedent  # Unused
     # The body of an 'if' should be columnized with the surrounding blocks, so
@@ -685,16 +791,18 @@ def _conditional_field(if_, condition, colon, comment, eol, indent, body, dedent
     ] + indented_body[1:]
 
 
-_InlineBitsBodyType = collections.namedtuple(
-    "InlineBitsBodyType", ["header_lines", "field_blocks"]
-)
+class _InlineBitsBodyType(NamedTuple):
+    header_lines: list[_Row]
+    field_blocks: list[_Block]
 
 
 @_formats(
     "anonymous-bits-body ->"
     "    Indent attribute-line* anonymous-bits-field-block Dedent"
 )
-def _inline_bits_body(indent, attributes, fields, dedent):
+def _inline_bits_body(
+    indent: str, attributes: list[_Row], fields: list[_Block], dedent: str
+) -> _InlineBitsBodyType:
     del indent, dedent  # Unused
     return _InlineBitsBodyType(
         header_lines=_indent_rows(attributes), field_blocks=_indent_blocks(fields)
@@ -704,7 +812,14 @@ def _inline_bits_body(indent, attributes, fields, dedent):
 @_formats_with_config(
     "enum-body -> Indent doc-line* attribute-line* enum-value+" "             Dedent"
 )
-def _enum_body(indent, docs, attributes, values, dedent, config):
+def _enum_body(
+    indent: str,
+    docs: list[_Row],
+    attributes: list[_Row],
+    values: list[_Block],
+    dedent: str,
+    config: Config,
+) -> list[_Row]:
     del indent, dedent  # Unused
     spacing = [_Row("value-separator")] if _should_add_blank_lines(values) else []
     columnized_values = _columnize(values, config.indent_width)
@@ -713,7 +828,7 @@ def _enum_body(indent, docs, attributes, values, dedent, config):
 
 @_formats("enum-value* -> enum-value enum-value*")
 @_formats("enum-value+ -> enum-value enum-value*")
-def _enum_values(value, block):
+def _enum_values(value: list[_Block], block: list[_Block]) -> list[_Block]:
     return value + block
 
 
@@ -721,7 +836,16 @@ def _enum_values(value, block):
     'enum-value -> constant-name "=" expression attribute* doc? Comment? eol'
     "              enum-value-body?"
 )
-def _enum_value(name, equals, value, attributes, docs, comment, eol, body):
+def _enum_value(
+    name: str,
+    equals: str,
+    value: str,
+    attributes: str,
+    docs: str,
+    comment: str,
+    eol: list[_Row],
+    body: list[_Row],
+) -> list[_Block]:
     return [
         _Block(
             [],
@@ -732,19 +856,23 @@ def _enum_value(name, equals, value, attributes, docs, comment, eol, body):
 
 
 @_formats("enum-value-body -> Indent doc-line* attribute-line* Dedent")
-def _enum_value_body(indent, docs, attributes, dedent):
+def _enum_value_body(
+    indent: str, docs: list[_Row], attributes: list[_Row], dedent: str
+) -> list[_Row]:
     del indent, dedent  # Unused
     return _indent_rows(docs + attributes)
 
 
 @_formats("external-body -> Indent doc-line* attribute-line* Dedent")
-def _external_body(indent, docs, attributes, dedent):
+def _external_body(
+    indent: str, docs: list[_Row], attributes: list[_Row], dedent: str
+) -> list[_Row]:
     del indent, dedent  # Unused
     return _indent_rows(_intersperse([_Row("section-break")], [docs, attributes]))
 
 
 @_formats('comment-line -> Comment? "\\n"')
-def _comment_line(comment, eol):
+def _comment_line(comment: str, eol: str) -> list[_Row]:
     del eol  # Unused
     if comment:
         return [_Row("comment", [comment])]
@@ -753,12 +881,12 @@ def _comment_line(comment, eol):
 
 
 @_formats('eol -> "\\n" comment-line*')
-def _eol(eol, comments):
+def _eol(eol: str, comments: list[_Row]) -> list[_Row]:
     del eol  # Unused
     return _strip_empty_leading_trailing_comment_lines(comments)
 
 
-def _strip_empty_leading_trailing_comment_lines(comments):
+def _strip_empty_leading_trailing_comment_lines(comments: list[_Row]) -> list[_Row]:
     first_non_empty_line = None
     last_non_empty_line = None
     for i in range(len(comments)):
@@ -786,7 +914,7 @@ def _strip_empty_leading_trailing_comment_lines(comments):
 @_formats("unconditional-anonymous-bits-field* -> ")
 @_formats("unconditional-bits-field* -> ")
 @_formats("unconditional-struct-field* -> ")
-def _empty_list():
+def _empty_list() -> list[Any]:
     return []
 
 
@@ -813,7 +941,7 @@ def _empty_list():
 @_formats("star-expression-right* -> ")
 @_formats("divmod-expression-right* -> ")
 @_formats("type-size-specifier? -> ")
-def _empty_string():
+def _empty_string() -> str:
     return ""
 
 
@@ -905,7 +1033,7 @@ def _empty_string():
 @_formats("unconditional-struct-field -> inline-enum-field-definition")
 @_formats("unconditional-struct-field -> inline-struct-field-definition")
 @_formats("unconditional-struct-field -> virtual-field")
-def _identity(x):
+def _identity(x: _T) -> _T:
     return x
 
 
@@ -1025,7 +1153,7 @@ def _identity(x):
     "comparison-expression -> additive-expression"
     "                         less-expression-right-list"
 )
-def _concatenate(*elements):
+def _concatenate(*elements: str) -> str:
     """Concatenates all arguments with no delimiters."""
     return "".join(elements)
 
@@ -1035,7 +1163,7 @@ def _concatenate(*elements):
 @_formats("greater-expression-right -> greater-operator additive-expression")
 @_formats("or-expression-right -> or-operator comparison-expression")
 @_formats("and-expression-right -> and-operator comparison-expression")
-def _concatenate_with_prefix_spaces(*elements):
+def _concatenate_with_prefix_spaces(*elements: str) -> str:
     """Concatenates non-empty `elements` with leading spaces."""
     return "".join(" " + element for element in elements if element)
 
@@ -1051,12 +1179,12 @@ def _concatenate_with_prefix_spaces(*elements):
     '                                        ":" logical-expression'
 )
 @_formats('parameter-definition-list-tail -> "," parameter-definition')
-def _concatenate_with_spaces(*elements):
+def _concatenate_with_spaces(*elements: str) -> str:
     """Concatenates non-empty `elements` with spaces between."""
     return _concatenate_with(" ", *elements)
 
 
-def _concatenate_with(joiner, *elements):
+def _concatenate_with(joiner: str, *elements: str) -> str:
     """Concatenates non-empty `elements` with `joiner` between."""
     return joiner.join(element for element in elements if element)
 
@@ -1065,7 +1193,7 @@ def _concatenate_with(joiner, *elements):
 @_formats("comment-line* -> comment-line comment-line*")
 @_formats("doc-line* -> doc-line doc-line*")
 @_formats("import-line* -> import-line import-line*")
-def _concatenate_lists(head, tail):
+def _concatenate_lists(head: list[Any], tail: list[Any]) -> list[Any]:
     return head + tail
 
 

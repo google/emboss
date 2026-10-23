@@ -22,14 +22,23 @@ This module also notably exports PRODUCTIONS and START_SYMBOL, which should be
 fed to lr1.Grammar in order to create a parser for the Emboss language.
 """
 
+from __future__ import annotations
+
 import re
 import sys
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from compiler.util import ir_data
 from compiler.util import ir_data_utils
 from compiler.util import name_conversion
 from compiler.util import parser_types
 from compiler.util import parser_util
+
+if TYPE_CHECKING:
+    from compiler.front_end import lr1
+
+_F = TypeVar("_F", bound=Callable[..., Any])
 
 
 # Intermediate types; should not be found in the final IR.
@@ -38,10 +47,12 @@ class _List(object):
 
     __slots__ = ("list", "source_location")
 
-    def __init__(self, l):
+    def __init__(self, l: list[Any]) -> None:
         assert isinstance(l, list), "_List object must wrap list, not '%r'" % l
-        self.list = l
-        self.source_location = parser_types.SourceLocation()
+        self.list: list[Any] = l
+        self.source_location: parser_types.SourceLocation | None = (
+            parser_types.SourceLocation()
+        )
 
 
 class _ExpressionTail(object):
@@ -63,10 +74,12 @@ class _ExpressionTail(object):
 
     __slots__ = ("operator", "expression", "source_location")
 
-    def __init__(self, operator, expression):
+    def __init__(self, operator: ir_data.Word, expression: ir_data.Expression) -> None:
         self.operator = operator
         self.expression = expression
-        self.source_location = parser_types.SourceLocation()
+        self.source_location: parser_types.SourceLocation | None = (
+            parser_types.SourceLocation()
+        )
 
 
 class _FieldWithType(object):
@@ -74,13 +87,20 @@ class _FieldWithType(object):
 
     __slots__ = ("field", "subtypes", "source_location")
 
-    def __init__(self, field, subtypes=None):
+    def __init__(
+        self, field: ir_data.Field, subtypes: list[ir_data.TypeDefinition] | None = None
+    ) -> None:
         self.field = field
         self.subtypes = subtypes or []
-        self.source_location = parser_types.SourceLocation()
+        self.source_location: parser_types.SourceLocation | None = (
+            parser_types.SourceLocation()
+        )
 
 
-def build_ir(parse_tree, used_productions=None):
+def build_ir(
+    parse_tree: parser_types.Token | lr1.Reduction,
+    used_productions: set[parser_types.Production] | None = None,
+) -> Any:
     r"""Builds a module-level intermediate representation from a valid parse tree.
 
     The parse tree is precisely dictated by the exact productions in the grammar
@@ -133,15 +153,15 @@ def build_ir(parse_tree, used_productions=None):
         constraints checked, fields synthesized, etc.; it will only be a
         representation of the syntactic elements of the source.
     """
-    handlers = {}
+    handlers: dict[parser_types.Production, Callable[..., Any]] = {}
     for production, handler in _handlers.items():
         # An extra layer of indirection is required here so that the resulting
         # lambda does not capture the local variable `handler`.
-        def wrapped_handler(handler):
-            def wrapped_handler(node, *args):
+        def wrapped_handler(handler: Callable[..., Any]) -> Callable[..., Any]:
+            def wrapped_handler(node: lr1.Reduction, *args: Any) -> Any:
                 module_node = handler(*args)
                 if node.source_location:
-                    if isinstance(module_node, tuple):
+                    if isinstance(module_node, parser_types.Token):
                         module_node = module_node._replace(
                             source_location=node.source_location
                         )
@@ -158,29 +178,31 @@ def build_ir(parse_tree, used_productions=None):
 
 
 # Map of productions to their handlers.
-_handlers = {}
+_handlers: dict[parser_types.Production, Callable[..., Any]] = {}
 
 _anonymous_name_counter = 0
 
 
-def _get_anonymous_field_name():
+def _get_anonymous_field_name() -> str:
     global _anonymous_name_counter
     _anonymous_name_counter += 1
     return "emboss_reserved_anonymous_field_{}".format(_anonymous_name_counter)
 
 
-def _handles(production_text):
+def _handles(production_text: str) -> Callable[[_F], _F]:
     """_handles marks a function as the handler for a particular production."""
     production = parser_types.Production.parse(production_text)
 
-    def handles(f):
+    def handles(f: _F) -> _F:
         _handlers[production] = f
         return f
 
     return handles
 
 
-def _make_prelude_import(position):
+def _make_prelude_import(
+    position: parser_types.SourcePosition | tuple[int, int],
+) -> ir_data.Import:
     """Helper function to construct a synthetic ir_data.Import for the prelude."""
     location = parser_types.SourceLocation(position, position)
     return ir_data.Import(
@@ -190,7 +212,7 @@ def _make_prelude_import(position):
     )
 
 
-def _text_to_operator(text):
+def _text_to_operator(text: str) -> ir_data.FunctionMapping:
     """Converts an operator's textual name to its corresponding enum."""
     operations = {
         "+": ir_data.FunctionMapping.ADDITION,
@@ -210,7 +232,7 @@ def _text_to_operator(text):
     return operations[text]
 
 
-def _text_to_function(text):
+def _text_to_function(text: str) -> ir_data.FunctionMapping:
     """Converts a function's textual name to its corresponding enum."""
     functions = {
         "$max": ir_data.FunctionMapping.MAXIMUM,
@@ -248,7 +270,13 @@ def _text_to_function(text):
     "module -> comment-line* doc-line* import-line* attribute-line*"
     "          type-definition*"
 )
-def _file(leading_newlines, docs, imports, attributes, type_definitions):
+def _file(
+    leading_newlines: _List,
+    docs: _List,
+    imports: _List,
+    attributes: _List,
+    type_definitions: _List,
+) -> ir_data.Module:
     """Assembles the top-level IR for a module."""
     del leading_newlines  # Unused.
     # Figure out the best synthetic source_location for the synthesized prelude
@@ -286,19 +314,28 @@ def _file(leading_newlines, docs, imports, attributes, type_definitions):
 
 
 @_handles("import-line ->" '    "import" string-constant "as" snake-word Comment? eol')
-def _import(import_, file_name, as_, local_name, comment, eol):
+def _import(
+    import_: parser_types.Token,
+    file_name: ir_data.String,
+    as_: parser_types.Token,
+    local_name: ir_data.Word,
+    comment: _List,
+    eol: parser_types.Token,
+) -> ir_data.Import:
     del import_, as_, comment, eol  # Unused
     return ir_data.Import(file_name=file_name, local_name=local_name)
 
 
 @_handles("doc-line -> doc Comment? eol")
-def _doc_line(doc, comment, eol):
+def _doc_line(
+    doc: ir_data.Documentation, comment: _List, eol: parser_types.Token
+) -> ir_data.Documentation:
     del comment, eol  # Unused.
     return doc
 
 
 @_handles("doc -> Documentation")
-def _doc(documentation):
+def _doc(documentation: parser_types.Token) -> ir_data.Documentation:
     # As a special case, an empty documentation string may omit the trailing
     # space.
     if documentation.text == "--":
@@ -313,7 +350,9 @@ def _doc(documentation):
 
 # A attribute-line is just a attribute on its own line.
 @_handles("attribute-line -> attribute Comment? eol")
-def _attribute_line(attr, comment, eol):
+def _attribute_line(
+    attr: ir_data.Attribute, comment: _List, eol: parser_types.Token
+) -> ir_data.Attribute:
     del comment, eol  # Unused.
     return attr
 
@@ -324,14 +363,14 @@ def _attribute_line(attr, comment, eol):
     '             snake-word ":" attribute-value "]"'
 )
 def _attribute(
-    open_bracket,
-    context_specifier,
-    default_specifier,
-    name,
-    colon,
-    attribute_value,
-    close_bracket,
-):
+    open_bracket: parser_types.Token,
+    context_specifier: _List,
+    default_specifier: _List,
+    name: ir_data.Word,
+    colon: parser_types.Token,
+    attribute_value: ir_data.AttributeValue,
+    close_bracket: parser_types.Token,
+) -> ir_data.Attribute:
     """Assembles an attribute IR node."""
     del open_bracket, colon, close_bracket  # Unused.
     if context_specifier.list:
@@ -348,28 +387,34 @@ def _attribute(
 
 
 @_handles('attribute-context -> "(" snake-word ")"')
-def _attribute_context(open_paren, context_name, close_paren):
+def _attribute_context(
+    open_paren: parser_types.Token,
+    context_name: ir_data.Word,
+    close_paren: parser_types.Token,
+) -> ir_data.Word:
     del open_paren, close_paren  # Unused.
     return context_name
 
 
 @_handles("attribute-value -> expression")
-def _attribute_value_expression(expression):
+def _attribute_value_expression(
+    expression: ir_data.Expression,
+) -> ir_data.AttributeValue:
     return ir_data.AttributeValue(expression=expression)
 
 
 @_handles("attribute-value -> string-constant")
-def _attribute_value_string(string):
+def _attribute_value_string(string: ir_data.String) -> ir_data.AttributeValue:
     return ir_data.AttributeValue(string_constant=string)
 
 
 @_handles("boolean-constant -> BooleanConstant")
-def _boolean_constant(boolean):
+def _boolean_constant(boolean: parser_types.Token) -> ir_data.BooleanConstant:
     return ir_data.BooleanConstant(value=(boolean.text == "true"))
 
 
 @_handles("string-constant -> String")
-def _string_constant(string):
+def _string_constant(string: parser_types.Token) -> ir_data.String:
     """Turns a String token into an ir_data.String, with proper unescaping.
 
     Arguments:
@@ -444,7 +489,7 @@ def _string_constant(string):
 @_handles("times-expression -> negation-expression")
 @_handles("times-expression -> star-expression")
 @_handles("times-expression -> divmod-expression")
-def _expression(expression):
+def _expression(expression: ir_data.Expression) -> ir_data.Expression:
     return expression
 
 
@@ -456,7 +501,13 @@ def _expression(expression):
     'choice-expression -> logical-expression "?" logical-expression'
     '                                        ":" logical-expression'
 )
-def _choice_expression(condition, question, if_true, colon, if_false):
+def _choice_expression(
+    condition: ir_data.Expression,
+    question: parser_types.Token,
+    if_true: ir_data.Expression,
+    colon: parser_types.Token,
+    if_false: ir_data.Expression,
+) -> ir_data.Expression:
     """Constructs an IR node for a choice operator (`?:`) expression."""
     location = parser_types.SourceLocation(
         condition.source_location.start, if_false.source_location.end
@@ -477,7 +528,9 @@ def _choice_expression(condition, question, if_true, colon, if_false):
 
 
 @_handles("comparison-expression -> additive-expression")
-def _no_op_comparative_expression(expression):
+def _no_op_comparative_expression(
+    expression: ir_data.Expression,
+) -> ir_data.Expression:
     return expression
 
 
@@ -485,7 +538,9 @@ def _no_op_comparative_expression(expression):
     "comparison-expression ->"
     "    additive-expression inequality-operator additive-expression"
 )
-def _comparative_expression(left, operator, right):
+def _comparative_expression(
+    left: ir_data.Expression, operator: ir_data.Word, right: ir_data.Expression
+) -> ir_data.Expression:
     location = parser_types.SourceLocation(
         left.source_location.start, right.source_location.end
     )
@@ -504,7 +559,9 @@ def _comparative_expression(left, operator, right):
 @_handles("divmod-expression -> negation-expression divmod-expression-right+")
 @_handles("and-expression -> comparison-expression and-expression-right+")
 @_handles("or-expression -> comparison-expression or-expression-right+")
-def _binary_operator_expression(expression, expression_right):
+def _binary_operator_expression(
+    expression: ir_data.Expression, expression_right: _List
+) -> ir_data.Expression:
     """Builds the IR for a chain of equal-precedence left-associative operations.
 
     _binary_operator_expression transforms a right-recursive list of expression
@@ -559,7 +616,9 @@ def _binary_operator_expression(expression, expression_right):
 @_handles(
     "comparison-expression ->" "    additive-expression greater-expression-right-list"
 )
-def _chained_comparison_expression(expression, expression_right):
+def _chained_comparison_expression(
+    expression: ir_data.Expression, expression_right: _List
+) -> ir_data.Expression:
     """Builds the IR for a chain of comparisons, like a == b == c.
 
     Like _binary_operator_expression, _chained_comparison_expression transforms a
@@ -601,7 +660,7 @@ def _chained_comparison_expression(expression, expression_right):
       An ir_data.Expression with the correct recursive structure to represent a
       chain of left-associative comparison operations.
     """
-    sequence = [expression]
+    sequence: list[Any] = [expression]
     for right in expression_right.list:
         sequence.append(right.operator)
         sequence.append(right.expression)
@@ -687,7 +746,9 @@ def _chained_comparison_expression(expression, expression_right):
     "    equality-expression-right* less-expression-right"
     "    equality-or-less-expression-right*"
 )
-def _chained_comparison_tails(start, middle, end):
+def _chained_comparison_tails(
+    start: _List, middle: _ExpressionTail, end: _List
+) -> _List:
     return _List(start.list + [middle] + end.list)
 
 
@@ -695,7 +756,7 @@ def _chained_comparison_tails(start, middle, end):
 @_handles("equality-or-greater-expression-right -> greater-expression-right")
 @_handles("equality-or-less-expression-right -> equality-expression-right")
 @_handles("equality-or-less-expression-right -> less-expression-right")
-def _equality_or_less_or_greater(right):
+def _equality_or_less_or_greater(right: _ExpressionTail) -> _ExpressionTail:
     return right
 
 
@@ -707,14 +768,18 @@ def _equality_or_less_or_greater(right):
 @_handles("less-expression-right -> less-operator additive-expression")
 @_handles("star-expression-right -> star-operator negation-expression")
 @_handles("divmod-expression-right -> divmod-operator negation-expression")
-def _expression_right_production(operator, expression):
+def _expression_right_production(
+    operator: ir_data.Word, expression: ir_data.Expression
+) -> _ExpressionTail:
     return _ExpressionTail(operator, expression)
 
 
 # This supports a single layer of unary plus/minus, so "+5" and "-value" are
 # allowed, but "+-5" or "-+-something" are not.
 @_handles("negation-expression -> additive-operator bottom-expression")
-def _negation_expression_with_operator(operator, expression):
+def _negation_expression_with_operator(
+    operator: ir_data.Word, expression: ir_data.Expression
+) -> ir_data.Expression:
     phantom_zero_location = parser_types.SourceLocation(
         start=operator.source_location.start, end=operator.source_location.start
     )
@@ -739,18 +804,27 @@ def _negation_expression_with_operator(operator, expression):
 
 
 @_handles("negation-expression -> bottom-expression")
-def _negation_expression(expression):
+def _negation_expression(expression: ir_data.Expression) -> ir_data.Expression:
     return expression
 
 
 @_handles('bottom-expression -> "(" expression ")"')
-def _bottom_expression_parentheses(open_paren, expression, close_paren):
+def _bottom_expression_parentheses(
+    open_paren: parser_types.Token,
+    expression: ir_data.Expression,
+    close_paren: parser_types.Token,
+) -> ir_data.Expression:
     del open_paren, close_paren  # Unused.
     return expression
 
 
 @_handles('bottom-expression -> function-name "(" argument-list ")"')
-def _bottom_expression_function(function, open_paren, arguments, close_paren):
+def _bottom_expression_function(
+    function: ir_data.Word,
+    open_paren: parser_types.Token,
+    arguments: _List,
+    close_paren: parser_types.Token,
+) -> ir_data.Expression:
     del open_paren  # Unused.
     return ir_data.Expression(
         function=ir_data.Function(
@@ -766,49 +840,61 @@ def _bottom_expression_function(function, open_paren, arguments, close_paren):
 
 
 @_handles('comma-then-expression -> "," expression')
-def _comma_then_expression(comma, expression):
+def _comma_then_expression(
+    comma: parser_types.Token, expression: ir_data.Expression
+) -> ir_data.Expression:
     del comma  # Unused.
     return expression
 
 
 @_handles("argument-list -> expression comma-then-expression*")
-def _argument_list(head, tail):
+def _argument_list(head: ir_data.Expression, tail: _List) -> _List:
     tail.list.insert(0, head)
     return tail
 
 
 @_handles("argument-list ->")
-def _empty_argument_list():
+def _empty_argument_list() -> _List:
     return _List([])
 
 
 @_handles("bottom-expression -> numeric-constant")
-def _bottom_expression_from_numeric_constant(constant):
+def _bottom_expression_from_numeric_constant(
+    constant: ir_data.NumericConstant,
+) -> ir_data.Expression:
     return ir_data.Expression(constant=constant)
 
 
 @_handles("bottom-expression -> constant-reference")
-def _bottom_expression_from_constant_reference(reference):
+def _bottom_expression_from_constant_reference(
+    reference: ir_data.Reference,
+) -> ir_data.Expression:
     return ir_data.Expression(constant_reference=reference)
 
 
 @_handles("bottom-expression -> builtin-reference")
-def _bottom_expression_from_builtin(reference):
+def _bottom_expression_from_builtin(reference: ir_data.Reference) -> ir_data.Expression:
     return ir_data.Expression(builtin_reference=reference)
 
 
 @_handles("bottom-expression -> boolean-constant")
-def _bottom_expression_from_boolean_constant(boolean):
+def _bottom_expression_from_boolean_constant(
+    boolean: ir_data.BooleanConstant,
+) -> ir_data.Expression:
     return ir_data.Expression(boolean_constant=boolean)
 
 
 @_handles("bottom-expression -> field-reference")
-def _bottom_expression_from_reference(reference):
+def _bottom_expression_from_reference(
+    reference: ir_data.Expression,
+) -> ir_data.Expression:
     return reference
 
 
 @_handles("field-reference -> snake-reference field-reference-tail*")
-def _indirect_field_reference(field_reference, field_references):
+def _indirect_field_reference(
+    field_reference: ir_data.Reference, field_references: _List
+) -> ir_data.Expression:
     return ir_data.Expression(
         field_reference=ir_data.FieldReference(
             path=[field_reference] + field_references.list,
@@ -822,13 +908,15 @@ def _indirect_field_reference(field_reference, field_references):
 # If "Type.field" ever becomes syntactically valid, it will be necessary to
 # check that enum values are compile-time constants.
 @_handles('field-reference-tail -> "." snake-reference')
-def _field_reference_tail(dot, reference):
+def _field_reference_tail(
+    dot: parser_types.Token, reference: ir_data.Reference
+) -> ir_data.Reference:
     del dot  # Unused.
     return reference
 
 
 @_handles("numeric-constant -> Number")
-def _numeric_constant(number):
+def _numeric_constant(number: parser_types.Token) -> ir_data.NumericConstant:
     # All types of numeric constant tokenize to the same symbol, because they are
     # interchangeable in source code.
     if number.text[0:2] == "0b":
@@ -844,7 +932,9 @@ def _numeric_constant(number):
 @_handles("type-definition -> bits")
 @_handles("type-definition -> enum")
 @_handles("type-definition -> external")
-def _type_definition(type_definition):
+def _type_definition(
+    type_definition: ir_data.TypeDefinition,
+) -> ir_data.TypeDefinition:
     return type_definition
 
 
@@ -860,7 +950,15 @@ def _type_definition(type_definition):
     'bits -> "bits" type-name delimited-parameter-definition-list? ":"'
     "        Comment? eol bits-body"
 )
-def _structure(struct, name, parameters, colon, comment, newline, struct_body):
+def _structure(
+    struct: parser_types.Token,
+    name: ir_data.NameDefinition,
+    parameters: _List,
+    colon: parser_types.Token,
+    comment: _List,
+    newline: parser_types.Token,
+    struct_body: ir_data.TypeDefinition,
+) -> ir_data.TypeDefinition:
     """Composes the top-level IR for an Emboss structure."""
     del colon, comment, newline  # Unused.
     ir_data_utils.builder(struct_body.structure).source_location = (
@@ -878,19 +976,27 @@ def _structure(struct, name, parameters, colon, comment, newline, struct_body):
 @_handles(
     "delimited-parameter-definition-list ->" '    "(" parameter-definition-list ")"'
 )
-def _delimited_parameter_definition_list(open_paren, parameters, close_paren):
+def _delimited_parameter_definition_list(
+    open_paren: parser_types.Token, parameters: _List, close_paren: parser_types.Token
+) -> _List:
     del open_paren, close_paren  # Unused
     return parameters
 
 
 @_handles('parameter-definition -> snake-name ":" type')
-def _parameter_definition(name, double_colon, parameter_type):
+def _parameter_definition(
+    name: ir_data.NameDefinition,
+    double_colon: parser_types.Token,
+    parameter_type: ir_data.Type,
+) -> ir_data.RuntimeParameter:
     del double_colon  # Unused
     return ir_data.RuntimeParameter(name=name, physical_type_alias=parameter_type)
 
 
 @_handles('parameter-definition-list-tail -> "," parameter-definition')
-def _parameter_definition_list_tail(comma, parameter):
+def _parameter_definition_list_tail(
+    comma: parser_types.Token, parameter: ir_data.RuntimeParameter
+) -> ir_data.RuntimeParameter:
     del comma  # Unused.
     return parameter
 
@@ -899,13 +1005,13 @@ def _parameter_definition_list_tail(comma, parameter):
     "parameter-definition-list -> parameter-definition"
     "                             parameter-definition-list-tail*"
 )
-def _parameter_definition_list(head, tail):
+def _parameter_definition_list(head: ir_data.RuntimeParameter, tail: _List) -> _List:
     tail.list.insert(0, head)
     return tail
 
 
 @_handles("parameter-definition-list ->")
-def _empty_parameter_definition_list():
+def _empty_parameter_definition_list() -> _List:
     return _List([])
 
 
@@ -914,14 +1020,27 @@ def _empty_parameter_definition_list():
     "struct-body -> Indent doc-line* attribute-line*"
     "               type-definition* struct-field-block Dedent"
 )
-def _struct_body(indent, docs, attributes, types, fields, dedent):
+def _struct_body(
+    indent: parser_types.Token,
+    docs: _List,
+    attributes: _List,
+    types: _List,
+    fields: _List,
+    dedent: parser_types.Token,
+) -> ir_data.TypeDefinition:
     del indent, dedent  # Unused.
     return _structure_body(
         docs, attributes, types, fields, ir_data.AddressableUnit.BYTE
     )
 
 
-def _structure_body(docs, attributes, types, fields, addressable_unit):
+def _structure_body(
+    docs: _List,
+    attributes: _List,
+    types: _List,
+    fields: _List,
+    addressable_unit: ir_data.AddressableUnit,
+) -> ir_data.TypeDefinition:
     """Constructs the body of a structure (bits or struct) definition."""
     return ir_data.TypeDefinition(
         structure=ir_data.Structure(field=[field.field for field in fields.list]),
@@ -936,7 +1055,7 @@ def _structure_body(docs, attributes, types, fields, addressable_unit):
 @_handles("struct-field-block ->")
 @_handles("bits-field-block ->")
 @_handles("anonymous-bits-field-block ->")
-def _empty_field_block():
+def _empty_field_block() -> _List:
     return _List([])
 
 
@@ -948,7 +1067,9 @@ def _empty_field_block():
     "anonymous-bits-field-block -> conditional-anonymous-bits-field-block"
     "                              anonymous-bits-field-block"
 )
-def _conditional_block_plus_field_block(conditional_block, block):
+def _conditional_block_plus_field_block(
+    conditional_block: _List, block: _List
+) -> _List:
     return _List(conditional_block.list + block.list)
 
 
@@ -958,7 +1079,7 @@ def _conditional_block_plus_field_block(conditional_block, block):
     "anonymous-bits-field-block ->"
     "    unconditional-anonymous-bits-field anonymous-bits-field-block"
 )
-def _unconditional_block_plus_field_block(field, block):
+def _unconditional_block_plus_field_block(field: _FieldWithType, block: _List) -> _List:
     """Prepends an unconditional field to block."""
     ir_data_utils.builder(field.field).existence_condition.source_location = (
         field.source_location
@@ -991,7 +1112,7 @@ def _unconditional_block_plus_field_block(field, block):
 @_handles("unconditional-anonymous-bits-field -> inline-bits-field-definition")
 @_handles("unconditional-bits-field -> unconditional-anonymous-bits-field")
 @_handles("unconditional-bits-field -> virtual-field")
-def _unconditional_field(field):
+def _unconditional_field(field: _FieldWithType) -> _FieldWithType:
     """Handles the unifying grammar production for a struct or bits field."""
     return field
 
@@ -1014,8 +1135,15 @@ def _unconditional_field(field):
     "        Indent unconditional-anonymous-bits-field+ Dedent"
 )
 def _conditional_field_block(
-    if_keyword, expression, colon, comment, newline, indent, fields, dedent
-):
+    if_keyword: parser_types.Token,
+    expression: ir_data.Expression,
+    colon: parser_types.Token,
+    comment: _List,
+    newline: parser_types.Token,
+    indent: parser_types.Token,
+    fields: _List,
+    dedent: parser_types.Token,
+) -> _List:
     """Applies an existence_condition to each element of fields."""
     del if_keyword, newline, colon, comment, indent, dedent  # Unused.
     for field in fields.list:
@@ -1032,7 +1160,14 @@ def _conditional_field_block(
     "bits-body -> Indent doc-line* attribute-line*"
     "             type-definition* bits-field-block Dedent"
 )
-def _bits_body(indent, docs, attributes, types, fields, dedent):
+def _bits_body(
+    indent: parser_types.Token,
+    docs: _List,
+    attributes: _List,
+    types: _List,
+    fields: _List,
+    dedent: parser_types.Token,
+) -> ir_data.TypeDefinition:
     del indent, dedent  # Unused.
     return _structure_body(docs, attributes, types, fields, ir_data.AddressableUnit.BIT)
 
@@ -1043,7 +1178,12 @@ def _bits_body(indent, docs, attributes, types, fields, dedent):
     "anonymous-bits-body ->"
     "    Indent attribute-line* anonymous-bits-field-block Dedent"
 )
-def _anonymous_bits_body(indent, attributes, fields, dedent):
+def _anonymous_bits_body(
+    indent: parser_types.Token,
+    attributes: _List,
+    fields: _List,
+    dedent: parser_types.Token,
+) -> ir_data.TypeDefinition:
     del indent, dedent  # Unused.
     return _structure_body(
         _List([]), attributes, _List([]), fields, ir_data.AddressableUnit.BIT
@@ -1062,16 +1202,16 @@ def _anonymous_bits_body(indent, attributes, fields, dedent):
     "    Comment? eol field-body?"
 )
 def _field(
-    location,
-    field_type,
-    name,
-    abbreviation,
-    attributes,
-    doc,
-    comment,
-    newline,
-    field_body,
-):
+    location: ir_data.FieldLocation,
+    field_type: ir_data.Type,
+    name: ir_data.NameDefinition,
+    abbreviation: _List,
+    attributes: _List,
+    doc: _List,
+    comment: _List,
+    newline: parser_types.Token,
+    field_body: _List,
+) -> _FieldWithType:
     """Constructs an ir_data.Field from the given components."""
     del comment  # Unused
     field_ir = ir_data.Field(
@@ -1102,7 +1242,15 @@ def _field(
 @_handles(
     "virtual-field ->" '    "let" snake-name "=" expression Comment? eol field-body?'
 )
-def _virtual_field(let, name, equals, value, comment, newline, field_body):
+def _virtual_field(
+    let: parser_types.Token,
+    name: ir_data.NameDefinition,
+    equals: parser_types.Token,
+    value: ir_data.Expression,
+    comment: _List,
+    newline: parser_types.Token,
+    field_body: _List,
+) -> _FieldWithType:
     """Constructs an ir_data.Field from the given components."""
     del equals, comment  # Unused
     field_ir = ir_data.Field(read_transform=value, name=name)
@@ -1130,8 +1278,15 @@ def _virtual_field(let, name, equals, value, comment, newline, field_body):
     "    enum-body"
 )
 def _inline_enum_field(
-    location, enum, name, abbreviation, colon, comment, newline, enum_body
-):
+    location: ir_data.FieldLocation,
+    enum: parser_types.Token,
+    name: ir_data.NameDefinition,
+    abbreviation: _List,
+    colon: parser_types.Token,
+    comment: _List,
+    newline: parser_types.Token,
+    enum_body: ir_data.TypeDefinition,
+) -> _FieldWithType:
     """Constructs an ir_data.Field for an inline enum field."""
     del enum, colon, comment, newline  # Unused.
     return _inline_type_field(location, name, abbreviation, enum_body)
@@ -1143,8 +1298,15 @@ def _inline_enum_field(
     "    struct-body"
 )
 def _inline_struct_field(
-    location, struct, name, abbreviation, colon, comment, newline, struct_body
-):
+    location: ir_data.FieldLocation,
+    struct: parser_types.Token,
+    name: ir_data.NameDefinition,
+    abbreviation: _List,
+    colon: parser_types.Token,
+    comment: _List,
+    newline: parser_types.Token,
+    struct_body: ir_data.TypeDefinition,
+) -> _FieldWithType:
     del struct, colon, comment, newline  # Unused.
     return _inline_type_field(location, name, abbreviation, struct_body)
 
@@ -1155,13 +1317,25 @@ def _inline_struct_field(
     "    bits-body"
 )
 def _inline_bits_field(
-    location, bits, name, abbreviation, colon, comment, newline, bits_body
-):
+    location: ir_data.FieldLocation,
+    bits: parser_types.Token,
+    name: ir_data.NameDefinition,
+    abbreviation: _List,
+    colon: parser_types.Token,
+    comment: _List,
+    newline: parser_types.Token,
+    bits_body: ir_data.TypeDefinition,
+) -> _FieldWithType:
     del bits, colon, comment, newline  # Unused.
     return _inline_type_field(location, name, abbreviation, bits_body)
 
 
-def _inline_type_field(location, name, abbreviation, body):
+def _inline_type_field(
+    location: ir_data.FieldLocation,
+    name: ir_data.NameDefinition,
+    abbreviation: _List,
+    body: ir_data.TypeDefinition,
+) -> _FieldWithType:
     """Shared implementation of _inline_enum_field and _anonymous_bit_field."""
     field_ir = ir_data.Field(
         location=location,
@@ -1202,7 +1376,14 @@ def _inline_type_field(location, name, abbreviation, body):
     "anonymous-bits-field-definition ->"
     '    field-location "bits" ":" Comment? eol anonymous-bits-body'
 )
-def _anonymous_bit_field(location, bits_keyword, colon, comment, newline, bits_body):
+def _anonymous_bit_field(
+    location: ir_data.FieldLocation,
+    bits_keyword: parser_types.Token,
+    colon: parser_types.Token,
+    comment: _List,
+    newline: parser_types.Token,
+    bits_body: ir_data.TypeDefinition,
+) -> _FieldWithType:
     """Constructs an ir_data.Field for an anonymous bit field."""
     del colon, comment, newline  # Unused.
     name = ir_data.NameDefinition(
@@ -1217,14 +1398,21 @@ def _anonymous_bit_field(location, bits_keyword, colon, comment, newline, bits_b
 
 
 @_handles("field-body -> Indent doc-line* attribute-line* Dedent")
-def _field_body(indent, docs, attributes, dedent):
+def _field_body(
+    indent: parser_types.Token,
+    docs: _List,
+    attributes: _List,
+    dedent: parser_types.Token,
+) -> ir_data.Field:
     del indent, dedent  # Unused.
     return ir_data.Field(documentation=docs.list, attribute=attributes.list)
 
 
 # A parenthetically-denoted abbreviation.
 @_handles('abbreviation -> "(" snake-word ")"')
-def _abbreviation(open_paren, word, close_paren):
+def _abbreviation(
+    open_paren: parser_types.Token, word: ir_data.Word, close_paren: parser_types.Token
+) -> ir_data.Word:
     del open_paren, close_paren  # Unused.
     return word
 
@@ -1232,7 +1420,14 @@ def _abbreviation(open_paren, word, close_paren):
 # enum EnumName:
 #   ... values ...
 @_handles('enum -> "enum" type-name ":" Comment? eol enum-body')
-def _enum(enum, name, colon, comment, newline, enum_body):
+def _enum(
+    enum: parser_types.Token,
+    name: ir_data.NameDefinition,
+    colon: parser_types.Token,
+    comment: _List,
+    newline: parser_types.Token,
+    enum_body: ir_data.TypeDefinition,
+) -> ir_data.TypeDefinition:
     del colon, comment, newline  # Unused.
     ir_data_utils.builder(enum_body.enumeration).source_location = (
         parser_types.merge_source_locations(enum, enum_body)
@@ -1245,7 +1440,13 @@ def _enum(enum, name, colon, comment, newline, enum_body):
 #   name = value
 #   name = value
 @_handles("enum-body -> Indent doc-line* attribute-line* enum-value+ Dedent")
-def _enum_body(indent, docs, attributes, values, dedent):
+def _enum_body(
+    indent: parser_types.Token,
+    docs: _List,
+    attributes: _List,
+    values: _List,
+    dedent: parser_types.Token,
+) -> ir_data.TypeDefinition:
     del indent, dedent  # Unused.
     return ir_data.TypeDefinition(
         enumeration=ir_data.Enum(value=values.list),
@@ -1261,8 +1462,15 @@ def _enum_body(indent, docs, attributes, values, dedent):
     '    constant-name "=" expression attribute* doc? Comment? eol enum-value-body?'
 )
 def _enum_value(
-    name, equals, expression, attribute, documentation, comment, newline, body
-):
+    name: ir_data.NameDefinition,
+    equals: parser_types.Token,
+    expression: ir_data.Expression,
+    attribute: _List,
+    documentation: _List,
+    comment: _List,
+    newline: parser_types.Token,
+    body: _List,
+) -> ir_data.EnumValue:
     """Constructs an IR node for an enum value statement (`NAME = value`)."""
     del equals, comment, newline  # Unused.
     result = ir_data.EnumValue(
@@ -1278,7 +1486,12 @@ def _enum_value(
 
 
 @_handles("enum-value-body -> Indent doc-line* attribute-line* Dedent")
-def _enum_value_body(indent, docs, attributes, dedent):
+def _enum_value_body(
+    indent: parser_types.Token,
+    docs: _List,
+    attributes: _List,
+    dedent: parser_types.Token,
+) -> ir_data.EnumValue:
     del indent, dedent  # Unused.
     return ir_data.EnumValue(documentation=docs.list, attribute=attributes.list)
 
@@ -1286,7 +1499,14 @@ def _enum_value_body(indent, docs, attributes, dedent):
 # An external is just a declaration that a type exists and has certain
 # attributes.
 @_handles('external -> "external" type-name ":" Comment? eol external-body')
-def _external(external, name, colon, comment, newline, external_body):
+def _external(
+    external: parser_types.Token,
+    name: ir_data.NameDefinition,
+    colon: parser_types.Token,
+    comment: _List,
+    newline: parser_types.Token,
+    external_body: ir_data.TypeDefinition,
+) -> ir_data.TypeDefinition:
     del colon, comment, newline  # Unused.
     external_body.source_location = parser_types.merge_source_locations(
         external, external_body
@@ -1301,7 +1521,12 @@ def _external(external, name, colon, comment, newline, external_body):
 # This syntax implicitly requires either a documentation line or a attribute
 # line, or it won't parse (because no Indent/Dedent tokens will be emitted).
 @_handles("external-body -> Indent doc-line* attribute-line* Dedent")
-def _external_body(indent, docs, attributes, dedent):
+def _external_body(
+    indent: parser_types.Token,
+    docs: _List,
+    attributes: _List,
+    dedent: parser_types.Token,
+) -> ir_data.TypeDefinition:
     return ir_data.TypeDefinition(
         external=ir_data.External(
             # Set source_location here, since it won't be set automatically.
@@ -1315,13 +1540,21 @@ def _external_body(indent, docs, attributes, dedent):
 
 
 @_handles('field-location -> expression "[" "+" expression "]"')
-def _field_location(start, open_bracket, plus, size, close_bracket):
+def _field_location(
+    start: ir_data.Expression,
+    open_bracket: parser_types.Token,
+    plus: parser_types.Token,
+    size: ir_data.Expression,
+    close_bracket: parser_types.Token,
+) -> ir_data.FieldLocation:
     del open_bracket, plus, close_bracket  # Unused.
     return ir_data.FieldLocation(start=start, size=size)
 
 
 @_handles('delimited-argument-list -> "(" argument-list ")"')
-def _type_argument_list(open_paren, arguments, close_paren):
+def _type_argument_list(
+    open_paren: parser_types.Token, arguments: _List, close_paren: parser_types.Token
+) -> _List:
     del open_paren, close_paren  # Unused
     return arguments
 
@@ -1334,7 +1567,9 @@ def _type_argument_list(open_paren, arguments, close_paren):
     "type -> type-reference delimited-argument-list? type-size-specifier?"
     "        array-length-specifier*"
 )
-def _type(reference, parameters, size, array_spec):
+def _type(
+    reference: ir_data.Reference, parameters: _List, size: _List, array_spec: _List
+) -> ir_data.Type:
     """Builds the IR for a type specifier."""
     base_type_source_location_end = reference.source_location.end
     atomic_type_source_location_end = reference.source_location.end
@@ -1384,7 +1619,9 @@ def _type(reference, parameters, size, array_spec):
 # TODO(bolms): Should symbolic names or expressions be allowed?  E.g.,
 # UInt:FIELD_SIZE or UInt:(16 + 16)?
 @_handles('type-size-specifier -> ":" numeric-constant')
-def _type_size_specifier(colon, numeric_constant):
+def _type_size_specifier(
+    colon: parser_types.Token, numeric_constant: ir_data.NumericConstant
+) -> ir_data.Expression:
     """handles the ":32" part of a type specifier like "UInt:32"."""
     del colon
     return ir_data.Expression(constant=numeric_constant)
@@ -1395,7 +1632,7 @@ def _type_size_specifier(colon, numeric_constant):
 @_handles("type-name -> type-word")
 @_handles("snake-name -> snake-word")
 @_handles("constant-name -> constant-word")
-def _name(word):
+def _name(word: ir_data.Word) -> ir_data.NameDefinition:
     return ir_data.NameDefinition(name=word)
 
 
@@ -1428,13 +1665,15 @@ def _name(word):
 @_handles('function-name -> "$present"')
 @_handles('function-name -> "$upper_bound"')
 @_handles('function-name -> "$lower_bound"')
-def _word(word):
+def _word(word: parser_types.Token) -> ir_data.Word:
     return ir_data.Word(text=word.text)
 
 
 @_handles("type-reference -> type-reference-tail")
 @_handles("constant-reference -> constant-reference-tail")
-def _un_module_qualified_type_reference(reference):
+def _un_module_qualified_type_reference(
+    reference: ir_data.Reference,
+) -> ir_data.Reference:
     return reference
 
 
@@ -1442,12 +1681,12 @@ def _un_module_qualified_type_reference(reference):
 @_handles("type-reference-tail -> type-word")
 @_handles("snake-reference -> snake-word")
 @_handles("snake-reference -> builtin-field-word")
-def _reference(word):
+def _reference(word: ir_data.Word) -> ir_data.Reference:
     return ir_data.Reference(source_name=[word])
 
 
 @_handles("builtin-reference -> builtin-word")
-def _builtin_reference(word):
+def _builtin_reference(word: ir_data.Word) -> ir_data.Reference:
     return ir_data.Reference(
         source_name=[word],
         canonical_name=ir_data.CanonicalName(object_path=[word.text]),
@@ -1466,7 +1705,9 @@ def _builtin_reference(word):
 # sees "snake_name.TypeName" or field-reference if it sees
 # "snake_name.snake_name".
 @_handles('constant-reference -> snake-reference "." constant-reference-tail')
-def _module_qualified_constant_reference(new_head, dot, reference):
+def _module_qualified_constant_reference(
+    new_head: ir_data.Reference, dot: parser_types.Token, reference: ir_data.Reference
+) -> ir_data.Reference:
     del dot  # Unused.
     new_source_name = list(new_head.source_name) + list(reference.source_name)
     del reference.source_name[:]
@@ -1480,7 +1721,9 @@ def _module_qualified_constant_reference(new_head, dot, reference):
 @_handles('constant-reference-tail -> type-word "." snake-reference')
 @_handles('type-reference-tail -> type-word "." type-reference-tail')
 @_handles('type-reference -> snake-word "." type-reference-tail')
-def _qualified_reference(word, dot, reference):
+def _qualified_reference(
+    word: ir_data.Word, dot: parser_types.Token, reference: ir_data.Reference
+) -> ir_data.Reference:
     """Adds a name. or Type. qualification to the head of a reference."""
     del dot  # Unused.
     new_source_name = [word] + list(reference.source_name)
@@ -1491,7 +1734,11 @@ def _qualified_reference(word, dot, reference):
 
 # Arrays are properly translated to IR in _type().
 @_handles('array-length-specifier -> "[" expression "]"')
-def _array_length_specifier(open_bracket, length, close_bracket):
+def _array_length_specifier(
+    open_bracket: parser_types.Token,
+    length: ir_data.Expression,
+    close_bracket: parser_types.Token,
+) -> ir_data.Expression:
     del open_bracket, close_bracket  # Unused.
     return length
 
@@ -1499,7 +1746,9 @@ def _array_length_specifier(open_bracket, length, close_bracket):
 # An array specifier can end with empty brackets ("arr[3][]"), in which case the
 # array's size is inferred from the size of its enclosing field.
 @_handles('array-length-specifier -> "[" "]"')
-def _auto_array_length_specifier(open_bracket, close_bracket):
+def _auto_array_length_specifier(
+    open_bracket: parser_types.Token, close_bracket: parser_types.Token
+) -> ir_data.Empty:
     # Note that the Void's source_location is the space between the brackets (if
     # any).
     return ir_data.Empty(
@@ -1511,22 +1760,22 @@ def _auto_array_length_specifier(open_bracket, close_bracket):
 
 
 @_handles('eol -> "\\n" comment-line*')
-def _eol(eol, comments):
+def _eol(eol: parser_types.Token, comments: _List) -> parser_types.Token:
     del comments  # Unused
     return eol
 
 
 @_handles('comment-line -> Comment? "\\n"')
-def _comment_line(comment, eol):
+def _comment_line(comment: _List, eol: parser_types.Token) -> parser_types.Token:
     del comment  # Unused
     return eol
 
 
-def _finalize_grammar():
+def _finalize_grammar() -> None:
     """_Finalize adds productions for foo*, foo+, and foo? symbols."""
-    star_symbols = set()
-    plus_symbols = set()
-    option_symbols = set()
+    star_symbols: set[str] = set()
+    plus_symbols: set[str] = set()
+    option_symbols: set[str] = set()
     for production in _handlers:
         for symbol in production.rhs:
             if symbol[-1] == "*":

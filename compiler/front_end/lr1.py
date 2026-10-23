@@ -26,14 +26,16 @@ Clients are expected to provide their own tokenizers and handle turning a raw
 parse tree into an intermediate representation on their own.
 """
 
+from __future__ import annotations
+
 import collections
+from collections.abc import Collection, Iterable, Mapping, Sequence
+from typing import Any, NamedTuple
 
 from compiler.util import parser_types
 
 
-class Item(
-    collections.namedtuple("Item", ["production", "dot", "terminal", "next_symbol"])
-):
+class Item(NamedTuple):
     """An Item is an LR(1) Item: a production, a cursor location, and a terminal.
 
     An Item represents a partially-parsed production, and a lookahead symbol.
@@ -49,7 +51,12 @@ class Item(
         next_symbol: The lookahead symbol.
     """
 
-    def __str__(self):
+    production: parser_types.Production
+    dot: int
+    terminal: str
+    next_symbol: str | None
+
+    def __str__(self) -> str:
         """__str__ generates ASLU notation."""
         return (
             str(self.production.lhs)
@@ -67,7 +74,7 @@ class Item(
         )
 
     @staticmethod
-    def parse(text):
+    def parse(text: str) -> Item:
         """Parses an Item in ALSU notation.
 
         Parses an Item from notation like:
@@ -107,7 +114,7 @@ class Item(
         )
 
 
-def make_item(production, dot, symbol):
+def make_item(production: parser_types.Production, dot: int, symbol: str) -> Item:
     return Item(
         production,
         dot,
@@ -116,21 +123,42 @@ def make_item(production, dot, symbol):
     )
 
 
-class Conflict(collections.namedtuple("Conflict", ["state", "symbol", "actions"])):
+class Conflict(NamedTuple):
     """Conflict represents a parse conflict."""
 
-    def __str__(self):
+    state: int
+    symbol: str
+    actions: frozenset[Action]
+
+    def __str__(self) -> str:
         return "Conflict for {} in state {}: ".format(
             self.symbol, self.state
         ) + " vs ".join([str(a) for a in self.actions])
 
 
-Shift = collections.namedtuple("Shift", ["state", "items"])
-Reduce = collections.namedtuple("Reduce", ["rule"])
-Accept = collections.namedtuple("Accept", [])
-Error = collections.namedtuple("Error", ["code"])
+class Shift(NamedTuple):
+    state: int
+    items: frozenset[Item]
 
-Symbol = collections.namedtuple("Symbol", ["symbol"])
+
+class Reduce(NamedTuple):
+    rule: parser_types.Production
+
+
+class Accept(NamedTuple):
+    pass
+
+
+class Error(NamedTuple):
+    code: str | None
+
+
+Action = Shift | Reduce | Accept | Error
+
+
+class Symbol(NamedTuple):
+    symbol: str
+
 
 # START_PRIME is the implicit 'real' root symbol for the grammar.
 START_PRIME = "S'"
@@ -141,15 +169,15 @@ END_OF_INPUT = "$"
 # ANY_TOKEN is used by mark_error as a "wildcard" token that should be replaced
 # by every other token.
 ANY_TOKEN = parser_types.Token(
-    object(), "*", parser_types.SourceLocation.from_str("0:0-0:0")
+    # This deliberately violates Token's type: a unique object cannot collide
+    # with any real symbol.
+    object(),  # type: ignore[arg-type]
+    "*",
+    parser_types.SourceLocation.from_str("0:0-0:0"),
 )
 
 
-class Reduction(
-    collections.namedtuple(
-        "Reduction", ["symbol", "children", "production", "source_location"]
-    )
-):
+class Reduction(NamedTuple):
     """A Reduction is a non-leaf node in a parse tree.
 
     Attributes:
@@ -162,7 +190,10 @@ class Reduction(
         did not include source_location.
     """
 
-    pass
+    symbol: str
+    children: list[Any]
+    production: parser_types.Production
+    source_location: parser_types.SourceLocation | None
 
 
 class Grammar(object):
@@ -177,7 +208,9 @@ class Grammar(object):
       terminals: A set of all terminal symbols in the grammar, including $.
     """
 
-    def __init__(self, start_symbol, productions):
+    def __init__(
+        self, start_symbol: str, productions: Iterable[parser_types.Production]
+    ):
         """Constructs a Grammar object.
 
         Arguments:
@@ -188,28 +221,30 @@ class Grammar(object):
         object.__init__(self)
         self.start = start_symbol
         self._seed_production = parser_types.Production(START_PRIME, (self.start,))
-        self.productions = productions + [self._seed_production]
+        self.productions = list(productions) + [self._seed_production]
 
-        self._single_level_closure_of_item_cache = {}
-        self._closure_of_item_cache = {}
+        self._single_level_closure_of_item_cache: dict[Item, set[Item]] = {}
+        self._closure_of_item_cache: dict[Item, set[Item]] = {}
         self._compute_symbols()
         self._compute_seed_firsts()
         self._set_productions_by_lhs()
         self._populate_item_cache()
 
-    def _set_productions_by_lhs(self):
+    def _set_productions_by_lhs(self) -> None:
         # Prepopulating _productions_by_lhs speeds up _closure_of_item by about 30%,
         # which is significant on medium-to-large grammars.
-        self._productions_by_lhs = collections.defaultdict(list)
+        self._productions_by_lhs: dict[str, list[parser_types.Production]] = (
+            collections.defaultdict(list)
+        )
         for production in self.productions:
             self._productions_by_lhs[production.lhs].append(production)
 
-    def _populate_item_cache(self):
+    def _populate_item_cache(self) -> None:
         # There are a relatively small number of possible Items for a grammar, and
         # the algorithm needs to get Items from their constituent components very
         # frequently.  As it turns out, pre-caching all possible Items results in a
         # ~35% overall speedup to Grammar.parser().
-        self._item_cache = {}
+        self._item_cache: dict[tuple[parser_types.Production, int, str], Item] = {}
         for symbol in self.terminals:
             for production in self.productions:
                 for dot in range(len(production.rhs) + 1):
@@ -217,7 +252,7 @@ class Grammar(object):
                         production, dot, symbol
                     )
 
-    def _compute_symbols(self):
+    def _compute_symbols(self) -> None:
         """Finds all grammar symbols, and sorts them into terminal and non-terminal.
 
         Nonterminal symbols are those which appear on the left side of any
@@ -225,8 +260,8 @@ class Grammar(object):
 
         _compute_symbols is used during __init__.
         """
-        self.symbols = {END_OF_INPUT}
-        self.nonterminals = set()
+        self.symbols: set[str] = {END_OF_INPUT}
+        self.nonterminals: set[str] = set()
         for production in self.productions:
             self.symbols.add(production.lhs)
             self.nonterminals.add(production.lhs)
@@ -234,7 +269,7 @@ class Grammar(object):
                 self.symbols.add(symbol)
         self.terminals = self.symbols - self.nonterminals
 
-    def _compute_seed_firsts(self):
+    def _compute_seed_firsts(self) -> None:
         """Computes FIRST (ALSU p221) for all terminal and nonterminal symbols.
 
         The algorithm for computing FIRST is an iterative one that terminates when
@@ -248,7 +283,7 @@ class Grammar(object):
 
         _compute_seed_firsts is used during __init__.
         """
-        self.firsts = {}
+        self.firsts: dict[str, set[str | None]] = {}
         # FIRST for a terminal symbol is always just that terminal symbol.
         for terminal in self.terminals:
             self.firsts[terminal] = set([terminal])
@@ -265,7 +300,7 @@ class Grammar(object):
             # symbol and epsilon has been added to the _firsts set for every
             # nonterminal symbol.  This would be slow, but requires a pathological
             # grammar; useful grammars should complete in only a few iterations.
-            firsts_to_add = {}
+            firsts_to_add: dict[str, set[str | None]] = {}
             for production in self.productions:
                 for first in self._first(production.rhs):
                     if first not in self.firsts[production.lhs]:
@@ -277,7 +312,7 @@ class Grammar(object):
             for symbol in firsts_to_add:
                 self.firsts[symbol].update(firsts_to_add[symbol])
 
-    def _first(self, symbols):
+    def _first(self, symbols: Sequence[str]) -> set[str | None]:
         """The FIRST function from ALSU p221.
 
         _first takes a string of symbols (both terminals and nonterminals) and
@@ -294,7 +329,7 @@ class Grammar(object):
         Returns:
           A set of terminals which could be the first terminal in "symbols."
         """
-        result = set()
+        result: set[str | None] = set()
         all_contain_epsilon = True
         for symbol in symbols:
             for first in self.firsts[symbol]:
@@ -308,7 +343,7 @@ class Grammar(object):
             result.add(None)
         return result
 
-    def _closure_of_item(self, root_item):
+    def _closure_of_item(self, root_item: Item) -> set[Item]:
         """Modified implementation of CLOSURE from ALSU p261.
 
         _closure_of_item performs the CLOSURE function with a single seed item, with
@@ -363,7 +398,7 @@ class Grammar(object):
             # speeds up this function by about 50%, even after the
             # _closure_of_item_cache check.
             if item not in self._single_level_closure_of_item_cache:
-                new_items = set()
+                new_items: set[Item] = set()
                 for production in self._productions_by_lhs.get(item.next_symbol, []):
                     for terminal in self._first(
                         item.production.rhs[item.dot + 1 :] + (item.terminal,)
@@ -393,7 +428,7 @@ class Grammar(object):
             self._closure_of_item(item)
         return item_set
 
-    def _parallel_goto(self, items):
+    def _parallel_goto(self, items: Iterable[Item]) -> dict[str, set[Item]]:
         """The GOTO function from ALSU p261, executed on all symbols.
 
         _parallel_goto takes a set of Items, and returns a dict from every symbol in
@@ -411,7 +446,7 @@ class Grammar(object):
         Returns:
           A dict from symbols to sets of items representing the new DFA states.
         """
-        results = collections.defaultdict(set)
+        results: dict[str, set[Item]] = collections.defaultdict(set)
         # Sorting `items` is necessary in order for the state numbers in the
         # generated parser to be deterministic, which is necessary in order to
         # check that a cached parser is up to date.  Otherwise, it would be
@@ -434,7 +469,7 @@ class Grammar(object):
             results[next_symbol].update(closure)
         return results
 
-    def _items(self):
+    def _items(self) -> tuple[list[frozenset[Item]], dict[int, dict[str, int]]]:
         """The items function from ALSU p261.
 
         _items computes the set of sets of LR(1) items for a shift-reduce parser
@@ -461,7 +496,7 @@ class Grammar(object):
             )
         ]
         items = {item_list[0]: 0}
-        goto_table = collections.defaultdict(dict)
+        goto_table: dict[int, dict[str, int]] = collections.defaultdict(dict)
         i = 0
         # For each state, figure out what the new state when each symbol is added to
         # the top of the parsing stack (see the comments in parser.parse).  See
@@ -471,8 +506,8 @@ class Grammar(object):
             gotos = self._parallel_goto(item_set)
             # Sort the gotos so that the state numbering in the generated
             # parser is deterministic.
-            for symbol, goto in sorted(gotos.items()):
-                goto = frozenset(goto)
+            for symbol, goto_items in sorted(gotos.items()):
+                goto = frozenset(goto_items)
                 if goto not in items:
                     items[goto] = len(item_list)
                     item_list.append(goto)
@@ -480,7 +515,7 @@ class Grammar(object):
             i += 1
         return item_list, goto_table
 
-    def parser(self):
+    def parser(self) -> Parser:
         """parser returns an LR(1) parser for the Grammar.
 
         This implements the Canonical LR(1) ("LR(1)") parser algorithm ("Algorithm
@@ -501,12 +536,12 @@ class Grammar(object):
           A Parser.
         """
         item_sets, goto = self._items()
-        action = collections.defaultdict(dict)
-        conflicts = set()
+        action: dict[int, dict[str, Action]] = collections.defaultdict(dict)
+        conflicts: set[Conflict] = set()
         end_item = self._item_cache[self._seed_production, 1, END_OF_INPUT]
         for i in range(len(item_sets)):
             for item in item_sets[i]:
-                new_action = None
+                new_action: Action | None = None
                 if (
                     item.next_symbol is None
                     and item.production != self._seed_production
@@ -531,7 +566,7 @@ class Grammar(object):
                     new_action = Accept()
                     assert action[i].get(END_OF_INPUT, new_action) == new_action
                     action[i][END_OF_INPUT] = new_action
-        trimmed_goto = collections.defaultdict(dict)
+        trimmed_goto: dict[int, dict[str, int]] = collections.defaultdict(dict)
         for k in goto:
             for l in goto[k]:
                 if l in self.nonterminals:
@@ -547,10 +582,18 @@ class Grammar(object):
         )
 
 
-ParseError = collections.namedtuple(
-    "ParseError", ["code", "index", "token", "state", "expected_tokens"]
-)
-ParseResult = collections.namedtuple("ParseResult", ["parse_tree", "error"])
+class ParseError(NamedTuple):
+    code: str | None
+    # `index` shadows tuple.index(); the field name predates the typed definition.
+    index: int  # type: ignore[assignment]
+    token: parser_types.Token | Symbol
+    state: int
+    expected_tokens: set[str]
+
+
+class ParseResult(NamedTuple):
+    parse_tree: parser_types.Token | Reduction | None
+    error: ParseError | None
 
 
 class Parser(object):
@@ -582,14 +625,14 @@ class Parser(object):
 
     def __init__(
         self,
-        item_sets,
-        goto,
-        action,
-        conflicts,
-        terminals,
-        nonterminals,
-        productions,
-        default_errors=None,
+        item_sets: Sequence[frozenset[Item]],
+        goto: Mapping[int, dict[str, int]],
+        action: Mapping[int, dict[str, Action]],
+        conflicts: set[Conflict],
+        terminals: set[str],
+        nonterminals: set[str],
+        productions: Collection[parser_types.Production],
+        default_errors: dict[int, str] | None = None,
     ):
         super(Parser, self).__init__()
         self.item_sets = item_sets
@@ -601,7 +644,7 @@ class Parser(object):
         self.productions = productions
         self.default_errors = default_errors or {}
 
-    def parse(self, tokens):
+    def parse(self, tokens: Iterable[parser_types.Token]) -> ParseResult:
         """parse implements the Shift-Reduce parsing algorithm.
 
         parse implements the standard shift-reduce algorithm outlined on ASLU
@@ -615,7 +658,8 @@ class Parser(object):
         """
         # The END_OF_INPUT token is explicitly added to avoid explicit "cursor <
         # len(tokens)" checks.
-        tokens = list(tokens) + [Symbol(END_OF_INPUT)]
+        token_list: list[parser_types.Token | Symbol] = list(tokens)
+        token_list.append(Symbol(END_OF_INPUT))
 
         # Each element of stack is a parse state and a (possibly partial) parse
         # tree.  The state at the top of the stack encodes which productions are
@@ -623,9 +667,9 @@ class Parser(object):
         # matches some prefix of the production, in a place where that production
         # might be valid), and, for each active production, how much of the
         # production has been completed.
-        stack = [(0, None)]
+        stack: list[tuple[int, Any]] = [(0, None)]
 
-        def state():
+        def state() -> int:
             return stack[-1][0]
 
         cursor = 0
@@ -633,26 +677,27 @@ class Parser(object):
         # On each iteration, look at the next symbol and the current state, and
         # perform the corresponding action.
         while True:
-            if tokens[cursor].symbol not in self.action.get(state(), {}):
+            if token_list[cursor].symbol not in self.action.get(state(), {}):
                 # Most state/symbol entries would be Errors, so rather than exhaustively
                 # adding error entries, we just check here.
+                next_action: Action
                 if state() in self.default_errors:
                     next_action = Error(self.default_errors[state()])
                 else:
                     next_action = Error(None)
             else:
-                next_action = self.action[state()][tokens[cursor].symbol]
+                next_action = self.action[state()][token_list[cursor].symbol]
 
             if isinstance(next_action, Shift):
                 # Shift means that there are no "complete" productions on the stack,
                 # and so the current token should be shifted onto the stack, with a new
                 # state indicating the new set of "active" productions.
-                stack.append((next_action.state, tokens[cursor]))
+                stack.append((next_action.state, token_list[cursor]))
                 cursor += 1
             elif isinstance(next_action, Accept):
                 # Accept means that parsing is over, successfully.
                 assert len(stack) == 2, "Accepted incompletely-reduced input."
-                assert tokens[cursor].symbol == END_OF_INPUT, (
+                assert token_list[cursor].symbol == END_OF_INPUT, (
                     "Accepted parse before " "end of input."
                 )
                 return ParseResult(stack[-1][1], None)
@@ -708,7 +753,7 @@ class Parser(object):
                     ParseError(
                         next_action.code,
                         cursor,
-                        tokens[cursor],
+                        token_list[cursor],
                         state(),
                         set(
                             k
@@ -720,7 +765,12 @@ class Parser(object):
             else:
                 assert False, "Shouldn't be here."
 
-    def mark_error(self, tokens, error_token, error_code):
+    def mark_error(
+        self,
+        tokens: Iterable[parser_types.Token],
+        error_token: parser_types.Token | None,
+        error_code: str,
+    ) -> str | None:
         """Marks an error state with the given error code.
 
         mark_error implements the equivalent of the "Merr" system presented in

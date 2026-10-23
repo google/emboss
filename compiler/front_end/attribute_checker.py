@@ -18,7 +18,11 @@ The main entry point is normalize_and_verify(), which adds attributes and/or
 verifies attributes which may have been manually entered.
 """
 
+from __future__ import annotations
+
 import re
+from collections.abc import Mapping
+from typing import TYPE_CHECKING
 
 from compiler.front_end import attributes
 from compiler.front_end import type_check
@@ -29,7 +33,8 @@ from compiler.util import ir_data_utils
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 
-
+if TYPE_CHECKING:
+    from compiler.util import parser_types
 # Default value for maximum_bits on an `enum`.
 _DEFAULT_ENUM_MAXIMUM_BITS = 64
 
@@ -43,7 +48,9 @@ _VALID_BYTE_ORDER = attribute_util.string_from_list(
 _VALID_TEXT_OUTPUT = attribute_util.string_from_list({"Emit", "Skip"})
 
 
-def _valid_back_ends(attr, module_source_file):
+def _valid_back_ends(
+    attr: ir_data.Attribute, module_source_file: str
+) -> list[list[error.Message]]:
     """Checks that `attr` holds a valid list of back end specifiers."""
     if not re.fullmatch(
         r"(?:\s*[a-z][a-z0-9_]*\s*(?:,\s*[a-z][a-z0-9_]*\s*)*,?)?\s*",
@@ -112,7 +119,9 @@ _STRUCT_VIRTUAL_FIELD_ATTRIBUTES = {
 }
 
 
-def _construct_integer_attribute(name, value, source_location):
+def _construct_integer_attribute(
+    name: str, value: int, source_location: parser_types.SourceLocation
+) -> ir_data.Attribute:
     """Constructs an integer Attribute with the given name and value."""
     attr_value = ir_data.AttributeValue(
         expression=ir_data.Expression(
@@ -138,7 +147,9 @@ def _construct_integer_attribute(name, value, source_location):
     )
 
 
-def _construct_boolean_attribute(name, value, source_location):
+def _construct_boolean_attribute(
+    name: str, value: bool, source_location: parser_types.SourceLocation
+) -> ir_data.Attribute:
     """Constructs a boolean Attribute with the given name and value."""
     attr_value = ir_data.AttributeValue(
         expression=ir_data.Expression(
@@ -157,7 +168,9 @@ def _construct_boolean_attribute(name, value, source_location):
     )
 
 
-def _construct_string_attribute(name, value, source_location):
+def _construct_string_attribute(
+    name: str, value: str, source_location: parser_types.SourceLocation
+) -> ir_data.Attribute:
     """Constructs a string Attribute with the given name and value."""
     attr_value = ir_data.AttributeValue(
         string_constant=ir_data.String(text=value, source_location=source_location),
@@ -170,7 +183,9 @@ def _construct_string_attribute(name, value, source_location):
     )
 
 
-def _fixed_size_of_struct_or_bits(struct, unit_size):
+def _fixed_size_of_struct_or_bits(
+    struct: ir_data.Structure, unit_size: ir_data.AddressableUnit
+) -> int | None:
     """Returns size of struct in bits or None, if struct is not fixed size."""
     size = 0
     for field in struct.field:
@@ -193,8 +208,11 @@ def _fixed_size_of_struct_or_bits(struct, unit_size):
 
 
 def _verify_size_attributes_on_structure(
-    struct, type_definition, source_file_name, errors
-):
+    struct: ir_data.Structure,
+    type_definition: ir_data.TypeDefinition,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     """Verifies size attributes on a struct or bits."""
     fixed_size = _fixed_size_of_struct_or_bits(struct, type_definition.addressable_unit)
     fixed_size_attr = ir_util.get_attribute(
@@ -228,7 +246,9 @@ def _verify_size_attributes_on_structure(
 
 
 # TODO(bolms): remove [fixed_size]; it is superseded by $size_in_{bits,bytes}
-def _add_missing_size_attributes_on_structure(struct, type_definition):
+def _add_missing_size_attributes_on_structure(
+    struct: ir_data.Structure, type_definition: ir_data.TypeDefinition
+) -> None:
     """Adds missing size attributes on a struct."""
     fixed_size = _fixed_size_of_struct_or_bits(struct, type_definition.addressable_unit)
     if fixed_size is None:
@@ -248,7 +268,9 @@ def _add_missing_size_attributes_on_structure(struct, type_definition):
         )
 
 
-def _field_needs_byte_order(field, type_definition, ir):
+def _field_needs_byte_order(
+    field: ir_data.Field, type_definition: ir_data.TypeDefinition, ir: ir_data.EmbossIr
+) -> bool:
     """Returns true if the given field needs a byte_order attribute."""
     if ir_util.field_is_virtual(field):
         # Virtual fields have no physical type, and thus do not need a byte order.
@@ -261,7 +283,9 @@ def _field_needs_byte_order(field, type_definition, ir):
     return field_type.addressable_unit != type_definition.addressable_unit
 
 
-def _field_may_have_null_byte_order(field, type_definition, ir):
+def _field_may_have_null_byte_order(
+    field: ir_data.Field, type_definition: ir_data.TypeDefinition, ir: ir_data.EmbossIr
+) -> bool:
     """Returns true if "Null" is a valid byte order for the given field."""
     # If the field is one unit in length, then byte order does not matter.
     if (
@@ -281,7 +305,12 @@ def _field_may_have_null_byte_order(field, type_definition, ir):
     return False
 
 
-def _add_missing_byte_order_attribute_on_field(field, type_definition, ir, defaults):
+def _add_missing_byte_order_attribute_on_field(
+    field: ir_data.Field,
+    type_definition: ir_data.TypeDefinition,
+    ir: ir_data.EmbossIr,
+    defaults: Mapping[str, ir_data.Attribute],
+) -> None:
     """Adds missing byte_order attributes to fields that need them."""
     if _field_needs_byte_order(field, type_definition, ir):
         byte_order_attr = ir_util.get_attribute(field.attribute, attributes.BYTE_ORDER)
@@ -298,7 +327,7 @@ def _add_missing_byte_order_attribute_on_field(field, type_definition, ir, defau
                 )
 
 
-def _add_missing_back_ends_to_module(module):
+def _add_missing_back_ends_to_module(module: ir_data.Module) -> None:
     """Sets the expected_back_ends attribute for a module, if not already set."""
     back_ends_attr = ir_util.get_attribute(module.attribute, attributes.BACK_ENDS)
     if back_ends_attr is None:
@@ -311,14 +340,16 @@ def _add_missing_back_ends_to_module(module):
         )
 
 
-def _gather_expected_back_ends(module):
+def _gather_expected_back_ends(module: ir_data.Module) -> dict[str, set[str]]:
     """Captures the expected_back_ends attribute for `module`."""
     back_ends_attr = ir_util.get_attribute(module.attribute, attributes.BACK_ENDS)
     back_ends_str = back_ends_attr.string_constant.text
     return {"expected_back_ends": {x.strip() for x in back_ends_str.split(",")} | {""}}
 
 
-def _add_addressable_unit_to_external(external, type_definition):
+def _add_addressable_unit_to_external(
+    external: ir_data.External, type_definition: ir_data.TypeDefinition
+) -> None:
     """Sets the addressable_unit field for an external TypeDefinition."""
     # Strictly speaking, addressable_unit isn't an "attribute," but it's close
     # enough that it makes sense to handle it with attributes.
@@ -334,7 +365,9 @@ def _add_addressable_unit_to_external(external, type_definition):
     # _verify_addressable_unit_attribute_on_external, below.
 
 
-def _add_missing_width_and_sign_attributes_on_enum(enum, type_definition):
+def _add_missing_width_and_sign_attributes_on_enum(
+    enum: ir_data.Enum, type_definition: ir_data.TypeDefinition
+) -> None:
     """Sets the maximum_bits and is_signed attributes for an enum, if needed."""
     max_bits_attr = ir_util.get_integer_attribute(
         type_definition.attribute, attributes.ENUM_MAXIMUM_BITS
@@ -372,8 +405,12 @@ def _add_missing_width_and_sign_attributes_on_enum(enum, type_definition):
 
 
 def _verify_byte_order_attribute_on_field(
-    field, type_definition, source_file_name, ir, errors
-):
+    field: ir_data.Field,
+    type_definition: ir_data.TypeDefinition,
+    source_file_name: str,
+    ir: ir_data.EmbossIr,
+    errors: list[list[error.Message]],
+) -> None:
     """Verifies the byte_order attribute on the given field."""
     byte_order_attr = ir_util.get_attribute(field.attribute, attributes.BYTE_ORDER)
     field_needs_byte_order = _field_needs_byte_order(field, type_definition, ir)
@@ -415,7 +452,12 @@ def _verify_byte_order_attribute_on_field(
         )
 
 
-def _verify_requires_attribute_on_field(field, source_file_name, ir, errors):
+def _verify_requires_attribute_on_field(
+    field: ir_data.Field,
+    source_file_name: str,
+    ir: ir_data.EmbossIr,
+    errors: list[list[error.Message]],
+) -> None:
     """Verifies that [requires] is valid on the given field."""
     requires_attr = ir_util.get_attribute(field.attribute, attributes.REQUIRES)
     if not requires_attr:
@@ -461,8 +503,11 @@ def _verify_requires_attribute_on_field(field, source_file_name, ir, errors):
 
 
 def _verify_addressable_unit_attribute_on_external(
-    external, type_definition, source_file_name, errors
-):
+    external: ir_data.External,
+    type_definition: ir_data.TypeDefinition,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     """Verifies the addressable_unit_size attribute on an external."""
     del external  # Unused.
     addressable_unit_size_attr = ir_util.get_integer_attribute(
@@ -493,7 +538,12 @@ def _verify_addressable_unit_attribute_on_external(
         )
 
 
-def _verify_width_attribute_on_enum(enum, type_definition, source_file_name, errors):
+def _verify_width_attribute_on_enum(
+    enum: ir_data.Enum,
+    type_definition: ir_data.TypeDefinition,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     """Verifies the maximum_bits attribute for an enum TypeDefinition."""
     del enum  # Unused.
     max_bits_value = ir_util.get_integer_attribute(
@@ -516,7 +566,7 @@ def _verify_width_attribute_on_enum(enum, type_definition, source_file_name, err
         )
 
 
-def _add_missing_attributes_on_ir(ir):
+def _add_missing_attributes_on_ir(ir: ir_data.EmbossIr) -> list[list[error.Message]]:
     """Adds missing attributes in a complete IR."""
     traverse_ir.fast_traverse_ir_top_down(
         ir, [ir_data.Module], _add_missing_back_ends_to_module
@@ -552,7 +602,13 @@ def _add_missing_attributes_on_ir(ir):
     return []
 
 
-def _verify_field_attributes(field, type_definition, source_file_name, ir, errors):
+def _verify_field_attributes(
+    field: ir_data.Field,
+    type_definition: ir_data.TypeDefinition,
+    source_file_name: str,
+    ir: ir_data.EmbossIr,
+    errors: list[list[error.Message]],
+) -> None:
     _verify_byte_order_attribute_on_field(
         field, type_definition, source_file_name, ir, errors
     )
@@ -560,8 +616,11 @@ def _verify_field_attributes(field, type_definition, source_file_name, ir, error
 
 
 def _verify_back_end_attributes(
-    attribute, expected_back_ends, source_file_name, errors
-):
+    attribute: ir_data.Attribute,
+    expected_back_ends: set[str],
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     back_end_text = ir_data_utils.reader(attribute).back_end.text
     if back_end_text not in expected_back_ends:
         expected_back_ends_for_error = expected_back_ends - {""}
@@ -587,9 +646,9 @@ def _verify_back_end_attributes(
         )
 
 
-def _verify_attributes_on_ir(ir):
+def _verify_attributes_on_ir(ir: ir_data.EmbossIr) -> list[list[error.Message]]:
     """Verifies attributes in a complete IR."""
-    errors = []
+    errors: list[list[error.Message]] = []
     traverse_ir.fast_traverse_ir_top_down(
         ir,
         [ir_data.Attribute],
@@ -623,7 +682,7 @@ def _verify_attributes_on_ir(ir):
     return errors
 
 
-def normalize_and_verify(ir):
+def normalize_and_verify(ir: ir_data.EmbossIr) -> list[list[error.Message]]:
     """Performs various normalizations and verifications on ir.
 
     Checks for duplicate attributes.

@@ -17,7 +17,7 @@
 import importlib.resources
 
 
-def load(package, file, encoding="utf-8"):
+def load(package: str, file: str, encoding: str = "utf-8") -> str:
     """Returns the contents of `file` from the Python package loader."""
     with importlib.resources.files(package).joinpath(file).open(
         "r", encoding=encoding

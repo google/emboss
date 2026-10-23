@@ -14,7 +14,10 @@
 
 """Routines to load a shift-reduce parser for the module_ir module."""
 
-import collections
+from __future__ import annotations
+
+from collections.abc import Iterable
+from typing import NamedTuple
 
 from compiler.front_end.generated import cached_parser
 from compiler.front_end import lr1
@@ -23,17 +26,15 @@ from compiler.front_end import module_ir
 from compiler.util import parser_types
 from compiler.util import simple_memoizer
 
-ParserAndIsCached = collections.namedtuple(
-    "ParserAndIsCached",
-    [
-        "parser",
-        "cache_mismatch",
-    ],
-)
+
+class ParserAndIsCached(NamedTuple):
+    parser: lr1.Parser
+    # Productions in the cached parser but not in module_ir, and vice versa.
+    cache_mismatch: tuple[set[parser_types.Production], set[parser_types.Production]]
 
 
 @simple_memoizer.memoize
-def _load_module_parser():
+def _load_module_parser() -> ParserAndIsCached:
     module_parser = cached_parser.module_parser()
     module_ir_productions = set(module_ir.PRODUCTIONS) | {
         parser_types.Production(lr1.START_PRIME, (module_ir.START_SYMBOL,))
@@ -50,7 +51,7 @@ def _load_module_parser():
 
 
 @simple_memoizer.memoize
-def _load_expression_parser():
+def _load_expression_parser() -> ParserAndIsCached:
     expression_parser = cached_parser.expression_parser()
     module_ir_productions = set(module_ir.PRODUCTIONS) | {
         parser_types.Production(lr1.START_PRIME, (module_ir.EXPRESSION_START_SYMBOL,))
@@ -69,19 +70,21 @@ def _load_expression_parser():
     )
 
 
-def module_parser_cache_mismatch():
+def module_parser_cache_mismatch() -> (
+    tuple[set[parser_types.Production], set[parser_types.Production]]
+):
     return _load_module_parser().cache_mismatch
 
 
-def module_parser():
+def module_parser() -> lr1.Parser:
     return _load_module_parser().parser
 
 
-def parse_module(tokens):
+def parse_module(tokens: Iterable[parser_types.Token]) -> lr1.ParseResult:
     """Parses the provided Emboss token list into an Emboss module parse tree."""
     return _load_module_parser().parser.parse(tokens)
 
 
-def parse_expression(tokens):
+def parse_expression(tokens: Iterable[parser_types.Token]) -> lr1.ParseResult:
     """Parses the provided Emboss token list into an expression parse tree."""
     return _load_expression_parser().parser.parse(tokens)

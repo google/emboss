@@ -17,12 +17,15 @@
 Use the format_template function to render a code template.
 """
 
+from __future__ import annotations
+
 import collections
 import re
 import string
+from typing import Any
 
 
-def format_template(template, **kwargs):
+def format_template(template: string.Template, **kwargs: object) -> str:
     """format_template acts like str.format, but uses ${name} instead of {name}.
 
     format_template acts like a str.format, except that instead of using { and }
@@ -43,7 +46,7 @@ def format_template(template, **kwargs):
     return template.substitute(**kwargs)
 
 
-def parse_templates(text):
+def parse_templates(text: str) -> Any:
     """Parses text into a namedtuple of templates.
 
     parse_templates will split its argument into templates by searching for lines
@@ -84,11 +87,11 @@ def parse_templates(text):
     """
     delimiter_re = re.compile(r"^\W*\*\* ([A-Za-z][A-Za-z0-9_]*) \*\*\W*$")
     comment_re = re.compile(r"^\s*//.*$")
-    templates = {}
-    name = None
-    template = []
+    templates: dict[str, string.Template] = {}
+    name: str | None = None
+    template: list[str] = []
 
-    def finish_template(template):
+    def finish_template(template: list[str]) -> string.Template:
         return string.Template("\n".join(template))
 
     for line in text.splitlines():

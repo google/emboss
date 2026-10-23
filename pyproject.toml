@@ -2,3 +2,28 @@
 extend-exclude = '''
 ^/compiler/front_end/generated/cached_parser\.py$
 '''
+
+[tool.mypy]
+python_version = "3.10"
+files = ["compiler", "embossc", "scripts"]
+# Tests exercise internal APIs loosely (dummy values, partial IR objects) and
+# are not type-checked.  The generated parser is excluded for the same reason
+# it is excluded from formatting.
+exclude = ['_test\.py$', '^compiler/front_end/generated/']
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+# IR fields are declared `Optional[...] = None` so that an unset field can be
+# detected, but code that reads a field after the front end has filled it in
+# treats it as always present.
+strict_optional = false
+
+[[tool.mypy.overrides]]
+module = ["clang_format", "black"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "compiler.front_end.generated.*"
+ignore_errors = true

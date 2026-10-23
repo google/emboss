@@ -14,24 +14,29 @@
 
 """Functions for proving mathematical properties of expressions."""
 
+from __future__ import annotations
+
 import math
-import fractions
 import operator
+from collections.abc import Iterable, Sequence
+from typing import TYPE_CHECKING
 
 from compiler.util import ir_data
 from compiler.util import ir_data_utils
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 
-# Create a local alias for math.gcd with a fallback to fractions.gcd if it is
-# not available. This can be dropped if pre-3.5 Python support is dropped.
-if hasattr(math, "gcd"):
-    _math_gcd = math.gcd
-else:
-    _math_gcd = fractions.gcd
+if TYPE_CHECKING:
+    from compiler.util import error
+
+# A bound on an integer expression: an int or a stringified int, or the strings
+# "infinity" and "-infinity".
+_Bound = int | str
 
 
-def compute_constraints_of_expression(expression, ir):
+def compute_constraints_of_expression(
+    expression: ir_data.Expression, ir: ir_data.EmbossIr
+) -> None:
     """Adds appropriate bounding constraints to the given expression."""
     if ir_util.is_constant_type(expression.type):
         return
@@ -54,7 +59,7 @@ def compute_constraints_of_expression(expression, ir):
         _assert_integer_constraints(expression)
 
 
-def _compute_constant_value_of_constant(expression):
+def _compute_constant_value_of_constant(expression: ir_data.Expression) -> None:
     value = expression.constant.value
     expression.type.integer.modular_value = value
     expression.type.integer.minimum_value = value
@@ -62,7 +67,9 @@ def _compute_constant_value_of_constant(expression):
     expression.type.integer.modulus = "infinity"
 
 
-def _compute_constant_value_of_constant_reference(expression, ir):
+def _compute_constant_value_of_constant_reference(
+    expression: ir_data.Expression, ir: ir_data.EmbossIr
+) -> None:
     referred_object = ir_util.find_object(
         expression.constant_reference.canonical_name, ir
     )
@@ -83,7 +90,9 @@ def _compute_constant_value_of_constant_reference(expression, ir):
         assert False, "Unexpected constant reference type."
 
 
-def _compute_constraints_of_function(expression, ir):
+def _compute_constraints_of_function(
+    expression: ir_data.Expression, ir: ir_data.EmbossIr
+) -> None:
     """Computes the known constraints of the result of a function."""
     for arg in expression.function.args:
         compute_constraints_of_expression(arg, ir)
@@ -122,7 +131,9 @@ def _compute_constraints_of_function(expression, ir):
         assert False, "Unknown operator {!r}".format(op)
 
 
-def _compute_constraints_of_existence_function(expression, ir):
+def _compute_constraints_of_existence_function(
+    expression: ir_data.Expression, ir: ir_data.EmbossIr
+) -> None:
     """Computes the constraints of a $has(field) expression."""
     field_path = expression.function.args[0].field_reference.path[-1]
     field = ir_util.find_object(field_path, ir)
@@ -130,7 +141,9 @@ def _compute_constraints_of_existence_function(expression, ir):
     ir_data_utils.builder(expression).type.CopyFrom(field.existence_condition.type)
 
 
-def _compute_constraints_of_field_reference(expression, ir):
+def _compute_constraints_of_field_reference(
+    expression: ir_data.Expression, ir: ir_data.EmbossIr
+) -> None:
     """Computes the constraints of a reference to a structure's field."""
     field_path = expression.field_reference.path[-1]
     field = ir_util.find_object(field_path, ir)
@@ -169,7 +182,11 @@ def _compute_constraints_of_field_reference(expression, ir):
         )
 
 
-def _set_integer_constraints_from_physical_type(expression, physical_type, type_size):
+def _set_integer_constraints_from_physical_type(
+    expression: ir_data.Expression | ir_data.RuntimeParameter,
+    physical_type: ir_data.Type,
+    type_size: int | None,
+) -> None:
     """Copies the integer constraints of an expression from a physical type."""
     # SCAFFOLDING HACK: In order to keep changelists manageable, this hardcodes
     # the ranges for all of the Emboss Prelude integer types.   This would break
@@ -210,7 +227,7 @@ def _set_integer_constraints_from_physical_type(expression, physical_type, type_
         assert False, "Unknown integral type " + ".".join(name)
 
 
-def _compute_constraints_of_parameter(parameter):
+def _compute_constraints_of_parameter(parameter: ir_data.RuntimeParameter) -> None:
     if parameter.type.which_type == "integer":
         type_size = ir_util.constant_value(parameter.physical_type_alias.size_in_bits)
         _set_integer_constraints_from_physical_type(
@@ -218,7 +235,7 @@ def _compute_constraints_of_parameter(parameter):
         )
 
 
-def _compute_constraints_of_builtin_value(expression):
+def _compute_constraints_of_builtin_value(expression: ir_data.Expression) -> None:
     """Computes the constraints of a builtin (like $static_size_in_bits)."""
     name = expression.builtin_reference.canonical_name.object_path[0]
     if name == "$static_size_in_bits":
@@ -259,11 +276,11 @@ def _compute_constraints_of_builtin_value(expression):
         assert False, "Unknown builtin " + name
 
 
-def _compute_constant_value_of_boolean_constant(expression):
+def _compute_constant_value_of_boolean_constant(expression: ir_data.Expression) -> None:
     expression.type.boolean.value = expression.boolean_constant.value
 
 
-def _add(a, b):
+def _add(a: _Bound, b: _Bound) -> _Bound:
     """Adds a and b, where a and b are ints, "infinity", or "-infinity"."""
     if a in ("infinity", "-infinity"):
         a, b = b, a
@@ -276,7 +293,7 @@ def _add(a, b):
     return int(a) + int(b)
 
 
-def _sub(a, b):
+def _sub(a: _Bound, b: _Bound) -> _Bound:
     """Subtracts b from a, where a and b are ints, "infinity", or "-infinity"."""
     if b == "infinity":
         return _add(a, "-infinity")
@@ -285,7 +302,7 @@ def _sub(a, b):
     return _add(a, -int(b))
 
 
-def _sign(a):
+def _sign(a: _Bound) -> int:
     """Returns 1 if a > 0, 0 if a == 0, and -1 if a < 0."""
     if a == "infinity":
         return 1
@@ -298,7 +315,7 @@ def _sign(a):
     return 0
 
 
-def _mul(a, b):
+def _mul(a: _Bound, b: _Bound) -> _Bound:
     """Multiplies a and b, where a and b are ints, "infinity", or "-infinity"."""
     if _is_infinite(a):
         a, b = b, a
@@ -312,11 +329,11 @@ def _mul(a, b):
     return int(a) * int(b)
 
 
-def _is_infinite(a):
+def _is_infinite(a: _Bound) -> bool:
     return a in ("infinity", "-infinity")
 
 
-def _floor_divide(a, b):
+def _floor_divide(a: _Bound, b: _Bound) -> _Bound:
     """Flooring division of a by b, each an int, "infinity", or "-infinity".
 
     The caller is responsible for ensuring b is not zero (or "0").
@@ -341,7 +358,7 @@ def _floor_divide(a, b):
     return int(a) // int(b)
 
 
-def _value_in_range(v, lo, hi):
+def _value_in_range(v: int, lo: _Bound, hi: _Bound) -> bool:
     """Returns True if lo <= v <= hi, where v is a finite int and lo/hi may be infinite."""
     if lo != "-infinity" and (lo == "infinity" or int(lo) > v):
         return False
@@ -350,7 +367,7 @@ def _value_in_range(v, lo, hi):
     return True
 
 
-def _max(a):
+def _max(a: Sequence[_Bound]) -> _Bound:
     """Returns max of a, where elements are ints, "infinity", or "-infinity"."""
     if any(n == "infinity" for n in a):
         return "infinity"
@@ -359,7 +376,7 @@ def _max(a):
     return max(int(n) for n in a if not _is_infinite(n))
 
 
-def _min(a):
+def _min(a: Sequence[_Bound]) -> _Bound:
     """Returns min of a, where elements are ints, "infinity", or "-infinity"."""
     if any(n == "-infinity" for n in a):
         return "-infinity"
@@ -368,7 +385,7 @@ def _min(a):
     return min(int(n) for n in a if not _is_infinite(n))
 
 
-def _range_includes_zero(minimum_value, maximum_value):
+def _range_includes_zero(minimum_value: str, maximum_value: str) -> bool:
     """Returns True if the closed range [minimum_value, maximum_value] holds 0.
 
     minimum_value and maximum_value are ints, stringified ints, "-infinity", or
@@ -379,7 +396,7 @@ def _range_includes_zero(minimum_value, maximum_value):
     return min_le_zero and max_ge_zero
 
 
-def _any_can_be_undefined(operands):
+def _any_can_be_undefined(operands: Iterable[ir_data.Expression]) -> bool:
     """Returns True if any of the given operand expressions can be undefined."""
     for operand in operands:
         operand_type = operand.type
@@ -396,7 +413,7 @@ def _any_can_be_undefined(operands):
     return False
 
 
-def _compute_constraints_of_additive_operator(expression):
+def _compute_constraints_of_additive_operator(expression: ir_data.Expression) -> None:
     """Computes the modular value of an additive expression."""
     funcs = {
         ir_data.FunctionMapping.ADDITION: _add,
@@ -417,6 +434,8 @@ def _compute_constraints_of_additive_operator(expression):
     if new_modulus == "infinity":
         expression.type.integer.modular_value = str(unadjusted_modular_value)
     else:
+        assert isinstance(new_modulus, int)
+        assert isinstance(unadjusted_modular_value, int)
         expression.type.integer.modular_value = str(
             unadjusted_modular_value % new_modulus
         )
@@ -434,7 +453,9 @@ def _compute_constraints_of_additive_operator(expression):
         expression.type.integer.can_be_undefined = True
 
 
-def _compute_constraints_of_multiplicative_operator(expression):
+def _compute_constraints_of_multiplicative_operator(
+    expression: ir_data.Expression,
+) -> None:
     """Computes the modular value of a multiplicative expression."""
     bounds = [arg.type.integer for arg in expression.function.args]
 
@@ -539,6 +560,7 @@ def _compute_constraints_of_multiplicative_operator(expression):
         zero_congruence_modulus = _greatest_common_divisor(
             bound.modulus, bound.modular_value
         )
+        assert isinstance(zero_congruence_modulus, int)
         assert int(bound.modulus) % zero_congruence_modulus == 0
         product_of_zero_congruence_moduli *= zero_congruence_modulus
         product_of_modular_values *= int(bound.modular_value)
@@ -546,6 +568,7 @@ def _compute_constraints_of_multiplicative_operator(expression):
     shared_nonzero_congruence_modulus = _greatest_common_divisor(
         nonzero_congruence_moduli[0], nonzero_congruence_moduli[1]
     )
+    assert isinstance(shared_nonzero_congruence_modulus, int)
     final_modulus = (
         shared_nonzero_congruence_modulus * product_of_zero_congruence_moduli
     )
@@ -555,7 +578,7 @@ def _compute_constraints_of_multiplicative_operator(expression):
     )
 
 
-def _set_dummy_integer_bounds(expression):
+def _set_dummy_integer_bounds(expression: ir_data.Expression) -> None:
     """Sets harmless placeholder bounds on a division/modulus by a constant zero.
 
     Bounds computation must be total, but a divisor that is provably zero has no
@@ -568,7 +591,9 @@ def _set_dummy_integer_bounds(expression):
     expression.type.integer.modular_value = "0"
 
 
-def _set_conservative_modulus(expression, mn, mx):
+def _set_conservative_modulus(
+    expression: ir_data.Expression, mn: _Bound, mx: _Bound
+) -> None:
     """Sets the modulus of a `//` or `%` result whose range is [mn, mx].
 
     A range that has collapsed to a single finite value (e.g. `x // 1000` for a
@@ -583,7 +608,7 @@ def _set_conservative_modulus(expression, mn, mx):
         expression.type.integer.modular_value = "0"
 
 
-def _compute_constraints_of_division_operator(expression):
+def _compute_constraints_of_division_operator(expression: ir_data.Expression) -> None:
     """Computes the bounds of a `//` (flooring integer division) expression."""
     left, right = (arg.type.integer for arg in expression.function.args)
 
@@ -613,7 +638,7 @@ def _compute_constraints_of_division_operator(expression):
     # {r_min, -1, 1, r_max}, dropping zeros from the right and dropping -1/1
     # from either side if they fall outside the operand's range.
     rmin, rmax = right.minimum_value, right.maximum_value
-    r_candidates = set()
+    r_candidates: set[str] = set()
     if rmin != "0":
         r_candidates.add(rmin)
     if rmax != "0":
@@ -645,7 +670,7 @@ def _compute_constraints_of_division_operator(expression):
     _set_conservative_modulus(expression, mn, mx)
 
 
-def _compute_constraints_of_modulus_operator(expression):
+def _compute_constraints_of_modulus_operator(expression: ir_data.Expression) -> None:
     """Computes the bounds of a `%` (flooring modulus) expression."""
     left, right = (arg.type.integer for arg in expression.function.args)
 
@@ -681,7 +706,7 @@ def _compute_constraints_of_modulus_operator(expression):
     _set_conservative_modulus(expression, mn, mx)
 
 
-def _assert_integer_constraints(expression):
+def _assert_integer_constraints(expression: ir_data.Expression) -> None:
     """Asserts that the integer bounds of expression are self-consistent.
 
     Asserts that `minimum_value` and `maximum_value` are congruent to
@@ -721,7 +746,9 @@ def _assert_integer_constraints(expression):
         assert int(bounds.minimum_value) <= int(bounds.maximum_value)
 
 
-def _compute_constant_value_of_comparison_operator(expression):
+def _compute_constant_value_of_comparison_operator(
+    expression: ir_data.Expression,
+) -> None:
     """Computes the constant value, if any, of a comparison operator."""
     args = expression.function.args
     if all(ir_util.is_constant(arg) for arg in args):
@@ -747,7 +774,7 @@ def _compute_constant_value_of_comparison_operator(expression):
         expression.type.boolean.can_be_undefined = True
 
 
-def _compute_constraints_of_bound_function(expression):
+def _compute_constraints_of_bound_function(expression: ir_data.Expression) -> None:
     """Computes the constraints of $upper_bound or $lower_bound."""
     if expression.function.function == ir_data.FunctionMapping.UPPER_BOUND:
         value = expression.function.args[0].type.integer.maximum_value
@@ -761,7 +788,7 @@ def _compute_constraints_of_bound_function(expression):
     expression.type.integer.modulus = "infinity"
 
 
-def _compute_constraints_of_maximum_function(expression):
+def _compute_constraints_of_maximum_function(expression: ir_data.Expression) -> None:
     """Computes the constraints of the $max function."""
     assert expression.type.which_type == "integer"
     args = expression.function.args
@@ -785,8 +812,8 @@ def _compute_constraints_of_maximum_function(expression):
         expression.type.integer.modular_value = expression.type.integer.minimum_value
         expression.type.integer.modulus = "infinity"
         return
-    result_modulus = args[0].type.integer.modulus
-    result_modular_value = args[0].type.integer.modular_value
+    result_modulus: _Bound = args[0].type.integer.modulus
+    result_modular_value: _Bound = args[0].type.integer.modular_value
     # The result of $max(a, b) could be either a or b, which means that the result
     # of $max(a, b) uses the _shared_modular_value() of a and b, just like the
     # choice operator '?:'.
@@ -808,7 +835,9 @@ def _compute_constraints_of_maximum_function(expression):
     expression.type.integer.modular_value = str(result_modular_value)
 
 
-def _shared_modular_value(left, right):
+def _shared_modular_value(
+    left: tuple[_Bound, _Bound], right: tuple[_Bound, _Bound]
+) -> tuple[_Bound, _Bound]:
     """Returns the shared modulus and modular value of left and right.
 
     Arguments:
@@ -860,6 +889,7 @@ def _shared_modular_value(left, right):
         assert left_modulus == right_modulus == "infinity"
         return new_modulus, left_modular_value
     else:
+        assert isinstance(new_modulus, int)
         assert (
             int(left_modular_value) % new_modulus
             == int(right_modular_value) % new_modulus
@@ -867,7 +897,7 @@ def _shared_modular_value(left, right):
         return new_modulus, int(left_modular_value) % new_modulus
 
 
-def _compute_constraints_of_choice_operator(expression):
+def _compute_constraints_of_choice_operator(expression: ir_data.Expression) -> None:
     """Computes the constraints of a choice operation '?:'."""
     condition, if_true, if_false = ir_data_utils.reader(expression).function.args
     expression = ir_data_utils.builder(expression)
@@ -932,7 +962,7 @@ def _compute_constraints_of_choice_operator(expression):
             expression.type.boolean.can_be_undefined = True
 
 
-def _greatest_common_divisor(a, b):
+def _greatest_common_divisor(a: _Bound, b: _Bound) -> _Bound:
     """Returns the greatest common divisor of a and b.
 
     Arguments:
@@ -951,27 +981,16 @@ def _greatest_common_divisor(a, b):
 
       Otherwise, returns the greatest common divisor of a and b.
     """
-    if a != "infinity":
-        a = int(a)
-    if b != "infinity":
-        b = int(b)
-    assert a == "infinity" or a >= 0
-    assert b == "infinity" or b >= 0
-    if a == b == 0:
-        return "infinity"
-    # GCD(0, x) is always x, so it's safe to shortcut when a == 0 or b == 0.
-    if a == 0:
-        return b
-    if b == 0:
-        return a
-    if a == "infinity":
-        return b
-    if b == "infinity":
-        return a
-    return _math_gcd(a, b)
+    # "infinity" behaves like 0 under gcd: gcd(0, x) == x for every x, and
+    # gcd(0, 0) == 0 maps back to "infinity".
+    a_value = 0 if a == "infinity" else int(a)
+    b_value = 0 if b == "infinity" else int(b)
+    assert a_value >= 0 and b_value >= 0
+    result = math.gcd(a_value, b_value)
+    return "infinity" if result == 0 else result
 
 
-def compute_constants(ir):
+def compute_constants(ir: ir_data.EmbossIr) -> list[list[error.Message]]:
     """Computes constant values for all expressions in ir.
 
     compute_constants calculates all constant values and adds them to the type

@@ -20,12 +20,14 @@ intermediate representation of the parse trees and symbol tables to stdout, or
 prints various bits of debug info, depending on which flags are passed.
 """
 
-from __future__ import print_function
+from __future__ import annotations
 
 import argparse
 import os
 from os import path
 import sys
+from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 from compiler.front_end import glue
 from compiler.front_end import module_ir
@@ -33,8 +35,11 @@ from compiler.front_end import parser
 from compiler.util import error
 from compiler.util import ir_data_utils
 
+if TYPE_CHECKING:
+    from compiler.util import ir_data
 
-def _parse_command_line(argv):
+
+def _parse_command_line(argv: Sequence[str]) -> argparse.Namespace:
     """Parses the given command-line arguments."""
     parser = argparse.ArgumentParser(
         description="Emboss compiler front end.", prog=argv[0]
@@ -109,9 +114,13 @@ def _parse_command_line(argv):
     return parser.parse_args(argv[1:])
 
 
-def _show_errors(errors, ir, color_output):
+def _show_errors(
+    errors: list[list[error.Message]],
+    ir: ir_data.EmbossIr | None,
+    color_output: str,
+) -> None:
     """Prints errors with source code snippets."""
-    source_codes = {}
+    source_codes: dict[str, str] = {}
     if ir:
         for module in ir.module:
             source_codes[module.source_file_name] = module.source_text
@@ -121,12 +130,12 @@ def _show_errors(errors, ir, color_output):
     print(error.format_errors(errors, source_codes, use_color), file=sys.stderr)
 
 
-def _find_in_dirs_and_read(import_dirs):
+def _find_in_dirs_and_read(import_dirs: Sequence[str]) -> glue.FileReader:
     """Returns a function which will search import_dirs for a file."""
 
-    def _find_and_read(file_name):
+    def _find_and_read(file_name: str) -> tuple[str | None, list[str] | None]:
         """Searches import_dirs for file_name and returns the contents."""
-        errors = []
+        errors: list[str] = []
         # *All* source files, including the one specified on the command line, will
         # be searched for in the import_dirs.  This may be surprising, especially if
         # the current directory is *not* an import_dir.
@@ -152,7 +161,7 @@ def _find_in_dirs_and_read(import_dirs):
     return _find_and_read
 
 
-def _warn_if_cached_parser_is_mismatched(color_output):
+def _warn_if_cached_parser_is_mismatched(color_output: str) -> None:
     cached_parser_mismatch = parser.module_parser_cache_mismatch()
     extra_production_notes = [
         error.note("<internal>", None, f"New production {prod}")
@@ -180,7 +189,12 @@ def _warn_if_cached_parser_is_mismatched(color_output):
         )
 
 
-def parse_and_log_errors(input_file, import_dirs, color_output, stop_before_step=None):
+def parse_and_log_errors(
+    input_file: str,
+    import_dirs: Sequence[str],
+    color_output: str,
+    stop_before_step: str | None = None,
+) -> tuple[ir_data.EmbossIr | None, glue.DebugInfo | None, list[list[error.Message]]]:
     """Fully parses an .emb and logs any errors.
 
     Arguments:
@@ -197,13 +211,14 @@ def parse_and_log_errors(input_file, import_dirs, color_output, stop_before_step
         _find_in_dirs_and_read(import_dirs),
         stop_before_step=stop_before_step,
     )
+    assert debug_info is None or isinstance(debug_info, glue.DebugInfo)
     if errors:
         _show_errors(errors, ir, color_output)
 
     return (ir, debug_info, errors)
 
 
-def main(flags):
+def main(flags: argparse.Namespace) -> int:
     ir, debug_info, errors = parse_and_log_errors(
         flags.input_file[0],
         flags.import_dirs,

@@ -21,10 +21,12 @@ import collections
 import dataclasses
 import enum
 import sys
-from typing import ClassVar, Optional
+from typing import Any, ClassVar, Optional, TypeVar
 
 from compiler.util import ir_data_fields
 from compiler.util import parser_types
+
+MessageT = TypeVar("MessageT", bound="Message")
 
 
 @dataclasses.dataclass
@@ -44,7 +46,7 @@ class Message:
     IR_DATACLASS: ClassVar[object] = object()
     field_specs: ClassVar[ir_data_fields.FilteredIrFieldSpecs]
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Called by dataclass subclasses after init.
 
         Post-processes any lists passed in to use our custom list type.
@@ -65,7 +67,7 @@ class Message:
     # running python with the `-O` flag, ie: `python3 -O ./embossc`.
     if __debug__:
 
-        def __setattr__(self, name: str, value) -> None:
+        def __setattr__(self, name: str, value: Any) -> None:
             """Debug-only hook that adds basic type checking for ir_data fields."""
             if spec := self.field_specs.all_field_specs.get(name):
                 if not (
@@ -103,9 +105,18 @@ class Message:
                     )
             object.__setattr__(self, name, value)
 
-    def has_field(self, name):
+    def has_field(self, name: str) -> bool:
         """Indicates if this class has the given field defined and it is set."""
         return getattr(self, name, None) is not None
+
+    def CopyFrom(
+        self: MessageT, template: MessageT
+    ) -> None:  # pylint:disable=invalid-name
+        """Overwrites this message's fields with the fields set in `template`."""
+        # ir_data_utils imports this module, so import it here to avoid a cycle.
+        from compiler.util import ir_data_utils
+
+        ir_data_utils.update(self, template)
 
 
 ################################################################################
@@ -471,6 +482,9 @@ class EnumType(Message):
 
 @dataclasses.dataclass
 class ExpressionType(Message):
+    # The name of the `type` oneof member that is currently set, or None;
+    # maintained by ir_data_fields.OneOfField.
+    which_type: ClassVar[Optional[str]] = None
     opaque: Optional[OpaqueType] = ir_data_fields.oneof_field("type")
     integer: Optional[IntegerType] = ir_data_fields.oneof_field("type")
     boolean: Optional[BooleanType] = ir_data_fields.oneof_field("type")
@@ -486,6 +500,9 @@ class Expression(Message):
     other Expressions (function).
     """
 
+    # The name of the `expression` oneof member that is currently set, or None;
+    # maintained by ir_data_fields.OneOfField.
+    which_expression: ClassVar[Optional[str]] = None
     constant: Optional[NumericConstant] = ir_data_fields.oneof_field("expression")
     constant_reference: Optional[Reference] = ir_data_fields.oneof_field("expression")
     function: Optional[Function] = ir_data_fields.oneof_field("expression")
@@ -505,6 +522,9 @@ class ArrayType(Message):
 
     base_type: Optional["Type"] = None
 
+    # The name of the `size` oneof member that is currently set, or None;
+    # maintained by ir_data_fields.OneOfField.
+    which_size: ClassVar[Optional[str]] = None
     element_count: Optional[Expression] = ir_data_fields.oneof_field("size")
     automatic: Optional[Empty] = ir_data_fields.oneof_field("size")
 
@@ -524,6 +544,9 @@ class AtomicType(Message):
 class Type(Message):
     """IR for a type reference ("UInt", "Int:8[12]", etc.)."""
 
+    # The name of the `type` oneof member that is currently set, or None;
+    # maintained by ir_data_fields.OneOfField.
+    which_type: ClassVar[Optional[str]] = None
     atomic_type: Optional[AtomicType] = ir_data_fields.oneof_field("type")
     array_type: Optional[ArrayType] = ir_data_fields.oneof_field("type")
 
@@ -537,6 +560,9 @@ class AttributeValue(Message):
 
     # TODO(bolms): Make String a type of Expression, and replace
     # AttributeValue with Expression.
+    # The name of the `value` oneof member that is currently set, or None;
+    # maintained by ir_data_fields.OneOfField.
+    which_value: ClassVar[Optional[str]] = None
     expression: Optional[Expression] = ir_data_fields.oneof_field("value")
     string_constant: Optional[String] = ir_data_fields.oneof_field("value")
 
@@ -576,6 +602,9 @@ class WriteTransform(Message):
 class WriteMethod(Message):
     """IR which defines the method used for writing to a virtual field."""
 
+    # The name of the `method` oneof member that is currently set, or None;
+    # maintained by ir_data_fields.OneOfField.
+    which_method: ClassVar[Optional[str]] = None
     physical: Optional[bool] = ir_data_fields.oneof_field("method")
     """A physical Field can be written directly."""
 
@@ -816,6 +845,9 @@ class AddressableUnit(int, enum.Enum):
 class TypeDefinition(Message):
     """Container IR for a type definition (struct, union, etc.)"""
 
+    # The name of the `type` oneof member that is currently set, or None;
+    # maintained by ir_data_fields.OneOfField.
+    which_type: ClassVar[Optional[str]] = None
     external: Optional[External] = ir_data_fields.oneof_field("type")
     enumeration: Optional[Enum] = ir_data_fields.oneof_field("type")
     structure: Optional[Structure] = ir_data_fields.oneof_field("type")

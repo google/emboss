@@ -14,15 +14,26 @@
 
 """Utility functions for reading and manipulating Emboss IR."""
 
+from __future__ import annotations
+
 import operator
+from collections.abc import Callable, Iterable, Mapping, Sequence
+from typing import Any
 
 from compiler.util import ir_data
 from compiler.util import ir_data_utils
 
 _FIXED_SIZE_ATTRIBUTE = "fixed_size_in_bits"
 
+# Names that can be looked up with find_object() and friends.
+_Name = (
+    ir_data.Reference | ir_data.NameDefinition | ir_data.CanonicalName | Sequence[str]
+)
 
-def get_attribute(attribute_list, name):
+
+def get_attribute(
+    attribute_list: Iterable[ir_data.Attribute] | None, name: str
+) -> ir_data.AttributeValue | None:
     """Finds name in attribute_list and returns a AttributeValue or None."""
     if not attribute_list:
         return None
@@ -34,7 +45,11 @@ def get_attribute(attribute_list, name):
     return attribute_value
 
 
-def get_boolean_attribute(attribute_list, name, default_value=None):
+def get_boolean_attribute(
+    attribute_list: Iterable[ir_data.Attribute] | None,
+    name: str,
+    default_value: bool | None = None,
+) -> bool | None:
     """Returns the boolean value of an attribute, if any, or default_value.
 
     Arguments:
@@ -55,7 +70,11 @@ def get_boolean_attribute(attribute_list, name, default_value=None):
     return attribute_value.expression.boolean_constant.value
 
 
-def get_integer_attribute(attribute_list, name, default_value=None):
+def get_integer_attribute(
+    attribute_list: Iterable[ir_data.Attribute] | None,
+    name: str,
+    default_value: int | None = None,
+) -> int | None:
     """Returns the integer value of an attribute, if any, or default_value.
 
     Arguments:
@@ -78,11 +97,14 @@ def get_integer_attribute(attribute_list, name, default_value=None):
     return constant_value(attribute_value.expression)
 
 
-def is_constant(expression, bindings=None):
+def is_constant(
+    expression: ir_data.Expression | None,
+    bindings: Mapping[str, int | bool] | None = None,
+) -> bool:
     return constant_value(expression, bindings) is not None
 
 
-def is_constant_type(expression_type):
+def is_constant_type(expression_type: ir_data.ExpressionType) -> bool:
     """Returns True if expression_type is inhabited by a single value."""
     expression_type = ir_data_utils.reader(expression_type)
     # A value that can be undefined is not a compile-time constant, even if its
@@ -102,7 +124,10 @@ def is_constant_type(expression_type):
     )
 
 
-def constant_value(expression, bindings=None):
+def constant_value(
+    expression: ir_data.Expression | None,
+    bindings: Mapping[str, int | bool] | None = None,
+) -> int | bool | None:
     """Evaluates expression with the given bindings."""
     if expression is None:
         return None
@@ -152,7 +177,9 @@ def constant_value(expression, bindings=None):
         )
 
 
-def _constant_value_of_function(function, bindings):
+def _constant_value_of_function(
+    function: ir_data.Function, bindings: Mapping[str, int | bool] | None
+) -> int | bool | None:
     """Returns the constant value of evaluating `function`, or None."""
     values = [constant_value(arg, bindings) for arg in function.args]
     # Expressions like `$is_statically_sized && 1 <= $static_size_in_bits <= 64`
@@ -204,7 +231,7 @@ def _constant_value_of_function(function, bindings):
     # function on an unknown value is, itself, considered unknown.
     if any(value is None for value in values):
         return None
-    functions = {
+    functions: dict[ir_data.FunctionMapping, Callable[..., Any]] = {
         ir_data.FunctionMapping.ADDITION: operator.add,
         ir_data.FunctionMapping.SUBTRACTION: operator.sub,
         ir_data.FunctionMapping.MULTIPLICATION: operator.mul,
@@ -229,11 +256,13 @@ def _constant_value_of_function(function, bindings):
     return functions[function.function](*values)
 
 
-def _hashable_form_of_name(name):
+def _hashable_form_of_name(name: ir_data.CanonicalName) -> tuple[str, ...]:
     return (name.module_file,) + tuple(name.object_path)
 
 
-def hashable_form_of_reference(reference):
+def hashable_form_of_reference(
+    reference: ir_data.Reference | ir_data.NameDefinition,
+) -> tuple[str, ...]:
     """Returns a representation of reference that can be used as a dict key.
 
     Arguments:
@@ -245,7 +274,9 @@ def hashable_form_of_reference(reference):
     return _hashable_form_of_name(reference.canonical_name)
 
 
-def hashable_form_of_field_reference(field_reference):
+def hashable_form_of_field_reference(
+    field_reference: ir_data.FieldReference,
+) -> tuple[tuple[str, ...], ...]:
     """Returns a representation of field_reference that can be used as a dict key.
 
     Arguments:
@@ -260,25 +291,31 @@ def hashable_form_of_field_reference(field_reference):
     )
 
 
-def is_array(type_ir):
+def is_array(type_ir: ir_data.Type) -> bool:
     """Returns true if type_ir is an array type."""
     return type_ir.has_field("array_type")
 
 
-def _find_path_in_structure_field(path, field):
+def _find_path_in_structure_field(
+    path: Sequence[str], field: ir_data.Field
+) -> ir_data.Field | None:
     if not path:
         return field
     return None
 
 
-def _find_path_in_structure(path, type_definition):
+def _find_path_in_structure(
+    path: Sequence[str], type_definition: ir_data.TypeDefinition
+) -> ir_data.Field | None:
     for field in type_definition.structure.field:
         if field.name.name.text == path[0]:
             return _find_path_in_structure_field(path[1:], field)
     return None
 
 
-def _find_path_in_enumeration(path, type_definition):
+def _find_path_in_enumeration(
+    path: Sequence[str], type_definition: ir_data.TypeDefinition
+) -> ir_data.EnumValue | None:
     if len(path) != 1:
         return None
     for value in type_definition.enumeration.value:
@@ -287,7 +324,9 @@ def _find_path_in_enumeration(path, type_definition):
     return None
 
 
-def _find_path_in_parameters(path, type_definition):
+def _find_path_in_parameters(
+    path: Sequence[str], type_definition: ir_data.TypeDefinition
+) -> ir_data.RuntimeParameter | None:
     if len(path) > 1 or not type_definition.has_field("runtime_parameter"):
         return None
     for parameter in type_definition.runtime_parameter:
@@ -296,11 +335,13 @@ def _find_path_in_parameters(path, type_definition):
     return None
 
 
-def _find_path_in_type_definition(path, type_definition):
+def _find_path_in_type_definition(
+    path: Sequence[str], type_definition: ir_data.TypeDefinition
+) -> Any:
     """Finds the object with the given path in the given type_definition."""
     if not path:
         return type_definition
-    obj = _find_path_in_parameters(path, type_definition)
+    obj: Any = _find_path_in_parameters(path, type_definition)
     if obj:
         return obj
     if type_definition.has_field("structure"):
@@ -313,21 +354,24 @@ def _find_path_in_type_definition(path, type_definition):
         return _find_path_in_type_list(path, type_definition.subtype or [])
 
 
-def _find_path_in_type_list(path, type_list):
+def _find_path_in_type_list(
+    path: Sequence[str], type_list: Iterable[ir_data.TypeDefinition]
+) -> Any:
     for type_definition in type_list:
         if type_definition.name.name.text == path[0]:
             return _find_path_in_type_definition(path[1:], type_definition)
     return None
 
 
-def _find_path_in_module(path, module_ir):
+def _find_path_in_module(path: Sequence[str], module_ir: ir_data.Module) -> Any:
     if not path:
         return module_ir
     return _find_path_in_type_list(path, module_ir.type)
 
 
-def find_object_or_none(name, ir):
+def find_object_or_none(name: _Name, ir: ir_data.EmbossIr) -> Any:
     """Finds the object with the given canonical name, if it exists.."""
+    path: Sequence[str]
     if isinstance(name, ir_data.Reference) or isinstance(name, ir_data.NameDefinition):
         path = _hashable_form_of_name(name.canonical_name)
     elif isinstance(name, ir_data.CanonicalName):
@@ -342,15 +386,16 @@ def find_object_or_none(name, ir):
     return None
 
 
-def find_object(name, ir):
+def find_object(name: _Name, ir: ir_data.EmbossIr) -> Any:
     """Finds the IR of the type, field, or value with the given canonical name."""
     result = find_object_or_none(name, ir)
     assert result is not None, "Bad reference {}".format(name)
     return result
 
 
-def find_parent_object(name, ir):
+def find_parent_object(name: _Name, ir: ir_data.EmbossIr) -> Any:
     """Finds the parent object of the object with the given canonical name."""
+    path: Sequence[str]
     if isinstance(name, ir_data.Reference) or isinstance(name, ir_data.NameDefinition):
         path = _hashable_form_of_name(name.canonical_name)
     elif isinstance(name, ir_data.CanonicalName):
@@ -360,7 +405,7 @@ def find_parent_object(name, ir):
     return find_object(path[:-1], ir)
 
 
-def get_base_type(type_ir):
+def get_base_type(type_ir: ir_data.Type) -> ir_data.Type:
     """Returns the base type of the given type.
 
     Arguments:
@@ -377,7 +422,9 @@ def get_base_type(type_ir):
     return type_ir
 
 
-def fixed_size_of_type_in_bits(type_ir, ir):
+def fixed_size_of_type_in_bits(
+    type_ir: ir_data.Type, ir: ir_data.EmbossIr
+) -> int | None:
     """Returns the fixed, known size for the given type, in bits, or None.
 
     Arguments:
@@ -416,14 +463,14 @@ def fixed_size_of_type_in_bits(type_ir, ir):
     return size * array_multiplier
 
 
-def field_is_virtual(field_ir):
+def field_is_virtual(field_ir: ir_data.Field) -> bool:
     """Returns true if the field is virtual."""
     # TODO(bolms): Should there be a more explicit indicator that a field is
     # virtual?
     return not field_ir.has_field("location")
 
 
-def field_is_read_only(field_ir):
+def field_is_read_only(field_ir: ir_data.Field) -> bool:
     """Returns true if the field is read-only."""
     # For now, all virtual fields are read-only, and no non-virtual fields are
     # read-only.

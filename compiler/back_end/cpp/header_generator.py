@@ -18,9 +18,11 @@ Call generate_header(ir) to get the text of a C++ header file implementing View
 classes for the ir.
 """
 
-import collections
+from __future__ import annotations
+
 import re
-from typing import NamedTuple
+from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence
+from typing import TYPE_CHECKING, Any, NamedTuple, Protocol
 
 from compiler.back_end.cpp import attributes
 from compiler.back_end.util import code_template
@@ -32,6 +34,9 @@ from compiler.util import ir_util
 from compiler.util import name_conversion
 from compiler.util import resources
 from compiler.util import traverse_ir
+
+if TYPE_CHECKING:
+    from compiler.util import parser_types
 
 _TEMPLATES = code_template.parse_templates(
     resources.load("compiler.back_end.cpp", "generated_code_templates")
@@ -186,7 +191,7 @@ class Config(NamedTuple):
     """Whether or not to include EnumTraits in the generated header."""
 
 
-def _get_namespace_components(namespace):
+def _get_namespace_components(namespace: str) -> list[str]:
     """Gets the components of a C++ namespace.
 
     Examples:
@@ -202,7 +207,7 @@ def _get_namespace_components(namespace):
     return re.findall(_NS_COMPONENT_RE, namespace)
 
 
-def _get_module_namespace(module):
+def _get_module_namespace(module: ir_data.Module) -> list[str]:
     """Returns the C++ namespace of the module, as a list of components.
 
     Arguments:
@@ -220,11 +225,11 @@ def _get_module_namespace(module):
     return _get_namespace_components(namespace)
 
 
-def _cpp_string_escape(string):
+def _cpp_string_escape(string: str) -> str:
     return re.sub("['\"\\\\]", r"\\\0", string)
 
 
-def _get_includes(module, config: Config):
+def _get_includes(module: ir_data.Module, config: Config) -> str:
     """Returns the appropriate #includes based on module's imports."""
     includes = []
     for import_ in module.foreign_import:
@@ -257,12 +262,12 @@ def _get_includes(module, config: Config):
     return "".join(includes)
 
 
-def _render_namespace_prefix(namespace):
+def _render_namespace_prefix(namespace: Sequence[str]) -> str:
     """Returns namespace rendered as a prefix, like ::foo::bar::baz."""
     return "".join(["::" + n for n in namespace])
 
 
-def _render_integer(value):
+def _render_integer(value: int) -> str:
     """Returns a C++ string representation of a constant integer."""
     integer_type = _cpp_integer_type_for_range(value, value)
     assert (
@@ -308,16 +313,17 @@ def _render_integer(value):
         return "static_cast</**/{0}>({1}{2}LL)".format(integer_type, value, suffix)
 
 
-def _maybe_type(wrapped_type):
+def _maybe_type(wrapped_type: str) -> str:
     return "::emboss::support::Maybe</**/{}>".format(wrapped_type)
 
 
-def _render_integer_for_expression(value):
+def _render_integer_for_expression(value: int) -> str:
     integer_type = _cpp_integer_type_for_range(value, value)
+    assert integer_type is not None, "Integer {} out of range.".format(value)
     return "{0}({1})".format(_maybe_type(integer_type), _render_integer(value))
 
 
-def _wrap_in_namespace(body, namespace):
+def _wrap_in_namespace(body: str, namespace: Sequence[str]) -> str:
     """Returns the given body wrapped in the given namespace."""
     for component in reversed(namespace):
         body = (
@@ -329,7 +335,7 @@ def _wrap_in_namespace(body, namespace):
     return body
 
 
-def _get_type_size(type_ir, ir):
+def _get_type_size(type_ir: ir_data.Type, ir: ir_data.EmbossIr) -> int:
     size = ir_util.fixed_size_of_type_in_bits(type_ir, ir)
     assert (
         size is not None
@@ -337,36 +343,46 @@ def _get_type_size(type_ir, ir):
     return size
 
 
-def _offset_storage_adapter(buffer_type, alignment, static_offset):
+def _offset_storage_adapter(
+    buffer_type: str, alignment: int | str, static_offset: int | str
+) -> str:
     return "{}::template OffsetStorageType</**/{}, {}>".format(
         buffer_type, alignment, static_offset
     )
 
 
-def _bytes_to_bits_convertor(buffer_type, byte_order, size):
+def _bytes_to_bits_convertor(
+    buffer_type: str, byte_order: str, size: int | None
+) -> str:
     assert byte_order, "byte_order should not be empty."
     return "{}::BitBlock</**/{}::{}ByteOrderer<typename {}>, {}>".format(
         _SUPPORT_NAMESPACE, _SUPPORT_NAMESPACE, byte_order, buffer_type, size
     )
 
 
-def _get_fully_qualified_namespace(name, ir):
+def _get_fully_qualified_namespace(
+    name: ir_data.CanonicalName, ir: ir_data.EmbossIr
+) -> str:
     module = ir_util.find_object((name.module_file,), ir)
     namespace = _render_namespace_prefix(_get_module_namespace(module))
     return namespace + "".join(["::" + str(s) for s in name.object_path[:-1]])
 
 
-def _get_unqualified_name(name):
+def _get_unqualified_name(name: ir_data.CanonicalName) -> str:
     return name.object_path[-1]
 
 
-def _get_fully_qualified_name(name, ir):
+def _get_fully_qualified_name(name: ir_data.CanonicalName, ir: ir_data.EmbossIr) -> str:
     return _get_fully_qualified_namespace(name, ir) + "::" + _get_unqualified_name(name)
 
 
 def _get_adapted_cpp_buffer_type_for_field(
-    type_definition, size_in_bits, buffer_type, byte_order, parent_addressable_unit
-):
+    type_definition: ir_data.TypeDefinition,
+    size_in_bits: int | None,
+    buffer_type: str,
+    byte_order: str,
+    parent_addressable_unit: int,
+) -> str:
     """Returns the adapted C++ type information needed to construct a view."""
     if (
         parent_addressable_unit == ir_data.AddressableUnit.BYTE
@@ -384,14 +400,14 @@ def _get_adapted_cpp_buffer_type_for_field(
 
 
 def _get_cpp_view_type_for_type_definition(
-    type_definition,
-    size,
-    ir,
-    buffer_type,
-    byte_order,
-    parent_addressable_unit,
-    validator,
-):
+    type_definition: ir_data.TypeDefinition,
+    size: int | None,
+    ir: ir_data.EmbossIr,
+    buffer_type: str,
+    byte_order: str,
+    parent_addressable_unit: int,
+    validator: str,
+) -> tuple[str, list[str]]:
     """Returns the C++ type information needed to construct a view.
 
     Returns the C++ type for a view of the given Emboss TypeDefinition, and the
@@ -469,8 +485,14 @@ def _get_cpp_view_type_for_type_definition(
 
 
 def _get_cpp_view_type_for_physical_type(
-    type_ir, size, byte_order, ir, buffer_type, parent_addressable_unit, validator
-):
+    type_ir: ir_data.Type,
+    size: int | None,
+    byte_order: str,
+    ir: ir_data.EmbossIr,
+    buffer_type: str,
+    parent_addressable_unit: int,
+    validator: str,
+) -> tuple[str, list[str], list[ir_data.Expression]]:
     """Returns the C++ type information needed to construct a field's view.
 
     Returns the C++ type of an ir_data.Type, and the C++ types of its parameters,
@@ -551,7 +573,7 @@ def _get_cpp_view_type_for_physical_type(
         return reader, parameter_types, list(type_ir.atomic_type.runtime_parameter)
 
 
-def _render_variable(variable, prefix=""):
+def _render_variable(variable: Sequence[Sequence[str]], prefix: str = "") -> str:
     """Renders a variable reference (e.g., `foo` or `foo.bar.baz`) in C++ code."""
     # A "variable" could be an immediate field or a subcomponent of an immediate
     # field.  For either case, in C++ it is valid to just use the last component
@@ -563,14 +585,14 @@ def _render_variable(variable, prefix=""):
     return ".".join(components)
 
 
-def _render_enum_value(enum_type, ir):
+def _render_enum_value(enum_type: ir_data.EnumType, ir: ir_data.EmbossIr) -> str:
     cpp_enum_type = _get_fully_qualified_name(enum_type.name.canonical_name, ir)
     return "{}(static_cast</**/{}>({}))".format(
         _maybe_type(cpp_enum_type), cpp_enum_type, enum_type.value
     )
 
 
-def _builtin_function_name(function):
+def _builtin_function_name(function: ir_data.FunctionMapping) -> str:
     """Returns the C++ operator name corresponding to an Emboss operator."""
     functions = {
         ir_data.FunctionMapping.ADDITION: "Sum",
@@ -592,13 +614,19 @@ def _builtin_function_name(function):
     return functions[function]
 
 
-def _cpp_basic_type_for_expression_type(expression_type, ir):
+def _cpp_basic_type_for_expression_type(
+    expression_type: ir_data.ExpressionType, ir: ir_data.EmbossIr
+) -> str:
     """Returns the C++ basic type (int32_t, bool, etc.) for an ExpressionType."""
     if expression_type.which_type == "integer":
-        return _cpp_integer_type_for_range(
+        integer_type = _cpp_integer_type_for_range(
             int(expression_type.integer.minimum_value),
             int(expression_type.integer.maximum_value),
         )
+        assert integer_type is not None, "Expression type {} out of range.".format(
+            expression_type
+        )
+        return integer_type
     elif expression_type.which_type == "boolean":
         return "bool"
     elif expression_type.which_type == "enumeration":
@@ -609,12 +637,14 @@ def _cpp_basic_type_for_expression_type(expression_type, ir):
         assert False, "Unknown expression type " + expression_type.which_type
 
 
-def _cpp_basic_type_for_expression(expression, ir):
+def _cpp_basic_type_for_expression(
+    expression: ir_data.Expression, ir: ir_data.EmbossIr
+) -> str:
     """Returns the C++ basic type (int32_t, bool, etc.) for an Expression."""
     return _cpp_basic_type_for_expression_type(expression.type, ir)
 
 
-def _cpp_integer_type_for_range(min_val, max_val):
+def _cpp_integer_type_for_range(min_val: int, max_val: int) -> str | None:
     """Returns the appropriate C++ integer type to hold min_val up to max_val."""
     # The choice of int32_t, uint32_t, int64_t, then uint64_t is somewhat
     # arbitrary here, and might not be perfectly ideal.  I (bolms@) have chosen
@@ -631,7 +661,7 @@ def _cpp_integer_type_for_range(min_val, max_val):
     return None
 
 
-def _cpp_integer_type_for_enum(max_bits, is_signed):
+def _cpp_integer_type_for_enum(max_bits: int, is_signed: bool) -> str:
     """Returns the appropriate C++ integer type to hold an enum."""
     # This is used to determine the `X` in `enum class : X`.
     #
@@ -649,7 +679,27 @@ def _cpp_integer_type_for_enum(max_bits, is_signed):
     assert False, f"Invalid value {max_bits} for maximum_bits"
 
 
-def _render_builtin_operation(expression, ir, field_reader, subexpressions):
+class _FieldReader(Protocol):
+    """Renders field reads and existence checks within an expression."""
+
+    def render_field(
+        self,
+        expression: ir_data.Expression,
+        ir: ir_data.EmbossIr,
+        subexpressions: ExpressionScope | None,
+    ) -> str: ...
+
+    def render_existence(
+        self, expression: ir_data.Expression, subexpressions: ExpressionScope | None
+    ) -> str: ...
+
+
+def _render_builtin_operation(
+    expression: ir_data.Expression,
+    ir: ir_data.EmbossIr,
+    field_reader: _FieldReader,
+    subexpressions: ExpressionScope | None,
+) -> str:
     """Renders a built-in operation (+, -, &&, etc.) into C++ code."""
     assert expression.function.function not in (
         ir_data.FunctionMapping.UPPER_BOUND,
@@ -721,7 +771,13 @@ def _render_builtin_operation(expression, ir, field_reader, subexpressions):
 class _FieldRenderer(object):
     """Base class for rendering field reads."""
 
-    def render_field_read_with_context(self, expression, ir, prefix, subexpressions):
+    def render_field_read_with_context(
+        self,
+        expression: ir_data.Expression,
+        ir: ir_data.EmbossIr,
+        prefix: str,
+        subexpressions: ExpressionScope | None,
+    ) -> str:
         field = prefix + _render_variable(
             ir_util.hashable_form_of_field_reference(expression.field_reference)
         )
@@ -738,7 +794,12 @@ class _FieldRenderer(object):
             )
         )
 
-    def render_existence_with_context(self, expression, prefix, subexpressions):
+    def render_existence_with_context(
+        self,
+        expression: ir_data.Expression,
+        prefix: str,
+        subexpressions: ExpressionScope | None,
+    ) -> str:
         return "{1}{0}".format(
             _render_variable(
                 ir_util.hashable_form_of_field_reference(expression.field_reference),
@@ -751,20 +812,34 @@ class _FieldRenderer(object):
 class _DirectFieldRenderer(_FieldRenderer):
     """Renderer for fields read from inside a structure's View type."""
 
-    def render_field(self, expression, ir, subexpressions):
+    def render_field(
+        self,
+        expression: ir_data.Expression,
+        ir: ir_data.EmbossIr,
+        subexpressions: ExpressionScope | None,
+    ) -> str:
         return self.render_field_read_with_context(expression, ir, "", subexpressions)
 
-    def render_existence(self, expression, subexpressions):
+    def render_existence(
+        self, expression: ir_data.Expression, subexpressions: ExpressionScope | None
+    ) -> str:
         return self.render_existence_with_context(expression, "", subexpressions)
 
 
 class _VirtualViewFieldRenderer(_FieldRenderer):
     """Renderer for field reads from inside a virtual field's View."""
 
-    def render_existence(self, expression, subexpressions):
+    def render_existence(
+        self, expression: ir_data.Expression, subexpressions: ExpressionScope | None
+    ) -> str:
         return self.render_existence_with_context(expression, "view_.", subexpressions)
 
-    def render_field(self, expression, ir, subexpressions):
+    def render_field(
+        self,
+        expression: ir_data.Expression,
+        ir: ir_data.EmbossIr,
+        subexpressions: ExpressionScope | None,
+    ) -> str:
         return self.render_field_read_with_context(
             expression, ir, "view_.", subexpressions
         )
@@ -773,15 +848,15 @@ class _VirtualViewFieldRenderer(_FieldRenderer):
 class ExpressionScope(object):
     """Holder for subexpressions to be assigned to local variables, with scoping."""
 
-    def __init__(self, prefix, parent=None):
+    def __init__(self, prefix: str, parent: ExpressionScope | None = None) -> None:
         self._prefix = prefix
         self._parent = parent
-        self._subexpr_to_name = {}
-        self._index_to_subexpr = []
+        self._subexpr_to_name: dict[str, str] = {}
+        self._index_to_subexpr: list[str] = []
 
-    def add(self, subexpr):
+    def add(self, subexpr: str) -> str:
         # Check if expression exists in current or parent scopes
-        scope = self
+        scope: ExpressionScope | None = self
         while scope:
             if subexpr in scope._subexpr_to_name:
                 return scope._subexpr_to_name[subexpr]
@@ -792,13 +867,13 @@ class ExpressionScope(object):
         self._subexpr_to_name[subexpr] = self._prefix + str(len(self._index_to_subexpr))
         return self._subexpr_to_name[subexpr]
 
-    def subexprs(self):
+    def subexprs(self) -> list[tuple[str, str]]:
         return [
             (self._subexpr_to_name[subexpr], subexpr)
             for subexpr in self._index_to_subexpr
         ]
 
-    def definition_code(self):
+    def definition_code(self) -> str:
         return "".join(
             [
                 "      const auto {} = {};\n".format(name, subexpr)
@@ -807,12 +882,19 @@ class ExpressionScope(object):
         )
 
 
-_ExpressionResult = collections.namedtuple(
-    "ExpressionResult", ["rendered", "is_constant"]
-)
+class _ExpressionResult(NamedTuple):
+    """A rendered C++ expression and whether it is a compile-time constant."""
+
+    rendered: str
+    is_constant: bool
 
 
-def _render_expression(expression, ir, field_reader=None, subexpressions=None):
+def _render_expression(
+    expression: ir_data.Expression,
+    ir: ir_data.EmbossIr,
+    field_reader: _FieldReader | None = None,
+    subexpressions: ExpressionScope | None = None,
+) -> _ExpressionResult:
     """Renders an expression into C++ code.
 
     Arguments:
@@ -897,11 +979,17 @@ def _render_expression(expression, ir, field_reader=None, subexpressions=None):
         return _ExpressionResult(subexpressions.add(result), False)
 
 
-def _render_existence_test(field, ir, subexpressions=None):
-    return _render_expression(field.existence_condition, ir, subexpressions)
+def _render_existence_test(
+    field: ir_data.Field,
+    ir: ir_data.EmbossIr,
+    subexpressions: ExpressionScope | None = None,
+) -> _ExpressionResult:
+    return _render_expression(
+        field.existence_condition, ir, subexpressions=subexpressions
+    )
 
 
-def _alignment_of_location(location):
+def _alignment_of_location(location: ir_data.FieldLocation) -> tuple[int | str, str]:
     constraints = location.start.type.integer
     if constraints.modulus == "infinity":
         # The C++ templates use 0 as a sentinel value meaning infinity for
@@ -912,8 +1000,12 @@ def _alignment_of_location(location):
 
 
 def _get_cpp_type_reader_of_field(
-    field_ir, ir, buffer_type, validator, parent_addressable_unit
-):
+    field_ir: ir_data.Field,
+    ir: ir_data.EmbossIr,
+    buffer_type: str,
+    validator: str,
+    parent_addressable_unit: int,
+) -> tuple[str, list[str], list[ir_data.Expression]]:
     """Returns the C++ view type for a field."""
     field_size = None
     if field_ir.type.has_field("size_in_bits"):
@@ -942,8 +1034,11 @@ def _get_cpp_type_reader_of_field(
 
 
 def _generate_structure_field_methods(
-    enclosing_type_name, field_ir, ir, parent_addressable_unit
-):
+    enclosing_type_name: str,
+    field_ir: ir_data.Field,
+    ir: ir_data.EmbossIr,
+    parent_addressable_unit: int,
+) -> tuple[str, str, str]:
     if ir_util.field_is_virtual(field_ir):
         return _generate_structure_virtual_field_methods(
             enclosing_type_name, field_ir, ir
@@ -954,7 +1049,9 @@ def _generate_structure_field_methods(
         )
 
 
-def _generate_custom_validator_expression_for(field_ir, ir):
+def _generate_custom_validator_expression_for(
+    field_ir: ir_data.Field, ir: ir_data.EmbossIr
+) -> str | None:
     """Returns a validator expression for the given field, or None."""
     requires_attr = ir_util.get_attribute(field_ir.attribute, "requires")
     if requires_attr:
@@ -962,11 +1059,20 @@ def _generate_custom_validator_expression_for(field_ir, ir):
         class _ValidatorFieldReader(object):
             """A "FieldReader" that translates the current field to `value`."""
 
-            def render_existence(self, expression, subexpressions):
+            def render_existence(
+                self,
+                expression: ir_data.Expression,
+                subexpressions: ExpressionScope | None,
+            ) -> str:
                 del expression  # Unused.
                 assert False, "Shouldn't be here."
 
-            def render_field(self, expression, ir, subexpressions):
+            def render_field(
+                self,
+                expression: ir_data.Expression,
+                ir: ir_data.EmbossIr,
+                subexpressions: ExpressionScope | None,
+            ) -> str:
                 assert len(expression.field_reference.path) == 1
                 assert (
                     expression.field_reference.path[0].canonical_name
@@ -985,7 +1091,9 @@ def _generate_custom_validator_expression_for(field_ir, ir):
         return None
 
 
-def _generate_validator_expression_for(field_ir, ir):
+def _generate_validator_expression_for(
+    field_ir: ir_data.Field, ir: ir_data.EmbossIr
+) -> str:
     """Returns a validator expression for the given field."""
     result = _generate_custom_validator_expression_for(field_ir, ir)
     if result is None:
@@ -993,7 +1101,9 @@ def _generate_validator_expression_for(field_ir, ir):
     return result
 
 
-def _generate_structure_virtual_field_methods(enclosing_type_name, field_ir, ir):
+def _generate_structure_virtual_field_methods(
+    enclosing_type_name: str, field_ir: ir_data.Field, ir: ir_data.EmbossIr
+) -> tuple[str, str, str]:
     """Generates C++ code for methods for a single virtual field.
 
     Arguments:
@@ -1109,7 +1219,9 @@ def _generate_structure_virtual_field_methods(enclosing_type_name, field_ir, ir)
     return "", declaration, definition
 
 
-def _generate_validator_type_for(enclosing_type_name, field_ir, ir):
+def _generate_validator_type_for(
+    enclosing_type_name: str, field_ir: ir_data.Field, ir: ir_data.EmbossIr
+) -> tuple[str, str]:
     """Returns a validator type name and definition for the given field."""
     result_expression = _generate_custom_validator_expression_for(field_ir, ir)
     if result_expression is None:
@@ -1135,8 +1247,11 @@ def _generate_validator_type_for(enclosing_type_name, field_ir, ir):
 
 
 def _generate_structure_physical_field_methods(
-    enclosing_type_name, field_ir, ir, parent_addressable_unit
-):
+    enclosing_type_name: str,
+    field_ir: ir_data.Field,
+    ir: ir_data.EmbossIr,
+    parent_addressable_unit: int,
+) -> tuple[str, str, str]:
     """Generates C++ code for methods for a single physical field.
 
     Arguments:
@@ -1223,7 +1338,7 @@ def _generate_structure_physical_field_methods(
     return validator_declaration, declaration, definition
 
 
-def _render_size_method(fields, ir):
+def _render_size_method(fields: Sequence[ir_data.Field], ir: ir_data.EmbossIr) -> str:
     """Renders the Size methods of a struct or bits, using the correct templates.
 
     Arguments:
@@ -1259,7 +1374,7 @@ def _render_size_method(fields, ir):
     assert False, "Expected a $size_in_bits or $size_in_bytes field."
 
 
-def _visibility_for_field(field_ir):
+def _visibility_for_field(field_ir: ir_data.Field) -> str:
     """Returns the C++ visibility for field_ir within its parent view."""
     # Generally, the Google style guide for hand-written C++ forbids having
     # multiple public: and private: sections, but trying to conform to that bit of
@@ -1297,7 +1412,9 @@ def _visibility_for_field(field_ir):
         return "public"
 
 
-def _generate_field_indirection(field_ir, parent_type_name, ir):
+def _generate_field_indirection(
+    field_ir: ir_data.Field, parent_type_name: str, ir: ir_data.EmbossIr
+) -> tuple[str, str, str]:
     """Renders a method which forwards to a field's view."""
     rendered_aliased_field = _render_variable(
         ir_util.hashable_form_of_field_reference(field_ir.write_method.alias)
@@ -1319,7 +1436,9 @@ def _generate_field_indirection(field_ir, parent_type_name, ir):
     return "", declaration, definition
 
 
-def _generate_subtype_definitions(type_ir, ir, config: Config):
+def _generate_subtype_definitions(
+    type_ir: ir_data.TypeDefinition, ir: ir_data.EmbossIr, config: Config
+) -> tuple[str, str, str]:
     """Generates C++ code for subtypes of type_ir."""
     subtype_bodies = []
     subtype_forward_declarations = []
@@ -1341,7 +1460,7 @@ def _generate_subtype_definitions(type_ir, ir, config: Config):
     return (wrapped_bodies, wrapped_forward_declarations, wrapped_method_definitions)
 
 
-def _cpp_field_name(name):
+def _cpp_field_name(name: str) -> str:
     """Returns the C++ name for the given field name."""
     if name.startswith("$"):
         dollar_field_names = {
@@ -1357,7 +1476,7 @@ def _cpp_field_name(name):
         return name
 
 
-def _is_equality_check(expression):
+def _is_equality_check(expression: ir_data.Expression) -> bool:
     return (
         expression.which_expression == "function"
         and expression.function.function == ir_data.FunctionMapping.EQUALITY
@@ -1365,7 +1484,7 @@ def _is_equality_check(expression):
     )
 
 
-def _render_case_label(expression, ir):
+def _render_case_label(expression: ir_data.Expression, ir: ir_data.EmbossIr) -> str:
     if expression.type.which_type == "integer":
         return _render_integer(int(expression.type.integer.modular_value))
     elif expression.type.which_type == "enumeration":
@@ -1377,7 +1496,7 @@ def _render_case_label(expression, ir):
         assert False, "Unsupported switch case type"
 
 
-def _case_sort_key(expression):
+def _case_sort_key(expression: ir_data.Expression) -> int:
     """Returns the underlying integer value of a switch case expression.
 
     Used to sort case labels within a switch so the emitted C++ presents cases
@@ -1393,7 +1512,9 @@ def _case_sort_key(expression):
         assert False, "Unsupported switch case type"
 
 
-def _is_discriminant_provably_known(discrim_expr, fields):
+def _is_discriminant_provably_known(
+    discrim_expr: ir_data.Expression, fields: Sequence[ir_data.Field]
+) -> bool:
     """Returns True when the switch's Known() guard is provably redundant.
 
     The optimized switch block emits
@@ -1435,7 +1556,9 @@ def _is_discriminant_provably_known(discrim_expr, fields):
     return False
 
 
-def _get_switch_candidate(expression, ir):
+def _get_switch_candidate(
+    expression: ir_data.Expression, ir: ir_data.EmbossIr
+) -> tuple[ir_data.Expression | None, ir_data.Expression | None]:
     """Returns (discriminant_expr, case_value_expr) or (None, None)."""
     if not _is_equality_check(expression):
         return None, None
@@ -1458,7 +1581,9 @@ def _get_switch_candidate(expression, ir):
     return None, None
 
 
-def _flatten_function(expression, function):
+def _flatten_function(
+    expression: ir_data.Expression, function: ir_data.FunctionMapping
+) -> list[ir_data.Expression]:
     """Flatten a binary function chain into a flat list of operands.
 
     Both `(a OP b) OP c` and `a OP (b OP c)` flatten to `[a, b, c]`.
@@ -1474,15 +1599,22 @@ def _flatten_function(expression, function):
     return [expression]
 
 
-def _flatten_or(expression):
+def _flatten_or(expression: ir_data.Expression) -> list[ir_data.Expression]:
     return _flatten_function(expression, ir_data.FunctionMapping.OR)
 
 
-def _flatten_and(expression):
+def _flatten_and(expression: ir_data.Expression) -> list[ir_data.Expression]:
     return _flatten_function(expression, ir_data.FunctionMapping.AND)
 
 
-def _extract_switch_arms(expression, ir):
+# One arm of a candidate `switch`: the case-label expression, plus the residual
+# conjuncts that must still hold for the field to exist under that label.
+_SwitchArm = tuple[ir_data.Expression, list[ir_data.Expression]]
+
+
+def _extract_switch_arms(
+    expression: ir_data.Expression, ir: ir_data.EmbossIr
+) -> tuple[ir_data.Expression | None, list[_SwitchArm] | None]:
     """Decomposes `expression` into a list of switch arms.
 
     Returns either:
@@ -1546,9 +1678,9 @@ def _extract_switch_arms(expression, ir):
         and expression.function.function == ir_data.FunctionMapping.OR
     ):
         disjuncts = _flatten_or(expression)
-        common_discrim = None
-        common_discrim_str = None
-        all_arms = []
+        common_discrim: ir_data.Expression | None = None
+        common_discrim_str: str | None = None
+        all_arms: list[_SwitchArm] = []
         for d in disjuncts:
             sub_discrim, sub_arms = _extract_switch_arms(d, ir)
             if sub_discrim is None:
@@ -1568,7 +1700,11 @@ def _extract_switch_arms(expression, ir):
     return None, None
 
 
-def _generate_optimized_ok_method_body(fields, ir, subexpressions):
+def _generate_optimized_ok_method_body(
+    fields: Sequence[ir_data.Field],
+    ir: ir_data.EmbossIr,
+    subexpressions: ExpressionScope,
+) -> str:
     """Generates optimized C++ code for the Ok() method body.
 
     This function optimizes validation logic for structures with conditional
@@ -1632,14 +1768,14 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
     Returns:
         A string containing the C++ code for the optimized Ok() method body.
     """
-    groups = {}
-    ordered_keys = []
+    groups: dict[str, dict[str, Any]] = {}
+    ordered_keys: list[str] = []
     # Track which group each field was routed to and whether the field's
     # arms have residuals; the demotion pass at the end uses this to fall
     # back to ok_method_test for groups where switch-ifying isn't a net
     # win (single-entry groups, where the switch wrapper costs more than
     # the dedupe saves).
-    field_group_key = {}
+    field_group_key: dict[int, str] = {}
 
     for field in fields:
         discrim_expr, arms = _extract_switch_arms(field.existence_condition, ir)
@@ -1775,7 +1911,11 @@ def _generate_optimized_ok_method_body(fields, ir, subexpressions):
     return "".join(blocks)
 
 
-def _render_case_body(entries, ir, subexpressions):
+def _render_case_body(
+    entries: Sequence[tuple[ir_data.Field, list[ir_data.Expression]]],
+    ir: ir_data.EmbossIr,
+    subexpressions: ExpressionScope,
+) -> str:
     """Renders the body of a single switch arm.
 
     Each entry is `(field, residuals)` where `residuals` is the list of
@@ -1819,7 +1959,9 @@ def _render_case_body(entries, ir, subexpressions):
     return "".join(parts)
 
 
-def _emit_switch_block(group, ir, subexpressions):
+def _emit_switch_block(
+    group: dict[str, Any], ir: ir_data.EmbossIr, subexpressions: ExpressionScope
+) -> str:
     """Emits a complete switch block from a collected switch group.
 
     Performs case-label sorting and identical-body coalescing:
@@ -1833,7 +1975,7 @@ def _emit_switch_block(group, ir, subexpressions):
         single multi-label arm, so the compiler emits one body for all of
         them rather than duplicating per case.
     """
-    body_to_labels = {}
+    body_to_labels: dict[str, list[tuple[int, str]]] = {}
     body_first_seen = {}
     for case_str, case_entry in group["cases_by_label"].items():
         body = _render_case_body(case_entry["entries"], ir, subexpressions)
@@ -1873,7 +2015,9 @@ def _emit_switch_block(group, ir, subexpressions):
     )
 
 
-def _generate_structure_definition(type_ir, ir, config: Config):
+def _generate_structure_definition(
+    type_ir: ir_data.TypeDefinition, ir: ir_data.EmbossIr, config: Config
+) -> tuple[str, str, str]:
     """Generates C++ for an Emboss structure (struct or bits).
 
     Arguments:
@@ -1893,7 +2037,7 @@ def _generate_structure_definition(type_ir, ir, config: Config):
     field_helper_type_definitions = []
     field_method_declarations = []
     field_method_definitions = []
-    virtual_field_type_definitions = []
+    virtual_field_type_definitions: list[str] = []
     decode_field_clauses = []
     write_field_clauses = []
 
@@ -2075,7 +2219,9 @@ def _generate_structure_definition(type_ir, ir, config: Config):
     )
 
 
-def _split_enum_case_values_into_spans(enum_case_value):
+def _split_enum_case_values_into_spans(
+    enum_case_value: str,
+) -> Iterator[tuple[int, int]]:
     """Yields spans containing each enum case in an enum_case attribute value.
 
     Arguments:
@@ -2120,7 +2266,7 @@ def _split_enum_case_values_into_spans(enum_case_value):
         start = delimiter + 1
 
 
-def _split_enum_case_values(enum_case_value):
+def _split_enum_case_values(enum_case_value: str) -> list[str]:
     """Returns all enum cases in an enum case value.
 
     Arguments:
@@ -2136,7 +2282,7 @@ def _split_enum_case_values(enum_case_value):
     ]
 
 
-def _get_enum_value_names(enum_value):
+def _get_enum_value_names(enum_value: ir_data.EnumValue) -> list[str]:
     """Determines one or more enum names based on attributes."""
     cases = ["SHOUTY_CASE"]
     name = enum_value.name.name.text
@@ -2147,7 +2293,9 @@ def _get_enum_value_names(enum_value):
     return [name_conversion.convert_case("SHOUTY_CASE", case, name) for case in cases]
 
 
-def _generate_enum_definition(type_ir, include_traits=True):
+def _generate_enum_definition(
+    type_ir: ir_data.TypeDefinition, include_traits: bool = True
+) -> tuple[str, str, str]:
     """Generates C++ for an Emboss enum."""
     enum_values = []
     enum_from_string_statements = []
@@ -2219,7 +2367,9 @@ def _generate_enum_definition(type_ir, include_traits=True):
     return (declaration, definition, "")
 
 
-def _generate_type_definition(type_ir, ir, config: Config):
+def _generate_type_definition(
+    type_ir: ir_data.TypeDefinition, ir: ir_data.EmbossIr, config: Config
+) -> tuple[str, str, str]:
     """Generates C++ for an Emboss type."""
     if type_ir.has_field("structure"):
         return _generate_structure_definition(type_ir, ir, config)
@@ -2233,7 +2383,7 @@ def _generate_type_definition(type_ir, ir, config: Config):
         assert False, "Unknown type {}".format(type_ir)
 
 
-def _generate_header_guard(file_path):
+def _generate_header_guard(file_path: str) -> str:
     # TODO(bolms): Make this configurable.
     header_path = file_path + ".h"
     uppercased_path = header_path.upper()
@@ -2243,7 +2393,9 @@ def _generate_header_guard(file_path):
     return no_double_underscore_path
 
 
-def _add_missing_enum_case_attribute_on_enum_value(enum_value, defaults):
+def _add_missing_enum_case_attribute_on_enum_value(
+    enum_value: ir_data.EnumValue, defaults: Mapping[str, ir_data.Attribute]
+) -> None:
     """Adds an `enum_case` attribute if there isn't one but a default is set."""
     if (
         ir_util.get_attribute(enum_value.attribute, attributes.Attribute.ENUM_CASE)
@@ -2253,7 +2405,12 @@ def _add_missing_enum_case_attribute_on_enum_value(enum_value, defaults):
             enum_value.attribute.extend([defaults[attributes.Attribute.ENUM_CASE]])
 
 
-def _propagate_defaults(ir, targets, ancestors, add_fn):
+def _propagate_defaults(
+    ir: ir_data.EmbossIr,
+    targets: Sequence[type[ir_data.Message]],
+    ancestors: Iterable[type[ir_data.Message]],
+    add_fn: Callable[..., Any],
+) -> None:
     """Propagates default values
 
     Traverses the IR to propagate default values to target nodes.
@@ -2281,7 +2438,9 @@ def _propagate_defaults(ir, targets, ancestors, add_fn):
     )
 
 
-def _offset_source_location_column(source_location, offset):
+def _offset_source_location_column(
+    source_location: parser_types.SourceLocation, offset: tuple[int, int]
+) -> parser_types.SourceLocation:
     """Adds offsets from the start column of the supplied source location.
 
     Arguments:
@@ -2308,7 +2467,11 @@ def _offset_source_location_column(source_location, offset):
     return new_location
 
 
-def _verify_namespace_attribute(attr, source_file_name, errors):
+def _verify_namespace_attribute(
+    attr: ir_data.Attribute,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     if attr.name.text != attributes.Attribute.NAMESPACE:
         return
     namespace_value = ir_data_utils.reader(attr).value.string_constant
@@ -2362,7 +2525,11 @@ def _verify_namespace_attribute(attr, source_file_name, errors):
 _VALID_CASES = ", ".join(case for case in _SUPPORTED_ENUM_CASES)
 
 
-def _verify_enum_case_attribute(attr, source_file_name, errors):
+def _verify_enum_case_attribute(
+    attr: ir_data.Attribute,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     """Verify that `enum_case` values are supported."""
     if attr.name.text != attributes.Attribute.ENUM_CASE:
         return
@@ -2415,9 +2582,9 @@ def _verify_enum_case_attribute(attr, source_file_name, errors):
             )
 
 
-def _verify_attribute_values(ir):
+def _verify_attribute_values(ir: ir_data.EmbossIr) -> list[list[error.Message]]:
     """Verify backend attribute values."""
-    errors = []
+    errors: list[list[error.Message]] = []
 
     traverse_ir.fast_traverse_ir_top_down(
         ir,
@@ -2435,7 +2602,9 @@ def _verify_attribute_values(ir):
     return errors
 
 
-def _propagate_defaults_and_verify_attributes(ir):
+def _propagate_defaults_and_verify_attributes(
+    ir: ir_data.EmbossIr,
+) -> list[list[error.Message]]:
     """Verify attributes and ensure defaults are set when not overridden.
 
     Arguments:
@@ -2470,7 +2639,9 @@ def _propagate_defaults_and_verify_attributes(ir):
     return []
 
 
-def generate_header(ir, config=Config()):
+def generate_header(
+    ir: ir_data.EmbossIr, config: Config = Config()
+) -> tuple[str | None, list[list[error.Message]]]:
     """Generates a C++ header from an Emboss module.
 
     Arguments:

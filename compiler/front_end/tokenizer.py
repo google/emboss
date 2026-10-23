@@ -28,14 +28,18 @@ REGEX_TOKEN_PATTERNS: A list of regexes used for tokenization.
   which match the pattern.
 """
 
-import collections
+from __future__ import annotations
+
 import re
+from typing import NamedTuple
 
 from compiler.util import error
 from compiler.util import parser_types
 
 
-def tokenize(text, file_name):
+def tokenize(
+    text: str, file_name: str
+) -> tuple[list[parser_types.Token] | None, list[list[error.Message]]]:
     # TODO(bolms): suppress end-of-line, indent, and dedent tokens between matched
     # delimiters ([], (), and {}).
     """Tokenizes its argument.
@@ -49,7 +53,7 @@ def tokenize(text, file_name):
         a list of parser_types.Tokens or None
         a possibly-empty list of errors.
     """
-    tokens = []
+    tokens: list[parser_types.Token] = []
     indent_stack = [""]
     line_number = 0
     for line in text.splitlines():
@@ -163,7 +167,15 @@ LITERAL_TOKEN_PATTERNS = (
     "$max_size_in_bits $max_size_in_bytes $min_size_in_bits $min_size_in_bytes "
     "$default struct bits enum external import as if let"
 ).split()
-_T = collections.namedtuple("T", ["regex", "symbol", "example"])
+
+
+class _RegexTokenPattern(NamedTuple):
+    regex: re.Pattern[str]
+    symbol: str | None
+    example: str
+
+
+_T = _RegexTokenPattern
 REGEX_TOKEN_PATTERNS = [
     # Words starting with variations of "emboss reserved" are reserved for
     # internal use by the Emboss compiler.
@@ -204,7 +216,9 @@ REGEX_TOKEN_PATTERNS = [
 del _T
 
 
-def _tokenize_line(line, line_number, file_name):
+def _tokenize_line(
+    line: str, line_number: int, file_name: str
+) -> tuple[list[parser_types.Token] | None, list[list[error.Message]] | None]:
     """Tokenizes a single line of input.
 
     Arguments:
@@ -217,11 +231,11 @@ def _tokenize_line(line, line_number, file_name):
         A list of token objects or None.
         A possibly-empty list of errors.
     """
-    tokens = []
+    tokens: list[parser_types.Token] = []
     offset = 0
     while offset < len(line):
         best_candidate = ""
-        best_candidate_symbol = None
+        best_candidate_symbol: str | None = None
         # Find the longest match.  Ties go to the first match.  This way, keywords
         # ("struct") are matched as themselves, but words that only happen to start
         # with keywords ("structure") are matched as words.

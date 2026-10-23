@@ -14,12 +14,23 @@
 
 """Utilities for working with parse trees."""
 
+from __future__ import annotations
+
+from collections.abc import Callable, Mapping
+from typing import TYPE_CHECKING, Any
+
 from compiler.util import parser_types
+
+if TYPE_CHECKING:
+    from compiler.front_end import lr1
 
 
 def transform_parse_tree(
-    parse_tree, token_handler, production_handlers, used_productions=None
-):
+    parse_tree: parser_types.Token | lr1.Reduction,
+    token_handler: Callable[[parser_types.Token], Any],
+    production_handlers: Mapping[parser_types.Production, Callable[..., Any]],
+    used_productions: set[parser_types.Production] | None = None,
+) -> Any:
     """Walks the provided parse_tree, calling handlers for each node.
 
     This function uses provided handlers to transform a parse tree into a new
@@ -114,11 +125,13 @@ def transform_parse_tree(
     # 25. Return production_handlers[A.production](A, *A.transformed_children)
     #
     # It takes quite a few steps to handle even a small tree!
-    stack = [(parse_tree, None, False, None)]
+    stack: list[tuple[Any, list[Any] | None, bool, list[Any] | None]] = [
+        (parse_tree, None, False, None)
+    ]
     while True:
         node, parent, children_completed, transformed_children = stack.pop()
         if not children_completed:
-            parent_entry = []
+            parent_entry: list[Any] = []
             stack.append((node, parent, True, parent_entry))
             if hasattr(node, "children"):
                 for child in node.children:
@@ -129,8 +142,9 @@ def transform_parse_tree(
             if isinstance(node, parser_types.Token):
                 transformed_node = token_handler(node)
             else:
+                assert transformed_children is not None
                 transformed_node = production_handlers[node.production](
-                    *([node] + transformed_children)
+                    node, *transformed_children
                 )
             if parent is None:
                 return transformed_node

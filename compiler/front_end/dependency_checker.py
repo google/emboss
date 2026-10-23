@@ -14,15 +14,29 @@
 
 """Checks for dependency cycles in Emboss IR."""
 
+from __future__ import annotations
+
+from collections.abc import Iterable, Mapping
+
 from compiler.util import error
 from compiler.util import ir_data
 from compiler.util import ir_util
 from compiler.util import traverse_ir
 
+# A node in the dependency graph: the hashable form of a reference (see
+# ir_util.hashable_form_of_reference) or, for module dependencies, a 1-tuple of
+# the module's file name.
+_Node = tuple[str, ...]
+_Dependencies = dict[_Node, set[_Node]]
+
 
 def _add_reference_to_dependencies(
-    reference, dependencies, name, source_file_name, errors
-):
+    reference: ir_data.Reference,
+    dependencies: _Dependencies,
+    name: _Node,
+    source_file_name: str,
+    errors: list[list[error.Message]],
+) -> None:
     """Adds the specified `reference` to the `dependencies` set."""
     if reference.canonical_name.object_path[0] in {
         "$is_statically_sized",
@@ -47,20 +61,27 @@ def _add_reference_to_dependencies(
     dependencies[name] |= {ir_util.hashable_form_of_reference(reference)}
 
 
-def _add_field_reference_to_dependencies(reference, dependencies, name):
+def _add_field_reference_to_dependencies(
+    reference: ir_data.FieldReference, dependencies: _Dependencies, name: _Node
+) -> None:
     dependencies[name] |= {ir_util.hashable_form_of_reference(reference.path[0])}
 
 
-def _add_name_to_dependencies(proto, dependencies):
+def _add_name_to_dependencies(
+    proto: ir_data.Field | ir_data.EnumValue | ir_data.RuntimeParameter,
+    dependencies: _Dependencies,
+) -> dict[str, _Node]:
     name = ir_util.hashable_form_of_reference(proto.name)
     dependencies.setdefault(name, set())
     return {"name": name}
 
 
-def _find_dependencies(ir):
+def _find_dependencies(
+    ir: ir_data.EmbossIr,
+) -> tuple[_Dependencies, list[list[error.Message]]]:
     """Constructs a dependency graph for the entire IR."""
-    dependencies = {}
-    errors = []
+    dependencies: _Dependencies = {}
+    errors: list[list[error.Message]] = []
     traverse_ir.fast_traverse_ir_top_down(
         ir,
         [ir_data.Reference],
@@ -98,8 +119,10 @@ def _find_dependencies(ir):
 
 
 def _find_dependency_ordering_for_fields_in_structure(
-    structure, type_definition, dependencies
-):
+    structure: ir_data.Structure,
+    type_definition: ir_data.TypeDefinition,
+    dependencies: _Dependencies,
+) -> None:
     """Populates structure.fields_in_dependency_order."""
     # For fields which appear before their dependencies in the original source
     # text, this algorithm moves them to immediately after their dependencies.
@@ -107,8 +130,8 @@ def _find_dependency_ordering_for_fields_in_structure(
     # This is one of many possible schemes for constructing a dependency ordering;
     # it has the advantage that all of the generated fields (e.g., $size_in_bytes)
     # stay at the end of the ordering, which makes testing easier.
-    order = []
-    added = set()
+    order: list[int] = []
+    added: set[_Node] = set()
     for parameter in type_definition.runtime_parameter:
         added.add(ir_util.hashable_form_of_reference(parameter.name))
     needed = list(range(len(structure.field)))
@@ -135,9 +158,9 @@ def _find_dependency_ordering_for_fields_in_structure(
     structure.fields_in_dependency_order.extend(order)
 
 
-def _find_dependency_ordering_for_fields(ir):
+def _find_dependency_ordering_for_fields(ir: ir_data.EmbossIr) -> None:
     """Populates the fields_in_dependency_order fields throughout ir."""
-    dependencies = {}
+    dependencies: _Dependencies = {}
     # TODO(bolms): This duplicates work in _find_dependencies that could be
     # shared.
     traverse_ir.fast_traverse_ir_top_down(
@@ -160,11 +183,11 @@ def _find_dependency_ordering_for_fields(ir):
     )
 
 
-def _find_module_import_dependencies(ir):
+def _find_module_import_dependencies(ir: ir_data.EmbossIr) -> _Dependencies:
     """Constructs a dependency graph of module imports."""
-    dependencies = {}
+    dependencies: _Dependencies = {}
     for module in ir.module:
-        foreign_imports = set()
+        foreign_imports: set[_Node] = set()
         for foreign_import in module.foreign_import:
             # The prelude gets an automatic self-import that shouldn't cause any
             # problems.  No other self-imports are allowed, however.
@@ -174,7 +197,7 @@ def _find_module_import_dependencies(ir):
     return dependencies
 
 
-def _find_cycles(graph):
+def _find_cycles(graph: Mapping[_Node, Iterable[_Node]]) -> set[frozenset[_Node]]:
     """Finds cycles in graph.
 
     The graph does not need to be fully connected.
@@ -206,13 +229,13 @@ def _find_cycles(graph):
     # they are first encountered, but not removed until all nodes they can reach
     # have been checked.
     next_index = [0]
-    node_indices = {}
-    node_lowlinks = {}
-    nodes_on_stack = set()
-    stack = []
-    nontrivial_components = set()
+    node_indices: dict[_Node, int] = {}
+    node_lowlinks: dict[_Node, int] = {}
+    nodes_on_stack: set[_Node] = set()
+    stack: list[_Node] = []
+    nontrivial_components: set[frozenset[_Node]] = set()
 
-    def strong_connect(node):
+    def strong_connect(node: _Node) -> None:
         """Implements the STRONGCONNECT routine of Tarjan's algorithm."""
         node_indices[node] = next_index[0]
         node_lowlinks[node] = next_index[0]
@@ -252,12 +275,12 @@ def _find_cycles(graph):
     return nontrivial_components
 
 
-def _find_object_dependency_cycles(ir):
+def _find_object_dependency_cycles(ir: ir_data.EmbossIr) -> list[list[error.Message]]:
     """Finds dependency cycles in types in the ir."""
     dependencies, find_dependency_errors = _find_dependencies(ir)
     if find_dependency_errors:
         return find_dependency_errors
-    errors = []
+    errors: list[list[error.Message]] = []
     cycles = _find_cycles(dict(dependencies))
     for cycle in cycles:
         # TODO(bolms): This lists the entire strongly-connected component in a
@@ -284,11 +307,11 @@ def _find_object_dependency_cycles(ir):
     return errors
 
 
-def _find_module_dependency_cycles(ir):
+def _find_module_dependency_cycles(ir: ir_data.EmbossIr) -> list[list[error.Message]]:
     """Finds dependency cycles in modules in the ir."""
     dependencies = _find_module_import_dependencies(ir)
     cycles = _find_cycles(dict(dependencies))
-    errors = []
+    errors: list[list[error.Message]] = []
     for cycle in cycles:
         cycle_list = sorted(list(cycle))
         module = ir_util.find_object(cycle_list[0], ir)
@@ -310,13 +333,13 @@ def _find_module_dependency_cycles(ir):
     return errors
 
 
-def find_dependency_cycles(ir):
+def find_dependency_cycles(ir: ir_data.EmbossIr) -> list[list[error.Message]]:
     """Finds any dependency cycles in the ir."""
     errors = _find_module_dependency_cycles(ir)
     return errors + _find_object_dependency_cycles(ir)
 
 
-def set_dependency_order(ir):
+def set_dependency_order(ir: ir_data.EmbossIr) -> list[list[error.Message]]:
     """Sets the fields_in_dependency_order member of Structures."""
     _find_dependency_ordering_for_fields(ir)
     return []
