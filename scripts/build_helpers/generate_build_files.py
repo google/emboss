@@ -15,6 +15,8 @@
 
 """Generates build helper files from `build.json`."""
 
+from __future__ import annotations
+
 import json
 import os
 
@@ -33,8 +35,11 @@ COPYRIGHT_HEADER = """# Copyright 2025 Google LLC
 # limitations under the License.
 """
 
+# The parsed contents of build.json: a list of source files under each key.
+_BuildData = dict[str, list[str]]
 
-def read_build_json(file_path):
+
+def read_build_json(file_path: str) -> _BuildData:
     """Reads build.json, strips comments, and returns the parsed JSON data."""
     with open(file_path, "r") as f:
         # Simple comment stripping for JSONC format
@@ -42,7 +47,7 @@ def read_build_json(file_path):
     return json.loads(content)
 
 
-def generate_sources_json(output_dir, data):
+def generate_sources_json(output_dir: str, data: _BuildData) -> None:
     """Generates gen/sources.json."""
     output_path = os.path.join(output_dir, "sources.json")
     with open(output_path, "w") as f:
@@ -51,7 +56,7 @@ def generate_sources_json(output_dir, data):
     print(f"Generated {output_path}")
 
 
-def generate_sources_bzl(output_dir, data):
+def generate_sources_bzl(output_dir: str, data: _BuildData) -> None:
     """Generates gen/sources.bzl."""
     output_path = os.path.join(output_dir, "sources.bzl")
     with open(output_path, "w") as f:
@@ -71,7 +76,7 @@ def generate_sources_bzl(output_dir, data):
     print(f"Generated {output_path}")
 
 
-def generate_sources_cmake(output_dir, data):
+def generate_sources_cmake(output_dir: str, data: _BuildData) -> None:
     """Generates gen/sources.cmake."""
     output_path = os.path.join(output_dir, "sources.cmake")
     with open(output_path, "w") as f:
@@ -90,7 +95,7 @@ def generate_sources_cmake(output_dir, data):
     print(f"Generated {output_path}")
 
 
-def generate_sources_gni(output_dir, data):
+def generate_sources_gni(output_dir: str, data: _BuildData) -> None:
     """Generates gen/sources.gni."""
     output_path = os.path.join(output_dir, "sources.gni")
     with open(output_path, "w") as f:
@@ -109,7 +114,7 @@ def generate_sources_gni(output_dir, data):
     print(f"Generated {output_path}")
 
 
-def main():
+def main() -> None:
     workspace_root = os.environ.get("BUILD_WORKSPACE_DIRECTORY", os.getcwd())
     build_json_path = os.path.join(workspace_root, "build.json")
     gen_dir = os.path.join(workspace_root, "gen")

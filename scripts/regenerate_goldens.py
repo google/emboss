@@ -5,6 +5,8 @@ Run from the repo root. Mirrors the cpp_golden_test list in
 compiler/back_end/cpp/BUILD.
 """
 
+from __future__ import annotations
+
 import os
 import subprocess
 import sys
@@ -53,7 +55,7 @@ GOLDENS = [
 
 # imported_genfiles.emb is produced by a genrule from imported.emb.
 # Reproduce that sed transformation so the golden stays in sync.
-def _ensure_imported_genfiles():
+def _ensure_imported_genfiles() -> None:
     src = os.path.join(REPO, "testdata", "imported.emb")
     dst = os.path.join(REPO, "testdata", "imported_genfiles.emb")
     with open(src, "r") as f:
@@ -63,19 +65,19 @@ def _ensure_imported_genfiles():
         f.write(contents)
 
 
-def _no_enum_traits_args(emb_file):
+def _no_enum_traits_args(emb_file: str) -> list[str]:
     # The golden test for no_enum_traits.emb actually runs with default
     # (traits-enabled) settings; the file just verifies that the schema
     # parses when traits are disabled in downstream tests.
     return []
 
 
-def main():
+def main() -> None:
     _ensure_imported_genfiles()
     try:
         embossc = os.path.join(REPO, "embossc")
         out_dir = os.path.join(REPO, "testdata", "golden_cpp")
-        failures = []
+        failures: list[tuple[str, str]] = []
         for emb, golden in GOLDENS + [
             ("imported_genfiles.emb", "imported_genfiles.emb.h")
         ]:

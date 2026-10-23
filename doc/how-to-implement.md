@@ -143,6 +143,11 @@ the [Black](https://black.readthedocs.io/en/stable/) code formatter.[^genfile]
     both because it can hang the formatter and because the formatted version
     takes noticeably longer for CPython to load.
 
+Python code is type-annotated and checked with
+[mypy](https://mypy.readthedocs.io/en/stable/).  The configuration is in
+`pyproject.toml`; `pip install mypy` and then run `mypy` from the top `emboss`
+directory to run the same check as the pull request workflow.
+
 For C++, Emboss uses the `--style=Google` preset of
 [ClangFormat](https://clang.llvm.org/docs/ClangFormat.html).
 

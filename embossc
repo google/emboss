@@ -16,12 +16,15 @@
 
 """Main driver program for the Emboss compiler."""
 
+from __future__ import annotations
+
 import argparse
 import os
 import sys
+from collections.abc import Sequence
 
 
-def _parse_args(argv):
+def _parse_args(argv: Sequence[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Emboss compiler")
     parser.add_argument(
         "--color-output",
@@ -67,16 +70,17 @@ def _parse_args(argv):
     return parser.parse_args(argv[1:])
 
 
-def main(argv):
+def main(argv: Sequence[str]) -> int:
     flags = _parse_args(argv)
     base_path = os.path.dirname(__file__) or "."
     sys.path.append(base_path)
 
-    from compiler.back_end.cpp import ( # pylint:disable=import-outside-toplevel
-    emboss_codegen_cpp, header_generator
+    from compiler.back_end.cpp import (  # pylint:disable=import-outside-toplevel
+        emboss_codegen_cpp,
+        header_generator,
     )
-    from compiler.front_end import ( # pylint:disable=import-outside-toplevel
-    emboss_front_end
+    from compiler.front_end import (  # pylint:disable=import-outside-toplevel
+        emboss_front_end,
     )
 
     ir, _, errors = emboss_front_end.parse_and_log_errors(
