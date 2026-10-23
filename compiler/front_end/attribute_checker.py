@@ -355,7 +355,9 @@ def _add_missing_width_and_sign_attributes_on_enum(enum, type_definition):
     if signed_attr is None:
         for value in enum.value:
             numeric_value = ir_util.constant_value(value.value)
-            if numeric_value < 0:
+            # A constant expression has no value only when it divides by zero;
+            # the constraints pass rejects that, so just skip it here.
+            if numeric_value is not None and numeric_value < 0:
                 is_signed = True
                 break
         else:

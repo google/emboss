@@ -131,6 +131,28 @@ class IrUtilTest(unittest.TestCase):
     def test_constant_value_of_multiplication(self):
         self.assertEqual(8, ir_util.constant_value(_parse_expression("2*4")))
 
+    def test_constant_value_of_floor_division(self):
+        self.assertEqual(2, ir_util.constant_value(_parse_expression("8 // 3")))
+        # Flooring division rounds toward negative infinity.
+        self.assertEqual(-3, ir_util.constant_value(_parse_expression("8 // (0-3)")))
+        self.assertEqual(-3, ir_util.constant_value(_parse_expression("(0-8) // 3")))
+        self.assertEqual(2, ir_util.constant_value(_parse_expression("(0-8) // (0-3)")))
+
+    def test_constant_value_of_modulus(self):
+        self.assertEqual(2, ir_util.constant_value(_parse_expression("8 % 3")))
+        # Flooring modulus takes the sign of the divisor.
+        self.assertEqual(-1, ir_util.constant_value(_parse_expression("8 % (0-3)")))
+        self.assertEqual(1, ir_util.constant_value(_parse_expression("(0-8) % 3")))
+        self.assertEqual(-2, ir_util.constant_value(_parse_expression("(0-8) % (0-3)")))
+
+    def test_constant_value_of_division_or_modulus_by_zero_is_none(self):
+        # Constant folding must be total: a zero divisor has no constant value,
+        # so `constant_value` returns None rather than raising (the constraints
+        # pass reports the error).  This is also a regression test: without a
+        # dispatch entry for `//`/`%`, folding raised KeyError.
+        self.assertIsNone(ir_util.constant_value(_parse_expression("8 // 0")))
+        self.assertIsNone(ir_util.constant_value(_parse_expression("8 % 0")))
+
     def test_constant_value_of_equality(self):
         self.assertFalse(ir_util.constant_value(_parse_expression("2 == 4")))
 

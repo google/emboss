@@ -124,6 +124,133 @@ TEST(Product, Product) {
                                      Maybe</**/ ::std::int32_t>(2))));
 }
 
+TEST(FlooringQuotient, FlooringQuotient) {
+  // Sign table from the division_and_modulus design doc.
+  EXPECT_EQ(Maybe</**/ ::std::int32_t>(2),
+            (FlooringQuotient</**/ ::std::int32_t, ::std::int32_t,
+                              ::std::int32_t, ::std::int32_t>(
+                Maybe</**/ ::std::int32_t>(8), Maybe</**/ ::std::int32_t>(3))));
+  EXPECT_EQ(Maybe</**/ ::std::int32_t>(-3),
+            (FlooringQuotient</**/ ::std::int32_t, ::std::int32_t,
+                              ::std::int32_t, ::std::int32_t>(
+                Maybe</**/ ::std::int32_t>(8), Maybe</**/ ::std::int32_t>(-3))));
+  EXPECT_EQ(Maybe</**/ ::std::int32_t>(-3),
+            (FlooringQuotient</**/ ::std::int32_t, ::std::int32_t,
+                              ::std::int32_t, ::std::int32_t>(
+                Maybe</**/ ::std::int32_t>(-8), Maybe</**/ ::std::int32_t>(3))));
+  EXPECT_EQ(
+      Maybe</**/ ::std::int32_t>(2),
+      (FlooringQuotient</**/ ::std::int32_t, ::std::int32_t, ::std::int32_t,
+                        ::std::int32_t>(Maybe</**/ ::std::int32_t>(-8),
+                                        Maybe</**/ ::std::int32_t>(-3))));
+  // Exact division needs no flooring adjustment.
+  EXPECT_EQ(
+      Maybe</**/ ::std::int32_t>(-2),
+      (FlooringQuotient</**/ ::std::int32_t, ::std::int32_t, ::std::int32_t,
+                        ::std::int32_t>(Maybe</**/ ::std::int32_t>(-6),
+                                        Maybe</**/ ::std::int32_t>(3))));
+  // Unsigned: identical to C++'s built-in division.
+  EXPECT_EQ(Maybe</**/ ::std::uint32_t>(2),
+            (FlooringQuotient</**/ ::std::uint32_t, ::std::uint32_t,
+                              ::std::uint32_t, ::std::uint32_t>(
+                Maybe</**/ ::std::uint32_t>(8),
+                Maybe</**/ ::std::uint32_t>(3))));
+  // Unknown propagates.
+  EXPECT_EQ(
+      Maybe</**/ ::std::int32_t>(),
+      (FlooringQuotient</**/ ::std::int32_t, ::std::int32_t, ::std::int32_t,
+                        ::std::int32_t>(Maybe</**/ ::std::int32_t>(),
+                                        Maybe</**/ ::std::int32_t>(3))));
+}
+
+TEST(FlooringRemainder, FlooringRemainder) {
+  // Sign table from the design doc; the result takes the sign of the divisor.
+  EXPECT_EQ(Maybe</**/ ::std::int32_t>(2),
+            (FlooringRemainder</**/ ::std::int32_t, ::std::int32_t,
+                               ::std::int32_t, ::std::int32_t>(
+                Maybe</**/ ::std::int32_t>(8), Maybe</**/ ::std::int32_t>(3))));
+  EXPECT_EQ(Maybe</**/ ::std::int32_t>(-1),
+            (FlooringRemainder</**/ ::std::int32_t, ::std::int32_t,
+                               ::std::int32_t, ::std::int32_t>(
+                Maybe</**/ ::std::int32_t>(8), Maybe</**/ ::std::int32_t>(-3))));
+  EXPECT_EQ(Maybe</**/ ::std::int32_t>(1),
+            (FlooringRemainder</**/ ::std::int32_t, ::std::int32_t,
+                               ::std::int32_t, ::std::int32_t>(
+                Maybe</**/ ::std::int32_t>(-8), Maybe</**/ ::std::int32_t>(3))));
+  EXPECT_EQ(
+      Maybe</**/ ::std::int32_t>(-2),
+      (FlooringRemainder</**/ ::std::int32_t, ::std::int32_t, ::std::int32_t,
+                         ::std::int32_t>(Maybe</**/ ::std::int32_t>(-8),
+                                         Maybe</**/ ::std::int32_t>(-3))));
+  // Exact division: remainder is zero regardless of sign.
+  EXPECT_EQ(
+      Maybe</**/ ::std::int32_t>(0),
+      (FlooringRemainder</**/ ::std::int32_t, ::std::int32_t, ::std::int32_t,
+                         ::std::int32_t>(Maybe</**/ ::std::int32_t>(-6),
+                                         Maybe</**/ ::std::int32_t>(3))));
+  // Unsigned.
+  EXPECT_EQ(Maybe</**/ ::std::uint32_t>(2),
+            (FlooringRemainder</**/ ::std::uint32_t, ::std::uint32_t,
+                               ::std::uint32_t, ::std::uint32_t>(
+                Maybe</**/ ::std::uint32_t>(8),
+                Maybe</**/ ::std::uint32_t>(3))));
+  // Unknown propagates.
+  EXPECT_EQ(
+      Maybe</**/ ::std::int32_t>(),
+      (FlooringRemainder</**/ ::std::int32_t, ::std::int32_t, ::std::int32_t,
+                         ::std::int32_t>(Maybe</**/ ::std::int32_t>(8),
+                                         Maybe</**/ ::std::int32_t>())));
+}
+
+TEST(FlooringQuotient, Int64Extremes) {
+  using Int64 = ::std::int64_t;
+  constexpr Int64 kMin = ::std::numeric_limits<Int64>::min();
+  constexpr Int64 kMax = ::std::numeric_limits<Int64>::max();
+  // Dividing by -1 is handled without a hardware divide, since `kMin / -1`
+  // would overflow; `kMin // -1` itself is unrepresentable and is kept out of
+  // generated code by the front end's range check.
+  EXPECT_EQ(Maybe<Int64>(kMax),
+            (FlooringQuotient<Int64, Int64, Int64, Int64>(
+                Maybe<Int64>(kMin + 1), Maybe<Int64>(-1))));
+  EXPECT_EQ(Maybe<Int64>(-kMax),
+            (FlooringQuotient<Int64, Int64, Int64, Int64>(
+                Maybe<Int64>(kMax), Maybe<Int64>(-1))));
+  EXPECT_EQ(Maybe<Int64>(Int64{1} << 62),
+            (FlooringQuotient<Int64, Int64, Int64, Int64>(
+                Maybe<Int64>(kMin), Maybe<Int64>(-2))));
+  EXPECT_EQ(Maybe<Int64>(-3074457345618258603LL),
+            (FlooringQuotient<Int64, Int64, Int64, Int64>(
+                Maybe<Int64>(kMin), Maybe<Int64>(3))));
+  EXPECT_EQ(Maybe</**/ ::std::uint64_t>(0x5555555555555555ULL),
+            (FlooringQuotient</**/ ::std::uint64_t, ::std::uint64_t,
+                              ::std::uint64_t, ::std::uint64_t>(
+                Maybe</**/ ::std::uint64_t>(0xffffffffffffffffULL),
+                Maybe</**/ ::std::uint64_t>(3))));
+}
+
+TEST(FlooringRemainder, Int64Extremes) {
+  using Int64 = ::std::int64_t;
+  constexpr Int64 kMin = ::std::numeric_limits<Int64>::min();
+  constexpr Int64 kMax = ::std::numeric_limits<Int64>::max();
+  // `kMin % -1` is mathematically 0 but is undefined behavior in C++ (and traps
+  // on x86); it is reachable from generated code, so it must not divide.
+  EXPECT_EQ(Maybe<Int64>(0), (FlooringRemainder<Int64, Int64, Int64, Int64>(
+                                 Maybe<Int64>(kMin), Maybe<Int64>(-1))));
+  EXPECT_EQ(Maybe<Int64>(0), (FlooringRemainder<Int64, Int64, Int64, Int64>(
+                                 Maybe<Int64>(kMax), Maybe<Int64>(-1))));
+  EXPECT_EQ(Maybe<Int64>(0), (FlooringRemainder<Int64, Int64, Int64, Int64>(
+                                 Maybe<Int64>(kMin), Maybe<Int64>(-2))));
+  EXPECT_EQ(Maybe<Int64>(1), (FlooringRemainder<Int64, Int64, Int64, Int64>(
+                                 Maybe<Int64>(kMin), Maybe<Int64>(3))));
+  EXPECT_EQ(Maybe<Int64>(-2), (FlooringRemainder<Int64, Int64, Int64, Int64>(
+                                  Maybe<Int64>(kMin), Maybe<Int64>(-3))));
+  EXPECT_EQ(Maybe</**/ ::std::uint64_t>(0),
+            (FlooringRemainder</**/ ::std::uint64_t, ::std::uint64_t,
+                               ::std::uint64_t, ::std::uint64_t>(
+                Maybe</**/ ::std::uint64_t>(0xffffffffffffffffULL),
+                Maybe</**/ ::std::uint64_t>(3))));
+}
+
 TEST(Equal, Equal) {
   EXPECT_EQ(Maybe<bool>(true),
             (Equal</**/ ::std::int32_t, bool, ::std::int32_t, ::std::int32_t>(

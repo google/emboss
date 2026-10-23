@@ -187,6 +187,22 @@ def _type_check_monomorphic_operator(expression, source_file_name, errors):
             2,
             "operator",
         ),
+        ir_data.FunctionMapping.FLOOR_DIVISION: (
+            int_result,
+            int_args,
+            binary,
+            2,
+            2,
+            "operator",
+        ),
+        ir_data.FunctionMapping.MODULUS: (
+            int_result,
+            int_args,
+            binary,
+            2,
+            2,
+            "operator",
+        ),
         ir_data.FunctionMapping.AND: (bool_result, bool_args, binary, 2, 2, "operator"),
         ir_data.FunctionMapping.OR: (bool_result, bool_args, binary, 2, 2, "operator"),
         ir_data.FunctionMapping.MAXIMUM: (
@@ -223,7 +239,7 @@ def _type_check_monomorphic_operator(expression, source_file_name, errors):
         ),
     }
     function = expression.function.function
-    (set_result_type, check_arg, arg_names, min_args, max_args, kind) = functions[
+    set_result_type, check_arg, arg_names, min_args, max_args, kind = functions[
         function
     ]
     for argument, name in zip(args, arg_names):

@@ -159,7 +159,7 @@ Roughly speaking, there are two common forms of "integer division:" *flooring*
 | +8 / +3    | 2                | 2                 |
 | +8 / -3    | -3               | -2                |
 | -8 / +3    | -3               | -2                |
-| -8 / -3    | -3               | 2                 |
+| -8 / -3    | 2                | 2                 |
 | +8 % +3    | 2                | 2                 |
 | +8 % -3    | -1               | 2                 |
 | -8 % +3    | 1                | -2                |
