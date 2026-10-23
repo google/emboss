@@ -9,3 +9,5 @@ __pycache__
 # IDEs
 .vscode
 
+# scripts/size_bench.py default --out-dir
+size_results/
