@@ -45,7 +45,7 @@ TEST(NextKeyword, FieldsAreCorrectlyLocated) {
   };
   const auto view = MakeNextKeywordView(&values);
   ASSERT_TRUE(view.Ok());
-  EXPECT_EQ(1, view.value32().Read());
+  EXPECT_EQ(1U, view.value32().Read());
   EXPECT_EQ(2, view.value16().Read());
   EXPECT_EQ(3, view.value8().Read());
   EXPECT_EQ(4, view.value8_offset().Read());

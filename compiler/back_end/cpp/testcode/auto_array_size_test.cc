@@ -111,7 +111,7 @@ TEST(AutoSizeView, PreviousNext) {
 TEST(AutoSizeView, ForEach) {
   auto view = MakeAutoSizeView(kAutoSize, sizeof kAutoSize).four_struct_array();
 
-  int i = 0;
+  ::std::size_t i = 0;
   ::std::for_each(view.begin(), view.end(), [&](ElementView element) {
     ASSERT_TRUE(element.Equals(view[i++]));
   });
@@ -125,7 +125,7 @@ TEST(AutoSizeView, ForEach) {
 TEST(AutoSizeView, ForEachWithTemporaries) {
   auto view = MakeAutoSizeView(kAutoSize, sizeof kAutoSize);
 
-  int i = 0;
+  ::std::size_t i = 0;
   ::std::for_each(view.four_struct_array().begin(),
                   view.four_struct_array().end(), [&](ElementView element) {
                     ASSERT_TRUE(element.Equals(view.four_struct_array()[i++]));
@@ -178,12 +178,13 @@ TEST(AutoSizeView, Find) {
 
 TEST(AutoSizeView, Comparison) {
   auto view = MakeAutoSizeView(kAutoSize, sizeof kAutoSize).four_struct_array();
+  const auto count = static_cast</**/ ::std::ptrdiff_t>(view.ElementCount());
 
-  EXPECT_EQ(view.begin() + view.ElementCount(), view.end());
-  EXPECT_EQ(view.end() - view.ElementCount(), view.begin());
+  EXPECT_EQ(view.begin() + count, view.end());
+  EXPECT_EQ(view.end() - count, view.begin());
 
-  EXPECT_EQ(view.rbegin() + view.ElementCount(), view.rend());
-  EXPECT_EQ(view.rend() - view.ElementCount(), view.rbegin());
+  EXPECT_EQ(view.rbegin() + count, view.rend());
+  EXPECT_EQ(view.rend() - count, view.rbegin());
 
   EXPECT_LT(view.begin(), view.end());
   EXPECT_LT(view.rbegin(), view.rend());
@@ -205,7 +206,7 @@ TEST(AutoSizeView, Comparison) {
 TEST(AutoSizeView, RangeBasedFor) {
   auto view = MakeAutoSizeView(kAutoSize, sizeof kAutoSize).four_struct_array();
 
-  int i = 0;
+  ::std::size_t i = 0;
   for (auto element : view) {
     ASSERT_TRUE(element.Equals(view[i++]));
   }

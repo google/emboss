@@ -107,7 +107,7 @@ TEST(MessageView, Writer) {
   writer.header_length().Write(2);
   writer.message_length().Write(6);
   EXPECT_EQ(6, writer.message_length().Read());
-  for (int i = 0; i < writer.message_length().Read(); ++i) {
+  for (::std::size_t i = 0; i < writer.message_length().Read(); ++i) {
     writer.message()[i].Write(i + 1);
   }
   EXPECT_EQ(12U, writer.SizeInBytes());
@@ -133,7 +133,7 @@ TEST(MessageView, Writer) {
   EXPECT_EQ(5U, writer2.message()[0].Read());
   // The padding bytes are already set to the correct values; do not update
   // them.
-  for (int i = 0; i < writer2.message_length().Read(); ++i) {
+  for (::std::size_t i = 0; i < writer2.message_length().Read(); ++i) {
     writer2.padding()[i].Write(i + 1);
   }
   writer2.crc32().Write(0x0c0b0a09);
@@ -180,9 +180,9 @@ static const ::std::uint8_t kThreeByFiveImage[46] = {
 TEST(ImageView, PixelsAreCorrect) {
   auto view = ImageView(kThreeByFiveImage, sizeof kThreeByFiveImage);
   int counter = 1;
-  for (int x = 0; x < view.size().Read(); ++x) {
-    for (int y = 0; y < 5; ++y) {
-      for (int channel = 0; channel < 3; ++channel) {
+  for (::std::size_t x = 0; x < view.size().Read(); ++x) {
+    for (::std::size_t y = 0; y < 5; ++y) {
+      for (::std::size_t channel = 0; channel < 3; ++channel) {
         EXPECT_EQ(counter, view.pixels()[x][y][channel].Read())
             << "x: " << x << "; y: " << y << "; channel: " << channel;
         ++counter;
@@ -196,9 +196,9 @@ TEST(ImageView, WritePixels) {
   auto writer = ImageWriter(buffer, sizeof buffer);
   writer.size().Write(3);
   int counter = 1;
-  for (int x = 0; x < writer.size().Read(); ++x) {
-    for (int y = 0; y < 5; ++y) {
-      for (int channel = 0; channel < 3; ++channel) {
+  for (::std::size_t x = 0; x < writer.size().Read(); ++x) {
+    for (::std::size_t y = 0; y < 5; ++y) {
+      for (::std::size_t channel = 0; channel < 3; ++channel) {
         writer.pixels()[x][y][channel].Write(counter);
         ++counter;
       }

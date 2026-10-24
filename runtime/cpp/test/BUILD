@@ -14,7 +14,6 @@
 
 # Emboss public definitions.
 
-load("@rules_cc//cc:cc_test.bzl", "cc_test")
 load(
     ":build_defs.bzl",
     "emboss_cc_util_test",
@@ -157,16 +156,14 @@ emboss_cc_util_test(
     ],
 )
 
-cc_test(
+emboss_cc_util_test(
     name = "emboss_cpp_util_google_integration_test",
     srcs = [
         "emboss_cpp_util_google_integration_test.cc",
     ],
     copts = [
         "-DEMBOSS_FORCE_ALL_CHECKS",
-        "-Wsign-compare",
     ],
-    features = ["-layering_check"],
     deps = [
         "//runtime/cpp:cpp_utils",
         "@com_google_absl//absl/strings",

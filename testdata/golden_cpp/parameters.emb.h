@@ -377,12 +377,15 @@ class GenericMultiVersionView final {
     {
       const auto emboss_reserved_switch_discrim =
           emboss_reserved_local_ok_subexpr_2;
-      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
-        case static_cast</**/ ::emboss::test::MessageId>(0):
+      switch (static_cast</**/ ::std::uint64_t>(
+          emboss_reserved_switch_discrim.ValueOrDefault())) {
+        case static_cast</**/ ::std::uint64_t>(
+            static_cast</**/ ::std::int32_t>(0LL)):
           if (!axes().Ok()) return false;
           break;
 
-        case static_cast</**/ ::emboss::test::MessageId>(1):
+        case static_cast</**/ ::std::uint64_t>(
+            static_cast</**/ ::std::int32_t>(1LL)):
           if (!config().Ok()) return false;
           break;
 
@@ -400,6 +403,8 @@ class GenericMultiVersionView final {
   bool IsComplete() const {
     return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
            (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            ::emboss::support::FitsInSizeT(
+                IntrinsicSizeInBytes().UncheckedRead()) &&
             backing_.SizeInBytes() >=
                 static_cast</**/ ::std::size_t>(
                     IntrinsicSizeInBytes().UncheckedRead()));
@@ -559,7 +564,9 @@ class GenericMultiVersionView final {
       GenericMultiVersionView<OtherStorage> emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes()
+                .UncheckedRead()));
   }
 
   template <typename OtherStorage>
@@ -567,7 +574,8 @@ class GenericMultiVersionView final {
       GenericMultiVersionView<OtherStorage> emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(
@@ -575,7 +583,8 @@ class GenericMultiVersionView final {
     return emboss_reserved_local_other.Ok() &&
            backing_.TryToCopyFrom(
                emboss_reserved_local_other.BackingStorage(),
-               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
 
   template <class Stream>
@@ -1202,6 +1211,8 @@ class GenericAxesView final {
   bool IsComplete() const {
     return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
            (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            ::emboss::support::FitsInSizeT(
+                IntrinsicSizeInBytes().UncheckedRead()) &&
             backing_.SizeInBytes() >=
                 static_cast</**/ ::std::size_t>(
                     IntrinsicSizeInBytes().UncheckedRead()));
@@ -1360,7 +1371,9 @@ class GenericAxesView final {
       GenericAxesView<OtherStorage> emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes()
+                .UncheckedRead()));
   }
 
   template <typename OtherStorage>
@@ -1368,7 +1381,8 @@ class GenericAxesView final {
       GenericAxesView<OtherStorage> emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(
@@ -1376,7 +1390,8 @@ class GenericAxesView final {
     return emboss_reserved_local_other.Ok() &&
            backing_.TryToCopyFrom(
                emboss_reserved_local_other.BackingStorage(),
-               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
 
   template <class Stream>
@@ -2105,6 +2120,8 @@ class GenericAxisPairView final {
   bool IsComplete() const {
     return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
            (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            ::emboss::support::FitsInSizeT(
+                IntrinsicSizeInBytes().UncheckedRead()) &&
             backing_.SizeInBytes() >=
                 static_cast</**/ ::std::size_t>(
                     IntrinsicSizeInBytes().UncheckedRead()));
@@ -2253,7 +2270,9 @@ class GenericAxisPairView final {
       GenericAxisPairView<OtherStorage> emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes()
+                .UncheckedRead()));
   }
 
   template <typename OtherStorage>
@@ -2261,7 +2280,8 @@ class GenericAxisPairView final {
       GenericAxisPairView<OtherStorage> emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(
@@ -2269,7 +2289,8 @@ class GenericAxisPairView final {
     return emboss_reserved_local_other.Ok() &&
            backing_.TryToCopyFrom(
                emboss_reserved_local_other.BackingStorage(),
-               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
 
   template <class Stream>
@@ -2889,6 +2910,8 @@ class GenericAxesEnvelopeView final {
   bool IsComplete() const {
     return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
            (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            ::emboss::support::FitsInSizeT(
+                IntrinsicSizeInBytes().UncheckedRead()) &&
             backing_.SizeInBytes() >=
                 static_cast</**/ ::std::size_t>(
                     IntrinsicSizeInBytes().UncheckedRead()));
@@ -2967,7 +2990,9 @@ class GenericAxesEnvelopeView final {
       GenericAxesEnvelopeView<OtherStorage> emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes()
+                .UncheckedRead()));
   }
 
   template <typename OtherStorage>
@@ -2975,7 +3000,8 @@ class GenericAxesEnvelopeView final {
       GenericAxesEnvelopeView<OtherStorage> emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(
@@ -2983,7 +3009,8 @@ class GenericAxesEnvelopeView final {
     return emboss_reserved_local_other.Ok() &&
            backing_.TryToCopyFrom(
                emboss_reserved_local_other.BackingStorage(),
-               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
 
   template <class Stream>
@@ -3573,16 +3600,20 @@ class GenericAxisView final {
       const auto emboss_reserved_switch_discrim =
           emboss_reserved_local_ok_subexpr_2;
       if (!emboss_reserved_switch_discrim.Known()) return false;
-      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
-        case static_cast</**/ ::emboss::test::AxisType>(1):
+      switch (static_cast</**/ ::std::int64_t>(
+          emboss_reserved_switch_discrim.ValueOrDefault())) {
+        case static_cast</**/ ::std::int64_t>(
+            static_cast</**/ ::std::int32_t>(1LL)):
           if (!x().Ok()) return false;
           break;
 
-        case static_cast</**/ ::emboss::test::AxisType>(2):
+        case static_cast</**/ ::std::int64_t>(
+            static_cast</**/ ::std::int32_t>(2LL)):
           if (!y().Ok()) return false;
           break;
 
-        case static_cast</**/ ::emboss::test::AxisType>(3):
+        case static_cast</**/ ::std::int64_t>(
+            static_cast</**/ ::std::int32_t>(3LL)):
           if (!z().Ok()) return false;
           break;
 
@@ -3597,6 +3628,8 @@ class GenericAxisView final {
   bool IsComplete() const {
     return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
            (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            ::emboss::support::FitsInSizeT(
+                IntrinsicSizeInBytes().UncheckedRead()) &&
             backing_.SizeInBytes() >=
                 static_cast</**/ ::std::size_t>(
                     IntrinsicSizeInBytes().UncheckedRead()));
@@ -3760,7 +3793,9 @@ class GenericAxisView final {
       GenericAxisView<OtherStorage> emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes()
+                .UncheckedRead()));
   }
 
   template <typename OtherStorage>
@@ -3768,7 +3803,8 @@ class GenericAxisView final {
       GenericAxisView<OtherStorage> emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(
@@ -3776,7 +3812,8 @@ class GenericAxisView final {
     return emboss_reserved_local_other.Ok() &&
            backing_.TryToCopyFrom(
                emboss_reserved_local_other.BackingStorage(),
-               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
 
   template <class Stream>
@@ -4382,6 +4419,8 @@ class GenericConfigView final {
   bool IsComplete() const {
     return IntrinsicSizeInBits().IsUndefined().ValueOr(false) ||
            (backing_.Ok() && IntrinsicSizeInBits().Ok() &&
+            ::emboss::support::FitsInSizeT(
+                IntrinsicSizeInBits().UncheckedRead()) &&
             backing_.SizeInBits() >=
                 static_cast</**/ ::std::size_t>(
                     IntrinsicSizeInBits().UncheckedRead()));
@@ -4433,14 +4472,17 @@ class GenericConfigView final {
       GenericConfigView<OtherStorage> emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBits().UncheckedRead());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBits().UncheckedRead()));
   }
 
   template <typename OtherStorage>
   void CopyFrom(
       GenericConfigView<OtherStorage> emboss_reserved_local_other) const {
-    backing_.CopyFrom(emboss_reserved_local_other.BackingStorage(),
-                      emboss_reserved_local_other.IntrinsicSizeInBits().Read());
+    backing_.CopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBits().Read()));
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(
@@ -4448,7 +4490,8 @@ class GenericConfigView final {
     return emboss_reserved_local_other.Ok() &&
            backing_.TryToCopyFrom(
                emboss_reserved_local_other.BackingStorage(),
-               emboss_reserved_local_other.IntrinsicSizeInBits().Read());
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_other.IntrinsicSizeInBits().Read()));
   }
 
   template <class Stream>
@@ -4796,6 +4839,8 @@ class GenericEmbossReservedAnonymousField1View final {
   bool IsComplete() const {
     return IntrinsicSizeInBits().IsUndefined().ValueOr(false) ||
            (backing_.Ok() && IntrinsicSizeInBits().Ok() &&
+            ::emboss::support::FitsInSizeT(
+                IntrinsicSizeInBits().UncheckedRead()) &&
             backing_.SizeInBits() >=
                 static_cast</**/ ::std::size_t>(
                     IntrinsicSizeInBits().UncheckedRead()));
@@ -4847,14 +4892,17 @@ class GenericEmbossReservedAnonymousField1View final {
                              emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBits().UncheckedRead());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBits().UncheckedRead()));
   }
 
   template <typename OtherStorage>
   void CopyFrom(GenericEmbossReservedAnonymousField1View<OtherStorage>
                     emboss_reserved_local_other) const {
-    backing_.CopyFrom(emboss_reserved_local_other.BackingStorage(),
-                      emboss_reserved_local_other.IntrinsicSizeInBits().Read());
+    backing_.CopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBits().Read()));
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(GenericEmbossReservedAnonymousField1View<OtherStorage>
@@ -4862,7 +4910,8 @@ class GenericEmbossReservedAnonymousField1View final {
     return emboss_reserved_local_other.Ok() &&
            backing_.TryToCopyFrom(
                emboss_reserved_local_other.BackingStorage(),
-               emboss_reserved_local_other.IntrinsicSizeInBits().Read());
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_other.IntrinsicSizeInBits().Read()));
   }
 
   template <class Stream>
@@ -5214,6 +5263,8 @@ class GenericConfigVXView final {
   bool IsComplete() const {
     return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
            (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            ::emboss::support::FitsInSizeT(
+                IntrinsicSizeInBytes().UncheckedRead()) &&
             backing_.SizeInBytes() >=
                 static_cast</**/ ::std::size_t>(
                     IntrinsicSizeInBytes().UncheckedRead()));
@@ -5302,7 +5353,9 @@ class GenericConfigVXView final {
       GenericConfigVXView<OtherStorage> emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes()
+                .UncheckedRead()));
   }
 
   template <typename OtherStorage>
@@ -5310,7 +5363,8 @@ class GenericConfigVXView final {
       GenericConfigVXView<OtherStorage> emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(
@@ -5318,7 +5372,8 @@ class GenericConfigVXView final {
     return emboss_reserved_local_other.Ok() &&
            backing_.TryToCopyFrom(
                emboss_reserved_local_other.BackingStorage(),
-               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
 
   template <class Stream>
@@ -5731,6 +5786,8 @@ class GenericStructWithUnusedParameterView final {
   bool IsComplete() const {
     return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
            (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            ::emboss::support::FitsInSizeT(
+                IntrinsicSizeInBytes().UncheckedRead()) &&
             backing_.SizeInBytes() >=
                 static_cast</**/ ::std::size_t>(
                     IntrinsicSizeInBytes().UncheckedRead()));
@@ -5809,7 +5866,9 @@ class GenericStructWithUnusedParameterView final {
                              emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes()
+                .UncheckedRead()));
   }
 
   template <typename OtherStorage>
@@ -5817,7 +5876,8 @@ class GenericStructWithUnusedParameterView final {
                     emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(GenericStructWithUnusedParameterView<OtherStorage>
@@ -5825,7 +5885,8 @@ class GenericStructWithUnusedParameterView final {
     return emboss_reserved_local_other.Ok() &&
            backing_.TryToCopyFrom(
                emboss_reserved_local_other.BackingStorage(),
-               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
 
   template <class Stream>
@@ -6200,6 +6261,8 @@ class GenericStructContainingStructWithUnusedParameterView final {
   bool IsComplete() const {
     return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
            (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            ::emboss::support::FitsInSizeT(
+                IntrinsicSizeInBytes().UncheckedRead()) &&
             backing_.SizeInBytes() >=
                 static_cast</**/ ::std::size_t>(
                     IntrinsicSizeInBytes().UncheckedRead()));
@@ -6280,7 +6343,9 @@ class GenericStructContainingStructWithUnusedParameterView final {
           emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes()
+                .UncheckedRead()));
   }
 
   template <typename OtherStorage>
@@ -6289,7 +6354,8 @@ class GenericStructContainingStructWithUnusedParameterView final {
           emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(
@@ -6298,7 +6364,8 @@ class GenericStructContainingStructWithUnusedParameterView final {
     return emboss_reserved_local_other.Ok() &&
            backing_.TryToCopyFrom(
                emboss_reserved_local_other.BackingStorage(),
-               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
 
   template <class Stream>
@@ -6708,6 +6775,8 @@ class GenericBiasedValueView final {
   bool IsComplete() const {
     return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
            (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            ::emboss::support::FitsInSizeT(
+                IntrinsicSizeInBytes().UncheckedRead()) &&
             backing_.SizeInBytes() >=
                 static_cast</**/ ::std::size_t>(
                     IntrinsicSizeInBytes().UncheckedRead()));
@@ -6786,7 +6855,9 @@ class GenericBiasedValueView final {
       GenericBiasedValueView<OtherStorage> emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes()
+                .UncheckedRead()));
   }
 
   template <typename OtherStorage>
@@ -6794,7 +6865,8 @@ class GenericBiasedValueView final {
       GenericBiasedValueView<OtherStorage> emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(
@@ -6802,7 +6874,8 @@ class GenericBiasedValueView final {
     return emboss_reserved_local_other.Ok() &&
            backing_.TryToCopyFrom(
                emboss_reserved_local_other.BackingStorage(),
-               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
 
   template <class Stream>
@@ -7285,6 +7358,8 @@ class GenericVirtualFirstFieldWithParamView final {
   bool IsComplete() const {
     return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
            (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            ::emboss::support::FitsInSizeT(
+                IntrinsicSizeInBytes().UncheckedRead()) &&
             backing_.SizeInBytes() >=
                 static_cast</**/ ::std::size_t>(
                     IntrinsicSizeInBytes().UncheckedRead()));
@@ -7363,7 +7438,9 @@ class GenericVirtualFirstFieldWithParamView final {
                              emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes()
+                .UncheckedRead()));
   }
 
   template <typename OtherStorage>
@@ -7371,7 +7448,8 @@ class GenericVirtualFirstFieldWithParamView final {
                     emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(GenericVirtualFirstFieldWithParamView<OtherStorage>
@@ -7379,7 +7457,8 @@ class GenericVirtualFirstFieldWithParamView final {
     return emboss_reserved_local_other.Ok() &&
            backing_.TryToCopyFrom(
                emboss_reserved_local_other.BackingStorage(),
-               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
 
   template <class Stream>
@@ -7807,6 +7886,8 @@ class GenericConstVirtualFirstFieldWithParamView final {
   bool IsComplete() const {
     return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
            (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            ::emboss::support::FitsInSizeT(
+                IntrinsicSizeInBytes().UncheckedRead()) &&
             backing_.SizeInBytes() >=
                 static_cast</**/ ::std::size_t>(
                     IntrinsicSizeInBytes().UncheckedRead()));
@@ -7886,7 +7967,9 @@ class GenericConstVirtualFirstFieldWithParamView final {
           emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes()
+                .UncheckedRead()));
   }
 
   template <typename OtherStorage>
@@ -7894,7 +7977,8 @@ class GenericConstVirtualFirstFieldWithParamView final {
                     emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(GenericConstVirtualFirstFieldWithParamView<OtherStorage>
@@ -7902,7 +7986,8 @@ class GenericConstVirtualFirstFieldWithParamView final {
     return emboss_reserved_local_other.Ok() &&
            backing_.TryToCopyFrom(
                emboss_reserved_local_other.BackingStorage(),
-               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
 
   template <class Stream>
@@ -8337,6 +8422,8 @@ class GenericSizedArrayOfBiasedValuesView final {
   bool IsComplete() const {
     return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
            (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            ::emboss::support::FitsInSizeT(
+                IntrinsicSizeInBytes().UncheckedRead()) &&
             backing_.SizeInBytes() >=
                 static_cast</**/ ::std::size_t>(
                     IntrinsicSizeInBytes().UncheckedRead()));
@@ -8443,7 +8530,9 @@ class GenericSizedArrayOfBiasedValuesView final {
                              emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes()
+                .UncheckedRead()));
   }
 
   template <typename OtherStorage>
@@ -8451,7 +8540,8 @@ class GenericSizedArrayOfBiasedValuesView final {
                     emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(GenericSizedArrayOfBiasedValuesView<OtherStorage>
@@ -8459,7 +8549,8 @@ class GenericSizedArrayOfBiasedValuesView final {
     return emboss_reserved_local_other.Ok() &&
            backing_.TryToCopyFrom(
                emboss_reserved_local_other.BackingStorage(),
-               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
 
   template <class Stream>
@@ -8921,9 +9012,11 @@ GenericMultiVersionView<Storage>::message_id() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::support::EnumView<
           /**/ ::emboss::test::MessageId,
           ::emboss::support::FixedSizeViewParameters<
@@ -8934,8 +9027,10 @@ GenericMultiVersionView<Storage>::message_id() const {
               8>>
 
           (backing_.template GetOffsetStorage<0, 0>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::support::EnumView<
@@ -8992,16 +9087,20 @@ GenericMultiVersionView<Storage>::axes() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(1LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::test::GenericAxesView<
           typename Storage::template OffsetStorageType</**/ 0, 1>>
 
           (emboss_reserved_local_subexpr_4.ValueOrDefault(),
            backing_.template GetOffsetStorage<0, 1>(
-               emboss_reserved_local_offset.ValueOrDefault(),
-               emboss_reserved_local_size.ValueOrDefault()));
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_offset.ValueOrDefault()),
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::test::GenericAxesView<
@@ -9041,9 +9140,11 @@ GenericMultiVersionView<Storage>::config() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(1LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::test::GenericConfigView<
           typename ::emboss::support::BitBlock<
               /**/ ::emboss::support::LittleEndianByteOrderer<
@@ -9051,8 +9152,10 @@ GenericMultiVersionView<Storage>::config() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 1>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::test::GenericConfigView<typename ::emboss::support::BitBlock<
@@ -9091,15 +9194,19 @@ GenericMultiVersionView<Storage>::config_vx() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(1LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::test::GenericConfigVXView<
           typename Storage::template OffsetStorageType</**/ 0, 1>>
 
           (backing_.template GetOffsetStorage<0, 1>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::test::GenericConfigVXView<
@@ -9223,9 +9330,11 @@ GenericAxesView<Storage>::values() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::support::GenericArrayView<
           typename ::emboss::test::GenericAxisView<
               typename Storage::template OffsetStorageType<
@@ -9239,8 +9348,10 @@ GenericAxesView<Storage>::values() const {
                static_cast</**/ ::emboss::test::AxisType>(-1))
                .ValueOrDefault(),
            backing_.template GetOffsetStorage<0, 0>(
-               emboss_reserved_local_offset.ValueOrDefault(),
-               emboss_reserved_local_size.ValueOrDefault()));
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_offset.ValueOrDefault()),
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::support::GenericArrayView<
@@ -9277,9 +9388,11 @@ GenericAxesView<Storage>::x() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::test::GenericAxisView<
           typename Storage::template OffsetStorageType</**/ 0, 0>>
 
@@ -9287,8 +9400,10 @@ GenericAxesView<Storage>::x() const {
                static_cast</**/ ::emboss::test::AxisType>(1))
                .ValueOrDefault(),
            backing_.template GetOffsetStorage<0, 0>(
-               emboss_reserved_local_offset.ValueOrDefault(),
-               emboss_reserved_local_size.ValueOrDefault()));
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_offset.ValueOrDefault()),
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::test::GenericAxisView<
@@ -9325,9 +9440,11 @@ GenericAxesView<Storage>::y() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::test::GenericAxisView<
           typename Storage::template OffsetStorageType</**/ 0, 4>>
 
@@ -9335,8 +9452,10 @@ GenericAxesView<Storage>::y() const {
                static_cast</**/ ::emboss::test::AxisType>(2))
                .ValueOrDefault(),
            backing_.template GetOffsetStorage<0, 4>(
-               emboss_reserved_local_offset.ValueOrDefault(),
-               emboss_reserved_local_size.ValueOrDefault()));
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_offset.ValueOrDefault()),
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::test::GenericAxisView<
@@ -9373,9 +9492,11 @@ GenericAxesView<Storage>::z() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::test::GenericAxisView<
           typename Storage::template OffsetStorageType</**/ 0, 8>>
 
@@ -9383,8 +9504,10 @@ GenericAxesView<Storage>::z() const {
                static_cast</**/ ::emboss::test::AxisType>(3))
                .ValueOrDefault(),
            backing_.template GetOffsetStorage<0, 8>(
-               emboss_reserved_local_offset.ValueOrDefault(),
-               emboss_reserved_local_size.ValueOrDefault()));
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_offset.ValueOrDefault()),
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::test::GenericAxisView<
@@ -9509,16 +9632,20 @@ GenericAxisPairView<Storage>::axis_a() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::test::GenericAxisView<
           typename Storage::template OffsetStorageType</**/ 0, 0>>
 
           (emboss_reserved_local_subexpr_2.ValueOrDefault(),
            backing_.template GetOffsetStorage<0, 0>(
-               emboss_reserved_local_offset.ValueOrDefault(),
-               emboss_reserved_local_size.ValueOrDefault()));
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_offset.ValueOrDefault()),
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::test::GenericAxisView<
@@ -9568,16 +9695,20 @@ GenericAxisPairView<Storage>::axis_b() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::test::GenericAxisView<
           typename Storage::template OffsetStorageType</**/ 0, 4>>
 
           (emboss_reserved_local_subexpr_2.ValueOrDefault(),
            backing_.template GetOffsetStorage<0, 4>(
-               emboss_reserved_local_offset.ValueOrDefault(),
-               emboss_reserved_local_size.ValueOrDefault()));
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_offset.ValueOrDefault()),
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::test::GenericAxisView<
@@ -9671,9 +9802,11 @@ GenericAxesEnvelopeView<Storage>::axis_count() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               8, ::emboss::support::AllValuesAreOk>,
@@ -9683,8 +9816,10 @@ GenericAxesEnvelopeView<Storage>::axis_count() const {
               8>>
 
           (backing_.template GetOffsetStorage<0, 0>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -9730,16 +9865,20 @@ GenericAxesEnvelopeView<Storage>::axes() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(1LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::test::GenericAxesView<
           typename Storage::template OffsetStorageType</**/ 0, 1>>
 
           (emboss_reserved_local_subexpr_2.ValueOrDefault(),
            backing_.template GetOffsetStorage<0, 1>(
-               emboss_reserved_local_offset.ValueOrDefault(),
-               emboss_reserved_local_size.ValueOrDefault()));
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_offset.ValueOrDefault()),
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::test::GenericAxesView<
@@ -9827,9 +9966,11 @@ GenericAxisView<Storage>::value() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -9839,8 +9980,10 @@ GenericAxisView<Storage>::value() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 0>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -9891,9 +10034,11 @@ GenericAxisView<Storage>::x() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -9903,8 +10048,10 @@ GenericAxisView<Storage>::x() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 0>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -9950,9 +10097,11 @@ GenericAxisView<Storage>::y() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -9962,8 +10111,10 @@ GenericAxisView<Storage>::y() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 0>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -10009,9 +10160,11 @@ GenericAxisView<Storage>::z() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -10021,8 +10174,10 @@ GenericAxisView<Storage>::z() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 0>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -10126,17 +10281,21 @@ GenericConfigView<Storage>::power() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(31LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::FlagView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               1, ::emboss::support::AllValuesAreOk>,
           typename Storage::template OffsetStorageType</**/ 0, 31>>
 
           (backing_.template GetOffsetStorage<0, 31>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::FlagView<
@@ -10232,17 +10391,21 @@ GenericEmbossReservedAnonymousField1View<Storage>::power() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(31LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::FlagView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               1, ::emboss::support::AllValuesAreOk>,
           typename Storage::template OffsetStorageType</**/ 0, 31>>
 
           (backing_.template GetOffsetStorage<0, 31>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::FlagView<
@@ -10339,9 +10502,11 @@ inline
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::test::ConfigVX::GenericEmbossReservedAnonymousField1View<
           typename ::emboss::support::BitBlock<
               /**/ ::emboss::support::LittleEndianByteOrderer<
@@ -10349,8 +10514,10 @@ inline
               32>>
 
           (backing_.template GetOffsetStorage<0, 0>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::test::ConfigVX::GenericEmbossReservedAnonymousField1View<
@@ -10394,9 +10561,11 @@ GenericConfigVXView<Storage>::gain() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -10406,8 +10575,10 @@ GenericConfigVXView<Storage>::gain() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -10506,9 +10677,11 @@ GenericStructWithUnusedParameterView<Storage>::y() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               8, ::emboss::support::AllValuesAreOk>,
@@ -10518,8 +10691,10 @@ GenericStructWithUnusedParameterView<Storage>::y() const {
               8>>
 
           (backing_.template GetOffsetStorage<0, 0>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -10620,9 +10795,11 @@ GenericStructContainingStructWithUnusedParameterView<Storage>::x() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(1LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               8, ::emboss::support::AllValuesAreOk>,
@@ -10632,8 +10809,10 @@ GenericStructContainingStructWithUnusedParameterView<Storage>::x() const {
               8>>
 
           (backing_.template GetOffsetStorage<0, 1>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -10674,16 +10853,20 @@ GenericStructContainingStructWithUnusedParameterView<Storage>::swup() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::test::GenericStructWithUnusedParameterView<
           typename Storage::template OffsetStorageType</**/ 0, 0>>
 
           (emboss_reserved_local_subexpr_2.ValueOrDefault(),
            backing_.template GetOffsetStorage<0, 0>(
-               emboss_reserved_local_offset.ValueOrDefault(),
-               emboss_reserved_local_size.ValueOrDefault()));
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_offset.ValueOrDefault()),
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::test::GenericStructWithUnusedParameterView<
@@ -10784,9 +10967,11 @@ GenericBiasedValueView<Storage>::raw_value() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               8, ::emboss::support::AllValuesAreOk>,
@@ -10796,8 +10981,10 @@ GenericBiasedValueView<Storage>::raw_value() const {
               8>>
 
           (backing_.template GetOffsetStorage<0, 0>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -10910,9 +11097,11 @@ GenericVirtualFirstFieldWithParamView<Storage>::x() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               8, ::emboss::support::AllValuesAreOk>,
@@ -10922,8 +11111,10 @@ GenericVirtualFirstFieldWithParamView<Storage>::x() const {
               8>>
 
           (backing_.template GetOffsetStorage<0, 0>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -11050,9 +11241,11 @@ GenericConstVirtualFirstFieldWithParamView<Storage>::x() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               8, ::emboss::support::AllValuesAreOk>,
@@ -11062,8 +11255,10 @@ GenericConstVirtualFirstFieldWithParamView<Storage>::x() const {
               8>>
 
           (backing_.template GetOffsetStorage<0, 0>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -11163,9 +11358,11 @@ GenericSizedArrayOfBiasedValuesView<Storage>::element_count() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               8, ::emboss::support::AllValuesAreOk>,
@@ -11175,8 +11372,10 @@ GenericSizedArrayOfBiasedValuesView<Storage>::element_count() const {
               8>>
 
           (backing_.template GetOffsetStorage<0, 0>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -11214,9 +11413,11 @@ GenericSizedArrayOfBiasedValuesView<Storage>::bias() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(1LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               8, ::emboss::support::AllValuesAreOk>,
@@ -11226,8 +11427,10 @@ GenericSizedArrayOfBiasedValuesView<Storage>::bias() const {
               8>>
 
           (backing_.template GetOffsetStorage<0, 1>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -11280,9 +11483,11 @@ GenericSizedArrayOfBiasedValuesView<Storage>::values() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(2LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::support::GenericArrayView<
           typename ::emboss::test::GenericBiasedValueView<
               typename Storage::template OffsetStorageType<
@@ -11294,8 +11499,10 @@ GenericSizedArrayOfBiasedValuesView<Storage>::values() const {
 
           (emboss_reserved_local_subexpr_2.ValueOrDefault(),
            backing_.template GetOffsetStorage<0, 2>(
-               emboss_reserved_local_offset.ValueOrDefault(),
-               emboss_reserved_local_size.ValueOrDefault()));
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_offset.ValueOrDefault()),
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::support::GenericArrayView<

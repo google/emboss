@@ -13,7 +13,7 @@
 # limitations under the License.
 
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
-load("@rules_cc//cc:cc_test.bzl", "cc_test")
+load("//compiler/back_end/cpp:build_defs.bzl", "emboss_cc_test")
 
 package(
     default_applicable_licenses = ["//:license"],
@@ -31,13 +31,11 @@ cc_library(
     ],
 )
 
-cc_test(
+emboss_cc_test(
     name = "emboss_test_util_test",
     srcs = [
         "emboss_test_util_test.cc",
     ],
-    copts = ["-Wsign-compare"],
-    features = ["-layering_check"],
     deps = [
         ":emboss_test_util",
         "//testdata:complex_structure_emboss",

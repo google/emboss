@@ -17,7 +17,9 @@
 #ifndef EMBOSS_RUNTIME_CPP_EMBOSS_BIT_UTIL_H_
 #define EMBOSS_RUNTIME_CPP_EMBOSS_BIT_UTIL_H_
 
+#include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <type_traits>
 
 #include "runtime/cpp/emboss_defines.h"
@@ -32,7 +34,7 @@ inline constexpr ::std::uint16_t ByteSwap(::std::uint16_t x) {
 #ifdef EMBOSS_BYTESWAP16
   return EMBOSS_BYTESWAP16(x);
 #else
-  return (x << 8) | (x >> 8);
+  return static_cast</**/ ::std::uint16_t>((x << 8) | (x >> 8));
 #endif
 }
 inline constexpr ::std::uint32_t ByteSwap(::std::uint32_t x) {
@@ -61,8 +63,9 @@ template <typename T>
 inline constexpr T MaskToNBits(T value, unsigned bits) {
   static_assert(!::std::is_signed<T>::value,
                 "MaskToNBits only works on unsigned values.");
-  return bits < sizeof value * 8 ? value & ((static_cast<T>(1) << bits) - 1)
-                                 : value;
+  return bits < sizeof value * 8
+             ? static_cast<T>(value & ((static_cast<T>(1) << bits) - 1))
+             : value;
 }
 
 template <typename T>
@@ -71,6 +74,15 @@ inline constexpr bool IsPowerOfTwo(T value) {
   // fewer bit set to 1 than x (if x is nonzero), and powers of 2 always have
   // exactly one 1 bit, thus x & (x - 1) == 0 if x is a power of 2.
   return value > 0 && (value & (value - 1)) == 0;
+}
+
+// Returns true if value is non-negative and fits in ::std::size_t.
+template <typename T>
+inline constexpr bool FitsInSizeT(T value) {
+  return (!::std::is_signed<T>::value ||
+          static_cast</**/ ::std::int64_t>(value) >= 0) &&
+         static_cast</**/ ::std::uint64_t>(value) <=
+             ::std::numeric_limits</**/ ::std::size_t>::max();
 }
 
 }  // namespace support

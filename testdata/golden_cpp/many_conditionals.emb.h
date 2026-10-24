@@ -516,6 +516,8 @@ class GenericLargeConditionalsView final {
   bool IsComplete() const {
     return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
            (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            ::emboss::support::FitsInSizeT(
+                IntrinsicSizeInBytes().UncheckedRead()) &&
             backing_.SizeInBytes() >=
                 static_cast</**/ ::std::size_t>(
                     IntrinsicSizeInBytes().UncheckedRead()));
@@ -3294,7 +3296,9 @@ class GenericLargeConditionalsView final {
                              emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes()
+                .UncheckedRead()));
   }
 
   template <typename OtherStorage>
@@ -3302,7 +3306,8 @@ class GenericLargeConditionalsView final {
                     emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(GenericLargeConditionalsView<OtherStorage>
@@ -3310,7 +3315,8 @@ class GenericLargeConditionalsView final {
     return emboss_reserved_local_other.Ok() &&
            backing_.TryToCopyFrom(
                emboss_reserved_local_other.BackingStorage(),
-               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
 
   template <class Stream>
@@ -10168,6 +10174,8 @@ class GenericDisjunctionConditionalsView final {
   bool IsComplete() const {
     return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
            (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            ::emboss::support::FitsInSizeT(
+                IntrinsicSizeInBytes().UncheckedRead()) &&
             backing_.SizeInBytes() >=
                 static_cast</**/ ::std::size_t>(
                     IntrinsicSizeInBytes().UncheckedRead()));
@@ -10301,7 +10309,9 @@ class GenericDisjunctionConditionalsView final {
                              emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes()
+                .UncheckedRead()));
   }
 
   template <typename OtherStorage>
@@ -10309,7 +10319,8 @@ class GenericDisjunctionConditionalsView final {
                     emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(GenericDisjunctionConditionalsView<OtherStorage>
@@ -10317,7 +10328,8 @@ class GenericDisjunctionConditionalsView final {
     return emboss_reserved_local_other.Ok() &&
            backing_.TryToCopyFrom(
                emboss_reserved_local_other.BackingStorage(),
-               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
 
   template <class Stream>
@@ -11678,6 +11690,8 @@ class GenericOuterGuardedUnionView final {
   bool IsComplete() const {
     return IntrinsicSizeInBytes().IsUndefined().ValueOr(false) ||
            (backing_.Ok() && IntrinsicSizeInBytes().Ok() &&
+            ::emboss::support::FitsInSizeT(
+                IntrinsicSizeInBytes().UncheckedRead()) &&
             backing_.SizeInBytes() >=
                 static_cast</**/ ::std::size_t>(
                     IntrinsicSizeInBytes().UncheckedRead()));
@@ -14456,7 +14470,9 @@ class GenericOuterGuardedUnionView final {
                              emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().UncheckedRead());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes()
+                .UncheckedRead()));
   }
 
   template <typename OtherStorage>
@@ -14464,7 +14480,8 @@ class GenericOuterGuardedUnionView final {
                     emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(GenericOuterGuardedUnionView<OtherStorage>
@@ -14472,7 +14489,8 @@ class GenericOuterGuardedUnionView final {
     return emboss_reserved_local_other.Ok() &&
            backing_.TryToCopyFrom(
                emboss_reserved_local_other.BackingStorage(),
-               emboss_reserved_local_other.IntrinsicSizeInBytes().Read());
+               static_cast</**/ ::std::size_t>(
+                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
   }
 
   template <class Stream>
@@ -21653,9 +21671,11 @@ GenericLargeConditionalsView<Storage>::tag() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -21665,8 +21685,10 @@ GenericLargeConditionalsView<Storage>::tag() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 0>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -21704,9 +21726,11 @@ GenericLargeConditionalsView<Storage>::f0() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -21716,8 +21740,10 @@ GenericLargeConditionalsView<Storage>::f0() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -21762,9 +21788,11 @@ GenericLargeConditionalsView<Storage>::f1() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -21774,8 +21802,10 @@ GenericLargeConditionalsView<Storage>::f1() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -21820,9 +21850,11 @@ GenericLargeConditionalsView<Storage>::f2() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -21832,8 +21864,10 @@ GenericLargeConditionalsView<Storage>::f2() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -21878,9 +21912,11 @@ GenericLargeConditionalsView<Storage>::f3() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -21890,8 +21926,10 @@ GenericLargeConditionalsView<Storage>::f3() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -21936,9 +21974,11 @@ GenericLargeConditionalsView<Storage>::f4() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -21948,8 +21988,10 @@ GenericLargeConditionalsView<Storage>::f4() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -21994,9 +22036,11 @@ GenericLargeConditionalsView<Storage>::f5() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -22006,8 +22050,10 @@ GenericLargeConditionalsView<Storage>::f5() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -22052,9 +22098,11 @@ GenericLargeConditionalsView<Storage>::f6() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -22064,8 +22112,10 @@ GenericLargeConditionalsView<Storage>::f6() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -22110,9 +22160,11 @@ GenericLargeConditionalsView<Storage>::f7() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -22122,8 +22174,10 @@ GenericLargeConditionalsView<Storage>::f7() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -22168,9 +22222,11 @@ GenericLargeConditionalsView<Storage>::f8() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -22180,8 +22236,10 @@ GenericLargeConditionalsView<Storage>::f8() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -22226,9 +22284,11 @@ GenericLargeConditionalsView<Storage>::f9() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -22238,8 +22298,10 @@ GenericLargeConditionalsView<Storage>::f9() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -22284,9 +22346,11 @@ GenericLargeConditionalsView<Storage>::f10() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -22296,8 +22360,10 @@ GenericLargeConditionalsView<Storage>::f10() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -22342,9 +22408,11 @@ GenericLargeConditionalsView<Storage>::f11() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -22354,8 +22422,10 @@ GenericLargeConditionalsView<Storage>::f11() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -22400,9 +22470,11 @@ GenericLargeConditionalsView<Storage>::f12() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -22412,8 +22484,10 @@ GenericLargeConditionalsView<Storage>::f12() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -22458,9 +22532,11 @@ GenericLargeConditionalsView<Storage>::f13() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -22470,8 +22546,10 @@ GenericLargeConditionalsView<Storage>::f13() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -22516,9 +22594,11 @@ GenericLargeConditionalsView<Storage>::f14() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -22528,8 +22608,10 @@ GenericLargeConditionalsView<Storage>::f14() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -22574,9 +22656,11 @@ GenericLargeConditionalsView<Storage>::f15() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -22586,8 +22670,10 @@ GenericLargeConditionalsView<Storage>::f15() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -22632,9 +22718,11 @@ GenericLargeConditionalsView<Storage>::f16() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -22644,8 +22732,10 @@ GenericLargeConditionalsView<Storage>::f16() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -22690,9 +22780,11 @@ GenericLargeConditionalsView<Storage>::f17() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -22702,8 +22794,10 @@ GenericLargeConditionalsView<Storage>::f17() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -22748,9 +22842,11 @@ GenericLargeConditionalsView<Storage>::f18() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -22760,8 +22856,10 @@ GenericLargeConditionalsView<Storage>::f18() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -22806,9 +22904,11 @@ GenericLargeConditionalsView<Storage>::f19() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -22818,8 +22918,10 @@ GenericLargeConditionalsView<Storage>::f19() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -22864,9 +22966,11 @@ GenericLargeConditionalsView<Storage>::f20() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -22876,8 +22980,10 @@ GenericLargeConditionalsView<Storage>::f20() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -22922,9 +23028,11 @@ GenericLargeConditionalsView<Storage>::f21() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -22934,8 +23042,10 @@ GenericLargeConditionalsView<Storage>::f21() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -22980,9 +23090,11 @@ GenericLargeConditionalsView<Storage>::f22() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -22992,8 +23104,10 @@ GenericLargeConditionalsView<Storage>::f22() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -23038,9 +23152,11 @@ GenericLargeConditionalsView<Storage>::f23() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -23050,8 +23166,10 @@ GenericLargeConditionalsView<Storage>::f23() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -23096,9 +23214,11 @@ GenericLargeConditionalsView<Storage>::f24() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -23108,8 +23228,10 @@ GenericLargeConditionalsView<Storage>::f24() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -23154,9 +23276,11 @@ GenericLargeConditionalsView<Storage>::f25() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -23166,8 +23290,10 @@ GenericLargeConditionalsView<Storage>::f25() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -23212,9 +23338,11 @@ GenericLargeConditionalsView<Storage>::f26() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -23224,8 +23352,10 @@ GenericLargeConditionalsView<Storage>::f26() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -23270,9 +23400,11 @@ GenericLargeConditionalsView<Storage>::f27() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -23282,8 +23414,10 @@ GenericLargeConditionalsView<Storage>::f27() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -23328,9 +23462,11 @@ GenericLargeConditionalsView<Storage>::f28() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -23340,8 +23476,10 @@ GenericLargeConditionalsView<Storage>::f28() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -23386,9 +23524,11 @@ GenericLargeConditionalsView<Storage>::f29() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -23398,8 +23538,10 @@ GenericLargeConditionalsView<Storage>::f29() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -23444,9 +23586,11 @@ GenericLargeConditionalsView<Storage>::f30() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -23456,8 +23600,10 @@ GenericLargeConditionalsView<Storage>::f30() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -23502,9 +23648,11 @@ GenericLargeConditionalsView<Storage>::f31() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -23514,8 +23662,10 @@ GenericLargeConditionalsView<Storage>::f31() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -23560,9 +23710,11 @@ GenericLargeConditionalsView<Storage>::f32() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -23572,8 +23724,10 @@ GenericLargeConditionalsView<Storage>::f32() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -23618,9 +23772,11 @@ GenericLargeConditionalsView<Storage>::f33() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -23630,8 +23786,10 @@ GenericLargeConditionalsView<Storage>::f33() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -23676,9 +23834,11 @@ GenericLargeConditionalsView<Storage>::f34() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -23688,8 +23848,10 @@ GenericLargeConditionalsView<Storage>::f34() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -23734,9 +23896,11 @@ GenericLargeConditionalsView<Storage>::f35() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -23746,8 +23910,10 @@ GenericLargeConditionalsView<Storage>::f35() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -23792,9 +23958,11 @@ GenericLargeConditionalsView<Storage>::f36() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -23804,8 +23972,10 @@ GenericLargeConditionalsView<Storage>::f36() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -23850,9 +24020,11 @@ GenericLargeConditionalsView<Storage>::f37() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -23862,8 +24034,10 @@ GenericLargeConditionalsView<Storage>::f37() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -23908,9 +24082,11 @@ GenericLargeConditionalsView<Storage>::f38() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -23920,8 +24096,10 @@ GenericLargeConditionalsView<Storage>::f38() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -23966,9 +24144,11 @@ GenericLargeConditionalsView<Storage>::f39() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -23978,8 +24158,10 @@ GenericLargeConditionalsView<Storage>::f39() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -24024,9 +24206,11 @@ GenericLargeConditionalsView<Storage>::f40() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -24036,8 +24220,10 @@ GenericLargeConditionalsView<Storage>::f40() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -24082,9 +24268,11 @@ GenericLargeConditionalsView<Storage>::f41() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -24094,8 +24282,10 @@ GenericLargeConditionalsView<Storage>::f41() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -24140,9 +24330,11 @@ GenericLargeConditionalsView<Storage>::f42() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -24152,8 +24344,10 @@ GenericLargeConditionalsView<Storage>::f42() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -24198,9 +24392,11 @@ GenericLargeConditionalsView<Storage>::f43() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -24210,8 +24406,10 @@ GenericLargeConditionalsView<Storage>::f43() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -24256,9 +24454,11 @@ GenericLargeConditionalsView<Storage>::f44() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -24268,8 +24468,10 @@ GenericLargeConditionalsView<Storage>::f44() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -24314,9 +24516,11 @@ GenericLargeConditionalsView<Storage>::f45() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -24326,8 +24530,10 @@ GenericLargeConditionalsView<Storage>::f45() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -24372,9 +24578,11 @@ GenericLargeConditionalsView<Storage>::f46() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -24384,8 +24592,10 @@ GenericLargeConditionalsView<Storage>::f46() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -24430,9 +24640,11 @@ GenericLargeConditionalsView<Storage>::f47() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -24442,8 +24654,10 @@ GenericLargeConditionalsView<Storage>::f47() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -24488,9 +24702,11 @@ GenericLargeConditionalsView<Storage>::f48() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -24500,8 +24716,10 @@ GenericLargeConditionalsView<Storage>::f48() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -24546,9 +24764,11 @@ GenericLargeConditionalsView<Storage>::f49() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -24558,8 +24778,10 @@ GenericLargeConditionalsView<Storage>::f49() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -24604,9 +24826,11 @@ GenericLargeConditionalsView<Storage>::f50() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -24616,8 +24840,10 @@ GenericLargeConditionalsView<Storage>::f50() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -24662,9 +24888,11 @@ GenericLargeConditionalsView<Storage>::f51() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -24674,8 +24902,10 @@ GenericLargeConditionalsView<Storage>::f51() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -24720,9 +24950,11 @@ GenericLargeConditionalsView<Storage>::f52() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -24732,8 +24964,10 @@ GenericLargeConditionalsView<Storage>::f52() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -24778,9 +25012,11 @@ GenericLargeConditionalsView<Storage>::f53() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -24790,8 +25026,10 @@ GenericLargeConditionalsView<Storage>::f53() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -24836,9 +25074,11 @@ GenericLargeConditionalsView<Storage>::f54() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -24848,8 +25088,10 @@ GenericLargeConditionalsView<Storage>::f54() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -24894,9 +25136,11 @@ GenericLargeConditionalsView<Storage>::f55() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -24906,8 +25150,10 @@ GenericLargeConditionalsView<Storage>::f55() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -24952,9 +25198,11 @@ GenericLargeConditionalsView<Storage>::f56() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -24964,8 +25212,10 @@ GenericLargeConditionalsView<Storage>::f56() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -25010,9 +25260,11 @@ GenericLargeConditionalsView<Storage>::f57() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -25022,8 +25274,10 @@ GenericLargeConditionalsView<Storage>::f57() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -25068,9 +25322,11 @@ GenericLargeConditionalsView<Storage>::f58() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -25080,8 +25336,10 @@ GenericLargeConditionalsView<Storage>::f58() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -25126,9 +25384,11 @@ GenericLargeConditionalsView<Storage>::f59() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -25138,8 +25398,10 @@ GenericLargeConditionalsView<Storage>::f59() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -25184,9 +25446,11 @@ GenericLargeConditionalsView<Storage>::f60() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -25196,8 +25460,10 @@ GenericLargeConditionalsView<Storage>::f60() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -25242,9 +25508,11 @@ GenericLargeConditionalsView<Storage>::f61() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -25254,8 +25522,10 @@ GenericLargeConditionalsView<Storage>::f61() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -25300,9 +25570,11 @@ GenericLargeConditionalsView<Storage>::f62() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -25312,8 +25584,10 @@ GenericLargeConditionalsView<Storage>::f62() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -25358,9 +25632,11 @@ GenericLargeConditionalsView<Storage>::f63() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -25370,8 +25646,10 @@ GenericLargeConditionalsView<Storage>::f63() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -25416,9 +25694,11 @@ GenericLargeConditionalsView<Storage>::f64() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -25428,8 +25708,10 @@ GenericLargeConditionalsView<Storage>::f64() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -25474,9 +25756,11 @@ GenericLargeConditionalsView<Storage>::f65() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -25486,8 +25770,10 @@ GenericLargeConditionalsView<Storage>::f65() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -25532,9 +25818,11 @@ GenericLargeConditionalsView<Storage>::f66() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -25544,8 +25832,10 @@ GenericLargeConditionalsView<Storage>::f66() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -25590,9 +25880,11 @@ GenericLargeConditionalsView<Storage>::f67() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -25602,8 +25894,10 @@ GenericLargeConditionalsView<Storage>::f67() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -25648,9 +25942,11 @@ GenericLargeConditionalsView<Storage>::f68() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -25660,8 +25956,10 @@ GenericLargeConditionalsView<Storage>::f68() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -25706,9 +26004,11 @@ GenericLargeConditionalsView<Storage>::f69() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -25718,8 +26018,10 @@ GenericLargeConditionalsView<Storage>::f69() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -25764,9 +26066,11 @@ GenericLargeConditionalsView<Storage>::f70() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -25776,8 +26080,10 @@ GenericLargeConditionalsView<Storage>::f70() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -25822,9 +26128,11 @@ GenericLargeConditionalsView<Storage>::f71() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -25834,8 +26142,10 @@ GenericLargeConditionalsView<Storage>::f71() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -25880,9 +26190,11 @@ GenericLargeConditionalsView<Storage>::f72() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -25892,8 +26204,10 @@ GenericLargeConditionalsView<Storage>::f72() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -25938,9 +26252,11 @@ GenericLargeConditionalsView<Storage>::f73() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -25950,8 +26266,10 @@ GenericLargeConditionalsView<Storage>::f73() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -25996,9 +26314,11 @@ GenericLargeConditionalsView<Storage>::f74() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -26008,8 +26328,10 @@ GenericLargeConditionalsView<Storage>::f74() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -26054,9 +26376,11 @@ GenericLargeConditionalsView<Storage>::f75() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -26066,8 +26390,10 @@ GenericLargeConditionalsView<Storage>::f75() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -26112,9 +26438,11 @@ GenericLargeConditionalsView<Storage>::f76() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -26124,8 +26452,10 @@ GenericLargeConditionalsView<Storage>::f76() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -26170,9 +26500,11 @@ GenericLargeConditionalsView<Storage>::f77() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -26182,8 +26514,10 @@ GenericLargeConditionalsView<Storage>::f77() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -26228,9 +26562,11 @@ GenericLargeConditionalsView<Storage>::f78() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -26240,8 +26576,10 @@ GenericLargeConditionalsView<Storage>::f78() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -26286,9 +26624,11 @@ GenericLargeConditionalsView<Storage>::f79() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -26298,8 +26638,10 @@ GenericLargeConditionalsView<Storage>::f79() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -26344,9 +26686,11 @@ GenericLargeConditionalsView<Storage>::f80() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -26356,8 +26700,10 @@ GenericLargeConditionalsView<Storage>::f80() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -26402,9 +26748,11 @@ GenericLargeConditionalsView<Storage>::f81() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -26414,8 +26762,10 @@ GenericLargeConditionalsView<Storage>::f81() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -26460,9 +26810,11 @@ GenericLargeConditionalsView<Storage>::f82() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -26472,8 +26824,10 @@ GenericLargeConditionalsView<Storage>::f82() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -26518,9 +26872,11 @@ GenericLargeConditionalsView<Storage>::f83() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -26530,8 +26886,10 @@ GenericLargeConditionalsView<Storage>::f83() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -26576,9 +26934,11 @@ GenericLargeConditionalsView<Storage>::f84() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -26588,8 +26948,10 @@ GenericLargeConditionalsView<Storage>::f84() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -26634,9 +26996,11 @@ GenericLargeConditionalsView<Storage>::f85() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -26646,8 +27010,10 @@ GenericLargeConditionalsView<Storage>::f85() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -26692,9 +27058,11 @@ GenericLargeConditionalsView<Storage>::f86() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -26704,8 +27072,10 @@ GenericLargeConditionalsView<Storage>::f86() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -26750,9 +27120,11 @@ GenericLargeConditionalsView<Storage>::f87() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -26762,8 +27134,10 @@ GenericLargeConditionalsView<Storage>::f87() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -26808,9 +27182,11 @@ GenericLargeConditionalsView<Storage>::f88() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -26820,8 +27196,10 @@ GenericLargeConditionalsView<Storage>::f88() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -26866,9 +27244,11 @@ GenericLargeConditionalsView<Storage>::f89() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -26878,8 +27258,10 @@ GenericLargeConditionalsView<Storage>::f89() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -26924,9 +27306,11 @@ GenericLargeConditionalsView<Storage>::f90() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -26936,8 +27320,10 @@ GenericLargeConditionalsView<Storage>::f90() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -26982,9 +27368,11 @@ GenericLargeConditionalsView<Storage>::f91() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -26994,8 +27382,10 @@ GenericLargeConditionalsView<Storage>::f91() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -27040,9 +27430,11 @@ GenericLargeConditionalsView<Storage>::f92() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -27052,8 +27444,10 @@ GenericLargeConditionalsView<Storage>::f92() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -27098,9 +27492,11 @@ GenericLargeConditionalsView<Storage>::f93() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -27110,8 +27506,10 @@ GenericLargeConditionalsView<Storage>::f93() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -27156,9 +27554,11 @@ GenericLargeConditionalsView<Storage>::f94() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -27168,8 +27568,10 @@ GenericLargeConditionalsView<Storage>::f94() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -27214,9 +27616,11 @@ GenericLargeConditionalsView<Storage>::f95() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -27226,8 +27630,10 @@ GenericLargeConditionalsView<Storage>::f95() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -27272,9 +27678,11 @@ GenericLargeConditionalsView<Storage>::f96() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -27284,8 +27692,10 @@ GenericLargeConditionalsView<Storage>::f96() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -27330,9 +27740,11 @@ GenericLargeConditionalsView<Storage>::f97() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -27342,8 +27754,10 @@ GenericLargeConditionalsView<Storage>::f97() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -27388,9 +27802,11 @@ GenericLargeConditionalsView<Storage>::f98() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -27400,8 +27816,10 @@ GenericLargeConditionalsView<Storage>::f98() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -27446,9 +27864,11 @@ GenericLargeConditionalsView<Storage>::f99() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -27458,8 +27878,10 @@ GenericLargeConditionalsView<Storage>::f99() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -27504,9 +27926,11 @@ GenericLargeConditionalsView<Storage>::f0_copy() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -27516,8 +27940,10 @@ GenericLargeConditionalsView<Storage>::f0_copy() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -27617,9 +28043,11 @@ GenericDisjunctionConditionalsView<Storage>::tag() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -27629,8 +28057,10 @@ GenericDisjunctionConditionalsView<Storage>::tag() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 0>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -27668,9 +28098,11 @@ GenericDisjunctionConditionalsView<Storage>::shared_low() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -27680,8 +28112,10 @@ GenericDisjunctionConditionalsView<Storage>::shared_low() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -27744,9 +28178,11 @@ GenericDisjunctionConditionalsView<Storage>::shared_high() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -27756,8 +28192,10 @@ GenericDisjunctionConditionalsView<Storage>::shared_high() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -27811,9 +28249,11 @@ GenericDisjunctionConditionalsView<Storage>::shared_far() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -27823,8 +28263,10 @@ GenericDisjunctionConditionalsView<Storage>::shared_far() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -27942,9 +28384,11 @@ GenericOuterGuardedUnionView<Storage>::outer() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(0LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -27954,8 +28398,10 @@ GenericOuterGuardedUnionView<Storage>::outer() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 0>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -27993,9 +28439,11 @@ GenericOuterGuardedUnionView<Storage>::tag() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(4LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -28005,8 +28453,10 @@ GenericOuterGuardedUnionView<Storage>::tag() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 4>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -28044,9 +28494,11 @@ GenericOuterGuardedUnionView<Storage>::g0() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -28056,8 +28508,10 @@ GenericOuterGuardedUnionView<Storage>::g0() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -28111,9 +28565,11 @@ GenericOuterGuardedUnionView<Storage>::g1() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -28123,8 +28579,10 @@ GenericOuterGuardedUnionView<Storage>::g1() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -28178,9 +28636,11 @@ GenericOuterGuardedUnionView<Storage>::g2() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -28190,8 +28650,10 @@ GenericOuterGuardedUnionView<Storage>::g2() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -28245,9 +28707,11 @@ GenericOuterGuardedUnionView<Storage>::g3() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -28257,8 +28721,10 @@ GenericOuterGuardedUnionView<Storage>::g3() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -28312,9 +28778,11 @@ GenericOuterGuardedUnionView<Storage>::g4() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -28324,8 +28792,10 @@ GenericOuterGuardedUnionView<Storage>::g4() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -28379,9 +28849,11 @@ GenericOuterGuardedUnionView<Storage>::g5() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -28391,8 +28863,10 @@ GenericOuterGuardedUnionView<Storage>::g5() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -28446,9 +28920,11 @@ GenericOuterGuardedUnionView<Storage>::g6() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -28458,8 +28934,10 @@ GenericOuterGuardedUnionView<Storage>::g6() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -28513,9 +28991,11 @@ GenericOuterGuardedUnionView<Storage>::g7() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -28525,8 +29005,10 @@ GenericOuterGuardedUnionView<Storage>::g7() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -28580,9 +29062,11 @@ GenericOuterGuardedUnionView<Storage>::g8() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -28592,8 +29076,10 @@ GenericOuterGuardedUnionView<Storage>::g8() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -28647,9 +29133,11 @@ GenericOuterGuardedUnionView<Storage>::g9() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -28659,8 +29147,10 @@ GenericOuterGuardedUnionView<Storage>::g9() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -28714,9 +29204,11 @@ GenericOuterGuardedUnionView<Storage>::g10() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -28726,8 +29218,10 @@ GenericOuterGuardedUnionView<Storage>::g10() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -28781,9 +29275,11 @@ GenericOuterGuardedUnionView<Storage>::g11() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -28793,8 +29289,10 @@ GenericOuterGuardedUnionView<Storage>::g11() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -28848,9 +29346,11 @@ GenericOuterGuardedUnionView<Storage>::g12() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -28860,8 +29360,10 @@ GenericOuterGuardedUnionView<Storage>::g12() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -28915,9 +29417,11 @@ GenericOuterGuardedUnionView<Storage>::g13() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -28927,8 +29431,10 @@ GenericOuterGuardedUnionView<Storage>::g13() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -28982,9 +29488,11 @@ GenericOuterGuardedUnionView<Storage>::g14() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -28994,8 +29502,10 @@ GenericOuterGuardedUnionView<Storage>::g14() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -29049,9 +29559,11 @@ GenericOuterGuardedUnionView<Storage>::g15() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -29061,8 +29573,10 @@ GenericOuterGuardedUnionView<Storage>::g15() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -29116,9 +29630,11 @@ GenericOuterGuardedUnionView<Storage>::g16() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -29128,8 +29644,10 @@ GenericOuterGuardedUnionView<Storage>::g16() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -29183,9 +29701,11 @@ GenericOuterGuardedUnionView<Storage>::g17() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -29195,8 +29715,10 @@ GenericOuterGuardedUnionView<Storage>::g17() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -29250,9 +29772,11 @@ GenericOuterGuardedUnionView<Storage>::g18() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -29262,8 +29786,10 @@ GenericOuterGuardedUnionView<Storage>::g18() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -29317,9 +29843,11 @@ GenericOuterGuardedUnionView<Storage>::g19() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -29329,8 +29857,10 @@ GenericOuterGuardedUnionView<Storage>::g19() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -29384,9 +29914,11 @@ GenericOuterGuardedUnionView<Storage>::g20() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -29396,8 +29928,10 @@ GenericOuterGuardedUnionView<Storage>::g20() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -29451,9 +29985,11 @@ GenericOuterGuardedUnionView<Storage>::g21() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -29463,8 +29999,10 @@ GenericOuterGuardedUnionView<Storage>::g21() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -29518,9 +30056,11 @@ GenericOuterGuardedUnionView<Storage>::g22() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -29530,8 +30070,10 @@ GenericOuterGuardedUnionView<Storage>::g22() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -29585,9 +30127,11 @@ GenericOuterGuardedUnionView<Storage>::g23() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -29597,8 +30141,10 @@ GenericOuterGuardedUnionView<Storage>::g23() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -29652,9 +30198,11 @@ GenericOuterGuardedUnionView<Storage>::g24() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -29664,8 +30212,10 @@ GenericOuterGuardedUnionView<Storage>::g24() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -29719,9 +30269,11 @@ GenericOuterGuardedUnionView<Storage>::g25() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -29731,8 +30283,10 @@ GenericOuterGuardedUnionView<Storage>::g25() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -29786,9 +30340,11 @@ GenericOuterGuardedUnionView<Storage>::g26() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -29798,8 +30354,10 @@ GenericOuterGuardedUnionView<Storage>::g26() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -29853,9 +30411,11 @@ GenericOuterGuardedUnionView<Storage>::g27() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -29865,8 +30425,10 @@ GenericOuterGuardedUnionView<Storage>::g27() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -29920,9 +30482,11 @@ GenericOuterGuardedUnionView<Storage>::g28() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -29932,8 +30496,10 @@ GenericOuterGuardedUnionView<Storage>::g28() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -29987,9 +30553,11 @@ GenericOuterGuardedUnionView<Storage>::g29() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -29999,8 +30567,10 @@ GenericOuterGuardedUnionView<Storage>::g29() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -30054,9 +30624,11 @@ GenericOuterGuardedUnionView<Storage>::g30() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -30066,8 +30638,10 @@ GenericOuterGuardedUnionView<Storage>::g30() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -30121,9 +30695,11 @@ GenericOuterGuardedUnionView<Storage>::g31() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -30133,8 +30709,10 @@ GenericOuterGuardedUnionView<Storage>::g31() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -30188,9 +30766,11 @@ GenericOuterGuardedUnionView<Storage>::g32() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -30200,8 +30780,10 @@ GenericOuterGuardedUnionView<Storage>::g32() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -30255,9 +30837,11 @@ GenericOuterGuardedUnionView<Storage>::g33() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -30267,8 +30851,10 @@ GenericOuterGuardedUnionView<Storage>::g33() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -30322,9 +30908,11 @@ GenericOuterGuardedUnionView<Storage>::g34() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -30334,8 +30922,10 @@ GenericOuterGuardedUnionView<Storage>::g34() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -30389,9 +30979,11 @@ GenericOuterGuardedUnionView<Storage>::g35() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -30401,8 +30993,10 @@ GenericOuterGuardedUnionView<Storage>::g35() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -30456,9 +31050,11 @@ GenericOuterGuardedUnionView<Storage>::g36() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -30468,8 +31064,10 @@ GenericOuterGuardedUnionView<Storage>::g36() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -30523,9 +31121,11 @@ GenericOuterGuardedUnionView<Storage>::g37() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -30535,8 +31135,10 @@ GenericOuterGuardedUnionView<Storage>::g37() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -30590,9 +31192,11 @@ GenericOuterGuardedUnionView<Storage>::g38() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -30602,8 +31206,10 @@ GenericOuterGuardedUnionView<Storage>::g38() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -30657,9 +31263,11 @@ GenericOuterGuardedUnionView<Storage>::g39() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -30669,8 +31277,10 @@ GenericOuterGuardedUnionView<Storage>::g39() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -30724,9 +31334,11 @@ GenericOuterGuardedUnionView<Storage>::g40() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -30736,8 +31348,10 @@ GenericOuterGuardedUnionView<Storage>::g40() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -30791,9 +31405,11 @@ GenericOuterGuardedUnionView<Storage>::g41() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -30803,8 +31419,10 @@ GenericOuterGuardedUnionView<Storage>::g41() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -30858,9 +31476,11 @@ GenericOuterGuardedUnionView<Storage>::g42() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -30870,8 +31490,10 @@ GenericOuterGuardedUnionView<Storage>::g42() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -30925,9 +31547,11 @@ GenericOuterGuardedUnionView<Storage>::g43() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -30937,8 +31561,10 @@ GenericOuterGuardedUnionView<Storage>::g43() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -30992,9 +31618,11 @@ GenericOuterGuardedUnionView<Storage>::g44() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -31004,8 +31632,10 @@ GenericOuterGuardedUnionView<Storage>::g44() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -31059,9 +31689,11 @@ GenericOuterGuardedUnionView<Storage>::g45() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -31071,8 +31703,10 @@ GenericOuterGuardedUnionView<Storage>::g45() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -31126,9 +31760,11 @@ GenericOuterGuardedUnionView<Storage>::g46() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -31138,8 +31774,10 @@ GenericOuterGuardedUnionView<Storage>::g46() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -31193,9 +31831,11 @@ GenericOuterGuardedUnionView<Storage>::g47() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -31205,8 +31845,10 @@ GenericOuterGuardedUnionView<Storage>::g47() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -31260,9 +31902,11 @@ GenericOuterGuardedUnionView<Storage>::g48() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -31272,8 +31916,10 @@ GenericOuterGuardedUnionView<Storage>::g48() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -31327,9 +31973,11 @@ GenericOuterGuardedUnionView<Storage>::g49() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -31339,8 +31987,10 @@ GenericOuterGuardedUnionView<Storage>::g49() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -31394,9 +32044,11 @@ GenericOuterGuardedUnionView<Storage>::g50() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -31406,8 +32058,10 @@ GenericOuterGuardedUnionView<Storage>::g50() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -31461,9 +32115,11 @@ GenericOuterGuardedUnionView<Storage>::g51() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -31473,8 +32129,10 @@ GenericOuterGuardedUnionView<Storage>::g51() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -31528,9 +32186,11 @@ GenericOuterGuardedUnionView<Storage>::g52() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -31540,8 +32200,10 @@ GenericOuterGuardedUnionView<Storage>::g52() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -31595,9 +32257,11 @@ GenericOuterGuardedUnionView<Storage>::g53() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -31607,8 +32271,10 @@ GenericOuterGuardedUnionView<Storage>::g53() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -31662,9 +32328,11 @@ GenericOuterGuardedUnionView<Storage>::g54() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -31674,8 +32342,10 @@ GenericOuterGuardedUnionView<Storage>::g54() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -31729,9 +32399,11 @@ GenericOuterGuardedUnionView<Storage>::g55() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -31741,8 +32413,10 @@ GenericOuterGuardedUnionView<Storage>::g55() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -31796,9 +32470,11 @@ GenericOuterGuardedUnionView<Storage>::g56() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -31808,8 +32484,10 @@ GenericOuterGuardedUnionView<Storage>::g56() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -31863,9 +32541,11 @@ GenericOuterGuardedUnionView<Storage>::g57() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -31875,8 +32555,10 @@ GenericOuterGuardedUnionView<Storage>::g57() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -31930,9 +32612,11 @@ GenericOuterGuardedUnionView<Storage>::g58() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -31942,8 +32626,10 @@ GenericOuterGuardedUnionView<Storage>::g58() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -31997,9 +32683,11 @@ GenericOuterGuardedUnionView<Storage>::g59() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -32009,8 +32697,10 @@ GenericOuterGuardedUnionView<Storage>::g59() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -32064,9 +32754,11 @@ GenericOuterGuardedUnionView<Storage>::g60() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -32076,8 +32768,10 @@ GenericOuterGuardedUnionView<Storage>::g60() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -32131,9 +32825,11 @@ GenericOuterGuardedUnionView<Storage>::g61() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -32143,8 +32839,10 @@ GenericOuterGuardedUnionView<Storage>::g61() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -32198,9 +32896,11 @@ GenericOuterGuardedUnionView<Storage>::g62() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -32210,8 +32910,10 @@ GenericOuterGuardedUnionView<Storage>::g62() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -32265,9 +32967,11 @@ GenericOuterGuardedUnionView<Storage>::g63() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -32277,8 +32981,10 @@ GenericOuterGuardedUnionView<Storage>::g63() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -32332,9 +33038,11 @@ GenericOuterGuardedUnionView<Storage>::g64() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -32344,8 +33052,10 @@ GenericOuterGuardedUnionView<Storage>::g64() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -32399,9 +33109,11 @@ GenericOuterGuardedUnionView<Storage>::g65() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -32411,8 +33123,10 @@ GenericOuterGuardedUnionView<Storage>::g65() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -32466,9 +33180,11 @@ GenericOuterGuardedUnionView<Storage>::g66() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -32478,8 +33194,10 @@ GenericOuterGuardedUnionView<Storage>::g66() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -32533,9 +33251,11 @@ GenericOuterGuardedUnionView<Storage>::g67() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -32545,8 +33265,10 @@ GenericOuterGuardedUnionView<Storage>::g67() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -32600,9 +33322,11 @@ GenericOuterGuardedUnionView<Storage>::g68() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -32612,8 +33336,10 @@ GenericOuterGuardedUnionView<Storage>::g68() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -32667,9 +33393,11 @@ GenericOuterGuardedUnionView<Storage>::g69() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -32679,8 +33407,10 @@ GenericOuterGuardedUnionView<Storage>::g69() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -32734,9 +33464,11 @@ GenericOuterGuardedUnionView<Storage>::g70() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -32746,8 +33478,10 @@ GenericOuterGuardedUnionView<Storage>::g70() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -32801,9 +33535,11 @@ GenericOuterGuardedUnionView<Storage>::g71() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -32813,8 +33549,10 @@ GenericOuterGuardedUnionView<Storage>::g71() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -32868,9 +33606,11 @@ GenericOuterGuardedUnionView<Storage>::g72() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -32880,8 +33620,10 @@ GenericOuterGuardedUnionView<Storage>::g72() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -32935,9 +33677,11 @@ GenericOuterGuardedUnionView<Storage>::g73() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -32947,8 +33691,10 @@ GenericOuterGuardedUnionView<Storage>::g73() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -33002,9 +33748,11 @@ GenericOuterGuardedUnionView<Storage>::g74() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -33014,8 +33762,10 @@ GenericOuterGuardedUnionView<Storage>::g74() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -33069,9 +33819,11 @@ GenericOuterGuardedUnionView<Storage>::g75() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -33081,8 +33833,10 @@ GenericOuterGuardedUnionView<Storage>::g75() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -33136,9 +33890,11 @@ GenericOuterGuardedUnionView<Storage>::g76() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -33148,8 +33904,10 @@ GenericOuterGuardedUnionView<Storage>::g76() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -33203,9 +33961,11 @@ GenericOuterGuardedUnionView<Storage>::g77() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -33215,8 +33975,10 @@ GenericOuterGuardedUnionView<Storage>::g77() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -33270,9 +34032,11 @@ GenericOuterGuardedUnionView<Storage>::g78() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -33282,8 +34046,10 @@ GenericOuterGuardedUnionView<Storage>::g78() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -33337,9 +34103,11 @@ GenericOuterGuardedUnionView<Storage>::g79() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -33349,8 +34117,10 @@ GenericOuterGuardedUnionView<Storage>::g79() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -33404,9 +34174,11 @@ GenericOuterGuardedUnionView<Storage>::g80() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -33416,8 +34188,10 @@ GenericOuterGuardedUnionView<Storage>::g80() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -33471,9 +34245,11 @@ GenericOuterGuardedUnionView<Storage>::g81() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -33483,8 +34259,10 @@ GenericOuterGuardedUnionView<Storage>::g81() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -33538,9 +34316,11 @@ GenericOuterGuardedUnionView<Storage>::g82() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -33550,8 +34330,10 @@ GenericOuterGuardedUnionView<Storage>::g82() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -33605,9 +34387,11 @@ GenericOuterGuardedUnionView<Storage>::g83() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -33617,8 +34401,10 @@ GenericOuterGuardedUnionView<Storage>::g83() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -33672,9 +34458,11 @@ GenericOuterGuardedUnionView<Storage>::g84() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -33684,8 +34472,10 @@ GenericOuterGuardedUnionView<Storage>::g84() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -33739,9 +34529,11 @@ GenericOuterGuardedUnionView<Storage>::g85() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -33751,8 +34543,10 @@ GenericOuterGuardedUnionView<Storage>::g85() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -33806,9 +34600,11 @@ GenericOuterGuardedUnionView<Storage>::g86() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -33818,8 +34614,10 @@ GenericOuterGuardedUnionView<Storage>::g86() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -33873,9 +34671,11 @@ GenericOuterGuardedUnionView<Storage>::g87() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -33885,8 +34685,10 @@ GenericOuterGuardedUnionView<Storage>::g87() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -33940,9 +34742,11 @@ GenericOuterGuardedUnionView<Storage>::g88() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -33952,8 +34756,10 @@ GenericOuterGuardedUnionView<Storage>::g88() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -34007,9 +34813,11 @@ GenericOuterGuardedUnionView<Storage>::g89() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -34019,8 +34827,10 @@ GenericOuterGuardedUnionView<Storage>::g89() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -34074,9 +34884,11 @@ GenericOuterGuardedUnionView<Storage>::g90() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -34086,8 +34898,10 @@ GenericOuterGuardedUnionView<Storage>::g90() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -34141,9 +34955,11 @@ GenericOuterGuardedUnionView<Storage>::g91() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -34153,8 +34969,10 @@ GenericOuterGuardedUnionView<Storage>::g91() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -34208,9 +35026,11 @@ GenericOuterGuardedUnionView<Storage>::g92() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -34220,8 +35040,10 @@ GenericOuterGuardedUnionView<Storage>::g92() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -34275,9 +35097,11 @@ GenericOuterGuardedUnionView<Storage>::g93() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -34287,8 +35111,10 @@ GenericOuterGuardedUnionView<Storage>::g93() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -34342,9 +35168,11 @@ GenericOuterGuardedUnionView<Storage>::g94() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -34354,8 +35182,10 @@ GenericOuterGuardedUnionView<Storage>::g94() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -34409,9 +35239,11 @@ GenericOuterGuardedUnionView<Storage>::g95() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -34421,8 +35253,10 @@ GenericOuterGuardedUnionView<Storage>::g95() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -34476,9 +35310,11 @@ GenericOuterGuardedUnionView<Storage>::g96() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -34488,8 +35324,10 @@ GenericOuterGuardedUnionView<Storage>::g96() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -34543,9 +35381,11 @@ GenericOuterGuardedUnionView<Storage>::g97() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -34555,8 +35395,10 @@ GenericOuterGuardedUnionView<Storage>::g97() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -34610,9 +35452,11 @@ GenericOuterGuardedUnionView<Storage>::g98() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -34622,8 +35466,10 @@ GenericOuterGuardedUnionView<Storage>::g98() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<
@@ -34677,9 +35523,11 @@ GenericOuterGuardedUnionView<Storage>::g99() const {
         ::emboss::support::Maybe</**/ ::std::int32_t>(
             static_cast</**/ ::std::int32_t>(8LL));
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
       return ::emboss::prelude::UIntView<
           /**/ ::emboss::support::FixedSizeViewParameters<
               32, ::emboss::support::AllValuesAreOk>,
@@ -34689,8 +35537,10 @@ GenericOuterGuardedUnionView<Storage>::g99() const {
               32>>
 
           (backing_.template GetOffsetStorage<0, 8>(
-              emboss_reserved_local_offset.ValueOrDefault(),
-              emboss_reserved_local_size.ValueOrDefault()));
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_offset.ValueOrDefault()),
+              static_cast</**/ ::std::size_t>(
+                  emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ::emboss::prelude::UIntView<

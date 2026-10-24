@@ -430,11 +430,12 @@ TEST(TextOutputOptions, WithAllowPartialOutput) {
 // Small helper function for the various WriteIntegerToTextStream tests; just
 // sets up a stream, forwards its arguments to WriteIntegerToTextStream, and
 // then returns the text from the stream.
-template <typename Arg0, typename... Args>
-::std::string WriteIntegerToString(Arg0 &&arg0, Args &&... args) {
+template <typename Arg0>
+::std::string WriteIntegerToString(Arg0 &&arg0, ::std::uint8_t base,
+                                   bool digit_grouping) {
   TextOutputStream stream;
-  WriteIntegerToTextStream(::std::forward<Arg0>(arg0), &stream,
-                           ::std::forward<Args>(args)...);
+  WriteIntegerToTextStream(::std::forward<Arg0>(arg0), &stream, base,
+                           digit_grouping);
   return stream.Result();
 }
 

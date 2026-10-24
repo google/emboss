@@ -56,7 +56,9 @@ class ElementViewIterator {
 
   explicit ElementViewIterator(const GenericArrayView array_view,
                                ::std::ptrdiff_t index)
-      : array_view_(array_view), view_(array_view.at(index)), index_(index) {}
+      : array_view_(array_view),
+        view_(array_view.at(static_cast</**/ ::std::size_t>(index))),
+        index_(index) {}
 
   ElementViewIterator() = default;
 
@@ -66,7 +68,7 @@ class ElementViewIterator {
 
   ElementViewIterator &operator+=(difference_type d) {
     index_ += (kDirection == ElementViewIteratorDirection::kForward ? d : -d);
-    view_ = array_view_.at(index_);
+    view_ = array_view_.at(static_cast</**/ ::std::size_t>(index_));
     return *this;
   }
 
@@ -190,9 +192,13 @@ class GenericArrayView final {
   }
 
   ForwardIterator begin() const { return ForwardIterator(*this, 0); }
-  ForwardIterator end() const { return ForwardIterator(*this, ElementCount()); }
+  ForwardIterator end() const {
+    return ForwardIterator(*this,
+                           static_cast</**/ ::std::ptrdiff_t>(ElementCount()));
+  }
   ReverseIterator rbegin() const {
-    return ReverseIterator(*this, ElementCount() - 1);
+    return ReverseIterator(
+        *this, static_cast</**/ ::std::ptrdiff_t>(ElementCount()) - 1);
   }
   ReverseIterator rend() const { return ReverseIterator(*this, -1); }
 
@@ -344,7 +350,7 @@ class GenericArrayView final {
         BufferType buffer, ::std::size_t index, ::std::size_t size) {
       return ElementView(
           ::std::get<N>(parameters)...,
-          index < 0 || index >= size
+          index >= size
               ? typename BufferType::template OffsetStorageType<kElementSize,
                                                                 0>(nullptr)
               : buffer.template GetOffsetStorage<kElementSize, 0>(

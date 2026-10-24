@@ -19,22 +19,39 @@
 
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
 
-def emboss_cc_util_test(name, copts = [], **kwargs):
+EMBOSS_TEST_COPTS = [
+    "-Wall",
+    "-Werror=cast-qual",
+    "-Werror=conversion",
+    "-Werror=extra",
+    "-Werror=extra-semi",
+    "-Werror=implicit-fallthrough",
+    "-Werror=non-virtual-dtor",
+    "-Werror=pointer-arith",
+    "-Werror=redundant-decls",
+    "-Werror=shadow",
+    "-Werror=sign-compare",
+    "-Werror=sign-conversion",
+    "-Werror=switch-enum",
+    "-Werror=undef",
+]
+
+def emboss_cc_util_test(name, copts = None, **kwargs):
     """Constructs two cc_test targets, with and without optimizations."""
     cc_test(
         name = name,
-        copts = copts + ["-Wsign-compare"],
-        features = ["-layering_check"],
+        copts = EMBOSS_TEST_COPTS + (copts or []),
+        features = ["external_include_paths", "-layering_check"],
         **kwargs
     )
     cc_test(
         name = name + "_no_opts",
-        copts = copts + [
+        copts = [
             # This is generally a dangerous flag for an individual target, but
             # these tests do not depend on any other .cc files that might
             # #include any Emboss headers.
             "-DEMBOSS_NO_OPTIMIZATIONS",
-        ],
-        features = ["-layering_check"],
+        ] + EMBOSS_TEST_COPTS + (copts or []),
+        features = ["external_include_paths", "-layering_check"],
         **kwargs
     )

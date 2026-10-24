@@ -144,6 +144,8 @@ ${requires_check}
   bool IsComplete() const {
     return IntrinsicSizeIn${units}().IsUndefined().ValueOr(false) ||
            (backing_.Ok() && IntrinsicSizeIn${units}().Ok() &&
+            ::emboss::support::FitsInSizeT(
+                IntrinsicSizeIn${units}().UncheckedRead()) &&
             backing_.SizeIn${units}() >=
                 static_cast</**/ ::std::size_t>(
                     IntrinsicSizeIn${units}().UncheckedRead()));
@@ -170,7 +172,9 @@ ${size_method}
       Generic${name}View<OtherStorage> emboss_reserved_local_other) const {
     backing_.UncheckedCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeIn${units}().UncheckedRead());
+        static_cast</**/ ::std::size_t>(emboss_reserved_local_other
+                                            .IntrinsicSizeIn${units}()
+                                            .UncheckedRead()));
   }
 
   template <typename OtherStorage>
@@ -178,14 +182,16 @@ ${size_method}
       Generic${name}View<OtherStorage> emboss_reserved_local_other) const {
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeIn${units}().Read());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeIn${units}().Read()));
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(
       Generic${name}View<OtherStorage> emboss_reserved_local_other) const {
       return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
         emboss_reserved_local_other.BackingStorage(),
-        emboss_reserved_local_other.IntrinsicSizeIn${units}().Read());
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeIn${units}().Read()));
   }
 
 ${text_stream_methods}
@@ -412,7 +418,7 @@ ${write_fields}
     // Check fields that depend on a common discriminant using a switch.
     {
       const auto emboss_reserved_switch_discrim = ${discriminant};
-${known_check}      switch (emboss_reserved_switch_discrim.ValueOrDefault()) {
+${known_check}      switch (${switch_value}) {
 ${switch_cases}
         
         default: break;
@@ -535,15 +541,19 @@ ${size_and_offset_subexpressions}
     auto emboss_reserved_local_size = ${size};
     auto emboss_reserved_local_offset = ${offset};
     if (emboss_reserved_local_size.Known() &&
-        emboss_reserved_local_size.ValueOr(0) >= 0 &&
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_size.ValueOrDefault()) &&
         emboss_reserved_local_offset.Known() &&
-        emboss_reserved_local_offset.ValueOr(0) >= 0) {
+        ::emboss::support::FitsInSizeT(
+            emboss_reserved_local_offset.ValueOrDefault())) {
         return ${type_reader}(
                 ${parameter_values} backing_
                         .template GetOffsetStorage<${alignment},
                                                    ${static_offset}>(
-                                emboss_reserved_local_offset.ValueOrDefault(),
-                                emboss_reserved_local_size.ValueOrDefault()));
+                                static_cast</**/ ::std::size_t>(
+                                    emboss_reserved_local_offset.ValueOrDefault()),
+                                static_cast</**/ ::std::size_t>(
+                                    emboss_reserved_local_size.ValueOrDefault())));
     }
   }
   return ${type_reader}();

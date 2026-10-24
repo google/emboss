@@ -18,34 +18,36 @@
 
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
 load("@rules_python//python:py_test.bzl", "py_test")
+load("//runtime/cpp/test:build_defs.bzl", "EMBOSS_TEST_COPTS")
 
-def emboss_cc_test(name, copts = None, no_w_sign_compare = False, **kwargs):
+def emboss_cc_test(name, copts = None, **kwargs):
     """Generates cc_test rules with and without -DEMBOSS_NO_OPTIMIZATIONS.
 
     Args:
       name: The base name of the test target.
       copts: Additional compiler flags.
-      no_w_sign_compare: Unused, kept for compatibility.
       **kwargs: Additional arguments passed to cc_test.
     """
     cc_test(
         name = name,
-        copts = copts or [],
-        features = ["-layering_check"],
+        copts = EMBOSS_TEST_COPTS + (copts or []),
+        features = ["external_include_paths", "-layering_check"],
         **kwargs
     )
     cc_test(
         name = name + "_no_opts",
         copts = [
             "-DEMBOSS_NO_OPTIMIZATIONS",
-        ] + ([] if no_w_sign_compare else ["-Wsign-compare"]) + (copts or []),
-        features = ["-layering_check"],
+        ] + EMBOSS_TEST_COPTS + (copts or []),
+        features = ["external_include_paths", "-layering_check"],
         **kwargs
     )
     cc_test(
         name = name + "_no_checks",
-        copts = ["-DEMBOSS_SKIP_CHECKS"] + (copts or []),
-        features = ["-layering_check"],
+        copts = [
+            "-DEMBOSS_SKIP_CHECKS",
+        ] + EMBOSS_TEST_COPTS + (copts or []),
+        features = ["external_include_paths", "-layering_check"],
         **kwargs
     )
     cc_test(
@@ -53,8 +55,8 @@ def emboss_cc_test(name, copts = None, no_w_sign_compare = False, **kwargs):
         copts = [
             "-DEMBOSS_NO_OPTIMIZATIONS",
             "-DEMBOSS_SKIP_CHECKS",
-        ] + ([] if no_w_sign_compare else ["-Wsign-compare"]) + (copts or []),
-        features = ["-layering_check"],
+        ] + EMBOSS_TEST_COPTS + (copts or []),
+        features = ["external_include_paths", "-layering_check"],
         **kwargs
     )
 
