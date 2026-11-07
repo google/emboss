@@ -1,0 +1,41 @@
+{
+  "name": "emboss",
+  "displayName": "Emboss",
+  "description": "Syntax highlighting for the Emboss binary structure description language (.emb files).",
+  "version": "0.0.1",
+  "publisher": "emboss",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/google/emboss.git",
+    "directory": "integration/vscode"
+  },
+  "engines": {
+    "vscode": "^1.50.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "emboss",
+        "aliases": [
+          "Emboss",
+          "emboss"
+        ],
+        "extensions": [
+          ".emb"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "emboss",
+        "scopeName": "source.emboss",
+        "path": "./syntaxes/emboss.tmLanguage.json"
+      }
+    ]
+  }
+}

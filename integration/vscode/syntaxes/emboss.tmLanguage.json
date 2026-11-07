@@ -1,0 +1,263 @@
+{
+  "name": "Emboss",
+  "scopeName": "source.emboss",
+  "fileTypes": [
+    "emb"
+  ],
+  "patterns": [
+    {
+      "include": "#comment"
+    },
+    {
+      "include": "#documentation"
+    },
+    {
+      "include": "#string"
+    },
+    {
+      "include": "#attribute"
+    },
+    {
+      "include": "#number"
+    },
+    {
+      "include": "#word"
+    },
+    {
+      "include": "#operator"
+    },
+    {
+      "include": "#punctuation"
+    },
+    {
+      "include": "#illegal"
+    }
+  ],
+  "repository": {
+    "comment": {
+      "match": "(#).*$",
+      "name": "comment.line.number-sign.emboss",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.comment.emboss"
+        }
+      }
+    },
+    "documentation": {
+      "patterns": [
+        {
+          "match": "(--)(?: .*)?$",
+          "name": "comment.line.double-dash.documentation.emboss",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.comment.emboss"
+            }
+          }
+        },
+        {
+          "match": "--.*$",
+          "name": "invalid.illegal.documentation.emboss"
+        }
+      ]
+    },
+    "string": {
+      "patterns": [
+        {
+          "begin": "\"(?=(?:[^\"\\\\]|\\\\.)*\")",
+          "end": "\"",
+          "name": "string.quoted.double.emboss",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.emboss"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.emboss"
+            }
+          },
+          "patterns": [
+            {
+              "match": "\\\\[n\\\\\"]",
+              "name": "constant.character.escape.emboss"
+            },
+            {
+              "match": "\\\\.",
+              "name": "invalid.illegal.escape.emboss"
+            }
+          ]
+        },
+        {
+          "match": "\"",
+          "name": "invalid.illegal.string.emboss"
+        }
+      ]
+    },
+    "attribute": {
+      "match": "(\\[)\\s*(?:(\\()\\s*((?!(?:true|false|struct|bits|enum|external|import|as|if|let)(?![A-Za-z0-9_$])|emboss_reserved)[a-z][a-z_0-9]*)\\s*(\\))\\s*)?(?:(\\$default)(?![A-Za-z0-9_$])\\s*)?((?!(?:true|false|struct|bits|enum|external|import|as|if|let)(?![A-Za-z0-9_$])|emboss_reserved)[a-z][a-z_0-9]*)\\s*(:)",
+      "captures": {
+        "1": {
+          "name": "punctuation.section.brackets.begin.emboss"
+        },
+        "2": {
+          "name": "punctuation.section.parens.begin.emboss"
+        },
+        "3": {
+          "name": "entity.other.attribute-name.back-end.emboss"
+        },
+        "4": {
+          "name": "punctuation.section.parens.end.emboss"
+        },
+        "5": {
+          "name": "keyword.other.default.emboss"
+        },
+        "6": {
+          "name": "entity.other.attribute-name.emboss"
+        },
+        "7": {
+          "name": "punctuation.separator.colon.emboss"
+        }
+      }
+    },
+    "number": {
+      "patterns": [
+        {
+          "match": "(?<![A-Za-z0-9_$])(?:0x(?:[0-9a-fA-F]+|_?[0-9a-fA-F]{1,4}(?:_[0-9a-fA-F]{4})*|_?[0-9a-fA-F]{1,8}(?:_[0-9a-fA-F]{8})*))(?![A-Za-z0-9_$])",
+          "name": "constant.numeric.hex.emboss"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_$])(?:0b(?:[01]+|_?[01]{1,4}(?:_[01]{4})*|_?[01]{1,8}(?:_[01]{8})*))(?![A-Za-z0-9_$])",
+          "name": "constant.numeric.binary.emboss"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_$])(?:[0-9]+|[0-9]{1,3}(?:_[0-9]{3})*)(?![A-Za-z0-9_$])",
+          "name": "constant.numeric.decimal.emboss"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_$])[0-9][A-Za-z0-9_$]*",
+          "name": "invalid.illegal.numeric.emboss"
+        }
+      ]
+    },
+    "word": {
+      "patterns": [
+        {
+          "match": "(?<![A-Za-z0-9_$])(?:EmbossReserved[A-Za-z0-9]*|emboss_reserved[_a-z0-9]*|EMBOSS_RESERVED[_A-Z0-9]*)(?![A-Za-z0-9_$])",
+          "name": "invalid.illegal.reserved.emboss"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_$])(?:true|false)(?![A-Za-z0-9_$])",
+          "name": "constant.language.boolean.emboss"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_$])(?:struct|bits|enum|external)(?![A-Za-z0-9_$])",
+          "name": "storage.type.emboss"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_$])(?:import|as)(?![A-Za-z0-9_$])",
+          "name": "keyword.control.import.emboss"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_$])(?:if)(?![A-Za-z0-9_$])",
+          "name": "keyword.control.conditional.emboss"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_$])(?:let)(?![A-Za-z0-9_$])",
+          "name": "keyword.other.let.emboss"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_$])(?:\\$default)(?![A-Za-z0-9_$])",
+          "name": "keyword.other.default.emboss"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_$])(?:\\$(?:present|max|upper_bound|lower_bound))(?![A-Za-z0-9_$])",
+          "name": "support.function.builtin.emboss"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_$])(?:\\$(?:next|static_size_in_bits|is_statically_sized|(?:max_|min_)?size_in_(?:bits|bytes)))(?![A-Za-z0-9_$])",
+          "name": "variable.language.emboss"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_$])(?:[A-Z][A-Z_0-9]*[A-Z_][A-Z_0-9]*)(?![A-Za-z0-9_$])",
+          "name": "variable.other.constant.emboss"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_$])(?:UInt|Int|Bcd|Flag|Float)(?![A-Za-z0-9_$])",
+          "name": "support.type.builtin.emboss"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_$])(?:[A-Z][a-zA-Z0-9]*[a-z][a-zA-Z0-9]*)(?![A-Za-z0-9_$])",
+          "name": "entity.name.type.emboss"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_$])(?:[a-z][a-z_0-9]*)(?![A-Za-z0-9_$])",
+          "name": "variable.other.emboss"
+        },
+        {
+          "match": "(?<![A-Za-z0-9_$])[A-Za-z_$][A-Za-z0-9_$]*",
+          "name": "invalid.illegal.name.emboss"
+        }
+      ]
+    },
+    "operator": {
+      "patterns": [
+        {
+          "match": "==|!=|<=|>=|<|>",
+          "name": "keyword.operator.comparison.emboss"
+        },
+        {
+          "match": "&&|\\|\\|",
+          "name": "keyword.operator.logical.emboss"
+        },
+        {
+          "match": "//|[-+*%]",
+          "name": "keyword.operator.arithmetic.emboss"
+        },
+        {
+          "match": "\\?",
+          "name": "keyword.operator.ternary.emboss"
+        },
+        {
+          "match": "=",
+          "name": "keyword.operator.assignment.emboss"
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "match": "\\[",
+          "name": "punctuation.section.brackets.begin.emboss"
+        },
+        {
+          "match": "\\]",
+          "name": "punctuation.section.brackets.end.emboss"
+        },
+        {
+          "match": "\\(",
+          "name": "punctuation.section.parens.begin.emboss"
+        },
+        {
+          "match": "\\)",
+          "name": "punctuation.section.parens.end.emboss"
+        },
+        {
+          "match": ":",
+          "name": "punctuation.separator.colon.emboss"
+        },
+        {
+          "match": "\\.",
+          "name": "punctuation.accessor.emboss"
+        },
+        {
+          "match": ",",
+          "name": "punctuation.separator.comma.emboss"
+        }
+      ]
+    },
+    "illegal": {
+      "match": "[^\\s\\x1c-\\x1f]",
+      "name": "invalid.illegal.character.emboss"
+    }
+  }
+}
