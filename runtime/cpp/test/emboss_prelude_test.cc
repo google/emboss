@@ -542,7 +542,7 @@ TEST(IntView, Int128ReadAndWriteWithSufficientBuffer) {
   int128_view.Write(write_value);
   EXPECT_EQ(write_value, int128_view.Read());
   // All bytes should be 0xff
-  for (int i = 0; i < 16; ++i) {
+  for (::std::size_t i = 0; i < 16; ++i) {
     EXPECT_EQ(0xff, bytes[i]);
   }
   // Last byte should be untouched
