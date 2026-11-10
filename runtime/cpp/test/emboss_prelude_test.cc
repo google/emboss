@@ -256,6 +256,80 @@ TEST(UIntView, NonPowerOfTwoSize) {
   EXPECT_TRUE(uint24_view.IsComplete());
 }
 
+// A validator which only accepts values less than 16, for testing views whose
+// values are not all Ok().
+struct LessThan16 {
+  template <typename ValueType>
+  static constexpr bool ValueIsOk(ValueType value) {
+    return value < 16;
+  }
+};
+
+template </**/ ::std::size_t kBits>
+using ValidatedViewParameters =
+    ::emboss::support::FixedSizeViewParameters<kBits, LessThan16>;
+
+TEST(UIntView, AllValuesAreOk) {
+  EXPECT_TRUE(UIntViewN<8>::AllValuesAreOk());
+  EXPECT_FALSE(
+      (UIntView<ValidatedViewParameters<8>, BitBlockN<8>>::AllValuesAreOk()));
+  EXPECT_TRUE((IntView<ViewParameters<8>, BitBlockN<8>>::AllValuesAreOk()));
+  EXPECT_TRUE((FlagView<ViewParameters<1>,
+                        OffsetBitBlock<BitBlockN<8>>>::AllValuesAreOk()));
+  EXPECT_FALSE((BcdView<ViewParameters<8>, BitBlockN<8>>::AllValuesAreOk()));
+}
+
+TEST(UIntView, OkAndUncheckedRead) {
+  ::std::vector</**/ ::std::uint8_t> bytes = {{0x10, 0x0f}};
+  auto uint16_view =
+      UIntViewN<16>{BitBlockN<16>{ReadWriteContiguousBuffer{bytes.data(), 2}}};
+  EXPECT_TRUE(uint16_view.OkAndUncheckedRead().Known());
+  EXPECT_EQ(0x0f10U, uint16_view.OkAndUncheckedRead().ValueOrDefault());
+
+  // An incomplete view is not Ok(), so its value is not Known().
+  auto short_view =
+      UIntViewN<16>{BitBlockN<16>{ReadWriteContiguousBuffer{bytes.data(), 1}}};
+  EXPECT_FALSE(short_view.OkAndUncheckedRead().Known());
+
+  // A view whose value fails validation is not Ok() either.
+  auto validated_view = UIntView<ValidatedViewParameters<8>, BitBlockN<8>>{
+      BitBlockN<8>{ReadWriteContiguousBuffer{bytes.data(), 1}}};
+  EXPECT_FALSE(validated_view.OkAndUncheckedRead().Known());
+  EXPECT_FALSE(validated_view.Ok());
+  bytes[0] = 0x0f;
+  EXPECT_TRUE(validated_view.OkAndUncheckedRead().Known());
+  EXPECT_EQ(0x0fU, validated_view.OkAndUncheckedRead().ValueOrDefault());
+  EXPECT_TRUE(validated_view.Ok());
+}
+
+TEST(FlagView, OkAndUncheckedRead) {
+  ::std::uint8_t byte = 0x01;
+  auto flag_view = FlagView<ViewParameters<1>, OffsetBitBlock<BitBlockN<8>>>{
+      BitBlockN<8>{ReadWriteContiguousBuffer{&byte, 1}}.GetOffsetStorage<1, 0>(
+          0, 1)};
+  EXPECT_TRUE(flag_view.OkAndUncheckedRead().Known());
+  EXPECT_TRUE(flag_view.OkAndUncheckedRead().ValueOrDefault());
+  byte = 0xfe;
+  EXPECT_TRUE(flag_view.OkAndUncheckedRead().Known());
+  EXPECT_FALSE(flag_view.OkAndUncheckedRead().ValueOrDefault());
+  auto null_flag_view =
+      FlagView<ViewParameters<1>, OffsetBitBlock<BitBlockN<8>>>{BitBlockN<8>{
+          ReadWriteContiguousBuffer{}}.GetOffsetStorage<1, 0>(0, 1)};
+  EXPECT_FALSE(null_flag_view.OkAndUncheckedRead().Known());
+}
+
+TEST(BcdView, OkAndUncheckedRead) {
+  ::std::uint8_t byte = 0x42;
+  auto bcd8_view = BcdView<ViewParameters<8>, BitBlockN<8>>{
+      BitBlockN<8>{ReadWriteContiguousBuffer{&byte, 1}}};
+  EXPECT_TRUE(bcd8_view.OkAndUncheckedRead().Known());
+  EXPECT_EQ(42U, bcd8_view.OkAndUncheckedRead().ValueOrDefault());
+  // 0xa is not a decimal digit, so the view is not Ok().
+  byte = 0x4a;
+  EXPECT_FALSE(bcd8_view.OkAndUncheckedRead().Known());
+  EXPECT_FALSE(bcd8_view.Ok());
+}
+
 TEST(UIntView, NonPowerOfTwoSizeInsufficientBuffer) {
   ::std::vector</**/ ::std::uint8_t> bytes = {{0x10, 0x0f, 0x0e, 0x0d}};
   auto uint24_view =

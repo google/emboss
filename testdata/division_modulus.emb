@@ -86,3 +86,36 @@ struct FieldGatedByDivision:
 struct CollapsingQuotient:
   0 [+1]  UInt  divisor
   let zero_or_undefined = 0 // divisor
+
+
+# A field whose size *collapses* to a single defined value (`(0 // divisor) + 1`
+# is {1}) yet is undefined when the divisor is zero.  The structure's size must
+# not be folded to a constant: when divisor == 0 it is undefined.
+struct CollapsingFieldSize:
+  0 [+1]                  UInt      divisor
+  1 [+(0 // divisor) + 1] UInt:8[]  payload
+
+
+# An existence condition with several `&&` conjuncts which are each possibly
+# undefined.  The reason that has_gated() is unknown is the merge of the
+# conjuncts': undefined if every unknown conjunct is undefined, but unreadable
+# if any is merely unreadable (more bytes might make that conjunct false).  `b`
+# precedes `a`, so a short buffer can make the first conjunct (which reads `a`)
+# unreadable while the second (which reads `b`) is undefined.
+struct GatedByTwoDivisions:
+  0 [+1]  UInt  b
+  1 [+1]  UInt  a
+  if 12 // a == 3 && 12 // b == 3:
+    2 [+1]  UInt  gated
+
+
+# Two fields whose ends can be un-Known for different reasons.  In a one-byte
+# buffer, `payload`'s end is unreadable (it reads `length`, which is past the
+# end) and, when `divisor` is zero, `tail`'s end is undefined.  As with
+# `$max()`, the structure's size is then undefined, even though the unreadable
+# end comes first: no number of extra bytes can make the size defined.
+struct UnreadableThenUndefinedSize:
+  0 [+1]              UInt      divisor
+  1 [+1]              UInt      length
+  2 [+length]         UInt:8[]  payload
+  2 [+16 // divisor]  UInt:8[]  tail

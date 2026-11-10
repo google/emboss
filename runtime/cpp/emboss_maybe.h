@@ -59,44 +59,61 @@ class Maybe final {
   // reason.  This is by far the most common Unknown (an unreadable field), so
   // most Unknown-constructing sites -- field reads, absent parameters -- need
   // no change to get the right reason.
-  constexpr Maybe() : value_(), unknowability_(Unknowability::kUnreadable) {}
-  constexpr explicit Maybe(T value)
+  EMBOSS_ALWAYS_INLINE constexpr Maybe()
+      : value_(), unknowability_(Unknowability::kUnreadable) {}
+  EMBOSS_ALWAYS_INLINE constexpr explicit Maybe(T value)
       : value_(::std::move(value)), unknowability_(Unknowability::kKnown) {}
   // Constructs an Unknown Maybe with an explicit reason.  Callers must pass a
   // non-kKnown reason (there is no value to hold); passing kKnown would produce
   // a nominally-Known() Maybe with a default-initialized value.
-  constexpr explicit Maybe(Unknowability unknowability)
+  EMBOSS_ALWAYS_INLINE constexpr explicit Maybe(Unknowability unknowability)
       : value_(), unknowability_(unknowability) {}
-  constexpr Maybe(const Maybe<T> &) = default;
+#if !EMBOSS_GCC_BUG_115033
+  EMBOSS_ALWAYS_INLINE constexpr Maybe(const Maybe<T> &) = default;
   ~Maybe() = default;
-  Maybe &operator=(const Maybe &) = default;
-  Maybe &operator=(T value) {
+  EMBOSS_ALWAYS_INLINE Maybe &operator=(const Maybe &) = default;
+#else
+  // Affected versions of GCC fail to keep a Maybe<> in registers when it is
+  // copied with the defaulted copy constructor; see the comment on
+  // ContiguousBuffer's copy constructor in emboss_memory_util.h.
+  EMBOSS_ALWAYS_INLINE constexpr Maybe(const Maybe<T> &other)
+      : value_(other.value_), unknowability_(other.unknowability_) {}
+  ~Maybe() = default;
+  EMBOSS_ALWAYS_INLINE Maybe &operator=(const Maybe &other) {
+    value_ = other.value_;
+    unknowability_ = other.unknowability_;
+    return *this;
+  }
+#endif
+  EMBOSS_ALWAYS_INLINE Maybe &operator=(T value) {
     value_ = ::std::move(value);
     unknowability_ = Unknowability::kKnown;
     return *this;
   }
-  Maybe &operator=(const T &value) {
+  EMBOSS_ALWAYS_INLINE Maybe &operator=(const T &value) {
     value_ = value;
     unknowability_ = Unknowability::kKnown;
     return *this;
   }
 
-  constexpr bool Known() const {
+  EMBOSS_ALWAYS_INLINE constexpr bool Known() const {
     return unknowability_ == Unknowability::kKnown;
   }
   // True iff this Maybe is Unknown specifically because its value is undefined
   // (division/modulus by zero) rather than merely unreadable.
-  constexpr bool IsUndefined() const {
+  EMBOSS_ALWAYS_INLINE constexpr bool IsUndefined() const {
     return unknowability_ == Unknowability::kUndefined;
   }
   // The reason this Maybe has (or has not) a value.  Used by the expression
   // operators to merge reasons when combining operands.
-  constexpr Unknowability Reason() const { return unknowability_; }
-  T Value() const {
+  EMBOSS_ALWAYS_INLINE constexpr Unknowability Reason() const {
+    return unknowability_;
+  }
+  EMBOSS_ALWAYS_INLINE T Value() const {
     EMBOSS_CHECK(Known());
     return value_;
   }
-  constexpr T ValueOr(T default_value) const {
+  EMBOSS_ALWAYS_INLINE constexpr T ValueOr(T default_value) const {
     return Known() ? value_ : default_value;
   }
   // A non-Ok() Maybe value-initializes value_ to a default (by explicitly
@@ -104,7 +121,7 @@ class Maybe final {
   // is safe to just return value_ here.  For integral types and enums, value_
   // will be 0, for bool it will be false, and for other types it depends on the
   // constructor's behavior.
-  constexpr T ValueOrDefault() const { return value_; }
+  EMBOSS_ALWAYS_INLINE constexpr T ValueOrDefault() const { return value_; }
 
  private:
   T value_;

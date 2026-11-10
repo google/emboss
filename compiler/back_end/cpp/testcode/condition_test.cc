@@ -344,6 +344,117 @@ TEST(Conditional, ResidualConditionalDiscriminantOkWhenGatedFieldIsPresent) {
   EXPECT_EQ(7, writer.a().Read());
 }
 
+// The intrinsic size of a structure is `$max(0, cond_1 ? end_1 : 0, ...)`,
+// which is un-Known exactly when some field's existence condition is un-Known
+// (or a present field's end is).  The generated code evaluates the conditions
+// as a tree of nested switches, and must agree with that definition on
+// truncated buffers, where some of the discriminants cannot be read.
+//
+// In NestedUnionWithEarlyKind, `kind` precedes `inner_tag`, so once
+// `inner_tag` has been read, `kind` is necessarily readable; in
+// NestedUnionWithLateKind it is not.
+TEST(Conditional, NestedUnionWithEarlyKindSizeOnTruncatedBuffers) {
+  {
+    // outer_tag == 0: nothing else exists; the size is known.
+    ::std::uint8_t buffer[1] = {0};
+    auto view = MakeNestedUnionWithEarlyKindView(buffer, sizeof buffer);
+    EXPECT_TRUE(view.SizeIsKnown());
+    EXPECT_EQ(1U, view.SizeInBytes());
+    EXPECT_TRUE(view.IsComplete());
+    EXPECT_TRUE(view.Ok());
+  }
+  {
+    // outer_tag == 1, but `inner_tag` is out of bounds: whether
+    // `bare_payload` exists is indeterminate, so the size is not known.
+    ::std::uint8_t buffer[1] = {1};
+    auto view = MakeNestedUnionWithEarlyKindView(buffer, sizeof buffer);
+    EXPECT_FALSE(view.SizeIsKnown());
+    EXPECT_FALSE(view.IsComplete());
+  }
+  {
+    ::std::uint8_t buffer[2] = {1, 7};
+    auto view = MakeNestedUnionWithEarlyKindView(buffer, sizeof buffer);
+    EXPECT_FALSE(view.SizeIsKnown());
+    EXPECT_FALSE(view.IsComplete());
+  }
+  {
+    // inner_tag == 2 and kind == 7: `payload_a` exists, ending at 8.
+    ::std::uint8_t buffer[3] = {1, 7, 2};
+    auto view = MakeNestedUnionWithEarlyKindView(buffer, sizeof buffer);
+    EXPECT_TRUE(view.SizeIsKnown());
+    EXPECT_EQ(8U, view.SizeInBytes());
+    EXPECT_FALSE(view.IsComplete());
+  }
+  {
+    // inner_tag == 3: neither payload nor `bare_payload` exists.
+    ::std::uint8_t buffer[3] = {1, 7, 3};
+    auto view = MakeNestedUnionWithEarlyKindView(buffer, sizeof buffer);
+    EXPECT_TRUE(view.SizeIsKnown());
+    EXPECT_EQ(3U, view.SizeInBytes());
+    EXPECT_TRUE(view.IsComplete());
+    EXPECT_TRUE(view.Ok());
+  }
+  {
+    // inner_tag == 2 but kind == 9: only `bare_payload` exists.
+    ::std::uint8_t buffer[3] = {1, 9, 2};
+    auto view = MakeNestedUnionWithEarlyKindView(buffer, sizeof buffer);
+    EXPECT_TRUE(view.SizeIsKnown());
+    EXPECT_EQ(4U, view.SizeInBytes());
+    EXPECT_FALSE(view.IsComplete());
+  }
+  {
+    ::std::uint8_t buffer[12] = {1, 8, 2, 5, 0, 0, 0, 0, 0, 0, 0, 9};
+    auto view = MakeNestedUnionWithEarlyKindView(buffer, sizeof buffer);
+    EXPECT_TRUE(view.SizeIsKnown());
+    EXPECT_EQ(12U, view.SizeInBytes());
+    EXPECT_TRUE(view.IsComplete());
+    EXPECT_TRUE(view.Ok());
+    EXPECT_TRUE(view.has_payload_b().Value());
+    EXPECT_FALSE(view.has_payload_a().Value());
+    EXPECT_EQ(5, view.bare_payload().Read());
+  }
+}
+
+TEST(Conditional, NestedUnionWithLateKindSizeOnTruncatedBuffers) {
+  {
+    ::std::uint8_t buffer[1] = {1};
+    auto view = MakeNestedUnionWithLateKindView(buffer, sizeof buffer);
+    EXPECT_FALSE(view.SizeIsKnown());
+  }
+  {
+    // inner_tag == 2, but `kind` is out of bounds: whether `payload_a`
+    // exists is indeterminate.
+    ::std::uint8_t buffer[2] = {1, 2};
+    auto view = MakeNestedUnionWithLateKindView(buffer, sizeof buffer);
+    EXPECT_FALSE(view.SizeIsKnown());
+    EXPECT_FALSE(view.IsComplete());
+  }
+  {
+    // inner_tag == 3: the payloads cannot exist whatever `kind` is, so the
+    // size is known even though `kind` itself is out of bounds.
+    ::std::uint8_t buffer[2] = {1, 3};
+    auto view = MakeNestedUnionWithLateKindView(buffer, sizeof buffer);
+    EXPECT_TRUE(view.SizeIsKnown());
+    EXPECT_EQ(4U, view.SizeInBytes());
+    EXPECT_FALSE(view.IsComplete());
+  }
+  {
+    ::std::uint8_t buffer[4] = {1, 2, 0, 7};
+    auto view = MakeNestedUnionWithLateKindView(buffer, sizeof buffer);
+    EXPECT_TRUE(view.SizeIsKnown());
+    EXPECT_EQ(8U, view.SizeInBytes());
+    EXPECT_FALSE(view.IsComplete());
+  }
+  {
+    ::std::uint8_t buffer[4] = {1, 2, 0, 9};
+    auto view = MakeNestedUnionWithLateKindView(buffer, sizeof buffer);
+    EXPECT_TRUE(view.SizeIsKnown());
+    EXPECT_EQ(4U, view.SizeInBytes());
+    EXPECT_TRUE(view.IsComplete());
+    EXPECT_TRUE(view.Ok());
+  }
+}
+
 TEST(Conditional, ResidualConditionalDiscriminantNotOkWhenGatedFieldTruncated) {
   // outer == 1, tag == 0, so `a` exists, but the buffer is too short for it.
   ::std::uint8_t buffer[2] = {1, 0};
