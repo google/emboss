@@ -215,6 +215,38 @@ TEST(ArrayView, TextFormatOutput_WithAndWithoutComments) {
       "0x8, 0xd, 0x15, 0x22, 0x37, 0x59 }");
 }
 
+TEST(ArrayView, TextFormatOutput_AsJson) {
+  signed char bytes[16] = {-3, 2, -1, 1,  0,  1,  1,  2,
+                           3,  5, 8,  13, 21, 34, 55, 89};
+  auto buffer = ReadWriteContiguousBuffer{
+      reinterpret_cast</**/ ::std::uint8_t*>(bytes), sizeof bytes};
+  auto byte_array =
+      ArrayView<FixedIntView<8>, ReadWriteContiguousBuffer, 1>{buffer};
+
+  EXPECT_EQ("[-3,2,-1,1,0,1,1,2,3,5,8,13,21,34,55,89]",
+            WriteToString(byte_array, TextOutputOptions().Json(true)));
+}
+
+TEST(ArrayView, TextFormatOutput_AsJsonMultiline) {
+  signed char bytes[3] = {1, 2, 3};
+  auto buffer = ReadWriteContiguousBuffer{
+      reinterpret_cast</**/ ::std::uint8_t*>(bytes), sizeof bytes};
+  auto byte_array =
+      ArrayView<FixedIntView<8>, ReadWriteContiguousBuffer, 1>{buffer};
+
+  // Multiline JSON arrays put each element on its own indented line, with the
+  // closing bracket back at the outer indent.
+  EXPECT_EQ(
+      "[\n"
+      "  1,\n"
+      "  2,\n"
+      "  3\n"
+      "]",
+      WriteToString(byte_array,
+                    TextOutputOptions().Json(true).Multiline(true).WithIndent(
+                        "  ")));
+}
+
 TEST(ArrayView, TextFormatOutput_8BitIntElementTypes) {
   ::std::uint8_t bytes[1] = {65};
   auto buffer = ReadWriteContiguousBuffer{bytes, sizeof bytes};

@@ -1912,6 +1912,10 @@ The single-argument form `WriteToString(view)` will return a single line of
 text. For more readable output, `WriteToString(view, ::emboss::MultilineText())`
 should help.
 
+To get JSON instead of the Emboss text format, pass
+`::emboss::TextOutputOptions().Json(true)`; see the `json()` method below for
+the details of JSON output.
+
 ## `::emboss::TextOutputOptions` class
 
 The `TextOutputOptions` is used to set options for text output, such as numeric
@@ -1985,6 +1989,25 @@ TextOutputOptions WithAllowPartialOutput(bool new_value) const;
 Returns a new `TextOutputOptions` with the same options as the current
 `TextOutputOptions`, except for a new value for `allow_partial_output()`.
 
+### `Json` method
+
+```c++
+TextOutputOptions Json(bool new_value) const;
+```
+
+Returns a new `TextOutputOptions` with the same options as the current
+`TextOutputOptions`, except for a new value for `json()`.
+
+### `WithJsonLargeIntegerHandling` method
+
+```c++
+TextOutputOptions WithJsonLargeIntegerHandling(
+    JsonLargeIntegerHandling new_value) const;
+```
+
+Returns a new `TextOutputOptions` with the same options as the current
+`TextOutputOptions`, except for a new value for `json_large_integer_handling()`.
+
 ### `current_indent` method
 
 ```c++
@@ -2054,3 +2077,66 @@ is not `Ok()`.  If so:
     in the text stream.
 *   Aggregate fields (`struct`, `bits`, or arrays) will be written, but may be
     missing fields or entirely empty if they have non-`Ok()` members.
+
+### `json` method
+
+```c++
+bool json() const;  // Default false.
+```
+
+Returns `true` if output should be JSON rather than the Emboss text format.  In
+JSON mode:
+
+*   `struct` and `bits` values are written as JSON objects with quoted field
+    names and no space after the `:`, and arrays are written as JSON arrays.
+*   Enum values with a known name are written as quoted strings.  Enum values
+    with no known name are written as numbers, quoted according to
+    `json_large_integer_handling()` when the enum's underlying type is wider
+    than 32 bits (the default, unless the enum has a `[maximum_bits]` of 32 or
+    less).
+*   Integers wider than 32 bits are quoted according to
+    `json_large_integer_handling()`.
+*   `NaN`, `Infinity`, and `-Infinity` floating-point values are written as
+    quoted strings, since JSON has no literal for them.  Finite values always
+    use `.` as the decimal point, regardless of the current C locale.
+*   `comments()` and `digit_grouping()` are ignored, and numbers are always
+    written in base 10 regardless of `numeric_base()`.  `multiline()` and
+    `indent()` are honored.
+*   Fields that are absent because their `if` condition is false, fields marked
+    `[text_output: "Skip"]`, virtual (`let`) fields, and, when
+    `allow_partial_output()` is `true`, fields that cannot be read are omitted.
+
+JSON output is write-only: `UpdateFromText()` and `UpdateFromTextStream()` only
+accept the Emboss text format.
+
+### `json_large_integer_handling` method
+
+```c++
+JsonLargeIntegerHandling json_large_integer_handling() const;
+// Default JsonLargeIntegerHandling::kLargeAsString.
+```
+
+Returns how integers wider than 32 bits are written in JSON mode.  Has no effect
+unless `json()` is `true`.
+
+## `::emboss::JsonLargeIntegerHandling` enum
+
+```c++
+enum class JsonLargeIntegerHandling {
+  kAsNumber,
+  kLargeAsString,
+};
+```
+
+Controls how integer values wider than 32 bits are written in JSON mode.  JSON
+itself does not limit the precision of numbers, but many JSON parsers store them
+as IEEE-754 doubles, which cannot represent every integer outside the range
+[-2^53, 2^53].
+
+*   `kLargeAsString` (the default): integers wider than 32 bits are written as
+    quoted decimal strings, such as `"1157159078456920585"`, so that they
+    survive such parsers.  Values 32 bits wide or narrower are always written as
+    bare numbers.
+*   `kAsNumber`: all integers are written as bare JSON numbers.  Use this only
+    when the consumer is known to preserve 64-bit integers, or when the values
+    are known to fit in 53 bits.

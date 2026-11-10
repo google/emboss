@@ -285,24 +285,37 @@ class GenericArrayOfUint16BySizeInBytesView final {
     if (has_size_in_bytes().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           size_in_bytes().IsAggregate() || size_in_bytes().Ok()) {
-        if (emboss_reserved_local_field_options.multiline()) {
-          emboss_reserved_local_stream->Write(
-              emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
             emboss_reserved_local_stream->Write(",");
           }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          if (emboss_reserved_local_wrote_field &&
+              emboss_reserved_local_field_options.json()) {
+            emboss_reserved_local_stream->Write("\n");
+          }
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("size_in_bytes: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"size_in_bytes\":");
+        } else {
+          emboss_reserved_local_stream->Write("size_in_bytes: ");
+        }
         size_in_bytes().WriteToTextStream(emboss_reserved_local_stream,
                                           emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !size_in_bytes().IsAggregate() && !size_in_bytes().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -315,24 +328,37 @@ class GenericArrayOfUint16BySizeInBytesView final {
     if (has_elements().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           elements().IsAggregate() || elements().Ok()) {
-        if (emboss_reserved_local_field_options.multiline()) {
-          emboss_reserved_local_stream->Write(
-              emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
             emboss_reserved_local_stream->Write(",");
           }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          if (emboss_reserved_local_wrote_field &&
+              emboss_reserved_local_field_options.json()) {
+            emboss_reserved_local_stream->Write("\n");
+          }
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("elements: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"elements\":");
+        } else {
+          emboss_reserved_local_stream->Write("elements: ");
+        }
         elements().WriteToTextStream(emboss_reserved_local_stream,
                                      emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !elements().IsAggregate() && !elements().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -344,11 +370,18 @@ class GenericArrayOfUint16BySizeInBytesView final {
 
     (void)emboss_reserved_local_wrote_field;
     if (emboss_reserved_local_options.multiline()) {
+      if (emboss_reserved_local_wrote_field &&
+          emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write("\n");
+      }
       emboss_reserved_local_stream->Write(
           emboss_reserved_local_options.current_indent());
       emboss_reserved_local_stream->Write("}");
     } else {
-      emboss_reserved_local_stream->Write(" }");
+      if (!emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write(" ");
+      }
+      emboss_reserved_local_stream->Write("}");
     }
   }
 
@@ -860,24 +893,37 @@ class GenericChunkedPayloadView final {
     if (has_chunk_count().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           chunk_count().IsAggregate() || chunk_count().Ok()) {
-        if (emboss_reserved_local_field_options.multiline()) {
-          emboss_reserved_local_stream->Write(
-              emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
             emboss_reserved_local_stream->Write(",");
           }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          if (emboss_reserved_local_wrote_field &&
+              emboss_reserved_local_field_options.json()) {
+            emboss_reserved_local_stream->Write("\n");
+          }
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("chunk_count: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"chunk_count\":");
+        } else {
+          emboss_reserved_local_stream->Write("chunk_count: ");
+        }
         chunk_count().WriteToTextStream(emboss_reserved_local_stream,
                                         emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !chunk_count().IsAggregate() && !chunk_count().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -890,24 +936,37 @@ class GenericChunkedPayloadView final {
     if (has_padded().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           padded().IsAggregate() || padded().Ok()) {
-        if (emboss_reserved_local_field_options.multiline()) {
-          emboss_reserved_local_stream->Write(
-              emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
             emboss_reserved_local_stream->Write(",");
           }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          if (emboss_reserved_local_wrote_field &&
+              emboss_reserved_local_field_options.json()) {
+            emboss_reserved_local_stream->Write("\n");
+          }
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("padded: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"padded\":");
+        } else {
+          emboss_reserved_local_stream->Write("padded: ");
+        }
         padded().WriteToTextStream(emboss_reserved_local_stream,
                                    emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !padded().IsAggregate() && !padded().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -919,11 +978,18 @@ class GenericChunkedPayloadView final {
 
     (void)emboss_reserved_local_wrote_field;
     if (emboss_reserved_local_options.multiline()) {
+      if (emboss_reserved_local_wrote_field &&
+          emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write("\n");
+      }
       emboss_reserved_local_stream->Write(
           emboss_reserved_local_options.current_indent());
       emboss_reserved_local_stream->Write("}");
     } else {
-      emboss_reserved_local_stream->Write(" }");
+      if (!emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write(" ");
+      }
+      emboss_reserved_local_stream->Write("}");
     }
   }
 
@@ -1401,7 +1467,8 @@ class GenericConstantsView final {
     }
     bool emboss_reserved_local_wrote_field = false;
     if (has_exact_quotient().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           exact_quotient().IsAggregate() || exact_quotient().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -1420,7 +1487,8 @@ class GenericConstantsView final {
     }
 
     if (has_truncating_quotient().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           truncating_quotient().IsAggregate() || truncating_quotient().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -1440,7 +1508,8 @@ class GenericConstantsView final {
     }
 
     if (has_negative_quotient().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           negative_quotient().IsAggregate() || negative_quotient().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -1460,7 +1529,8 @@ class GenericConstantsView final {
     }
 
     if (has_exact_modulus().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           exact_modulus().IsAggregate() || exact_modulus().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -1479,7 +1549,8 @@ class GenericConstantsView final {
     }
 
     if (has_truncating_modulus().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           truncating_modulus().IsAggregate() || truncating_modulus().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -1499,7 +1570,8 @@ class GenericConstantsView final {
     }
 
     if (has_negative_modulus().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           negative_modulus().IsAggregate() || negative_modulus().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -1518,7 +1590,8 @@ class GenericConstantsView final {
     }
 
     if (has_chained_div().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           chained_div().IsAggregate() || chained_div().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -1537,7 +1610,8 @@ class GenericConstantsView final {
     }
 
     if (has_chained_mod().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           chained_mod().IsAggregate() || chained_mod().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -1556,7 +1630,8 @@ class GenericConstantsView final {
     }
 
     if (has_mixed_divmod().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           mixed_divmod().IsAggregate() || mixed_divmod().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -1576,11 +1651,18 @@ class GenericConstantsView final {
 
     (void)emboss_reserved_local_wrote_field;
     if (emboss_reserved_local_options.multiline()) {
+      if (emboss_reserved_local_wrote_field &&
+          emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write("\n");
+      }
       emboss_reserved_local_stream->Write(
           emboss_reserved_local_options.current_indent());
       emboss_reserved_local_stream->Write("}");
     } else {
-      emboss_reserved_local_stream->Write(" }");
+      if (!emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write(" ");
+      }
+      emboss_reserved_local_stream->Write("}");
     }
   }
 
@@ -2434,24 +2516,37 @@ class GenericSignedRuntimeDivisionView final {
     if (has_wide_dividend().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           wide_dividend().IsAggregate() || wide_dividend().Ok()) {
-        if (emboss_reserved_local_field_options.multiline()) {
-          emboss_reserved_local_stream->Write(
-              emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
             emboss_reserved_local_stream->Write(",");
           }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          if (emboss_reserved_local_wrote_field &&
+              emboss_reserved_local_field_options.json()) {
+            emboss_reserved_local_stream->Write("\n");
+          }
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("wide_dividend: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"wide_dividend\":");
+        } else {
+          emboss_reserved_local_stream->Write("wide_dividend: ");
+        }
         wide_dividend().WriteToTextStream(emboss_reserved_local_stream,
                                           emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !wide_dividend().IsAggregate() && !wide_dividend().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -2464,24 +2559,37 @@ class GenericSignedRuntimeDivisionView final {
     if (has_narrow_dividend().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           narrow_dividend().IsAggregate() || narrow_dividend().Ok()) {
-        if (emboss_reserved_local_field_options.multiline()) {
-          emboss_reserved_local_stream->Write(
-              emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
             emboss_reserved_local_stream->Write(",");
           }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          if (emboss_reserved_local_wrote_field &&
+              emboss_reserved_local_field_options.json()) {
+            emboss_reserved_local_stream->Write("\n");
+          }
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("narrow_dividend: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"narrow_dividend\":");
+        } else {
+          emboss_reserved_local_stream->Write("narrow_dividend: ");
+        }
         narrow_dividend().WriteToTextStream(
             emboss_reserved_local_stream, emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !narrow_dividend().IsAggregate() && !narrow_dividend().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -2494,24 +2602,37 @@ class GenericSignedRuntimeDivisionView final {
     if (has_divisor_magnitude().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           divisor_magnitude().IsAggregate() || divisor_magnitude().Ok()) {
-        if (emboss_reserved_local_field_options.multiline()) {
-          emboss_reserved_local_stream->Write(
-              emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
             emboss_reserved_local_stream->Write(",");
           }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          if (emboss_reserved_local_wrote_field &&
+              emboss_reserved_local_field_options.json()) {
+            emboss_reserved_local_stream->Write("\n");
+          }
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("divisor_magnitude: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"divisor_magnitude\":");
+        } else {
+          emboss_reserved_local_stream->Write("divisor_magnitude: ");
+        }
         divisor_magnitude().WriteToTextStream(
             emboss_reserved_local_stream, emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !divisor_magnitude().IsAggregate() &&
                  !divisor_magnitude().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
@@ -2524,7 +2645,8 @@ class GenericSignedRuntimeDivisionView final {
     }
 
     if (has_wide_quotient_by_constant().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           wide_quotient_by_constant().IsAggregate() ||
           wide_quotient_by_constant().Ok()) {
@@ -2545,7 +2667,8 @@ class GenericSignedRuntimeDivisionView final {
     }
 
     if (has_wide_remainder_by_constant().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           wide_remainder_by_constant().IsAggregate() ||
           wide_remainder_by_constant().Ok()) {
@@ -2566,7 +2689,8 @@ class GenericSignedRuntimeDivisionView final {
     }
 
     if (has_wide_quotient_by_divisor().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           wide_quotient_by_divisor().IsAggregate() ||
           wide_quotient_by_divisor().Ok()) {
@@ -2587,7 +2711,8 @@ class GenericSignedRuntimeDivisionView final {
     }
 
     if (has_wide_remainder_by_negative_divisor().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           wide_remainder_by_negative_divisor().IsAggregate() ||
           wide_remainder_by_negative_divisor().Ok()) {
@@ -2609,7 +2734,8 @@ class GenericSignedRuntimeDivisionView final {
     }
 
     if (has_narrow_quotient_by_negative_divisor().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           narrow_quotient_by_negative_divisor().IsAggregate() ||
           narrow_quotient_by_negative_divisor().Ok()) {
@@ -2631,7 +2757,8 @@ class GenericSignedRuntimeDivisionView final {
     }
 
     if (has_narrow_remainder_by_negative_divisor().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           narrow_remainder_by_negative_divisor().IsAggregate() ||
           narrow_remainder_by_negative_divisor().Ok()) {
@@ -2654,11 +2781,18 @@ class GenericSignedRuntimeDivisionView final {
 
     (void)emboss_reserved_local_wrote_field;
     if (emboss_reserved_local_options.multiline()) {
+      if (emboss_reserved_local_wrote_field &&
+          emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write("\n");
+      }
       emboss_reserved_local_stream->Write(
           emboss_reserved_local_options.current_indent());
       emboss_reserved_local_stream->Write("}");
     } else {
-      emboss_reserved_local_stream->Write(" }");
+      if (!emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write(" ");
+      }
+      emboss_reserved_local_stream->Write("}");
     }
   }
 
@@ -3684,24 +3818,37 @@ class GenericPayloadSizedByDivisionView final {
     if (has_divisor().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           divisor().IsAggregate() || divisor().Ok()) {
-        if (emboss_reserved_local_field_options.multiline()) {
-          emboss_reserved_local_stream->Write(
-              emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
             emboss_reserved_local_stream->Write(",");
           }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          if (emboss_reserved_local_wrote_field &&
+              emboss_reserved_local_field_options.json()) {
+            emboss_reserved_local_stream->Write("\n");
+          }
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("divisor: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"divisor\":");
+        } else {
+          emboss_reserved_local_stream->Write("divisor: ");
+        }
         divisor().WriteToTextStream(emboss_reserved_local_stream,
                                     emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !divisor().IsAggregate() && !divisor().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -3714,24 +3861,37 @@ class GenericPayloadSizedByDivisionView final {
     if (has_payload().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           payload().IsAggregate() || payload().Ok()) {
-        if (emboss_reserved_local_field_options.multiline()) {
-          emboss_reserved_local_stream->Write(
-              emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
             emboss_reserved_local_stream->Write(",");
           }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          if (emboss_reserved_local_wrote_field &&
+              emboss_reserved_local_field_options.json()) {
+            emboss_reserved_local_stream->Write("\n");
+          }
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("payload: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"payload\":");
+        } else {
+          emboss_reserved_local_stream->Write("payload: ");
+        }
         payload().WriteToTextStream(emboss_reserved_local_stream,
                                     emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !payload().IsAggregate() && !payload().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -3743,11 +3903,18 @@ class GenericPayloadSizedByDivisionView final {
 
     (void)emboss_reserved_local_wrote_field;
     if (emboss_reserved_local_options.multiline()) {
+      if (emboss_reserved_local_wrote_field &&
+          emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write("\n");
+      }
       emboss_reserved_local_stream->Write(
           emboss_reserved_local_options.current_indent());
       emboss_reserved_local_stream->Write("}");
     } else {
-      emboss_reserved_local_stream->Write(" }");
+      if (!emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write(" ");
+      }
+      emboss_reserved_local_stream->Write("}");
     }
   }
 
@@ -4253,24 +4420,37 @@ class GenericFieldGatedByDivisionView final {
     if (has_divisor().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           divisor().IsAggregate() || divisor().Ok()) {
-        if (emboss_reserved_local_field_options.multiline()) {
-          emboss_reserved_local_stream->Write(
-              emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
             emboss_reserved_local_stream->Write(",");
           }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          if (emboss_reserved_local_wrote_field &&
+              emboss_reserved_local_field_options.json()) {
+            emboss_reserved_local_stream->Write("\n");
+          }
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("divisor: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"divisor\":");
+        } else {
+          emboss_reserved_local_stream->Write("divisor: ");
+        }
         divisor().WriteToTextStream(emboss_reserved_local_stream,
                                     emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !divisor().IsAggregate() && !divisor().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -4283,24 +4463,37 @@ class GenericFieldGatedByDivisionView final {
     if (has_gated().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           gated().IsAggregate() || gated().Ok()) {
-        if (emboss_reserved_local_field_options.multiline()) {
-          emboss_reserved_local_stream->Write(
-              emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
             emboss_reserved_local_stream->Write(",");
           }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          if (emboss_reserved_local_wrote_field &&
+              emboss_reserved_local_field_options.json()) {
+            emboss_reserved_local_stream->Write("\n");
+          }
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("gated: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"gated\":");
+        } else {
+          emboss_reserved_local_stream->Write("gated: ");
+        }
         gated().WriteToTextStream(emboss_reserved_local_stream,
                                   emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !gated().IsAggregate() && !gated().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -4312,11 +4505,18 @@ class GenericFieldGatedByDivisionView final {
 
     (void)emboss_reserved_local_wrote_field;
     if (emboss_reserved_local_options.multiline()) {
+      if (emboss_reserved_local_wrote_field &&
+          emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write("\n");
+      }
       emboss_reserved_local_stream->Write(
           emboss_reserved_local_options.current_indent());
       emboss_reserved_local_stream->Write("}");
     } else {
-      emboss_reserved_local_stream->Write(" }");
+      if (!emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write(" ");
+      }
+      emboss_reserved_local_stream->Write("}");
     }
   }
 
@@ -4785,24 +4985,37 @@ class GenericCollapsingQuotientView final {
     if (has_divisor().ValueOr(false)) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           divisor().IsAggregate() || divisor().Ok()) {
-        if (emboss_reserved_local_field_options.multiline()) {
-          emboss_reserved_local_stream->Write(
-              emboss_reserved_local_field_options.current_indent());
-        } else {
-          if (emboss_reserved_local_wrote_field) {
+        if (emboss_reserved_local_wrote_field) {
+          if (emboss_reserved_local_field_options.json() ||
+              !emboss_reserved_local_field_options.multiline()) {
             emboss_reserved_local_stream->Write(",");
           }
+        }
+        if (emboss_reserved_local_field_options.multiline()) {
+          if (emboss_reserved_local_wrote_field &&
+              emboss_reserved_local_field_options.json()) {
+            emboss_reserved_local_stream->Write("\n");
+          }
+          emboss_reserved_local_stream->Write(
+              emboss_reserved_local_field_options.current_indent());
+        } else if (!emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write(" ");
         }
-        emboss_reserved_local_stream->Write("divisor: ");
+        if (emboss_reserved_local_field_options.json()) {
+          emboss_reserved_local_stream->Write("\"divisor\":");
+        } else {
+          emboss_reserved_local_stream->Write("divisor: ");
+        }
         divisor().WriteToTextStream(emboss_reserved_local_stream,
                                     emboss_reserved_local_field_options);
         emboss_reserved_local_wrote_field = true;
-        if (emboss_reserved_local_field_options.multiline()) {
+        if (emboss_reserved_local_field_options.multiline() &&
+            !emboss_reserved_local_field_options.json()) {
           emboss_reserved_local_stream->Write("\n");
         }
       } else if (emboss_reserved_local_field_options.allow_partial_output() &&
                  emboss_reserved_local_field_options.comments() &&
+                 !emboss_reserved_local_field_options.json() &&
                  !divisor().IsAggregate() && !divisor().Ok()) {
         if (emboss_reserved_local_field_options.multiline()) {
           emboss_reserved_local_stream->Write(
@@ -4813,7 +5026,8 @@ class GenericCollapsingQuotientView final {
     }
 
     if (has_zero_or_undefined().ValueOr(false) &&
-        emboss_reserved_local_field_options.comments()) {
+        emboss_reserved_local_field_options.comments() &&
+        !emboss_reserved_local_field_options.json()) {
       if (!emboss_reserved_local_field_options.allow_partial_output() ||
           zero_or_undefined().IsAggregate() || zero_or_undefined().Ok()) {
         emboss_reserved_local_stream->Write(
@@ -4834,11 +5048,18 @@ class GenericCollapsingQuotientView final {
 
     (void)emboss_reserved_local_wrote_field;
     if (emboss_reserved_local_options.multiline()) {
+      if (emboss_reserved_local_wrote_field &&
+          emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write("\n");
+      }
       emboss_reserved_local_stream->Write(
           emboss_reserved_local_options.current_indent());
       emboss_reserved_local_stream->Write("}");
     } else {
-      emboss_reserved_local_stream->Write(" }");
+      if (!emboss_reserved_local_options.json()) {
+        emboss_reserved_local_stream->Write(" ");
+      }
+      emboss_reserved_local_stream->Write("}");
     }
   }
 
