@@ -25,6 +25,7 @@ import sys
 # The Bazel targets that define the embossc compiler sources.
 EMBOSSC_TARGETS = [
     "//compiler/back_end/cpp:emboss_codegen_cpp",
+    "//compiler/back_end/descriptor:emboss_codegen_descriptor",
     "//compiler/front_end:emboss_front_end",
 ]
 

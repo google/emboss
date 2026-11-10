@@ -1,0 +1,522 @@
+{
+  "modules": [
+    {
+      "source_file_name": "testdata/enum.emb",
+      "documentation": "",
+      "types": [
+        {
+          "name": "Constants",
+          "canonical_name": {
+            "module_file": "testdata/enum.emb",
+            "object_path": [
+              "Constants"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 0,
+          "min_bit_size": 0,
+          "max_bit_size": 0,
+          "byte_order": null,
+          "parameters": [],
+          "fields": [],
+          "virtuals": [
+            {
+              "name": "sprocket",
+              "abbreviation": null,
+              "value": 1,
+              "value_expression": "1",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "geegaw",
+              "abbreviation": null,
+              "value": 2,
+              "value_expression": "2",
+              "type": "integer",
+              "is_signed": false,
+              "is_read_only": true,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ]
+        },
+        {
+          "name": "Kind",
+          "canonical_name": {
+            "module_file": "testdata/enum.emb",
+            "object_path": [
+              "Kind"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": false,
+          "maximum_bits": 64,
+          "members": [
+            {
+              "name": "WIDGET",
+              "value": 0,
+              "documentation": ""
+            },
+            {
+              "name": "SPROCKET",
+              "value": 1,
+              "documentation": ""
+            },
+            {
+              "name": "GEEGAW",
+              "value": 2,
+              "documentation": ""
+            },
+            {
+              "name": "COMPUTED",
+              "value": 3,
+              "documentation": ""
+            },
+            {
+              "name": "LARGE_VALUE",
+              "value": 2000,
+              "documentation": ""
+            },
+            {
+              "name": "DUPLICATE_LARGE_VALUE",
+              "value": 2000,
+              "documentation": ""
+            },
+            {
+              "name": "MAX32BIT",
+              "value": 4294967295,
+              "documentation": ""
+            },
+            {
+              "name": "MAX64BIT",
+              "value": 18446744073709551615,
+              "documentation": ""
+            }
+          ]
+        },
+        {
+          "name": "Signed",
+          "canonical_name": {
+            "module_file": "testdata/enum.emb",
+            "object_path": [
+              "Signed"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": true,
+          "maximum_bits": 64,
+          "members": [
+            {
+              "name": "MIN64BIT",
+              "value": -9223372036854775808,
+              "documentation": ""
+            },
+            {
+              "name": "MAX64BIT",
+              "value": 9223372036854775807,
+              "documentation": ""
+            }
+          ]
+        },
+        {
+          "name": "OnlyShortValues",
+          "canonical_name": {
+            "module_file": "testdata/enum.emb",
+            "object_path": [
+              "OnlyShortValues"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": false,
+          "maximum_bits": 64,
+          "members": [
+            {
+              "name": "ZERO",
+              "value": 0,
+              "documentation": ""
+            },
+            {
+              "name": "ONE",
+              "value": 1,
+              "documentation": ""
+            }
+          ]
+        },
+        {
+          "name": "OnlyShortSignedValues",
+          "canonical_name": {
+            "module_file": "testdata/enum.emb",
+            "object_path": [
+              "OnlyShortSignedValues"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": true,
+          "maximum_bits": 64,
+          "members": [
+            {
+              "name": "ZERO",
+              "value": 0,
+              "documentation": ""
+            },
+            {
+              "name": "NEGATIVE_ONE",
+              "value": -1,
+              "documentation": ""
+            }
+          ]
+        },
+        {
+          "name": "ExplicitlySigned",
+          "canonical_name": {
+            "module_file": "testdata/enum.emb",
+            "object_path": [
+              "ExplicitlySigned"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": true,
+          "maximum_bits": 64,
+          "members": [
+            {
+              "name": "ZERO",
+              "value": 0,
+              "documentation": ""
+            }
+          ]
+        },
+        {
+          "name": "ExplicitlySized64",
+          "canonical_name": {
+            "module_file": "testdata/enum.emb",
+            "object_path": [
+              "ExplicitlySized64"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": false,
+          "maximum_bits": 64,
+          "members": [
+            {
+              "name": "ZERO",
+              "value": 0,
+              "documentation": ""
+            }
+          ]
+        },
+        {
+          "name": "ExplicitlySized32",
+          "canonical_name": {
+            "module_file": "testdata/enum.emb",
+            "object_path": [
+              "ExplicitlySized32"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": false,
+          "maximum_bits": 32,
+          "members": [
+            {
+              "name": "ZERO",
+              "value": 0,
+              "documentation": ""
+            }
+          ]
+        },
+        {
+          "name": "ExplicitlySized16",
+          "canonical_name": {
+            "module_file": "testdata/enum.emb",
+            "object_path": [
+              "ExplicitlySized16"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": false,
+          "maximum_bits": 16,
+          "members": [
+            {
+              "name": "ZERO",
+              "value": 0,
+              "documentation": ""
+            }
+          ]
+        },
+        {
+          "name": "ExplicitlySized8",
+          "canonical_name": {
+            "module_file": "testdata/enum.emb",
+            "object_path": [
+              "ExplicitlySized8"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": false,
+          "maximum_bits": 8,
+          "members": [
+            {
+              "name": "ZERO",
+              "value": 0,
+              "documentation": ""
+            }
+          ]
+        },
+        {
+          "name": "ExplicitlySized12",
+          "canonical_name": {
+            "module_file": "testdata/enum.emb",
+            "object_path": [
+              "ExplicitlySized12"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": false,
+          "maximum_bits": 12,
+          "members": [
+            {
+              "name": "ZERO",
+              "value": 0,
+              "documentation": ""
+            }
+          ]
+        },
+        {
+          "name": "ExplicitlySizedAndSigned",
+          "canonical_name": {
+            "module_file": "testdata/enum.emb",
+            "object_path": [
+              "ExplicitlySizedAndSigned"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": true,
+          "maximum_bits": 32,
+          "members": [
+            {
+              "name": "ZERO",
+              "value": 0,
+              "documentation": ""
+            }
+          ]
+        },
+        {
+          "name": "ManifestEntry",
+          "canonical_name": {
+            "module_file": "testdata/enum.emb",
+            "object_path": [
+              "ManifestEntry"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 112,
+          "min_bit_size": 112,
+          "max_bit_size": 112,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "kind",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "Kind",
+              "type": {
+                "module_file": "testdata/enum.emb",
+                "object_path": [
+                  "Kind"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": "Kind",
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "count",
+              "abbreviation": null,
+              "bit_offset": 8,
+              "bit_size": 32,
+              "offset_expression": "1",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "wide_kind",
+              "abbreviation": null,
+              "bit_offset": 40,
+              "bit_size": 32,
+              "offset_expression": "5",
+              "size_expression": "4",
+              "alignment": null,
+              "type_name": "Kind",
+              "type": {
+                "module_file": "testdata/enum.emb",
+                "object_path": [
+                  "Kind"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": "Kind",
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            },
+            {
+              "name": "wide_kind_in_bits",
+              "abbreviation": null,
+              "bit_offset": 76,
+              "bit_size": 32,
+              "offset_expression": "4",
+              "size_expression": "32",
+              "alignment": null,
+              "type_name": "Kind",
+              "type": {
+                "module_file": "testdata/enum.emb",
+                "object_path": [
+                  "Kind"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": "Kind",
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": null,
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "StructContainingEnum",
+          "canonical_name": {
+            "module_file": "testdata/enum.emb",
+            "object_path": [
+              "StructContainingEnum"
+            ]
+          },
+          "kind": "struct",
+          "documentation": "",
+          "requires": [],
+          "bit_size": 8,
+          "min_bit_size": 8,
+          "max_bit_size": 8,
+          "byte_order": "LittleEndian",
+          "parameters": [],
+          "fields": [
+            {
+              "name": "bar",
+              "abbreviation": null,
+              "bit_offset": 0,
+              "bit_size": 8,
+              "offset_expression": "0",
+              "size_expression": "1",
+              "alignment": null,
+              "type_name": "UInt",
+              "type": {
+                "module_file": "",
+                "object_path": [
+                  "UInt"
+                ]
+              },
+              "is_signed": false,
+              "enum_ref": null,
+              "is_array": false,
+              "array_element_count": null,
+              "byte_order": "LittleEndian",
+              "existence_condition": "true",
+              "documentation": "",
+              "requires": []
+            }
+          ],
+          "virtuals": []
+        },
+        {
+          "name": "Status",
+          "canonical_name": {
+            "module_file": "testdata/enum.emb",
+            "object_path": [
+              "StructContainingEnum",
+              "Status"
+            ]
+          },
+          "kind": "enum",
+          "documentation": "",
+          "requires": [],
+          "is_signed": false,
+          "maximum_bits": 64,
+          "members": [
+            {
+              "name": "OK",
+              "value": 0,
+              "documentation": ""
+            },
+            {
+              "name": "FAILURE",
+              "value": 1,
+              "documentation": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
