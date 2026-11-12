@@ -91,6 +91,8 @@ void CopyFrom(GenericStructView<OtherStorage> other) const;
 ```
 
 The `CopyFrom` method copies data from the view `other` into the current view.
+Runtime parameters are copied as well, so parameter-dependent fields and sizes
+in the destination use the source's parameters after copying.
 When complete, the current view's backing storage will contain the same bytes
 as `other`.  This works even if the view's backing storage overlaps, in which
 case `other`'s backing storage is modified by the operation.
