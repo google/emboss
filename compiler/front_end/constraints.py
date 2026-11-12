@@ -56,7 +56,7 @@ def _check_that_inner_array_dimensions_are_constant(type_ir, source_file_name, e
             [
                 error.error(
                     source_file_name,
-                    ir_data_utils.reader(type_ir).element_count.source_location,
+                    type_ir.automatic.source_location,
                     "Array dimensions can only be omitted for the outermost dimension.",
                 )
             ]
