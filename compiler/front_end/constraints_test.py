@@ -39,26 +39,45 @@ class ConstraintsTest(unittest.TestCase):
 
     def test_error_on_missing_inner_array_size(self):
         ir = _make_ir_from_emb("struct Foo:\n" "  0 [+1]  UInt:8[][1]  one_byte\n")
-        # There is a latent issue here where the source location reported in this
-        # error is using a default value of 0:0. An issue is filed at
-        # https://github.com/google/emboss/issues/153 for further investigation.
-        # In the meantime we use `ir_data_utils.reader` to mimic this legacy
-        # behavior.
         error_array = ir_data_utils.reader(
             ir.module[0].type[0].structure.field[0].type.array_type
         )
+        messages = error.filter_errors(constraints.check_constraints(ir))
         self.assertEqual(
             [
                 [
                     error.error(
                         "m.emb",
-                        error_array.base_type.array_type.element_count.source_location,
+                        error_array.base_type.array_type.automatic.source_location,
                         "Array dimensions can only be omitted for the outermost dimension.",
                     )
                 ]
             ],
-            error.filter_errors(constraints.check_constraints(ir)),
+            messages,
         )
+        self.assertEqual((2, 17), messages[0][0].location.start)
+        self.assertEqual((2, 19), messages[0][0].location.end)
+
+    def test_error_locations_on_missing_inner_array_sizes(self):
+        cases = [
+            ("UInt:8[  ][1]", [((2, 17), (2, 21))]),
+            ("UInt:8[1][][1]", [((2, 20), (2, 22))]),
+            ("UInt:8[][][1]", [((2, 17), (2, 19)), ((2, 19), (2, 21))]),
+        ]
+        for type_name, expected in cases:
+            with self.subTest(type_name=type_name):
+                ir = _make_ir_from_emb(
+                    f"struct Foo:\n  0 [+1]  {type_name}  one_byte\n"
+                )
+                messages = error.filter_errors(constraints.check_constraints(ir))
+                self.assertCountEqual(
+                    expected,
+                    [
+                        (message.location.start, message.location.end)
+                        for group in messages
+                        for message in group
+                    ],
+                )
 
     def test_no_error_on_ok_array_size(self):
         ir = _make_ir_from_emb("struct Foo:\n" "  0 [+1]  UInt:8[1][1]  one_byte\n")
