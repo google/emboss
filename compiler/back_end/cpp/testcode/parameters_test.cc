@@ -93,6 +93,92 @@ TEST(Axes, VirtualUsingParameter) {
   EXPECT_EQ(3, view.axis_count_plus_one().Read());
 }
 
+TEST(Axes, CopyFromCopiesParameters) {
+  ::std::array<char, 12> source_bytes = {1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0};
+  ::std::array<char, 12> destination_bytes = {};
+  const auto source = MakeAxesView(3, &source_bytes);
+  const auto destination = MakeAxesView(2, &destination_bytes);
+
+  destination.CopyFrom(source);
+
+  EXPECT_EQ(source_bytes, destination_bytes);
+  EXPECT_TRUE(destination.Ok());
+  EXPECT_EQ(3U, destination.values().ElementCount());
+  EXPECT_EQ(12U, destination.SizeInBytes());
+  EXPECT_TRUE(destination.has_z().Value());
+  if (destination.has_z().Value()) {
+    EXPECT_EQ(3U, destination.z().z().Read());
+  }
+}
+
+TEST(Axes, UncheckedCopyFromCopiesParameters) {
+  ::std::array<char, 12> source_bytes = {1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0};
+  ::std::array<char, 12> destination_bytes = {};
+  const auto source = MakeAxesView(3, &source_bytes);
+  const auto destination = MakeAxesView(2, &destination_bytes);
+
+  destination.UncheckedCopyFrom(source);
+
+  EXPECT_EQ(source_bytes, destination_bytes);
+  EXPECT_TRUE(destination.Ok());
+  EXPECT_EQ(3U, destination.values().ElementCount());
+}
+
+TEST(Axes, TryToCopyFromCopiesParameters) {
+  ::std::array<char, 12> source_bytes = {1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0};
+  ::std::array<char, 12> destination_bytes = {};
+  const auto source = MakeAxesView(3, &source_bytes);
+  const auto destination = MakeAxesView(2, &destination_bytes);
+
+  EXPECT_TRUE(destination.TryToCopyFrom(source));
+
+  EXPECT_EQ(source_bytes, destination_bytes);
+  EXPECT_TRUE(destination.Ok());
+  EXPECT_EQ(3U, destination.values().ElementCount());
+}
+
+TEST(Axes, FailedTryToCopyFromDoesNotCopyParametersOrBytes) {
+  ::std::array<char, 12> source_bytes = {1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0};
+  ::std::array<char, 8> destination_bytes = {};
+  const auto source = MakeAxesView(3, &source_bytes);
+  const auto destination = MakeAxesView(2, &destination_bytes);
+
+  EXPECT_FALSE(destination.TryToCopyFrom(source));
+
+  EXPECT_EQ((::std::array<char, 8>{}), destination_bytes);
+  EXPECT_TRUE(destination.Ok());
+  EXPECT_EQ(2U, destination.values().ElementCount());
+}
+
+TEST(Axes, InvalidSourceDoesNotChangeDestinationParametersOrBytes) {
+  ::std::array<char, 12> source_bytes = {1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0};
+  ::std::array<char, 12> destination_bytes = {};
+  const auto source = MakeAxesView(4, &source_bytes);
+  const auto destination = MakeAxesView(2, &destination_bytes);
+
+  EXPECT_FALSE(destination.TryToCopyFrom(source));
+
+  EXPECT_EQ((::std::array<char, 12>{}), destination_bytes);
+  EXPECT_TRUE(destination.Ok());
+  EXPECT_EQ(2U, destination.values().ElementCount());
+}
+
+TEST(AxisPair, CopyFromCopiesAllEnumParametersAcrossStorageTypes) {
+  const ::std::array<char, 8> source_bytes = {1, 0, 0, 0, 2, 0, 0, 0};
+  ::std::array<unsigned char, 8> destination_bytes = {};
+  const auto source =
+      MakeAxisPairView(AxisType::X_AXIS, AxisType::Y_AXIS, &source_bytes);
+  const auto destination =
+      MakeAxisPairView(AxisType::Y_AXIS, AxisType::Z_AXIS, &destination_bytes);
+
+  destination.CopyFrom(source);
+
+  EXPECT_EQ(AxisType::X_AXIS, destination.axis_type_a().Read());
+  EXPECT_EQ(AxisType::Y_AXIS, destination.axis_type_b().Read());
+  EXPECT_EQ(1U, destination.axis_a().value().Read());
+  EXPECT_EQ(2U, destination.axis_b().value().Read());
+}
+
 TEST(AxesEnvelope, FieldPassedAsParameter) {
   ::std::array<unsigned char, 9> values = {2, 0, 0, 0, 0x80, 0, 100, 0, 0};
   auto view = MakeAxesEnvelopeView(&values);

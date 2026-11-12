@@ -567,6 +567,9 @@ class GenericMultiVersionView final {
         static_cast</**/ ::std::size_t>(
             emboss_reserved_local_other.IntrinsicSizeInBytes()
                 .UncheckedRead()));
+    product_ = emboss_reserved_local_other.product_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
   }
 
   template <typename OtherStorage>
@@ -576,15 +579,24 @@ class GenericMultiVersionView final {
         emboss_reserved_local_other.BackingStorage(),
         static_cast</**/ ::std::size_t>(
             emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
+    product_ = emboss_reserved_local_other.product_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(
       GenericMultiVersionView<OtherStorage> emboss_reserved_local_other) const {
-    return emboss_reserved_local_other.Ok() &&
-           backing_.TryToCopyFrom(
-               emboss_reserved_local_other.BackingStorage(),
-               static_cast</**/ ::std::size_t>(
-                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
+    if (!emboss_reserved_local_other.Ok() ||
+        !backing_.TryToCopyFrom(
+            emboss_reserved_local_other.BackingStorage(),
+            static_cast</**/ ::std::size_t>(
+                emboss_reserved_local_other.IntrinsicSizeInBytes().Read()))) {
+      return false;
+    }
+    product_ = emboss_reserved_local_other.product_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
+    return true;
   }
 
   template <class Stream>
@@ -1059,8 +1071,8 @@ class GenericMultiVersionView final {
 
  private:
   Storage backing_;
-  ::emboss::test::Product product_;
-  bool parameters_initialized_ = false;
+  mutable ::emboss::test::Product product_;
+  mutable bool parameters_initialized_ = false;
 
   template <class OtherStorage>
   friend class GenericMultiVersionView;
@@ -1374,6 +1386,9 @@ class GenericAxesView final {
         static_cast</**/ ::std::size_t>(
             emboss_reserved_local_other.IntrinsicSizeInBytes()
                 .UncheckedRead()));
+    axes_ = emboss_reserved_local_other.axes_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
   }
 
   template <typename OtherStorage>
@@ -1383,15 +1398,24 @@ class GenericAxesView final {
         emboss_reserved_local_other.BackingStorage(),
         static_cast</**/ ::std::size_t>(
             emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
+    axes_ = emboss_reserved_local_other.axes_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(
       GenericAxesView<OtherStorage> emboss_reserved_local_other) const {
-    return emboss_reserved_local_other.Ok() &&
-           backing_.TryToCopyFrom(
-               emboss_reserved_local_other.BackingStorage(),
-               static_cast</**/ ::std::size_t>(
-                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
+    if (!emboss_reserved_local_other.Ok() ||
+        !backing_.TryToCopyFrom(
+            emboss_reserved_local_other.BackingStorage(),
+            static_cast</**/ ::std::size_t>(
+                emboss_reserved_local_other.IntrinsicSizeInBytes().Read()))) {
+      return false;
+    }
+    axes_ = emboss_reserved_local_other.axes_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
+    return true;
   }
 
   template <class Stream>
@@ -1969,8 +1993,8 @@ class GenericAxesView final {
 
  private:
   Storage backing_;
-  ::std::int32_t axes_;
-  bool parameters_initialized_ = false;
+  mutable ::std::int32_t axes_;
+  mutable bool parameters_initialized_ = false;
 
   template <class OtherStorage>
   friend class GenericAxesView;
@@ -2273,6 +2297,10 @@ class GenericAxisPairView final {
         static_cast</**/ ::std::size_t>(
             emboss_reserved_local_other.IntrinsicSizeInBytes()
                 .UncheckedRead()));
+    axis_type_a_parameter_ = emboss_reserved_local_other.axis_type_a_parameter_;
+    axis_type_b_parameter_ = emboss_reserved_local_other.axis_type_b_parameter_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
   }
 
   template <typename OtherStorage>
@@ -2282,15 +2310,26 @@ class GenericAxisPairView final {
         emboss_reserved_local_other.BackingStorage(),
         static_cast</**/ ::std::size_t>(
             emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
+    axis_type_a_parameter_ = emboss_reserved_local_other.axis_type_a_parameter_;
+    axis_type_b_parameter_ = emboss_reserved_local_other.axis_type_b_parameter_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(
       GenericAxisPairView<OtherStorage> emboss_reserved_local_other) const {
-    return emboss_reserved_local_other.Ok() &&
-           backing_.TryToCopyFrom(
-               emboss_reserved_local_other.BackingStorage(),
-               static_cast</**/ ::std::size_t>(
-                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
+    if (!emboss_reserved_local_other.Ok() ||
+        !backing_.TryToCopyFrom(
+            emboss_reserved_local_other.BackingStorage(),
+            static_cast</**/ ::std::size_t>(
+                emboss_reserved_local_other.IntrinsicSizeInBytes().Read()))) {
+      return false;
+    }
+    axis_type_a_parameter_ = emboss_reserved_local_other.axis_type_a_parameter_;
+    axis_type_b_parameter_ = emboss_reserved_local_other.axis_type_b_parameter_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
+    return true;
   }
 
   template <class Stream>
@@ -2774,9 +2813,9 @@ class GenericAxisPairView final {
 
  private:
   Storage backing_;
-  ::emboss::test::AxisType axis_type_a_parameter_;
-  ::emboss::test::AxisType axis_type_b_parameter_;
-  bool parameters_initialized_ = false;
+  mutable ::emboss::test::AxisType axis_type_a_parameter_;
+  mutable ::emboss::test::AxisType axis_type_b_parameter_;
+  mutable bool parameters_initialized_ = false;
 
   template <class OtherStorage>
   friend class GenericAxisPairView;
@@ -3796,6 +3835,9 @@ class GenericAxisView final {
         static_cast</**/ ::std::size_t>(
             emboss_reserved_local_other.IntrinsicSizeInBytes()
                 .UncheckedRead()));
+    axis_type_parameter_ = emboss_reserved_local_other.axis_type_parameter_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
   }
 
   template <typename OtherStorage>
@@ -3805,15 +3847,24 @@ class GenericAxisView final {
         emboss_reserved_local_other.BackingStorage(),
         static_cast</**/ ::std::size_t>(
             emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
+    axis_type_parameter_ = emboss_reserved_local_other.axis_type_parameter_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(
       GenericAxisView<OtherStorage> emboss_reserved_local_other) const {
-    return emboss_reserved_local_other.Ok() &&
-           backing_.TryToCopyFrom(
-               emboss_reserved_local_other.BackingStorage(),
-               static_cast</**/ ::std::size_t>(
-                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
+    if (!emboss_reserved_local_other.Ok() ||
+        !backing_.TryToCopyFrom(
+            emboss_reserved_local_other.BackingStorage(),
+            static_cast</**/ ::std::size_t>(
+                emboss_reserved_local_other.IntrinsicSizeInBytes().Read()))) {
+      return false;
+    }
+    axis_type_parameter_ = emboss_reserved_local_other.axis_type_parameter_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
+    return true;
   }
 
   template <class Stream>
@@ -4295,8 +4346,8 @@ class GenericAxisView final {
 
  private:
   Storage backing_;
-  ::emboss::test::AxisType axis_type_parameter_;
-  bool parameters_initialized_ = false;
+  mutable ::emboss::test::AxisType axis_type_parameter_;
+  mutable bool parameters_initialized_ = false;
 
   template <class OtherStorage>
   friend class GenericAxisView;
@@ -5869,6 +5920,9 @@ class GenericStructWithUnusedParameterView final {
         static_cast</**/ ::std::size_t>(
             emboss_reserved_local_other.IntrinsicSizeInBytes()
                 .UncheckedRead()));
+    x_ = emboss_reserved_local_other.x_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
   }
 
   template <typename OtherStorage>
@@ -5878,15 +5932,24 @@ class GenericStructWithUnusedParameterView final {
         emboss_reserved_local_other.BackingStorage(),
         static_cast</**/ ::std::size_t>(
             emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
+    x_ = emboss_reserved_local_other.x_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(GenericStructWithUnusedParameterView<OtherStorage>
                          emboss_reserved_local_other) const {
-    return emboss_reserved_local_other.Ok() &&
-           backing_.TryToCopyFrom(
-               emboss_reserved_local_other.BackingStorage(),
-               static_cast</**/ ::std::size_t>(
-                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
+    if (!emboss_reserved_local_other.Ok() ||
+        !backing_.TryToCopyFrom(
+            emboss_reserved_local_other.BackingStorage(),
+            static_cast</**/ ::std::size_t>(
+                emboss_reserved_local_other.IntrinsicSizeInBytes().Read()))) {
+      return false;
+    }
+    x_ = emboss_reserved_local_other.x_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
+    return true;
   }
 
   template <class Stream>
@@ -6124,8 +6187,8 @@ class GenericStructWithUnusedParameterView final {
 
  private:
   Storage backing_;
-  ::std::int32_t x_;
-  bool parameters_initialized_ = false;
+  mutable ::std::int32_t x_;
+  mutable bool parameters_initialized_ = false;
 
   template <class OtherStorage>
   friend class GenericStructWithUnusedParameterView;
@@ -6858,6 +6921,9 @@ class GenericBiasedValueView final {
         static_cast</**/ ::std::size_t>(
             emboss_reserved_local_other.IntrinsicSizeInBytes()
                 .UncheckedRead()));
+    bias_ = emboss_reserved_local_other.bias_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
   }
 
   template <typename OtherStorage>
@@ -6867,15 +6933,24 @@ class GenericBiasedValueView final {
         emboss_reserved_local_other.BackingStorage(),
         static_cast</**/ ::std::size_t>(
             emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
+    bias_ = emboss_reserved_local_other.bias_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(
       GenericBiasedValueView<OtherStorage> emboss_reserved_local_other) const {
-    return emboss_reserved_local_other.Ok() &&
-           backing_.TryToCopyFrom(
-               emboss_reserved_local_other.BackingStorage(),
-               static_cast</**/ ::std::size_t>(
-                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
+    if (!emboss_reserved_local_other.Ok() ||
+        !backing_.TryToCopyFrom(
+            emboss_reserved_local_other.BackingStorage(),
+            static_cast</**/ ::std::size_t>(
+                emboss_reserved_local_other.IntrinsicSizeInBytes().Read()))) {
+      return false;
+    }
+    bias_ = emboss_reserved_local_other.bias_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
+    return true;
   }
 
   template <class Stream>
@@ -7219,8 +7294,8 @@ class GenericBiasedValueView final {
 
  private:
   Storage backing_;
-  ::std::int32_t bias_;
-  bool parameters_initialized_ = false;
+  mutable ::std::int32_t bias_;
+  mutable bool parameters_initialized_ = false;
 
   template <class OtherStorage>
   friend class GenericBiasedValueView;
@@ -7441,6 +7516,9 @@ class GenericVirtualFirstFieldWithParamView final {
         static_cast</**/ ::std::size_t>(
             emboss_reserved_local_other.IntrinsicSizeInBytes()
                 .UncheckedRead()));
+    param_ = emboss_reserved_local_other.param_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
   }
 
   template <typename OtherStorage>
@@ -7450,15 +7528,24 @@ class GenericVirtualFirstFieldWithParamView final {
         emboss_reserved_local_other.BackingStorage(),
         static_cast</**/ ::std::size_t>(
             emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
+    param_ = emboss_reserved_local_other.param_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(GenericVirtualFirstFieldWithParamView<OtherStorage>
                          emboss_reserved_local_other) const {
-    return emboss_reserved_local_other.Ok() &&
-           backing_.TryToCopyFrom(
-               emboss_reserved_local_other.BackingStorage(),
-               static_cast</**/ ::std::size_t>(
-                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
+    if (!emboss_reserved_local_other.Ok() ||
+        !backing_.TryToCopyFrom(
+            emboss_reserved_local_other.BackingStorage(),
+            static_cast</**/ ::std::size_t>(
+                emboss_reserved_local_other.IntrinsicSizeInBytes().Read()))) {
+      return false;
+    }
+    param_ = emboss_reserved_local_other.param_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
+    return true;
   }
 
   template <class Stream>
@@ -7740,8 +7827,8 @@ class GenericVirtualFirstFieldWithParamView final {
 
  private:
   Storage backing_;
-  ::std::int32_t param_;
-  bool parameters_initialized_ = false;
+  mutable ::std::int32_t param_;
+  mutable bool parameters_initialized_ = false;
 
   template <class OtherStorage>
   friend class GenericVirtualFirstFieldWithParamView;
@@ -7970,6 +8057,9 @@ class GenericConstVirtualFirstFieldWithParamView final {
         static_cast</**/ ::std::size_t>(
             emboss_reserved_local_other.IntrinsicSizeInBytes()
                 .UncheckedRead()));
+    param_ = emboss_reserved_local_other.param_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
   }
 
   template <typename OtherStorage>
@@ -7979,15 +8069,24 @@ class GenericConstVirtualFirstFieldWithParamView final {
         emboss_reserved_local_other.BackingStorage(),
         static_cast</**/ ::std::size_t>(
             emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
+    param_ = emboss_reserved_local_other.param_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(GenericConstVirtualFirstFieldWithParamView<OtherStorage>
                          emboss_reserved_local_other) const {
-    return emboss_reserved_local_other.Ok() &&
-           backing_.TryToCopyFrom(
-               emboss_reserved_local_other.BackingStorage(),
-               static_cast</**/ ::std::size_t>(
-                   emboss_reserved_local_other.IntrinsicSizeInBytes().Read()));
+    if (!emboss_reserved_local_other.Ok() ||
+        !backing_.TryToCopyFrom(
+            emboss_reserved_local_other.BackingStorage(),
+            static_cast</**/ ::std::size_t>(
+                emboss_reserved_local_other.IntrinsicSizeInBytes().Read()))) {
+      return false;
+    }
+    param_ = emboss_reserved_local_other.param_;
+    parameters_initialized_ =
+        emboss_reserved_local_other.parameters_initialized_;
+    return true;
   }
 
   template <class Stream>
@@ -8284,8 +8383,8 @@ class GenericConstVirtualFirstFieldWithParamView final {
 
  private:
   Storage backing_;
-  ::std::int32_t param_;
-  bool parameters_initialized_ = false;
+  mutable ::std::int32_t param_;
+  mutable bool parameters_initialized_ = false;
 
   template <class OtherStorage>
   friend class GenericConstVirtualFirstFieldWithParamView;

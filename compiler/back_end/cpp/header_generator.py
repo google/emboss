@@ -1926,6 +1926,7 @@ def _generate_structure_definition(type_ir, ir, config: Config):
     forwarded_parameters = []
     parameter_initializers = []
     parameter_copy_initializers = []
+    parameter_copy_assignments = []
     units = {1: "Bits", 8: "Bytes"}[type_ir.addressable_unit]
 
     for subtype in type_ir.subtype:
@@ -1941,10 +1942,14 @@ def _generate_structure_definition(type_ir, ir, config: Config):
             )
 
     # TODO(bolms): Reorder parameter fields to optimize packing in the view type.
+    # CopyFrom methods are const like field writes, but must also update the
+    # destination's parameter metadata to match the copied data.
     for parameter in type_ir.runtime_parameter:
         parameter_type = _cpp_basic_type_for_expression_type(parameter.type, ir)
         parameter_name = parameter.name.name.text
-        parameter_fields.append("{} {}_;".format(parameter_type, parameter_name))
+        parameter_fields.append(
+            "mutable {} {}_;".format(parameter_type, parameter_name)
+        )
         constructor_parameters.append("{} {}, ".format(parameter_type, parameter_name))
         forwarded_parameters.append(
             "::std::forward</**/{}>({}),".format(parameter_type, parameter_name)
@@ -1952,6 +1957,9 @@ def _generate_structure_definition(type_ir, ir, config: Config):
         parameter_initializers.append(", {0}_({0})".format(parameter_name))
         parameter_copy_initializers.append(
             ", {0}_(emboss_reserved_local_other.{0}_)".format(parameter_name)
+        )
+        parameter_copy_assignments.append(
+            "{0}_ = emboss_reserved_local_other.{0}_;".format(parameter_name)
         )
 
         field_method_declarations.append(
@@ -1977,13 +1985,27 @@ def _generate_structure_definition(type_ir, ir, config: Config):
         parameter_copy_initializers.append(
             ", {0}(emboss_reserved_local_other.{0})".format(flag_name)
         )
-        parameters_initialized_flag = "bool {} = false;".format(flag_name)
+        parameter_copy_assignments.append(
+            "{0} = emboss_reserved_local_other.{0};".format(flag_name)
+        )
+        parameters_initialized_flag = "mutable bool {} = false;".format(flag_name)
         initialize_parameters_initialized_true = ", {}(true)".format(flag_name)
         parameter_checks = ["if (!{}) return false;".format(flag_name)]
     else:
         parameters_initialized_flag = ""
         initialize_parameters_initialized_true = ""
         parameter_checks = [""]
+
+    copy_parameters = "".join("\n    " + line for line in parameter_copy_assignments)
+    try_to_copy_from_body = code_template.format_template(
+        (
+            _TEMPLATES.structure_try_to_copy_from_with_parameters
+            if type_ir.runtime_parameter
+            else _TEMPLATES.structure_try_to_copy_from
+        ),
+        units=units,
+        copy_parameters=copy_parameters,
+    )
 
     # Generate code using subexpression store.
     ok_subexpressions = ExpressionScope("emboss_reserved_local_ok_subexpr_")
@@ -2085,6 +2107,8 @@ def _generate_structure_definition(type_ir, ir, config: Config):
         forwarded_parameters="".join(forwarded_parameters),
         parameter_initializers="\n".join(parameter_initializers),
         parameter_copy_initializers="\n".join(parameter_copy_initializers),
+        copy_parameters=copy_parameters,
+        try_to_copy_from_body=try_to_copy_from_body,
         parameters_initialized_flag=parameters_initialized_flag,
         initialize_parameters_initialized_true=(initialize_parameters_initialized_true),
         units=units,

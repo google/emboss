@@ -68,6 +68,23 @@ template <class Storage>
 class Generic${name}View;
 
 
+// ** structure_try_to_copy_from ** ////////////////////////////////////////////
+      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeIn${units}().Read()));
+
+
+// ** structure_try_to_copy_from_with_parameters ** ////////////////////////////
+    if (!emboss_reserved_local_other.Ok() || !backing_.TryToCopyFrom(
+        emboss_reserved_local_other.BackingStorage(),
+        static_cast</**/ ::std::size_t>(
+            emboss_reserved_local_other.IntrinsicSizeIn${units}().Read()))) {
+      return false;
+    }${copy_parameters}
+    return true;
+
+
 // ** structure_view_class ** //////////////////////////////////////////////////
 template <class View>
 struct EmbossReservedInternalIsGeneric${name}View;
@@ -174,7 +191,7 @@ ${size_method}
         emboss_reserved_local_other.BackingStorage(),
         static_cast</**/ ::std::size_t>(emboss_reserved_local_other
                                             .IntrinsicSizeIn${units}()
-                                            .UncheckedRead()));
+                                            .UncheckedRead()));${copy_parameters}
   }
 
   template <typename OtherStorage>
@@ -183,15 +200,12 @@ ${size_method}
     backing_.CopyFrom(
         emboss_reserved_local_other.BackingStorage(),
         static_cast</**/ ::std::size_t>(
-            emboss_reserved_local_other.IntrinsicSizeIn${units}().Read()));
+            emboss_reserved_local_other.IntrinsicSizeIn${units}().Read()));${copy_parameters}
   }
   template <typename OtherStorage>
   bool TryToCopyFrom(
       Generic${name}View<OtherStorage> emboss_reserved_local_other) const {
-      return emboss_reserved_local_other.Ok() && backing_.TryToCopyFrom(
-        emboss_reserved_local_other.BackingStorage(),
-        static_cast</**/ ::std::size_t>(
-            emboss_reserved_local_other.IntrinsicSizeIn${units}().Read()));
+${try_to_copy_from_body}
   }
 
 ${text_stream_methods}
