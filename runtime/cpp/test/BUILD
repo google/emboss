@@ -61,6 +61,16 @@ emboss_cc_util_test(
 )
 
 emboss_cc_util_test(
+    name = "emboss_array_parameter_equality_test",
+    srcs = ["emboss_array_parameter_equality_test.cc"],
+    copts = ["-DEMBOSS_FORCE_ALL_CHECKS"],
+    deps = [
+        "//runtime/cpp:cpp_utils",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+emboss_cc_util_test(
     name = "emboss_bit_util_test",
     srcs = [
         "emboss_bit_util_test.cc",

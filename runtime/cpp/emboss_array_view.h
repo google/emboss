@@ -231,20 +231,24 @@ class GenericArrayView final {
     }
     return true;
   }
-  template <class OtherElementView, class OtherBufferType>
+  template <class OtherElementView, class OtherBufferType,
+            typename... OtherElementViewParameterTypes>
   bool Equals(
       const GenericArrayView<OtherElementView, OtherBufferType, kElementSize,
-                             kAddressableUnitSize> &other) const {
+                             kAddressableUnitSize,
+                             OtherElementViewParameterTypes...> &other) const {
     if (ElementCount() != other.ElementCount()) return false;
     for (::std::size_t i = 0; i < ElementCount(); ++i) {
       if (!(*this)[i].Equals(other[i])) return false;
     }
     return true;
   }
-  template <class OtherElementView, class OtherBufferType>
+  template <class OtherElementView, class OtherBufferType,
+            typename... OtherElementViewParameterTypes>
   bool UncheckedEquals(
       const GenericArrayView<OtherElementView, OtherBufferType, kElementSize,
-                             kAddressableUnitSize> &other) const {
+                             kAddressableUnitSize,
+                             OtherElementViewParameterTypes...> &other) const {
     if (ElementCount() != other.ElementCount()) return false;
     for (::std::size_t i = 0; i < ElementCount(); ++i) {
       if (!(*this)[i].UncheckedEquals(other[i])) return false;
