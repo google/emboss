@@ -663,13 +663,15 @@ struct FixedSize:
   4 [+2]  UInt  short_field
 ```
 
-In this case, `FixedSize.$size_in_bytes` will always be `6`, even if a
-`FixedSize` is placed in a larger field:
+In this case, `FixedSize.$size_in_bytes` will always be `6`, even if its backing
+buffer contains more than six bytes.  A statically-sized field containing a
+named `struct` must match its size; allocate any padding separately:
 
 ```
 struct Envelope:
   # padded_payload.$size_in_bytes == FixedSize.$size_in_bytes == 6
-  0 [+8]  FixedSize  padded_payload
+  0 [+6]  FixedSize  padded_payload
+  6 [+2]  UInt       padding
 ```
 
 The intrinsic size of a `struct` might not be constant:
@@ -998,10 +1000,13 @@ bits Inner:
   4 [+4]  UInt  field_b
 
 struct Outer:
-  0 [+1]                      UInt   message_type
+  0 [+1]                           UInt   message_type
   if message_type == 4:
-    4 [+Inner.$size_in_bits]  Inner  payload
+    4 [+Inner.$size_in_bits // 8]  Inner  payload
 ```
+
+Field sizes in a `struct` are measured in bytes, so the bit size of `Inner`
+must be divided by eight here.
 
 
 ##### `$size_in_bits`
@@ -1016,13 +1021,15 @@ bits FixedSize:
   3 [+1]  Flag  short_field
 ```
 
-In this case, `FixedSize.$size_in_bits` will always be `4`, even if a
-`FixedSize` is placed in a larger field:
+In this case, `FixedSize.$size_in_bits` will always be `4`.  A named `bits` type
+cannot be placed directly in a larger statically-sized field.  To allocate a
+whole byte while keeping the four-bit payload, wrap it in anonymous `bits`:
 
 ```
 struct Envelope:
   # padded_payload.$size_in_bits == FixedSize.$size_in_bits == 4
-  0 [+8]  FixedSize  padded_payload
+  0 [+1]  bits:
+    0 [+4]  FixedSize  padded_payload
 ```
 
 Unlike `struct`s, the size of `bits` must known at compile time; there are no
