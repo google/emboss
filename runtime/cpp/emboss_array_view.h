@@ -141,7 +141,7 @@ class ElementViewIterator {
   }
 
  private:
-  const GenericArrayView array_view_;
+  GenericArrayView array_view_;
   typename GenericArrayView::ViewType view_;
   ::std::ptrdiff_t index_;
 };

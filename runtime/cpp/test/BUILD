@@ -97,6 +97,16 @@ emboss_cc_util_test(
 )
 
 emboss_cc_util_test(
+    name = "emboss_array_iterator_assignment_test",
+    srcs = ["emboss_array_iterator_assignment_test.cc"],
+    copts = ["-DEMBOSS_FORCE_ALL_CHECKS"],
+    deps = [
+        "//runtime/cpp:cpp_utils",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+emboss_cc_util_test(
     name = "emboss_defines_test",
     srcs = [
         "emboss_defines_test.cc",
