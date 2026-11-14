@@ -41,6 +41,13 @@ class MaybeConstantView {
   constexpr ValueT UncheckedRead() const { return value_.ValueOrDefault(); }
   constexpr bool Ok() const { return value_.Known(); }
 
+  bool Equals(const MaybeConstantView &other) const {
+    return Read() == other.Read();
+  }
+  constexpr bool UncheckedEquals(const MaybeConstantView &other) const {
+    return UncheckedRead() == other.UncheckedRead();
+  }
+
  private:
   ::emboss::support::Maybe<ValueT> value_;
 };

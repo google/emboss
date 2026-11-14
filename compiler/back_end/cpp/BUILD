@@ -408,6 +408,15 @@ emboss_cc_test(
 )
 
 emboss_cc_test(
+    name = "parameter_equality_test",
+    srcs = ["testcode/parameter_equality_test.cc"],
+    deps = [
+        "//testdata:parameters_emboss",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+emboss_cc_test(
     name = "complex_structure_test",
     srcs = ["testcode/complex_structure_test.cc"],
     deps = [

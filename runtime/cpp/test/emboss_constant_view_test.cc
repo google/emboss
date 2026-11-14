@@ -37,6 +37,28 @@ TEST(MaybeConstantViewTest, Ok) {
   EXPECT_FALSE(MaybeConstantView</**/ ::std::uint8_t>().Ok());
 }
 
+TEST(MaybeConstantViewTest, Equals) {
+  constexpr MaybeConstantView<int> seven(7);
+  constexpr MaybeConstantView<int> other_seven(7);
+  constexpr MaybeConstantView<int> eight(8);
+  EXPECT_TRUE(seven.Equals(other_seven));
+  EXPECT_FALSE(seven.Equals(eight));
+}
+
+TEST(MaybeConstantViewTest, UncheckedEquals) {
+  constexpr MaybeConstantView<int> seven(7);
+  constexpr MaybeConstantView<int> other_seven(7);
+  constexpr MaybeConstantView<int> eight(8);
+  static_assert(seven.UncheckedEquals(other_seven),
+                "Equal constants compare equal");
+  static_assert(!seven.UncheckedEquals(eight),
+                "Different constants compare unequal");
+  EXPECT_TRUE(seven.UncheckedEquals(other_seven));
+  EXPECT_FALSE(seven.UncheckedEquals(eight));
+  EXPECT_TRUE(
+      MaybeConstantView<int>().UncheckedEquals(MaybeConstantView<int>(0)));
+}
+
 TEST(MaybeConstantViewTest, CopyConstruction) {
   auto with_value = MaybeConstantView</**/ ::std::uint8_t>(7);
   auto copied_with_value = with_value;
