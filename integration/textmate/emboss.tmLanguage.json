@@ -1,0 +1,160 @@
+{
+  "name": "Emboss",
+  "scopeName": "source.emboss",
+  "fileTypes": [
+    "emb"
+  ],
+  "patterns": [
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#doc-comments"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#builtins"
+    },
+    {
+      "include": "#types"
+    },
+    {
+      "include": "#constants"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#operators"
+    },
+    {
+      "include": "#punctuation"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.emboss",
+          "match": "#.*$"
+        }
+      ]
+    },
+    "doc-comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-dash.documentation.emboss",
+          "match": "--(?: .*|)$"
+        },
+        {
+          "name": "invalid.illegal.documentation.emboss",
+          "match": "--[^ ].*$"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.emboss",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.emboss",
+              "match": "\\\\[n\\\\\"]"
+            }
+          ]
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.emboss",
+          "match": "\\b(struct|enum|bits|external|import|as|if|let)\\b"
+        },
+        {
+          "name": "constant.language.emboss",
+          "match": "\\b(true|false)\\b"
+        }
+      ]
+    },
+    "builtins": {
+      "patterns": [
+        {
+          "name": "variable.language.emboss",
+          "match": "(?<!\\w)(\\$default|\\$static_size_in_bits|\\$is_statically_sized|\\$next|\\$max|\\$present|\\$upper_bound|\\$lower_bound)\\b"
+        },
+        {
+          "name": "variable.other.emboss",
+          "match": "(?<!\\w)(\\$size_in_bits|\\$size_in_bytes|\\$max_size_in_bits|\\$max_size_in_bytes|\\$min_size_in_bits|\\$min_size_in_bytes)\\b"
+        }
+      ]
+    },
+    "types": {
+      "patterns": [
+        {
+          "name": "entity.name.type.emboss",
+          "match": "\\b[A-Z][a-zA-Z0-9]*[a-z][a-zA-Z0-9]*\\b"
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "name": "variable.other.constant.emboss",
+          "match": "\\b[A-Z][A-Z_0-9]*[A-Z_][A-Z_0-9]*\\b"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.hex.emboss",
+          "match": "\\b0[xX](?:[0-9a-fA-F]+|_?[0-9a-fA-F]{1,4}(?:_[0-9a-fA-F]{4})*|_?[0-9a-fA-F]{1,8}(?:_[0-9a-fA-F]{8})*)\\b"
+        },
+        {
+          "name": "constant.numeric.binary.emboss",
+          "match": "\\b0[bB](?:[01]+|_?[01]{1,4}(?:_[01]{4})*|_?[01]{1,8}(?:_[01]{8})*)\\b"
+        },
+        {
+          "name": "constant.numeric.decimal.emboss",
+          "match": "\\b(?:\\d+|\\d{1,3}(?:_\\d{3})+)\\b"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.emboss",
+          "match": "==|!=|<=|>=|<|>|&&|\\|\\||\\+|-|\\*|\\?|="
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "name": "punctuation.separator.emboss",
+          "match": "[:,]"
+        },
+        {
+          "name": "punctuation.section.brackets.emboss",
+          "match": "\\[|\\]"
+        },
+        {
+          "name": "punctuation.section.parens.emboss",
+          "match": "\\(|\\)"
+        },
+        {
+          "name": "punctuation.accessor.emboss",
+          "match": "\\."
+        }
+      ]
+    }
+  }
+}
