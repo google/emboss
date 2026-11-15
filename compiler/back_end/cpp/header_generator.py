@@ -565,8 +565,16 @@ def _render_variable(variable, prefix=""):
 
 def _render_enum_value(enum_type, ir):
     cpp_enum_type = _get_fully_qualified_name(enum_type.name.canonical_name, ir)
+    value = int(enum_type.value)
+    # Values outside of (-2**63, 2**63) cannot be written as plain decimal
+    # literals: C++ compilers warn that they are too large for a signed type
+    # (see _render_integer).  This can only happen for 64-bit enums.
+    if -(2**63) < value < 2**63:
+        rendered_value = str(value)
+    else:
+        rendered_value = _render_integer(value)
     return "{}(static_cast</**/{}>({}))".format(
-        _maybe_type(cpp_enum_type), cpp_enum_type, enum_type.value
+        _maybe_type(cpp_enum_type), cpp_enum_type, rendered_value
     )
 
 
