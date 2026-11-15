@@ -14,6 +14,7 @@
 
 """Tests for attribute_checker.py."""
 
+import re
 import unittest
 from compiler.back_end.cpp import header_generator
 from compiler.front_end import glue
@@ -552,6 +553,56 @@ class NormalizeIrTest(unittest.TestCase):
                 ],
                 header_generator.generate_header(ir)[1],
             )
+
+
+class RenderEnumValueTest(unittest.TestCase):
+
+    def test_renders_64_bit_enum_constants_without_oversized_literals(self):
+        ir = _make_ir_from_emb(
+            '[$default byte_order: "LittleEndian"]\n'
+            '[(cpp) namespace: "test"]\n'
+            "enum Big:\n"
+            "  [maximum_bits: 64]\n"
+            "  SMALL = 1\n"
+            "  LARGEST = 0xffff_ffff_ffff_ffff\n"
+            "\n"
+            "enum SignedBig:\n"
+            "  [maximum_bits: 64]\n"
+            "  [is_signed: true]\n"
+            "  ONE = 1\n"
+            "  SMALLEST = -0x8000_0000_0000_0000\n"
+            "\n"
+            "struct Foo:\n"
+            "  0 [+8]  Big        big\n"
+            "  8 [+8]  SignedBig  signed_big\n"
+            "  if big == Big.LARGEST:\n"
+            "    16 [+1]  UInt  x\n"
+            "  if signed_big == SignedBig.SMALLEST:\n"
+            "    17 [+1]  UInt  y\n"
+            "  if big == Big.SMALL:\n"
+            "    18 [+1]  UInt  z\n"
+        )
+        header, errors = header_generator.generate_header(ir)
+        self.assertEqual([], errors)
+        # 18446744073709551615 and 9223372036854775808 do not fit in any signed
+        # C++ integer type, so an unsuffixed literal of either value draws a
+        # warning from C++ compilers (and an error under -pedantic-errors).
+        self.assertEqual(
+            [],
+            re.findall(r">\((?:18446744073709551615|-9223372036854775808)\)", header),
+        )
+        self.assertIn(
+            "static_cast</**/::test::Big>("
+            "static_cast</**/::std::uint64_t>(18446744073709551615ULL))",
+            header,
+        )
+        self.assertIn(
+            "static_cast</**/::test::SignedBig>("
+            "static_cast</**/::std::int64_t>(-9223372036854775807LL - 1))",
+            header,
+        )
+        # Values that fit in a `long long` are rendered as plain literals.
+        self.assertIn("static_cast</**/::test::Big>(1)", header)
 
 
 if __name__ == "__main__":
